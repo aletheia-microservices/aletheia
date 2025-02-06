@@ -1,0 +1,22 @@
+CouponService:
+- fields:
+    couponsDB: NoSQLDatabase
+- services: {}
+- datastores:
+    coupons_db: coupons_db MongoDB (NoSQLDatabase)
+
+Frontend:
+- fields:
+    CouponService: CouponService
+    StudentService: StudentService
+- services:
+    CouponService: coupons_app.CouponService
+    StudentService: coupons_app.StudentService
+- datastores: {}
+
+StudentService:
+- fields:
+    studentsDB: NoSQLDatabase
+- services: {}
+- datastores:
+    students_db: students_db MongoDB (NoSQLDatabase)

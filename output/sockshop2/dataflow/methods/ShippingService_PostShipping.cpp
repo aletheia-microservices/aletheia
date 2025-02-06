@@ -13,9 +13,9 @@
 [0] (StructObject UserType) shipment shipping.Shipment struct{ID string, Name string, Status string}
      --> w-tainted: write(shipqueue.Shipment, shipdb.Shipment, order_db.Order.Shipment) {3}         --> w-tainted: write(shipqueue.Shipment, shipdb.Shipment, order_db.Order.Shipment) {3} --> r-tainted: read(shipqueue.Shipment) {1}
 [_1] (Reference UserType) ref <shipment shipping.Shipment struct{ID string, Name string, Status "awaiting shipment" string}> @ OrderService
-      --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) {4}           --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) {4} --> r-tainted: read(shipqueue.Shipment.ID) {1}
+      --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3}           --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3} --> r-tainted: read(shipqueue.Shipment.ID) {1}
 [__2] (FieldObject FieldType) ID string
-       --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID) {3}             --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID) {3} --> r-tainted: read(shipqueue.Shipment.ID) {1}
+       --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3}             --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3} --> r-tainted: read(shipqueue.Shipment.ID) {1}
 [___3] (BasicObject BasicType) string
       --> w-tainted: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.Shipment) {3}           --> w-tainted: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.Shipment) {3} --> r-tainted: read(shipqueue.Shipment.Name) {1}
 [__2] (FieldObject FieldType) Name string

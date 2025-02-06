@@ -21,11 +21,10 @@
     Name string, Status "awaiting shipment" string}> @ OrderService --> w-tainted
     3x: write(shipqueue.Shipment, shipdb.Shipment, order_db.Order.Shipment) --> r-tainted
     1x: read(shipqueue.Shipment)'
-  - '___3 depth 3 (FieldObject FieldType) ID string --> w-tainted 4x: write(shipqueue.Shipment.ID,
-    shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) --> r-tainted
-    1x: read(shipqueue.Shipment.ID)'
+  - '___3 depth 3 (FieldObject FieldType) ID string --> w-tainted 3x: write(shipqueue.Shipment.ID,
+    shipdb.Shipment.ID, order_db.Order.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '____4 depth 4 (BasicObject BasicType) string --> w-tainted 3x: write(shipqueue.Shipment.ID,
-    shipdb.Shipment.ID, order_db.Order.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
+    shipdb.Shipment.ID, order_db.Order.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '___5 depth 3 (FieldObject FieldType) Name string --> w-tainted 3x: write(shipqueue.Shipment.Name,
     shipdb.Shipment.Name, order_db.Order.Shipment) --> r-tainted 1x: read(shipqueue.Shipment.Name)'
   - '____6 depth 4 (BasicObject BasicType) customerID string --> w-tainted 4x: write(shipqueue.Shipment.Name,
@@ -47,12 +46,12 @@
   - '_18 depth 1 (FieldObject FieldType) ID string --> w-tainted 2x: write(shipqueue.Shipment.ID,
     shipdb.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '__19 depth 2 (Reference FieldType) ref <ID string> @ OrderService --> w-tainted
-    4x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID)
+    3x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID)
     --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '__21 depth 2 (BasicObject BasicType) ID string --> w-tainted 2x: write(shipqueue.Shipment.ID,
     shipdb.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '___22 depth 3 (Reference FieldType) ref <ID string> @ OrderService --> w-tainted
-    4x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID)
+    3x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID)
     --> r-tainted 1x: read(shipqueue.Shipment.ID)'
 
 .NewQueueMaster(ctx context.Context, queue Queue, shipping shipping.ShippingService):

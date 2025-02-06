@@ -1,0 +1,12 @@
+(*StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, value int):
+- DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+- DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+(*StudentServiceImpl).CreateStudent(ctx context.Context, studentID int, name string):
+- DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+.NewCouponServiceImpl(ctx context.Context, couponsDB NoSQLDatabase): []
+
+.NewFrontendImpl(ctx context.Context, StudentService coupons_app.StudentService, CouponService coupons_app.CouponService): []
+
+.NewStudentServiceImpl(ctx context.Context, studentsDB NoSQLDatabase): []

@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"os"
 	"slices"
+	"strings"
 	"time"
 
 	"analyzer/pkg/abstractgraph"
@@ -18,36 +21,63 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func main() {
+type analysisConfig struct {
+	allFlag                    string
+	appName                    string
+	detectOnly                 bool
+	xcyDetection               bool
+	foreignKeyDetection        bool
+	cascadeDetection           bool
+	unicityIndividualDetection bool
+	unicityAggregateDetection  bool
+	specializationDetection    bool
+}
 
+func main() {
 	allFlag := flag.String("all", "", fmt.Sprintf("Run analyzer for all applications: %v", utils.Apps))
 	appName := flag.String("app", "", fmt.Sprintf("The name of the application to be analyzed: %v", utils.Apps))
+	detectOnly := flag.Bool("detect_only", false, "Only perform detection (assume parsing is already done)")
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
 	foreignKeyDetection := flag.Bool("fk", false, "Enable detection of anomalies in foreign key constraints")
 	cascadeDetection := flag.Bool("cascade", false, "Enable detection of the absence of cascading delete logic")
+	unicityIndividualDetection := flag.Bool("unicity_individual", false, "Enable detection of inconsistencies for unicity constraints (individual)")
+	unicityAggregateDetection := flag.Bool("unicity_aggregate", false, "Enable detection of inconsistencies for unicity constraints (aggregate)")
 	specializationDetection := flag.Bool("specialization", false, "Enable detection of removals in mandatory specializations")
+
 	flag.Parse()
-	if *allFlag == "true" || *allFlag == "True" || *allFlag == "1" {
+	analysis := analysisConfig{
+		allFlag:                    *allFlag,
+		appName:                    *appName,
+		detectOnly:                 *detectOnly,
+		xcyDetection:               *xcyDetection,
+		foreignKeyDetection:        *foreignKeyDetection,
+		cascadeDetection:           *cascadeDetection,
+		unicityIndividualDetection: *unicityIndividualDetection,
+		unicityAggregateDetection:  *unicityAggregateDetection,
+		specializationDetection:    *specializationDetection,
+	}
+
+	if analysis.allFlag == "true" || analysis.allFlag == "True" || analysis.allFlag == "1" {
 		for _, app := range utils.Apps {
 			logger.Logger.Infof(fmt.Sprintf("running analyzer for '%s'...", app))
 			time.Sleep(1500 * time.Millisecond)
-			initAnalyzer(app, *xcyDetection, *cascadeDetection, *foreignKeyDetection, *specializationDetection)
+			initAnalyzer(analysis)
 			fmt.Println()
 			fmt.Println()
 		}
 		return
 	}
-	if !slices.Contains(utils.Apps, *appName) {
-		logger.Logger.Fatal(fmt.Sprintf("invalid app name (%s) must provide an application name using the -app flag for one of the available applications: %v", *appName, utils.Apps))
+	if !slices.Contains(utils.Apps, analysis.appName) {
+		logger.Logger.Fatal(fmt.Sprintf("invalid app name (%s) must provide an application name using the -app flag for one of the available applications: %v", analysis.appName, utils.Apps))
 
 	}
-	initAnalyzer(*appName, *xcyDetection, *cascadeDetection, *foreignKeyDetection, *specializationDetection)
+	initAnalyzer(analysis)
 }
 
-func initAnalyzer(appName string, xcyDetection bool, cascadeDetection bool, foreignKeyDetection bool, specializationDetection bool) {
-	servicesInfo, databaseInstances, frontends := blueprint.LoadWiring(appName)
+func initAnalyzer(analysis analysisConfig) {
+	servicesInfo, databaseInstances, frontends := blueprint.LoadWiring(analysis.appName)
 
-	app, err := app.InitApp(appName, servicesInfo)
+	app, err := app.InitApp(analysis.appName, servicesInfo)
 	if err != nil {
 		return
 	}
@@ -79,7 +109,7 @@ func initAnalyzer(appName string, xcyDetection bool, cascadeDetection bool, fore
 
 	summary := "\n\n"
 
-	if xcyDetection {
+	if analysis.xcyDetection {
 		fmt.Println()
 		fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")
 		fmt.Println(" --------------------------------------- CHECK XCY - TAINTED APPROACH  ---------------------------------------- ")
@@ -101,7 +131,7 @@ func initAnalyzer(appName string, xcyDetection bool, cascadeDetection bool, fore
 
 	app.ResetAllDataflows()
 
-	if cascadeDetection {
+	if analysis.cascadeDetection {
 		fmt.Println()
 		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 		fmt.Println(" --------------------------------------- CHECK ABSENCE OF CASCADING DELETE ---------------------------------------- ")
@@ -113,7 +143,7 @@ func initAnalyzer(appName string, xcyDetection bool, cascadeDetection bool, fore
 		summary += results + "\n\n"
 	}
 
-	if foreignKeyDetection {
+	if analysis.foreignKeyDetection {
 		fmt.Println()
 		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 		fmt.Println(" ----------------------------------- CHECK INTEGRITY ANOMALIES FOR FOREIGN KEYS ----------------------------------- ")
@@ -128,7 +158,7 @@ func initAnalyzer(appName string, xcyDetection bool, cascadeDetection bool, fore
 		app.DumpYamlSchema(true)
 	}
 
-	if specializationDetection {
+	if analysis.specializationDetection {
 		fmt.Println()
 		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 		fmt.Println(" ----------------------------------- CHECK REMOVALS IN MANDATORY SPECIALIZATIONS ---------------------------------- ")
@@ -143,5 +173,29 @@ func initAnalyzer(appName string, xcyDetection bool, cascadeDetection bool, fore
 	}
 
 	bold_light_red := "\033[1;31m"
+	reset_color := "\033[0m"
+
+	if analysis.unicityIndividualDetection {
+
+		for dbName, dbInstance := range app.Databases {
+			fmt.Printf("\n\nSetting up additional constraints for database (%s) with schema:\n\n", dbName)
+
+			for _, unfoldedField := range dbInstance.GetDatastore().Schema.UnfoldedFields {
+				fmt.Println("- " + unfoldedField.GetFullName())
+			}
+
+			fmt.Println("\nSpecify fields with unicity constraint (delimiter is ';', composed uniqueness is within '(...)'): ")
+			reader := bufio.NewReader(os.Stdin)
+			input, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Println("Error reading input:", err)
+				return
+			}
+			input = strings.TrimSpace(input)
+			targetFields := strings.Split(input, ";")
+			fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n%s \n%s", bold_light_red, targetFields, reset_color)
+		}
+	}
+
 	fmt.Println(bold_light_red + summary)
 }

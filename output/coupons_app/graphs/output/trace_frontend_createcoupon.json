@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "CouponService",
+      "type": "service"
+    },
+    {
+      "id": "Frontend",
+      "type": "service"
+    },
+    {
+      "id": "coupons_db MongoDB",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "Client",
+      "callee": "Frontend",
+      "call": "CreateCoupon",
+      "depth": 0
+    },
+    {
+      "caller": "CouponService",
+      "callee": "coupons_db MongoDB",
+      "call": "InsertOne",
+      "depth": 2
+    },
+    {
+      "caller": "Frontend",
+      "callee": "CouponService",
+      "call": "CreateCoupon",
+      "depth": 1
+    }
+  ]
+}

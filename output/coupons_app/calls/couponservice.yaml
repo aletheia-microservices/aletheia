@@ -1,0 +1,12 @@
+(*CouponServiceImpl).ClaimCoupon(ctx context.Context, couponID int, category string, userID int):
+- DATASTORE CALL @ coupons_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+- DATASTORE CALL @ coupons_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+(*CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string):
+- DATASTORE CALL @ coupons_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+.NewCouponServiceImpl(ctx context.Context, couponsDB NoSQLDatabase): []
+
+.NewFrontendImpl(ctx context.Context, StudentService coupons_app.StudentService, CouponService coupons_app.CouponService): []
+
+.NewStudentServiceImpl(ctx context.Context, studentsDB NoSQLDatabase): []

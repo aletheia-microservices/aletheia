@@ -1,0 +1,91 @@
+(*CouponServiceImpl).ClaimCoupon(ctx context.Context, couponID int, category string, userID int):
+  block 11 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) couponsDB NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) couponsDB NoSQLDatabase
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.CouponID)'
+  - '_1 depth 1 (Reference BasicType) ref <couponID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.ClaimedCoupon.CouponID)'
+  - '0 depth 0 (BasicObject BasicType) category string --> r-tainted 1x: read(coupons_db.Coupon.Category)'
+  - '_1 depth 1 (Reference BasicType) ref <category string> @ Frontend --> r-tainted
+    1x: read(coupons_db.Coupon.Category)'
+  - '0 depth 0 (BasicObject BasicType) userID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.UserID)
+    --> r-tainted 1x: read(coupons_db.Coupon.userID)'
+  - '_1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.ClaimedCoupon.UserID) --> r-tainted 1x: read(coupons_db.Coupon.userID)'
+  - '0 depth 0 (StructObject UserType) claimedCoupon coupons_app.ClaimedCoupon struct{CouponID
+    int, UserID int} --> r-tainted 1x: read(coupons_db.ClaimedCoupon)'
+  - _1 depth 1 (FieldObject FieldType) CouponID int
+  - __2 depth 2 (BasicObject BasicType) CouponID int
+  - _3 depth 1 (FieldObject FieldType) UserID int
+  - __4 depth 2 (BasicObject BasicType) UserID int
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = coupons, collection = claimed_coupons}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (SliceObject UserType) query primitive.D
+  - _1 depth 1 (StructObject StructType) struct{Key "category" string, Key "category" string, Value string, Value string}
+  - __2 depth 2 (FieldObject FieldType) Key "category" string
+  - ___3 depth 3 (BasicObject BasicType) "category" string
+  - __4 depth 2 (FieldObject FieldType) Value string
+  - _7 depth 1 (StructObject StructType) struct{Key "userID" string, Key "userID" string, Value int, Value int}
+  - __8 depth 2 (FieldObject FieldType) Key "userID" string
+  - ___9 depth 3 (BasicObject BasicType) "userID" string
+  - __10 depth 2 (FieldObject FieldType) Value int
+  - '0 depth 0 (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database
+    = coupons, collection = claimed_coupons} --> r-tainted 1x: read(coupons_db.Coupon)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (BasicObject BasicType) found bool
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - '0 depth 0 (StructObject UserType) claimedCoupon coupons_app.ClaimedCoupon struct{CouponID
+    int, UserID int} --> w-tainted 1x: write(coupons_db.ClaimedCoupon)'
+  - '_1 depth 1 (FieldObject FieldType) CouponID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.CouponID)'
+  - '_4 depth 1 (FieldObject FieldType) UserID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.UserID)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+(*CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string):
+  block 2 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) couponsDB NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) couponsDB NoSQLDatabase
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.Coupon.CouponID)'
+  - '_1 depth 1 (Reference BasicType) ref <couponID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.Coupon.CouponID)'
+  - '0 depth 0 (BasicObject BasicType) category string --> w-tainted 1x: write(coupons_db.Coupon.Category)'
+  - '_1 depth 1 (Reference BasicType) ref <category string> @ Frontend --> w-tainted
+    1x: write(coupons_db.Coupon.Category)'
+  - '0 depth 0 (StructObject UserType) coupon coupons_app.Coupon struct{CouponID int,
+    Category string} --> w-tainted 1x: write(coupons_db.Coupon)'
+  - '_1 depth 1 (FieldObject FieldType) Category string --> w-tainted 1x: write(coupons_db.Coupon.Category)'
+  - '_4 depth 1 (FieldObject FieldType) CouponID int --> w-tainted 1x: write(coupons_db.Coupon.CouponID)'
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = coupons, collection = coupons}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+.NewCouponServiceImpl(ctx context.Context, couponsDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) couponsDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) couponsDB NoSQLDatabase
+
+.NewFrontendImpl(ctx context.Context, StudentService coupons_app.StudentService, CouponService coupons_app.CouponService):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) StudentService coupons_app.StudentService
+  - 0 depth 0 (ServiceObject ServiceType) CouponService coupons_app.CouponService
+
+.NewStudentServiceImpl(ctx context.Context, studentsDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) studentsDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) studentsDB NoSQLDatabase

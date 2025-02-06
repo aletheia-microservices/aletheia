@@ -168,7 +168,7 @@ func (app *App) dumpYamlDataflow() {
 	}
 }
 
-func (app *App) DumpYamlSchema(compactSchema bool) {
+func (app *App) DumpYamlSchema(compactSchema bool) map[string]utils.OrderedProperties {
 	data := make(map[string]utils.OrderedProperties)
 	for _, datastore := range app.Databases {
 		schema := utils.NewOrderedPropertyList()
@@ -221,6 +221,8 @@ func (app *App) DumpYamlSchema(compactSchema bool) {
 	} else {
 		utils.DumpToYamlFile(data, app.Name, "app/schema")
 	}
+
+	return data
 }
 
 func (app *App) dumpYamlServices() {

@@ -1,0 +1,74 @@
+COUPONS_DB.ClaimedCoupon:
+- write <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+
+COUPONS_DB.ClaimedCoupon.CouponID:
+- write <couponID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <ref <couponID int> @ Frontend (Reference)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <couponID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <CouponID int (FieldObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+
+COUPONS_DB.ClaimedCoupon.UserID:
+- read <userID int (BasicObject)>
+- read <userID int (BasicObject)> from <userID int (BasicObject)>
+- read <ref <studentID int> @ Frontend (Reference)> from <userID int (BasicObject)>
+- read <studentID int (BasicObject)> from <userID int (BasicObject)>
+- write <userID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <ref <studentID int> @ Frontend (Reference)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <studentID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <UserID int (FieldObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+
+COUPONS_DB.Coupon:
+- write <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+  from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+  from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- read <result NoSQLCursor {database = coupons, collection = claimed_coupons} (BlueprintBackendObject)>
+
+COUPONS_DB.Coupon.Category:
+- write <category string (BasicObject)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <ref <category string> @ Frontend (Reference)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <category string (BasicObject)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <Category string (FieldObject)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- read <category string (BasicObject)>
+- read <category string (BasicObject)> from <category string (BasicObject)>
+- read <ref <category string> @ Frontend (Reference)> from <category string (BasicObject)>
+- read <category string (BasicObject)> from <category string (BasicObject)>
+
+COUPONS_DB.Coupon.CouponID:
+- write <couponID int (BasicObject)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <ref <couponID int> @ Frontend (Reference)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <couponID int (BasicObject)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+- write <CouponID int (FieldObject)> from <coupon coupons_app.Coupon struct{CouponID int, Category string} (StructObject)>
+
+COUPONS_DB.Coupon.userID:
+- read <userID int (BasicObject)>
+- read <userID int (BasicObject)> from <userID int (BasicObject)>
+- read <ref <studentID int> @ Frontend (Reference)> from <userID int (BasicObject)>
+- read <studentID int (BasicObject)> from <userID int (BasicObject)>
+- write <userID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <ref <studentID int> @ Frontend (Reference)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <studentID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+
+ClaimedCoupon:
+- read <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+  from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+
+int:
+- read <userID int (BasicObject)>
+- read <userID int (BasicObject)> from <userID int (BasicObject)>
+- read <ref <studentID int> @ Frontend (Reference)> from <userID int (BasicObject)>
+- read <studentID int (BasicObject)> from <userID int (BasicObject)>
+- write <userID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <ref <studentID int> @ Frontend (Reference)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <studentID int (BasicObject)> from <claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int} (StructObject)>
+- write <value int (BasicObject)> from <student coupons_app.Student struct{StudentID int, Name string, Balance int} (StructObject)>
+- write <ref <value int> @ Frontend (Reference)> from <student coupons_app.Student struct{StudentID int, Name string, Balance int} (StructObject)>
+- write <value int (BasicObject)> from <student coupons_app.Student struct{StudentID int, Name string, Balance int} (StructObject)>
+
+string:
+- read <category string (BasicObject)>
+- read <category string (BasicObject)> from <category string (BasicObject)>
+- read <ref <category string> @ Frontend (Reference)> from <category string (BasicObject)>
+- read <category string (BasicObject)> from <category string (BasicObject)>

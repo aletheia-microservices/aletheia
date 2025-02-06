@@ -2,9 +2,11 @@ package utils
 
 import (
 	specs_app_constraints_referential_integrity "github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring/specs"
+	specs_coupons_app "github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring/specs"
+	specs_coupons_app_sql "github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring/specs"
 	dsb_hotel "github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring/specs"
 	dsb_sn "github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring/specs"
-	spec_employee_app "github.com/blueprint-uservices/blueprint/examples/employee_app/wiring/specs"
+	specs_employee_app "github.com/blueprint-uservices/blueprint/examples/employee_app/wiring/specs"
 	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
 	specs_postnotification "github.com/blueprint-uservices/blueprint/examples/postnotification/wiring/specs"
 	specs_postnotification_simple "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring/specs"
@@ -22,7 +24,7 @@ const (
 	PATH_BLUEPRINT_CORE_BACKEND string = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
 )
 
-var Apps = []string{"foobar", "shopping_simple", "shopping_app", "postnotification_simple", "postnotification", "sockshop2", "trainticket", "app_constraints_referential_integrity", "employee_app", "dsb_sn", "dsb_hotel"}
+var Apps = []string{"foobar", "shopping_simple", "shopping_app", "postnotification_simple", "postnotification", "sockshop2", "trainticket", "app_constraints_referential_integrity", "employee_app", "dsb_sn", "dsb_hotel", "coupons_app", "coupons_app_sql"}
 
 type AppInfo struct {
 	PackagePath   string
@@ -33,7 +35,9 @@ var APPS_INFO = map[string]AppInfo{
 	"postnotification":                      {PATH_BLUEPRINT_EXAMPLES + "postnotification/workflow/postnotification", specs_postnotification.Docker},
 	"postnotification_simple":               {PATH_BLUEPRINT_EXAMPLES + "postnotification_simple/workflow/postnotification_simple", specs_postnotification_simple.Docker},
 	"app_constraints_referential_integrity": {PATH_BLUEPRINT_EXAMPLES + "app_constraints_referential_integrity/workflow/app_constraints_referential_integrity", specs_app_constraints_referential_integrity.Docker},
-	"employee_app":                          {PATH_BLUEPRINT_EXAMPLES + "employee_app/workflow/employee_app", spec_employee_app.Docker},
+	"employee_app":                          {PATH_BLUEPRINT_EXAMPLES + "employee_app/workflow/employee_app", specs_employee_app.Docker},
+	"coupons_app":                           {PATH_BLUEPRINT_EXAMPLES + "coupons_app/workflow/coupons_app", specs_coupons_app.Docker},
+	"coupons_app_sql":                       {PATH_BLUEPRINT_EXAMPLES + "coupons_app_sql/workflow/coupons_app_sql", specs_coupons_app_sql.Docker},
 	"foobar":                                {PATH_BLUEPRINT_EXAMPLES + "foobar/workflow/foobar", specs_foobar.Docker},
 	"sockshop2":                             {PATH_BLUEPRINT_EXAMPLES + "sockshop2/workflow", specs_sockshop2.Docker},
 	"trainticket":                           {PATH_BLUEPRINT_EXAMPLES + "train_ticket/workflow", specs_trainticket.Docker},

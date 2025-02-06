@@ -48,20 +48,25 @@ go run main.go -app=APP_NAME [--xcy] [--fk] [--cascade] [--specialization]
 
 # Cross-Service Inconsistency (XCY)
 go run main.go --app postnotification --xcy
+go run main.go --app sockshop2 --xcy
+
 # Referential Integrity Constraint: Invalid Foreign Key
 go run main.go --app postnotification --fk
+go run main.go --app sockshop2 --fk
+
 # Referential Integrity Constraint: Absence of Cascading Deletes
 go run main.go --app shopping_simple --cascade
+
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
 go run main.go --app employee_app --specialization
 
-# Domain (Numerical) Constraints
-go run main.go --app TODO --numerical_individual
-go run main.go --app TODO --numerical_req_effects
 # Unicity Constraints
-go run main.go --app TODO --unicity_individual
-go run main.go --app TODO --unicity_req_effects
+go run main.go --app coupons_app --unicity_individual
+go run main.go --app coupons_app --unicity_aggregate
 
+# Domain (Numerical) Constraints
+go run main.go --app coupons_app --numerical_individual
+go run main.go --app coupons_app --numerical_aggregate
 
 # all applications and detection patterns
 go run main.go -all=true --xcy --fk --cascade

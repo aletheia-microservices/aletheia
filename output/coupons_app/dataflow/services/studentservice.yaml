@@ -1,0 +1,82 @@
+(*StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, value int):
+  block 8 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) studentsDB NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) studentsDB NoSQLDatabase
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
+  - 0 depth 0 (BasicObject BasicType) studentID int
+  - '_1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.ClaimedCoupon.UserID) --> r-tainted 1x: read(coupons_db.Coupon.userID)'
+  - '0 depth 0 (BasicObject BasicType) value int --> w-tainted 1x: write(students_db.Student.Balance)
+    --> r-tainted 1x: read(students_db.Student.StudentID)'
+  - '_1 depth 1 (Reference BasicType) ref <value int> @ Frontend --> w-tainted 1x:
+    write(students_db.Student.Balance) --> r-tainted 1x: read(students_db.Student.StudentID)'
+  - '0 depth 0 (StructObject UserType) student coupons_app.Student struct{StudentID
+    int, Name string, Balance int} --> w-tainted 1x: write(students_db.Student) -->
+    r-tainted 2x: read(students_db.Student, students_db.Student.StudentID)'
+  - '_1 depth 1 (FieldObject FieldType) Balance int --> w-tainted 1x: write(students_db.Student.Balance)
+    --> r-tainted 1x: read(students_db.Student.StudentID)'
+  - '__2 depth 2 (BasicObject BasicType) value int --> w-tainted 1x: write(students_db.Student.Balance)
+    --> r-tainted 1x: read(students_db.Student.StudentID)'
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = students, collection = students}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (SliceObject UserType) query primitive.D
+  - _1 depth 1 (StructObject StructType) struct{Key "studentID" string, Key "studentID" string, Value coupons_app.Student struct{StudentID int, Name string, Balance int},
+    Value coupons_app.Student struct{StudentID int, Name string, Balance int}}
+  - __2 depth 2 (FieldObject FieldType) Key "studentID" string
+  - ___3 depth 3 (BasicObject BasicType) "studentID" string
+  - __4 depth 2 (FieldObject FieldType) Value coupons_app.Student struct{StudentID int, Name string, Balance int}
+  - '0 depth 0 (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database
+    = students, collection = students} --> r-tainted 1x: read(students_db.Student)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (BasicObject BasicType) found bool
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+(*StudentServiceImpl).CreateStudent(ctx context.Context, studentID int, name string):
+  block 2 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) studentsDB NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) studentsDB NoSQLDatabase
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(students_db.Student.StudentID)'
+  - '_1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
+    1x: write(students_db.Student.StudentID)'
+  - '0 depth 0 (BasicObject BasicType) name string --> w-tainted 1x: write(students_db.Student.Name)'
+  - '_1 depth 1 (Reference BasicType) ref <name string> @ Frontend --> w-tainted 1x:
+    write(students_db.Student.Name)'
+  - '0 depth 0 (StructObject UserType) coupon coupons_app.Student struct{StudentID
+    int, Name string, Balance int} --> w-tainted 1x: write(students_db.Student)'
+  - '_1 depth 1 (FieldObject FieldType) Name string --> w-tainted 1x: write(students_db.Student.Name)'
+  - '_4 depth 1 (FieldObject FieldType) StudentID int --> w-tainted 1x: write(students_db.Student.StudentID)'
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = students, collection = students}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+.NewCouponServiceImpl(ctx context.Context, couponsDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) couponsDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) couponsDB NoSQLDatabase
+
+.NewFrontendImpl(ctx context.Context, StudentService coupons_app.StudentService, CouponService coupons_app.CouponService):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) StudentService coupons_app.StudentService
+  - 0 depth 0 (ServiceObject ServiceType) CouponService coupons_app.CouponService
+
+.NewStudentServiceImpl(ctx context.Context, studentsDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) studentsDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) coupons_app.StudentServiceImpl struct{studentsDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) studentsDB NoSQLDatabase
