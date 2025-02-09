@@ -17,9 +17,10 @@ const ROOT_FIELD_NAME_CACHE_KEY = "key"
 const ROOT_FIELD_NAME_CACHE_VALUE = "value"
 
 type Schema struct {
-	Fields         []Field         `json:"fields"`
-	UnfoldedFields []Field         `json:"unfolded_fields"`
-	ForeignKeys    []*ForeignEntry `json:"foreign_keys"`
+	Fields            []Field             `json:"fields"`
+	UnfoldedFields    []Field             `json:"unfolded_fields"`
+	ForeignKeys       []*ForeignEntry     `json:"foreign_keys"`
+	UniqueConstraints []*UniqueConstraint `json:"unique_constraints"`
 }
 
 func NewEntry(name string, t string, id int64, datastore *Datastore) *Entry {
@@ -118,7 +119,7 @@ func (s *Schema) String() string {
 	fieldsStr := "fields = {"
 	for i, f := range s.Fields {
 		fieldsStr += fmt.Sprintf("[field #%d] %s", i, f.String())
-		if i < len(s.Fields) - 1 {
+		if i < len(s.Fields)-1 {
 			fieldsStr += ", "
 		}
 	}
@@ -127,7 +128,7 @@ func (s *Schema) String() string {
 	unfoldedFieldsStr := "unfolded fields = {"
 	for i, f := range s.UnfoldedFields {
 		unfoldedFieldsStr += fmt.Sprintf("[unfolded field #%d] %s", i, f.String())
-		if i < len(s.Fields) - 1 {
+		if i < len(s.Fields)-1 {
 			unfoldedFieldsStr += ", "
 		}
 	}
@@ -141,6 +142,16 @@ func (s *Schema) GetRootUnfoldedField() Field {
 		return s.UnfoldedFields[0]
 	}
 	logger.Logger.Fatalf("[SCHEMA] no root unfolded field for schema: %s", s.String())
+	return nil
+}
+
+func (s *Schema) GetFieldByFullName(str string) Field {
+	for _, unfoldedField := range s.UnfoldedFields {
+		if unfoldedField.GetFullName() == str {
+			return unfoldedField
+		}
+	}
+	logger.Logger.Fatalf("[SCHEMA] no unfolded field (%s) for schema: %s", str, s.String())
 	return nil
 }
 
@@ -184,6 +195,48 @@ func (s *Schema) GetFieldById(id int64) Field {
 	return nil
 }
 
+func (s *Schema) CreateUniqueConstraint(fields ...Field) {
+	constraint := NewUniqueConstraint(fields...)
+	s.UniqueConstraints = append(s.UniqueConstraints, constraint)
+	logger.Logger.Debugf("[SCHEMA] created unicity constraints for fields: %v", fields)
+}
+
+type UniqueConstraint struct {
+	// unique 			-> fields size = 1
+	// composed unique 	-> fields size > 1
+	fields []Field
+}
+
+func NewUniqueConstraint(field ...Field) *UniqueConstraint {
+	return &UniqueConstraint{
+		fields: field,
+	}
+}
+
+func (c *UniqueConstraint) IsComposed() bool {
+	return len(c.fields) > 1
+}
+
+func (c *UniqueConstraint) GetFields() []Field {
+	return c.fields
+}
+
+func (c *UniqueConstraint) String() string {
+	str := "UNIQUE "
+	if len(c.fields) == 1 {
+		return str + c.fields[0].GetFullName()
+	}
+	str += "("
+	for i, f := range c.fields {
+		str += f.GetFullName()
+		if i < len(c.fields) - 1 {
+			str += ", "
+		}
+	}
+	str += ")"
+	return str
+}
+
 type Field interface {
 	String() string
 	GetName() string
@@ -198,6 +251,9 @@ type Field interface {
 	GetDatastore() *Datastore
 	IsNamed(other string) bool
 	GetMandatoryReferences() []Field
+	AddUnicityConstraint(c *UniqueConstraint)
+	GetUnicityConstraints() []*UniqueConstraint
+	HasUnicityConstraints() bool
 }
 type Key struct {
 	Field
@@ -208,12 +264,13 @@ type Key struct {
 }
 type Entry struct {
 	Field
-	Name       string
-	Type       string
-	Datastore  *Datastore
-	References []Field
-	MandatoryRefs []Field // aka Total Participation
-	Id         int64
+	Name                 string
+	Type                 string
+	Datastore            *Datastore
+	References           []Field
+	MandatoryRefs        []Field // aka Total Participation
+	Id                   int64
+	UniqueConstraints    []*UniqueConstraint
 }
 type ForeignEntry struct {
 	Field
@@ -284,6 +341,15 @@ func (f *Entry) AddMandatoryReference(ref Field) {
 }
 func (f *Entry) GetMandatoryReferences() []Field {
 	return f.MandatoryRefs
+}
+func (f *Entry) AddUnicityConstraint(c *UniqueConstraint) {
+	f.UniqueConstraints = append(f.UniqueConstraints, c)
+}
+func (f *Entry) GetUnicityConstraints() []*UniqueConstraint {
+	return f.UniqueConstraints
+}
+func (f *Entry) HasUnicityConstraints() bool {
+	return len(f.UniqueConstraints) > 0
 }
 
 // Foreign Key

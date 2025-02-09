@@ -62,6 +62,7 @@ go run main.go --app employee_app --specialization
 
 # Unicity Constraints
 go run main.go --app coupons_app --unicity_individual
+# > (STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)
 go run main.go --app coupons_app --unicity_aggregate
 
 # Domain (Numerical) Constraints
