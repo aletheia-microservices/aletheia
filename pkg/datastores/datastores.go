@@ -37,6 +37,10 @@ func (ds *Datastore) GetTypeLongName() string {
 	return fmt.Sprintf("%s (%s)", ds.GetKindString(), ds.GetTypeString())
 }
 
+func (ds *Datastore) GetSchema() *Schema {
+	return ds.Schema
+}
+
 func (ds *Datastore) IsReferencingDatastore(dependency *Datastore) bool {
 	return slices.Contains(ds.ReferencingDatastores, dependency)
 }

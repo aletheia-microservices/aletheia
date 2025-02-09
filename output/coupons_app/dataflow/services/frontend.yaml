@@ -11,23 +11,11 @@
   - '0 depth 0 (BasicObject BasicType) category string --> r-tainted 1x: read(coupons_db.Coupon.Category)'
   - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.UserID)
     --> r-tainted 1x: read(coupons_db.Coupon.userID)'
-  - '0 depth 0 (BasicObject BasicType) value int --> w-tainted 1x: write(students_db.Student.Balance)
-    --> r-tainted 1x: read(students_db.Student.StudentID)'
+  - 0 depth 0 (BasicObject BasicType) value int
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference UserType) ref <err .error> @ CouponService
-  - '0 depth 0 (StructObject UserType) student coupons_app.Student struct{StudentID
-    int, Name string, Balance int} --> w-tainted 1x: write(students_db.Student)'
-  - '_1 depth 1 (Reference UserType) ref <student coupons_app.Student struct{StudentID
-    int, Name string, Balance int}> @ StudentService --> w-tainted 1x: write(students_db.Student)
-    --> r-tainted 2x: read(students_db.Student, students_db.Student.StudentID)'
-  - '__2 depth 2 (FieldObject FieldType) Balance int --> w-tainted 1x: write(students_db.Student.Balance)
-    --> r-tainted 1x: read(students_db.Student.StudentID)'
-  - '___3 depth 3 (BasicObject BasicType) value int --> w-tainted 1x: write(students_db.Student.Balance)
-    --> r-tainted 1x: read(students_db.Student.StudentID)'
-  - '____4 depth 4 (Reference BasicType) ref <value int> @ Frontend --> w-tainted
-    1x: write(students_db.Student.Balance) --> r-tainted 1x: read(students_db.Student.StudentID)'
   - 0 depth 0 (InterfaceObject UserType) err .error
-  - _1 depth 1 (Reference UserType) ref <err .error> @ StudentService
+  - _1 depth 1 (Reference BasicType) ref <nil> @ StudentService
 
 (*FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string):
   block 0 (Body):

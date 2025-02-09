@@ -32,6 +32,26 @@ func NewEntry(name string, t string, id int64, datastore *Datastore) *Entry {
 	}
 }
 
+func (s *Schema) HasUnicityConstraints() bool {
+	return len(s.UniqueConstraints) > 0
+}
+
+func (s *Schema) GetUnicityConstraints() []*UniqueConstraint {
+	return s.UniqueConstraints
+}
+
+func (s *Schema) GetUnicityConstraintsForFieldName(fieldName string) []*UniqueConstraint {
+	var constraints []*UniqueConstraint
+	for _, unicityConstraints := range s.GetUnicityConstraints() {
+		for _, field := range unicityConstraints.GetFields() {
+			if field.GetName() == fieldName {
+				constraints = append(constraints, unicityConstraints)
+			}
+		}
+	}
+	return constraints
+}
+
 func (s *Schema) GetAllFields() []Field {
 	var fields []Field
 	for _, field := range s.Fields {

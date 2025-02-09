@@ -1,6 +1,6 @@
 (*FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, category string, studentID int, value int):
 - SERVICE CALL @ ClaimCoupon >> (*coupons_app.CouponServiceImpl).ClaimCoupon(ctx context.Context, couponID int, category string, userID int) error
-- SERVICE CALL @ AddToBalance >> (*coupons_app.StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, value int) (coupons_app.Student struct{StudentID int, Name string, Balance int}, error)
+- SERVICE CALL @ AddToBalance >> (*coupons_app.StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, value int) error
 
 (*FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string):
 - SERVICE CALL @ CreateCoupon >> (*coupons_app.CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string) (coupons_app.Coupon struct{CouponID int, Category string}, error)

@@ -1,6 +1,5 @@
 (*StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, value int):
-- DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
-- DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+- DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D) (int, interface{})
 
 (*StudentServiceImpl).CreateStudent(ctx context.Context, studentID int, name string):
 - DATASTORE CALL @ students_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}

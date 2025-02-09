@@ -15,6 +15,7 @@ import (
 	"analyzer/pkg/detection/cascade"
 	"analyzer/pkg/detection/foreign_key"
 	"analyzer/pkg/detection/specialization"
+	"analyzer/pkg/detection/unicity"
 	"analyzer/pkg/detection/xcy"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
@@ -172,11 +173,28 @@ func initAnalyzer(analysis analysisConfig) {
 		app.DumpYamlSchema(true)
 	}
 
+	bold_light_red := "\033[1;31m"
+	reset_color := "\033[0m"
+
 	if analysis.unicityIndividualDetection {
 		parseUniqueConstaintsFromUserInput(app)
+
+		fmt.Println()
+		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+		fmt.Println(" ----------------------------------- INCONSISTENCY DETECTOR - UNICITY CONSTRAINTS --------------------------------- ")
+		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+		fmt.Println()
+
+		detector := unicity.NewDetector()
+		iterator := unicity.NewIterator(app, abstractGraph, detector)
+		iterator.Run()
+
+		fmt.Println(bold_light_red)
+		res := detector.Results()
+		fmt.Println(res)
+		fmt.Println(reset_color)
 	}
 
-	bold_light_red := "\033[1;31m"
 	fmt.Println(bold_light_red + summary)
 }
 
@@ -194,30 +212,40 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 	}
 
 	fmt.Printf("\nPlease specify fields to enforce unicity constraint (delimiter is ';', composed uniqueness is within '(...)'):\n> ")
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
+
+	var input string
+	var err error
+	if app.Name == "coupons_app" {
+		input = "(STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)"
+	} else {
+		reader := bufio.NewReader(os.Stdin)
+		input, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			return
+		}
 	}
+	
 	input = strings.TrimSpace(input)
 	targetFields := strings.Split(input, ";")
-
 	targetFieldsByDatastore := make(map[string][]string)
 	fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n", bold_light_red)
 
-	for _, targetField := range targetFields {
-		// remove parentheses
-		targetField = targetField[1 : len(targetField)-1]
-
-		splits := strings.SplitN(targetField, ".", 2)
-		dbName := splits[0]
-		fieldName := targetField
-		targetFieldsByDatastore[dbName] = append(targetFieldsByDatastore[dbName], fieldName)
-
-		fmt.Println("- " + targetField)
+	if len(targetFields) > 0 && strings.TrimSpace(targetFields[0]) != "" {
+		for _, targetField := range targetFields {
+			// remove parentheses
+			targetField = targetField[1 : len(targetField)-1]
+	
+			splits := strings.SplitN(targetField, ".", 2)
+			dbName := splits[0]
+			fieldName := targetField
+			targetFieldsByDatastore[dbName] = append(targetFieldsByDatastore[dbName], fieldName)
+	
+			fmt.Println("- " + targetField)
+		}
+		fmt.Println(reset_color)
 	}
-	fmt.Println(reset_color)
+
 
 	for db, targetFields := range targetFieldsByDatastore {
 		dbInstance := app.GetDatastoreInstance(strings.ToLower(db))

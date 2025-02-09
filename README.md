@@ -75,6 +75,7 @@ go run main.go -all=true --xcy --fk --cascade
 
 Run the graph builder:
 ```zsh
+source ~/.venv/bin/activate
 ./graphs.py --help
 
 # usage
@@ -84,6 +85,7 @@ graphs.py [-h] [--app {postnotification,postnotification_simple,trainticket,shop
 ./graphs.py --app foobar
 ./graphs.py --app postnotification
 ./graphs.py --app employee_app
+./graphs.py --app coupons_app
 
 # all applications
 ./graphs.py --all
