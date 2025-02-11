@@ -252,8 +252,8 @@ order:
   - order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string},
     Card user.Card struct{LongNum string, Expires string, CCV string, ID string},
     Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment
-    shipping.Shipment struct{ID string, Name string, Status "awaiting shipment" string},
-    Date string, Total float32}
+    shipping.Shipment struct{ID string, Name string, Status string}, Date string,
+    Total float32}
   - order.OrderService
   - order.orderImpl struct{users user.UserService, carts cart.CartService, payments payment.PaymentService, shipping shipping.ShippingService, db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
 - declared variables: []

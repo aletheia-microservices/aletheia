@@ -2,16 +2,70 @@ package xcy
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"slices"
-	"strings"
 
 	"gopkg.in/yaml.v2"
 
-	"analyzer/pkg/logger"
-	"analyzer/pkg/utils"
+	"analyzer/pkg/abstractgraph"
+	"analyzer/pkg/app"
+	"analyzer/pkg/detection/detector"
 )
+
+type DetectorGroup struct {
+	detector.Detector
+	detectors []*XCYDetector
+	results   string
+}
+
+func NewDetectorGroup(entryNodes []abstractgraph.AbstractNode) *DetectorGroup {
+	dg := &DetectorGroup{}
+	for _, entryNode := range entryNodes {
+		for _, mode := range GetActiveDetectionModes() {
+			detector := NewDetector(entryNode, mode)
+			dg.detectors = append(dg.detectors, detector)
+		}
+	}
+	return dg
+}
+
+func (dg *DetectorGroup) GetAllDetectors() []*XCYDetector {
+	return dg.detectors
+}
+
+func (dg *DetectorGroup) OnRun(app *app.App)                                        { /* no-op */ }
+func (dg *DetectorGroup) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) { /* no-op */ }
+func (dg *DetectorGroup) OnEndRequest(app *app.App)                                 { /* no-op */ }
+func (dg *DetectorGroup) OnNewNode(app *app.App, node abstractgraph.AbstractNode)   { /* no-op */ }
+func (dg *DetectorGroup) OnEndNode(app *app.App, node abstractgraph.AbstractNode)   { /* no-op */ }
+func (dg *DetectorGroup) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) { /* no-op */
+}
+func (dg *DetectorGroup) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) { /* no-op */
+}
+func (dg *DetectorGroup) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) { /* no-op */
+}
+
+func (dg *DetectorGroup) ComputeResults() {
+	dg.results = "------------------------------------------------------------\n"
+	dg.results += "----------------------- XCY ANALYSIS -----------------------\n"
+	dg.results += "------------------------------------------------------------\n"
+	for _, detector := range dg.detectors {
+		if detector.HasInconsistencies() {
+			for _, request := range detector.requests {
+				data, _ := yaml.Marshal(detector.dumpRequestYaml(request, false))
+				dg.results += string(data)
+				dg.results += "----------------------------------------------------------\n"
+			}
+		}
+	}
+}
+
+func (dg *DetectorGroup) GetAnalysisTypeString() string {
+	return "xcy"
+}
+
+func (dg *DetectorGroup) GetResults() string {
+	return dg.results
+}
 
 func (detector *XCYDetector) dumpOperationYaml(operation *Operation) map[string]interface{} {
 	data := make(map[string]interface{})
@@ -76,8 +130,8 @@ func (detector *XCYDetector) dumpLineageYaml(request *Request, lineage *Lineage)
 
 func (detector *XCYDetector) dumpRequestYaml(request *Request, includeLineages bool) map[string]interface{} {
 	data := make(map[string]interface{})
-	data["entry"] = detector.EntryNode.ShortString()
-	data["mode"] = detector.DetectionModeName()
+	data["entry"] = detector.entryNode.ShortString()
+	data["mode"] = DetectionModeName(detector)
 	data["number_inconsistencies"] = len(request.Inconsistencies)
 
 	var dataInconsistencies []map[string]interface{}
@@ -96,48 +150,4 @@ func (detector *XCYDetector) dumpRequestYaml(request *Request, includeLineages b
 		data["xcy_lineages"] = dataLineages
 	}
 	return data
-}
-
-func (set *DetectorSet) Results() string {
-	results := "------------------------------------------------------------\n"
-	results += "----------------------- XCY ANALYSIS -----------------------\n"
-	results += "------------------------------------------------------------\n"
-
-	for _, detector := range set.detectors {
-		if detector.HasInconsistencies() {
-			for _, request := range detector.Requests {
-				data, _ := yaml.Marshal(detector.dumpRequestYaml(request, false))
-				results += string(data)
-				results += "----------------------------------------------------------\n"
-			}
-		}
-	}
-	set.save(results)
-	return results
-}
-
-func (set *DetectorSet) save(results string) {
-	path := fmt.Sprintf("output/%s/analysis/xcy.txt", set.app.Name)
-
-	dir := filepath.Dir(path)
-	err := os.MkdirAll(dir, 0755)
-	if err != nil {
-		logger.Logger.Fatalf("[XCY] error creating directory %s: %s", dir, err.Error())
-	}
-
-	err = os.WriteFile(path, []byte(results), 0644)
-	if err != nil {
-		logger.Logger.Fatalf("[XCY] error writing data to %s: %s", path, err.Error())
-	}
-	logger.Logger.Tracef("[XCY] saved cascading detection results to %s", path)
-}
-
-func (set *DetectorSet) DumpYaml(results string) {
-	for _, detector := range set.detectors {
-		for _, request := range detector.Requests {
-			filename := fmt.Sprintf("analysis/xcy/%s_%s_%s", strings.ToLower(request.EntryNode.GetCallee()), strings.ToLower(request.EntryNode.GetName()), strings.ToLower(detector.DetectionModeName()))
-			data := detector.dumpRequestYaml(request, true)
-			utils.DumpToYamlFile(data, set.app.Name, filename)
-		}
-	}
 }

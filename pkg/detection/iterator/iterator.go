@@ -1,24 +1,25 @@
-package unicity
+package iterator
 
 import (
 	"fmt"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/detection/detector"
 	"analyzer/pkg/logger"
 )
 
 type Iterator struct {
 	app      *app.App
 	graph    *abstractgraph.AbstractGraph
-	detector Detector
+	detector detector.Detector
 }
 
 func (iterator *Iterator) getGraph() *abstractgraph.AbstractGraph {
 	return iterator.graph
 }
 
-func NewIterator(app *app.App, graph *abstractgraph.AbstractGraph, detector Detector) *Iterator {
+func NewIterator(app *app.App, graph *abstractgraph.AbstractGraph, detector detector.Detector) *Iterator {
 	return &Iterator{
 		app:      app,
 		graph:    graph,
@@ -29,16 +30,10 @@ func NewIterator(app *app.App, graph *abstractgraph.AbstractGraph, detector Dete
 func (iterator *Iterator) Run() {
 	for idx, entry := range iterator.getGraph().Nodes {
 		entryServiceCall := entry.(*abstractgraph.AbstractServiceCall)
-		iterator.detector.onNewRequest(entryServiceCall)
+		iterator.detector.OnNewRequest(entryServiceCall)
 		iterator.transverseNode(idx, entryServiceCall, entry)
+		iterator.detector.OnEndRequest(iterator.app)
 	}
-}
-
-type Detector interface {
-	onNewRequest(entryNode *abstractgraph.AbstractServiceCall)
-	onWrite(dbCall *abstractgraph.AbstractDatabaseCall)
-	onUpdate(dbCall *abstractgraph.AbstractDatabaseCall)
-	onDelete(dbCall *abstractgraph.AbstractDatabaseCall)
 }
 
 func (iterator *Iterator) transverseNode(child_idx int, lastServiceCallNode *abstractgraph.AbstractServiceCall, node abstractgraph.AbstractNode) {
@@ -46,19 +41,25 @@ func (iterator *Iterator) transverseNode(child_idx int, lastServiceCallNode *abs
 		lastServiceCallNode = svcCall
 	}
 
+	iterator.detector.OnNewNode(iterator.app, node)
+
 	if dbCall, ok := node.(*abstractgraph.AbstractDatabaseCall); ok {
 		fmt.Println()
 		logger.Logger.Debugf("[ITERATOR #%d] %s", child_idx, dbCall.String())
-		if dbCall.ParsedCall.Method.IsWrite() {
-			iterator.detector.onWrite(dbCall)
+		if dbCall.ParsedCall.Method.IsRead() {
+			iterator.detector.OnRead(iterator.app, dbCall, lastServiceCallNode, child_idx)
+		} else if dbCall.ParsedCall.Method.IsWrite() {
+			iterator.detector.OnWrite(iterator.app, dbCall, lastServiceCallNode, child_idx)
 		} else if dbCall.ParsedCall.Method.IsUpdate() {
-			iterator.detector.onUpdate(dbCall)
+			iterator.detector.OnUpdate(iterator.app, dbCall, lastServiceCallNode, child_idx)
 		} else if dbCall.ParsedCall.Method.IsDelete() {
-			iterator.detector.onDelete(dbCall)
+			iterator.detector.OnDelete(iterator.app, dbCall, lastServiceCallNode, child_idx)
 		}
 	}
 
 	for idx, child := range node.GetChildren() {
 		iterator.transverseNode(idx, lastServiceCallNode, child)
 	}
+
+	iterator.detector.OnEndNode(iterator.app, node)
 }

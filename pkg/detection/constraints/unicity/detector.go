@@ -1,77 +1,66 @@
 package unicity
 
 import (
+	"fmt"
+
 	"github.com/golang-collections/collections/stack"
 
 	"analyzer/pkg/abstractgraph"
+	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
+	"analyzer/pkg/detection/detector"
 	"analyzer/pkg/logger"
 )
 
 func NewDetector() *UnicityDetector {
+	fmt.Println()
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println(" ----------------------------------------- INITIALIZING UNICITY DETECTOR ------------------------------------------ ")
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println()
+
 	return &UnicityDetector{
 		requestInfoStack: stack.New(),
 	}
 }
 
 type UnicityDetector struct {
-	Detector
+	detector.Detector
+	results          string
 	requestInfoStack *stack.Stack
-}
-
-type RequestInfo struct {
-	entry      *abstractgraph.AbstractServiceCall
-	operations []*Operation
-}
-
-func (info *RequestInfo) addOperation(operation *Operation) {
-	info.operations = append(info.operations, operation)
-}
-
-func (info *RequestInfo) hasOperations() bool {
-	return len(info.operations) > 0
-}
-
-func (info *RequestInfo) hasPotentialInconsistencies() bool {
-	return len(info.operations) > 1 // only if we have more than 2 ops
-}
-
-func (info *RequestInfo) getOperations() []*Operation {
-	return info.operations
-}
-
-type Operation struct {
-	call                *abstractgraph.AbstractDatabaseCall
-	datastore           *datastores.Datastore
-	onUnicityConstraint bool
-}
-
-func NewOperation(call *abstractgraph.AbstractDatabaseCall, datastore *datastores.Datastore) *Operation {
-	return &Operation{
-		call:      call,
-		datastore: datastore,
-	}
-}
-
-func NewOperationOnUnicityConstraint(call *abstractgraph.AbstractDatabaseCall, datastore *datastores.Datastore) *Operation {
-	return &Operation{
-		call:                call,
-		datastore:           datastore,
-		onUnicityConstraint: true,
-	}
 }
 
 func (detector *UnicityDetector) getCurrentRequestInfo() *RequestInfo {
 	return detector.requestInfoStack.Peek().(*RequestInfo)
 }
 
-func (detector *UnicityDetector) onNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
+func (detector *UnicityDetector) OnRun(app *app.App) {
+	//no-op
+}
+
+func (detector *UnicityDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
 	detector.requestInfoStack.Push(&RequestInfo{
 		entry: entryNode,
 	})
 }
 
-func (detector *UnicityDetector) onWrite(dbCall *abstractgraph.AbstractDatabaseCall) {
+func (detector *UnicityDetector) OnEndRequest(app *app.App) {
+	//no-op
+}
+
+func (detector *UnicityDetector) OnNewNode(app *app.App, node abstractgraph.AbstractNode) {
+	//no-op
+}
+
+func (detector *UnicityDetector) OnEndNode(app *app.App, node abstractgraph.AbstractNode) {
+	//no-op
+}
+
+func (detector *UnicityDetector) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	//no-op
+}
+
+func (detector *UnicityDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
 	if schema.HasUnicityConstraints() {
@@ -103,7 +92,7 @@ func (detector *UnicityDetector) onWrite(dbCall *abstractgraph.AbstractDatabaseC
 	}
 }
 
-func (detector *UnicityDetector) onUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
+func (detector *UnicityDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
 	if schema.HasUnicityConstraints() {
@@ -135,21 +124,29 @@ func (detector *UnicityDetector) onUpdate(dbCall *abstractgraph.AbstractDatabase
 	}
 }
 
-func (detector *UnicityDetector) onDelete(dbCall *abstractgraph.AbstractDatabaseCall) {
+func (detector *UnicityDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	// no-op
 }
 
-func (detector *UnicityDetector) Results() string {
-	var res string
-	res += "[UNICITY DETECTOR] ========= RESULTS =========\n"
+func (detector *UnicityDetector) ComputeResults() {
+	detector.results = "------------------------------------------------------------\n"
+	detector.results += "--------------------- UNICITY ANALYSIS --------------------\n"
+	detector.results += "------------------------------------------------------------\n"
 	for detector.requestInfoStack.Len() > 0 {
 		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
 		if requestInfo.hasPotentialInconsistencies() {
-			res += "\n[ENTRY] " + requestInfo.entry.String() + "\n"
+			detector.results += "\n[ENTRY] " + requestInfo.entry.String() + "\n"
 			for _, op := range requestInfo.getOperations() {
-				res += "\t- OPERATION @ " + op.call.Service + ": " + op.call.String() + "\n"
+				detector.results += "\t- OPERATION @ " + op.call.Service + ": " + op.call.String() + "\n"
 			}
 		}
 	}
-	return res
+}
+
+func (detector *UnicityDetector) GetAnalysisTypeString() string {
+	return "unicity"
+}
+
+func (detector *UnicityDetector) GetResults() string {
+	return detector.results
 }

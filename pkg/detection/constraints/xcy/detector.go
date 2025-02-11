@@ -9,72 +9,111 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
+	"analyzer/pkg/detection/detector"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types/objects"
 	"analyzer/pkg/utils"
 )
 
-type DetectorSet struct {
-	app       *app.App
-	detectors []*XCYDetector
-}
-
-func NewDetectorSet(app *app.App, entryNodes []abstractgraph.AbstractNode) *DetectorSet {
-	set := &DetectorSet{
-		app: app,
-	}
-	for _, entryNode := range entryNodes {
-		for _, mode := range GetActiveDetectionModes() {
-			detector := NewDetector(app, entryNode, mode)
-			set.detectors = append(set.detectors, detector)
-		}
-	}
-	return set
-}
-
-func (set *DetectorSet) GetAllDetectors() []*XCYDetector {
-	return set.detectors
-}
-
 type XCYDetector struct {
-	DetectionMode   DetectionMode
-	Requests        []*Request
-	DatastoresOps   map[*datastores.Datastore][]*Operation
-	EntryNode       abstractgraph.AbstractNode
+	detector.Detector
+
+	currentRequest *Request
+	requests       []*Request
+	detectionMode  DetectionMode
+	datastoresOps  map[*datastores.Datastore][]*Operation
+	entryNode      abstractgraph.AbstractNode
+
 	inconsistencies int
 }
 
-func NewDetector(app *app.App, entryNode abstractgraph.AbstractNode, mode DetectionMode) *XCYDetector {
+func NewDetector(entryNode abstractgraph.AbstractNode, mode DetectionMode) *XCYDetector {
+	fmt.Println()
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println(" ------------------------------------------- INITIALIZING XCY DETECTOR -------------------------------------------- ")
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println()
+
 	return &XCYDetector{
-		DatastoresOps: make(map[*datastores.Datastore][]*Operation),
-		EntryNode:     entryNode,
-		DetectionMode: mode,
+		datastoresOps: make(map[*datastores.Datastore][]*Operation),
+		entryNode:     entryNode,
+		detectionMode: mode,
 	}
 }
 
-type DetectionMode int
+func (detector *XCYDetector) OnRun(app *app.App) {
+	//no-op
+}
 
-const (
-	FOREIGN_KEYS_DEFAULT DetectionMode = iota
-	FOREIGN_KEYS_LINEAGES
-	XCY_ALL_DATASTORES
-	XCY_EQUAL_DATASTORES
-	DEBUG_LINEAGES
-	DEBUG_XCY_MISSING_DEPENDENCIES
-	DEBUG_XCY_MINIMIZE_DEPENDENCIES
-)
+func (detector *XCYDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
+	//no-op
+}
 
-func GetActiveDetectionModes() []DetectionMode {
-	return []DetectionMode{
-		//XCY_ALL_DATASTORES,
-		//XCY_EQUAL_DATASTORES,
-		//FOREIGN_KEYS_DEFAULT,
-		DEBUG_LINEAGES,
-		DEBUG_XCY_MISSING_DEPENDENCIES,
-		DEBUG_XCY_MINIMIZE_DEPENDENCIES,
-		FOREIGN_KEYS_LINEAGES,
+func (detector *XCYDetector) OnEndRequest(app *app.App) {
+	//no-op
+}
+
+func (detector *XCYDetector) OnNewNode(app *app.App, node abstractgraph.AbstractNode) {
+	if DetectionModeUsesLineages(detector) {
+		if _, ok := node.(*abstractgraph.AbstractQueueHandler); ok {
+			detector.currentRequest.PushLineage()
+		}
 	}
+}
+
+func (detector *XCYDetector) OnEndNode(app *app.App, node abstractgraph.AbstractNode) {
+	// FIXME: maybe we should link the two stateful nodes (push and pop) in the abstract graph
+	// instead of placing a stateless queue handler between both
+	if DetectionModeUsesLineages(detector) {
+		if _, ok := node.(*abstractgraph.AbstractQueueHandler); ok {
+			detector.currentRequest.PopLineage()
+		}
+	}
+}
+
+func (detector *XCYDetector) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	if backend, ok := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); ok {
+		operation := detector.currentRequest.SaveReadOperation(dbCall, backend)
+		detector.attachOperationToDatastore(operation)
+		logger.Logger.Infof("[XCY] saved read %s", operation.String())
+
+		if !detector.HasDetectionMode(DEBUG_LINEAGES) {
+			inconsistencies := detector.searchInconsistencies(detector.currentRequest, operation, dbCall)
+			if detector.HasDetectionMode(DEBUG_XCY_MISSING_DEPENDENCIES) && len(inconsistencies) > 0 {
+				detectMissingDependencies(detector.currentRequest, inconsistencies)
+			}
+		}
+		detector.afterAnyOperation(operation)
+	}
+}
+
+func (detector *XCYDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	detector.onWriteOrUpdate(dbCall)
+}
+
+func (detector *XCYDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	detector.onWriteOrUpdate(dbCall)
+}
+
+func (detector *XCYDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
+	if backend, ok := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); ok {
+		operation := detector.currentRequest.SaveWriteOperation(dbCall, backend)
+		detector.attachOperationToDatastore(operation)
+		logger.Logger.Infof("[XCY] saved write/update %s", operation.String())
+		detector.afterAnyOperation(operation)
+	}
+}
+
+func (detector *XCYDetector) afterAnyOperation(operation *Operation) {
+	if detector.HasDetectionMode(DEBUG_XCY_MINIMIZE_DEPENDENCIES) {
+		detector.attachOperationToDatastore(operation)
+	}
+}
+
+func (detector *XCYDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	// no-op
+	logger.Logger.Warnf("[XCY] ignoring operation: %s", dbCall.String())
 }
 
 func (detector *XCYDetector) HasInconsistencies() bool {
@@ -83,64 +122,35 @@ func (detector *XCYDetector) HasInconsistencies() bool {
 
 func (detector *XCYDetector) GetActiveDetectionModeIndex() int {
 	for i, activeMode := range GetActiveDetectionModes() {
-		if detector.DetectionMode == activeMode {
+		if detector.detectionMode == activeMode {
 			return i
 		}
 	}
-	logger.Logger.Fatalf("[XCY DETECTOR] could not find current detection mode (%s) in active mode list: %v", detector.DetectionModeName(), GetActiveDetectionModes())
+	logger.Logger.Fatalf("[XCY DETECTOR] could not find current detection mode (%s) in active mode list: %v", DetectionModeName(detector), GetActiveDetectionModes())
 	return -1
 }
 
-func (detector *XCYDetector) DetectionModeName() string {
-	var detectionMap = map[DetectionMode]string{
-		FOREIGN_KEYS_DEFAULT:            "FOREIGN_KEYS_DEFAULT",
-		FOREIGN_KEYS_LINEAGES:           "FOREIGN_KEYS_LINEAGES",
-		XCY_ALL_DATASTORES:              "XCY_ALL_DATASTORES",
-		XCY_EQUAL_DATASTORES:            "XCY_EQUAL_DATASTORES",
-		DEBUG_LINEAGES:                  "DEBUG_LINEAGES",
-		DEBUG_XCY_MISSING_DEPENDENCIES:  "DEBUG_XCY_MISSING_DEPENDENCIES",
-		DEBUG_XCY_MINIMIZE_DEPENDENCIES: "DEBUG_XCY_MINIMIZE_DEPENDENCIES",
-	}
-	return detectionMap[detector.DetectionMode]
-}
-
-func (detector *XCYDetector) DetectionModeUsesLineages() bool {
-	var modesWithLineages = []DetectionMode{
-		FOREIGN_KEYS_LINEAGES,
-		XCY_ALL_DATASTORES,
-		XCY_EQUAL_DATASTORES,
-		DEBUG_LINEAGES,
-		DEBUG_XCY_MISSING_DEPENDENCIES,
-		DEBUG_XCY_MINIMIZE_DEPENDENCIES,
-	}
-	return slices.Contains(modesWithLineages, detector.DetectionMode)
-}
-
-func (detector *XCYDetector) GetRequests() []*Request {
-	return detector.Requests
-}
-
 func (detector *XCYDetector) GetDatastoreOps() map[*datastores.Datastore][]*Operation {
-	return detector.DatastoresOps
+	return detector.datastoresOps
 }
 
 func (detector *XCYDetector) UpdateDatastoreOps(ops map[*datastores.Datastore][]*Operation) {
-	detector.DatastoresOps = ops
+	detector.datastoresOps = ops
 }
 
-func (detector *XCYDetector) InitRequest(cumulativeDatastoreOps map[*datastores.Datastore][]*Operation) *Request {
+func (detector *XCYDetector) InitRequest(cumulativeDatastoreOps map[*datastores.Datastore][]*Operation) {
 	if cumulativeDatastoreOps != nil {
-		detector.DatastoresOps = cumulativeDatastoreOps //FIXME: this is not copying and instead it is just using the pointer for the cumulativeDatastoreOps
+		detector.datastoresOps = cumulativeDatastoreOps //FIXME: this is not copying and instead it is just using the pointer for the cumulativeDatastoreOps
 	}
 	request := &Request{
-		EntryNode:     detector.EntryNode,
+		EntryNode:     detector.entryNode,
 		LineagesStack: stack.New(),
 	}
 	fmt.Printf("\n\n-------------------- ENTRY NODE = %s.%s --------------------\n", request.EntryNode.GetCallee(), request.EntryNode.GetName())
-	fmt.Printf("-------------------- (%d/%d) XCY DETECTOR MODE = %s --------------------\n\n", detector.GetActiveDetectionModeIndex()+1, len(GetActiveDetectionModes()), detector.DetectionModeName())
+	fmt.Printf("-------------------- (%d/%d) XCY DETECTOR MODE = %s --------------------\n\n", detector.GetActiveDetectionModeIndex()+1, len(GetActiveDetectionModes()), DetectionModeName(detector))
 	request.PushLineage()
-	detector.Requests = append(detector.Requests, request)
-	return request
+	detector.requests = append(detector.requests, request)
+	detector.currentRequest = request
 }
 
 func (detector *XCYDetector) searchInconsistencies(request *Request, read *Operation, readCall *abstractgraph.AbstractDatabaseCall) []*XCYInconsistency {
@@ -270,18 +280,8 @@ func (detector *XCYDetector) MinimizeDependecySets(request *Request) {
 	}
 }
 
-func (detector *XCYDetector) InitXCYRequestTransversal(request *Request) {
-	logger.Logger.Tracef("[XCY] init tranversal for entry node: %s", request.EntryNode.GetName())
-	for _, edge := range request.EntryNode.GetChildren() {
-		/* fmt.Println("\n------------------------------------------------------------------------------------------------------------------------------------------------")
-		logger.Logger.Infof("[XCY] transversing child node: %s", edge.GetName())
-		fmt.Println("------------------------------------------------------------------------------------------------------------------------------------------------") */
-		detector.transverseOperations(request, edge)
-	}
-}
-
 func (detector *XCYDetector) HasDetectionMode(mode DetectionMode) bool {
-	return detector.DetectionMode == mode
+	return detector.detectionMode == mode
 }
 
 func detectMissingDependencies(request *Request, inconsistencies []*XCYInconsistency) {
@@ -293,62 +293,15 @@ func detectMissingDependencies(request *Request, inconsistencies []*XCYInconsist
 }
 
 func (detector *XCYDetector) attachOperationToDatastore(operation *Operation) {
-	detector.DatastoresOps[operation.GetDatastore()] = append(detector.DatastoresOps[operation.GetDatastore()], operation)
+	detector.datastoresOps[operation.GetDatastore()] = append(detector.datastoresOps[operation.GetDatastore()], operation)
 }
 
 func (detector *XCYDetector) getWriteOperationsForDatastore(datastore *datastores.Datastore) []*Operation {
 	var ops []*Operation
-	for _, op := range detector.DatastoresOps[datastore] {
+	for _, op := range detector.datastoresOps[datastore] {
 		if op.Write {
 			ops = append(ops, op)
 		}
 	}
 	return ops
-}
-
-func (detector *XCYDetector) transverseOperations(request *Request, node abstractgraph.AbstractNode) {
-	// FIXME: maybe we should link the two stateful nodes (push and pop) in the abstract graph
-	// instead of placing a stateless queue handler between both
-	if detector.DetectionModeUsesLineages() {
-		if _, ok := node.(*abstractgraph.AbstractQueueHandler); ok {
-			request.PushLineage()
-		}
-	}
-
-	if dbCall, ok := node.(*abstractgraph.AbstractDatabaseCall); ok {
-		var operation *Operation
-		if backend, ok := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); ok {
-			if backend.IsWrite() || backend.IsUpdate() {
-				operation = request.SaveWriteOperation(dbCall, backend)
-				detector.attachOperationToDatastore(operation)
-				logger.Logger.Infof("[XCY] saved write %s", operation.String())
-			} else if backend.IsRead() {
-				operation = request.SaveReadOperation(dbCall, backend)
-				detector.attachOperationToDatastore(operation)
-				logger.Logger.Infof("[XCY] saved read %s", operation.String())
-				if !detector.HasDetectionMode(DEBUG_LINEAGES) {
-					inconsistencies := detector.searchInconsistencies(request, operation, dbCall)
-					if detector.HasDetectionMode(DEBUG_XCY_MISSING_DEPENDENCIES) && len(inconsistencies) > 0 {
-						detectMissingDependencies(request, inconsistencies)
-					}
-				}
-			} else {
-				logger.Logger.Warnf("[XCY] ignoring operation: %s", dbCall.String())
-			}
-			if operation != nil && detector.HasDetectionMode(DEBUG_XCY_MINIMIZE_DEPENDENCIES) {
-				detector.attachOperationToDatastore(operation)
-			}
-		}
-	}
-	for _, edge := range node.GetChildren() {
-		detector.transverseOperations(request, edge)
-	}
-
-	// FIXME: maybe we should link the two stateful nodes (push and pop) in the abstract graph
-	// instead of placing a stateless queue handler between both
-	if detector.DetectionModeUsesLineages() {
-		if _, ok := node.(*abstractgraph.AbstractQueueHandler); ok {
-			request.PopLineage()
-		}
-	}
 }

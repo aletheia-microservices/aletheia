@@ -12,15 +12,20 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
-	"analyzer/pkg/detection/cascade"
-	"analyzer/pkg/detection/foreign_key"
-	"analyzer/pkg/detection/specialization"
-	"analyzer/pkg/detection/unicity"
-	"analyzer/pkg/detection/xcy"
+	"analyzer/pkg/detection/constraints/cascade"
+	"analyzer/pkg/detection/constraints/foreign_key"
+	"analyzer/pkg/detection/constraints/specialization"
+	"analyzer/pkg/detection/constraints/unicity"
+	"analyzer/pkg/detection/constraints/xcy"
+	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/iterator"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/utils"
 )
+
+const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
+const TEXT_RESET_COLOR = "\033[0m"
 
 type analysisConfig struct {
 	allFlag                    string
@@ -117,31 +122,26 @@ func initAnalyzer(analysis analysisConfig) {
 		fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")
 		fmt.Println()
 
-		detectorSet := xcy.NewDetectorSet(app, abstractGraph.Nodes)
+		xcyDetectorGroup := xcy.NewDetectorGroup(abstractGraph.Nodes)
 		var cumulativeDatastoreOps map[*datastores.Datastore][]*xcy.Operation
-		for _, detector := range detectorSet.GetAllDetectors() {
-			request := detector.InitRequest(cumulativeDatastoreOps)
-			detector.InitXCYRequestTransversal(request)
-			cumulativeDatastoreOps = detector.GetDatastoreOps()
+		for _, xcyDetector := range xcyDetectorGroup.GetAllDetectors() {
+			xcyDetector.InitRequest(cumulativeDatastoreOps)
+
+			iterator := iterator.NewIterator(app, abstractGraph, xcyDetector)
+			iterator.Run()
+			cumulativeDatastoreOps = xcyDetector.GetDatastoreOps()
 		}
 
-		fmt.Println()
-		results := detectorSet.Results()
-		summary += results + "\n\n"
+		summary += detector.SaveResults(app, xcyDetectorGroup)
 	}
 
 	app.ResetAllDataflows()
 
 	if analysis.cascadeDetection {
-		fmt.Println()
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println(" --------------------------------------- CHECK ABSENCE OF CASCADING DELETE ---------------------------------------- ")
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println()
-		detector := cascade.NewDetector(app, abstractGraph)
-		detector.Run()
-		results := detector.Results()
-		summary += results + "\n\n"
+		cascadeDetector := cascade.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, cascadeDetector)
+		iterator.Run()
+		summary += detector.SaveResults(app, cascadeDetector)
 	}
 
 	if analysis.foreignKeyDetection {
@@ -150,58 +150,38 @@ func initAnalyzer(analysis analysisConfig) {
 		fmt.Println(" ----------------------------------- CHECK INTEGRITY ANOMALIES FOR FOREIGN KEYS ----------------------------------- ")
 		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 		fmt.Println()
-		detector := foreign_key.NewDetector(app, abstractGraph)
-		detector.Run()
-		results := detector.Results()
-		summary += results + "\n\n"
 
-		detector.CompactSchema()
+		foreignKeyDetector := foreign_key.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyDetector)
+		iterator.Run()
+		summary += detector.SaveResults(app, foreignKeyDetector)
+
+		foreignKeyDetector.CompactSchema(app)
 		app.DumpYamlSchema(true)
 	}
 
 	if analysis.specializationDetection {
-		fmt.Println()
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println(" ----------------------------------- CHECK REMOVALS IN MANDATORY SPECIALIZATIONS ---------------------------------- ")
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println()
-		detector := specialization.NewDetector(app, abstractGraph)
-		detector.Run()
-		results := detector.Results()
-		summary += results + "\n\n"
+		specializationDetector := specialization.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, specializationDetector)
+		iterator.Run()
+		summary += detector.SaveResults(app, specializationDetector)
 
 		app.DumpYamlSchema(true)
 	}
 
-	bold_light_red := "\033[1;31m"
-	reset_color := "\033[0m"
-
 	if analysis.unicityIndividualDetection {
 		parseUniqueConstaintsFromUserInput(app)
 
-		fmt.Println()
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println(" ----------------------------------- INCONSISTENCY DETECTOR - UNICITY CONSTRAINTS --------------------------------- ")
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println()
-
-		detector := unicity.NewDetector()
-		iterator := unicity.NewIterator(app, abstractGraph, detector)
+		unicityDetector := unicity.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, unicityDetector)
 		iterator.Run()
-
-		fmt.Println(bold_light_red)
-		res := detector.Results()
-		fmt.Println(res)
-		fmt.Println(reset_color)
+		summary += detector.SaveResults(app, unicityDetector)
 	}
 
-	fmt.Println(bold_light_red + summary)
+	fmt.Println(summary)
 }
 
 func parseUniqueConstaintsFromUserInput(app *app.App) {
-	bold_light_red := "\033[1;31m"
-	reset_color := "\033[0m"
-
 	fmt.Printf("\n\nSetting up unicity constraints for available schema:\n\n")
 	for _, dbInstance := range app.Databases {
 		for _, unfoldedField := range dbInstance.GetDatastore().Schema.UnfoldedFields {
@@ -225,27 +205,26 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 			return
 		}
 	}
-	
+
 	input = strings.TrimSpace(input)
 	targetFields := strings.Split(input, ";")
 	targetFieldsByDatastore := make(map[string][]string)
-	fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n", bold_light_red)
+	fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n", TEXT_BOLD_LIGHT_RED)
 
 	if len(targetFields) > 0 && strings.TrimSpace(targetFields[0]) != "" {
 		for _, targetField := range targetFields {
 			// remove parentheses
 			targetField = targetField[1 : len(targetField)-1]
-	
+
 			splits := strings.SplitN(targetField, ".", 2)
 			dbName := splits[0]
 			fieldName := targetField
 			targetFieldsByDatastore[dbName] = append(targetFieldsByDatastore[dbName], fieldName)
-	
+
 			fmt.Println("- " + targetField)
 		}
-		fmt.Println(reset_color)
+		fmt.Println(TEXT_RESET_COLOR)
 	}
-
 
 	for db, targetFields := range targetFieldsByDatastore {
 		dbInstance := app.GetDatastoreInstance(strings.ToLower(db))
@@ -264,11 +243,11 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 
 	for _, db := range app.GetDbInstances() {
 		schema := db.GetDatastore().Schema
-		fmt.Printf("\n%s[WARNING] The following unicity constraints were added:\n", bold_light_red)
+		fmt.Printf("\n%s[WARNING] The following unicity constraints were added:\n", TEXT_BOLD_LIGHT_RED)
 
 		for _, uc := range schema.UniqueConstraints {
 			fmt.Println("- " + uc.String())
 		}
-		fmt.Print(reset_color)
+		fmt.Print(TEXT_RESET_COLOR)
 	}
 }

@@ -56,6 +56,8 @@ go run main.go --app sockshop2 --fk
 
 # Referential Integrity Constraint: Absence of Cascading Deletes
 go run main.go --app shopping_simple --cascade
+go run main.go --app employee_app --cascade
+go run main.go --app trainticket --cascade
 
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
 go run main.go --app employee_app --specialization
