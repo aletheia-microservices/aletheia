@@ -1,0 +1,140 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "CouponService",
+      "type": "service"
+    },
+    {
+      "id": "CouponService",
+      "type": "service"
+    },
+    {
+      "id": "Frontend",
+      "type": "service"
+    },
+    {
+      "id": "Frontend",
+      "type": "service"
+    },
+    {
+      "id": "Frontend",
+      "type": "service"
+    },
+    {
+      "id": "StudentService",
+      "type": "service"
+    },
+    {
+      "id": "StudentService",
+      "type": "service"
+    },
+    {
+      "id": "coupons_db MySQL",
+      "type": "datastore"
+    },
+    {
+      "id": "coupons_db MySQL",
+      "type": "datastore"
+    },
+    {
+      "id": "students_db MySQL",
+      "type": "datastore"
+    },
+    {
+      "id": "students_db MySQL",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "Client",
+      "callee": "Frontend",
+      "call": "ClaimCoupon",
+      "depth": 0
+    },
+    {
+      "caller": "Client",
+      "callee": "Frontend",
+      "call": "CreateCoupon",
+      "depth": 0
+    },
+    {
+      "caller": "Client",
+      "callee": "Frontend",
+      "call": "CreateStudent",
+      "depth": 0
+    },
+    {
+      "caller": "CouponService",
+      "callee": "coupons_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    },
+    {
+      "caller": "CouponService",
+      "callee": "coupons_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    },
+    {
+      "caller": "CouponService",
+      "callee": "coupons_db MySQL",
+      "call": "Select",
+      "depth": 2
+    },
+    {
+      "caller": "Frontend",
+      "callee": "CouponService",
+      "call": "ClaimCoupon",
+      "depth": 1
+    },
+    {
+      "caller": "Frontend",
+      "callee": "CouponService",
+      "call": "CreateCoupon",
+      "depth": 1
+    },
+    {
+      "caller": "Frontend",
+      "callee": "StudentService",
+      "call": "AddToBalance",
+      "depth": 1
+    },
+    {
+      "caller": "Frontend",
+      "callee": "StudentService",
+      "call": "CreateStudent",
+      "depth": 1
+    },
+    {
+      "caller": "StudentService",
+      "callee": "students_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    },
+    {
+      "caller": "StudentService",
+      "callee": "students_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    },
+    {
+      "caller": "StudentService",
+      "callee": "students_db MySQL",
+      "call": "Select",
+      "depth": 2
+    }
+  ]
+}

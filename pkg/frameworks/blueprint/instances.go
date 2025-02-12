@@ -132,3 +132,42 @@ func (nosql *NoSQLInstance) MarshalJSON() ([]byte, error) {
 		Datastore: nosql.GetDatastore(),
 	})
 }
+
+type RelationalDBInstance struct {
+	BlueprintDatabaseInstance
+}
+
+func (reldb *RelationalDBInstance) GetName() string {
+	return reldb.Name
+}
+
+func (reldb *RelationalDBInstance) String() string {
+	return reldb.Name + " " + reldb.Datastore.GetKindString()
+}
+
+func (reldb *RelationalDBInstance) LongString() string {
+	return reldb.Name + " " + reldb.GetTypeLongName()
+}
+
+func (reldb *RelationalDBInstance) IsQueue() bool {
+	return false
+}
+
+func (reldb *RelationalDBInstance) GetTypeName() string {
+	return "RelationalDB"
+}
+
+func (reldb *RelationalDBInstance) GetTypeLongName() string {
+	return reldb.GetDatastore().GetTypeLongName()
+}
+
+// MarshalJSON is used by app.Save()
+func (reldb *RelationalDBInstance) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Name      string                `json:"name"`
+		Datastore *datastores.Datastore `json:"datastore"`
+	}{
+		Name:      reldb.GetName(),
+		Datastore: reldb.GetDatastore(),
+	})
+}

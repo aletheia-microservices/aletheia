@@ -14,7 +14,7 @@ func IsBackendComponent(name string) bool {
 
 func IsBackend(name string) bool {
 	switch name {
-	case "Queue", "Cache", "NoSQLDatabase":
+	case "Queue", "Cache", "NoSQLDatabase", "RelationalDB":
 		return true
 	}
 	return false

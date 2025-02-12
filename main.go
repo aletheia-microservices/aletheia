@@ -191,12 +191,53 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 
 	}
 
-	fmt.Printf("\nPlease specify fields to enforce unicity constraint (delimiter is ';', composed uniqueness is within '(...)'):\n> ")
-
 	var input string
 	var err error
+	var targetFields []string
+	var targetDbPaths []string
+
+	fmt.Printf("\nPlease specify path(s) to mysql files (.sql) if existent (delimiter is ';', format is <db_name>:<path>):\n> ")
+
+	if app.Name == "coupons_app_sql" {
+		input = "coupons_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/coupons.sql;students_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/students.sql"
+	} else if app.Name == "coupons_app" {
+		//skip
+	} else {
+		reader := bufio.NewReader(os.Stdin)
+		input, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			return
+		}
+	}
+
+	targetDbPaths = strings.Split(input, ";")
+	for _, dbPath := range targetDbPaths {
+		splits := strings.Split(dbPath, ":")
+		db := splits[0]
+		sqlStmt := splits[1]
+		sqlBytes, err := os.ReadFile(sqlStmt)
+		if err != nil {
+			fmt.Println("Error reading database sql files:", err)
+			return
+		}
+		sqlStmts := strings.Split(string(sqlBytes), ";")
+		dbInstance := app.GetDatastoreInstance(db)
+		for _, stmt := range sqlStmts {
+			if stmt == "\n" {
+				continue
+			}
+			datastores.ParseSQLStatement(dbInstance.GetDatastore(), stmt)
+		}
+	}
+
+	input = ""
+	fmt.Printf("\nPlease specify fields to enforce unicity constraint (delimiter is ';', composed uniqueness is within '(...)'):\n> ")
+
 	if app.Name == "coupons_app" {
 		input = "(STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)"
+	} else if app.Name == "coupons_app_sql" {
+		//skip
 	} else {
 		reader := bufio.NewReader(os.Stdin)
 		input, err = reader.ReadString('\n')
@@ -207,7 +248,7 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 	}
 
 	input = strings.TrimSpace(input)
-	targetFields := strings.Split(input, ";")
+	targetFields = strings.Split(input, ";")
 	targetFieldsByDatastore := make(map[string][]string)
 	fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n", TEXT_BOLD_LIGHT_RED)
 

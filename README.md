@@ -62,10 +62,14 @@ go run main.go --app trainticket --cascade
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
 go run main.go --app employee_app --specialization
 
-# Unicity Constraints
+# Unicity Constraints (NoSQL Database)
 go run main.go --app coupons_app --unicity_individual
 # > (STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)
 go run main.go --app coupons_app --unicity_aggregate
+
+# Unicity Constraints (Relational Database)
+go run main.go --app coupons_app_sql --unicity_individual
+go run main.go --app coupons_app_sql --unicity_aggregate
 
 # Domain (Numerical) Constraints
 go run main.go --app coupons_app --numerical_individual

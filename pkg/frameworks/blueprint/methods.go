@@ -201,6 +201,8 @@ func (b *BackendMethod) GetWrittenObjectIndex() int {
 
 func (b *BackendMethod) GetReadObjectIndex() int {
 	switch b.FullName() {
+	case "RelationalDB.Select":
+		return 1
 	case "Cache.Get", "Cache.Mget":
 		return 2
 	case "NoSQLDatabase.NoSQLCollection.FindOne", "NoSQLDatabase.NoSQLCollection.FindMany":
@@ -282,6 +284,18 @@ func BuildBackendComponentMethods(name string) []*BackendMethod {
 			Params:  []*types.MethodField{&ctxParam, &dbNameParam, &collectionNameParam},
 			Returns: []*types.MethodField{&NoSQLCollectionReturn, &errorReturn},
 		})
+	case "RelationalDB":
+		// Select(ctx context.Context, dst interface{}, query string, args ...any) error
+		methods = append(methods, &BackendMethod{Name: "Select", Backend: "RelationalDB", Operation: OP_READ,
+			Params:  []*types.MethodField{&ctxParam, &dstParam, &queryParam, &argsParam},
+			Returns: []*types.MethodField{&errorReturn},
+		})
+		// Exec(ctx context.Context, query string, args ...any) (sql.Result, error)
+		methods = append(methods, &BackendMethod{Name: "Exec", Backend: "RelationalDB", Operation: OP_WRITE,
+			Params:  []*types.MethodField{&ctxParam, &queryParam, &argsParam},
+			Returns: []*types.MethodField{&errorReturn},
+		})
+
 	// ----------------
 	// NoSQL Components
 	// ----------------
@@ -419,6 +433,20 @@ var docParam = types.MethodField{
 		Type: &gotypes.InterfaceType{Methods: make(map[string]string)},
 	},
 }
+var dstParam = types.MethodField{
+	FieldInfo: types.FieldInfo{
+		Name: "dst",
+		Type: &gotypes.InterfaceType{Methods: make(map[string]string)},
+	},
+}
+var argsParam = types.MethodField{
+	FieldInfo: types.FieldInfo{
+		Name: "dst",
+		Type: &gotypes.SliceType{
+			UnderlyingType:  &gotypes.InterfaceType{Methods: make(map[string]string)},
+		},
+	},
+}
 var docsParam = types.MethodField{
 	FieldInfo: types.FieldInfo{
 		Name: "key",
@@ -471,6 +499,14 @@ var dbNameParam = types.MethodField{
 var collectionNameParam = types.MethodField{
 	FieldInfo: types.FieldInfo{
 		Name: "collection_name",
+		Type: &gotypes.BasicType{
+			Name: "string",
+		},
+	},
+}
+var queryParam = types.MethodField{
+	FieldInfo: types.FieldInfo{
+		Name: "query",
 		Type: &gotypes.BasicType{
 			Name: "string",
 		},

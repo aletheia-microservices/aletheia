@@ -15,6 +15,7 @@ import (
 	"github.com/blueprint-uservices/blueprint/plugins/linuxcontainer"
 	"github.com/blueprint-uservices/blueprint/plugins/memcached"
 	"github.com/blueprint-uservices/blueprint/plugins/mongodb"
+	"github.com/blueprint-uservices/blueprint/plugins/mysql"
 	"github.com/blueprint-uservices/blueprint/plugins/rabbitmq"
 	"github.com/blueprint-uservices/blueprint/plugins/redis"
 	"github.com/blueprint-uservices/blueprint/plugins/workflow"
@@ -115,6 +116,10 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], mongoDbClient)
 											databases[mongoDbClient.Name()] = mongoDbClient
 											logger.Logger.Tracef("[IR HANDLER ARG] [mongodb.MongoDBGoClient] got node %s", mongoDbClient.Name())
+										} else if mysqlClient, ok := arg.(*mysql.MySQLDBGoClient); ok {
+											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], mysqlClient)
+											databases[mysqlClient.Name()] = mysqlClient
+											logger.Logger.Tracef("[IR HANDLER ARG] [mongodb.MongoDBGoClient] got node %s", mysqlClient.Name())
 										} else if workflowClient, ok := arg.(*workflow.WorkflowClient); ok {
 											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], workflowClient)
 											logger.Logger.Tracef("[IR HANDLER ARG] [workflow.WorkflowClient] got node %s (service_type = %v)", workflowClient.Name(), workflowClient.ServiceType)
@@ -137,6 +142,8 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 			logger.Logger.Tracef("[IR INFO] ignoring rabbitmq.RabbitmqContainer for node %s, interface %s", rabbitContainer.Name(), rabbitContainer.Iface)
 		} else if mongoDbContainer, ok := node.(*mongodb.MongoDBContainer); ok {
 			logger.Logger.Tracef("[IR INFO] ignoring mongodb.MongoDBContainer for node %s, interface %s", mongoDbContainer.Name(), mongoDbContainer.Iface)
+		} else if mysqlContainer, ok := node.(*mysql.MySQLDBContainer); ok {
+			logger.Logger.Tracef("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s", mysqlContainer.Name(), mysqlContainer.Iface)
 		}
 	}
 
@@ -160,6 +167,8 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 			logger.Logger.Tracef("[IR DATASTORE] \t\t[memcached] %s", memcachedClient.Name())
 		} else if mongodbClient, ok := value.(*mongodb.MongoDBGoClient); ok {
 			logger.Logger.Tracef("[IR DATASTORE] \t\t[mongodb] %s", mongodbClient.Name())
+		} else if mysqlClient, ok := value.(*mysql.MySQLDBGoClient); ok {
+			logger.Logger.Tracef("[IR DATASTORE] \t\t[mysqlClient] %s", mysqlClient.Name())
 		}
 	}
 	return services, databases, frontends

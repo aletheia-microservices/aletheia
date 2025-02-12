@@ -23,6 +23,10 @@ type Schema struct {
 	UniqueConstraints []*UniqueConstraint `json:"unique_constraints"`
 }
 
+func (s *Schema) AddField(field Field) {
+	s.Fields = append(s.Fields, field)
+}
+
 func NewEntry(name string, t string, id int64, datastore *Datastore) *Entry {
 	return &Entry{
 		Name:      name,
@@ -227,6 +231,68 @@ type UniqueConstraint struct {
 	fields []Field
 }
 
+type Constraint struct {
+	// default constraint 	-> fields size = 1
+	// composed constraint 	-> fields size > 1
+	fields  []Field
+	unique  bool
+	primary bool
+	foreign bool
+}
+
+func (constraint *Constraint) AddField(field Field) {
+	constraint.fields = append(constraint.fields, field)
+}
+
+func (constraint *Constraint) String() string {
+	var fieldsStr string
+	/* if len(constraint.fields) > 1 {
+		fieldsStr += "("
+	} */
+	fieldsStr += "("
+	for i, field := range constraint.fields {
+		fieldsStr += field.GetName()
+		if i < len(constraint.fields) - 1 {
+			fieldsStr += ", "
+		}
+	}
+	/* if len(constraint.fields) > 1 {
+		fieldsStr += ")"
+	} */
+
+	fieldsStr += ")"
+	if constraint.unique {
+		return "UNIQUE" + fieldsStr
+	} else if constraint.primary {
+		return "PRIMARY KEY" + fieldsStr
+	} else if constraint.foreign {
+		return "FOREIGN KEY" + fieldsStr + "REFERENCES" + " [TODO]"
+	}
+	return ""
+}
+
+func NewConstraintUnique(field ...Field) *Constraint {
+	return &Constraint{
+		fields: field,
+		unique: true,
+	}
+}
+
+func NewConstraintPrimary(field ...Field) *Constraint {
+	return &Constraint{
+		fields: field,
+		primary: true,
+	}
+}
+
+func NewConstraintForeign(field ...Field) *Constraint {
+	return &Constraint{
+		fields: field,
+		foreign: true,
+	}
+}
+
+// NewUniqueConstraint must not include current field
 func NewUniqueConstraint(field ...Field) *UniqueConstraint {
 	return &UniqueConstraint{
 		fields: field,
@@ -249,7 +315,7 @@ func (c *UniqueConstraint) String() string {
 	str += "("
 	for i, f := range c.fields {
 		str += f.GetFullName()
-		if i < len(c.fields) - 1 {
+		if i < len(c.fields)-1 {
 			str += ", "
 		}
 	}
@@ -271,6 +337,7 @@ type Field interface {
 	GetDatastore() *Datastore
 	IsNamed(other string) bool
 	GetMandatoryReferences() []Field
+	AddConstraint(constraint *Constraint)
 	AddUnicityConstraint(c *UniqueConstraint)
 	GetUnicityConstraints() []*UniqueConstraint
 	HasUnicityConstraints() bool
@@ -284,13 +351,14 @@ type Key struct {
 }
 type Entry struct {
 	Field
-	Name                 string
-	Type                 string
-	Datastore            *Datastore
-	References           []Field
-	MandatoryRefs        []Field // aka Total Participation
-	Id                   int64
-	UniqueConstraints    []*UniqueConstraint
+	Name              string
+	Type              string
+	Datastore         *Datastore
+	References        []Field
+	MandatoryRefs     []Field // aka Total Participation
+	Id                int64
+	UniqueConstraints []*UniqueConstraint
+	Constraints       []*Constraint
 }
 type ForeignEntry struct {
 	Field
@@ -364,6 +432,9 @@ func (f *Entry) GetMandatoryReferences() []Field {
 }
 func (f *Entry) AddUnicityConstraint(c *UniqueConstraint) {
 	f.UniqueConstraints = append(f.UniqueConstraints, c)
+}
+func (f *Entry) AddConstraint(constraint *Constraint) {
+	f.Constraints = append(f.Constraints, constraint)
 }
 func (f *Entry) GetUnicityConstraints() []*UniqueConstraint {
 	return f.UniqueConstraints

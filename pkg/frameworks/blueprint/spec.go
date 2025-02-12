@@ -7,6 +7,7 @@ import (
 	"github.com/blueprint-uservices/blueprint/plugins/golang"
 	"github.com/blueprint-uservices/blueprint/plugins/memcached"
 	"github.com/blueprint-uservices/blueprint/plugins/mongodb"
+	"github.com/blueprint-uservices/blueprint/plugins/mysql"
 	"github.com/blueprint-uservices/blueprint/plugins/rabbitmq"
 	"github.com/blueprint-uservices/blueprint/plugins/redis"
 	"github.com/blueprint-uservices/blueprint/plugins/workflow"
@@ -117,8 +118,21 @@ func buildDatabasesInstances(databases map[string]ir.IRNode) []datastores.Databa
 					},
 				},
 			})
+		case *mysql.MySQLDBGoClient:
+			dbInstances = append(dbInstances, &RelationalDBInstance{
+				BlueprintDatabaseInstance: BlueprintDatabaseInstance{
+					Name: name,
+					//FIXME, we can have many replicas
+					Datastore: &datastores.Datastore{
+						Type:   datastores.SQL,
+						Kind:   datastores.MySQL,
+						Name:   name,
+						Schema: &datastores.Schema{},
+					},
+				},
+			})
 		default:
-			logger.Logger.Warnf("unknown type for database instance: %s (type = %s)", name, utils.GetType(node))
+			logger.Logger.Fatalf("unknown type for database instance: %s (type = %s)", name, utils.GetType(node))
 			continue
 		}
 	}
