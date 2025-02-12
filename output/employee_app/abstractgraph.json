@@ -1,5 +1,450 @@
 [
   {
+    "method": "(*FrontendImpl).CreateEmployeeFreelancer(ctx context.Context, employeeID string, name string, IBAN string, freelancerID string, rate string, terms string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*EmployeeServiceImpl).CreateEmployeeFreelancer(ctx context.Context, employeeID string, name string, IBAN string, freelancerID string, rate string, terms string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "EmployeeService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "employee",
+                  "type": "employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag \"freelancer\" string}"
+                },
+                "struct_fields": {
+                  "EmployeeID": {
+                    "field": {
+                      "name": "EmployeeID",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "employeeID",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "employeeID",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "IBAN": {
+                    "field": {
+                      "name": "IBAN",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "IBAN",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "IBAN",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Name": {
+                    "field": {
+                      "name": "Name",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "name",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "name",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "SpecFlag": {
+                    "field": {
+                      "name": "SpecFlag",
+                      "type": "\"freelancer\" string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "",
+                        "type": "\"freelancer\" string"
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "employees_db"
+          },
+          {
+            "method": "(*FreelancerServiceImpl).CreateFreelancer(ctx context.Context, employeeID string, freelancerID string, rate string, terms string)",
+            "depth": 2,
+            "caller": "EmployeeService",
+            "edges": [
+              {
+                "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+                "depth": 3,
+                "caller": "FreelancerService",
+                "params": [
+                  {
+                    "interface": {
+                      "name": "ctx",
+                      "type": "context.Context",
+                      "refs": [
+                        {
+                          "name": "ctx",
+                          "creator": "EmployeeService"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "struct": {
+                      "name": "employee",
+                      "type": "employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}"
+                    },
+                    "struct_fields": {
+                      "EmployeeID": {
+                        "field": {
+                          "name": "EmployeeID",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "employeeID",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "employeeID",
+                                "creator": "EmployeeService"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "FreelancerID": {
+                        "field": {
+                          "name": "FreelancerID",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "freelancerID",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "freelancerID",
+                                "creator": "EmployeeService"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Rate": {
+                        "field": {
+                          "name": "Rate",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "rate",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "rate",
+                                "creator": "EmployeeService"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Terms": {
+                        "field": {
+                          "name": "Terms",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "terms",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "terms",
+                                "creator": "EmployeeService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "returns": [
+                  {
+                    "interface": {
+                      "name": "err",
+                      "type": ".error"
+                    }
+                  }
+                ],
+                "datastore": "freelancers_db"
+              }
+            ],
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "employeeID",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "employeeID",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "freelancerID",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "freelancerID",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "rate",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "rate",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "terms",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "terms",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              }
+            ],
+            "returns": [
+              {
+                "struct": {
+                  "name": "freelancer",
+                  "type": "employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}",
+                  "refs": [
+                    {
+                      "name": "employee",
+                      "creator": "FreelancerService"
+                    }
+                  ]
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error",
+                  "refs": [
+                    {
+                      "name": "err",
+                      "creator": "FreelancerService"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "employeeID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "name",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "IBAN",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "freelancerID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "rate",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "terms",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "employee",
+              "type": "employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag string}",
+              "refs": [
+                {
+                  "name": "employee",
+                  "creator": "EmployeeService"
+                }
+              ]
+            }
+          },
+          {
+            "struct": {
+              "name": "freelancer",
+              "type": "employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}",
+              "refs": [
+                {
+                  "name": "freelancer",
+                  "creator": "EmployeeService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "EmployeeService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "employeeID",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "name",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "IBAN",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "freelancerID",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "rate",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "terms",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
     "method": "(*FrontendImpl).CreateEmployeeFulltime(ctx context.Context, employeeID string, name string, IBAN string, fulltimeID string, salary string, position string)",
     "depth": 0,
     "caller": "Client",
@@ -1702,451 +2147,6 @@
       {
         "basic": {
           "name": "employeeID",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).CreateEmployeeFreelancer(ctx context.Context, employeeID string, name string, IBAN string, freelancerID string, rate string, terms string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*EmployeeServiceImpl).CreateEmployeeFreelancer(ctx context.Context, employeeID string, name string, IBAN string, freelancerID string, rate string, terms string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-            "depth": 2,
-            "caller": "EmployeeService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "struct": {
-                  "name": "employee",
-                  "type": "employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag \"freelancer\" string}"
-                },
-                "struct_fields": {
-                  "EmployeeID": {
-                    "field": {
-                      "name": "EmployeeID",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "employeeID",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "employeeID",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "IBAN": {
-                    "field": {
-                      "name": "IBAN",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "IBAN",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "IBAN",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "Name": {
-                    "field": {
-                      "name": "Name",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "name",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "name",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "SpecFlag": {
-                    "field": {
-                      "name": "SpecFlag",
-                      "type": "\"freelancer\" string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "",
-                        "type": "\"freelancer\" string"
-                      }
-                    }
-                  }
-                }
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "employees_db"
-          },
-          {
-            "method": "(*FreelancerServiceImpl).CreateFreelancer(ctx context.Context, employeeID string, freelancerID string, rate string, terms string)",
-            "depth": 2,
-            "caller": "EmployeeService",
-            "edges": [
-              {
-                "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-                "depth": 3,
-                "caller": "FreelancerService",
-                "params": [
-                  {
-                    "interface": {
-                      "name": "ctx",
-                      "type": "context.Context",
-                      "refs": [
-                        {
-                          "name": "ctx",
-                          "creator": "EmployeeService"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "struct": {
-                      "name": "employee",
-                      "type": "employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}"
-                    },
-                    "struct_fields": {
-                      "EmployeeID": {
-                        "field": {
-                          "name": "EmployeeID",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "employeeID",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "employeeID",
-                                "creator": "EmployeeService"
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      "FreelancerID": {
-                        "field": {
-                          "name": "FreelancerID",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "freelancerID",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "freelancerID",
-                                "creator": "EmployeeService"
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      "Rate": {
-                        "field": {
-                          "name": "Rate",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "rate",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "rate",
-                                "creator": "EmployeeService"
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      "Terms": {
-                        "field": {
-                          "name": "Terms",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "terms",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "terms",
-                                "creator": "EmployeeService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ],
-                "returns": [
-                  {
-                    "interface": {
-                      "name": "err",
-                      "type": ".error"
-                    }
-                  }
-                ],
-                "datastore": "freelancers_db"
-              }
-            ],
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "employeeID",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "employeeID",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "freelancerID",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "freelancerID",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "rate",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "rate",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "terms",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "terms",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              }
-            ],
-            "returns": [
-              {
-                "struct": {
-                  "name": "freelancer",
-                  "type": "employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}",
-                  "refs": [
-                    {
-                      "name": "employee",
-                      "creator": "FreelancerService"
-                    }
-                  ]
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error",
-                  "refs": [
-                    {
-                      "name": "err",
-                      "creator": "FreelancerService"
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "employeeID",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "name",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "IBAN",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "freelancerID",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "rate",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "terms",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "employee",
-              "type": "employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag string}",
-              "refs": [
-                {
-                  "name": "employee",
-                  "creator": "EmployeeService"
-                }
-              ]
-            }
-          },
-          {
-            "struct": {
-              "name": "freelancer",
-              "type": "employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}",
-              "refs": [
-                {
-                  "name": "freelancer",
-                  "creator": "EmployeeService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "EmployeeService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "employeeID",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "name",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "IBAN",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "freelancerID",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "rate",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "terms",
           "type": "string"
         }
       }

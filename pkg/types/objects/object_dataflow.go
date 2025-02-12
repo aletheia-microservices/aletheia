@@ -16,7 +16,7 @@ type ObjectDataflow struct {
 	Direct         bool
 	Variable       Object
 	IndirectSource Object
-	Field          datastores.Field
+	Field          *datastores.Field
 	RequestIdx     int
 }
 
@@ -104,7 +104,7 @@ func (df *ObjectDataflow) GetDatastore() string {
 	return df.Datastore
 }
 
-func (v *ObjectInfo) SetDirectDataflow(datastore string, service string, variable Object, field datastores.Field, write bool, requestIdx int) *ObjectDataflow {
+func (v *ObjectInfo) SetDirectDataflow(datastore string, service string, variable Object, field *datastores.Field, write bool, requestIdx int) *ObjectDataflow {
 	df := &ObjectDataflow{
 		Direct:     true,
 		Variable:   variable,
@@ -119,7 +119,7 @@ func (v *ObjectInfo) SetDirectDataflow(datastore string, service string, variabl
 	return df
 }
 
-func (v *ObjectInfo) SetIndirectDataflow(datastore string, service string, current Object, source Object, field datastores.Field, write bool, requestIdx int) *ObjectDataflow {
+func (v *ObjectInfo) SetIndirectDataflow(datastore string, service string, current Object, source Object, field *datastores.Field, write bool, requestIdx int) *ObjectDataflow {
 	df := &ObjectDataflow{
 		Variable:       current,
 		IndirectSource: source,

@@ -34,7 +34,11 @@ func (detector *UnicityDetector) getCurrentRequestInfo() *RequestInfo {
 	return detector.requestInfoStack.Peek().(*RequestInfo)
 }
 
-func (detector *UnicityDetector) OnRun(app *app.App) {
+func (detector *UnicityDetector) OnNewRun(app *app.App) {
+	//no-op
+}
+
+func (detector *UnicityDetector) OnEndRun(app *app.App) {
 	//no-op
 }
 
@@ -61,53 +65,29 @@ func (detector *UnicityDetector) OnRead(app *app.App, dbCall *abstractgraph.Abst
 }
 
 func (detector *UnicityDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	schema := dbCall.DbInstance.GetDatastore().GetSchema()
-	datastore := dbCall.DbInstance.GetDatastore()
-	if schema.HasUnicityConstraints() {
-		if datastore.IsNoSQLDatabase() {
-			doc := dbCall.GetParam(1)
-			docType := doc.GetType()
-			logger.Logger.Infof("[UNICITY DETECTOR] found WRITE on database (%s)", dbCall.DbInstance.GetName())
-			_, fieldNames := docType.GetNestedFieldTypes(docType.GetName(), datastore.IsNoSQLDatabase())
-
-			var unicityConstraints []*datastores.UniqueConstraint
-			for _, fieldName := range fieldNames {
-				unicityConstraint := schema.GetUnicityConstraintsForFieldName(fieldName)
-				unicityConstraints = append(unicityConstraints, unicityConstraint...)
-			}
-			logger.Logger.Warnf("[UNICITY DETECTOR] WRITE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
-			for _, uc := range unicityConstraints {
-				logger.Logger.Warn("\t\t\t - " + uc.String())
-			}
-
-			requestInfo := detector.getCurrentRequestInfo()
-			if len(unicityConstraints) > 0 {
-				operation := NewOperationOnUnicityConstraint(dbCall, datastore)
-				requestInfo.addOperation(operation)
-			} else if requestInfo.hasOperations() {
-				operation := NewOperation(dbCall, datastore)
-				requestInfo.addOperation(operation)
-			}
-		}
-	}
+	detector.onWriteOrUpdate(dbCall)
 }
 
 func (detector *UnicityDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	detector.onWriteOrUpdate(dbCall)
+}
+
+func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
-	if schema.HasUnicityConstraints() {
+	if schema.HasConstraintsUnique() {
 		if datastore.IsNoSQLDatabase() {
 			update := dbCall.GetParam(1)
 			updateType := update.GetType()
-			logger.Logger.Infof("[UNICITY DETECTOR] found UPDATE on database (%s)", dbCall.DbInstance.GetName())
+			logger.Logger.Infof("[UNICITY DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
 			_, fieldNames := updateType.GetNestedFieldTypes(updateType.GetName(), datastore.IsNoSQLDatabase())
 
-			var unicityConstraints []*datastores.UniqueConstraint
+			var unicityConstraints []*datastores.Constraint
 			for _, fieldName := range fieldNames {
-				unicityConstraint := schema.GetUnicityConstraintsForFieldName(fieldName)
+				unicityConstraint := schema.GetConstraintsUniqueForFieldName(fieldName)
 				unicityConstraints = append(unicityConstraints, unicityConstraint...)
 			}
-			logger.Logger.Warnf("[UNICITY DETECTOR] UPDATE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
+			logger.Logger.Warnf("[UNICITY DETECTOR] WRITE/UPDATE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
 			for _, uc := range unicityConstraints {
 				logger.Logger.Warn("\t\t\t - " + uc.String())
 			}

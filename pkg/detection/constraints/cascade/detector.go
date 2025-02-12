@@ -32,8 +32,12 @@ func NewDetector() *CascadeDetector {
 	return &CascadeDetector{}
 }
 
-func (detector *CascadeDetector) OnRun(app *app.App) {
+func (detector *CascadeDetector) OnNewRun(app *app.App) {
 	app.ResetAllDataflows()
+}
+
+func (detector *CascadeDetector) OnEndRun(app *app.App) {
+	//no-op
 }
 
 func (detector *CascadeDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {

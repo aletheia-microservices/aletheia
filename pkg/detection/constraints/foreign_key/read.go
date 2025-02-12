@@ -8,13 +8,13 @@ import (
 )
 
 type ForeignKeyRead struct {
-	refField     *datastores.Entry // field that is referencing
-	originField  *datastores.Entry // field that is being referenced
+	refField     *datastores.Field // field that is referencing
+	originField  *datastores.Field // field that is being referenced
 	refDbCall    *types.ParsedDatabaseCall
 	originDbCall *types.ParsedDatabaseCall
 }
 
-func newForeignKeyRead(refField *datastores.Entry, originField *datastores.Entry, refDbCall *types.ParsedDatabaseCall, originDbCall *types.ParsedDatabaseCall) *ForeignKeyRead {
+func newForeignKeyRead(refField *datastores.Field, originField *datastores.Field, refDbCall *types.ParsedDatabaseCall, originDbCall *types.ParsedDatabaseCall) *ForeignKeyRead {
 	return &ForeignKeyRead{
 		refField:     refField,
 		originField:  originField,

@@ -28,12 +28,14 @@ func NewIterator(app *app.App, graph *abstractgraph.AbstractGraph, detector dete
 }
 
 func (iterator *Iterator) Run() {
+	iterator.detector.OnNewRun(iterator.app)
 	for idx, entry := range iterator.getGraph().Nodes {
 		entryServiceCall := entry.(*abstractgraph.AbstractServiceCall)
 		iterator.detector.OnNewRequest(entryServiceCall)
 		iterator.transverseNode(idx, entryServiceCall, entry)
 		iterator.detector.OnEndRequest(iterator.app)
 	}
+	iterator.detector.OnEndRun(iterator.app)
 }
 
 func (iterator *Iterator) transverseNode(child_idx int, lastServiceCallNode *abstractgraph.AbstractServiceCall, node abstractgraph.AbstractNode) {

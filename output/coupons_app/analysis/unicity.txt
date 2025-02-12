@@ -1,0 +1,7 @@
+------------------------------------------------------------
+--------------------- UNICITY ANALYSIS --------------------
+------------------------------------------------------------
+
+[ENTRY] Frontend(ctx context.Context, couponID int, category string, studentID int, value int)
+	- OPERATION @ CouponService: collection.InsertOne(ctx context.Context, claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int})
+	- OPERATION @ StudentService: collection.UpdateOne(ctx context.Context, filter primitive.D, update primitive.D)

@@ -17,18 +17,17 @@ const ROOT_FIELD_NAME_CACHE_KEY = "key"
 const ROOT_FIELD_NAME_CACHE_VALUE = "value"
 
 type Schema struct {
-	Fields            []Field             `json:"fields"`
-	UnfoldedFields    []Field             `json:"unfolded_fields"`
-	ForeignKeys       []*ForeignEntry     `json:"foreign_keys"`
-	UniqueConstraints []*UniqueConstraint `json:"unique_constraints"`
+	Fields            []*Field            `json:"fields"`
+	UnfoldedFields    []*Field            `json:"unfolded_fields"`
+	Constraints       []*Constraint       `json:"constraints"`
 }
 
-func (s *Schema) AddField(field Field) {
+func (s *Schema) AddField(field *Field) {
 	s.Fields = append(s.Fields, field)
 }
 
-func NewEntry(name string, t string, id int64, datastore *Datastore) *Entry {
-	return &Entry{
+func NewEntry(name string, t string, id int64, datastore *Datastore) *Field {
+	return &Field{
 		Name:      name,
 		Type:      t,
 		Id:        id,
@@ -36,28 +35,39 @@ func NewEntry(name string, t string, id int64, datastore *Datastore) *Entry {
 	}
 }
 
-func (s *Schema) HasUnicityConstraints() bool {
-	return len(s.UniqueConstraints) > 0
-}
-
-func (s *Schema) GetUnicityConstraints() []*UniqueConstraint {
-	return s.UniqueConstraints
-}
-
-func (s *Schema) GetUnicityConstraintsForFieldName(fieldName string) []*UniqueConstraint {
-	var constraints []*UniqueConstraint
-	for _, unicityConstraints := range s.GetUnicityConstraints() {
-		for _, field := range unicityConstraints.GetFields() {
+func (s *Schema) GetConstraintsUniqueForFieldName(fieldName string) []*Constraint {
+	var constraints []*Constraint
+	for _, constraintUnique := range s.GetConstraintsUnique() {
+		for _, field := range constraintUnique.GetFields() {
 			if field.GetName() == fieldName {
-				constraints = append(constraints, unicityConstraints)
+				constraints = append(constraints, constraintUnique)
 			}
 		}
 	}
 	return constraints
 }
 
-func (s *Schema) GetAllFields() []Field {
-	var fields []Field
+func (s *Schema) GetConstraintsUnique() []*Constraint {
+	var constraints []*Constraint
+	for _, c := range s.Constraints {
+		if c.unique {
+			constraints = append(constraints, c)
+		}
+	}
+	return constraints
+}
+
+func (s *Schema) HasConstraintsUnique() bool {
+	for _, c := range s.Constraints {
+		if c.unique {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Schema) GetAllFields() []*Field {
+	var fields []*Field
 	for _, field := range s.Fields {
 		if !slices.Contains(fields, field) {
 			fields = append(fields, field)
@@ -87,7 +97,7 @@ func (s *Schema) GetRootFieldName() string {
 	return ""
 }
 
-func (s *Schema) GetOrCreateField(name string, t string, id int64, datastore *Datastore) Field {
+func (s *Schema) GetOrCreateField(name string, t string, id int64, datastore *Datastore) *Field {
 	for _, field := range s.Fields {
 		if field.GetName() == name && field.GetDatastoreName() == datastore.GetName() { // last condition of datastore is just for sanity check
 			// upgrade type if type is unknown
@@ -103,7 +113,7 @@ func (s *Schema) GetOrCreateField(name string, t string, id int64, datastore *Da
 	return e
 }
 
-func (s *Schema) GetOrCreateUnfoldedField(name string, t string, id int64, datastore *Datastore) Field {
+func (s *Schema) GetOrCreateUnfoldedField(name string, t string, id int64, datastore *Datastore) *Field {
 	for _, field := range s.UnfoldedFields {
 		if field.IsNamed(name) && field.GetDatastoreName() == datastore.GetName() { // last condition of datastore is just for sanity check
 			// upgrade type if type is unknown
@@ -119,7 +129,7 @@ func (s *Schema) GetOrCreateUnfoldedField(name string, t string, id int64, datas
 	return e
 }
 
-func (s *Schema) GetOrCreateRootField(name string, t string, id int64, datastore *Datastore) Field {
+func (s *Schema) GetOrCreateRootField(name string, t string, id int64, datastore *Datastore) *Field {
 	// FIXME: better to have an additional bool for the fields that state if they are root or no, but for now we have:
 	// index 0 is for "_" root field (that can be created in reads if no fields exists) and index 1 is when there was a previous write
 	if len(s.Fields) >= 2 {
@@ -133,16 +143,16 @@ func (s *Schema) GetOrCreateRootField(name string, t string, id int64, datastore
 	return e
 }
 
-func (s *Schema) AddForeignReferenceToField(current Field, reference Field) {
-	if !slices.Contains(current.(*Entry).References, reference) {
-		current.(*Entry).References = append(current.(*Entry).References, reference)
+func (s *Schema) AddForeignReferenceToField(current *Field, reference *Field) {
+	if !slices.Contains(current.References, reference) {
+		current.References = append(current.References, reference)
 	}
 }
 
 func (s *Schema) String() string {
 	fieldsStr := "fields = {"
-	for i, f := range s.Fields {
-		fieldsStr += fmt.Sprintf("[field #%d] %s", i, f.String())
+	for i, field := range s.Fields {
+		fieldsStr += fmt.Sprintf("[field #%d] %s", i, field.String())
 		if i < len(s.Fields)-1 {
 			fieldsStr += ", "
 		}
@@ -150,8 +160,8 @@ func (s *Schema) String() string {
 	fieldsStr += "}"
 
 	unfoldedFieldsStr := "unfolded fields = {"
-	for i, f := range s.UnfoldedFields {
-		unfoldedFieldsStr += fmt.Sprintf("[unfolded field #%d] %s", i, f.String())
+	for i, field := range s.UnfoldedFields {
+		unfoldedFieldsStr += fmt.Sprintf("[unfolded field #%d] %s", i, field.String())
 		if i < len(s.Fields)-1 {
 			unfoldedFieldsStr += ", "
 		}
@@ -161,7 +171,7 @@ func (s *Schema) String() string {
 	return fieldsStr + ", " + unfoldedFieldsStr
 }
 
-func (s *Schema) GetRootUnfoldedField() Field {
+func (s *Schema) GetRootUnfoldedField() *Field {
 	if len(s.UnfoldedFields) > 1 {
 		return s.UnfoldedFields[0]
 	}
@@ -169,7 +179,7 @@ func (s *Schema) GetRootUnfoldedField() Field {
 	return nil
 }
 
-func (s *Schema) GetFieldByFullName(str string) Field {
+func (s *Schema) GetFieldByFullName(str string) *Field {
 	for _, unfoldedField := range s.UnfoldedFields {
 		if unfoldedField.GetFullName() == str {
 			return unfoldedField
@@ -179,69 +189,51 @@ func (s *Schema) GetFieldByFullName(str string) Field {
 	return nil
 }
 
-func (s *Schema) GetField(name string) Field {
-	for _, f := range s.Fields {
-		if f.IsNamed(name) {
-			return f
+func (s *Schema) GetField(name string) *Field {
+	for _, field := range s.Fields {
+		if field.IsNamed(name) {
+			return field
 		}
 	}
-	for _, f := range s.UnfoldedFields {
-		if f.IsNamed(name) {
-			return f
-		}
-	}
-	for _, f := range s.ForeignKeys {
-		if f.IsNamed(name) {
-			return f
+	for _, field := range s.UnfoldedFields {
+		if field.IsNamed(name) {
+			return field
 		}
 	}
 	logger.Logger.Fatalf("[FIXME] no field for name %s in datastore schema %s", name, s.String())
 	return nil
 }
 
-func (s *Schema) GetFieldById(id int64) Field {
-	for _, f := range s.Fields {
-		if f.HasId(id) {
-			return f
+func (s *Schema) GetFieldById(id int64) *Field {
+	for _, field := range s.Fields {
+		if field.HasId(id) {
+			return field
 		}
 	}
-	for _, f := range s.UnfoldedFields {
-		if f.HasId(id) {
-			return f
-		}
-	}
-	for _, f := range s.ForeignKeys {
-		if f.HasId(id) {
-			return f
+	for _, field := range s.UnfoldedFields {
+		if field.HasId(id) {
+			return field
 		}
 	}
 	logger.Logger.Warnf("[FIXME] no field for id %d in datastore schema %v", id, s.String())
 	return nil
 }
 
-func (s *Schema) CreateUniqueConstraint(fields ...Field) {
-	constraint := NewUniqueConstraint(fields...)
-	s.UniqueConstraints = append(s.UniqueConstraints, constraint)
-	logger.Logger.Debugf("[SCHEMA] created unicity constraints for fields: %v", fields)
-}
-
-type UniqueConstraint struct {
-	// unique 			-> fields size = 1
-	// composed unique 	-> fields size > 1
-	fields []Field
-}
-
 type Constraint struct {
 	// default constraint 	-> fields size = 1
 	// composed constraint 	-> fields size > 1
-	fields  []Field
+	fields  []*Field
 	unique  bool
 	primary bool
 	foreign bool
 }
 
-func (constraint *Constraint) AddField(field Field) {
+func (constraint *Constraint) AddField(field *Field) {
 	constraint.fields = append(constraint.fields, field)
+}
+
+func (constraint *Constraint) GetFields() []*Field {
+	return constraint.fields
 }
 
 func (constraint *Constraint) String() string {
@@ -252,7 +244,7 @@ func (constraint *Constraint) String() string {
 	fieldsStr += "("
 	for i, field := range constraint.fields {
 		fieldsStr += field.GetName()
-		if i < len(constraint.fields) - 1 {
+		if i < len(constraint.fields)-1 {
 			fieldsStr += ", "
 		}
 	}
@@ -271,200 +263,82 @@ func (constraint *Constraint) String() string {
 	return ""
 }
 
-func NewConstraintUnique(field ...Field) *Constraint {
+func NewConstraintUnique(field ...*Field) *Constraint {
 	return &Constraint{
 		fields: field,
 		unique: true,
 	}
 }
 
-func NewConstraintPrimary(field ...Field) *Constraint {
+func NewConstraintPrimary(field ...*Field) *Constraint {
 	return &Constraint{
-		fields: field,
+		fields:  field,
 		primary: true,
 	}
 }
 
-func NewConstraintForeign(field ...Field) *Constraint {
+func NewConstraintForeign(field ...*Field) *Constraint {
 	return &Constraint{
-		fields: field,
+		fields:  field,
 		foreign: true,
 	}
 }
 
-// NewUniqueConstraint must not include current field
-func NewUniqueConstraint(field ...Field) *UniqueConstraint {
-	return &UniqueConstraint{
-		fields: field,
-	}
+func (s *Schema) AddConstraint(constraint *Constraint) {
+	s.Constraints = append(s.Constraints, constraint)
 }
 
-func (c *UniqueConstraint) IsComposed() bool {
-	return len(c.fields) > 1
+func (s *Schema) GetConstraints() []*Constraint {
+	return s.Constraints
 }
 
-func (c *UniqueConstraint) GetFields() []Field {
-	return c.fields
-}
-
-func (c *UniqueConstraint) String() string {
-	str := "UNIQUE "
-	if len(c.fields) == 1 {
-		return str + c.fields[0].GetFullName()
-	}
-	str += "("
-	for i, f := range c.fields {
-		str += f.GetFullName()
-		if i < len(c.fields)-1 {
-			str += ", "
-		}
-	}
-	str += ")"
-	return str
-}
-
-type Field interface {
-	String() string
-	GetName() string
-	GetFullName() string
-	HasId(id int64) bool
-	GetType() string
-	HasUnknownType() bool
-	SetType(t string)
-	AddReference(Field)
-	AddMandatoryReference(Field)
-	GetDatastoreName() string
-	GetDatastore() *Datastore
-	IsNamed(other string) bool
-	GetMandatoryReferences() []Field
-	AddConstraint(constraint *Constraint)
-	AddUnicityConstraint(c *UniqueConstraint)
-	GetUnicityConstraints() []*UniqueConstraint
-	HasUnicityConstraints() bool
-}
-type Key struct {
-	Field
-	Name      string
-	Type      string
-	Datastore *Datastore
-	Id        int64
-}
-type Entry struct {
-	Field
+type Field struct {
 	Name              string
 	Type              string
 	Datastore         *Datastore
-	References        []Field
-	MandatoryRefs     []Field // aka Total Participation
+	References        []*Field
+	MandatoryRefs     []*Field // aka Total Participation
 	Id                int64
-	UniqueConstraints []*UniqueConstraint
-	Constraints       []*Constraint
-}
-type ForeignEntry struct {
-	Field
-	Name      string
-	Type      string
-	Reference Field
-	Datastore *Datastore
-	Id        int64
+	constraints       []*Constraint
 }
 
-// Key
-func (f *Key) GetName() string {
-	return f.Name
+func (field *Field) GetName() string {
+	return field.Name
 }
-func (f *Key) GetDatastoreName() string {
-	return f.Datastore.GetName()
-}
-func (f *Key) GetDatastore() *Datastore {
-	return f.Datastore
-}
-func (f *Key) GetFullName() string {
-	return strings.ToUpper(f.Datastore.GetName()) + "." + f.Name
-}
-func (f *Key) GetType() string {
-	return f.Type
-}
-func (f *Key) String() string {
-	return f.Name + " " + f.Type
-}
-func (f *Key) HasId(id int64) bool {
-	return f.Id == id
+func (field *Field) IsNamed(other string) bool {
+	return strings.EqualFold(field.GetName(), other) // FIXME NOSQL MONGODB
 }
 
-// Entry
-func (f *Entry) GetName() string {
-	return f.Name
+func (field *Field) GetDatastoreName() string {
+	return field.Datastore.GetName()
 }
-func (f *Entry) IsNamed(other string) bool {
-	return strings.EqualFold(f.GetName(), other) // FIXME NOSQL MONGODB
+func (field *Field) GetDatastore() *Datastore {
+	return field.Datastore
 }
-
-func (f *Entry) GetDatastoreName() string {
-	return f.Datastore.GetName()
+func (field *Field) GetFullName() string {
+	return strings.ToUpper(field.Datastore.GetName()) + "." + field.Name
 }
-func (f *Entry) GetDatastore() *Datastore {
-	return f.Datastore
+func (field *Field) GetType() string {
+	return field.Type
 }
-func (f *Entry) GetFullName() string {
-	return strings.ToUpper(f.Datastore.GetName()) + "." + f.Name
+func (field *Field) String() string {
+	return field.Name + " " + field.Type
 }
-func (f *Entry) GetType() string {
-	return f.Type
+func (field *Field) HasId(id int64) bool {
+	return field.Id == id
 }
-func (f *Entry) String() string {
-	return f.Name + " " + f.Type
+func (field *Field) HasUnknownType() bool {
+	return field.Type == UNKNOWN_FIELD_TYPE
 }
-func (f *Entry) HasId(id int64) bool {
-	return f.Id == id
+func (field *Field) SetType(t string) {
+	field.Type = t
 }
-func (f *Entry) HasUnknownType() bool {
-	return f.Type == UNKNOWN_FIELD_TYPE
+func (field *Field) AddMandatoryReference(ref *Field) {
+	field.MandatoryRefs = append(field.MandatoryRefs, ref)
 }
-func (f *Entry) SetType(t string) {
-	f.Type = t
+func (field *Field) GetMandatoryReferences() []*Field {
+	return field.MandatoryRefs
 }
-func (f *Entry) AddMandatoryReference(ref Field) {
-	f.MandatoryRefs = append(f.MandatoryRefs, ref)
-}
-func (f *Entry) GetMandatoryReferences() []Field {
-	return f.MandatoryRefs
-}
-func (f *Entry) AddUnicityConstraint(c *UniqueConstraint) {
-	f.UniqueConstraints = append(f.UniqueConstraints, c)
-}
-func (f *Entry) AddConstraint(constraint *Constraint) {
-	f.Constraints = append(f.Constraints, constraint)
-}
-func (f *Entry) GetUnicityConstraints() []*UniqueConstraint {
-	return f.UniqueConstraints
-}
-func (f *Entry) HasUnicityConstraints() bool {
-	return len(f.UniqueConstraints) > 0
-}
-
-// Foreign Key
-func (f *ForeignEntry) GetName() string {
-	return f.Name
-}
-func (f *ForeignEntry) GetDatastoreName() string {
-	return f.Datastore.GetName()
-}
-func (f *ForeignEntry) GetDatastore() *Datastore {
-	return f.Datastore
-}
-func (f *ForeignEntry) GetFullName() string {
-	return strings.ToUpper(f.Datastore.GetName()) + "." + f.Name
-}
-func (f *ForeignEntry) GetType() string {
-	return f.Type
-}
-func (f *ForeignEntry) String() string {
-	return f.Name + " " + f.Type
-}
-func (f *ForeignEntry) HasId(id int64) bool {
-	return f.Id == id
-}
-func (f *ForeignEntry) GetReferenceName() string {
-	return f.Datastore.GetName() + "." + f.GetName()
+func (field *Field) AddConstraint(constraint *Constraint) {
+	field.constraints = append(field.constraints, constraint)
 }

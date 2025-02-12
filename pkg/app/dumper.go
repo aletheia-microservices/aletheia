@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"analyzer/pkg/datastores"
 	"analyzer/pkg/utils"
 )
 
@@ -189,7 +188,7 @@ func (app *App) DumpYamlSchema(compactSchema bool) map[string]utils.OrderedPrope
 
 		propsForeignKeys := utils.NewOrderedPropertyList()
 		for _, f := range datastore.GetDatastore().Schema.GetAllFields() {
-			entry := f.(*datastores.Entry)
+			entry := f
 			if len(entry.References) > 0 {
 				var lst []string
 				for _, r := range entry.References {

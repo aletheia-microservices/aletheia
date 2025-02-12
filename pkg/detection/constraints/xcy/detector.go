@@ -42,7 +42,11 @@ func NewDetector(entryNode abstractgraph.AbstractNode, mode DetectionMode) *XCYD
 	}
 }
 
-func (detector *XCYDetector) OnRun(app *app.App) {
+func (detector *XCYDetector) OnNewRun(app *app.App) {
+	//no-op
+}
+
+func (detector *XCYDetector) OnEndRun(app *app.App) {
 	//no-op
 }
 

@@ -37,8 +37,12 @@ func (detector *SpecializationDetector) schemaHasMandatoryField(datastore *datas
 	return len(mandatoryFields) > 0, mandatoryFields
 }
 
-func (detector *SpecializationDetector) OnRun(app *app.App) {
+func (detector *SpecializationDetector) OnNewRun(app *app.App) {
 	app.ResetAllDataflows()
+}
+
+func (detector *SpecializationDetector) OnEndRun(app *app.App) {
+	//no-op
 }
 
 func (detector *SpecializationDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {

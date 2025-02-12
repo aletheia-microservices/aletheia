@@ -1,18 +1,120 @@
 [
   {
-    "method": "(*FrontendImpl).ListTags(ctx context.Context)",
+    "method": "(*FrontendImpl).DeleteCart(ctx context.Context, sessionID string)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*catalogueImpl).Tags(ctx context.Context)",
+        "method": "(*cartImpl).DeleteCart(ctx context.Context, customerID string)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
+            "method": "NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)",
             "depth": 2,
-            "caller": "CatalogueService",
+            "caller": "CartService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "FrontendService"
+                    },
+                    {
+                      "name": "ctx",
+                      "creator": "OrderService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{ string,  \"id\" string,  string}"
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "cart_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "sessionID",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "CartService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "sessionID",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).RemoveItem(ctx context.Context, sessionID string, itemID string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*cartImpl).RemoveItem(ctx context.Context, customerID string, itemID string)",
+        "depth": 1,
+        "caller": "FrontendService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{})",
+            "depth": 2,
+            "caller": "CartService",
             "params": [
               {
                 "interface": {
@@ -28,78 +130,66 @@
               },
               {
                 "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                }
-              },
-              {
-                "slice": {
-                  "name": "projection",
+                  "name": "",
                   "type": "primitive.D"
                 },
                 "slice_variables": [
                   {
                     "struct": {
                       "name": "",
-                      "type": "struct{Key \"tags\" string, Key \"tags\" string, Value true bool, Value true bool}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"tags\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"tags\" string"
-                          }
-                        }
+                      "type": "struct{ string,  \"id\" string,  string}"
+                    }
+                  }
+                ]
+              },
+              {
+                "pointer": {
+                  "name": "cart",
+                  "type": "(*cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}})"
+                },
+                "ptr_to": {
+                  "struct": {
+                    "name": "",
+                    "type": "cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}"
+                  },
+                  "struct_fields": {
+                    "ID": {
+                      "field": {
+                        "name": "ID",
+                        "type": "string"
                       },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "true bool"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "true bool"
-                          }
+                      "wrapped_variable": {
+                        "basic": {
+                          "name": "customerID",
+                          "type": "string",
+                          "refs": [
+                            {
+                              "name": "sessionID",
+                              "creator": "FrontendService"
+                            }
+                          ]
                         }
                       }
                     }
                   }
-                ]
+                }
               }
             ],
             "returns": [
               {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = catalogue, collection = catalogue}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "socks",
-                    "type": "(*[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string})"
-                  },
-                  "ptr_to": {
-                    "array": {
-                      "name": "socks",
-                      "type": "[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
-                    }
-                  }
+                "basic": {
+                  "name": "",
+                  "type": "int"
                 }
               },
               {
                 "interface": {
-                  "name": "_",
+                  "name": "",
                   "type": ".error"
                 }
               }
             ],
-            "datastore": "catalogue_db"
+            "datastore": "cart_db"
           }
         ],
         "params": [
@@ -108,21 +198,21 @@
               "name": "ctx",
               "type": "context.Context"
             }
+          },
+          {
+            "basic": {
+              "name": "sessionID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "itemID",
+              "type": "string"
+            }
           }
         ],
         "returns": [
-          {
-            "slice": {
-              "name": "",
-              "type": "[]string",
-              "refs": [
-                {
-                  "name": "tags",
-                  "creator": "CatalogueService"
-                }
-              ]
-            }
-          },
           {
             "interface": {
               "name": "",
@@ -130,7 +220,7 @@
               "refs": [
                 {
                   "name": "",
-                  "creator": "CatalogueService"
+                  "creator": "CartService"
                 }
               ]
             }
@@ -144,21 +234,33 @@
           "name": "ctx",
           "type": "context.Context"
         }
+      },
+      {
+        "basic": {
+          "name": "sessionID",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "itemID",
+          "type": "string"
+        }
       }
     ]
   },
   {
-    "method": "(*FrontendImpl).Login(ctx context.Context, sessionID string, username string, password string)",
+    "method": "(*FrontendImpl).Register(ctx context.Context, sessionID string, username string, password string, email string, first string, last string)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*userServiceImpl).Login(ctx context.Context, username string, password string)",
+        "method": "(*userServiceImpl).Register(ctx context.Context, username string, password string, email string, first string, last string)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
             "depth": 2,
             "caller": "UserService",
             "params": [
@@ -175,114 +277,132 @@
                 }
               },
               {
-                "slice": {
-                  "name": "query",
-                  "type": "primitive.D"
+                "struct": {
+                  "name": "u",
+                  "type": "user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}"
                 },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"username\" string, Key \"username\" string, Value string, Value string}"
+                "struct_fields": {
+                  "Addresses": {
+                    "field": {
+                      "name": "Addresses",
+                      "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
                     },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"username\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"username\" string"
+                    "wrapped_variable": {
+                      "struct": {
+                        "name": "",
+                        "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
+                      }
+                    }
+                  },
+                  "Cards": {
+                    "field": {
+                      "name": "Cards",
+                      "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
+                    },
+                    "wrapped_variable": {
+                      "struct": {
+                        "name": "",
+                        "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
+                      }
+                    }
+                  },
+                  "Email": {
+                    "field": {
+                      "name": "Email",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "email",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "email",
+                            "creator": "FrontendService"
                           }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
+                        ]
+                      }
+                    }
+                  },
+                  "FirstName": {
+                    "field": {
+                      "name": "FirstName",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "first",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "first",
+                            "creator": "FrontendService"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "LastName": {
+                    "field": {
+                      "name": "LastName",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "last",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "last",
+                            "creator": "FrontendService"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Password": {
+                    "field": {
+                      "name": "Password",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "password",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "password",
+                            "creator": "FrontendService"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Username": {
+                    "field": {
+                      "name": "Username",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "username",
+                        "type": "string",
+                        "refs": [
+                          {
                             "name": "username",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "username",
-                                "creator": "FrontendService"
-                              }
-                            ]
+                            "creator": "FrontendService"
                           }
-                        }
+                        ]
                       }
                     }
                   }
-                ]
-              },
-              {
-                "slice": {
-                  "name": "projection",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"password\" string, Key \"password\" string, Value true bool, Value true bool}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"password\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"password\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "true bool"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "true bool"
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
+                }
               }
             ],
             "returns": [
               {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = users, collection = users}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "user",
-                    "type": "(*user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string})"
-                  },
-                  "ptr_to": {
-                    "struct": {
-                      "name": "user",
-                      "type": "user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}"
-                    }
-                  }
-                }
-              },
-              {
                 "interface": {
-                  "name": "_",
+                  "name": "",
                   "type": ".error"
                 }
               }
@@ -308,33 +428,37 @@
               "name": "password",
               "type": "string"
             }
+          },
+          {
+            "basic": {
+              "name": "email",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "first",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "last",
+              "type": "string"
+            }
           }
         ],
         "returns": [
           {
-            "struct": {
-              "name": "u",
-              "type": "user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}",
+            "basic": {
+              "name": "userID",
+              "type": "string",
               "refs": [
                 {
-                  "name": "user",
+                  "name": "UserID",
                   "creator": "UserService"
                 }
               ]
-            },
-            "struct_fields": {
-              "UserID": {
-                "field": {
-                  "name": "UserID",
-                  "type": "string"
-                },
-                "wrapped_variable": {
-                  "basic": {
-                    "name": "UserID",
-                    "type": "string"
-                  }
-                }
-              }
             }
           },
           {
@@ -413,11 +537,11 @@
                           "type": "string",
                           "refs": [
                             {
-                              "name": "UserID",
+                              "name": "userID",
                               "creator": "FrontendService"
                             },
                             {
-                              "name": "userID",
+                              "name": "UserID",
                               "creator": "FrontendService"
                             }
                           ]
@@ -500,8 +624,14 @@
           },
           {
             "basic": {
-              "name": "UserID",
-              "type": "string"
+              "name": "userID",
+              "type": "string",
+              "refs": [
+                {
+                  "name": "UserID",
+                  "creator": "UserService"
+                }
+              ]
             }
           },
           {
@@ -514,7 +644,7 @@
         "returns": [
           {
             "interface": {
-              "name": "err",
+              "name": "",
               "type": ".error",
               "refs": [
                 {
@@ -549,6 +679,24 @@
       {
         "basic": {
           "name": "password",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "email",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "first",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "last",
           "type": "string"
         }
       }
@@ -718,212 +866,6 @@
         "basic": {
           "name": "userID",
           "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).PostAddress(ctx context.Context, userID string, address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string})",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*userServiceImpl).PostAddress(ctx context.Context, userid string, address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string})",
-        "depth": 1,
-        "caller": "FrontendService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{})",
-            "depth": 2,
-            "caller": "UserService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "FrontendService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"userid\" string, Key \"userid\" string, Value string, Value string}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"userid\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"userid\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "userid",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "userID",
-                                "creator": "FrontendService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "slice": {
-                  "name": "update",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"address\" string, Key \"address\" string, Value user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Value user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"address\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"address\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
-                        },
-                        "wrapped_variable": {
-                          "struct": {
-                            "name": "address",
-                            "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}",
-                            "refs": [
-                              {
-                                "name": "address",
-                                "creator": "FrontendService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "basic": {
-                  "name": "",
-                  "type": "bool"
-                }
-              },
-              {
-                "interface": {
-                  "name": "",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "user_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "userID",
-              "type": "string"
-            }
-          },
-          {
-            "struct": {
-              "name": "address",
-              "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "basic": {
-              "name": "",
-              "type": "string",
-              "refs": [
-                {
-                  "name": "userid",
-                  "creator": "UserService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "UserService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "userID",
-          "type": "string"
-        }
-      },
-      {
-        "struct": {
-          "name": "address",
-          "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
         }
       }
     ]
@@ -1181,19 +1123,19 @@
     ]
   },
   {
-    "method": "(*FrontendImpl).GetOrder(ctx context.Context, orderID string)",
+    "method": "(*FrontendImpl).ListTags(ctx context.Context)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*orderImpl).GetOrder(ctx context.Context, orderID string)",
+        "method": "(*catalogueImpl).Tags(ctx context.Context)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
             "depth": 2,
-            "caller": "OrderService",
+            "caller": "CatalogueService",
             "params": [
               {
                 "interface": {
@@ -1211,12 +1153,44 @@
                 "slice": {
                   "name": "filter",
                   "type": "primitive.D"
+                }
+              },
+              {
+                "slice": {
+                  "name": "projection",
+                  "type": "primitive.D"
                 },
                 "slice_variables": [
                   {
                     "struct": {
                       "name": "",
-                      "type": "struct{ string,  \"id\" string,  string}"
+                      "type": "struct{Key \"tags\" string, Key \"tags\" string, Value true bool, Value true bool}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"tags\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"tags\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "true bool"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "true bool"
+                          }
+                        }
+                      }
                     }
                   }
                 ]
@@ -1225,30 +1199,30 @@
             "returns": [
               {
                 "blueprint_backend": {
-                  "name": "cursor",
-                  "type": "NoSQLCursor {database = order_service, collection = orders}"
+                  "name": "result",
+                  "type": "NoSQLCursor {database = catalogue, collection = catalogue}"
                 },
                 "target_variable": {
                   "pointer": {
-                    "name": "order",
-                    "type": "(*order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32})"
+                    "name": "socks",
+                    "type": "(*[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string})"
                   },
                   "ptr_to": {
-                    "struct": {
-                      "name": "order",
-                      "type": "order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}"
+                    "array": {
+                      "name": "socks",
+                      "type": "[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
                     }
                   }
                 }
               },
               {
                 "interface": {
-                  "name": "err",
+                  "name": "_",
                   "type": ".error"
                 }
               }
             ],
-            "datastore": "order_db"
+            "datastore": "catalogue_db"
           }
         ],
         "params": [
@@ -1257,23 +1231,17 @@
               "name": "ctx",
               "type": "context.Context"
             }
-          },
-          {
-            "basic": {
-              "name": "orderID",
-              "type": "string"
-            }
           }
         ],
         "returns": [
           {
-            "struct": {
+            "slice": {
               "name": "",
-              "type": "order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}",
+              "type": "[]string",
               "refs": [
                 {
-                  "name": "order",
-                  "creator": "OrderService"
+                  "name": "tags",
+                  "creator": "CatalogueService"
                 }
               ]
             }
@@ -1285,7 +1253,7 @@
               "refs": [
                 {
                   "name": "",
-                  "creator": "OrderService"
+                  "creator": "CatalogueService"
                 }
               ]
             }
@@ -1299,27 +1267,21 @@
           "name": "ctx",
           "type": "context.Context"
         }
-      },
-      {
-        "basic": {
-          "name": "orderID",
-          "type": "string"
-        }
       }
     ]
   },
   {
-    "method": "(*FrontendImpl).PostCard(ctx context.Context, userID string, card user.Card struct{LongNum string, Expires string, CCV string, ID string})",
+    "method": "(*FrontendImpl).GetCard(ctx context.Context, cardID string)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*userServiceImpl).PostCard(ctx context.Context, userid string, card user.Card struct{LongNum string, Expires string, CCV string, ID string})",
+        "method": "(*userServiceImpl).GetCards(ctx context.Context, cardid string)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{})",
+            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
             "depth": 2,
             "caller": "UserService",
             "params": [
@@ -1331,6 +1293,10 @@
                     {
                       "name": "ctx",
                       "creator": "FrontendService"
+                    },
+                    {
+                      "name": "ctx",
+                      "creator": "OrderService"
                     }
                   ]
                 }
@@ -1344,18 +1310,18 @@
                   {
                     "struct": {
                       "name": "",
-                      "type": "struct{Key \"userid\" string, Key \"userid\" string, Value string, Value string}"
+                      "type": "struct{Key \"cards\" string, Key \"cards\" string, Value string, Value string}"
                     },
                     "struct_fields": {
                       "Key": {
                         "field": {
                           "name": "Key",
-                          "type": "\"userid\" string"
+                          "type": "\"cards\" string"
                         },
                         "wrapped_variable": {
                           "basic": {
                             "name": "",
-                            "type": "\"userid\" string"
+                            "type": "\"cards\" string"
                           }
                         }
                       },
@@ -1366,12 +1332,16 @@
                         },
                         "wrapped_variable": {
                           "basic": {
-                            "name": "userid",
+                            "name": "cardid",
                             "type": "string",
                             "refs": [
                               {
-                                "name": "userID",
+                                "name": "cardID",
                                 "creator": "FrontendService"
+                              },
+                              {
+                                "name": "cardID",
+                                "creator": "OrderService"
                               }
                             ]
                           }
@@ -1383,43 +1353,37 @@
               },
               {
                 "slice": {
-                  "name": "update",
+                  "name": "projection",
                   "type": "primitive.D"
                 },
                 "slice_variables": [
                   {
                     "struct": {
                       "name": "",
-                      "type": "struct{Key \"card\" string, Key \"card\" string, Value user.Card struct{LongNum string, Expires string, CCV string, ID string}, Value user.Card struct{LongNum string, Expires string, CCV string, ID string}}"
+                      "type": "struct{Key \"cards\" string, Key \"cards\" string, Value true bool, Value true bool}"
                     },
                     "struct_fields": {
                       "Key": {
                         "field": {
                           "name": "Key",
-                          "type": "\"card\" string"
+                          "type": "\"cards\" string"
                         },
                         "wrapped_variable": {
                           "basic": {
                             "name": "",
-                            "type": "\"card\" string"
+                            "type": "\"cards\" string"
                           }
                         }
                       },
                       "Value": {
                         "field": {
                           "name": "Value",
-                          "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
+                          "type": "true bool"
                         },
                         "wrapped_variable": {
-                          "struct": {
-                            "name": "card",
-                            "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}",
-                            "refs": [
-                              {
-                                "name": "card",
-                                "creator": "FrontendService"
-                              }
-                            ]
+                          "basic": {
+                            "name": "",
+                            "type": "true bool"
                           }
                         }
                       }
@@ -1430,14 +1394,26 @@
             ],
             "returns": [
               {
-                "basic": {
-                  "name": "",
-                  "type": "bool"
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = users, collection = users}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "cards",
+                    "type": "(*[]user.Card struct{LongNum string, Expires string, CCV string, ID string})"
+                  },
+                  "ptr_to": {
+                    "array": {
+                      "name": "cards",
+                      "type": "[]user.Card struct{LongNum string, Expires string, CCV string, ID string}"
+                    }
+                  }
                 }
               },
               {
                 "interface": {
-                  "name": "",
+                  "name": "_",
                   "type": ".error"
                 }
               }
@@ -1454,25 +1430,19 @@
           },
           {
             "basic": {
-              "name": "userID",
+              "name": "cardID",
               "type": "string"
-            }
-          },
-          {
-            "struct": {
-              "name": "card",
-              "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
             }
           }
         ],
         "returns": [
           {
-            "basic": {
+            "slice": {
               "name": "",
-              "type": "string",
+              "type": "[]user.Card struct{LongNum string, Expires string, CCV string, ID string}",
               "refs": [
                 {
-                  "name": "userid",
+                  "name": "cards",
                   "creator": "UserService"
                 }
               ]
@@ -1502,14 +1472,8 @@
       },
       {
         "basic": {
-          "name": "userID",
+          "name": "cardID",
           "type": "string"
-        }
-      },
-      {
-        "struct": {
-          "name": "card",
-          "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
         }
       }
     ]
@@ -1974,19 +1938,19 @@
     ]
   },
   {
-    "method": "(*FrontendImpl).DeleteCart(ctx context.Context, sessionID string)",
+    "method": "(*FrontendImpl).ListItems(ctx context.Context, tags []string, order string, pageNum int, pageSize int)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*cartImpl).DeleteCart(ctx context.Context, customerID string)",
+        "method": "(*catalogueImpl).List(ctx context.Context, tags []string, order string, pageNum int, pageSize int)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)",
+            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
             "depth": 2,
-            "caller": "CartService",
+            "caller": "CatalogueService",
             "params": [
               {
                 "interface": {
@@ -1996,24 +1960,164 @@
                     {
                       "name": "ctx",
                       "creator": "FrontendService"
-                    },
-                    {
-                      "name": "ctx",
-                      "creator": "OrderService"
                     }
                   ]
                 }
               },
               {
                 "slice": {
-                  "name": "",
+                  "name": "filter",
+                  "type": "primitive.D"
+                }
+              }
+            ],
+            "returns": [
+              {
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = catalogue, collection = catalogue}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "allSocks",
+                    "type": "(*[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string})"
+                  },
+                  "ptr_to": {
+                    "array": {
+                      "name": "allSocks",
+                      "type": "[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
+                    }
+                  }
+                }
+              },
+              {
+                "interface": {
+                  "name": "_",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "catalogue_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "array": {
+              "name": "tags",
+              "type": "[]string"
+            }
+          },
+          {
+            "basic": {
+              "name": "order",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "pageNum",
+              "type": "int"
+            }
+          },
+          {
+            "basic": {
+              "name": "pageSize",
+              "type": "int"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "slice": {
+              "name": "",
+              "type": "[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
+            }
+          },
+          {
+            "interface": {
+              "name": "",
+              "type": ".error"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "array": {
+          "name": "tags",
+          "type": "[]string"
+        }
+      },
+      {
+        "basic": {
+          "name": "order",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "pageNum",
+          "type": "int"
+        }
+      },
+      {
+        "basic": {
+          "name": "pageSize",
+          "type": "int"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).GetOrders(ctx context.Context, userID string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*orderImpl).GetOrders(ctx context.Context, customerID string)",
+        "depth": 1,
+        "caller": "FrontendService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
+            "depth": 2,
+            "caller": "OrderService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "FrontendService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
                   "type": "primitive.D"
                 },
                 "slice_variables": [
                   {
                     "struct": {
                       "name": "",
-                      "type": "struct{ string,  \"id\" string,  string}"
+                      "type": "struct{ string,  \"customerid\" string,  string}"
                     }
                   }
                 ]
@@ -2021,13 +2125,31 @@
             ],
             "returns": [
               {
+                "blueprint_backend": {
+                  "name": "cursor",
+                  "type": "NoSQLCursor {database = order_service, collection = orders}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "orders",
+                    "type": "(*[]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32})"
+                  },
+                  "ptr_to": {
+                    "array": {
+                      "name": "orders",
+                      "type": "[]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}"
+                    }
+                  }
+                }
+              },
+              {
                 "interface": {
-                  "name": "",
+                  "name": "err",
                   "type": ".error"
                 }
               }
             ],
-            "datastore": "cart_db"
+            "datastore": "order_db"
           }
         ],
         "params": [
@@ -2039,12 +2161,24 @@
           },
           {
             "basic": {
-              "name": "sessionID",
+              "name": "userID",
               "type": "string"
             }
           }
         ],
         "returns": [
+          {
+            "slice": {
+              "name": "",
+              "type": "[]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}",
+              "refs": [
+                {
+                  "name": "orders",
+                  "creator": "OrderService"
+                }
+              ]
+            }
+          },
           {
             "interface": {
               "name": "",
@@ -2052,7 +2186,7 @@
               "refs": [
                 {
                   "name": "",
-                  "creator": "CartService"
+                  "creator": "OrderService"
                 }
               ]
             }
@@ -2069,8 +2203,420 @@
       },
       {
         "basic": {
-          "name": "sessionID",
+          "name": "userID",
           "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).PostAddress(ctx context.Context, userID string, address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string})",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*userServiceImpl).PostAddress(ctx context.Context, userid string, address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string})",
+        "depth": 1,
+        "caller": "FrontendService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{})",
+            "depth": 2,
+            "caller": "UserService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "FrontendService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"userid\" string, Key \"userid\" string, Value string, Value string}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"userid\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"userid\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "userid",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "userID",
+                                "creator": "FrontendService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "slice": {
+                  "name": "update",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"address\" string, Key \"address\" string, Value user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Value user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"address\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"address\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
+                        },
+                        "wrapped_variable": {
+                          "struct": {
+                            "name": "address",
+                            "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}",
+                            "refs": [
+                              {
+                                "name": "address",
+                                "creator": "FrontendService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "basic": {
+                  "name": "",
+                  "type": "bool"
+                }
+              },
+              {
+                "interface": {
+                  "name": "",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "user_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "userID",
+              "type": "string"
+            }
+          },
+          {
+            "struct": {
+              "name": "address",
+              "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "basic": {
+              "name": "",
+              "type": "string",
+              "refs": [
+                {
+                  "name": "userid",
+                  "creator": "UserService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "UserService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "userID",
+          "type": "string"
+        }
+      },
+      {
+        "struct": {
+          "name": "address",
+          "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).PostCard(ctx context.Context, userID string, card user.Card struct{LongNum string, Expires string, CCV string, ID string})",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*userServiceImpl).PostCard(ctx context.Context, userid string, card user.Card struct{LongNum string, Expires string, CCV string, ID string})",
+        "depth": 1,
+        "caller": "FrontendService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{})",
+            "depth": 2,
+            "caller": "UserService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "FrontendService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"userid\" string, Key \"userid\" string, Value string, Value string}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"userid\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"userid\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "userid",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "userID",
+                                "creator": "FrontendService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "slice": {
+                  "name": "update",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"card\" string, Key \"card\" string, Value user.Card struct{LongNum string, Expires string, CCV string, ID string}, Value user.Card struct{LongNum string, Expires string, CCV string, ID string}}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"card\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"card\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
+                        },
+                        "wrapped_variable": {
+                          "struct": {
+                            "name": "card",
+                            "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}",
+                            "refs": [
+                              {
+                                "name": "card",
+                                "creator": "FrontendService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "basic": {
+                  "name": "",
+                  "type": "bool"
+                }
+              },
+              {
+                "interface": {
+                  "name": "",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "user_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "userID",
+              "type": "string"
+            }
+          },
+          {
+            "struct": {
+              "name": "card",
+              "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "basic": {
+              "name": "",
+              "type": "string",
+              "refs": [
+                {
+                  "name": "userid",
+                  "creator": "UserService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "UserService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "userID",
+          "type": "string"
+        }
+      },
+      {
+        "struct": {
+          "name": "card",
+          "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
         }
       }
     ]
@@ -2551,150 +3097,6 @@
     ]
   },
   {
-    "method": "(*FrontendImpl).ListItems(ctx context.Context, tags []string, order string, pageNum int, pageSize int)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*catalogueImpl).List(ctx context.Context, tags []string, order string, pageNum int, pageSize int)",
-        "depth": 1,
-        "caller": "FrontendService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
-            "depth": 2,
-            "caller": "CatalogueService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "FrontendService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                }
-              }
-            ],
-            "returns": [
-              {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = catalogue, collection = catalogue}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "allSocks",
-                    "type": "(*[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string})"
-                  },
-                  "ptr_to": {
-                    "array": {
-                      "name": "allSocks",
-                      "type": "[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
-                    }
-                  }
-                }
-              },
-              {
-                "interface": {
-                  "name": "_",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "catalogue_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "array": {
-              "name": "tags",
-              "type": "[]string"
-            }
-          },
-          {
-            "basic": {
-              "name": "order",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "pageNum",
-              "type": "int"
-            }
-          },
-          {
-            "basic": {
-              "name": "pageSize",
-              "type": "int"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "slice": {
-              "name": "",
-              "type": "[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
-            }
-          },
-          {
-            "interface": {
-              "name": "",
-              "type": ".error"
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "array": {
-          "name": "tags",
-          "type": "[]string"
-        }
-      },
-      {
-        "basic": {
-          "name": "order",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "pageNum",
-          "type": "int"
-        }
-      },
-      {
-        "basic": {
-          "name": "pageSize",
-          "type": "int"
-        }
-      }
-    ]
-  },
-  {
     "method": "(*FrontendImpl).NewOrder(ctx context.Context, userID string, addressID string, cardID string, cartID string)",
     "depth": 0,
     "caller": "Client",
@@ -3137,11 +3539,11 @@
                       "refs": [
                         {
                           "name": "ctx",
-                          "creator": "OrderService"
+                          "creator": "FrontendService"
                         },
                         {
                           "name": "ctx",
-                          "creator": "FrontendService"
+                          "creator": "OrderService"
                         }
                       ]
                     }
@@ -3182,11 +3584,11 @@
                                 "refs": [
                                   {
                                     "name": "cardID",
-                                    "creator": "OrderService"
+                                    "creator": "FrontendService"
                                   },
                                   {
                                     "name": "cardID",
-                                    "creator": "FrontendService"
+                                    "creator": "OrderService"
                                   }
                                 ]
                               }
@@ -4155,267 +4557,17 @@
     ]
   },
   {
-    "method": "(*FrontendImpl).LoadCatalogue(ctx context.Context)",
+    "method": "(*FrontendImpl).GetOrder(ctx context.Context, orderID string)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*catalogueImpl).AddSock(ctx context.Context, sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string})",
+        "method": "(*orderImpl).GetOrder(ctx context.Context, orderID string)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-            "depth": 2,
-            "caller": "CatalogueService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "FrontendService"
-                    }
-                  ]
-                }
-              },
-              {
-                "struct": {
-                  "name": "sock",
-                  "type": "catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}",
-                  "refs": [
-                    {
-                      "name": "sock",
-                      "creator": "FrontendService"
-                    }
-                  ]
-                }
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "catalogue_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "struct": {
-              "name": "sock",
-              "type": "catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "basic": {
-              "name": "",
-              "type": "string",
-              "refs": [
-                {
-                  "name": "ID",
-                  "creator": "CatalogueService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "CatalogueService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).RemoveItem(ctx context.Context, sessionID string, itemID string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*cartImpl).RemoveItem(ctx context.Context, customerID string, itemID string)",
-        "depth": 1,
-        "caller": "FrontendService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{})",
-            "depth": 2,
-            "caller": "CartService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "FrontendService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{ string,  \"id\" string,  string}"
-                    }
-                  }
-                ]
-              },
-              {
-                "pointer": {
-                  "name": "cart",
-                  "type": "(*cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}})"
-                },
-                "ptr_to": {
-                  "struct": {
-                    "name": "",
-                    "type": "cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}"
-                  },
-                  "struct_fields": {
-                    "ID": {
-                      "field": {
-                        "name": "ID",
-                        "type": "string"
-                      },
-                      "wrapped_variable": {
-                        "basic": {
-                          "name": "customerID",
-                          "type": "string",
-                          "refs": [
-                            {
-                              "name": "sessionID",
-                              "creator": "FrontendService"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            ],
-            "returns": [
-              {
-                "basic": {
-                  "name": "",
-                  "type": "int"
-                }
-              },
-              {
-                "interface": {
-                  "name": "",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "cart_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "sessionID",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "itemID",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "CartService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "sessionID",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "itemID",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).GetOrders(ctx context.Context, userID string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*orderImpl).GetOrders(ctx context.Context, customerID string)",
-        "depth": 1,
-        "caller": "FrontendService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
+            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
             "depth": 2,
             "caller": "OrderService",
             "params": [
@@ -4440,7 +4592,7 @@
                   {
                     "struct": {
                       "name": "",
-                      "type": "struct{ string,  \"customerid\" string,  string}"
+                      "type": "struct{ string,  \"id\" string,  string}"
                     }
                   }
                 ]
@@ -4454,13 +4606,13 @@
                 },
                 "target_variable": {
                   "pointer": {
-                    "name": "orders",
-                    "type": "(*[]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32})"
+                    "name": "order",
+                    "type": "(*order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32})"
                   },
                   "ptr_to": {
-                    "array": {
-                      "name": "orders",
-                      "type": "[]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}"
+                    "struct": {
+                      "name": "order",
+                      "type": "order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}"
                     }
                   }
                 }
@@ -4484,19 +4636,19 @@
           },
           {
             "basic": {
-              "name": "userID",
+              "name": "orderID",
               "type": "string"
             }
           }
         ],
         "returns": [
           {
-            "slice": {
+            "struct": {
               "name": "",
-              "type": "[]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}",
+              "type": "order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}",
               "refs": [
                 {
-                  "name": "orders",
+                  "name": "order",
                   "creator": "OrderService"
                 }
               ]
@@ -4526,24 +4678,24 @@
       },
       {
         "basic": {
-          "name": "userID",
+          "name": "orderID",
           "type": "string"
         }
       }
     ]
   },
   {
-    "method": "(*FrontendImpl).Register(ctx context.Context, sessionID string, username string, password string, email string, first string, last string)",
+    "method": "(*FrontendImpl).Login(ctx context.Context, sessionID string, username string, password string)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*userServiceImpl).Register(ctx context.Context, username string, password string, email string, first string, last string)",
+        "method": "(*userServiceImpl).Login(ctx context.Context, username string, password string)",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
             "depth": 2,
             "caller": "UserService",
             "params": [
@@ -4560,132 +4712,114 @@
                 }
               },
               {
-                "struct": {
-                  "name": "u",
-                  "type": "user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}"
+                "slice": {
+                  "name": "query",
+                  "type": "primitive.D"
                 },
-                "struct_fields": {
-                  "Addresses": {
-                    "field": {
-                      "name": "Addresses",
-                      "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"username\" string, Key \"username\" string, Value string, Value string}"
                     },
-                    "wrapped_variable": {
-                      "struct": {
-                        "name": "",
-                        "type": "user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}"
-                      }
-                    }
-                  },
-                  "Cards": {
-                    "field": {
-                      "name": "Cards",
-                      "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
-                    },
-                    "wrapped_variable": {
-                      "struct": {
-                        "name": "",
-                        "type": "user.Card struct{LongNum string, Expires string, CCV string, ID string}"
-                      }
-                    }
-                  },
-                  "Email": {
-                    "field": {
-                      "name": "Email",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "email",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "email",
-                            "creator": "FrontendService"
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"username\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"username\" string"
                           }
-                        ]
-                      }
-                    }
-                  },
-                  "FirstName": {
-                    "field": {
-                      "name": "FirstName",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "first",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "first",
-                            "creator": "FrontendService"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "LastName": {
-                    "field": {
-                      "name": "LastName",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "last",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "last",
-                            "creator": "FrontendService"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "Password": {
-                    "field": {
-                      "name": "Password",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "password",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "password",
-                            "creator": "FrontendService"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "Username": {
-                    "field": {
-                      "name": "Username",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "username",
-                        "type": "string",
-                        "refs": [
-                          {
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
                             "name": "username",
-                            "creator": "FrontendService"
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "username",
+                                "creator": "FrontendService"
+                              }
+                            ]
                           }
-                        ]
+                        }
                       }
                     }
                   }
-                }
+                ]
+              },
+              {
+                "slice": {
+                  "name": "projection",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"password\" string, Key \"password\" string, Value true bool, Value true bool}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"password\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"password\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "true bool"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "true bool"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
               }
             ],
             "returns": [
               {
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = users, collection = users}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "user",
+                    "type": "(*user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string})"
+                  },
+                  "ptr_to": {
+                    "struct": {
+                      "name": "user",
+                      "type": "user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}"
+                    }
+                  }
+                }
+              },
+              {
                 "interface": {
-                  "name": "",
+                  "name": "_",
                   "type": ".error"
                 }
               }
@@ -4711,37 +4845,33 @@
               "name": "password",
               "type": "string"
             }
-          },
-          {
-            "basic": {
-              "name": "email",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "first",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "last",
-              "type": "string"
-            }
           }
         ],
         "returns": [
           {
-            "basic": {
-              "name": "userID",
-              "type": "string",
+            "struct": {
+              "name": "u",
+              "type": "user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}",
               "refs": [
                 {
-                  "name": "UserID",
+                  "name": "user",
                   "creator": "UserService"
                 }
               ]
+            },
+            "struct_fields": {
+              "UserID": {
+                "field": {
+                  "name": "UserID",
+                  "type": "string"
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "UserID",
+                    "type": "string"
+                  }
+                }
+              }
             }
           },
           {
@@ -4820,11 +4950,11 @@
                           "type": "string",
                           "refs": [
                             {
-                              "name": "UserID",
+                              "name": "userID",
                               "creator": "FrontendService"
                             },
                             {
-                              "name": "userID",
+                              "name": "UserID",
                               "creator": "FrontendService"
                             }
                           ]
@@ -4907,14 +5037,8 @@
           },
           {
             "basic": {
-              "name": "userID",
-              "type": "string",
-              "refs": [
-                {
-                  "name": "UserID",
-                  "creator": "UserService"
-                }
-              ]
+              "name": "UserID",
+              "type": "string"
             }
           },
           {
@@ -4927,7 +5051,7 @@
         "returns": [
           {
             "interface": {
-              "name": "",
+              "name": "err",
               "type": ".error",
               "refs": [
                 {
@@ -4962,24 +5086,6 @@
       {
         "basic": {
           "name": "password",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "email",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "first",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "last",
           "type": "string"
         }
       }
@@ -5194,19 +5300,19 @@
     ]
   },
   {
-    "method": "(*FrontendImpl).GetCard(ctx context.Context, cardID string)",
+    "method": "(*FrontendImpl).LoadCatalogue(ctx context.Context)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*userServiceImpl).GetCards(ctx context.Context, cardid string)",
+        "method": "(*catalogueImpl).AddSock(ctx context.Context, sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string})",
         "depth": 1,
         "caller": "FrontendService",
         "edges": [
           {
-            "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
             "depth": 2,
-            "caller": "UserService",
+            "caller": "CatalogueService",
             "params": [
               {
                 "interface": {
@@ -5215,133 +5321,33 @@
                   "refs": [
                     {
                       "name": "ctx",
-                      "creator": "OrderService"
-                    },
-                    {
-                      "name": "ctx",
                       "creator": "FrontendService"
                     }
                   ]
                 }
               },
               {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"cards\" string, Key \"cards\" string, Value string, Value string}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"cards\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"cards\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "cardid",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "cardID",
-                                "creator": "OrderService"
-                              },
-                              {
-                                "name": "cardID",
-                                "creator": "FrontendService"
-                              }
-                            ]
-                          }
-                        }
-                      }
+                "struct": {
+                  "name": "sock",
+                  "type": "catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}",
+                  "refs": [
+                    {
+                      "name": "sock",
+                      "creator": "FrontendService"
                     }
-                  }
-                ]
-              },
-              {
-                "slice": {
-                  "name": "projection",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"cards\" string, Key \"cards\" string, Value true bool, Value true bool}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"cards\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"cards\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "true bool"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "true bool"
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
+                  ]
+                }
               }
             ],
             "returns": [
               {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = users, collection = users}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "cards",
-                    "type": "(*[]user.Card struct{LongNum string, Expires string, CCV string, ID string})"
-                  },
-                  "ptr_to": {
-                    "array": {
-                      "name": "cards",
-                      "type": "[]user.Card struct{LongNum string, Expires string, CCV string, ID string}"
-                    }
-                  }
-                }
-              },
-              {
                 "interface": {
-                  "name": "_",
+                  "name": "",
                   "type": ".error"
                 }
               }
             ],
-            "datastore": "user_db"
+            "datastore": "catalogue_db"
           }
         ],
         "params": [
@@ -5352,21 +5358,21 @@
             }
           },
           {
-            "basic": {
-              "name": "cardID",
-              "type": "string"
+            "struct": {
+              "name": "sock",
+              "type": "catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}"
             }
           }
         ],
         "returns": [
           {
-            "slice": {
+            "basic": {
               "name": "",
-              "type": "[]user.Card struct{LongNum string, Expires string, CCV string, ID string}",
+              "type": "string",
               "refs": [
                 {
-                  "name": "cards",
-                  "creator": "UserService"
+                  "name": "ID",
+                  "creator": "CatalogueService"
                 }
               ]
             }
@@ -5378,7 +5384,7 @@
               "refs": [
                 {
                   "name": "",
-                  "creator": "UserService"
+                  "creator": "CatalogueService"
                 }
               ]
             }
@@ -5391,12 +5397,6 @@
         "interface": {
           "name": "ctx",
           "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "cardID",
-          "type": "string"
         }
       }
     ]

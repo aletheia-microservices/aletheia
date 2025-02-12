@@ -10,6 +10,7 @@ backend:
     NoSQLDatabase.NoSQLCursor.All(ctx context.Context, obj interface{})}
   - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
   - Queue interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})}
+  - RelationalDB interface{RelationalDB.Select(ctx context.Context, dst interface{}, query string, dst []interface{}), RelationalDB.Exec(ctx context.Context, query string, dst []interface{})}
 - datastore types:
   - Cache interface{Cache.Put(ctx context.Context, key string, value interface{}),
     Cache.Get(ctx context.Context, key string, value interface{}), Cache.Mget(ctx context.Context, key []string, key []interface{})}
@@ -18,3 +19,4 @@ backend:
     NoSQLDatabase.NoSQLCursor.All(ctx context.Context, obj interface{})}
   - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
   - Queue interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})}
+  - RelationalDB interface{RelationalDB.Select(ctx context.Context, dst interface{}, query string, dst []interface{}), RelationalDB.Exec(ctx context.Context, query string, dst []interface{})}

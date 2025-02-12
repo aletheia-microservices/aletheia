@@ -155,7 +155,7 @@ func TaintDataflowNoSQL(app *app.App, obj objects.Object, call *AbstractDatabase
 	fmt.Printf("\n------------- TAINT READ (DOC) DATAFLOW FOR CALL %s @ %s -------------\n\n", call.GetMethodStr(), datastore.Name)
 	fmt.Println()
 
-	var field datastores.Field
+	var field *datastores.Field
 	if queryField {
 		field = datastore.Schema.GetOrCreateUnfoldedField(fieldName, obj.GetType().GetName(), obj.GetId(), datastore)
 	} else { // cursor
@@ -207,7 +207,7 @@ func TaintDataflowNoSQL(app *app.App, obj objects.Object, call *AbstractDatabase
 	fmt.Println()
 }
 
-func taintDataflowNoSQLHelper(app *app.App, obj objects.Object, dep objects.Object, field datastores.Field, call *AbstractDatabaseCall, datastore *datastores.Datastore, typeName string, queryField bool, write bool, requestIdx int) {
+func taintDataflowNoSQLHelper(app *app.App, obj objects.Object, dep objects.Object, field *datastores.Field, call *AbstractDatabaseCall, datastore *datastores.Datastore, typeName string, queryField bool, write bool, requestIdx int) {
 	if queryField { // query
 		//logger.Logger.Debugf("query field? YES! for typename = %s", typeName)
 		df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, field, write, requestIdx)

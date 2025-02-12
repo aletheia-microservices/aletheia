@@ -41,7 +41,7 @@ func ParseSQLStatement(database *Datastore, sql string) {
 		if stmt.TableSpec == nil {
 			logger.Logger.Fatalf("[SQL PARSER] nil tablespec for SQL statament: %v", stmt)
 		}
-		fields := make(map[string]Field, 0)
+		fields := make(map[string]*Field, 0)
 		for _, column := range stmt.TableSpec.Columns {
 			fieldName := column.Name.CompliantName()
 

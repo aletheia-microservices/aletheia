@@ -21,7 +21,8 @@ type Detector interface {
 	ComputeResults()
 	GetAnalysisTypeString() string
 
-	OnRun(app *app.App)
+	OnNewRun(app *app.App)
+	OnEndRun(app *app.App)
 	OnNewRequest(entryNode *abstractgraph.AbstractServiceCall)
 	OnEndRequest(app *app.App)
 	OnNewNode(app *app.App, node abstractgraph.AbstractNode)

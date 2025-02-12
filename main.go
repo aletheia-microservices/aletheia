@@ -116,12 +116,6 @@ func initAnalyzer(analysis analysisConfig) {
 	summary := "\n\n"
 
 	if analysis.xcyDetection {
-		fmt.Println()
-		fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")
-		fmt.Println(" --------------------------------------- CHECK XCY - TAINTED APPROACH  ---------------------------------------- ")
-		fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")
-		fmt.Println()
-
 		xcyDetectorGroup := xcy.NewDetectorGroup(abstractGraph.Nodes)
 		var cumulativeDatastoreOps map[*datastores.Datastore][]*xcy.Operation
 		for _, xcyDetector := range xcyDetectorGroup.GetAllDetectors() {
@@ -145,12 +139,6 @@ func initAnalyzer(analysis analysisConfig) {
 	}
 
 	if analysis.foreignKeyDetection {
-		fmt.Println()
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println(" ----------------------------------- CHECK INTEGRITY ANOMALIES FOR FOREIGN KEYS ----------------------------------- ")
-		fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-		fmt.Println()
-
 		foreignKeyDetector := foreign_key.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyDetector)
 		iterator.Run()
@@ -196,6 +184,7 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 	var targetFields []string
 	var targetDbPaths []string
 
+	input = ""
 	fmt.Printf("\nPlease specify path(s) to mysql files (.sql) if existent (delimiter is ';', format is <db_name>:<path>):\n> ")
 
 	if app.Name == "coupons_app_sql" {
@@ -211,23 +200,25 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 		}
 	}
 
-	targetDbPaths = strings.Split(input, ";")
-	for _, dbPath := range targetDbPaths {
-		splits := strings.Split(dbPath, ":")
-		db := splits[0]
-		sqlStmt := splits[1]
-		sqlBytes, err := os.ReadFile(sqlStmt)
-		if err != nil {
-			fmt.Println("Error reading database sql files:", err)
-			return
-		}
-		sqlStmts := strings.Split(string(sqlBytes), ";")
-		dbInstance := app.GetDatastoreInstance(db)
-		for _, stmt := range sqlStmts {
-			if stmt == "\n" {
-				continue
+	if input != "" {
+		targetDbPaths = strings.Split(input, ";")
+		for _, dbPath := range targetDbPaths {
+			splits := strings.Split(dbPath, ":")
+			db := splits[0]
+			sqlStmt := splits[1]
+			sqlBytes, err := os.ReadFile(sqlStmt)
+			if err != nil {
+				fmt.Println("Error reading database sql files:", err)
+				return
 			}
-			datastores.ParseSQLStatement(dbInstance.GetDatastore(), stmt)
+			sqlStmts := strings.Split(string(sqlBytes), ";")
+			dbInstance := app.GetDatastoreInstance(db)
+			for _, stmt := range sqlStmts {
+				if stmt == "\n" {
+					continue
+				}
+				datastores.ParseSQLStatement(dbInstance.GetDatastore(), stmt)
+			}
 		}
 	}
 
@@ -271,14 +262,18 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 		dbInstance := app.GetDatastoreInstance(strings.ToLower(db))
 		schema := dbInstance.GetDatastore().Schema
 		for _, targetField := range targetFields {
-			var fields []datastores.Field
+			var fields []*datastores.Field
 
 			for _, targetFieldSplit := range strings.Split(targetField, ",") {
 				field := schema.GetFieldByFullName(targetFieldSplit)
 				fields = append(fields, field)
 			}
 
-			schema.CreateUniqueConstraint(fields...)
+			constraint := datastores.NewConstraintUnique(fields...)
+			schema.AddConstraint(constraint)
+			for _, field := range fields {
+				field.AddConstraint(constraint)
+			}
 		}
 	}
 
@@ -286,7 +281,7 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 		schema := db.GetDatastore().Schema
 		fmt.Printf("\n%s[WARNING] The following unicity constraints were added:\n", TEXT_BOLD_LIGHT_RED)
 
-		for _, uc := range schema.UniqueConstraints {
+		for _, uc := range schema.GetConstraints() {
 			fmt.Println("- " + uc.String())
 		}
 		fmt.Print(TEXT_RESET_COLOR)
