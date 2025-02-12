@@ -27,7 +27,16 @@ func NewDetector() *UnicityDetector {
 type UnicityDetector struct {
 	detector.Detector
 	results          string
+	summary          string
 	requestInfoStack *stack.Stack
+}
+
+func (detector *UnicityDetector) GetSummary() string {
+	return detector.summary
+}
+
+func (detector *UnicityDetector) SetSummary(summary string) {
+	detector.summary = summary
 }
 
 func (detector *UnicityDetector) getCurrentRequestInfo() *RequestInfo {
@@ -109,18 +118,26 @@ func (detector *UnicityDetector) OnDelete(app *app.App, dbCall *abstractgraph.Ab
 }
 
 func (detector *UnicityDetector) ComputeResults() {
-	detector.results = "------------------------------------------------------------\n"
-	detector.results += "--------------------- UNICITY ANALYSIS --------------------\n"
-	detector.results += "------------------------------------------------------------\n"
+	header := "------------------------------------------------------------\n"
+	header += "---------------------- UNICITY ANALYSIS --------------------\n"
+	header += "------------------------------------------------------------\n"
+
+	var numRequests, numOps int
+
 	for detector.requestInfoStack.Len() > 0 {
 		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
 		if requestInfo.hasPotentialInconsistencies() {
 			detector.results += "\n[ENTRY] " + requestInfo.entry.String() + "\n"
+			numRequests++
 			for _, op := range requestInfo.getOperations() {
 				detector.results += "\t- OPERATION @ " + op.call.Service + ": " + op.call.String() + "\n"
+				numOps++
 			}
 		}
 	}
+
+	header += fmt.Sprintf(">> SUMMARY (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
+	detector.results = header + detector.results
 }
 
 func (detector *UnicityDetector) GetAnalysisTypeString() string {

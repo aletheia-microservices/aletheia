@@ -1,9 +1,7 @@
 ANALYTICS_DB:
 - type: NoSQLDatabase
 - kind: MongoDB
-- dependencies:
-  - analytics_queue
-  - posts_db
+- dependencies: []
 - schema:
   - fields:
     - _: postnotification.Analytics struct{PostID int64}
@@ -11,19 +9,16 @@ ANALYTICS_DB:
   - unfolded_fields:
     - Analytics: postnotification.Analytics struct{PostID int64}
     - Analytics.PostID: int64
-  - foreign_references:
-    - Analytics:
-      - ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID * {MANDATORY}
-      - POSTS_DB.Post.PostID * {MANDATORY}
-    - Analytics.PostID:
-      - ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID * {MANDATORY}
-      - POSTS_DB.Post.PostID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Analytics.PostID --> TriggerAnalyticsMessage.PostID) [+]
+    - REFERENCE(Analytics.PostID --> Post.PostID) [+]
+    - REFERENCE(Analytics --> TriggerAnalyticsMessage.PostID) [+]
+    - REFERENCE(Analytics --> Post.PostID) [+]
 
 ANALYTICS_QUEUE:
 - type: Queue
 - kind: RabbitMQ
-- dependencies:
-  - posts_db
+- dependencies: []
 - schema:
   - fields:
     - _: postnotification.TriggerAnalyticsMessage struct{PostID string}
@@ -31,11 +26,9 @@ ANALYTICS_QUEUE:
   - unfolded_fields:
     - TriggerAnalyticsMessage: postnotification.TriggerAnalyticsMessage struct{PostID string}
     - TriggerAnalyticsMessage.PostID: string
-  - foreign_references:
-    - TriggerAnalyticsMessage:
-      - POSTS_DB.Post.PostID * {MANDATORY}
-    - TriggerAnalyticsMessage.PostID:
-      - POSTS_DB.Post.PostID * {MANDATORY}
+  - constraints:
+    - REFERENCE(TriggerAnalyticsMessage.PostID --> Post.PostID) [+]
+    - REFERENCE(TriggerAnalyticsMessage --> Post.PostID) [+]
 
 MEDIA_DB:
 - type: NoSQLDatabase
@@ -50,15 +43,11 @@ MEDIA_DB:
     - Media: postnotification.Media struct{MediaID int64, Content string}
     - Media.MediaID: int64
     - Media.Content: string
-  - foreign_references: []
 
 NOTIFICATIONS_QUEUE:
 - type: Queue
 - kind: RabbitMQ
-- dependencies:
-  - posts_db
-  - analytics_queue
-  - analytics_db
+- dependencies: []
 - schema:
   - fields:
     - _: postnotification.Message struct{ReqID string, PostID string, Timestamp string}
@@ -68,18 +57,15 @@ NOTIFICATIONS_QUEUE:
     - Message.ReqID: string
     - Message.PostID: string
     - Message.Timestamp: string
-  - foreign_references:
-    - Message:
-      - ANALYTICS_DB.Analytics.PostID * {MANDATORY}
-      - ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID * {MANDATORY}
-      - POSTS_DB.Post.PostID * {MANDATORY}
-      - POSTS_DB.Post.ReqID * {MANDATORY}
-    - Message.ReqID:
-      - POSTS_DB.Post.ReqID * {MANDATORY}
-    - Message.PostID:
-      - ANALYTICS_DB.Analytics.PostID * {MANDATORY}
-      - ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID * {MANDATORY}
-      - POSTS_DB.Post.PostID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Message.PostID --> Post.PostID) [+]
+    - REFERENCE(Message.PostID --> TriggerAnalyticsMessage.PostID) [+]
+    - REFERENCE(Message.PostID --> Analytics.PostID) [+]
+    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
+    - REFERENCE(Message --> Post.PostID) [+]
+    - REFERENCE(Message --> TriggerAnalyticsMessage.PostID) [+]
+    - REFERENCE(Message --> Analytics.PostID) [+]
+    - REFERENCE(Message --> Post.ReqID) [+]
 
 POSTS_CACHE:
 - type: Cache
@@ -90,7 +76,6 @@ POSTS_CACHE:
     - key: <unknown type>
     - value: <unknown type>
   - unfolded_fields: []
-  - foreign_references: []
 
 POSTS_DB:
 - type: NoSQLDatabase
@@ -110,29 +95,22 @@ POSTS_DB:
     - Post.Timestamp: int64
     - Post.Creator: postnotification.Creator struct{Username string}
     - Post.Creator.Username: string
-  - foreign_references: []
 
 TIMELINE_CACHE:
 - type: Cache
 - kind: Redis
-- dependencies:
-  - posts_db
-  - notifications_queue
-  - analytics_queue
-  - analytics_db
+- dependencies: []
 - schema:
   - fields:
     - key: string
     - value: Timeline
   - unfolded_fields: []
-  - foreign_references:
-    - key:
-      - NOTIFICATIONS_QUEUE.Message.ReqID * {MANDATORY}
-      - POSTS_DB.Post.ReqID * {MANDATORY}
-    - value:
-      - ANALYTICS_DB.Analytics.PostID * {MANDATORY}
-      - ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID * {MANDATORY}
-      - NOTIFICATIONS_QUEUE.Message.PostID * {MANDATORY}
-      - NOTIFICATIONS_QUEUE.Message.ReqID * {MANDATORY}
-      - POSTS_DB.Post.PostID * {MANDATORY}
-      - POSTS_DB.Post.ReqID * {MANDATORY}
+  - constraints:
+    - REFERENCE(key --> Post.ReqID) [+]
+    - REFERENCE(key --> Message.ReqID) [+]
+    - REFERENCE(value --> Post.PostID) [+]
+    - REFERENCE(value --> TriggerAnalyticsMessage.PostID) [+]
+    - REFERENCE(value --> Message.PostID) [+]
+    - REFERENCE(value --> Analytics.PostID) [+]
+    - REFERENCE(value --> Post.ReqID) [+]
+    - REFERENCE(value --> Message.ReqID) [+]

@@ -1,8 +1,7 @@
 NOTIFICATIONS_QUEUE:
 - type: Queue
 - kind: RabbitMQ
-- dependencies:
-  - posts_db
+- dependencies: []
 - schema:
   - fields:
     - _: postnotification_simple.Message struct{ReqID int64, PostID_MESSAGE int64, Timestamp int64}
@@ -12,14 +11,11 @@ NOTIFICATIONS_QUEUE:
     - Message.ReqID: int64
     - Message.PostID_MESSAGE: int64
     - Message.Timestamp: int64
-  - foreign_references:
-    - Message:
-      - POSTS_DB.Post.PostID * {MANDATORY}
-      - POSTS_DB.Post.ReqID * {MANDATORY}
-    - Message.ReqID:
-      - POSTS_DB.Post.ReqID * {MANDATORY}
-    - Message.PostID_MESSAGE:
-      - POSTS_DB.Post.PostID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
+    - REFERENCE(Message.PostID_MESSAGE --> Post.PostID) [+]
+    - REFERENCE(Message --> Post.PostID) [+]
+    - REFERENCE(Message --> Post.ReqID) [+]
 
 POSTS_DB:
 - type: NoSQLDatabase
@@ -40,4 +36,3 @@ POSTS_DB:
     - Post.Timestamp: int64
     - Post.Creator: postnotification_simple.Creator struct{Username "some username" string}
     - Post.Creator.Username: '"some username" string'
-  - foreign_references: []

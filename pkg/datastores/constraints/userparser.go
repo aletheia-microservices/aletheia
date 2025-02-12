@@ -8,10 +8,7 @@ import (
 	"analyzer/pkg/datastores"
 )
 
-const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
-const TEXT_RESET_COLOR = "\033[0m"
-
-func ParseUserUniqueConstraints(app *app.App, targetFieldsByDatastore map[string][]string) {
+func parseUserUniqueConstraints(app *app.App, targetFieldsByDatastore map[string][]string) {
 	fmt.Printf("\n\nSetting up unicity constraints for available schema:\n\n")
 	for _, dbInstance := range app.Databases {
 		for _, unfoldedField := range dbInstance.GetDatastore().Schema.UnfoldedFields {
@@ -40,13 +37,5 @@ func ParseUserUniqueConstraints(app *app.App, targetFieldsByDatastore map[string
 		}
 	}
 
-	for _, db := range app.GetDbInstances() {
-		schema := db.GetDatastore().Schema
-		fmt.Printf("\n%s[WARNING] The following unicity constraints were added:\n", TEXT_BOLD_LIGHT_RED)
-
-		for _, uc := range schema.GetConstraints() {
-			fmt.Println("- " + uc.String())
-		}
-		fmt.Print(TEXT_RESET_COLOR)
-	}
+	summarize(app, "USER_PARSER")
 }

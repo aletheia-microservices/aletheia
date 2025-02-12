@@ -1,5 +1,354 @@
 [
   {
+    "method": "(*FrontendImpl).CreateAccount(ctx context.Context, reqID string, accountID string, username string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*AccountServiceImpl).CreateAccount(ctx context.Context, reqID string, accountID string, username string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "(*UserServiceImpl).CreateUser(ctx context.Context, reqID string, username string)",
+            "depth": 2,
+            "caller": "AccountService",
+            "edges": [
+              {
+                "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+                "depth": 3,
+                "caller": "UserService",
+                "params": [
+                  {
+                    "interface": {
+                      "name": "ctx",
+                      "type": "context.Context",
+                      "refs": [
+                        {
+                          "name": "ctx",
+                          "creator": "AccountService"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "struct": {
+                      "name": "user",
+                      "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}"
+                    },
+                    "struct_fields": {
+                      "ReqID": {
+                        "field": {
+                          "name": "ReqID",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "reqID",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "reqID",
+                                "creator": "AccountService"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Timestamp": {
+                        "field": {
+                          "name": "Timestamp",
+                          "type": "int64"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "timestamp",
+                            "type": "int64"
+                          }
+                        }
+                      },
+                      "Username": {
+                        "field": {
+                          "name": "Username",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "username",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "username",
+                                "creator": "AccountService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "returns": [
+                  {
+                    "interface": {
+                      "name": "err",
+                      "type": ".error"
+                    }
+                  }
+                ],
+                "datastore": "users_db"
+              }
+            ],
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "reqID",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "reqID",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "username",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "username",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              }
+            ],
+            "returns": [
+              {
+                "struct": {
+                  "name": "_",
+                  "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}",
+                  "refs": [
+                    {
+                      "name": "user",
+                      "creator": "UserService"
+                    }
+                  ]
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error",
+                  "refs": [
+                    {
+                      "name": "err",
+                      "creator": "UserService"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "AccountService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "account",
+                  "type": "app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}"
+                },
+                "struct_fields": {
+                  "AccountID": {
+                    "field": {
+                      "name": "AccountID",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "accountID",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "accountID",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "ReqID": {
+                    "field": {
+                      "name": "ReqID",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "reqID",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "reqID",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Timestamp": {
+                    "field": {
+                      "name": "Timestamp",
+                      "type": "int64"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "timestamp",
+                        "type": "int64"
+                      }
+                    }
+                  },
+                  "Username": {
+                    "field": {
+                      "name": "Username",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "username",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "username",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "accounts_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "reqID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "accountID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "username",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "account",
+              "type": "app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}",
+              "refs": [
+                {
+                  "name": "account",
+                  "creator": "AccountService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "AccountService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "reqID",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "accountID",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "username",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
     "method": "(*FrontendImpl).ReadAccount(ctx context.Context, accountID string)",
     "depth": 0,
     "caller": "Client",
@@ -752,355 +1101,6 @@
         "interface": {
           "name": "ctx",
           "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "username",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).CreateAccount(ctx context.Context, reqID string, accountID string, username string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*AccountServiceImpl).CreateAccount(ctx context.Context, reqID string, accountID string, username string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "(*UserServiceImpl).CreateUser(ctx context.Context, reqID string, username string)",
-            "depth": 2,
-            "caller": "AccountService",
-            "edges": [
-              {
-                "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-                "depth": 3,
-                "caller": "UserService",
-                "params": [
-                  {
-                    "interface": {
-                      "name": "ctx",
-                      "type": "context.Context",
-                      "refs": [
-                        {
-                          "name": "ctx",
-                          "creator": "AccountService"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "struct": {
-                      "name": "user",
-                      "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}"
-                    },
-                    "struct_fields": {
-                      "ReqID": {
-                        "field": {
-                          "name": "ReqID",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "reqID",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "reqID",
-                                "creator": "AccountService"
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      "Timestamp": {
-                        "field": {
-                          "name": "Timestamp",
-                          "type": "int64"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "timestamp",
-                            "type": "int64"
-                          }
-                        }
-                      },
-                      "Username": {
-                        "field": {
-                          "name": "Username",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "username",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "username",
-                                "creator": "AccountService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ],
-                "returns": [
-                  {
-                    "interface": {
-                      "name": "err",
-                      "type": ".error"
-                    }
-                  }
-                ],
-                "datastore": "users_db"
-              }
-            ],
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "reqID",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "reqID",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "username",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "username",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              }
-            ],
-            "returns": [
-              {
-                "struct": {
-                  "name": "_",
-                  "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}",
-                  "refs": [
-                    {
-                      "name": "user",
-                      "creator": "UserService"
-                    }
-                  ]
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error",
-                  "refs": [
-                    {
-                      "name": "err",
-                      "creator": "UserService"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-            "depth": 2,
-            "caller": "AccountService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "struct": {
-                  "name": "account",
-                  "type": "app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}"
-                },
-                "struct_fields": {
-                  "AccountID": {
-                    "field": {
-                      "name": "AccountID",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "accountID",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "accountID",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "ReqID": {
-                    "field": {
-                      "name": "ReqID",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "reqID",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "reqID",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "Timestamp": {
-                    "field": {
-                      "name": "Timestamp",
-                      "type": "int64"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "timestamp",
-                        "type": "int64"
-                      }
-                    }
-                  },
-                  "Username": {
-                    "field": {
-                      "name": "Username",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "username",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "username",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "accounts_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "reqID",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "accountID",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "username",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "account",
-              "type": "app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}",
-              "refs": [
-                {
-                  "name": "account",
-                  "creator": "AccountService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "AccountService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "reqID",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "accountID",
-          "type": "string"
         }
       },
       {

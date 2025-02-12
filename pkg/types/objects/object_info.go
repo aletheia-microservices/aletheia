@@ -189,7 +189,7 @@ func (vinfo *ObjectInfo) Copy(force bool) *ObjectInfo {
 		indirectDataflows = append(indirectDataflows, df.Copy(force))
 	}
 	var refsCopy []*Reference
-	for _, r := range vinfo.References {
+	for _, r := range vinfo.GetReferences() {
 		refsCopy = append(refsCopy, r.Copy(force).(*Reference))
 	}
 	return &ObjectInfo{
@@ -218,7 +218,7 @@ func (vinfo *ObjectInfo) DeepCopy() *ObjectInfo {
 		indirectDataflows = append(indirectDataflows, df.DeepCopy())
 	}
 	var refsCopy []*Reference
-	for _, r := range vinfo.References {
+	for _, r := range vinfo.GetReferences() {
 		logger.Logger.Infof("[VARS INFO - DEEP COPY] deep copy reference (%s) for creator = %s", vinfo.String(), r.Creator)
 		refsCopy = append(refsCopy, r.DeepCopy().(*Reference))
 	}
@@ -250,7 +250,7 @@ func (vinfo *ObjectInfo) MarshalJSON() ([]byte, error) {
 		Type: vinfo.Type.String(),
 		//Id:   vinfo.Id,
 		//Reference: v.Reference != nil,
-		References: vinfo.References,
+		References: vinfo.GetReferences(),
 	})
 }
 

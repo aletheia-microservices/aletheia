@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"analyzer/pkg/logger"
+	"analyzer/pkg/utils"
 )
 
 const UNKNOWN_FIELD_TYPE = "<unknown type>"
@@ -17,16 +18,16 @@ const ROOT_FIELD_NAME_CACHE_KEY = "key"
 const ROOT_FIELD_NAME_CACHE_VALUE = "value"
 
 type Schema struct {
-	Fields            []*Field            `json:"fields"`
-	UnfoldedFields    []*Field            `json:"unfolded_fields"`
-	Constraints       []*Constraint       `json:"constraints"`
+	Fields         []*Field      `json:"fields"`
+	UnfoldedFields []*Field      `json:"unfolded_fields"`
+	Constraints    []*Constraint `json:"constraints"`
 }
 
 func (s *Schema) AddField(field *Field) {
 	s.Fields = append(s.Fields, field)
 }
 
-func NewEntry(name string, t string, id int64, datastore *Datastore) *Field {
+func NewField(name string, t string, id int64, datastore *Datastore) *Field {
 	return &Field{
 		Name:      name,
 		Type:      t,
@@ -108,7 +109,7 @@ func (s *Schema) GetOrCreateField(name string, t string, id int64, datastore *Da
 		}
 	}
 
-	e := NewEntry(name, t, id, datastore)
+	e := NewField(name, t, id, datastore)
 	s.Fields = append(s.Fields, e)
 	return e
 }
@@ -124,7 +125,7 @@ func (s *Schema) GetOrCreateUnfoldedField(name string, t string, id int64, datas
 		}
 	}
 
-	e := NewEntry(name, t, id, datastore)
+	e := NewField(name, t, id, datastore)
 	s.UnfoldedFields = append(s.UnfoldedFields, e)
 	return e
 }
@@ -138,15 +139,9 @@ func (s *Schema) GetOrCreateRootField(name string, t string, id int64, datastore
 	if len(s.Fields) == 1 {
 		return s.Fields[0]
 	}
-	e := NewEntry(name, t, id, datastore)
+	e := NewField(name, t, id, datastore)
 	s.Fields = append(s.Fields, e)
 	return e
-}
-
-func (s *Schema) AddForeignReferenceToField(current *Field, reference *Field) {
-	if !slices.Contains(current.References, reference) {
-		current.References = append(current.References, reference)
-	}
 }
 
 func (s *Schema) String() string {
@@ -222,10 +217,11 @@ func (s *Schema) GetFieldById(id int64) *Field {
 type Constraint struct {
 	// default constraint 	-> fields size = 1
 	// composed constraint 	-> fields size > 1
-	fields  []*Field
-	unique  bool
-	primary bool
-	foreign bool
+	fields    []*Field
+	unique    bool
+	primary   bool
+	reference bool
+	mandatory bool
 }
 
 func (constraint *Constraint) AddField(field *Field) {
@@ -237,7 +233,13 @@ func (constraint *Constraint) GetFields() []*Field {
 }
 
 func (constraint *Constraint) String() string {
-	var fieldsStr string
+	var fieldsStr, delimiter string
+
+	if constraint.reference {
+		delimiter = " --> "
+	} else {
+		delimiter = ", "
+	}
 	/* if len(constraint.fields) > 1 {
 		fieldsStr += "("
 	} */
@@ -245,7 +247,7 @@ func (constraint *Constraint) String() string {
 	for i, field := range constraint.fields {
 		fieldsStr += field.GetName()
 		if i < len(constraint.fields)-1 {
-			fieldsStr += ", "
+			fieldsStr += delimiter
 		}
 	}
 	/* if len(constraint.fields) > 1 {
@@ -256,59 +258,150 @@ func (constraint *Constraint) String() string {
 	if constraint.unique {
 		return "UNIQUE" + fieldsStr
 	} else if constraint.primary {
-		return "PRIMARY KEY" + fieldsStr
-	} else if constraint.foreign {
-		return "FOREIGN KEY" + fieldsStr + "REFERENCES" + " [TODO]"
+		return "PRIMARY" + fieldsStr
+	} else if constraint.reference && constraint.mandatory {
+		return "REFERENCE" + fieldsStr + " [+]"
+	} else if constraint.reference {
+		return "REFERENCE" + fieldsStr
+	} else if constraint.mandatory {
+		return "MANDATORY" + fieldsStr
 	}
 	return ""
 }
 
-func NewConstraintUnique(field ...*Field) *Constraint {
+func NewConstraintUnique(fields ...*Field) *Constraint {
 	return &Constraint{
-		fields: field,
+		fields: fields,
 		unique: true,
 	}
 }
 
-func NewConstraintPrimary(field ...*Field) *Constraint {
+func NewConstraintPrimary(fields ...*Field) *Constraint {
 	return &Constraint{
-		fields:  field,
+		fields:  fields,
 		primary: true,
 	}
 }
 
-func NewConstraintForeign(field ...*Field) *Constraint {
+func NewConstraintReference(mandatory bool, fields ...*Field) *Constraint {
 	return &Constraint{
-		fields:  field,
-		foreign: true,
+		fields:    fields,
+		reference: true,
+		mandatory: mandatory,
 	}
+}
+func (c *Constraint) FieldIsReferencing(field *Field) bool {
+	if len(c.fields) != 2 {
+		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
+	}
+	return c.fields[0] == field
+}
+func (c *Constraint) GetReferencingField() *Field {
+	if len(c.fields) != 2 {
+		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
+	}
+	return c.fields[0]
+}
+func (c *Constraint) FieldIsReferencedBy(field *Field) bool {
+	if len(c.fields) != 2 {
+		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
+	}
+	return c.fields[1] == field
+}
+func (c *Constraint) GetReferencedByField() *Field {
+	if len(c.fields) != 2 {
+		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
+	}
+	return c.fields[1]
 }
 
 func (s *Schema) AddConstraint(constraint *Constraint) {
 	s.Constraints = append(s.Constraints, constraint)
 }
 
-func (s *Schema) GetConstraints() []*Constraint {
+func (s *Schema) GetConstraints(filter ConstraintFilter) []*Constraint {
+	var constraints []*Constraint
+	for _, c := range s.Constraints {
+		if (filter.Unique == nil || *filter.Unique == c.unique) &&
+			(filter.Primary == nil || *filter.Primary == c.primary) &&
+			(filter.Reference == nil || *filter.Reference == c.reference) &&
+			(filter.Mandatory == nil || *filter.Mandatory == c.mandatory) {
+			constraints = append(constraints, c)
+		}
+	}
+	return constraints
+}
+func (s *Schema) GetAllConstraints() []*Constraint {
 	return s.Constraints
 }
 
 type Field struct {
-	Name              string
-	Type              string
-	Datastore         *Datastore
-	References        []*Field
-	MandatoryRefs     []*Field // aka Total Participation
-	Id                int64
-	constraints       []*Constraint
+	Name        string
+	Type        string
+	Datastore   *Datastore
+	References  []*Field
+	Id          int64
+	constraints []*Constraint
 }
 
 func (field *Field) GetName() string {
 	return field.Name
 }
+
+type ConstraintFilter struct {
+	Unique    *bool
+	Primary   *bool
+	Reference *bool
+	Mandatory *bool
+}
+
+func (field *Field) GetConstraints(filter ConstraintFilter) []*Constraint {
+	var constraints []*Constraint
+	for _, c := range field.constraints {
+		if (filter.Unique == nil || *filter.Unique == c.unique) &&
+			(filter.Primary == nil || *filter.Primary == c.primary) &&
+			(filter.Reference == nil || *filter.Reference == c.reference) &&
+			(filter.Mandatory == nil || *filter.Mandatory == c.mandatory) {
+			constraints = append(constraints, c)
+		}
+	}
+	return constraints
+}
+
+func (field *Field) GetAllConstraints() []*Constraint {
+	return field.constraints
+}
+func (field *Field) GetReferences() []*Field {
+	return field.References
+}
+func (field *Field) HasReference(ref *Field) bool {
+	return slices.Contains(field.References, ref)
+}
+func (field *Field) CreateAndAddReference(ref *Field, mandatory bool) *Constraint {
+	field.References = append(field.References, ref)
+	constraint := NewConstraintReference(mandatory, field, ref)
+	field.AddConstraint(constraint)
+	return constraint
+}
+
+func (field *Field) CompactReferences(refsToKeep []*Field) {
+	field.References = refsToKeep
+	var constraintsToKeep []*Constraint
+	for _, ref := range refsToKeep {
+		for _, constraint := range field.GetConstraints(ConstraintFilter{Reference: utils.BoolPtr(true)}) {
+			if constraint.FieldIsReferencedBy(ref) {
+				constraintsToKeep = append(constraintsToKeep, constraint)
+			}
+		}
+	}
+	field.constraints = constraintsToKeep
+}
+func (field *Field) HasReferences() bool {
+	return len(field.References) > 0
+}
 func (field *Field) IsNamed(other string) bool {
 	return strings.EqualFold(field.GetName(), other) // FIXME NOSQL MONGODB
 }
-
 func (field *Field) GetDatastoreName() string {
 	return field.Datastore.GetName()
 }
@@ -332,12 +425,6 @@ func (field *Field) HasUnknownType() bool {
 }
 func (field *Field) SetType(t string) {
 	field.Type = t
-}
-func (field *Field) AddMandatoryReference(ref *Field) {
-	field.MandatoryRefs = append(field.MandatoryRefs, ref)
-}
-func (field *Field) GetMandatoryReferences() []*Field {
-	return field.MandatoryRefs
 }
 func (field *Field) AddConstraint(constraint *Constraint) {
 	field.constraints = append(field.constraints, constraint)

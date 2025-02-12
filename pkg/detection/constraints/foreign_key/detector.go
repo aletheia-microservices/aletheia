@@ -16,7 +16,16 @@ import (
 type ForeignKeyDetector struct {
 	detector.Detector
 	results string
+	summary string
 	reads   []*ForeignKeyRead
+}
+
+func (detector *ForeignKeyDetector) GetSummary() string {
+	return detector.summary
+}
+
+func (detector *ForeignKeyDetector) SetSummary(summary string) {
+	detector.summary = summary
 }
 
 func (detector *ForeignKeyDetector) addForeignKeyRead(read *ForeignKeyRead) {
@@ -87,7 +96,7 @@ func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj object
 			for _, field := range df.Field.GetDatastore().Schema.UnfoldedFields {
 				if field.GetFullName() == refField.GetFullName() {
 					attachedRefField := field
-					for _, refTarget := range attachedRefField.References {
+					for _, refTarget := range attachedRefField.GetReferences() {
 						if !slices.Contains(savedOriginFieldName, originField.GetFullName()) && refTarget == originField {
 							read := newForeignKeyRead(attachedRefField, originField, app.GetDataflowForObjectDataflow(df).GetDatabaseCall(), dbCall.ParsedCall)
 							detector.addForeignKeyRead(read)
@@ -156,15 +165,19 @@ func (detector *ForeignKeyDetector) OnDelete(app *app.App, dbCall *abstractgraph
 }
 
 func (detector *ForeignKeyDetector) ComputeResults() {
-	detector.results = "------------------------------------------------------------\n"
-	detector.results += "------------------- FOREIGN KEY ANALYSIS -------------------\n"
-	detector.results += "------------------------------------------------------------\n"
+	header := "------------------------------------------------------------\n"
+	header += "------------------- FOREIGN KEY ANALYSIS -------------------\n"
+	header += "------------------------------------------------------------\n"
+
 	for i, read := range detector.reads {
 		detector.results += fmt.Sprintf("foreign key read #%d:\n%s\n", i, read.String())
 		if i < len(detector.reads)-1 {
 			detector.results += "\n" // enforce empty line between each foreign key read result
 		}
 	}
+
+	header += fmt.Sprintf(">> SUMMARY (# READS USING FOREIGN REFERENCES):\n>> (%d)\n", len(detector.reads))
+	detector.results = header + detector.results
 }
 
 func (detector *ForeignKeyDetector) GetAnalysisTypeString() string {
@@ -180,12 +193,12 @@ func (detector *ForeignKeyDetector) CompactSchema(app *app.App) {
 		for _, unfoldedField := range ds.GetDatastore().Schema.GetAllFields() {
 			var refsToKeep []*datastores.Field
 			foreignReferences := detector.getUsedForeignReferencesForFieldInDatastore(unfoldedField.GetFullName(), ds.GetDatastore())
-			for _, ref := range unfoldedField.References {
+			for _, ref := range unfoldedField.GetReferences() {
 				if slices.Contains(foreignReferences, ref.GetFullName()) {
 					refsToKeep = append(refsToKeep, ref)
 				}
 			}
-			unfoldedField.References = refsToKeep
+			unfoldedField.CompactReferences(refsToKeep)
 		}
 	}
 }

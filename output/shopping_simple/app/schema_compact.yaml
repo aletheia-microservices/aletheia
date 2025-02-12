@@ -13,7 +13,10 @@ CART_DB:
     - Cart.TotalQuantity: int
     - Cart.Products: '[]string'
     - Cart.Products.*: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Cart.Products --> Product.ProductID)
+    - REFERENCE(Cart.LastProductID --> Product.ProductID)
+    - REFERENCE(Cart --> Product.ProductID)
 
 PRODUCT_DB:
 - type: NoSQLDatabase
@@ -29,7 +32,6 @@ PRODUCT_DB:
     - Product.Description: string
     - Product.PricePerUnit: int
     - Product.Category: string
-  - foreign_references: []
 
 PRODUCT_QUEUE:
 - type: Queue
@@ -38,4 +40,3 @@ PRODUCT_QUEUE:
 - schema:
   - fields: []
   - unfolded_fields: []
-  - foreign_references: []

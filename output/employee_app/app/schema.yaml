@@ -12,13 +12,11 @@ EMPLOYEES_DB:
     - Employee.Name: string
     - Employee.IBAN: string
     - Employee.SpecFlag: '"freelancer" string'
-  - foreign_references: []
 
 FREELANCERS_DB:
 - type: NoSQLDatabase
 - kind: MongoDB
-- dependencies:
-  - employees_db
+- dependencies: []
 - schema:
   - fields:
     - _: employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string}
@@ -29,17 +27,14 @@ FREELANCERS_DB:
     - Freelancer.FreelancerID: string
     - Freelancer.Rate: string
     - Freelancer.Terms: string
-  - foreign_references:
-    - Freelancer:
-      - EMPLOYEES_DB.Employee.EmployeeID * {MANDATORY}
-    - Freelancer.EmployeeID:
-      - EMPLOYEES_DB.Employee.EmployeeID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Freelancer.EmployeeID --> Employee.EmployeeID) [+]
+    - REFERENCE(Freelancer --> Employee.EmployeeID) [+]
 
 FULLTIMES_DB:
 - type: NoSQLDatabase
 - kind: MongoDB
-- dependencies:
-  - employees_db
+- dependencies: []
 - schema:
   - fields:
     - _: employee_app.Fulltime struct{EmployeeID string, FulltimeID string, Salary string, Position string}
@@ -50,17 +45,14 @@ FULLTIMES_DB:
     - Fulltime.FulltimeID: string
     - Fulltime.Salary: string
     - Fulltime.Position: string
-  - foreign_references:
-    - Fulltime:
-      - EMPLOYEES_DB.Employee.EmployeeID * {MANDATORY}
-    - Fulltime.EmployeeID:
-      - EMPLOYEES_DB.Employee.EmployeeID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Fulltime.EmployeeID --> Employee.EmployeeID) [+]
+    - REFERENCE(Fulltime --> Employee.EmployeeID) [+]
 
 INTERNS_DB:
 - type: NoSQLDatabase
 - kind: MongoDB
-- dependencies:
-  - employees_db
+- dependencies: []
 - schema:
   - fields:
     - _: employee_app.Intern struct{EmployeeID string, InternID string, Stipend string, Duration string, Mentor string}
@@ -72,8 +64,6 @@ INTERNS_DB:
     - Intern.Stipend: string
     - Intern.Duration: string
     - Intern.Mentor: string
-  - foreign_references:
-    - Intern:
-      - EMPLOYEES_DB.Employee.EmployeeID * {MANDATORY}
-    - Intern.EmployeeID:
-      - EMPLOYEES_DB.Employee.EmployeeID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Intern.EmployeeID --> Employee.EmployeeID) [+]
+    - REFERENCE(Intern --> Employee.EmployeeID) [+]

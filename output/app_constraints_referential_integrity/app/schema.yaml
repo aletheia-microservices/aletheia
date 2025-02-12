@@ -1,8 +1,7 @@
 ACCOUNTS_DB:
 - type: NoSQLDatabase
 - kind: MongoDB
-- dependencies:
-  - users_db
+- dependencies: []
 - schema:
   - fields:
     - _: app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}
@@ -13,14 +12,11 @@ ACCOUNTS_DB:
     - Account.AccountID: string
     - Account.Username: string
     - Account.Timestamp: int64
-  - foreign_references:
-    - Account:
-      - USERS_DB.User.ReqID * {MANDATORY}
-      - USERS_DB.User.Username * {MANDATORY}
-    - Account.ReqID:
-      - USERS_DB.User.ReqID * {MANDATORY}
-    - Account.Username:
-      - USERS_DB.User.Username * {MANDATORY}
+  - constraints:
+    - REFERENCE(Account.ReqID --> User.ReqID) [+]
+    - REFERENCE(Account.Username --> User.Username) [+]
+    - REFERENCE(Account --> User.ReqID) [+]
+    - REFERENCE(Account --> User.Username) [+]
 
 USERS_DB:
 - type: NoSQLDatabase
@@ -36,4 +32,3 @@ USERS_DB:
     - User.UserID: string
     - User.Username: string
     - User.Timestamp: int64
-  - foreign_references: []

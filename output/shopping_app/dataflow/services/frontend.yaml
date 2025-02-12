@@ -27,8 +27,8 @@
   - '0 depth 0 (BasicObject BasicType) productID string --> w-tainted 3x: write(order_db.Order.ProductID,
     stock_db.Stock.ProductID, billing_db.Bill.ProductID) --> r-tainted 1x: read(product_db._.productID)'
   - '0 depth 0 (BasicObject BasicType) quantity int --> w-tainted 3x: write(order_db.Order.Quantity,
-    stock_db.Stock.Quantity, billing_db.Bill.TotalCost)'
-  - '0 depth 0 (BasicObject BasicType) price int --> w-tainted 1x: write(billing_db.Bill.TotalCost)'
+    stock_db.Stock.Quantity, billing_db.Bill.Quantity)'
+  - '0 depth 0 (BasicObject BasicType) price int --> w-tainted 1x: write(billing_db.Bill.PricePerUnit)'
 
 (*FrontendImpl).ReadOrder(ctx context.Context, orderID string):
   block 0 (Body):

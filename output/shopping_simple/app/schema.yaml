@@ -1,8 +1,7 @@
 CART_DB:
 - type: NoSQLDatabase
 - kind: MongoDB
-- dependencies:
-  - product_db
+- dependencies: []
 - schema:
   - fields:
     - _: shopping_simple.Cart struct{CartID string, LastProductID string, TotalQuantity int, Products []string}
@@ -14,13 +13,10 @@ CART_DB:
     - Cart.TotalQuantity: int
     - Cart.Products: '[]string'
     - Cart.Products.*: string
-  - foreign_references:
-    - Cart:
-      - PRODUCT_DB.Product.ProductID * {MANDATORY}
-    - Cart.LastProductID:
-      - PRODUCT_DB.Product.ProductID * {MANDATORY}
-    - Cart.Products:
-      - PRODUCT_DB.Product.ProductID * {MANDATORY}
+  - constraints:
+    - REFERENCE(Cart.Products --> Product.ProductID)
+    - REFERENCE(Cart.LastProductID --> Product.ProductID)
+    - REFERENCE(Cart --> Product.ProductID)
 
 PRODUCT_DB:
 - type: NoSQLDatabase
@@ -36,7 +32,6 @@ PRODUCT_DB:
     - Product.Description: string
     - Product.PricePerUnit: int
     - Product.Category: string
-  - foreign_references: []
 
 PRODUCT_QUEUE:
 - type: Queue
@@ -45,4 +40,3 @@ PRODUCT_QUEUE:
 - schema:
   - fields: []
   - unfolded_fields: []
-  - foreign_references: []

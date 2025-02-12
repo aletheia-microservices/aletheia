@@ -3,15 +3,25 @@ COUPONS_DB:
 - kind: MySQL
 - dependencies: []
 - schema:
-  - fields: []
+  - fields:
+    - coupons.coupon_id: int
+    - coupons.category: varchar
+    - claimed_coupons.coupon_id: int
+    - claimed_coupons.user_id: int
   - unfolded_fields: []
-  - foreign_references: []
+  - constraints:
+    - UNIQUE(coupons.coupon_id)
+    - UNIQUE(claimed_coupons.coupon_id, claimed_coupons.user_id)
 
 STUDENTS_DB:
 - type: SQL
 - kind: MySQL
 - dependencies: []
 - schema:
-  - fields: []
+  - fields:
+    - students.student_id: int
+    - students.name: varchar
+    - students.balance: int
   - unfolded_fields: []
-  - foreign_references: []
+  - constraints:
+    - UNIQUE(students.student_id)

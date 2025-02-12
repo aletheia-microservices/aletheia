@@ -15,7 +15,9 @@ COUPONS_DB:
     - ClaimedCoupon: coupons_app.ClaimedCoupon struct{CouponID int, UserID int}
     - ClaimedCoupon.CouponID: int
     - ClaimedCoupon.UserID: int
-  - foreign_references: []
+  - constraints:
+    - UNIQUE(Coupon.CouponID)
+    - UNIQUE(ClaimedCoupon.CouponID, ClaimedCoupon.UserID)
 
 STUDENTS_DB:
 - type: NoSQLDatabase
@@ -30,4 +32,5 @@ STUDENTS_DB:
     - Student.StudentID: int
     - Student.Name: string
     - Student.Balance: int
-  - foreign_references: []
+  - constraints:
+    - UNIQUE(Student.StudentID)

@@ -80,7 +80,7 @@ func TaintDataflowWrite(app *app.App, variable objects.Object, call *AbstractDat
 
 	// taint indirect dataflow
 	fieldName = computeSchemaFieldNameRoot(datastore, fieldName)
-	
+
 	var vars []objects.Object
 	var names []string
 	if includeNestedFields {
@@ -214,7 +214,7 @@ func taintDataflowNoSQLHelper(app *app.App, obj objects.Object, dep objects.Obje
 		app.AddDataflow(df, call.ParsedCall)
 	} else { // cursor
 		//logger.Logger.Debugf("query field? NO! for typename = %s", typeName)
-		entry := datastores.NewEntry(typeName, typeName, 0, datastore)
+		entry := datastores.NewField(typeName, typeName, 0, datastore)
 		df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, entry, write, requestIdx)
 		app.AddDataflow(df, call.ParsedCall)
 	}
@@ -244,7 +244,7 @@ func TaintDataflowReadCache(app *app.App, obj objects.Object, fieldName string, 
 		if !slices.Contains(taintedVariables, dep) {
 			typeName := dep.GetType().GetName()
 
-			entry := datastores.NewEntry(typeName, typeName, 0, datastore)
+			entry := datastores.NewField(typeName, typeName, 0, datastore)
 			df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, entry, false, requestIdx)
 			app.AddDataflow(df, call.ParsedCall)
 
@@ -345,17 +345,6 @@ func GetNoSQLQueryDocument(datastore *datastores.Datastore, variable objects.Obj
 								logger.Logger.Warnf("[$AND_NESTED_ELEM #%d.%d] [%s] %s", i, j, utils.GetType(andNestedElem.Object), andNestedElem.Object.LongString())
 								queryObjects = append(queryObjects, andNestedElem)
 							}
-
-							/* if andStruct, ok := andElem.(*objects.StructObject); ok {
-								key := andStruct.GetFieldAt(0).GetWrappedVariable()
-								val := andStruct.GetFieldAt(1).GetWrappedVariable()
-								queryObj := NoSQLQueryDocument{
-									FieldName: datastore.Schema.GetRootFieldName() + "." + key.GetType().GetBasicValue(),
-									Object:    val,
-								}
-								queryObjects = append(queryObjects, queryObj)
-								logger.Logger.Infof("[QUERY OBJ $AND] %s", queryObj.String())
-							} */
 						}
 					}
 				} else {
@@ -385,13 +374,19 @@ func referenceTaintedDataflowForNestedField(writtenVariable objects.Object, data
 		for _, df := range dep.GetVariableInfo().GetAllDataflows() {
 			if df.Datastore != datastore.Name {
 				var mandatoryPrefix string
+				var isMandatory bool
 				if df.InRequestIndex(requestIdx) {
-					mandatoryPrefix = "* [MANDATORY]"
-					dbField.AddMandatoryReference(df.Field)
+					mandatoryPrefix = "[+ MANDATORY]"
+					isMandatory = true
 				}
-				datastore.Schema.AddForeignReferenceToField(dbField, df.Field)
+
+				if !dbField.HasReference(df.Field) {
+					constraint := dbField.CreateAndAddReference(df.Field, isMandatory)
+					datastore.GetSchema().AddConstraint(constraint)
+
+				}
+
 				datastore.AddReferencingDatastoreIfNotExists(df.Field.GetDatastore())
-				//logger.Logger.Fatalf("%s: %s", datastore.GetName(), datastore.ReferencedByDatastores[0].GetName())
 				logger.Logger.Debugf("[SCHEMA REFERENCE] %s (%s -> %s) from dependency [%s]: %s", mandatoryPrefix, dbField.GetFullName(), df.Field.GetFullName(), utils.GetType(dep), dep.String())
 			}
 		}
@@ -409,21 +404,6 @@ func referenceTaintedDataflowForAllNestedFields(writtenVariable objects.Object, 
 	}
 }
 
-/* var pendingNodes *stack.Stack
-
-func BuildSchema2(app *app.App, entryNodes []AbstractNode) {
-	pendingNodes = stack.New()
-	for _, entry := range entryNodes {
-		pendingNodes.Push(entry)
-	}
-	for {
-		node := pendingNodes.Pop().(*AbstractNode)
-		if pendingNodes.Len() == 0 {
-			break
-		}
-	}
-} */
-
 func BuildSchema(app *app.App, frontends []string, entryNodes []AbstractNode) {
 	visited := make(map[AbstractNode]bool, 0)
 	for _, frontend := range frontends {
@@ -438,28 +418,10 @@ func BuildSchema(app *app.App, frontends []string, entryNodes []AbstractNode) {
 					}
 				}
 			}
-			
+
 		}
 	}
-	//app.ResetAllDataflows()
-
-	/* logger.Logger.Debug()
-	for i, pendingNode := range pendingNodes {
-		logger.Logger.Debugf("[%d] pending node %s ", i, pendingNode.dbCall.String())
-	}
-	logger.Logger.Info()
-	for i, node := range visitedNodes {
-		logger.Logger.Infof("[%d] visited node %s ", i, node.String())
-	} */
 }
-
-/* type pendingNode struct {
-	dbCall *AbstractDatabaseCall
-	done   bool
-}
-
-var pendingNodes []*pendingNode
-var pendingDBs map[*datastores.Datastore]bool = make(map[*datastores.Datastore]bool) */
 
 var visitedNodes []AbstractNode
 var writtenDatastores = make(map[string]bool, 0)
@@ -519,10 +481,6 @@ func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
 	}
 
 	visitedNodes = append(visitedNodes, node)
-
-	/* if dbCall, ok := node.(*AbstractDatabaseCall); ok && dbCall.ParsedCall.Method.IsUpdate() {
-		logger.Logger.Fatalf("TODO FOR DB CALL: %s", dbCall.String())
-	} */
 
 	for _, child := range node.GetChildren() {
 		doBuildSchema(app, child, requestIdx)

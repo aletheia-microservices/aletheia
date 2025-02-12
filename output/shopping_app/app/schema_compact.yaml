@@ -11,7 +11,6 @@ ANALYTICS_DB:
     - Analytics: shopping_app.Analytics struct{UserID string, Categories []string}
     - Analytics.UserID: string
     - Analytics.Categories: '[]string'
-  - foreign_references: []
 
 ANALYTICS_QUEUE:
 - type: Queue
@@ -25,7 +24,11 @@ ANALYTICS_QUEUE:
     - AnalyticsMessage: shopping_app.AnalyticsMessage struct{UserID string, ProductCategory string}
     - AnalyticsMessage.UserID: string
     - AnalyticsMessage.ProductCategory: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(AnalyticsMessage.UserID --> Order.UserID) [+]
+    - REFERENCE(AnalyticsMessage.UserID --> Bill.UserID) [+]
+    - REFERENCE(AnalyticsMessage --> Order.UserID) [+]
+    - REFERENCE(AnalyticsMessage --> Bill.UserID) [+]
 
 BILLING_DB:
 - type: NoSQLDatabase
@@ -42,7 +45,19 @@ BILLING_DB:
     - Bill.Quantity: int
     - Bill.PricePerUnit: int
     - Bill.TotalCost: ""
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Bill.UserID --> Order.UserID) [+]
+    - REFERENCE(Bill.TotalCost --> Order.Quantity) [+]
+    - REFERENCE(Bill.TotalCost --> Stock.Quantity) [+]
+    - REFERENCE(Bill.Quantity --> Order.Quantity) [+]
+    - REFERENCE(Bill.Quantity --> Stock.Quantity) [+]
+    - REFERENCE(Bill.ProductID --> Order.ProductID) [+]
+    - REFERENCE(Bill.ProductID --> Stock.ProductID) [+]
+    - REFERENCE(Bill --> Order.ProductID) [+]
+    - REFERENCE(Bill --> Stock.ProductID) [+]
+    - REFERENCE(Bill --> Order.Quantity) [+]
+    - REFERENCE(Bill --> Stock.Quantity) [+]
+    - REFERENCE(Bill --> Order.UserID) [+]
 
 CART_DB:
 - type: NoSQLDatabase
@@ -61,7 +76,6 @@ CART_DB:
     - Cart.Quantity: int
     - Cart.PricePerUnit: int
     - Cart.Status: string
-  - foreign_references: []
 
 ORDER_DB:
 - type: NoSQLDatabase
@@ -79,7 +93,6 @@ ORDER_DB:
     - Order.ProductID: string
     - Order.Quantity: int
     - Order.Timestamp: 1 int
-  - foreign_references: []
 
 PRODUCT_DB:
 - type: NoSQLDatabase
@@ -90,7 +103,6 @@ PRODUCT_DB:
     - _: <unknown type>
   - unfolded_fields:
     - _.productID: string
-  - foreign_references: []
 
 SHIPMENT_DB:
 - type: NoSQLDatabase
@@ -105,7 +117,9 @@ SHIPMENT_DB:
     - Shipment.OrderID: string
     - Shipment.UserID: string
     - Shipment.Status: '"pending" string'
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Shipment.OrderID --> _.orderID)
+    - REFERENCE(Shipment --> _.orderID)
 
 SHIPMENT_QUEUE:
 - type: Queue
@@ -119,7 +133,15 @@ SHIPMENT_QUEUE:
     - ShipmentMessage: shopping_app.ShipmentMessage struct{OrderID string, UserID string}
     - ShipmentMessage.OrderID: string
     - ShipmentMessage.UserID: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(ShipmentMessage.UserID --> Order.UserID) [+]
+    - REFERENCE(ShipmentMessage.UserID --> AnalyticsMessage.UserID) [+]
+    - REFERENCE(ShipmentMessage.UserID --> Bill.UserID) [+]
+    - REFERENCE(ShipmentMessage.OrderID --> Order.OrderID) [+]
+    - REFERENCE(ShipmentMessage --> Order.OrderID) [+]
+    - REFERENCE(ShipmentMessage --> Order.UserID) [+]
+    - REFERENCE(ShipmentMessage --> AnalyticsMessage.UserID) [+]
+    - REFERENCE(ShipmentMessage --> Bill.UserID) [+]
 
 STOCK_DB:
 - type: NoSQLDatabase
@@ -133,4 +155,8 @@ STOCK_DB:
     - Stock: shopping_app.Stock struct{ProductID string, Quantity int}
     - Stock.ProductID: string
     - Stock.Quantity: int
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Stock.ProductID --> Order.ProductID) [+]
+    - REFERENCE(Stock.Quantity --> Order.Quantity) [+]
+    - REFERENCE(Stock --> Order.ProductID) [+]
+    - REFERENCE(Stock --> Order.Quantity) [+]

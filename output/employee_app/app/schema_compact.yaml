@@ -12,7 +12,6 @@ EMPLOYEES_DB:
     - Employee.Name: string
     - Employee.IBAN: string
     - Employee.SpecFlag: '"freelancer" string'
-  - foreign_references: []
 
 FREELANCERS_DB:
 - type: NoSQLDatabase
@@ -28,7 +27,9 @@ FREELANCERS_DB:
     - Freelancer.FreelancerID: string
     - Freelancer.Rate: string
     - Freelancer.Terms: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Freelancer.EmployeeID --> Employee.EmployeeID) [+]
+    - REFERENCE(Freelancer --> Employee.EmployeeID) [+]
 
 FULLTIMES_DB:
 - type: NoSQLDatabase
@@ -44,7 +45,9 @@ FULLTIMES_DB:
     - Fulltime.FulltimeID: string
     - Fulltime.Salary: string
     - Fulltime.Position: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Fulltime.EmployeeID --> Employee.EmployeeID) [+]
+    - REFERENCE(Fulltime --> Employee.EmployeeID) [+]
 
 INTERNS_DB:
 - type: NoSQLDatabase
@@ -61,4 +64,6 @@ INTERNS_DB:
     - Intern.Stipend: string
     - Intern.Duration: string
     - Intern.Mentor: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Intern.EmployeeID --> Employee.EmployeeID) [+]
+    - REFERENCE(Intern --> Employee.EmployeeID) [+]

@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"slices"
 	"sort"
 	"strings"
 
@@ -186,13 +185,12 @@ func (app *App) DumpYamlSchema(compactSchema bool) map[string]utils.OrderedPrope
 
 		var dependencies []string
 
-		propsForeignKeys := utils.NewOrderedPropertyList()
-		for _, f := range datastore.GetDatastore().Schema.GetAllFields() {
-			entry := f
-			if len(entry.References) > 0 {
+		/* propsForeignKeys := utils.NewOrderedPropertyList()
+		for _, field := range datastore.GetDatastore().Schema.GetAllFields() {
+			if field.HasReferences() {
 				var lst []string
-				for _, r := range entry.References {
-					if slices.Contains(entry.MandatoryRefs, r) {
+				for _, r := range field.GetReferences() {
+					if slices.Contains(field.MandatoryRefs, r) {
 						lst = append(lst, r.GetFullName() + " * {MANDATORY}")
 					} else {
 						lst = append(lst, r.GetFullName())
@@ -202,10 +200,19 @@ func (app *App) DumpYamlSchema(compactSchema bool) map[string]utils.OrderedPrope
 					}
 				}
 				sort.Strings(lst)
-				propsForeignKeys.AddOrderedProperty(entry.GetName(), lst)
+				propsForeignKeys.AddOrderedProperty(field.GetName(), lst)
 			}
 		}
-		schema.AddOrderedProperty("foreign_references", propsForeignKeys.Result())
+		schema.AddOrderedProperty("foreign_references", propsForeignKeys.Result()) */
+
+		dbConstraints := datastore.GetDatastore().GetSchema().GetAllConstraints()
+		if len(dbConstraints) > 0 {
+			var lstConstraints []string
+			for _, constraint := range datastore.GetDatastore().GetSchema().GetAllConstraints() {
+				lstConstraints = append(lstConstraints, constraint.String())
+			}
+			schema.AddOrderedProperty("constraints", lstConstraints)
+		}
 
 		props := utils.NewOrderedPropertyList()
 		props.AddOrderedProperty("type", datastore.GetDatastore().GetTypeString())

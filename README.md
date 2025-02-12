@@ -56,8 +56,9 @@ go run main.go --app sockshop2 --fk
 
 # Referential Integrity Constraint: Absence of Cascading Deletes
 go run main.go --app shopping_simple --cascade
-go run main.go --app employee_app --cascade
+go run main.go --app sockshop2 --cascade
 go run main.go --app trainticket --cascade
+go run main.go --app employee_app --cascade
 
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
 go run main.go --app employee_app --specialization
@@ -101,9 +102,9 @@ graphs.py [-h] [--app {postnotification,postnotification_simple,trainticket,shop
 
 | Application Name                          | Runs          | XCY Analysis  | Cascade Analysis  | Foreign Key Analysis  | Specialization |
 |-------------------------------------------|---------------|---------------|-------------------|-----------------------|----------------|
-| `foobar`                                  | **YES**       | 0             | 0                 | 0                     | 0              |
+| `foobar`                                  | **YES**       | 0             | 0;0               | 0                     | 0              |
 | `shopping_simple`                         | **YES**       | 0             | 1;1               | 0                     | 0              |
-| `shopping_app`                            | **YES**       | 1?            | 0                 | 1?                    | 0              |
+| `shopping_app`                            | **YES**       | 0 (PREV=1!)   | 0                 | 0 (PREV=1!)           | 0              |
 | `postnotification_simple`                 | **YES**       | 1             | 0                 | 1                     | 0              |
 | `postnotification`                        | **YES**       | 2             | 0                 | 2                     | 0              |
 | `sockshop2`                               | **YES**       | 0             | 4;0               | 0                     | 0              |
@@ -111,7 +112,7 @@ graphs.py [-h] [--app {postnotification,postnotification_simple,trainticket,shop
 | `dsb_sn`                                  | **YES**       | 0             | 0                 | 0                     | 0              |
 | `dsb_hotel`                               | **NO**        | -             | -                 | -                     | -              |
 | `app_constraints_referential_integrity`   | **YES**       | 0             | 2;1               | 1                     | 0              |
-| `employee_app`          | **YES**       | 0             | 2;3               | 0                     | 1              |
+| `employee_app`                            | **YES**       | 0             | 2;3               | 0                     | 1              |
 
 ## Structure
 

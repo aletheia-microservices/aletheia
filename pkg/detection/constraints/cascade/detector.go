@@ -12,6 +12,7 @@ import (
 type CascadeDetector struct {
 	detector.Detector
 	results          string
+	summary          string
 	deleteOperations []*deleteOperation
 }
 
@@ -21,6 +22,15 @@ func (detector *CascadeDetector) addDeleteOperation(op *deleteOperation) {
 
 func (detector *CascadeDetector) getDeleteOperations() []*deleteOperation {
 	return detector.deleteOperations
+}
+
+func (detector *CascadeDetector) GetSummary() string {
+	return detector.summary
+}
+
+
+func (detector *CascadeDetector) SetSummary(summary string) {
+	detector.summary = summary
 }
 
 func NewDetector() *CascadeDetector {
@@ -141,9 +151,12 @@ func (detector *CascadeDetector) searchCascadingDeletes(deleteOp *deleteOperatio
 }
 
 func (detector *CascadeDetector) ComputeResults() {
-	detector.results = "------------------------------------------------------------\n"
-	detector.results += "-------------------- CASCADING ANALYSIS --------------------\n"
-	detector.results += "------------------------------------------------------------\n"
+	header := "------------------------------------------------------------\n"
+	header += "-------------------- CASCADING ANALYSIS --------------------\n"
+	header += "------------------------------------------------------------\n"
+
+	var numMissingCascadingDeletes int
+	numDeletes := len(detector.getDeleteOperations())
 
 	for i, op := range detector.getDeleteOperations() {
 		detector.results += fmt.Sprintf("(#%0d) %s: %s\n", i, op.getCall().GetCallerStr(), op.call.ShortString())
@@ -151,9 +164,13 @@ func (detector *CascadeDetector) ComputeResults() {
 		for _, dep := range op.getDependencies() {
 			if !dep.cascading {
 				detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())
+				numMissingCascadingDeletes++
 			}
 		}
 	}
+
+	header += fmt.Sprintf(">> SUMMARY (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):\n>> (%d;%d)\n", numDeletes, numMissingCascadingDeletes)
+	detector.results = header + detector.results
 }
 
 func (detector *CascadeDetector) GetAnalysisTypeString() string {

@@ -15,6 +15,15 @@ type DetectorGroup struct {
 	detector.Detector
 	detectors []*XCYDetector
 	results   string
+	summary   string
+}
+
+func (detector *DetectorGroup) GetSummary() string {
+	return detector.summary
+}
+
+func (detector *DetectorGroup) SetSummary(summary string) {
+	detector.summary = summary
 }
 
 func NewDetectorGroup(entryNodes []abstractgraph.AbstractNode) *DetectorGroup {
@@ -51,9 +60,11 @@ func (dg *DetectorGroup) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDa
 }
 
 func (dg *DetectorGroup) ComputeResults() {
-	dg.results = "------------------------------------------------------------\n"
-	dg.results += "----------------------- XCY ANALYSIS -----------------------\n"
-	dg.results += "------------------------------------------------------------\n"
+	header := "------------------------------------------------------------\n"
+	header += "----------------------- XCY ANALYSIS -----------------------\n"
+	header += "------------------------------------------------------------\n"
+
+	var numInconsistencies int
 	for _, detector := range dg.detectors {
 		if detector.HasInconsistencies() {
 			for _, request := range detector.requests {
@@ -61,8 +72,11 @@ func (dg *DetectorGroup) ComputeResults() {
 				dg.results += string(data)
 				dg.results += "----------------------------------------------------------\n"
 			}
+			numInconsistencies += detector.inconsistencies
 		}
 	}
+	header += fmt.Sprintf(">> SUMMARY (# CROSS-SERVICE INCONSISTENCIES):\n>> (%d)\n", numInconsistencies)
+	dg.results = header + dg.results
 }
 
 func (dg *DetectorGroup) GetAnalysisTypeString() string {

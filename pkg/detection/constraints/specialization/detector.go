@@ -7,15 +7,25 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/logger"
+	"analyzer/pkg/utils"
 )
 
 type SpecializationDetector struct {
 	results string
+	summary string
 	rmes    []*RemovedMandatoryEntity
 }
 
 func (detector *SpecializationDetector) addRemovedMandatoryEntity(rme *RemovedMandatoryEntity) {
 	detector.rmes = append(detector.rmes, rme)
+}
+
+func (detector *SpecializationDetector) GetSummary() string {
+	return detector.summary
+}
+
+func (detector *SpecializationDetector) SetSummary(summary string) {
+	detector.summary = summary
 }
 
 func NewDetector() *SpecializationDetector {
@@ -25,16 +35,6 @@ func NewDetector() *SpecializationDetector {
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 	fmt.Println()
 	return &SpecializationDetector{}
-}
-
-func (detector *SpecializationDetector) schemaHasMandatoryField(datastore *datastores.Datastore) (bool, []*mandatoryField) {
-	var mandatoryFields []*mandatoryField
-	for _, field := range datastore.Schema.GetAllFields() {
-		for _, mandatoryRef := range field.GetMandatoryReferences() {
-			mandatoryFields = append(mandatoryFields, newMandatoryField(field, mandatoryRef))
-		}
-	}
-	return len(mandatoryFields) > 0, mandatoryFields
 }
 
 func (detector *SpecializationDetector) OnNewRun(app *app.App) {
@@ -99,8 +99,9 @@ func (detector *SpecializationDetector) OnDelete(app *app.App, dbCall *abstractg
 	case datastores.NoSQL:
 		/* doc := params[1]
 		abstractgraph.TaintDataflowWrite(detector.app, doc, dbCall, datastore, "", true, requestIdx) */
-		hasMandatoryFields, _ := detector.schemaHasMandatoryField(datastore)
-		if hasMandatoryFields {
+
+		dbMandatoryConstraints := datastore.GetSchema().GetConstraints(datastores.ConstraintFilter{Mandatory: utils.BoolPtr(true)})
+		if len(dbMandatoryConstraints) > 0 {
 			detector.addRemovedMandatoryEntity(newRemovedMandatoryEntity(dbCall.ParsedCall, nil)) // FIXME: IN THE FUTURE, REPLACE NIL MANDATORY FIELDS
 		}
 	default:
@@ -109,9 +110,10 @@ func (detector *SpecializationDetector) OnDelete(app *app.App, dbCall *abstractg
 }
 
 func (detector *SpecializationDetector) ComputeResults() {
-	detector.results = "------------------------------------------------------------\n"
-	detector.results += "------------------ SPECIALIZATION ANALYSIS -----------------\n"
-	detector.results += "------------------------------------------------------------\n"
+	header := "------------------------------------------------------------\n"
+	header += "------------------ SPECIALIZATION ANALYSIS -----------------\n"
+	header += "------------------------------------------------------------\n"
+	var numRemovedMandatoryFields int
 	if len(detector.rmes) > 0 {
 		detector.results += "removed mandatory entities:\n"
 	}
@@ -119,11 +121,15 @@ func (detector *SpecializationDetector) ComputeResults() {
 		detector.results += fmt.Sprintf("- (#%d) %s", i, rme.String())
 		for _, mandatoryField := range rme.mandatoryFields { // AT THE MOMENT MANDATORY FIELDS IS ALWAYS NIL SO WE NEVER PRINT THIS
 			detector.results += fmt.Sprintf("\t\t %s REFERENCES %s * {MANDATORY}", mandatoryField.field.GetFullName(), mandatoryField.mandatoryRef.GetFullName())
+			numRemovedMandatoryFields++
 		}
 		if i < len(detector.rmes)-1 {
 			detector.results += "\n" // enforce empty line between each foreign key read result
 		}
 	}
+
+	header += fmt.Sprintf(">> SUMMARY (# REMOVED MANDATORY OBJECTS; # REFERENCES OF OBJECTS):\n>> (%d;%d)\n", len(detector.rmes), numRemovedMandatoryFields)
+	detector.results = header + detector.results
 }
 
 func (detector *SpecializationDetector) GetAnalysisTypeString() string {

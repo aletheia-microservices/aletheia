@@ -5,7 +5,6 @@ CART_DB:
 - schema:
   - fields: []
   - unfolded_fields: []
-  - foreign_references: []
 
 CATALOGUE_DB:
 - type: NoSQLDatabase
@@ -28,7 +27,6 @@ CATALOGUE_DB:
     - Sock.Quantity: int
     - Sock.Tags: '[]string'
     - Sock.TagString: string
-  - foreign_references: []
 
 ORDER_DB:
 - type: NoSQLDatabase
@@ -90,7 +88,32 @@ ORDER_DB:
     - Order.Shipment.Status: '"awaiting shipment" string'
     - Order.Date: string
     - Order.Total: 10 float32
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
+    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
+    - REFERENCE(Order.CustomerID --> _.userid)
+    - REFERENCE(Order.ID --> Shipment.ID) [+]
+    - REFERENCE(Order.ID --> Shipment.ID) [+]
+    - REFERENCE(Order.Shipment.ID --> Shipment.ID) [+]
+    - REFERENCE(Order.Shipment.ID --> Shipment.ID) [+]
+    - REFERENCE(Order.Shipment --> Shipment) [+]
+    - REFERENCE(Order.Shipment --> Shipment) [+]
+    - REFERENCE(Order.Shipment --> Shipment.ID) [+]
+    - REFERENCE(Order.Shipment --> Shipment.ID) [+]
+    - REFERENCE(Order.Shipment --> Shipment.Name) [+]
+    - REFERENCE(Order.Shipment --> Shipment.Name) [+]
+    - REFERENCE(Order.Shipment --> _.userid)
+    - REFERENCE(Order.Shipment --> Shipment.Status) [+]
+    - REFERENCE(Order.Shipment --> Shipment.Status) [+]
+    - REFERENCE(Order --> Shipment.Name) [+]
+    - REFERENCE(Order --> Shipment.Name) [+]
+    - REFERENCE(Order --> _.userid)
+    - REFERENCE(Order --> Shipment.ID) [+]
+    - REFERENCE(Order --> Shipment.ID) [+]
+    - REFERENCE(Order --> Shipment) [+]
+    - REFERENCE(Order --> Shipment) [+]
+    - REFERENCE(Order --> Shipment.Status) [+]
+    - REFERENCE(Order --> Shipment.Status) [+]
 
 SHIPDB:
 - type: NoSQLDatabase
@@ -105,7 +128,16 @@ SHIPDB:
     - Shipment.ID: string
     - Shipment.Name: string
     - Shipment.Status: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Shipment.Name --> Shipment.Name) [+]
+    - REFERENCE(Shipment.Name --> _.userid)
+    - REFERENCE(Shipment.ID --> Shipment.ID) [+]
+    - REFERENCE(Shipment.Status --> Shipment.Status) [+]
+    - REFERENCE(Shipment --> Shipment) [+]
+    - REFERENCE(Shipment --> Shipment.ID) [+]
+    - REFERENCE(Shipment --> Shipment.Name) [+]
+    - REFERENCE(Shipment --> _.userid)
+    - REFERENCE(Shipment --> Shipment.Status) [+]
 
 SHIPQUEUE:
 - type: Queue
@@ -120,7 +152,9 @@ SHIPQUEUE:
     - Shipment.ID: string
     - Shipment.Name: string
     - Shipment.Status: string
-  - foreign_references: []
+  - constraints:
+    - REFERENCE(Shipment.Name --> _.userid)
+    - REFERENCE(Shipment --> _.userid)
 
 USER_DB:
 - type: NoSQLDatabase
@@ -161,4 +195,3 @@ USER_DB:
     - User.Cards.ID: string
     - User.UserID: string
     - User.Salt: string
-  - foreign_references: []

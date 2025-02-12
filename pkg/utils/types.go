@@ -10,6 +10,10 @@ import (
 	"analyzer/pkg/logger"
 )
 
+func BoolPtr(b bool) *bool {
+    return &b
+}
+
 var builtInTypes = []string{
 	"nil",
 	"bool",

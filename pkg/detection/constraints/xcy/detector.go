@@ -28,6 +28,14 @@ type XCYDetector struct {
 	inconsistencies int
 }
 
+func (detector *XCYDetector) GetSummary() string {
+	return ""
+}
+
+func (detector *XCYDetector) SetSummary(summary string) {
+	//no-op
+}
+
 func NewDetector(entryNode abstractgraph.AbstractNode, mode DetectionMode) *XCYDetector {
 	fmt.Println()
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")

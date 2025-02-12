@@ -16,7 +16,6 @@ ASSURANCE_DB:
     - Assurance.AT.Index: int64
     - Assurance.AT.Name: string
     - Assurance.AT.Price: float64
-  - foreign_references: []
 
 CONFIG_DB:
 - type: NoSQLDatabase
@@ -32,7 +31,6 @@ CONFIG_DB:
     - Config.Name: string
     - Config.Value: string
     - Config.Description: string
-  - foreign_references: []
 
 CONSIGNPRICE_DB:
 - type: NoSQLDatabase
@@ -51,7 +49,6 @@ CONSIGNPRICE_DB:
     - ConsignPrice.InitialPrice: float64
     - ConsignPrice.WithinPrice: float64
     - ConsignPrice.BeyondPrice: float64
-  - foreign_references: []
 
 CONTACTS_DB:
 - type: NoSQLDatabase
@@ -73,7 +70,6 @@ CONTACTS_DB:
     - Contact.DocumentType: int
     - Contact.DocumentNumber: string
     - Contact.PhoneNumber: string
-  - foreign_references: []
 
 DELIVERY_DB:
 - type: NoSQLDatabase
@@ -82,7 +78,6 @@ DELIVERY_DB:
 - schema:
   - fields: []
   - unfolded_fields: []
-  - foreign_references: []
 
 DELIVERY_Q:
 - type: Queue
@@ -91,7 +86,6 @@ DELIVERY_Q:
 - schema:
   - fields: []
   - unfolded_fields: []
-  - foreign_references: []
 
 MONEY_DB:
 - type: NoSQLDatabase
@@ -106,7 +100,6 @@ MONEY_DB:
     - Money.ID: string
     - Money.UserID: string
     - Money.Price: string
-  - foreign_references: []
 
 PAYMENTS_DB:
 - type: NoSQLDatabase
@@ -123,7 +116,6 @@ PAYMENTS_DB:
     - Payment.OrderID: string
     - Payment.UserID: string
     - Payment.Price: string
-  - foreign_references: []
 
 PRICE_DB:
 - type: NoSQLDatabase
@@ -141,7 +133,6 @@ PRICE_DB:
     - PriceConfig.RouteID: string
     - PriceConfig.BasicPriceRate: float64
     - PriceConfig.FirstClassPriceRate: float64
-  - foreign_references: []
 
 ROUTE_DB:
 - type: NoSQLDatabase
@@ -161,7 +152,6 @@ ROUTE_DB:
     - Route.Distances: '[]int64'
     - Route.StartStation: string
     - Route.EndStation: string
-  - foreign_references: []
 
 STATION_DB:
 - type: NoSQLDatabase
@@ -177,7 +167,6 @@ STATION_DB:
     - Station.ID: string
     - Station.Name: string
     - Station.StayTime: int64
-  - foreign_references: []
 
 STATIONFOOD_DB:
 - type: NoSQLDatabase
@@ -197,7 +186,6 @@ STATIONFOOD_DB:
     - StationFoodStore.BusinessTime: string
     - StationFoodStore.DeliveryFee: float64
     - StationFoodStore.Foods: '[]food.Food struct{Name string, Price float64}'
-  - foreign_references: []
 
 TRAIN_DB:
 - type: NoSQLDatabase
@@ -215,7 +203,6 @@ TRAIN_DB:
     - TrainType.EconomyClass: int64
     - TrainType.ComfortClass: int64
     - TrainType.AvgSpeed: int64
-  - foreign_references: []
 
 TRAINFOOD_DB:
 - type: NoSQLDatabase
@@ -231,7 +218,6 @@ TRAINFOOD_DB:
     - TrainFood.ID: string
     - TrainFood.TripID: string
     - TrainFood.Foods: '[]food.Food struct{Name string, Price float64}'
-  - foreign_references: []
 
 USER_DB:
 - type: NoSQLDatabase
@@ -252,4 +238,3 @@ USER_DB:
     - User.DocumentType: int64
     - User.DocumentNum: string
     - User.Email: string
-  - foreign_references: []

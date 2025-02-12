@@ -1,12 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"os"
 	"slices"
-	"strings"
 	"time"
 
 	"analyzer/pkg/abstractgraph"
@@ -25,8 +22,11 @@ import (
 	"analyzer/pkg/utils"
 )
 
+const TEXT_BOLD_LIGHT_YELLOW = "\033[1;38;5;179m"
 const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
 const TEXT_RESET_COLOR = "\033[0m"
+const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;75m"
+const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 
 type analysisConfig struct {
 	allFlag                    string
@@ -114,7 +114,21 @@ func initAnalyzer(analysis analysisConfig) {
 	abstractGraph.Dump()
 	fmt.Println()
 
-	summary := "\n\n"
+
+	prepAnalysis(analysis, app)
+	runAnalysis(analysis, app, abstractGraph)
+	endAnalysis(analysis, app)
+}
+
+func prepAnalysis(analysis analysisConfig, app *app.App) {
+	if analysis.unicityIndividualDetection {
+		constraints.ParseConstraints(app)
+		app.DumpYamlSchema(false)
+	}
+}
+
+func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractgraph.AbstractGraph) {
+	var results, summary string
 
 	if analysis.xcyDetection {
 		xcyDetectorGroup := xcy.NewDetectorGroup(abstractGraph.Nodes)
@@ -127,136 +141,55 @@ func initAnalyzer(analysis analysisConfig) {
 			cumulativeDatastoreOps = xcyDetector.GetDatastoreOps()
 		}
 
-		summary += detector.SaveResults(app, xcyDetectorGroup)
+		results += detector.SaveResults(app, xcyDetectorGroup)
+		summary += xcyDetectorGroup.GetSummary()
 	}
 
 	app.ResetAllDataflows()
-
-	if analysis.cascadeDetection {
-		cascadeDetector := cascade.NewDetector()
-		iterator := iterator.NewIterator(app, abstractGraph, cascadeDetector)
-		iterator.Run()
-		summary += detector.SaveResults(app, cascadeDetector)
-	}
 
 	if analysis.foreignKeyDetection {
 		foreignKeyDetector := foreign_key.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyDetector)
 		iterator.Run()
-		summary += detector.SaveResults(app, foreignKeyDetector)
+
+		results += detector.SaveResults(app, foreignKeyDetector)
+		summary += foreignKeyDetector.GetSummary()
 
 		foreignKeyDetector.CompactSchema(app)
-		app.DumpYamlSchema(true)
+	}
+
+	if analysis.cascadeDetection {
+		cascadeDetector := cascade.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, cascadeDetector)
+		iterator.Run()
+		results += detector.SaveResults(app, cascadeDetector)
+		summary += cascadeDetector.GetSummary()
 	}
 
 	if analysis.specializationDetection {
 		specializationDetector := specialization.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, specializationDetector)
 		iterator.Run()
-		summary += detector.SaveResults(app, specializationDetector)
-
-		app.DumpYamlSchema(true)
+		results += detector.SaveResults(app, specializationDetector)
+		summary += specializationDetector.GetSummary()
 	}
 
 	if analysis.unicityIndividualDetection {
-		parseUniqueConstaintsFromUserInput(app)
+		constraints.ParseConstraints(app)
 
 		unicityDetector := unicity.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, unicityDetector)
 		iterator.Run()
-		summary += detector.SaveResults(app, unicityDetector)
+		results += detector.SaveResults(app, unicityDetector)
+		summary += unicityDetector.GetSummary()
 	}
 
-	fmt.Println(summary)
+	fmt.Println("\n--------- RESULTS ---------\n" + results)
+	fmt.Println("\n--------- SUMMARY ---------\n" + summary)
 }
 
-func parseUniqueConstaintsFromUserInput(app *app.App) {
-	fmt.Printf("\n\nSetting up unicity constraints for available schema:\n\n")
-	for _, dbInstance := range app.Databases {
-		for _, unfoldedField := range dbInstance.GetDatastore().Schema.UnfoldedFields {
-			fmt.Println("- " + unfoldedField.GetFullName())
-		}
-		fmt.Println()
-
+func endAnalysis(analysis analysisConfig, app *app.App) {
+	if analysis.foreignKeyDetection || analysis.specializationDetection {
+		app.DumpYamlSchema(true)
 	}
-
-	var input string
-	var err error
-	var targetFields []string
-	var targetDbPaths []string
-
-	input = ""
-	fmt.Printf("\nPlease specify path(s) to mysql files (.sql) if existent (delimiter is ';', format is <db_name>:<path>):\n> ")
-
-	if app.Name == "coupons_app_sql" {
-		input = "coupons_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/coupons.sql;students_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/students.sql"
-	} else if app.Name == "coupons_app" {
-		//skip
-	} else {
-		reader := bufio.NewReader(os.Stdin)
-		input, err = reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading input:", err)
-			return
-		}
-	}
-
-	if input != "" {
-		targetDbPaths = strings.Split(input, ";")
-		for _, dbPath := range targetDbPaths {
-			splits := strings.Split(dbPath, ":")
-			db := splits[0]
-			sqlStmt := splits[1]
-			sqlBytes, err := os.ReadFile(sqlStmt)
-			if err != nil {
-				fmt.Println("Error reading database sql files:", err)
-				return
-			}
-			sqlStmts := strings.Split(string(sqlBytes), ";")
-			dbInstance := app.GetDatastoreInstance(db)
-			for _, stmt := range sqlStmts {
-				if stmt == "\n" {
-					continue
-				}
-				constraints.ParseSQLStatement(dbInstance.GetDatastore(), stmt)
-			}
-		}
-	}
-
-	input = ""
-	fmt.Printf("\nPlease specify fields to enforce unicity constraint (delimiter is ';', composed uniqueness is within '(...)'):\n> ")
-
-	if app.Name == "coupons_app" {
-		input = "(STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)"
-	} else if app.Name == "coupons_app_sql" {
-		//skip
-	} else {
-		reader := bufio.NewReader(os.Stdin)
-		input, err = reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading input:", err)
-			return
-		}
-	}
-
-	input = strings.TrimSpace(input)
-	targetFields = strings.Split(input, ";")
-	targetFieldsByDatastore := make(map[string][]string)
-	fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n", TEXT_BOLD_LIGHT_RED)
-
-	if len(targetFields) > 0 && strings.TrimSpace(targetFields[0]) != "" {
-		for _, targetField := range targetFields {
-			// remove parentheses
-			targetField = targetField[1 : len(targetField)-1]
-
-			splits := strings.SplitN(targetField, ".", 2)
-			dbName := splits[0]
-			fieldName := targetField
-			targetFieldsByDatastore[dbName] = append(targetFieldsByDatastore[dbName], fieldName)
-
-			fmt.Println("- " + targetField)
-		}
-		fmt.Println(TEXT_RESET_COLOR)
-	}
-	constraints.ParseUserUniqueConstraints(app, targetFieldsByDatastore)
 }
