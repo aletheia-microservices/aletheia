@@ -12,6 +12,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
+	"analyzer/pkg/datastores/constraints"
 	"analyzer/pkg/detection/constraints/cascade"
 	"analyzer/pkg/detection/constraints/foreign_key"
 	"analyzer/pkg/detection/constraints/specialization"
@@ -217,7 +218,7 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 				if stmt == "\n" {
 					continue
 				}
-				datastores.ParseSQLStatement(dbInstance.GetDatastore(), stmt)
+				constraints.ParseSQLStatement(dbInstance.GetDatastore(), stmt)
 			}
 		}
 	}
@@ -257,33 +258,5 @@ func parseUniqueConstaintsFromUserInput(app *app.App) {
 		}
 		fmt.Println(TEXT_RESET_COLOR)
 	}
-
-	for db, targetFields := range targetFieldsByDatastore {
-		dbInstance := app.GetDatastoreInstance(strings.ToLower(db))
-		schema := dbInstance.GetDatastore().Schema
-		for _, targetField := range targetFields {
-			var fields []*datastores.Field
-
-			for _, targetFieldSplit := range strings.Split(targetField, ",") {
-				field := schema.GetFieldByFullName(targetFieldSplit)
-				fields = append(fields, field)
-			}
-
-			constraint := datastores.NewConstraintUnique(fields...)
-			schema.AddConstraint(constraint)
-			for _, field := range fields {
-				field.AddConstraint(constraint)
-			}
-		}
-	}
-
-	for _, db := range app.GetDbInstances() {
-		schema := db.GetDatastore().Schema
-		fmt.Printf("\n%s[WARNING] The following unicity constraints were added:\n", TEXT_BOLD_LIGHT_RED)
-
-		for _, uc := range schema.GetConstraints() {
-			fmt.Println("- " + uc.String())
-		}
-		fmt.Print(TEXT_RESET_COLOR)
-	}
+	constraints.ParseUserUniqueConstraints(app, targetFieldsByDatastore)
 }

@@ -1,10 +1,11 @@
-package datastores
+package constraints
 
 import (
 	"strings"
 
 	"github.com/xwb1989/sqlparser"
 
+	"analyzer/pkg/datastores"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/utils"
 )
@@ -21,7 +22,7 @@ type SQLColumn struct {
 	IsPrimaryKey bool
 }
 
-func ParseSQLStatement(database *Datastore, sql string) {
+func ParseSQLStatement(database *datastores.Datastore, sql string) {
 	logger.Logger.Infof("[SQL PARSER] parsing statement: %s", sql)
 
 	sql = strings.ReplaceAll(sql, "\n", " ")
@@ -41,24 +42,24 @@ func ParseSQLStatement(database *Datastore, sql string) {
 		if stmt.TableSpec == nil {
 			logger.Logger.Fatalf("[SQL PARSER] nil tablespec for SQL statament: %v", stmt)
 		}
-		fields := make(map[string]*Field, 0)
+		fields := make(map[string]*datastores.Field, 0)
 		for _, column := range stmt.TableSpec.Columns {
 			fieldName := column.Name.CompliantName()
 
 			columnName := tableName + "." + fieldName
 			columnType := column.Type.Type
-			field := NewEntry(columnName, columnType, -1, database)
+			field := datastores.NewEntry(columnName, columnType, -1, database)
 			database.GetSchema().AddField(field)
 
 			fields[column.Name.CompliantName()] = field
 			logger.Logger.Infof("[SQL PARSER] added new database field: %s", field.GetFullName())
 		}
 		for _, index := range stmt.TableSpec.Indexes {
-			var constraint *Constraint
+			var constraint *datastores.Constraint
 			if index.Info.Unique {
-				constraint = NewConstraintUnique()
+				constraint = datastores.NewConstraintUnique()
 			} else if index.Info.Primary {
-				constraint = NewConstraintPrimary()
+				constraint = datastores.NewConstraintPrimary()
 			}
 			for _, column := range index.Columns {
 				field := fields[column.Column.CompliantName()]
