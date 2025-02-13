@@ -129,10 +129,10 @@ SHIPDB:
     - Shipment.Name: string
     - Shipment.Status: string
   - constraints:
+    - REFERENCE(Shipment.Status --> Shipment.Status) [+]
     - REFERENCE(Shipment.Name --> Shipment.Name) [+]
     - REFERENCE(Shipment.Name --> _.userid)
     - REFERENCE(Shipment.ID --> Shipment.ID) [+]
-    - REFERENCE(Shipment.Status --> Shipment.Status) [+]
     - REFERENCE(Shipment --> Shipment) [+]
     - REFERENCE(Shipment --> Shipment.ID) [+]
     - REFERENCE(Shipment --> Shipment.Name) [+]

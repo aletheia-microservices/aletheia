@@ -13,9 +13,11 @@ const UNKNOWN_FIELD_TYPE = "<unknown type>"
 
 const ROOT_FIELD_NAME_NOSQL = "_"
 const ROOT_FIELD_NAME_QUEUE = "_"
+const ROOT_FIELD_NAME_SQL = "*"
 
 const ROOT_FIELD_NAME_CACHE_KEY = "key"
 const ROOT_FIELD_NAME_CACHE_VALUE = "value"
+
 
 type Schema struct {
 	Fields         []*Field      `json:"fields"`
@@ -185,6 +187,14 @@ func (s *Schema) GetFieldByFullName(str string) *Field {
 }
 
 func (s *Schema) GetField(name string) *Field {
+	if field := s.GetFieldIfExists(name); field != nil {
+		return field
+	}
+	logger.Logger.Fatalf("[FIXME] no field for name %s in datastore schema %s", name, s.String())
+	return nil
+}
+
+func (s *Schema) GetFieldIfExists(name string) *Field {
 	for _, field := range s.Fields {
 		if field.IsNamed(name) {
 			return field
@@ -195,7 +205,6 @@ func (s *Schema) GetField(name string) *Field {
 			return field
 		}
 	}
-	logger.Logger.Fatalf("[FIXME] no field for name %s in datastore schema %s", name, s.String())
 	return nil
 }
 

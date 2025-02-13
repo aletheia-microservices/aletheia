@@ -16,9 +16,9 @@
     --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3}       --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3} --> r-tainted: read(product_db._.productID) {1}
 [0] (BasicObject BasicType) productID string
 
-    --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+    --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [0] (BasicObject BasicType) quantity int
 
-    --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+    --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [0] (BasicObject BasicType) price int
 

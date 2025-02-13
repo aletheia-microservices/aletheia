@@ -14,11 +14,11 @@
       --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3}           --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3} --> r-tainted: read(product_db._.productID) {1}
 [__2] (Reference BasicType) ref <productID string> @ Frontend
 
-    --> w-tainted: write(stock_db.Stock.Quantity, order_db.Order.Quantity, billing_db.Bill.Quantity) {3}
+    --> w-tainted: write(stock_db.Stock.Quantity, order_db.Order.Quantity, billing_db.Bill.TotalCost) {3}
 [0] (BasicObject BasicType) quantity int
-     --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+     --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [_1] (Reference BasicType) ref <quantity int> @ OrderService
-      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [__2] (Reference BasicType) ref <quantity int> @ Frontend
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = stock_database, collection = stock_collection}
@@ -37,10 +37,10 @@
 [____4] (Reference BasicType) ref <productID string> @ Frontend
      --> w-tainted: write(stock_db.Stock.Quantity) {1}
 [_1] (FieldObject FieldType) Quantity int
-      --> w-tainted: write(stock_db.Stock.Quantity, order_db.Order.Quantity, billing_db.Bill.Quantity) {3}
+      --> w-tainted: write(stock_db.Stock.Quantity, order_db.Order.Quantity, billing_db.Bill.TotalCost) {3}
 [__2] (BasicObject BasicType) quantity int
-       --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+       --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [___3] (Reference BasicType) ref <quantity int> @ OrderService
-        --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+        --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [____4] (Reference BasicType) ref <quantity int> @ Frontend
 

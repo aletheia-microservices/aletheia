@@ -35,12 +35,12 @@
     3x: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID)
     --> r-tainted 1x: read(product_db._.productID)'
   - '0 depth 0 (BasicObject BasicType) quantity int --> w-tainted 3x: write(order_db.Order.Quantity,
-    stock_db.Stock.Quantity, billing_db.Bill.Quantity)'
+    stock_db.Stock.Quantity, billing_db.Bill.TotalCost)'
   - '_1 depth 1 (Reference BasicType) ref <quantity int> @ Frontend --> w-tainted
-    3x: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity)'
-  - '0 depth 0 (BasicObject BasicType) price int --> w-tainted 1x: write(billing_db.Bill.PricePerUnit)'
+    3x: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost)'
+  - '0 depth 0 (BasicObject BasicType) price int --> w-tainted 1x: write(billing_db.Bill.TotalCost)'
   - '_1 depth 1 (Reference BasicType) ref <price int> @ Frontend --> w-tainted 1x:
-    write(billing_db.Bill.PricePerUnit)'
+    write(billing_db.Bill.TotalCost)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
     {database = order_database, collection = order_collection}
   - 0 depth 0 (InterfaceObject UserType) _ .error

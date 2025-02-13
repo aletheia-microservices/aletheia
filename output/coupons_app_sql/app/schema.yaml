@@ -5,8 +5,10 @@ COUPONS_DB:
 - schema:
   - fields:
     - coupons.coupon_id: int
-    - coupons.category: varchar
+    - coupons.category: string
+    - coupons.value: int
     - claimed_coupons.coupon_id: int
+    - claimed_coupons.*: SQL Table
     - claimed_coupons.user_id: int
   - unfolded_fields: []
   - constraints:
@@ -20,8 +22,10 @@ STUDENTS_DB:
 - schema:
   - fields:
     - students.student_id: int
-    - students.name: varchar
+    - students.name: string
+    - students.*: SQL Table
     - students.balance: int
   - unfolded_fields: []
   - constraints:
+    - REFERENCE(students.student_id --> claimed_coupons.user_id) [+]
     - UNIQUE(students.student_id)

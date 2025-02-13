@@ -63,14 +63,14 @@
 
 [0] (StructObject UserType) _ cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}
 [_1] (Reference UserType) ref <item cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ CartService
-[__2] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
+[__2] (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
 [___3] (FieldObject FieldType) ID string
 [____4] (BasicObject BasicType) ID string
 [___3] (FieldObject FieldType) Quantity 1 int
 [____4] (BasicObject BasicType) 1 int
 [___3] (FieldObject FieldType) UnitPrice float32
 [____4] (BasicObject BasicType) Price float32
-[_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
+[_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
 [__2] (FieldObject FieldType) ID string
 [___3] (BasicObject BasicType) ID string
 [__2] (FieldObject FieldType) Quantity 1 int

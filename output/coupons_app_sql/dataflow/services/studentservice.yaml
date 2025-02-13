@@ -6,14 +6,18 @@
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) studentsDB RelationalDB
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) studentID int
-  - _1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) studentID int --> r-tainted 2x: read(students_db.students.student_id,
+    students_db.int)'
+  - '_1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.claimed_coupons.user_id) --> r-tainted 1x: read(students_db.int)'
   - 0 depth 0 (BasicObject BasicType) couponValue int
   - _1 depth 1 (Reference BasicType) ref <value int> @ Frontend
-  - __2 depth 2 (Reference BasicType) ref <Value int> @ CouponService
-  - 0 depth 0 (StructObject UserType) student coupons_app_sql.Student struct{StudentID int, Name string, Balance int}
+  - '__2 depth 2 (Reference BasicType) ref <Value int> @ CouponService --> r-tainted
+    1x: read(coupons_db.int)'
+  - '0 depth 0 (StructObject UserType) student coupons_app_sql.Student struct{StudentID
+    int, Name string, Balance int} --> r-tainted 1x: read(students_db.Student)'
   - 0 depth 0 (InterfaceObject UserType) err .error
-  - 0 depth 0 (BasicObject BasicType) newBalance int
+  - '0 depth 0 (BasicObject BasicType) newBalance int --> w-tainted 1x: write(students_db.students.balance)'
   - 0 depth 0 (InterfaceObject UserType) _ sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }
   - 0 depth 0 (InterfaceObject UserType) err .error
 
@@ -25,10 +29,12 @@
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) studentsDB RelationalDB
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) studentID int
-  - _1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) name string
-  - _1 depth 1 (Reference BasicType) ref <name string> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(students_db.students.student_id)'
+  - '_1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
+    1x: write(students_db.students.student_id)'
+  - '0 depth 0 (BasicObject BasicType) name string --> w-tainted 1x: write(students_db.students.name)'
+  - '_1 depth 1 (Reference BasicType) ref <name string> @ Frontend --> w-tainted 1x:
+    write(students_db.students.name)'
   - 0 depth 0 (InterfaceObject UserType) _ sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }
   - 0 depth 0 (InterfaceObject UserType) err .error
 

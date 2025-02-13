@@ -51,6 +51,10 @@ func (b *BackendMethod) DeepCopy() types.Method {
 	}
 }
 
+func (b *BackendMethod) GetName() string {
+	return b.Name
+}
+
 func (b *BackendMethod) String() string {
 	var repr string
 	if b.Component != "" {
@@ -129,6 +133,18 @@ func (b *BackendMethod) SetNoSQLDatabaseCollection(databaseName string, collecti
 
 func (b *BackendMethod) IsNoSQLBackendCall() bool {
 	return b.Backend == "NoSQLDatabase" && b.Component == ""
+}
+
+func (b *BackendMethod) IsRelationalDBSelectCall() bool {
+	return b.Backend == "RelationalDB" && b.Component == "" && b.Name == "Select"
+}
+
+func (b *BackendMethod) IsRelationalDBQueryCall() bool {
+	return b.Backend == "RelationalDB" && b.Component == "" && b.Name == "Query"
+}
+
+func (b *BackendMethod) IsRelationalDBExecCall() bool {
+	return b.Backend == "RelationalDB" && b.Component == "" && b.Name == "Exec"
 }
 
 func (b *BackendMethod) IsNoSQLComponentCall() bool {

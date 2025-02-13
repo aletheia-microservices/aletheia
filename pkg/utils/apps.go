@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+
 	specs_app_constraints_referential_integrity "github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring/specs"
 	specs_coupons_app "github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring/specs"
 	specs_coupons_app_sql "github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring/specs"
@@ -19,9 +21,14 @@ import (
 	"analyzer/pkg/logger"
 )
 
+const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
+const TEXT_RESET_COLOR = "\033[0m"
+
 const (
 	PATH_BLUEPRINT_EXAMPLES     string = "github.com/blueprint-uservices/blueprint/examples/"
 	PATH_BLUEPRINT_CORE_BACKEND string = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
+	COUPONS_DB_SQL_PATH         string = "coupons_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/coupons.sql"
+	STUDENTS_DB_SQL_PATH        string = "students_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/students.sql"
 )
 
 var Apps = []string{"foobar", "shopping_simple", "shopping_app", "postnotification_simple", "postnotification", "sockshop2", "trainticket", "app_constraints_referential_integrity", "employee_app", "dsb_sn", "dsb_hotel", "coupons_app", "coupons_app_sql"}
@@ -46,6 +53,43 @@ var APPS_INFO = map[string]AppInfo{
 	"dsb_hotel":                             {PATH_BLUEPRINT_EXAMPLES + "dsb_hotel/workflow/hotelreservation", dsb_hotel.Original},
 	"dsb_sn":                                {PATH_BLUEPRINT_EXAMPLES + "dsb_sn/workflow/socialnetwork", dsb_sn.Docker},
 }
+
+func GetAppDatabaseSQLPaths(app string) (bool, string) {
+	fmt.Printf("\nPlease specify path(s) to mysql files (.sql) if existent (delimiter is ';', format is <db_name>:<path>):\n> ")
+	if app == "coupons_app_sql" {
+		return true, COUPONS_DB_SQL_PATH + ";" + STUDENTS_DB_SQL_PATH
+	} else if app == "coupons_app" {
+		return false, "" //skip
+	}
+	return false, ""
+
+	/* reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		logger.Logger.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
+		return false, ""
+	}
+
+	return true, input */
+}
+
+func GetAppDatabaseSQLUserInput(app string) (bool, string) {
+	fmt.Printf("\nPlease specify fields to enforce unicity constraint (delimiter is ';', composed uniqueness is within '(...)'):\n> ")
+	if app == "coupons_app" {
+		return true, "(STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)"
+	} else if app == "coupons_app_sql" {
+		return false, "" //skip
+	}
+	return false, ""
+	/* reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		logger.Logger.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
+		return false, ""
+	}
+	return true, input */
+}
+
 
 func LoadAppPath(app string) string {
 	if info, ok := APPS_INFO[app]; ok {

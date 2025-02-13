@@ -10,7 +10,7 @@
 [_1] (Reference BasicType) ref <sessionID string> @ FrontendService
 
 [0] (StructObject UserType) item cart.Item struct{ID string, Quantity int, UnitPrice float32}
-[_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
+[_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
 [__2] (FieldObject FieldType) ID string
 [___3] (BasicObject BasicType) ID string
 [__2] (FieldObject FieldType) Quantity 1 int

@@ -5,7 +5,6 @@ import (
 
 	"github.com/xwb1989/sqlparser"
 
-	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/utils"
@@ -23,8 +22,8 @@ type SQLColumn struct {
 	IsPrimaryKey bool
 }
 
-func parseSQLStatement(app *app.App, database *datastores.Datastore, sql string) {
-	logger.Logger.Infof("[SQL PARSER] parsing statement: %s", sql)
+func parseSQLStatement(database *datastores.Datastore, sql string) {
+	//logger.Logger.Infof("[SQL PARSER] parsing statement: %s", sql)
 
 	sql = strings.ReplaceAll(sql, "\n", " ")
 	sql = strings.ReplaceAll(sql, "\t", " ")
@@ -37,22 +36,26 @@ func parseSQLStatement(app *app.App, database *datastores.Datastore, sql string)
 
 	switch stmt := stmt.(type) {
 	case *sqlparser.DDL:
-		logger.Logger.Tracef("[SQL PARSER] parsing DDL: %v", stmt)
+		logger.Logger.Infof("[SQL PARSER] parsing DDL: %v", stmt)
 		tableName := stmt.NewName.Name.CompliantName()
 		if stmt.TableSpec == nil {
 			logger.Logger.Fatalf("[SQL PARSER] nil tablespec for SQL statament: %v", stmt)
 		}
 		fields := make(map[string]*datastores.Field, 0)
 		for _, column := range stmt.TableSpec.Columns {
-			fieldName := column.Name.CompliantName()
+			columnName := column.Name.CompliantName()
 
-			columnName := tableName + "." + fieldName
-			columnType := column.Type.Type
-			field := datastores.NewField(columnName, columnType, -1, database)
-			database.GetSchema().AddField(field)
+			fieldName := tableName + "." + columnName
+			fieldType := column.Type.Type
+
+			field := database.GetSchema().GetFieldIfExists(fieldName)
+			if field == nil {
+				field := datastores.NewField(fieldName, fieldType, -1, database)
+				database.GetSchema().AddField(field)
+				logger.Logger.Infof("[SQL PARSER] added new database field: %s", field.GetFullName())
+			}
 
 			fields[column.Name.CompliantName()] = field
-			logger.Logger.Infof("[SQL PARSER] added new database field: %s", field.GetFullName())
 		}
 		for _, index := range stmt.TableSpec.Indexes {
 			var constraint *datastores.Constraint
@@ -73,5 +76,5 @@ func parseSQLStatement(app *app.App, database *datastores.Datastore, sql string)
 	default:
 		logger.Logger.Fatalf("[SQL PARSER] unexpected type (%s) for sqlparser: %v", utils.GetType(stmt), stmt)
 	}
-	summarize(app, "SQL_PARSER")
+	//summarize(app, "SQL_PARSER")
 }

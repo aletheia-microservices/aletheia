@@ -6,13 +6,17 @@
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) couponsDB RelationalDB
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) couponID int
-  - _1 depth 1 (Reference BasicType) ref <couponID int> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) userID int
-  - _1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend
-  - 0 depth 0 (StructObject UserType) coupon coupons_app_sql.Coupon struct{CouponID int, Category string, Value int}
-  - _1 depth 1 (FieldObject FieldType) Value int
-  - __2 depth 2 (BasicObject BasicType) Value int
+  - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.claimed_coupons.coupon_id)
+    --> r-tainted 2x: read(coupons_db.claimed_coupons.coupon_id, coupons_db.int)'
+  - '_1 depth 1 (Reference BasicType) ref <couponID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.claimed_coupons.coupon_id) --> r-tainted 1x: read(coupons_db.int)'
+  - '0 depth 0 (BasicObject BasicType) userID int --> w-tainted 1x: write(coupons_db.claimed_coupons.user_id)'
+  - '_1 depth 1 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.claimed_coupons.user_id) --> r-tainted 1x: read(students_db.int)'
+  - '0 depth 0 (StructObject UserType) coupon coupons_app_sql.Coupon struct{CouponID
+    int, Category string, Value int} --> r-tainted 1x: read(coupons_db.Coupon)'
+  - '_1 depth 1 (FieldObject FieldType) Value int --> r-tainted 1x: read(coupons_db.Value)'
+  - '__2 depth 2 (BasicObject BasicType) Value int --> r-tainted 1x: read(coupons_db.int)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (InterfaceObject UserType) _ sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }
   - 0 depth 0 (InterfaceObject UserType) err .error
@@ -25,12 +29,15 @@
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) couponsDB RelationalDB
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) couponID int
-  - _1 depth 1 (Reference BasicType) ref <couponID int> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) category string
-  - _1 depth 1 (Reference BasicType) ref <category string> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) value int
-  - _1 depth 1 (Reference BasicType) ref <value int> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.coupons.coupon_id)'
+  - '_1 depth 1 (Reference BasicType) ref <couponID int> @ Frontend --> w-tainted
+    1x: write(coupons_db.coupons.coupon_id)'
+  - '0 depth 0 (BasicObject BasicType) category string --> w-tainted 1x: write(coupons_db.coupons.category)'
+  - '_1 depth 1 (Reference BasicType) ref <category string> @ Frontend --> w-tainted
+    1x: write(coupons_db.coupons.category)'
+  - '0 depth 0 (BasicObject BasicType) value int --> w-tainted 1x: write(coupons_db.coupons.value)'
+  - '_1 depth 1 (Reference BasicType) ref <value int> @ Frontend --> w-tainted 1x:
+    write(coupons_db.coupons.value)'
   - 0 depth 0 (InterfaceObject UserType) _ sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }
   - 0 depth 0 (InterfaceObject UserType) err .error
 

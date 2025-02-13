@@ -12,8 +12,8 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID_MESSAGE: int64
     - Message.Timestamp: int64
   - constraints:
-    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
     - REFERENCE(Message.PostID_MESSAGE --> Post.PostID) [+]
+    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
     - REFERENCE(Message --> Post.PostID) [+]
     - REFERENCE(Message --> Post.ReqID) [+]
 

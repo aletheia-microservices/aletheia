@@ -3,8 +3,9 @@ package abstractgraph
 import (
 	"fmt"
 	"slices"
+	"strings"
 
-	/* "github.com/golang-collections/collections/stack" */
+	"github.com/xwb1989/sqlparser"
 
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
@@ -223,23 +224,35 @@ func taintDataflowNoSQLHelper(app *app.App, obj objects.Object, dep objects.Obje
 
 // aka TaintDataflowReadUnnamed
 func TaintDataflowReadCache(app *app.App, obj objects.Object, fieldName string, call *AbstractDatabaseCall, datastore *datastores.Datastore, requestIdx int) {
-	fmt.Printf("\n------------- TAINT READ (KV) DATAFLOW FOR CALL %s @ %s -------------\n\n", call.GetMethodStr(), datastore.Name)
-	fmt.Println()
+	fmt.Printf("\n------------- [CACHE %s] TAINT READ DATAFLOW FOR CALL %s -------------\n\n\n", datastore.GetName(), call.GetMethodStr())
+	field := datastore.Schema.GetOrCreateField(fieldName, datastores.UNKNOWN_FIELD_TYPE, -1, datastore)
+	taintDataflowReadCacheSQLHelper(app, obj, call, datastore, field, requestIdx)
+}
 
+func TaintDataflowReadSQL(app *app.App, obj objects.Object, fieldName string, call *AbstractDatabaseCall, datastore *datastores.Datastore, requestIdx int, isSelectAll bool) {
+	fmt.Printf("\n------------- [SQL %s] TAINT READ FOR CALL %s -------------\n\n\n", datastore.GetName(), call.GetMethodStr())
+	fieldType := datastores.UNKNOWN_FIELD_TYPE
+	if isSelectAll {
+		fieldType = "SQL Table"
+	}
+	field := datastore.Schema.GetOrCreateField(fieldName, fieldType, -1, datastore)
+	taintDataflowReadCacheSQLHelper(app, obj, call, datastore, field, requestIdx)
+}
+
+func taintDataflowReadCacheSQLHelper(app *app.App, obj objects.Object, call *AbstractDatabaseCall, datastore *datastores.Datastore, field *datastores.Field, requestIdx int) {
 	// taint direct dataflow
-	rootField := datastore.Schema.GetOrCreateField(fieldName, datastores.UNKNOWN_FIELD_TYPE, -1, datastore)
-	df := obj.GetVariableInfo().SetDirectDataflow(datastore.Name, call.Service, obj, rootField, false, requestIdx)
+	df := obj.GetVariableInfo().SetDirectDataflow(datastore.Name, call.Service, obj, field, false, requestIdx)
 	app.AddDataflow(df, call.ParsedCall)
-	logger.Logger.Debugf("[TAINT READ (KV) DIRECT] %s ---> (%02d) %s [%s]", rootField.GetFullName(), obj.GetId(), obj.String(), utils.GetType(obj))
-	if !slices.Contains(app.TaintedVariables[rootField.GetFullName()], obj) {
-		app.TaintedVariables[rootField.GetFullName()] = append(app.TaintedVariables[rootField.GetFullName()], obj)
+	logger.Logger.Debugf("[%s - TAINT READ DIRECT] %s ---> (%02d) %s [%s]", datastore.GetTypeString(), field.GetFullName(), obj.GetId(), obj.String(), utils.GetType(obj))
+	if !slices.Contains(app.TaintedVariables[field.GetFullName()], obj) {
+		app.TaintedVariables[field.GetFullName()] = append(app.TaintedVariables[field.GetFullName()], obj)
 	}
 
 	var taintedVariables []objects.Object
-	logger.Logger.Infof("[TENTATIVE TAINT READ (KV) VAR] [%s] (%02d) @ %s", utils.GetType(obj), obj.GetId(), obj.LongString())
-	obj = getTargetVariableIfNoSQLCursorRead(datastore, obj)
+	logger.Logger.Infof("[%s - TENTATIVE TAINT READ VAR] [%s] (%02d) @ %s", datastore.GetTypeString(), utils.GetType(obj), obj.GetId(), obj.LongString())
+
 	deps := obj.GetNestedDependencies(false)
-	logger.Logger.Infof("[TENTATIVE TAINT READ (KV) VAR] [%s] NUM DEPS = %d @ %s", utils.GetType(obj), len(deps), obj.LongString())
+	logger.Logger.Infof("[%s - TENTATIVE TAINT READ VAR] [%s] NUM DEPS = %d @ %s", datastore.GetTypeString(), utils.GetType(obj), len(deps), obj.LongString())
 	for _, dep := range deps {
 		if !slices.Contains(taintedVariables, dep) {
 			typeName := dep.GetType().GetName()
@@ -248,7 +261,7 @@ func TaintDataflowReadCache(app *app.App, obj objects.Object, fieldName string, 
 			df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, entry, false, requestIdx)
 			app.AddDataflow(df, call.ParsedCall)
 
-			logger.Logger.Debugf("\t\t[TAINT READ (KV) INDIRECT] <unnamed> ---> (%02d) %s [%s]", dep.GetId(), dep.String(), utils.GetType(dep))
+			logger.Logger.Debugf("\t\t[%s - TAINT READ INDIRECT] <unnamed> ---> (%02d) %s [%s]", datastore.GetTypeString(), dep.GetId(), dep.String(), utils.GetType(dep))
 
 			taintedVariables = append(taintedVariables, dep)
 			app.AddTaintedVariableIfNotExists(dep.GetType().GetName(), dep)
@@ -431,21 +444,42 @@ func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
 		datastore := dbCall.DbInstance.GetDatastore()
 		params := dbCall.GetParams()
 		returns := dbCall.GetReturns()
-		switch datastore.Type {
-		case datastores.Queue:
-			msg := params[1]
-			TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, requestIdx)
-		case datastores.NoSQL:
-			cursor, query := returns[0], params[1]
-			TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, requestIdx)
-			queryObjs := GetNoSQLQueryDocument(datastore, query)
-			for _, v := range queryObjs {
-				TaintDataflowNoSQL(app, v.Object, dbCall, datastore, v.FieldName, true, false, requestIdx)
+
+		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+			switch datastore.Type {
+			case datastores.Queue:
+				msg := params[1]
+				TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, requestIdx)
+
+			case datastores.NoSQL:
+				cursor, query := returns[0], params[1]
+				TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, requestIdx)
+				queryObjs := GetNoSQLQueryDocument(datastore, query)
+				for _, v := range queryObjs {
+					TaintDataflowNoSQL(app, v.Object, dbCall, datastore, v.FieldName, true, false, requestIdx)
+				}
+
+			case datastores.Cache:
+				key, value := params[1], params[2]
+				TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, requestIdx)
+				TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, requestIdx)
+
+			case datastores.SQL:
+				if blueprintBackendMethod.IsRelationalDBSelectCall() {
+					target, query, args := params[1], params[2], params[3:]
+					selectedFieldNames, filterFieldNames, filterFieldObjs := parseSQLReadSelect(query, args)
+					for idx, fieldName := range filterFieldNames {
+						fieldObj := filterFieldObjs[idx]
+						TaintDataflowReadSQL(app, fieldObj, fieldName, dbCall, datastore, requestIdx, false)
+					}
+					TaintDataflowReadSQL(app, target, selectedFieldNames[0], dbCall, datastore, requestIdx, true)
+				} else if blueprintBackendMethod.IsRelationalDBQueryCall() {
+					logger.Logger.Fatalf("TODO!! implement cursor for sql similar to nosql mongodb")
+				}
+
+			default:
+				logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
 			}
-		case datastores.Cache:
-			key, value := params[1], params[2]
-			TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, requestIdx)
-			TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, requestIdx)
 		}
 
 	} else if dbCall, ok := node.(*AbstractDatabaseCall); ok && dbCall.ParsedCall.Method.IsWrite() {
@@ -456,28 +490,51 @@ func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
 		params := dbCall.GetParams()
 		logger.Logger.Infof("[SCHEMA] [%s] building schema based on abstract node (%s)", datastore.Name, dbCall.GetName())
 
-		switch datastore.Type {
-		case datastores.Queue:
-			msg := params[1]
-			saveUnfoldedFieldsToDatastore(msg, datastores.ROOT_FIELD_NAME_QUEUE, datastore)
-			TaintDataflowWrite(app, msg, dbCall, datastore, "", true, requestIdx)
-			referenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
+		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+			switch datastore.Type {
+			case datastores.Queue:
+				msg := params[1]
+				saveUnfoldedFieldsToDatastore(msg, datastores.ROOT_FIELD_NAME_QUEUE, datastore)
+				TaintDataflowWrite(app, msg, dbCall, datastore, "", true, requestIdx)
+				referenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
 
-		case datastores.NoSQL:
-			doc := params[1]
-			saveUnfoldedFieldsToDatastore(doc, datastores.ROOT_FIELD_NAME_NOSQL, datastore)
-			TaintDataflowWrite(app, doc, dbCall, datastore, "", true, requestIdx)
-			referenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
+			case datastores.NoSQL:
+				doc := params[1]
+				saveUnfoldedFieldsToDatastore(doc, datastores.ROOT_FIELD_NAME_NOSQL, datastore)
+				TaintDataflowWrite(app, doc, dbCall, datastore, "", true, requestIdx)
+				referenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
 
-		case datastores.Cache:
-			key, value := params[1], params[2]
-			saveFieldToDatastore(key, datastores.ROOT_FIELD_NAME_CACHE_KEY, datastore)
-			saveFieldToDatastore(value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, datastore)
-			TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, requestIdx)
-			TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, requestIdx)
-			referenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
-			referenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
+			case datastores.Cache:
+				key, value := params[1], params[2]
+				saveFieldToDatastore(key, datastores.ROOT_FIELD_NAME_CACHE_KEY, datastore)
+				saveFieldToDatastore(value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, datastore)
+				TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, requestIdx)
+				TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, requestIdx)
+				referenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
+				referenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
+
+			case datastores.SQL:
+				if blueprintBackendMethod.IsRelationalDBExecCall() {
+					query, args := params[1], params[2:]
+					newFieldNames, newFieldObjs, filterFieldNames, filterFieldObjs := parseSQLWrite(query, args)
+					for idx, fieldName := range newFieldNames {
+						fieldObj := newFieldObjs[idx]
+						saveFieldToDatastore(fieldObj, fieldName, datastore)
+						TaintDataflowWrite(app, fieldObj, dbCall, datastore, fieldName, false, requestIdx)
+						referenceTaintedDataflowForNestedField(fieldObj, datastore, fieldName, requestIdx)
+					}
+					for idx, fieldName := range filterFieldNames {
+						fieldObj := filterFieldObjs[idx]
+						TaintDataflowReadSQL(app, fieldObj, fieldName, dbCall, datastore, requestIdx, false)
+						referenceTaintedDataflowForNestedField(fieldObj, datastore, fieldName, requestIdx)
+					}
+				}
+
+			default:
+				logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
+			}
 		}
+
 	}
 
 	visitedNodes = append(visitedNodes, node)
@@ -486,4 +543,180 @@ func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
 		doBuildSchema(app, child, requestIdx)
 	}
 	return true
+}
+
+type tableNameAlias struct {
+	alias string
+	name  string
+}
+
+func parseColumnName(compliantName string) (string, string) {
+	splits := strings.SplitAfterN(compliantName, ".", 1)
+	if len(splits) == 2 {
+		return splits[0], splits[1]
+	}
+	return "", compliantName
+}
+
+func parseTableName(prefixTableName string, tableNameAliasLst []tableNameAlias) string {
+	if prefixTableName == "" {
+		return tableNameAliasLst[0].name
+	}
+	for _, t := range tableNameAliasLst {
+		if t.alias != "" && prefixTableName == t.alias {
+			return t.name
+		}
+		if prefixTableName == t.name {
+			return t.name
+		}
+	}
+	logger.Logger.Fatal("unexpected")
+	return tableNameAliasLst[0].name
+}
+
+func parseSQLTableExprs(tableExprs sqlparser.TableExprs) []tableNameAlias {
+	var tableNameAliasLst []tableNameAlias
+	for _, table := range tableExprs {
+		if aliasedTableExpr, ok := table.(*sqlparser.AliasedTableExpr); ok {
+			if tableName, ok := aliasedTableExpr.Expr.(sqlparser.TableName); ok {
+				tableNameAliasLst = append(tableNameAliasLst, tableNameAlias{alias: aliasedTableExpr.As.CompliantName(), name: tableName.Name.CompliantName()})
+			}
+		}
+	}
+	return tableNameAliasLst
+}
+
+func parseSQLWhere(args []objects.Object, stmtWhere *sqlparser.Where, tableNameAliasLst []tableNameAlias, argIdx int, filterFieldNames []string, filterFieldObjs []objects.Object) (int, []string, []objects.Object){
+	if comparisonExpr, ok := stmtWhere.Expr.(*sqlparser.ComparisonExpr); ok {
+		var leftFieldName string
+		var rightFieldObj objects.Object
+		if col, ok := comparisonExpr.Left.(*sqlparser.ColName); ok {
+			prefixTableName, columnName := parseColumnName(string(col.Name.CompliantName()))
+			tableName := parseTableName(prefixTableName, tableNameAliasLst)
+			leftFieldName = tableName + "." + columnName
+		}
+		if sqlVal, ok := comparisonExpr.Right.(*sqlparser.SQLVal); ok {
+			if sqlVal.Type == sqlparser.ValArg { //placeholder (e.g., '?' that is then parsed into ':v1', ':v2', etc.)
+				rightFieldObj = args[argIdx]
+				argIdx++
+			}
+		}
+		logger.Logger.Infof("[SCHEMA] [WHERE]: %s -> %s", leftFieldName, rightFieldObj)
+		filterFieldNames = append(filterFieldNames, leftFieldName)
+		filterFieldObjs = append(filterFieldObjs, rightFieldObj)
+	}
+	return argIdx, filterFieldNames, filterFieldObjs
+}
+
+func parseSQLReadSelect(query objects.Object, args []objects.Object) ([]string, []string, []objects.Object) {
+	sql := query.GetType().GetBasicValue()
+	logger.Logger.Infof("[SCHEMA] parsing sql stmt: %s", sql)
+
+	stmt, err := sqlparser.Parse(sql)
+	if err != nil {
+		logger.Logger.Fatalf("[SCHEMA] unable to parse sql query (%s): %s", sql, err.Error())
+	}
+
+	argIdx := 0
+	var selectedFieldNames []string
+	var filterFieldNames []string
+	var filterFieldObjs []objects.Object
+	var tableNameAliasLst []tableNameAlias
+
+	switch stmt := stmt.(type) {
+	case *sqlparser.Select:
+		tableNameAliasLst = parseSQLTableExprs(stmt.From)
+
+		var readAllFields bool
+		for _, expr := range stmt.SelectExprs {
+			if _, ok := expr.(*sqlparser.StarExpr); ok {
+				readAllFields = true
+				selectedFieldNames = append(selectedFieldNames, tableNameAliasLst[0].name+".*")
+				logger.Logger.Tracef("[SCHEMA] found sqlparser.StarExpr (%t)", readAllFields)
+			} else if aliasedExpr, ok := expr.(*sqlparser.AliasedExpr); ok {
+				if valTuple, ok := aliasedExpr.Expr.(sqlparser.ValTuple); ok {
+					for rowIdx, expr := range valTuple {
+						if col, ok := expr.(*sqlparser.ColName); ok {
+							prefixTableName, columnName := parseColumnName(string(col.Name.CompliantName()))
+							tableName := parseTableName(prefixTableName, tableNameAliasLst)
+							fieldName := tableName + "." + columnName
+
+							logger.Logger.Infof("[SCHEMA] [SELECT record %d/%d]: %s", rowIdx+1, len(valTuple), fieldName)
+							selectedFieldNames = append(selectedFieldNames, fieldName)
+						}
+					}
+				}
+			}
+		}
+
+		_, filterFieldNames, filterFieldObjs = parseSQLWhere(args, stmt.Where, tableNameAliasLst, argIdx, filterFieldNames, filterFieldObjs)
+
+	default:
+		logger.Logger.Fatalf("[SCHEMA] Unsupported SQL statement: %s", sql)
+	}
+
+	return selectedFieldNames, filterFieldNames, filterFieldObjs
+}
+
+func parseSQLWrite(query objects.Object, args []objects.Object) ([]string, []objects.Object, []string, []objects.Object) {
+	sql := query.GetType().GetBasicValue()
+	logger.Logger.Infof("[SCHEMA] parsing sql stmt: %s", sql)
+
+	stmt, err := sqlparser.Parse(sql)
+	if err != nil {
+		logger.Logger.Fatalf("[SCHEMA] unable to parse sql query (%s): %s", sql, err.Error())
+	}
+
+	argIdx := 0
+	var writtenFieldNames []string
+	var writtenFieldObjs []objects.Object
+	var filterFieldNames []string
+	var filterFieldObjs []objects.Object
+
+	switch stmt := stmt.(type) {
+	case *sqlparser.Insert:
+		if values, ok := stmt.Rows.(sqlparser.Values); ok {
+			for rowIdx, tuple := range values {
+				for colIdx, expr := range tuple {
+					if sqlVal, ok := expr.(*sqlparser.SQLVal); ok {
+						stmt.Table.Name.CompliantName()
+						if sqlVal.Type == sqlparser.ValArg { // placeholder (e.g., '?' that is then parsed into ':v1', ':v2', etc.)
+							fieldName := stmt.Table.Name.CompliantName() + "." + stmt.Columns[colIdx].CompliantName()
+							fieldObj := args[argIdx]
+							placeholderVal := string(sqlVal.Val)
+							logger.Logger.Infof("[SCHEMA] (record %d/%d) INSERT %s = (%s) -> %s", rowIdx+1, len(values), fieldName, placeholderVal, fieldObj)
+							writtenFieldNames = append(writtenFieldNames, fieldName)
+							writtenFieldObjs = append(writtenFieldObjs, fieldObj)
+							argIdx++
+						}
+					}
+				}
+			}
+		} else {
+			logger.Logger.Fatalf("[SCHEMA] unexpected type %T for rows in sql insert: %s", stmt.Rows, sql)
+		}
+	case *sqlparser.Update:
+		tableNameAliasLst := parseSQLTableExprs(stmt.TableExprs)
+
+		for _, expr := range stmt.Exprs {
+
+			prefixTableName, columnName := parseColumnName(string(expr.Name.Name.CompliantName()))
+			tableName := parseTableName(prefixTableName, tableNameAliasLst)
+			fieldName := tableName + "." + columnName
+
+			if sqlVal, ok := expr.Expr.(*sqlparser.SQLVal); ok {
+				if sqlVal.Type == sqlparser.ValArg { // placeholder (e.g., '?', parsed as ':v1', ':v2')
+					fieldObj := args[argIdx]
+					placeholderVal := string(sqlVal.Val)
+					logger.Logger.Infof("[SCHEMA] SET %s = (%s) -> %s", fieldName, placeholderVal, fieldObj)
+					writtenFieldNames = append(writtenFieldNames, fieldName)
+					writtenFieldObjs = append(writtenFieldObjs, fieldObj)
+					argIdx++
+				}
+			}
+		}
+
+		_, filterFieldNames, filterFieldObjs = parseSQLWhere(args, stmt.Where, tableNameAliasLst, argIdx, filterFieldNames, filterFieldObjs)
+	}
+	return writtenFieldNames, writtenFieldObjs, filterFieldNames, filterFieldObjs
 }

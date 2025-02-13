@@ -115,16 +115,14 @@ func initAnalyzer(analysis analysisConfig) {
 	fmt.Println()
 
 
-	prepAnalysis(analysis, app)
+	prepAnalysis(app)
 	runAnalysis(analysis, app, abstractGraph)
 	endAnalysis(analysis, app)
 }
 
-func prepAnalysis(analysis analysisConfig, app *app.App) {
-	if analysis.unicityIndividualDetection {
-		constraints.ParseConstraints(app)
-		app.DumpYamlSchema(false)
-	}
+func prepAnalysis(app *app.App) {
+	constraints.ParseConstraints(app)
+	app.DumpYamlSchema(false)
 }
 
 func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractgraph.AbstractGraph) {
