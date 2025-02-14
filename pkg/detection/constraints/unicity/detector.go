@@ -89,20 +89,25 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
 			var writtenFieldNames []string
 			params := dbCall.GetParams()
-			if datastore.IsNoSQLDatabase() {
+			
+			switch datastore.Type {
+			case datastores.NoSQL:
 				obj := params[1]
 				objType := obj.GetType()
 				logger.Logger.Infof("[UNICITY DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
 				_, writtenFieldNames = objType.GetNestedFieldTypes(objType.GetName(), datastore.IsNoSQLDatabase())
-			} else if datastore.IsRelationalDB() {
+			case datastores.RelationalDB:
 				if blueprintBackendMethod.IsRelationalDBExecCall() {
 					query, args := params[1], params[2:]
-					writtenFieldNames, _, _, _ = abstractgraph.ParseSQLWrite(query, args)
+					writtenFields, _ := abstractgraph.ParseSQLWrite(query, args)
+					for _, field := range writtenFields {
+						writtenFieldNames = append(writtenFieldNames, field.GetName())
+					}
 				} else {
-					logger.Logger.Warnf("[UNICITY DETECTOR] ignoring on write/update for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
+					logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
 				}
-			} else {
-				logger.Logger.Warnf("[UNICITY DETECTOR] ignoring on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
+			default:
+				logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
 			}
 			
 			var unicityConstraints []*datastores.Constraint

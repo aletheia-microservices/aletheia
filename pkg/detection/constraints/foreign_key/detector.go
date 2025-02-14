@@ -8,6 +8,7 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types/objects"
 	"analyzer/pkg/utils"
@@ -80,7 +81,9 @@ func (detector *ForeignKeyDetector) OnEndRequest(app *app.App) {
 // for each dependency, it iterates all previous read dataflows
 // if the database field read on a previous (dependent) dataflow matches the current field
 // then we detect a new foreignkey-based read
-func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj objects.Object, originField *datastores.Field, dbCall *abstractgraph.AbstractDatabaseCall) {
+func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj objects.Object, originFieldName string, datastore *datastores.Datastore, dbCall *abstractgraph.AbstractDatabaseCall) {
+	originField := datastore.Schema.GetField(originFieldName)
+	
 	logger.Logger.Infof("[FOREIGN KEY] check foreign key read for origin field (%s) and object: %s", originField.String(), obj.String())
 	var savedOriginFieldName []string
 	//datastore := dbCall.DbInstance.GetDatastore()
@@ -115,41 +118,58 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 	params := dbCall.GetParams()
 	returns := dbCall.GetReturns()
 
-	switch datastore.Type {
-	case datastores.Queue:
-		msg := params[1]
-		logger.Logger.Infof("[FOREIGN KEY - QUEUE MESSAGE] %s", msg.String())
-		for _, df := range msg.GetVariableInfo().GetAllDataflows() {
-			logger.Logger.Infof("[df] %s", df.String())
+	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		switch datastore.Type {
+		case datastores.Queue:
+			msg := params[1]
+			logger.Logger.Infof("[FOREIGN KEY - QUEUE MESSAGE] %s", msg.String())
+			for _, df := range msg.GetVariableInfo().GetAllDataflows() {
+				logger.Logger.Infof("[df] %s", df.String())
+			}
+			abstractgraph.TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, child_idx)
+		case datastores.NoSQL:
+			cursor, query := returns[0], params[1]
+
+			queryObjs := abstractgraph.GetNoSQLQueryDocument(datastore, query)
+			for _, qObj := range queryObjs {
+				logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", qObj.String())
+				detector.checkForeignKeyRead(app, qObj.Object, qObj.FieldName, datastore, dbCall)
+			}
+
+			abstractgraph.TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, child_idx)
+			for _, obj := range queryObjs {
+				logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", obj.String())
+				abstractgraph.TaintDataflowNoSQL(app, obj.Object, dbCall, datastore, obj.FieldName, true, false, child_idx)
+			}
+		case datastores.Cache:
+			key, value := params[1], params[2]
+
+			detector.checkForeignKeyRead(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, datastore, dbCall)
+			abstractgraph.TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, child_idx)
+			abstractgraph.TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, child_idx)
+
+		case datastores.RelationalDB:
+			if blueprintBackendMethod.IsRelationalDBSelectCall() {
+				targetObj, queryObj, argsObjs := params[1], params[2], params[3:]
+				selectedFields, filterFields := abstractgraph.ParseSQLReadSelect(targetObj, queryObj, argsObjs)
+				for _, field := range filterFields {
+					// fieldName already contains the ROOT FIELD '*' in SQL if needed
+					detector.checkForeignKeyRead(app, field.GetObject(), field.GetName(), datastore, dbCall)
+					abstractgraph.TaintDataflowReadSQL(app, field.GetObject(), field.GetName(), dbCall, datastore, child_idx, false)
+				}
+
+				// fieldName already contains the ROOT FIELD '*' in SQL if needed
+				detector.checkForeignKeyRead(app, selectedFields[0].GetObject(), selectedFields[0].GetName(), datastore, dbCall)
+				abstractgraph.TaintDataflowReadSQL(app, selectedFields[0].GetObject(), selectedFields[0].GetName(), dbCall, datastore, child_idx, true)
+			} else if blueprintBackendMethod.IsRelationalDBQueryCall() {
+				logger.Logger.Fatalf("TODO!! implement cursor for sql similar to nosql mongodb")
+			}
+
+		default:
+			logger.Logger.Fatalf("[FOREIGN KEY] TODO: %s", dbCall.String())
 		}
-		abstractgraph.TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, child_idx)
-	case datastores.NoSQL:
-		cursor, query := returns[0], params[1]
-
-		queryObjs := abstractgraph.GetNoSQLQueryDocument(datastore, query)
-		for _, qObj := range queryObjs {
-			logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", qObj.String())
-			field := datastore.Schema.GetField(qObj.FieldName)
-			detector.checkForeignKeyRead(app, qObj.Object, field, dbCall)
-		}
-
-		abstractgraph.TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, child_idx)
-		for _, obj := range queryObjs {
-			logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", obj.String())
-			abstractgraph.TaintDataflowNoSQL(app, obj.Object, dbCall, datastore, obj.FieldName, true, false, child_idx)
-		}
-	case datastores.Cache:
-		key, value := params[1], params[2]
-
-		field := datastore.Schema.GetField(datastores.ROOT_FIELD_NAME_CACHE_KEY)
-		detector.checkForeignKeyRead(app, key, field, dbCall)
-
-		abstractgraph.TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, child_idx)
-		abstractgraph.TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, child_idx)
-
-	default:
-		logger.Logger.Fatalf("[FOREIGN KEY] TODO: %s", dbCall.String())
 	}
+
 }
 
 func (detector *ForeignKeyDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {

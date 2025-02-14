@@ -13,11 +13,10 @@ const UNKNOWN_FIELD_TYPE = "<unknown type>"
 
 const ROOT_FIELD_NAME_NOSQL = "_"
 const ROOT_FIELD_NAME_QUEUE = "_"
-const ROOT_FIELD_NAME_SQL = "*"
+const ROOT_FIELD_NAME_RELATIONALDB = "*"
 
 const ROOT_FIELD_NAME_CACHE_KEY = "key"
 const ROOT_FIELD_NAME_CACHE_VALUE = "value"
-
 
 type Schema struct {
 	Fields         []*Field      `json:"fields"`

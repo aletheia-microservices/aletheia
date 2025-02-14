@@ -58,10 +58,10 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID: string
     - Message.Timestamp: string
   - constraints:
-    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
     - REFERENCE(Message.PostID --> Post.PostID) [+]
     - REFERENCE(Message.PostID --> TriggerAnalyticsMessage.PostID) [+]
     - REFERENCE(Message.PostID --> Analytics.PostID) [+]
+    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
     - REFERENCE(Message --> Post.PostID) [+]
     - REFERENCE(Message --> TriggerAnalyticsMessage.PostID) [+]
     - REFERENCE(Message --> Analytics.PostID) [+]

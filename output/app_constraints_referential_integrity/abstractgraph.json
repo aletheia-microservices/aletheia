@@ -1,5 +1,466 @@
 [
   {
+    "method": "(*FrontendImpl).ReadAccountUser(ctx context.Context, accountID string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*AccountServiceImpl).ReadAccountUser(ctx context.Context, accountID string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+            "depth": 2,
+            "caller": "AccountService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "query",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"accountID\" string, Key \"accountID\" string, Value string, Value string}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"accountID\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"accountID\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "accountID",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "accountID",
+                                "creator": "Frontend"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = accounts, collection = accounts}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "account",
+                    "type": "(*app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64})"
+                  },
+                  "ptr_to": {
+                    "struct": {
+                      "name": "account",
+                      "type": "app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}"
+                    },
+                    "struct_fields": {
+                      "Username": {
+                        "field": {
+                          "name": "Username",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "Username",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "accounts_db"
+          },
+          {
+            "method": "(*UserServiceImpl).GetUser(ctx context.Context, username string)",
+            "depth": 2,
+            "caller": "AccountService",
+            "edges": [
+              {
+                "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+                "depth": 3,
+                "caller": "UserService",
+                "params": [
+                  {
+                    "interface": {
+                      "name": "ctx",
+                      "type": "context.Context",
+                      "refs": [
+                        {
+                          "name": "ctx",
+                          "creator": "AccountService"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "slice": {
+                      "name": "query",
+                      "type": "primitive.D"
+                    },
+                    "slice_variables": [
+                      {
+                        "struct": {
+                          "name": "",
+                          "type": "struct{Key \"username\" string, Key \"username\" string, Value string, Value string}"
+                        },
+                        "struct_fields": {
+                          "Key": {
+                            "field": {
+                              "name": "Key",
+                              "type": "\"username\" string"
+                            },
+                            "wrapped_variable": {
+                              "basic": {
+                                "name": "",
+                                "type": "\"username\" string"
+                              }
+                            }
+                          },
+                          "Value": {
+                            "field": {
+                              "name": "Value",
+                              "type": "string"
+                            },
+                            "wrapped_variable": {
+                              "basic": {
+                                "name": "username",
+                                "type": "string",
+                                "refs": [
+                                  {
+                                    "name": "Username",
+                                    "creator": "AccountService"
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "returns": [
+                  {
+                    "blueprint_backend": {
+                      "name": "result",
+                      "type": "NoSQLCursor {database = users, collection = users}"
+                    },
+                    "target_variable": {
+                      "pointer": {
+                        "name": "user",
+                        "type": "(*app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64})"
+                      },
+                      "ptr_to": {
+                        "struct": {
+                          "name": "user",
+                          "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "interface": {
+                      "name": "err",
+                      "type": ".error"
+                    }
+                  }
+                ],
+                "datastore": "users_db"
+              }
+            ],
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "Username",
+                  "type": "string"
+                }
+              }
+            ],
+            "returns": [
+              {
+                "struct": {
+                  "name": "",
+                  "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}",
+                  "refs": [
+                    {
+                      "name": "user",
+                      "creator": "UserService"
+                    }
+                  ]
+                }
+              },
+              {
+                "interface": {
+                  "name": "",
+                  "type": ".error",
+                  "refs": [
+                    {
+                      "name": "err",
+                      "creator": "UserService"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "accountID",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "",
+              "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "AccountService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "AccountService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "accountID",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).DeleteUser(ctx context.Context, username string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*UserServiceImpl).DeleteUser(ctx context.Context, username string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
+            "depth": 2,
+            "caller": "UserService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"username\" string, Key \"username\" string, Value string, Value string}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"username\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"username\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "username",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "username",
+                                "creator": "Frontend"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "users_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "username",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "basic": {
+              "name": "ok",
+              "type": "bool",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "UserService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "UserService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "username",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
     "method": "(*FrontendImpl).CreateAccount(ctx context.Context, reqID string, accountID string, username string)",
     "depth": 0,
     "caller": "Client",
@@ -645,467 +1106,6 @@
       {
         "basic": {
           "name": "accountID",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).ReadAccountUser(ctx context.Context, accountID string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*AccountServiceImpl).ReadAccountUser(ctx context.Context, accountID string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
-            "depth": 2,
-            "caller": "AccountService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "query",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"accountID\" string, Key \"accountID\" string, Value string, Value string}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"accountID\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"accountID\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "accountID",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "accountID",
-                                "creator": "Frontend"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = accounts, collection = accounts}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "account",
-                    "type": "(*app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64})"
-                  },
-                  "ptr_to": {
-                    "struct": {
-                      "name": "account",
-                      "type": "app_constraints_referential_integrity.Account struct{ReqID string, AccountID string, Username string, Timestamp int64}"
-                    },
-                    "struct_fields": {
-                      "Username": {
-                        "field": {
-                          "name": "Username",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "Username",
-                            "type": "string"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "accounts_db"
-          },
-          {
-            "method": "(*UserServiceImpl).GetUser(ctx context.Context, username string)",
-            "depth": 2,
-            "caller": "AccountService",
-            "edges": [
-              {
-                "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
-                "depth": 3,
-                "caller": "UserService",
-                "params": [
-                  {
-                    "interface": {
-                      "name": "ctx",
-                      "type": "context.Context",
-                      "refs": [
-                        {
-                          "name": "ctx",
-                          "creator": "AccountService"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "slice": {
-                      "name": "query",
-                      "type": "primitive.D"
-                    },
-                    "slice_variables": [
-                      {
-                        "struct": {
-                          "name": "",
-                          "type": "struct{Key \"username\" string, Key \"username\" string, Value string, Value string}"
-                        },
-                        "struct_fields": {
-                          "Key": {
-                            "field": {
-                              "name": "Key",
-                              "type": "\"username\" string"
-                            },
-                            "wrapped_variable": {
-                              "basic": {
-                                "name": "",
-                                "type": "\"username\" string"
-                              }
-                            }
-                          },
-                          "Value": {
-                            "field": {
-                              "name": "Value",
-                              "type": "string"
-                            },
-                            "wrapped_variable": {
-                              "basic": {
-                                "name": "username",
-                                "type": "string",
-                                "refs": [
-                                  {
-                                    "name": "Username",
-                                    "creator": "AccountService"
-                                  }
-                                ]
-                              }
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                ],
-                "returns": [
-                  {
-                    "blueprint_backend": {
-                      "name": "result",
-                      "type": "NoSQLCursor {database = users, collection = users}"
-                    },
-                    "target_variable": {
-                      "pointer": {
-                        "name": "user",
-                        "type": "(*app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64})"
-                      },
-                      "ptr_to": {
-                        "struct": {
-                          "name": "user",
-                          "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}"
-                        }
-                      }
-                    }
-                  },
-                  {
-                    "interface": {
-                      "name": "err",
-                      "type": ".error"
-                    }
-                  }
-                ],
-                "datastore": "users_db"
-              }
-            ],
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "Username",
-                  "type": "string"
-                }
-              }
-            ],
-            "returns": [
-              {
-                "struct": {
-                  "name": "",
-                  "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}",
-                  "refs": [
-                    {
-                      "name": "user",
-                      "creator": "UserService"
-                    }
-                  ]
-                }
-              },
-              {
-                "interface": {
-                  "name": "",
-                  "type": ".error",
-                  "refs": [
-                    {
-                      "name": "err",
-                      "creator": "UserService"
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "accountID",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "",
-              "type": "app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64}",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "AccountService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "AccountService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "accountID",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).DeleteUser(ctx context.Context, username string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*UserServiceImpl).DeleteUser(ctx context.Context, username string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
-            "depth": 2,
-            "caller": "UserService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"username\" string, Key \"username\" string, Value string, Value string}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"username\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"username\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "username",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "username",
-                                "creator": "Frontend"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "users_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "username",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "basic": {
-              "name": "ok",
-              "type": "bool",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "UserService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "UserService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "username",
           "type": "string"
         }
       }

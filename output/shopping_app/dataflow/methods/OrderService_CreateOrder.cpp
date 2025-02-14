@@ -31,9 +31,9 @@
      --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3}         --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3} --> r-tainted: read(product_db._.productID) {1}
 [_1] (Reference BasicType) ref <productID string> @ Frontend
 
-    --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
+    --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
 [0] (BasicObject BasicType) quantity int
-     --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
+     --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
 [_1] (Reference BasicType) ref <quantity int> @ Frontend
 
     --> w-tainted: write(billing_db.Bill.TotalCost) {1}
@@ -61,9 +61,9 @@
 [___3] (Reference BasicType) ref <productID string> @ Frontend
      --> w-tainted: write(order_db.Order.Quantity) {1}
 [_1] (FieldObject FieldType) Quantity int
-      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
+      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
 [__2] (BasicObject BasicType) quantity int
-       --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
+       --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
 [___3] (Reference BasicType) ref <quantity int> @ Frontend
      --> w-tainted: write(order_db.Order.Timestamp) {1}
 [_1] (FieldObject FieldType) Timestamp 1 int

@@ -69,7 +69,7 @@ func SaveResults(app *app.App, detector Detector) string {
 	color := TEXT_BOLD_LIGHT_BLUE
 	if string(previousContent) == results {
 		detector.SetSummary(color + strings.ToUpper(detector.GetAnalysisTypeString()) + ": " + summary + TEXT_RESET_COLOR + "\n")
-		return color + "[UNMODIFIED] \n" + results + TEXT_RESET_COLOR + "\n\n"
+		return color + "(unmodified) \n" + results + TEXT_RESET_COLOR + "\n\n"
 	}
 
 	// if content changed but the analysis summary is the same then the result is printed in yellow
@@ -94,5 +94,5 @@ func SaveResults(app *app.App, detector Detector) string {
 	logger.Logger.Tracef("[%s] saved cascading detection results to %s", analysisPrefix, path)
 
 	detector.SetSummary(color + strings.ToUpper(detector.GetAnalysisTypeString()) + ": " + summary + TEXT_RESET_COLOR + "\n")
-	return fmt.Sprintf("%s[MODIFIED]\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
+	return fmt.Sprintf("%s(modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
 }

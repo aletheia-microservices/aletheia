@@ -89,9 +89,6 @@ ORDER_DB:
     - Order.Date: string
     - Order.Total: 10 float32
   - constraints:
-    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
-    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
-    - REFERENCE(Order.CustomerID --> _.userid)
     - REFERENCE(Order.ID --> Shipment.ID) [+]
     - REFERENCE(Order.ID --> Shipment.ID) [+]
     - REFERENCE(Order.Shipment.ID --> Shipment.ID) [+]
@@ -105,6 +102,9 @@ ORDER_DB:
     - REFERENCE(Order.Shipment --> _.userid)
     - REFERENCE(Order.Shipment --> Shipment.Status) [+]
     - REFERENCE(Order.Shipment --> Shipment.Status) [+]
+    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
+    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
+    - REFERENCE(Order.CustomerID --> _.userid)
     - REFERENCE(Order --> Shipment.Name) [+]
     - REFERENCE(Order --> Shipment.Name) [+]
     - REFERENCE(Order --> _.userid)

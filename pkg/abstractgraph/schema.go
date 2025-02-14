@@ -426,7 +426,7 @@ func BuildSchema(app *app.App, frontends []string, entryNodes []AbstractNode) {
 				if entry.GetName() == exposedMethod.GetName() {
 					if _, isVisited := visited[entry]; !isVisited {
 						//app.ResetAllDataflows() //FIXME!!!!!
-						doBuildSchema(app, entry, requestIdx)
+						buildSchemaTransverseNode(app, entry, requestIdx)
 						visited[entry] = true
 					}
 				}
@@ -436,113 +436,122 @@ func BuildSchema(app *app.App, frontends []string, entryNodes []AbstractNode) {
 	}
 }
 
-var visitedNodes []AbstractNode
-var writtenDatastores = make(map[string]bool, 0)
-
-func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
-	if dbCall, ok := node.(*AbstractDatabaseCall); ok && dbCall.ParsedCall.Method.IsRead() {
+func buildSchemaTransverseNode(app *app.App, node AbstractNode, requestIdx int) bool {
+	if dbCall, ok := node.(*AbstractDatabaseCall); ok {
 		datastore := dbCall.DbInstance.GetDatastore()
-		params := dbCall.GetParams()
-		returns := dbCall.GetReturns()
-
-		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
-			switch datastore.Type {
-			case datastores.Queue:
-				msg := params[1]
-				TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, requestIdx)
-
-			case datastores.NoSQL:
-				cursor, query := returns[0], params[1]
-				TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, requestIdx)
-				queryObjs := GetNoSQLQueryDocument(datastore, query)
-				for _, v := range queryObjs {
-					TaintDataflowNoSQL(app, v.Object, dbCall, datastore, v.FieldName, true, false, requestIdx)
-				}
-
-			case datastores.Cache:
-				key, value := params[1], params[2]
-				TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, requestIdx)
-				TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, requestIdx)
-
-			case datastores.RelationalDB:
-				if blueprintBackendMethod.IsRelationalDBSelectCall() {
-					target, query, args := params[1], params[2], params[3:]
-					selectedFieldNames, filterFieldNames, filterFieldObjs := parseSQLReadSelect(query, args)
-					for idx, fieldName := range filterFieldNames {
-						fieldObj := filterFieldObjs[idx]
-						TaintDataflowReadSQL(app, fieldObj, fieldName, dbCall, datastore, requestIdx, false)
-					}
-					TaintDataflowReadSQL(app, target, selectedFieldNames[0], dbCall, datastore, requestIdx, true)
-				} else if blueprintBackendMethod.IsRelationalDBQueryCall() {
-					logger.Logger.Fatalf("TODO!! implement cursor for sql similar to nosql mongodb")
-				}
-
-			default:
-				logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
-			}
-		}
-
-	} else if dbCall, ok := node.(*AbstractDatabaseCall); ok && dbCall.ParsedCall.Method.IsWrite() {
-		datastore := dbCall.DbInstance.GetDatastore()
-		if found := writtenDatastores[datastore.Name]; !found {
-			writtenDatastores[datastore.Name] = true
-		}
-		params := dbCall.GetParams()
 		logger.Logger.Infof("[SCHEMA] [%s] building schema based on abstract node (%s)", datastore.Name, dbCall.GetName())
+		buildSchemaOnNewNode(dbCall)
 
-		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
-			switch datastore.Type {
-			case datastores.Queue:
-				msg := params[1]
-				saveUnfoldedFieldsToDatastore(msg, datastores.ROOT_FIELD_NAME_QUEUE, datastore)
-				TaintDataflowWrite(app, msg, dbCall, datastore, "", true, requestIdx)
-				referenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
-
-			case datastores.NoSQL:
-				doc := params[1]
-				saveUnfoldedFieldsToDatastore(doc, datastores.ROOT_FIELD_NAME_NOSQL, datastore)
-				TaintDataflowWrite(app, doc, dbCall, datastore, "", true, requestIdx)
-				referenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
-
-			case datastores.Cache:
-				key, value := params[1], params[2]
-				saveFieldToDatastore(key, datastores.ROOT_FIELD_NAME_CACHE_KEY, datastore)
-				saveFieldToDatastore(value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, datastore)
-				TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, requestIdx)
-				TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, requestIdx)
-				referenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
-				referenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
-
-			case datastores.RelationalDB:
-				if blueprintBackendMethod.IsRelationalDBExecCall() {
-					query, args := params[1], params[2:]
-					writtenFieldNames, writtenFieldObjs, filterFieldNames, filterFieldObjs := ParseSQLWrite(query, args)
-					for idx, fieldName := range writtenFieldNames {
-						fieldObj := writtenFieldObjs[idx]
-						saveFieldToDatastore(fieldObj, fieldName, datastore)
-						TaintDataflowWrite(app, fieldObj, dbCall, datastore, fieldName, false, requestIdx)
-						referenceTaintedDataflowForNestedField(fieldObj, datastore, fieldName, requestIdx)
-					}
-					for idx, fieldName := range filterFieldNames {
-						fieldObj := filterFieldObjs[idx]
-						TaintDataflowReadSQL(app, fieldObj, fieldName, dbCall, datastore, requestIdx, false)
-						referenceTaintedDataflowForNestedField(fieldObj, datastore, fieldName, requestIdx)
-					}
-				}
-
-			default:
-				logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
-			}
+		if dbCall.GetParsedCall().GetMethod().IsRead() {
+			buildSchemaOnRead(app, dbCall, requestIdx)
+		} else if dbCall.GetParsedCall().GetMethod().IsWrite() {
+			buildSchemaOnWrite(app, dbCall, requestIdx)
 		}
-
 	}
-
-	visitedNodes = append(visitedNodes, node)
 
 	for _, child := range node.GetChildren() {
-		doBuildSchema(app, child, requestIdx)
+		buildSchemaTransverseNode(app, child, requestIdx)
 	}
 	return true
+}
+
+var writtenDatastores = make(map[string]bool, 0)
+
+func buildSchemaOnNewNode(dbCall *AbstractDatabaseCall) {
+	datastore := dbCall.DbInstance.GetDatastore()
+	if found := writtenDatastores[datastore.Name]; !found {
+		writtenDatastores[datastore.Name] = true
+	}
+}
+
+func buildSchemaOnRead(app *app.App, dbCall *AbstractDatabaseCall, requestIdx int) {
+	datastore := dbCall.DbInstance.GetDatastore()
+	params := dbCall.GetParams()
+	returns := dbCall.GetReturns()
+
+	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		switch datastore.Type {
+		case datastores.Queue:
+			msg := params[1]
+			TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, requestIdx)
+
+		case datastores.NoSQL:
+			cursor, query := returns[0], params[1]
+			TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, requestIdx)
+			queryObjs := GetNoSQLQueryDocument(datastore, query)
+			for _, v := range queryObjs {
+				TaintDataflowNoSQL(app, v.Object, dbCall, datastore, v.FieldName, true, false, requestIdx)
+			}
+
+		case datastores.Cache:
+			key, value := params[1], params[2]
+			TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, requestIdx)
+			TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, requestIdx)
+
+		case datastores.RelationalDB:
+			if blueprintBackendMethod.IsRelationalDBSelectCall() {
+				targetObj, queryObj, argsObjs := params[1], params[2], params[3:]
+				selectedFields, filterFields := ParseSQLReadSelect(targetObj, queryObj, argsObjs)
+				for _, field := range filterFields {
+					TaintDataflowReadSQL(app, field.GetObject(), field.GetName(), dbCall, datastore, requestIdx, false)
+				}
+				TaintDataflowReadSQL(app, targetObj, selectedFields[0].GetName(), dbCall, datastore, requestIdx, true)
+			} else if blueprintBackendMethod.IsRelationalDBQueryCall() {
+				logger.Logger.Fatalf("TODO!! implement cursor for sql similar to nosql mongodb")
+			}
+
+		default:
+			logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
+		}
+	}
+}
+
+func buildSchemaOnWrite(app *app.App, dbCall *AbstractDatabaseCall, requestIdx int) {
+	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		datastore := dbCall.DbInstance.GetDatastore()
+		params := dbCall.GetParams()
+
+		switch datastore.Type {
+		case datastores.Queue:
+			msg := params[1]
+			saveUnfoldedFieldsToDatastore(msg, datastores.ROOT_FIELD_NAME_QUEUE, datastore)
+			TaintDataflowWrite(app, msg, dbCall, datastore, "", true, requestIdx)
+			referenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
+
+		case datastores.NoSQL:
+			doc := params[1]
+			saveUnfoldedFieldsToDatastore(doc, datastores.ROOT_FIELD_NAME_NOSQL, datastore)
+			TaintDataflowWrite(app, doc, dbCall, datastore, "", true, requestIdx)
+			referenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
+
+		case datastores.Cache:
+			key, value := params[1], params[2]
+			saveFieldToDatastore(key, datastores.ROOT_FIELD_NAME_CACHE_KEY, datastore)
+			saveFieldToDatastore(value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, datastore)
+			TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, requestIdx)
+			TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, requestIdx)
+			referenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
+			referenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
+
+		case datastores.RelationalDB:
+			if blueprintBackendMethod.IsRelationalDBExecCall() {
+				query, args := params[1], params[2:]
+				writtenFields, filterFields := ParseSQLWrite(query, args)
+				for _, field := range writtenFields {
+					saveFieldToDatastore(field.GetObject(), field.GetName(), datastore)
+					TaintDataflowWrite(app, field.GetObject(), dbCall, datastore, field.GetName(), false, requestIdx)
+					referenceTaintedDataflowForNestedField(field.GetObject(), datastore, field.GetName(), requestIdx)
+				}
+				for _, field := range filterFields {
+					TaintDataflowReadSQL(app, field.GetObject(), field.GetName(), dbCall, datastore, requestIdx, false)
+					referenceTaintedDataflowForNestedField(field.GetObject(), datastore, field.GetName(), requestIdx)
+				}
+			}
+
+		default:
+			logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
+		}
+	}
 }
 
 type tableNameAlias struct {
@@ -586,7 +595,7 @@ func parseSQLTableExprs(tableExprs sqlparser.TableExprs) []tableNameAlias {
 	return tableNameAliasLst
 }
 
-func parseSQLWhere(args []objects.Object, stmtWhere *sqlparser.Where, tableNameAliasLst []tableNameAlias, argIdx int, filterFieldNames []string, filterFieldObjs []objects.Object) (int, []string, []objects.Object){
+func parseSQLWhere(args []objects.Object, stmtWhere *sqlparser.Where, tableNameAliasLst []tableNameAlias, argIdx int, filterFields []SQLFieldObject) (int, []SQLFieldObject) {
 	if comparisonExpr, ok := stmtWhere.Expr.(*sqlparser.ComparisonExpr); ok {
 		var leftFieldName string
 		var rightFieldObj objects.Object
@@ -602,13 +611,29 @@ func parseSQLWhere(args []objects.Object, stmtWhere *sqlparser.Where, tableNameA
 			}
 		}
 		logger.Logger.Infof("[SCHEMA] [WHERE]: %s -> %s", leftFieldName, rightFieldObj)
-		filterFieldNames = append(filterFieldNames, leftFieldName)
-		filterFieldObjs = append(filterFieldObjs, rightFieldObj)
+		filterFields = append(filterFields, SQLFieldObject{leftFieldName, rightFieldObj})
 	}
-	return argIdx, filterFieldNames, filterFieldObjs
+	return argIdx, filterFields
 }
 
-func parseSQLReadSelect(query objects.Object, args []objects.Object) ([]string, []string, []objects.Object) {
+type SQLFieldObject struct {
+	name string
+	obj  objects.Object
+}
+
+func (field *SQLFieldObject) GetName() string {
+	return field.name
+}
+
+func (field *SQLFieldObject) GetObject() objects.Object {
+	return field.obj
+}
+
+func (field *SQLFieldObject) String() string {
+	return fmt.Sprintf("%s -> %s", field.name, field.obj)
+}
+
+func ParseSQLReadSelect(target objects.Object, query objects.Object, args []objects.Object) ([]SQLFieldObject, []SQLFieldObject) {
 	sql := query.GetType().GetBasicValue()
 	logger.Logger.Infof("[SCHEMA] parsing sql stmt: %s", sql)
 
@@ -618,9 +643,9 @@ func parseSQLReadSelect(query objects.Object, args []objects.Object) ([]string, 
 	}
 
 	argIdx := 0
-	var selectedFieldNames []string
-	var filterFieldNames []string
-	var filterFieldObjs []objects.Object
+	//FIXME: selectedFields has always only one element and the object is the "target" from the func args
+	var selectedFields []SQLFieldObject
+	var filterFields []SQLFieldObject
 	var tableNameAliasLst []tableNameAlias
 
 	switch stmt := stmt.(type) {
@@ -631,7 +656,8 @@ func parseSQLReadSelect(query objects.Object, args []objects.Object) ([]string, 
 		for _, expr := range stmt.SelectExprs {
 			if _, ok := expr.(*sqlparser.StarExpr); ok {
 				readAllFields = true
-				selectedFieldNames = append(selectedFieldNames, tableNameAliasLst[0].name+".*")
+				fieldName := tableNameAliasLst[0].name+".*"
+				selectedFields = append(selectedFields, SQLFieldObject{fieldName, target})
 				logger.Logger.Tracef("[SCHEMA] found sqlparser.StarExpr (%t)", readAllFields)
 			} else if aliasedExpr, ok := expr.(*sqlparser.AliasedExpr); ok {
 				if valTuple, ok := aliasedExpr.Expr.(sqlparser.ValTuple); ok {
@@ -642,23 +668,23 @@ func parseSQLReadSelect(query objects.Object, args []objects.Object) ([]string, 
 							fieldName := tableName + "." + columnName
 
 							logger.Logger.Infof("[SCHEMA] [SELECT record %d/%d]: %s", rowIdx+1, len(valTuple), fieldName)
-							selectedFieldNames = append(selectedFieldNames, fieldName)
+							selectedFields = append(selectedFields, SQLFieldObject{fieldName, target})
 						}
 					}
 				}
 			}
 		}
 
-		_, filterFieldNames, filterFieldObjs = parseSQLWhere(args, stmt.Where, tableNameAliasLst, argIdx, filterFieldNames, filterFieldObjs)
+		_, filterFields = parseSQLWhere(args, stmt.Where, tableNameAliasLst, argIdx, filterFields)
 
 	default:
 		logger.Logger.Fatalf("[SCHEMA] Unsupported SQL statement: %s", sql)
 	}
 
-	return selectedFieldNames, filterFieldNames, filterFieldObjs
+	return selectedFields, filterFields
 }
 
-func ParseSQLWrite(query objects.Object, args []objects.Object) ([]string, []objects.Object, []string, []objects.Object) {
+func ParseSQLWrite(query objects.Object, args []objects.Object) ([]SQLFieldObject, []SQLFieldObject) {
 	sql := query.GetType().GetBasicValue()
 	logger.Logger.Infof("[SCHEMA] parsing sql stmt: %s", sql)
 
@@ -668,10 +694,8 @@ func ParseSQLWrite(query objects.Object, args []objects.Object) ([]string, []obj
 	}
 
 	argIdx := 0
-	var writtenFieldNames []string
-	var writtenFieldObjs []objects.Object
-	var filterFieldNames []string
-	var filterFieldObjs []objects.Object
+	var writtenFields []SQLFieldObject
+	var filterFields []SQLFieldObject
 
 	switch stmt := stmt.(type) {
 	case *sqlparser.Insert:
@@ -685,8 +709,7 @@ func ParseSQLWrite(query objects.Object, args []objects.Object) ([]string, []obj
 							fieldObj := args[argIdx]
 							placeholderVal := string(sqlVal.Val)
 							logger.Logger.Infof("[SCHEMA] (record %d/%d) INSERT %s = (%s) -> %s", rowIdx+1, len(values), fieldName, placeholderVal, fieldObj)
-							writtenFieldNames = append(writtenFieldNames, fieldName)
-							writtenFieldObjs = append(writtenFieldObjs, fieldObj)
+							writtenFields = append(writtenFields, SQLFieldObject{fieldName, fieldObj})
 							argIdx++
 						}
 					}
@@ -709,14 +732,13 @@ func ParseSQLWrite(query objects.Object, args []objects.Object) ([]string, []obj
 					fieldObj := args[argIdx]
 					placeholderVal := string(sqlVal.Val)
 					logger.Logger.Infof("[SCHEMA] SET %s = (%s) -> %s", fieldName, placeholderVal, fieldObj)
-					writtenFieldNames = append(writtenFieldNames, fieldName)
-					writtenFieldObjs = append(writtenFieldObjs, fieldObj)
+					writtenFields = append(writtenFields, SQLFieldObject{fieldName, fieldObj})
 					argIdx++
 				}
 			}
 		}
 
-		_, filterFieldNames, filterFieldObjs = parseSQLWhere(args, stmt.Where, tableNameAliasLst, argIdx, filterFieldNames, filterFieldObjs)
+		_, filterFields = parseSQLWhere(args, stmt.Where, tableNameAliasLst, argIdx, filterFields)
 	}
-	return writtenFieldNames, writtenFieldObjs, filterFieldNames, filterFieldObjs
+	return writtenFields, filterFields
 }
