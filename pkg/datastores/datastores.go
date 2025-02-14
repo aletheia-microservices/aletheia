@@ -9,7 +9,7 @@ import (
 type DatastoreType int
 
 const (
-	SQL DatastoreType = iota
+	RelationalDB DatastoreType = iota
 	Cache
 	NoSQL
 	Queue
@@ -56,10 +56,10 @@ func (ds *Datastore) AddReferencingDatastoreIfNotExists(newDep *Datastore) {
 
 func (ds *Datastore) GetTypeString() string {
 	var typeToString = map[DatastoreType]string{
-		SQL:   "SQL",
-		Cache: "Cache",
-		NoSQL: "NoSQLDatabase",
-		Queue: "Queue",
+		RelationalDB: "RelationalDB",
+		Cache:        "Cache",
+		NoSQL:        "NoSQLDatabase",
+		Queue:        "Queue",
 	}
 	return typeToString[ds.Type]
 }
@@ -91,8 +91,8 @@ func (ds *Datastore) MarshalJSON() ([]byte, error) {
 func (ds *Datastore) GetName() string {
 	return ds.Name
 }
-func (ds *Datastore) IsSQL() bool {
-	return ds.GetTypeString() == "SQL"
+func (ds *Datastore) IsRelationalDB() bool {
+	return ds.GetTypeString() == "RelationalDB"
 }
 func (ds *Datastore) IsCache() bool {
 	return ds.GetTypeString() == "Cache"

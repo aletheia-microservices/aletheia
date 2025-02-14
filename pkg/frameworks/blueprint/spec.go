@@ -124,7 +124,7 @@ func buildDatabasesInstances(databases map[string]ir.IRNode) []datastores.Databa
 					Name: name,
 					//FIXME, we can have many replicas
 					Datastore: &datastores.Datastore{
-						Type:   datastores.SQL,
+						Type:   datastores.RelationalDB,
 						Kind:   datastores.MySQL,
 						Name:   name,
 						Schema: &datastores.Schema{},

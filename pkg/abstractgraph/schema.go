@@ -464,7 +464,7 @@ func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
 				TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, requestIdx)
 				TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, requestIdx)
 
-			case datastores.SQL:
+			case datastores.RelationalDB:
 				if blueprintBackendMethod.IsRelationalDBSelectCall() {
 					target, query, args := params[1], params[2], params[3:]
 					selectedFieldNames, filterFieldNames, filterFieldObjs := parseSQLReadSelect(query, args)
@@ -513,12 +513,12 @@ func doBuildSchema(app *app.App, node AbstractNode, requestIdx int) bool {
 				referenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
 				referenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
 
-			case datastores.SQL:
+			case datastores.RelationalDB:
 				if blueprintBackendMethod.IsRelationalDBExecCall() {
 					query, args := params[1], params[2:]
-					newFieldNames, newFieldObjs, filterFieldNames, filterFieldObjs := parseSQLWrite(query, args)
-					for idx, fieldName := range newFieldNames {
-						fieldObj := newFieldObjs[idx]
+					writtenFieldNames, writtenFieldObjs, filterFieldNames, filterFieldObjs := ParseSQLWrite(query, args)
+					for idx, fieldName := range writtenFieldNames {
+						fieldObj := writtenFieldObjs[idx]
 						saveFieldToDatastore(fieldObj, fieldName, datastore)
 						TaintDataflowWrite(app, fieldObj, dbCall, datastore, fieldName, false, requestIdx)
 						referenceTaintedDataflowForNestedField(fieldObj, datastore, fieldName, requestIdx)
@@ -658,7 +658,7 @@ func parseSQLReadSelect(query objects.Object, args []objects.Object) ([]string, 
 	return selectedFieldNames, filterFieldNames, filterFieldObjs
 }
 
-func parseSQLWrite(query objects.Object, args []objects.Object) ([]string, []objects.Object, []string, []objects.Object) {
+func ParseSQLWrite(query objects.Object, args []objects.Object) ([]string, []objects.Object, []string, []objects.Object) {
 	sql := query.GetType().GetBasicValue()
 	logger.Logger.Infof("[SCHEMA] parsing sql stmt: %s", sql)
 

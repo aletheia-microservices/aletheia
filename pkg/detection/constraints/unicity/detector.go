@@ -9,6 +9,7 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 )
 
@@ -85,15 +86,28 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
 	if schema.HasConstraintsUnique() {
-		if datastore.IsNoSQLDatabase() {
-			update := dbCall.GetParam(1)
-			updateType := update.GetType()
-			logger.Logger.Infof("[UNICITY DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
-			_, fieldNames := updateType.GetNestedFieldTypes(updateType.GetName(), datastore.IsNoSQLDatabase())
-
+		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+			var writtenFieldNames []string
+			params := dbCall.GetParams()
+			if datastore.IsNoSQLDatabase() {
+				obj := params[1]
+				objType := obj.GetType()
+				logger.Logger.Infof("[UNICITY DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
+				_, writtenFieldNames = objType.GetNestedFieldTypes(objType.GetName(), datastore.IsNoSQLDatabase())
+			} else if datastore.IsRelationalDB() {
+				if blueprintBackendMethod.IsRelationalDBExecCall() {
+					query, args := params[1], params[2:]
+					writtenFieldNames, _, _, _ = abstractgraph.ParseSQLWrite(query, args)
+				} else {
+					logger.Logger.Warnf("[UNICITY DETECTOR] ignoring on write/update for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
+				}
+			} else {
+				logger.Logger.Warnf("[UNICITY DETECTOR] ignoring on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
+			}
+			
 			var unicityConstraints []*datastores.Constraint
-			for _, fieldName := range fieldNames {
-				unicityConstraint := schema.GetConstraintsUniqueForFieldName(fieldName)
+			for _, writtenFieldName := range writtenFieldNames {
+				unicityConstraint := schema.GetConstraintsUniqueForFieldName(writtenFieldName)
 				unicityConstraints = append(unicityConstraints, unicityConstraint...)
 			}
 			logger.Logger.Warnf("[UNICITY DETECTOR] WRITE/UPDATE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
@@ -102,10 +116,10 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 			}
 
 			requestInfo := detector.getCurrentRequestInfo()
-			if len(unicityConstraints) > 0 {
+			if len(unicityConstraints) > 0 { // operation that may be affecting the following ones
 				operation := NewOperationOnUnicityConstraint(dbCall, datastore)
 				requestInfo.addOperation(operation)
-			} else if requestInfo.hasOperations() {
+			} else if requestInfo.hasOperations() { // operation that is affected by previous operations
 				operation := NewOperation(dbCall, datastore)
 				requestInfo.addOperation(operation)
 			}
@@ -127,10 +141,10 @@ func (detector *UnicityDetector) ComputeResults() {
 	for detector.requestInfoStack.Len() > 0 {
 		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
 		if requestInfo.hasPotentialInconsistencies() {
-			detector.results += "\n[ENTRY] " + requestInfo.entry.String() + "\n"
+			detector.results += fmt.Sprintf("\n[ENTRY] %s\n", requestInfo.entry.String())
 			numRequests++
 			for _, op := range requestInfo.getOperations() {
-				detector.results += "\t- OPERATION @ " + op.call.Service + ": " + op.call.String() + "\n"
+				detector.results += fmt.Sprintf("\t- OPERATION @ (%s, %s): %s\n", op.call.Service, op.datastore.GetName(), op.call.String())
 				numOps++
 			}
 		}

@@ -18,6 +18,7 @@ git submodule update --init --recursive
 ## Getting Started
 
 Install python requirements (use venv if needed):
+
 ```zsh
 python3 -m venv ~/.venv
 source ~/.venv/bin/activate
@@ -27,6 +28,7 @@ pip3 install -r requirements.txt
 ## Running the Tool
 
 Available applications:
+
 - `foobar`
 - `shopping_app`
 - `shopping_simple`
@@ -40,6 +42,7 @@ Available applications:
 - `employee_app`
 
 Run the code analyzer:
+
 ```zsh
 go run main.go --help
 
@@ -81,6 +84,7 @@ go run main.go -all=true --xcy --fk --cascade
 ```
 
 Run the graph builder:
+
 ```zsh
 source ~/.venv/bin/activate
 ./graphs.py --help
@@ -100,19 +104,21 @@ graphs.py [-h] [--app {postnotification,postnotification_simple,trainticket,shop
 
 ## Results
 
-| Application Name                          | Runs          | XCY Analysis  | Cascade Analysis  | Foreign Key Analysis  | Specialization |
-|-------------------------------------------|---------------|---------------|-------------------|-----------------------|----------------|
-| `foobar`                                  | **YES**       | 0             | 0;0               | 0                     | 0              |
-| `shopping_simple`                         | **YES**       | 0             | 1;1               | 0                     | 0              |
-| `shopping_app`                            | **YES**       | 0 (PREV=1!)   | 0                 | 0 (PREV=1!)           | 0              |
-| `postnotification_simple`                 | **YES**       | 1             | 0                 | 1                     | 0              |
-| `postnotification`                        | **YES**       | 2             | 0                 | 2                     | 0              |
-| `sockshop2`                               | **YES**       | 0             | 4;0               | 0                     | 0              |
-| `trainticket`                             | **YES**       | 0             | 13;0              | 0                     | 0              |
-| `dsb_sn`                                  | **YES**       | 0             | 0                 | 0                     | 0              |
-| `dsb_hotel`                               | **NO**        | -             | -                 | -                     | -              |
-| `app_constraints_referential_integrity`   | **YES**       | 0             | 2;1               | 1                     | 0              |
-| `employee_app`                            | **YES**       | 0             | 2;3               | 0                     | 1              |
+| Application Name                        | Runs    | XCY         | Cascade Delte | Foreign Key | Specialization | Unicity (Ind.) |
+| --------------------------------------- | ------- | ----------- | ------------- | ----------- | -------------- | -------------- |
+| `foobar`                                | **YES** | 0           | 0;0           | 0           | 0              | 0              |
+| `shopping_simple`                       | **YES** | 0           | 1;1           | 0           | 0              | 0              |
+| `shopping_app`                          | **YES** | 0 (PREV=1!) | 0;0           | 0 (PREV=1!) | 0              | 0              |
+| `postnotification_simple`               | **YES** | 1           | 0;0           | 1           | 0              | 0              |
+| `postnotification`                      | **YES** | 2           | 0;0           | 2           | 0              | 0              |
+| `sockshop2`                             | **YES** | 0           | 4;0           | 0           | 0              | 0              |
+| `trainticket`                           | **YES** | 0           | 13;0          | 0           | 0              | 0              |
+| `dsb_sn`                                | **YES** | 0           | 0;0           | 0           | 0              | 0              |
+| `dsb_hotel`                             | **NO**  | -           | -             | -           | -              | 0              |
+| `app_constraints_referential_integrity` | **YES** | 0           | 2;1           | 1           | 0              | 0              |
+| `employee_app`                          | **YES** | 0           | 2;3           | 0           | 1              | 0              |
+| `coupons_app`                           | **YES** | 0           | 0;0           | 0           | 0              | 1;2            |
+| `coupons_app_sql`                       | **YES** | 0           | 0;0           | -           | 0              | 1;2            |
 
 ## Structure
 

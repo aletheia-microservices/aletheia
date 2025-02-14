@@ -2,4 +2,8 @@
 ---------------------- UNICITY ANALYSIS --------------------
 ------------------------------------------------------------
 >> SUMMARY (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):
->> (0;0)
+>> (1;2)
+
+[ENTRY] Frontend(ctx context.Context, couponID int, studentID int)
+	- OPERATION @ (CouponService, coupons_db): s.couponsDB.Exec(ctx context.Context, "INSERT INTO claimed_coupons(coupon_id, user_id) VALUES (?, ?);" string, couponID int, userID int)
+	- OPERATION @ (StudentService, students_db): s.studentsDB.Exec(ctx context.Context, "UPDATE students SET balance = ? WHERE student_id = ?" string, newBalance int, studentID int)
