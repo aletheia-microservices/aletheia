@@ -4,23 +4,23 @@
 	- read <users []user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} (ArrayObject)>
     from <users []user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} (ArrayObject)>
 
-USER_DB._:
-- read <res NoSQLCursor {database = user, collection = user} (BlueprintBackendObject)>
-- read <res NoSQLCursor {database = user, collection = user} (BlueprintBackendObject)>
-- read <res NoSQLCursor {database = user, collection = user} (BlueprintBackendObject)>
-
-USER_DB._.userid:
-- read <userID string (BasicObject)>
-- read <userID string (BasicObject)> from <userID string (BasicObject)>
-
-USER_DB._.username:
-- read <username string (BasicObject)>
-- read <username string (BasicObject)> from <username string (BasicObject)>
-
 USER_DB.User:
 - write <user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} (StructObject)>
 - write <user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} (StructObject)> from
   <user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} (StructObject)>
+
+USER_DB.User.UserID:
+- read <res NoSQLCursor {database = user, collection = user} (BlueprintBackendObject)>
+- read <res NoSQLCursor {database = user, collection = user} (BlueprintBackendObject)>
+- read <res NoSQLCursor {database = user, collection = user} (BlueprintBackendObject)>
+
+USER_DB.User.UserID.userid:
+- read <userID string (BasicObject)>
+- read <userID string (BasicObject)> from <userID string (BasicObject)>
+
+USER_DB.User.UserID.username:
+- read <username string (BasicObject)>
+- read <username string (BasicObject)> from <username string (BasicObject)>
 
 User:
 - read <user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} (StructObject)> from
@@ -39,7 +39,6 @@ string:
 - read <id string (BasicObject)> from <id string (BasicObject)>
 - read <AccountID string (BasicObject)>
 - read <AccountID string (BasicObject)> from <AccountID string (BasicObject)>
-- write <AccountID string (BasicObject)> from <contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} (StructObject)>
 - read <DocumentNumber string (BasicObject)>
 - read <DocumentNumber string (BasicObject)> from <DocumentNumber string (BasicObject)>
 - write <DocumentNumber string (BasicObject)> from <contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} (StructObject)>

@@ -112,19 +112,24 @@ func initAnalyzer(analysis analysisConfig) {
 	fmt.Println(" ----------------------------------------------------------------------------------------------------------------- ")
 	fmt.Println()
 
+	prepSchema(analysis, app, abstractGraph)
+
 	abstractgraph.BuildSchema(app, frontends, abstractGraph.Nodes)
 	app.Dump()
 	abstractGraph.Dump()
 	fmt.Println()
 
-	prepAnalysis(analysis, app, abstractGraph)
+	prepAnalysis(analysis, app)
 	runAnalysis(analysis, app, abstractGraph)
 	endAnalysis(analysis, app)
 }
 
-func prepAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractgraph.AbstractGraph) {
-	constraints.ParseConstraints(app, analysis.autofill)
+func prepSchema(analysis analysisConfig, app *app.App, abstractGraph *abstractgraph.AbstractGraph) {
 	abstractGraph.AttachDatabaseFieldsToEntryArgs(app, analysis.autofill)
+}
+
+func prepAnalysis(analysis analysisConfig, app *app.App) {
+	constraints.ParseConstraints(app, analysis.autofill)
 	app.DumpYamlSchema(false)
 }
 

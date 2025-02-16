@@ -9,7 +9,7 @@
 
 [0] (InterfaceObject UserType) err .error
 
-    --> r-tainted: read(user_db._) {1}
+    --> r-tainted: read(user_db.User.UserID) {1}
 [0] (BlueprintBackendObject BlueprintBackendType) res NoSQLCursor {database = user, collection = user}
      --> r-tainted: read(user_db.[]user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}) {1}
 [_1] (ArrayObject ArrayType) users []user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}

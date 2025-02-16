@@ -14,7 +14,6 @@ CONTACTS_DB._.accountid:
 - read <id string (BasicObject)> from <id string (BasicObject)>
 - read <AccountID string (BasicObject)>
 - read <AccountID string (BasicObject)> from <AccountID string (BasicObject)>
-- write <AccountID string (BasicObject)> from <contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} (StructObject)>
 
 CONTACTS_DB._.documentnumber:
 - read <DocumentNumber string (BasicObject)>
@@ -37,9 +36,7 @@ CONTACTS_DB.Contact:
 - read <res NoSQLCursor {database = contacts, collection = contacts} (BlueprintBackendObject)>
 
 CONTACTS_DB.Contact.AccountID:
-- read <AccountID string (BasicObject)>
-- read <AccountID string (BasicObject)> from <AccountID string (BasicObject)>
-- write <AccountID string (BasicObject)> from <contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} (StructObject)>
+- write <userID string (BasicObject)> from <contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} (StructObject)>
 - write <AccountID string (FieldObject)> from <contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} (StructObject)>
 
 CONTACTS_DB.Contact.DocumentNumber:

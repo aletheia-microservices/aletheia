@@ -19,13 +19,13 @@
   - __2 depth 2 (FieldObject FieldType) userDB NoSQLDatabase
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) db NoSQLDatabase
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - '0 depth 0 (BasicObject BasicType) userID string --> r-tainted 1x: read(user_db._.userid)'
+  - '0 depth 0 (BasicObject BasicType) userID string --> r-tainted 1x: read(user_db.User.UserID.userid)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) coll NoSQLCollection {database = user, collection = user}
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (SliceObject UserType) query primitive.D
   - _1 depth 1 (StructObject StructType) struct{ string, "userid" string, string}
   - '0 depth 0 (BlueprintBackendObject BlueprintBackendType) res NoSQLCursor {database
-    = user, collection = user} --> r-tainted 1x: read(user_db._)'
+    = user, collection = user} --> r-tainted 1x: read(user_db.User.UserID)'
   - '_1 depth 1 (StructObject UserType) user user.User struct{UserID string, Username
     string, Password string, Gender int64, DocumentType int64, DocumentNum string,
     Email string} --> r-tainted 1x: read(user_db.User)'
@@ -40,13 +40,13 @@
   - __2 depth 2 (FieldObject FieldType) userDB NoSQLDatabase
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) db NoSQLDatabase
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - '0 depth 0 (BasicObject BasicType) username string --> r-tainted 1x: read(user_db._.username)'
+  - '0 depth 0 (BasicObject BasicType) username string --> r-tainted 1x: read(user_db.User.UserID.username)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) coll NoSQLCollection {database = user, collection = user}
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (SliceObject UserType) query primitive.D
   - _1 depth 1 (StructObject StructType) struct{ string, "username" string, string}
   - '0 depth 0 (BlueprintBackendObject BlueprintBackendType) res NoSQLCursor {database
-    = user, collection = user} --> r-tainted 1x: read(user_db._)'
+    = user, collection = user} --> r-tainted 1x: read(user_db.User.UserID)'
   - '_1 depth 1 (StructObject UserType) user user.User struct{UserID string, Username
     string, Password string, Gender int64, DocumentType int64, DocumentNum string,
     Email string} --> r-tainted 1x: read(user_db.User)'
@@ -64,7 +64,7 @@
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) coll NoSQLCollection {database = user, collection = user}
   - 0 depth 0 (InterfaceObject UserType) err .error
   - '0 depth 0 (BlueprintBackendObject BlueprintBackendType) res NoSQLCursor {database
-    = user, collection = user} --> r-tainted 1x: read(user_db._)'
+    = user, collection = user} --> r-tainted 1x: read(user_db.User.UserID)'
   - '_1 depth 1 (ArrayObject ArrayType) users []user.User struct{UserID string, Username
     string, Password string, Gender int64, DocumentType int64, DocumentNum string,
     Email string} --> r-tainted 1x: read(user_db.[]user.User struct{UserID string,

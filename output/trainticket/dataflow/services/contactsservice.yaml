@@ -1,4 +1,4 @@
-? (*ContactsServiceImpl).CreateContacts(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string})
+? (*ContactsServiceImpl).CreateContacts(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}, userID string)
 :
  block 11 (IfDone):
   - 0 depth 0 (PointerObject PointerType) c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase})
@@ -10,14 +10,14 @@
     AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber
     string} --> w-tainted 1x: write(contacts_db.Contact)'
   - '_1 depth 1 (FieldObject FieldType) AccountID string --> w-tainted 1x: write(contacts_db.Contact.AccountID)'
-  - '__2 depth 2 (BasicObject BasicType) AccountID string --> w-tainted 1x: write(contacts_db.Contact.AccountID)
-    --> r-tainted 1x: read(contacts_db._.accountid)'
+  - '__2 depth 2 (BasicObject BasicType) userID string --> w-tainted 1x: write(contacts_db.Contact.AccountID)'
   - '_3 depth 1 (FieldObject FieldType) DocumentNumber string --> w-tainted 1x: write(contacts_db.Contact.DocumentNumber)'
   - '__4 depth 2 (BasicObject BasicType) DocumentNumber string --> w-tainted 1x: write(contacts_db.Contact.DocumentNumber)
     --> r-tainted 1x: read(contacts_db._.documentnumber)'
   - '_5 depth 1 (FieldObject FieldType) DocumentType int --> w-tainted 1x: write(contacts_db.Contact.DocumentType)'
   - '__6 depth 2 (BasicObject BasicType) DocumentType int --> w-tainted 1x: write(contacts_db.Contact.DocumentType)
     --> r-tainted 1x: read(contacts_db._.documenttype)'
+  - '0 depth 0 (BasicObject BasicType) userID string --> w-tainted 1x: write(contacts_db.Contact.AccountID)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) coll NoSQLCollection {database = contacts, collection = contacts}
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (SliceObject UserType) query primitive.D

@@ -1,4 +1,4 @@
-? (*ContactsServiceImpl).CreateContacts(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string})
+? (*ContactsServiceImpl).CreateContacts(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}, userID string)
 :
 	- DATASTORE CALL @ contacts_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
   - DATASTORE CALL @ contacts_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}

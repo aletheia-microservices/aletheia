@@ -5,7 +5,7 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 
-    --> r-tainted: read(user_db._.userid) {1}
+    --> r-tainted: read(user_db.User.UserID.userid) {1}
 [0] (BasicObject BasicType) userID string
 
 [0] (BlueprintBackendObject BlueprintBackendType) coll NoSQLCollection {database = user, collection = user}
@@ -15,7 +15,7 @@
 [0] (SliceObject UserType) query primitive.D
 [_1] (StructObject StructType) struct{ string,  "userid" string,  string}
 
-    --> r-tainted: read(user_db._) {1}
+    --> r-tainted: read(user_db.User.UserID) {1}
 [0] (BlueprintBackendObject BlueprintBackendType) res NoSQLCursor {database = user, collection = user}
      --> r-tainted: read(user_db.User) {1}
 [_1] (StructObject UserType) user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}

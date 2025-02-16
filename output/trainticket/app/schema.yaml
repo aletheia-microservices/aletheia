@@ -225,11 +225,12 @@ USER_DB:
 - dependencies: []
 - schema:
   - fields:
+    - User.UserID: <unknown type>
     - _: user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}
     - User: user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}
   - unfolded_fields:
-    - _.userid: string
-    - _.username: string
+    - User.UserID.userid: string
+    - User.UserID.username: string
     - User: user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}
     - User.UserID: string
     - User.Username: string

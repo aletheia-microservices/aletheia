@@ -203,7 +203,7 @@ contacts:
     NoSQLDatabase.NoSQLCursor.All(ctx context.Context, obj interface{})}
   - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
 - parsed methods:
-  - (*contacts.ContactsServiceImpl).CreateContacts(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}) error
+  - (*contacts.ContactsServiceImpl).CreateContacts(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}, userID string) error
   - (*contacts.ContactsServiceImpl).Delete(ctx context.Context, contact contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}) error
   - (*contacts.ContactsServiceImpl).FindContactsByAccountId(ctx context.Context, id string) ([]contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}, error)
   - (*contacts.ContactsServiceImpl).FindContactsById(ctx context.Context, id string)

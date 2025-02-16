@@ -49,8 +49,20 @@ func (vinfo *ObjectInfo) IsDynamic() bool {
 }
 
 func (vinfo *ObjectInfo) ResetAllDataflows() {
-	vinfo.Dataflows = nil
-	vinfo.IndirectDataflows = nil
+	var dataflowsToKeep []*ObjectDataflow
+	var indirectDataflowsToKeep []*ObjectDataflow
+	for _, df := range vinfo.Dataflows {
+		if df.IsPermanent(){
+			dataflowsToKeep = append(dataflowsToKeep, df)
+		}
+	}
+	for _, df := range vinfo.IndirectDataflows {
+		if df.IsPermanent(){
+			indirectDataflowsToKeep = append(indirectDataflowsToKeep, df)
+		}
+	}
+	vinfo.Dataflows = dataflowsToKeep
+	vinfo.IndirectDataflows = indirectDataflowsToKeep
 }
 
 func (vinfo *ObjectInfo) GetDependencies() []Object {

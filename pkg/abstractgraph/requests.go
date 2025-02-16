@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"analyzer/pkg/app"
+	"analyzer/pkg/datastores"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types"
 )
@@ -61,9 +62,11 @@ func (graph *AbstractGraph) AttachDatabaseFieldsToEntryArgs(app *app.App, autofi
 
 	// FORMAT: FrontendService:AddItem:itemID:CATALOGUE_DB.Sock.ID
 	if autofill {
-		/* if graph.AppName == "sockshop2" {
+		if graph.AppName == "sockshop2" {
 			input += "FrontendService:AddItem:itemID:CATALOGUE_DB.Sock.ID"
-		} */
+		} else if graph.AppName == "trainticket" {
+			input += "ContactsService:CreateContacts:userID:USER_DB.User.UserID"
+		}
 	} else {
 		reader := bufio.NewReader(os.Stdin)
 		input, err = reader.ReadString('\n')
@@ -91,7 +94,18 @@ func (graph *AbstractGraph) AttachDatabaseFieldsToEntryArgs(app *app.App, autofi
 		dbStrings := strings.SplitN(attachedField.dbField, ".", 2)
 		dbName, dbFieldName := strings.ToLower(dbStrings[0]), dbStrings[1]
 		dbInstance := app.GetDatastoreInstance(dbName)
-		dbField := dbInstance.GetDatastore().GetSchema().GetField(dbFieldName)
+
+		var dbField *datastores.Field
+		dbField = dbInstance.GetDatastore().GetSchema().GetFieldIfExists(dbFieldName)
+
+		if dbField == nil {
+			dbField = &datastores.Field{
+				Name: dbFieldName,
+				Type: datastores.UNKNOWN_FIELD_TYPE,
+				Datastore: dbInstance.GetDatastore(),
+			}
+			dbInstance.GetDatastore().GetSchema().AddField(dbField)
+		}
 
 		var methodParamIdx int
 		for idx, param := range method.GetParams() {
@@ -102,7 +116,7 @@ func (graph *AbstractGraph) AttachDatabaseFieldsToEntryArgs(app *app.App, autofi
 
 		for _, abstractServiceCall := range graph.getAbstractServiceCallsToMethod(method) {
 			object := abstractServiceCall.GetParam(methodParamIdx)
-			dataflow := object.GetVariableInfo().SetDirectDataflow(dbName, service.GetName(), object, dbField, true, -1)
+			dataflow := object.GetVariableInfo().SetDirectDataflow(dbName, "", object, dbField, true, -1)
 			dataflow.EnablePermanent()
 			app.AddDataflow(dataflow, nil) //FIXME: can we actually do this????
 
