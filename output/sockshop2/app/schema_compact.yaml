@@ -3,8 +3,14 @@ CART_DB:
 - kind: MongoDB
 - dependencies: []
 - schema:
-  - fields: []
-  - unfolded_fields: []
+  - fields:
+    - _: cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}
+    - cart: cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}
+  - unfolded_fields:
+    - cart: cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}
+    - cart.ID: string
+    - cart.Items: '[]cart.Item struct{ID string, Quantity int, UnitPrice float32}'
+    - cart.Items.*: cart.Item struct{ID string, Quantity int, UnitPrice float32}
 
 CATALOGUE_DB:
 - type: NoSQLDatabase
@@ -89,6 +95,9 @@ ORDER_DB:
     - Order.Date: string
     - Order.Total: 10 float32
   - constraints:
+    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
+    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
+    - REFERENCE(Order.CustomerID --> _.userid)
     - REFERENCE(Order.ID --> Shipment.ID) [+]
     - REFERENCE(Order.ID --> Shipment.ID) [+]
     - REFERENCE(Order.Shipment.ID --> Shipment.ID) [+]
@@ -102,9 +111,6 @@ ORDER_DB:
     - REFERENCE(Order.Shipment --> _.userid)
     - REFERENCE(Order.Shipment --> Shipment.Status) [+]
     - REFERENCE(Order.Shipment --> Shipment.Status) [+]
-    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
-    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
-    - REFERENCE(Order.CustomerID --> _.userid)
     - REFERENCE(Order --> Shipment.Name) [+]
     - REFERENCE(Order --> Shipment.Name) [+]
     - REFERENCE(Order --> _.userid)

@@ -27,7 +27,7 @@ type ParsedMethod struct {
 	Method
 	Ast         *ast.FuncDecl                 `json:"-"`
 	Name        string                        `json:"name"`
-	Calls       []Call                        `json:"-"`
+	Calls       []Call                        `json:"-"` // calls made within method
 	Package     *Package                      `json:"-"`
 	ParsedCfg   *CFG                          `json:"-"`
 	DbInstances []datastores.DatabaseInstance `json:"-"`
@@ -122,6 +122,18 @@ func (p *ParsedMethod) String() string {
 		prefix = p.Receiver.GetTypeName()
 	}
 	repr := fmt.Sprintf("%s.%s(", prefix, p.Name)
+	for i, arg := range p.Params {
+		repr += arg.String()
+		if i < len(p.Params)-1 {
+			repr += ", "
+		}
+	}
+	repr += ")"
+	return repr
+}
+
+func (p *ParsedMethod) SimpleString() string {
+	repr := fmt.Sprintf("%s(", p.Name)
 	for i, arg := range p.Params {
 		repr += arg.String()
 		if i < len(p.Params)-1 {

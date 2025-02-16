@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	specs_app_constraints_referential_integrity "github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring/specs"
 	specs_coupons_app "github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring/specs"
@@ -54,40 +56,44 @@ var APPS_INFO = map[string]AppInfo{
 	"dsb_sn":                                {PATH_BLUEPRINT_EXAMPLES + "dsb_sn/workflow/socialnetwork", dsb_sn.Docker},
 }
 
-func GetAppDatabaseSQLPaths(app string) (bool, string) {
-	fmt.Printf("\nPlease specify path(s) to mysql files (.sql) if existent (delimiter is ';', format is <db_name>:<path>):\n> ")
-	if app == "coupons_app_sql" {
-		return true, COUPONS_DB_SQL_PATH + ";" + STUDENTS_DB_SQL_PATH
-	} else if app == "coupons_app" {
-		return false, "" //skip
-	}
-	return false, ""
-
-	/* reader := bufio.NewReader(os.Stdin)
+func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {
+	if autofill {
+		if app == "coupons_app_sql" {
+			return true, COUPONS_DB_SQL_PATH + ";" + STUDENTS_DB_SQL_PATH
+			} else if app == "coupons_app" {
+				return false, "" //skip
+			}
+			return false, ""
+		}
+		
+	fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
+	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		logger.Logger.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
 		return false, ""
 	}
 
-	return true, input */
+	return true, input
 }
 
-func GetAppDatabaseSQLUserInput(app string) (bool, string) {
-	fmt.Printf("\nPlease specify fields to enforce unicity constraint (delimiter is ';', composed uniqueness is within '(...)'):\n> ")
-	if app == "coupons_app" {
-		return true, "(STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)"
-	} else if app == "coupons_app_sql" {
-		return false, "" //skip
+func GetAppDatabaseSQLUserInput(app string, autofill bool) (bool, string) {
+	if autofill {
+		if app == "coupons_app" {
+			return true, "(STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)"
+		} else if app == "coupons_app_sql" {
+			return false, "" //skip
+		}
+		return false, ""
 	}
-	return false, ""
-	/* reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("\nPlease specify fields to enforce unicity constraint.\nFormat (delimiter is ';'): (<unique_field>)[;(<composed_unique_field_1, composed_unique_field_2>)]\n> ")
+	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		logger.Logger.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
 		return false, ""
 	}
-	return true, input */
+	return true, input
 }
 
 

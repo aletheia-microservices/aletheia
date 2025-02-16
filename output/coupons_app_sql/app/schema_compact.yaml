@@ -14,8 +14,6 @@ COUPONS_DB:
   - constraints:
     - UNIQUE(coupons.coupon_id)
     - UNIQUE(claimed_coupons.coupon_id, claimed_coupons.user_id)
-    - UNIQUE(coupons.coupon_id)
-    - UNIQUE(claimed_coupons.coupon_id, claimed_coupons.user_id)
 
 STUDENTS_DB:
 - type: RelationalDB
@@ -30,5 +28,4 @@ STUDENTS_DB:
   - unfolded_fields: []
   - constraints:
     - REFERENCE(students.student_id --> claimed_coupons.user_id) [+]
-    - UNIQUE(students.student_id)
     - UNIQUE(students.student_id)

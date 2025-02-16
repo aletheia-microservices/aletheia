@@ -47,40 +47,40 @@ Run the code analyzer:
 go run main.go --help
 
 # usage
-go run main.go -app=APP_NAME [--xcy] [--fk] [--cascade] [--specialization]
+go run main.go -app=APP_NAME [--auto] [--xcy] [--fk] [--cascade] [--specialization]
 
 # Cross-Service Inconsistency (XCY)
-go run main.go --app postnotification --xcy
-go run main.go --app sockshop2 --xcy
+go run main.go --app postnotification --auto --xcy
+go run main.go --app sockshop2 --auto --xcy
 
 # Referential Integrity Constraint: Invalid Foreign Key
-go run main.go --app postnotification --fk
-go run main.go --app sockshop2 --fk
+go run main.go --app postnotification --auto --fk
+go run main.go --app sockshop2 --auto --fk
 
 # Referential Integrity Constraint: Absence of Cascading Deletes
-go run main.go --app shopping_simple --cascade
-go run main.go --app sockshop2 --cascade
-go run main.go --app trainticket --cascade
-go run main.go --app employee_app --cascade
+go run main.go --app shopping_simple --auto --cascade
+go run main.go --app sockshop2 --auto --cascade
+go run main.go --app trainticket --auto --cascade
+go run main.go --app employee_app --auto --cascade
 
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
-go run main.go --app employee_app --specialization
+go run main.go --app employee_app --auto --specialization
 
 # Unicity Constraints (NoSQL Database)
-go run main.go --app coupons_app --unicity_individual
+go run main.go --app coupons_app --auto --unicity_individual
 # > (STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)
-go run main.go --app coupons_app --unicity_aggregate
+go run main.go --app coupons_app --auto --unicity_aggregate
 
 # Unicity Constraints (Relational Database)
-go run main.go --app coupons_app_sql --unicity_individual
-go run main.go --app coupons_app_sql --unicity_aggregate
+go run main.go --app coupons_app_sql --auto --unicity_individual
+go run main.go --app coupons_app_sql --auto --unicity_aggregate
 
 # Domain (Numerical) Constraints
-go run main.go --app coupons_app --numerical_individual
-go run main.go --app coupons_app --numerical_aggregate
+go run main.go --app coupons_app --auto --numerical_individual
+go run main.go --app coupons_app --auto --numerical_aggregate
 
 # all applications and detection patterns
-go run main.go -all=true --xcy --fk --cascade
+go run main.go -all=true --auto --xcy --fk --cascade
 ```
 
 Run the graph builder:
@@ -106,19 +106,19 @@ graphs.py [-h] [--app {postnotification,postnotification_simple,trainticket,shop
 
 | Application Name                        | Runs    | XCY         | Cascade Delete | Foreign Key | Specialization | Unicity (Ind.) |
 | --------------------------------------- | ------- | ----------- | -------------- | ----------- | -------------- | -------------- |
-| `foobar`                                | **YES** | 0           | 0;0            | 0           | 0              | 0              |
-| `shopping_simple`                       | **YES** | 0           | 1;1            | 0           | 0              | 0              |
-| `shopping_app`                          | **YES** | 0 (PREV=1!) | 0;0            | 0 (PREV=1!) | 0              | 0              |
-| `postnotification_simple`               | **YES** | 1           | 0;0            | 1           | 0              | 0              |
-| `postnotification`                      | **YES** | 2           | 0;0            | 2           | 0              | 0              |
-| `sockshop2`                             | **YES** | 0           | 4;0            | 0           | 0              | 0              |
-| `trainticket`                           | **YES** | 0           | 13;0           | 0           | 0              | 0              |
-| `dsb_sn`                                | **YES** | 0           | 0;0            | 0           | 0              | 0              |
+| `foobar`                                | **YES** | 0           | 0;0            | 0           | 0;0            | 0              |
+| `shopping_simple`                       | **YES** | 0           | 1;1            | 0           | 0;0            | 0              |
+| `shopping_app`                          | **YES** | 0 (PREV=1!) | 0;0            | 0 (PREV=1!) | 0;0            | 0              |
+| `postnotification_simple`               | **YES** | 1           | 0;0            | 1           | 0;0            | 0              |
+| `postnotification`                      | **YES** | 2           | 0;0            | 2           | 0;0            | 0              |
+| `sockshop2`                             | **YES** | 0           | 4;0            | 0           | 0;0            | 0              |
+| `trainticket`                           | **YES** | 0           | 13;0           | 0           | 0;0            | 0              |
+| `dsb_sn`                                | **YES** | 0           | 0;0            | 0           | 0;0            | 0              |
 | `dsb_hotel`                             | **NO**  | -           | -              | -           | -              | 0              |
-| `app_constraints_referential_integrity` | **YES** | 0           | 2;1            | 1           | 0              | 0              |
-| `employee_app`                          | **YES** | 0           | 2;3            | 0           | 1              | 0              |
-| `coupons_app`                           | **YES** | 0           | 0;0            | 0           | 0              | 1;2            |
-| `coupons_app_sql`                       | **YES** | 0           | 0;0            | -           | 0              | 1;2            |
+| `app_constraints_referential_integrity` | **YES** | 0           | 2;1            | 1           | 0;0            | 0              |
+| `employee_app`                          | **YES** | 0           | 2;3            | 0           | 1;0            | 0              |
+| `coupons_app`                           | **YES** | 0           | 0;0            | 0           | 0;0            | 1;2            |
+| `coupons_app_sql`                       | **YES** | 0           | 0;0            | -           | 0;0            | 1;2            |
 
 ## Structure
 

@@ -1,5 +1,5 @@
 (*cartImpl).AddItem(ctx context.Context, customerID string, item cart.Item struct{ID string, Quantity int, UnitPrice float32}):
-- DATASTORE CALL @ cart_db >> NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}) (err, interface{})
+- DATASTORE CALL @ cart_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
 
 (*cartImpl).DeleteCart(ctx context.Context, customerID string):
 - DATASTORE CALL @ cart_db >> NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D) interface{}

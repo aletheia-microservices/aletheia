@@ -40,11 +40,16 @@ func (app *App) MarshalJSON() ([]byte, error) {
 }
 
 func (app *App) ResetAllDataflows() {
+	var dataflowsToKeep []*types.Dataflow
 	for _, df := range app.Dataflows {
-		objInfo := df.GetObjectDataflow().Variable.GetVariableInfo()
-		objInfo.ResetAllDataflows()
+		if !df.GetObjectDataflow().IsPermanent() {
+			objInfo := df.GetObjectDataflow().Variable.GetVariableInfo()
+			objInfo.ResetAllDataflows()
+		} else {
+			dataflowsToKeep = append(dataflowsToKeep, df)
+		}
 	}
-	app.Dataflows = nil
+	app.Dataflows = dataflowsToKeep
 }
 
 func (app *App) AddDataflow(objDataflow *objects.ObjectDataflow, dbCall *types.ParsedDatabaseCall) {
@@ -133,6 +138,14 @@ func (app *App) GetServiceIfExists(name string) *service.Service {
 	if service, ok := app.Services[name]; ok {
 		return service
 	}
+	return nil
+}
+
+func (app *App) GetService(name string) *service.Service {
+	if service, ok := app.Services[name]; ok {
+		return service
+	}
+	logger.Logger.Fatalf("[APP] could not find service (%s) for app: %s", name, app.String())
 	return nil
 }
 

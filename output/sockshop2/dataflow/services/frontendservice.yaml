@@ -13,7 +13,7 @@
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BasicObject BasicType) sessionID string
   - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db._.id)'
-  - 0 depth 0 (BasicObject BasicType) sessionID string
+  - '0 depth 0 (BasicObject BasicType) sessionID string --> w-tainted 1x: write(cart_db.cart.ID)'
   - 0 depth 0 (StructObject UserType) sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - '_1 depth 1 (Reference UserType) ref <sock catalogue.Sock struct{ID string, Name
     string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string,
@@ -39,21 +39,25 @@
   - '___13 depth 3 (SliceObject SliceType) []string --> r-tainted 1x: read(catalogue_db.Sock.Tags)'
   - '____15 depth 4 (BasicObject BasicType) "," string --> r-tainted 1x: read(catalogue_db.Sock.string)'
   - _18 depth 1 (FieldObject FieldType) ID string
-  - __19 depth 2 (BasicObject BasicType) ID string
+  - '__19 depth 2 (BasicObject BasicType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
   - _20 depth 1 (FieldObject FieldType) Price float32
-  - __21 depth 2 (BasicObject BasicType) Price float32
+  - '__21 depth 2 (BasicObject BasicType) Price float32 --> w-tainted 1x: write(cart_db.cart.Items)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference BasicType) ref <nil> @ CatalogueService
-  - 0 depth 0 (StructObject UserType) _ cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}
-  - _1 depth 1 (Reference UserType) ref <item cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ CartService
-  - __2 depth 2 (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
-  - ___3 depth 3 (FieldObject FieldType) ID string
-  - ____4 depth 4 (BasicObject BasicType) ID string
-  - ___5 depth 3 (FieldObject FieldType) Quantity 1 int
-  - ____6 depth 4 (BasicObject BasicType) 1 int
-  - ___7 depth 3 (FieldObject FieldType) UnitPrice float32
-  - ____8 depth 4 (BasicObject BasicType) Price float32
-  - _9 depth 1 (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
+  - '0 depth 0 (StructObject UserType) _ cart.Item struct{ID string, Quantity 1 int,
+    UnitPrice float32} --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '_1 depth 1 (Reference UserType) ref <item cart.Item struct{ID string, Quantity
+    int, UnitPrice float32}> @ CartService --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '__2 depth 2 (Reference UserType) ref <cart.Item struct{ID string, Quantity int,
+    UnitPrice float32}> @ FrontendService --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '___3 depth 3 (FieldObject FieldType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '____4 depth 4 (BasicObject BasicType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '___5 depth 3 (FieldObject FieldType) Quantity 1 int --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '____6 depth 4 (BasicObject BasicType) 1 int --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '___7 depth 3 (FieldObject FieldType) UnitPrice float32 --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '____8 depth 4 (BasicObject BasicType) Price float32 --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '_9 depth 1 (Reference UserType) ref <cart.Item struct{ID string, Quantity int,
+    UnitPrice float32}> @ FrontendService --> w-tainted 1x: write(cart_db.cart.Items)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference BasicType) ref <nil> @ CartService
 
@@ -270,7 +274,7 @@
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - '0 depth 0 (BasicObject BasicType) userID string --> w-tainted 3x: write(shipqueue.Shipment.Name,
-    shipdb.Shipment.Name, order_db.Order.Shipment) --> r-tainted 2x: read(user_db._.userid,
+    shipdb.Shipment.Name, order_db.Order.CustomerID) --> r-tainted 2x: read(user_db._.userid,
     shipqueue.Shipment.Name)'
   - '0 depth 0 (BasicObject BasicType) addressID string --> r-tainted 1x: read(user_db._.addresses)'
   - '0 depth 0 (BasicObject BasicType) cardID string --> r-tainted 1x: read(user_db._.cards)'

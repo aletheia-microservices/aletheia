@@ -18,8 +18,6 @@ COUPONS_DB:
   - constraints:
     - UNIQUE(Coupon.CouponID)
     - UNIQUE(ClaimedCoupon.CouponID, ClaimedCoupon.UserID)
-    - UNIQUE(Coupon.CouponID)
-    - UNIQUE(ClaimedCoupon.CouponID, ClaimedCoupon.UserID)
 
 STUDENTS_DB:
 - type: NoSQLDatabase
@@ -35,5 +33,4 @@ STUDENTS_DB:
     - Student.Name: string
     - Student.Balance: int
   - constraints:
-    - UNIQUE(Student.StudentID)
     - UNIQUE(Student.StudentID)

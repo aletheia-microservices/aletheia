@@ -30,7 +30,7 @@ type DbStmts struct {
 	stmt string
 }
 
-func ParseConstraints(app *app.App) {
+func ParseConstraints(app *app.App, autofill bool) {
 	for _, dbInstance := range app.Databases {
 		for _, unfoldedField := range dbInstance.GetDatastore().Schema.UnfoldedFields {
 			fmt.Println("- " + unfoldedField.GetFullName())
@@ -39,7 +39,7 @@ func ParseConstraints(app *app.App) {
 
 	}
 
-	if ok, input := utils.GetAppDatabaseSQLPaths(app.Name); ok {
+	if ok, input := utils.GetAppDatabaseSQLPaths(app.Name, autofill); ok {
 		dbStmts := parseAppDatabaseSQLPaths(input)
 		for _, dbStmt := range dbStmts {
 			dbInstance := app.GetDatastoreInstance(dbStmt.db)
@@ -47,7 +47,7 @@ func ParseConstraints(app *app.App) {
 		}
 	}
 
-	if ok, input := utils.GetAppDatabaseSQLUserInput(app.Name); ok {
+	if ok, input := utils.GetAppDatabaseSQLUserInput(app.Name, autofill); ok {
 		targetFieldsByDatastore := parseAppDatabaseSQLUserInput(input)
 		parseUserUniqueConstraints(app, targetFieldsByDatastore)
 	}

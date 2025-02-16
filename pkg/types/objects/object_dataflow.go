@@ -18,6 +18,7 @@ type ObjectDataflow struct {
 	IndirectSource Object
 	Field          *datastores.Field
 	RequestIdx     int
+	perm           bool
 }
 
 func (df *ObjectDataflow) GetOpString() string {
@@ -102,6 +103,14 @@ func (df *ObjectDataflow) GetVariable() Object {
 
 func (df *ObjectDataflow) GetDatastore() string {
 	return df.Datastore
+}
+
+func (df *ObjectDataflow) EnablePermanent() {
+	df.perm = true
+}
+
+func (df *ObjectDataflow) IsPermanent() bool {
+	return df.perm
 }
 
 func (v *ObjectInfo) SetDirectDataflow(datastore string, service string, variable Object, field *datastores.Field, write bool, requestIdx int) *ObjectDataflow {

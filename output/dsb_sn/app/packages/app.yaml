@@ -71,10 +71,11 @@ socialnetwork:
   - crypto.Hash uint
   - hash.Hash interface{Reset, Size, Sum, Write, BlockSize, }
   - jwt-go.Claims interface{Valid, }
-  - jwt-go.SigningMethod interface{Verify, Alg, Sign, }
+  - jwt-go.SigningMethod interface{Alg, Sign, Verify, }
   - jwt-go.SigningMethodHMAC struct{Name string, Hash crypto.Hash uint}
   - jwt-go.StandardClaims struct{Audience string, ExpiresAt int64, Id string, IssuedAt int64, Issuer string, NotBefore int64, Subject string}
-  - jwt-go.Token struct{Raw string, Method jwt-go.SigningMethod interface{Alg, Sign, Verify, }, Header map[string]interface{}, Claims jwt-go.Claims interface{Valid, }, Signature string, Valid bool}
+  - jwt-go.Token struct{Raw string, Method jwt-go.SigningMethod interface{Sign, Verify, Alg, }, Header map[string]interface{}, Claims jwt-go.Claims interface{Valid, },
+    Signature string, Valid bool}
   - net.Flags uint
   - net.HardwareAddr []byte
   - net.Interface struct{Index int, MTU int, Name string, HardwareAddr net.HardwareAddr []byte, Flags net.Flags uint}

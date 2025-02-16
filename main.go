@@ -31,6 +31,7 @@ const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 type analysisConfig struct {
 	allFlag                    string
 	appName                    string
+	autofill                   bool
 	detectOnly                 bool
 	xcyDetection               bool
 	foreignKeyDetection        bool
@@ -43,6 +44,7 @@ type analysisConfig struct {
 func main() {
 	allFlag := flag.String("all", "", fmt.Sprintf("Run analyzer for all applications: %v", utils.Apps))
 	appName := flag.String("app", "", fmt.Sprintf("The name of the application to be analyzed: %v", utils.Apps))
+	autofill := flag.Bool("auto", false, "Autofills additional user input information")
 	detectOnly := flag.Bool("detect_only", false, "Only perform detection (assume parsing is already done)")
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
 	foreignKeyDetection := flag.Bool("fk", false, "Enable detection of anomalies in foreign key constraints")
@@ -55,6 +57,7 @@ func main() {
 	analysis := analysisConfig{
 		allFlag:                    *allFlag,
 		appName:                    *appName,
+		autofill:                   *autofill,
 		detectOnly:                 *detectOnly,
 		xcyDetection:               *xcyDetection,
 		foreignKeyDetection:        *foreignKeyDetection,
@@ -114,14 +117,14 @@ func initAnalyzer(analysis analysisConfig) {
 	abstractGraph.Dump()
 	fmt.Println()
 
-
-	prepAnalysis(app)
+	prepAnalysis(analysis, app, abstractGraph)
 	runAnalysis(analysis, app, abstractGraph)
 	endAnalysis(analysis, app)
 }
 
-func prepAnalysis(app *app.App) {
-	constraints.ParseConstraints(app)
+func prepAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractgraph.AbstractGraph) {
+	constraints.ParseConstraints(app, analysis.autofill)
+	abstractGraph.AttachDatabaseFieldsToEntryArgs(app, analysis.autofill)
 	app.DumpYamlSchema(false)
 }
 
@@ -173,8 +176,6 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 	}
 
 	if analysis.unicityIndividualDetection {
-		constraints.ParseConstraints(app)
-
 		unicityDetector := unicity.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, unicityDetector)
 		iterator.Run()
