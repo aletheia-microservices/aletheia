@@ -66,15 +66,14 @@ go run main.go --app employee_app --auto --cascade
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
 go run main.go --app employee_app --auto --specialization
 
-# Unicity Constraints (NoSQL Database)
+# Unicity Constraints
 go run main.go --app coupons_app --auto --unicity
 # > (STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)
-
-# Unicity Constraints (Relational Database)
 go run main.go --app coupons_app_sql --auto --unicity
 
 # Domain (Numerical) Constraints
 go run main.go --app coupons_app --auto --numerical
+go run main.go --app coupons_app_sql --auto --numerical
 
 # all applications and detection patterns
 go run main.go -all=true --auto --xcy --fk --cascade

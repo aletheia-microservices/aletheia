@@ -1,161 +1,5 @@
 [
   {
-    "method": "(*FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "RelationalDB.Exec(ctx context.Context, query string, dst []interface{})",
-            "depth": 2,
-            "caller": "CouponService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "",
-                  "type": "\"INSERT INTO coupons(coupon_id, category, value) VALUES (?, ?, ?);\" string"
-                }
-              },
-              {
-                "basic": {
-                  "name": "couponID",
-                  "type": "int",
-                  "refs": [
-                    {
-                      "name": "couponID",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "category",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "category",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "value",
-                  "type": "int",
-                  "refs": [
-                    {
-                      "name": "value",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "_",
-                  "type": "sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }"
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "coupons_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "couponID",
-              "type": "int"
-            }
-          },
-          {
-            "basic": {
-              "name": "category",
-              "type": "string"
-            }
-          },
-          {
-            "basic": {
-              "name": "value",
-              "type": "int"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "CouponService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "couponID",
-          "type": "int"
-        }
-      },
-      {
-        "basic": {
-          "name": "category",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "value",
-          "type": "int"
-        }
-      }
-    ]
-  },
-  {
     "method": "(*FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, studentID int)",
     "depth": 0,
     "caller": "Client",
@@ -662,6 +506,162 @@
         "basic": {
           "name": "name",
           "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "RelationalDB.Exec(ctx context.Context, query string, dst []interface{})",
+            "depth": 2,
+            "caller": "CouponService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "",
+                  "type": "\"INSERT INTO coupons(coupon_id, category, value) VALUES (?, ?, ?);\" string"
+                }
+              },
+              {
+                "basic": {
+                  "name": "couponID",
+                  "type": "int",
+                  "refs": [
+                    {
+                      "name": "couponID",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "category",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "category",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "value",
+                  "type": "int",
+                  "refs": [
+                    {
+                      "name": "value",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "_",
+                  "type": "sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }"
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "coupons_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "couponID",
+              "type": "int"
+            }
+          },
+          {
+            "basic": {
+              "name": "category",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "value",
+              "type": "int"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "CouponService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "couponID",
+          "type": "int"
+        }
+      },
+      {
+        "basic": {
+          "name": "category",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "value",
+          "type": "int"
         }
       }
     ]

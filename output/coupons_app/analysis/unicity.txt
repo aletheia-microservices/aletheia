@@ -5,5 +5,5 @@
 >> (1;2)
 
 [ENTRY] Frontend(ctx context.Context, couponID int, category string, studentID int, value int)
-	- OPERATION @ (CouponService, coupons_db): collection.InsertOne(ctx context.Context, claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int})
-	- OPERATION @ (StudentService, students_db): collection.UpdateOne(ctx context.Context, filter primitive.D, update primitive.D)
+	* (CouponService, coupons_db) -> collection.InsertOne(ctx context.Context, claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int})
+	- (StudentService, students_db) -> collection.UpdateOne(ctx context.Context, filter primitive.D, update primitive.D)

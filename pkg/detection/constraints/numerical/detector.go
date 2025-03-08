@@ -1,4 +1,4 @@
-package unicity
+package numerical
 
 import (
 	"fmt"
@@ -13,88 +13,88 @@ import (
 	"analyzer/pkg/logger"
 )
 
-func NewDetector() *UnicityDetector {
+func NewDetector() *NumericalDetector {
 	fmt.Println()
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" ----------------------------------------- INITIALIZING UNICITY DETECTOR ------------------------------------------ ")
+	fmt.Println(" ---------------------------------------- INITIALIZING NUMERICAL DETECTOR ----------------------------------------- ")
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 	fmt.Println()
 
-	return &UnicityDetector{
+	return &NumericalDetector{
 		requestInfoStack: stack.New(),
 	}
 }
 
-type UnicityDetector struct {
+type NumericalDetector struct {
 	detector.Detector
 	results          string
 	summary          string
 	requestInfoStack *stack.Stack
 }
 
-func (detector *UnicityDetector) GetSummary() string {
+func (detector *NumericalDetector) GetSummary() string {
 	return detector.summary
 }
 
-func (detector *UnicityDetector) SetSummary(summary string) {
+func (detector *NumericalDetector) SetSummary(summary string) {
 	detector.summary = summary
 }
 
-func (detector *UnicityDetector) getCurrentRequestInfo() *RequestInfo {
+func (detector *NumericalDetector) getCurrentRequestInfo() *RequestInfo {
 	return detector.requestInfoStack.Peek().(*RequestInfo)
 }
 
-func (detector *UnicityDetector) OnNewRun(app *app.App) {
+func (detector *NumericalDetector) OnNewRun(app *app.App) {
 	//no-op
 }
 
-func (detector *UnicityDetector) OnEndRun(app *app.App) {
+func (detector *NumericalDetector) OnEndRun(app *app.App) {
 	//no-op
 }
 
-func (detector *UnicityDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
+func (detector *NumericalDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
 	detector.requestInfoStack.Push(&RequestInfo{
 		entry: entryNode,
 	})
 }
 
-func (detector *UnicityDetector) OnEndRequest(app *app.App) {
+func (detector *NumericalDetector) OnEndRequest(app *app.App) {
 	//no-op
 }
 
-func (detector *UnicityDetector) OnNewNode(app *app.App, node abstractgraph.AbstractNode) {
+func (detector *NumericalDetector) OnNewNode(app *app.App, node abstractgraph.AbstractNode) {
 	//no-op
 }
 
-func (detector *UnicityDetector) OnEndNode(app *app.App, node abstractgraph.AbstractNode) {
+func (detector *NumericalDetector) OnEndNode(app *app.App, node abstractgraph.AbstractNode) {
 	//no-op
 }
 
-func (detector *UnicityDetector) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+func (detector *NumericalDetector) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	//no-op
 }
 
-func (detector *UnicityDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+func (detector *NumericalDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	detector.onWriteOrUpdate(dbCall)
 }
 
-func (detector *UnicityDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+func (detector *NumericalDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	detector.onWriteOrUpdate(dbCall)
 }
 
-func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
+func (detector *NumericalDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
-	if schema.HasConstraintsUnique() {
+	if schema.HasConstraintsNumerical() {
 		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
 			var writtenFieldNames []string
 			params := dbCall.GetParams()
-			
+
 			switch datastore.Type {
 			case datastores.NoSQL:
 				obj := params[1]
 				objType := obj.GetType()
-				logger.Logger.Infof("[UNICITY DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
+				logger.Logger.Infof("[NUMERICAL DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
 				_, writtenFieldNames = objType.GetNestedFieldTypes(objType.GetName(), datastore.IsNoSQLDatabase())
 			case datastores.RelationalDB:
 				if blueprintBackendMethod.IsRelationalDBExecCall() {
@@ -104,25 +104,25 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 						writtenFieldNames = append(writtenFieldNames, field.GetName())
 					}
 				} else {
-					logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
+					logger.Logger.Fatalf("[NUMERICAL DETECTOR] TODO on write/update for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
 				}
 			default:
-				logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
+				logger.Logger.Fatalf("[NUMERICAL DETECTOR] TODO on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
 			}
-			
-			var unicityConstraints []*datastores.Constraint
+
+			var numericalConstraints []*datastores.Constraint
 			for _, writtenFieldName := range writtenFieldNames {
-				unicityConstraint := schema.GetConstraintsUniqueForFieldName(writtenFieldName)
-				unicityConstraints = append(unicityConstraints, unicityConstraint...)
+				numericalConstraint := schema.GetConstraintsNumericalForFieldName(writtenFieldName)
+				numericalConstraints = append(numericalConstraints, numericalConstraint...)
 			}
-			logger.Logger.Warnf("[UNICITY DETECTOR] WRITE/UPDATE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
-			for _, uc := range unicityConstraints {
+			logger.Logger.Warnf("[NUMERICAL DETECTOR] WRITE/UPDATE in (%s) against numerical constraints:", dbCall.DbInstance.GetName())
+			for _, uc := range numericalConstraints {
 				logger.Logger.Warn("\t\t\t - " + uc.String())
 			}
 
 			requestInfo := detector.getCurrentRequestInfo()
-			if len(unicityConstraints) > 0 { // operation that may be affecting the following ones
-				operation := NewOperationOnUnicityConstraint(dbCall, datastore)
+			if len(numericalConstraints) > 0 { // operation that may be affecting the following ones
+				operation := NewOperationOnNumericalConstraint(dbCall, datastore)
 				requestInfo.addOperation(operation)
 			} else if requestInfo.hasOperations() { // operation that is affected by previous operations
 				operation := NewOperation(dbCall, datastore)
@@ -132,13 +132,13 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 	}
 }
 
-func (detector *UnicityDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+func (detector *NumericalDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	// no-op
 }
 
-func (detector *UnicityDetector) ComputeResults() {
+func (detector *NumericalDetector) ComputeResults() {
 	header := "------------------------------------------------------------\n"
-	header += "---------------------- UNICITY ANALYSIS --------------------\n"
+	header += "--------------------- NUMERICAL ANALYSIS -------------------\n"
 	header += "------------------------------------------------------------\n"
 
 	var numRequests, numOps int
@@ -149,7 +149,7 @@ func (detector *UnicityDetector) ComputeResults() {
 			detector.results += fmt.Sprintf("\n[ENTRY] %s\n", requestInfo.entry.String())
 			numRequests++
 			for _, op := range requestInfo.getOperations() {
-				if op.onUnicityConstraint {
+				if op.onNumericalConstraint {
 					detector.results += "\t* "
 				} else {
 					detector.results += "\t- "
@@ -164,10 +164,10 @@ func (detector *UnicityDetector) ComputeResults() {
 	detector.results = header + detector.results
 }
 
-func (detector *UnicityDetector) GetAnalysisTypeString() string {
-	return "unicity"
+func (detector *NumericalDetector) GetAnalysisTypeString() string {
+	return "numerical"
 }
 
-func (detector *UnicityDetector) GetResults() string {
+func (detector *NumericalDetector) GetResults() string {
 	return detector.results
 }

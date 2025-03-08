@@ -49,19 +49,56 @@ func (s *Schema) GetConstraintsUniqueForFieldName(fieldName string) []*Constrain
 	return constraints
 }
 
+func (s *Schema) GetConstraintsNumericalForFieldName(fieldName string) []*Constraint {
+	var constraints []*Constraint
+	for _, constraintUnique := range s.GetConstraintsNumerical() {
+		for _, field := range constraintUnique.GetFields() {
+			if field.GetName() == fieldName {
+				constraints = append(constraints, constraintUnique)
+			}
+		}
+	}
+	return constraints
+}
+
+// includes any PK
 func (s *Schema) GetConstraintsUnique() []*Constraint {
 	var constraints []*Constraint
 	for _, c := range s.Constraints {
 		if c.unique {
+			constraints = append(constraints, c)
+		} else if c.primary {
 			constraints = append(constraints, c)
 		}
 	}
 	return constraints
 }
 
+func (s *Schema) GetConstraintsNumerical() []*Constraint {
+	var constraints []*Constraint
+	for _, c := range s.Constraints {
+		if c.numerical != nil {
+			constraints = append(constraints, c)
+		}
+	}
+	return constraints
+}
+
+// includes any PK
 func (s *Schema) HasConstraintsUnique() bool {
 	for _, c := range s.Constraints {
 		if c.unique {
+			return true
+		} else if c.primary {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Schema) HasConstraintsNumerical() bool {
+	for _, c := range s.Constraints {
+		if c.numerical != nil {
 			return true
 		}
 	}
@@ -232,6 +269,49 @@ type Constraint struct {
 	primary   bool
 	reference bool
 	mandatory bool
+	numerical *NumericalConstraint
+}
+
+type ComparisonOperator int
+
+const (
+	EQ ComparisonOperator = iota // ==
+	LT // <
+	GT // >
+	LE // <=
+	GE // >=
+	NE // !=
+)
+
+type NumericalConstraint struct {
+	value    string
+	operator ComparisonOperator
+}
+
+func NewNumericalConstraint(value string, operator ComparisonOperator) *NumericalConstraint {
+	return &NumericalConstraint{value: value, operator: operator}
+}
+
+func ConstraintOperatorToString(operator ComparisonOperator) string {
+	switch operator {
+	case EQ:
+		return "=="
+	case LT:
+		return "<"
+	case LE:
+		return "<="
+	case GT:
+		return ">"
+	case GE:
+		return ">="
+	case NE:
+		return "!="
+	}
+	return ""
+}
+
+func ConstraintValueToString(value int) string {
+	return fmt.Sprintf("%d", value)
 }
 
 func (constraint *Constraint) AddField(field *Field) {
@@ -275,8 +355,17 @@ func (constraint *Constraint) String() string {
 		return "REFERENCE" + fieldsStr
 	} else if constraint.mandatory {
 		return "MANDATORY" + fieldsStr
+	} else if constraint.numerical != nil {
+		return "CHECK(" + constraint.fields[0].GetName() + " " + ConstraintOperatorToString(constraint.numerical.operator) + " " + constraint.numerical.value + ")"
 	}
 	return ""
+}
+
+func NewConstraintNumerical(numerical *NumericalConstraint, fields ...*Field) *Constraint {
+	return &Constraint{
+		fields:    fields,
+		numerical: numerical,
+	}
 }
 
 func NewConstraintUnique(fields ...*Field) *Constraint {

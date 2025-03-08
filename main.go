@@ -12,6 +12,7 @@ import (
 	"analyzer/pkg/datastores/constraints"
 	"analyzer/pkg/detection/constraints/cascade"
 	"analyzer/pkg/detection/constraints/foreign_key"
+	"analyzer/pkg/detection/constraints/numerical"
 	"analyzer/pkg/detection/constraints/specialization"
 	"analyzer/pkg/detection/constraints/unicity"
 	"analyzer/pkg/detection/constraints/xcy"
@@ -189,7 +190,11 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 	}
 
 	if analysis.numericalDetection {
-		//TODO
+		numericalDetector := numerical.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, numericalDetector)
+		iterator.Run()
+		results += detector.SaveResults(app, numericalDetector)
+		summary += numericalDetector.GetSummary()
 	}
 
 	fmt.Println("\n--------- RESULTS ---------\n" + results)
