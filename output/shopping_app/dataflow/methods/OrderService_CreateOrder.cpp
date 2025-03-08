@@ -31,14 +31,14 @@
      --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3}         --> w-tainted: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID) {3} --> r-tainted: read(product_db._.productID) {1}
 [_1] (Reference BasicType) ref <productID string> @ Frontend
 
-    --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+    --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [0] (BasicObject BasicType) quantity int
-     --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+     --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [_1] (Reference BasicType) ref <quantity int> @ Frontend
 
-    --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+    --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [0] (BasicObject BasicType) price int
-     --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+     --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [_1] (Reference BasicType) ref <price int> @ Frontend
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = order_database, collection = order_collection}
@@ -61,9 +61,9 @@
 [___3] (Reference BasicType) ref <productID string> @ Frontend
      --> w-tainted: write(order_db.Order.Quantity) {1}
 [_1] (FieldObject FieldType) Quantity int
-      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [__2] (BasicObject BasicType) quantity int
-       --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
+       --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost) {3}
 [___3] (Reference BasicType) ref <quantity int> @ Frontend
      --> w-tainted: write(order_db.Order.Timestamp) {1}
 [_1] (FieldObject FieldType) Timestamp 1 int

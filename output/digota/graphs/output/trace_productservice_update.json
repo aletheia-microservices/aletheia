@@ -1,0 +1,36 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "ProductService",
+      "type": "service"
+    },
+    {
+      "id": "products_db MongoDB",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "Client",
+      "callee": "ProductService",
+      "call": "Update",
+      "depth": 0
+    },
+    {
+      "caller": "ProductService",
+      "callee": "products_db MongoDB",
+      "call": "FindOne",
+      "depth": 1
+    },
+    {
+      "caller": "ProductService",
+      "callee": "products_db MongoDB",
+      "call": "InsertOne",
+      "depth": 1
+    }
+  ]
+}

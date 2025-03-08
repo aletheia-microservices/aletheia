@@ -10,7 +10,7 @@ CART_DB:
     - cart: cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}
     - cart.ID: string
     - cart.Items: '[]cart.Item struct{ID string, Quantity int, UnitPrice float32}'
-    - cart.Items.*: cart.Item struct{ID string, Quantity int, UnitPrice float32}
+    - cart.Items[*]: cart.Item struct{ID string, Quantity int, UnitPrice float32}
 
 CATALOGUE_DB:
 - type: NoSQLDatabase
@@ -18,10 +18,11 @@ CATALOGUE_DB:
 - dependencies: []
 - schema:
   - fields:
+    - Sock.ID: <unknown type>
     - _: catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
     - Sock: catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - unfolded_fields:
-    - _.id: string
+    - Sock.ID.id: string
     - Sock: catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
     - Sock.ID: string
     - Sock.Name: string
@@ -86,7 +87,7 @@ ORDER_DB:
     - Order.Card.CCV: string
     - Order.Card.ID: string
     - Order.Items: '[]cart.Item struct{ID string, Quantity int, UnitPrice float32}'
-    - Order.Items.*: cart.Item struct{ID string, Quantity int, UnitPrice float32}
+    - Order.Items[*]: cart.Item struct{ID string, Quantity int, UnitPrice float32}
     - Order.Shipment: shipping.Shipment struct{ID string, Name string, Status "awaiting
         shipment" string}
     - Order.Shipment.ID: string
@@ -135,10 +136,10 @@ SHIPDB:
     - Shipment.Name: string
     - Shipment.Status: string
   - constraints:
-    - REFERENCE(Shipment.Status --> Shipment.Status) [+]
     - REFERENCE(Shipment.Name --> Shipment.Name) [+]
     - REFERENCE(Shipment.Name --> _.userid)
     - REFERENCE(Shipment.ID --> Shipment.ID) [+]
+    - REFERENCE(Shipment.Status --> Shipment.Status) [+]
     - REFERENCE(Shipment --> Shipment) [+]
     - REFERENCE(Shipment --> Shipment.ID) [+]
     - REFERENCE(Shipment --> Shipment.Name) [+]

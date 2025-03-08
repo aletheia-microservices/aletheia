@@ -33,13 +33,25 @@ func findTypeFromSelectedImportedPackage(pkg *types.Package, typeExpr ast.Expr) 
 	goType := pkg.GetTypeInfo(typeExpr)
 	logger.Logger.Infof("GO GOTYPE [%s]: %s", utils.GetType(goType), goType.String())
 
-	if goNamedType, ok := goType.(*golangtypes.Named); ok {
+	var findForNamedType = func(goNamedType *golangtypes.Named) gotypes.Type {
 		t := pkg.GetImportedTypeIfExists(goNamedType.String())
 		if t != nil {
 			logger.Logger.Debugf("GOT TYPE [%s]: %s", utils.GetType(t), t.String())
 			return t
 		}
+		return nil
 	}
+
+	if goNamedType, ok := goType.(*golangtypes.Named); ok {
+		return findForNamedType(goNamedType)
+	} else if goAliasType, ok := goType.(*golangtypes.Alias); ok {
+		logger.Logger.Warnf("[APP GOTYPES] recursing alias for [%T] (%s); RHS = [%T] %s", goAliasType, goAliasType.String(), goAliasType.Rhs(), goAliasType.Rhs())
+		if goNamedType, ok := goAliasType.Rhs().(*golangtypes.Named); ok {
+			return findForNamedType(goNamedType)
+		}
+		
+	}
+
 	return nil
 }
 

@@ -1,0 +1,45 @@
+(*OrderItem).GetType(): []
+
+(*OrderItem).IsTypeDiscount(): []
+
+(*OrderItem).IsTypeReserved(): []
+
+(*OrderItem).IsTypeShipping(): []
+
+(*OrderItem).IsTypeSku(): []
+
+(*OrderItem).IsTypeTax(): []
+
+(*OrderServiceImpl).New(ctx context.Context, currency int32, items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), metadata map[string]string, email string, shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}),
+  Carrier string, TrackingNumber string}))
+:
+	- INTERNAL CALL >> (*digota.OrderServiceImpl).getUpdatedOrderItems(ctx context.Context, items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})) ([](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), error)
+  - INTERNAL CALL >> digota.calculateTotal(currency int32, orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})) (int64, error)
+  - DATASTORE CALL @ orders_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+(*OrderServiceImpl).getUpdatedOrderItems(ctx context.Context, items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}))
+:
+	- INTERNAL CALL >> (*digota.OrderItem).IsTypeSku() bool
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeDiscount() bool
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeShipping() bool
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeTax() bool
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeSku() bool
+  - SERVICE CALL @ Get >> (*digota.SkuServiceImpl).Get(ctx context.Context, id string)
+    ((*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), error)
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeDiscount() bool
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeShipping() bool
+  - INTERNAL CALL >> (*digota.OrderItem).IsTypeTax() bool
+
+.CurrencyIsReserved(currency int32): []
+
+.NewOrderServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase): []
+
+.NewPaymentServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.calculateTotal(currency int32, orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}))
+:
+ []

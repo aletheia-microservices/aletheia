@@ -12,7 +12,7 @@ CART_DB:
     - Cart.LastProductID: string
     - Cart.TotalQuantity: int
     - Cart.Products: '[]string'
-    - Cart.Products.*: string
+    - Cart.Products[*]: string
   - constraints:
     - REFERENCE(Cart.Products --> Product.ProductID)
     - REFERENCE(Cart.LastProductID --> Product.ProductID)

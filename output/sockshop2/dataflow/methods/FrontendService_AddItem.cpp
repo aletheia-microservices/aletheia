@@ -13,7 +13,7 @@
 
 [0] (BasicObject BasicType) sessionID string
 
-    --> r-tainted: read(catalogue_db._.id) {1}
+    --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [0] (BasicObject BasicType) itemID string
 
     --> w-tainted: write(cart_db.cart.ID) {1}

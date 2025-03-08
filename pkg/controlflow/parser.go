@@ -967,7 +967,7 @@ func parseBuiltInGoTypeCall(service *service.Service, method *types.ParsedMethod
 
 	deps := getFuncCallDeps(service, method, block, callExpr)
 	switch funcIdent.Name {
-	case "byte", "string", "float32", "int64", "uint16", "uint64":
+	case "byte", "string", "float32", "int64", "uint16", "uint64", "int32":
 		return wrapInBasicVariable(deps[0], funcIdent.Name)
 	case "delete":
 		return nil

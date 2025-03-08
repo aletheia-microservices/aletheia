@@ -29,16 +29,16 @@ const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;75m"
 const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 
 type analysisConfig struct {
-	allFlag                    string
-	appName                    string
-	autofill                   bool
-	detectOnly                 bool
-	xcyDetection               bool
-	foreignKeyDetection        bool
-	cascadeDetection           bool
-	unicityIndividualDetection bool
-	unicityAggregateDetection  bool
-	specializationDetection    bool
+	allFlag                 string
+	appName                 string
+	autofill                bool
+	detectOnly              bool
+	xcyDetection            bool
+	foreignKeyDetection     bool
+	cascadeDetection        bool
+	unicityDetection        bool
+	numericalDetection      bool
+	specializationDetection bool
 }
 
 func main() {
@@ -49,22 +49,22 @@ func main() {
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
 	foreignKeyDetection := flag.Bool("fk", false, "Enable detection of anomalies in foreign key constraints")
 	cascadeDetection := flag.Bool("cascade", false, "Enable detection of the absence of cascading delete logic")
-	unicityIndividualDetection := flag.Bool("unicity_individual", false, "Enable detection of inconsistencies for unicity constraints (individual)")
-	unicityAggregateDetection := flag.Bool("unicity_aggregate", false, "Enable detection of inconsistencies for unicity constraints (aggregate)")
+	unicityDetection := flag.Bool("unicity", false, "Enable detection of inconsistencies for unicity constraints")
+	numericalDetection := flag.Bool("numerical", false, "Enable detection of inconsistencies for numerical constraints")
 	specializationDetection := flag.Bool("specialization", false, "Enable detection of removals in mandatory specializations")
 
 	flag.Parse()
 	analysis := analysisConfig{
-		allFlag:                    *allFlag,
-		appName:                    *appName,
-		autofill:                   *autofill,
-		detectOnly:                 *detectOnly,
-		xcyDetection:               *xcyDetection,
-		foreignKeyDetection:        *foreignKeyDetection,
-		cascadeDetection:           *cascadeDetection,
-		unicityIndividualDetection: *unicityIndividualDetection,
-		unicityAggregateDetection:  *unicityAggregateDetection,
-		specializationDetection:    *specializationDetection,
+		allFlag:                 *allFlag,
+		appName:                 *appName,
+		autofill:                *autofill,
+		detectOnly:              *detectOnly,
+		xcyDetection:            *xcyDetection,
+		foreignKeyDetection:     *foreignKeyDetection,
+		cascadeDetection:        *cascadeDetection,
+		unicityDetection:        *unicityDetection,
+		numericalDetection:      *numericalDetection,
+		specializationDetection: *specializationDetection,
 	}
 
 	if analysis.allFlag == "true" || analysis.allFlag == "True" || analysis.allFlag == "1" {
@@ -89,7 +89,7 @@ func initAnalyzer(analysis analysisConfig) {
 
 	app, err := app.InitApp(analysis.appName, servicesInfo)
 	if err != nil {
-		return
+		logger.Logger.Fatalf("error initializing app: %s", err.Error())
 	}
 	app.RegisterPackages()
 	app.RegisterDatastoreInstances(databaseInstances)
@@ -180,12 +180,16 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		summary += specializationDetector.GetSummary()
 	}
 
-	if analysis.unicityIndividualDetection {
+	if analysis.unicityDetection {
 		unicityDetector := unicity.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, unicityDetector)
 		iterator.Run()
 		results += detector.SaveResults(app, unicityDetector)
 		summary += unicityDetector.GetSummary()
+	}
+
+	if analysis.numericalDetection {
+		//TODO
 	}
 
 	fmt.Println("\n--------- RESULTS ---------\n" + results)

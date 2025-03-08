@@ -1,0 +1,217 @@
+digota:
+- package: digota
+- package path: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota
+- module: github.com/blueprint-uservices/blueprint/examples/digota/workflow
+- files:
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/OrderService.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/PaymentService.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/ProductService.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/SkuService.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/order.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/payment.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/product.go
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/sku.go
+- imports (extracted from package):
+  - context
+  - fmt
+  - github.com/Rhymond/go-money
+  - github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota/validation
+  - github.com/blueprint-uservices/blueprint/runtime/core/backend
+  - go.mongodb.org/mongo-driver/bson
+  - sync
+  - time
+- imports (extracted from source files):
+  - (backend) github.com/blueprint-uservices/blueprint/runtime/core/backend
+  - (bson) go.mongodb.org/mongo-driver/bson
+  - (go-money) github.com/Rhymond/go-money
+  - (validation) github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota/validation
+  - context
+  - fmt
+  - sync
+  - time
+- imported types:
+  - .error
+  - NoSQLCollection interface{NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}), NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.UpdateMany(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{}), NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}), NoSQLDatabase.NoSQLCollection.InsertMany(ctx context.Context, key []interface{}), NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D), NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)}
+  - NoSQLCursor interface{NoSQLDatabase.NoSQLCursor.One(ctx context.Context, obj interface{}),
+    NoSQLDatabase.NoSQLCursor.All(ctx context.Context, obj interface{})}
+  - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
+  - atomic.Uint64
+  - atomic.align64
+  - atomic.noCopy
+  - context.Context
+  - go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string}
+  - go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - primitive.D
+  - primitive.E
+  - sync.WaitGroup
+  - sync.noCopy
+  - time.Duration int64
+- imported constants: []
+- imported variables: []
+- declared types:
+  - digota.Card struct{Number string, ExpireMonth string, ExpireYear string, FirstName string, LastName string, CVC string, Type int32}
+  - digota.Charge struct{Id string, Statement string, ChargeAmount uint64, RefundAmount uint64, Refunds [](*digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}), Currency int32, Email string, Paid bool,
+    Refunded bool, ProviderId int32, ProviderChargeId string, Created int64, Updated
+    int64}
+  - digota.ChargeList struct{Charges [](*digota.Charge struct{Id string, Statement string, ChargeAmount uint64, RefundAmount uint64, Refunds [](*digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}), Currency int32,
+    Email string, Paid bool, Refunded bool, ProviderId int32, ProviderChargeId string,
+    Created int64, Updated int64}), Total int32}
+  - digota.Inventory struct{Quantity int64, Type int32}
+  - digota.ListRequest struct{Page int64, Limit int64, Sort int32}
+  - digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string,
+    Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}),
+    Created int64, Updated int64}
+  - digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+  - digota.OrderList struct{Orders [](*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string,
+    Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier
+    string, TrackingNumber string}), Created int64, Updated int64}), Total int32}
+  - digota.OrderService
+  - digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
+  - digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}
+  - digota.PaymentService
+  - digota.PaymentServiceImpl struct{db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
+  - digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64,
+    Updated int64}
+  - digota.ProductList struct{Products [](*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}),
+    Created int64, Updated int64}), Created int64, Updated int64}), Total int32}
+  - digota.ProductService
+  - digota.ProductServiceImpl struct{db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
+  - digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}
+  - digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}
+  - digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}
+  - digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
+  - digota.SkuList struct{Orders [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
+    (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated
+    int64}), Total int32}
+  - digota.SkuService
+  - digota.SkuServiceImpl struct{db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
+- declared variables:
+  - Currency_name map[int32]string
+  - Currency_value map[string]int32
+  - Inventory_Type_name map[int32]string
+  - Inventory_Type_value map[string]int32
+  - OrderItem_Type_name map[int32]string
+  - OrderItem_Type_value map[string]int32
+- declared constants:
+  - github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.defaultDiscountDescription
+    "Discount" untyped string
+  - github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.defaultShippingDescription
+    "Shipping" untyped string
+  - github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.defaultTaxDescription
+    "Tax" untyped string
+  - github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ns "order"
+    untyped string
+- service types:
+  - digota.OrderService
+  - digota.PaymentService
+  - digota.ProductService
+  - digota.SkuService
+- datastore types:
+  - NoSQLCollection interface{NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}), NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.UpdateMany(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{}), NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}), NoSQLDatabase.NoSQLCollection.InsertMany(ctx context.Context, key []interface{}), NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D), NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)}
+  - NoSQLCursor interface{NoSQLDatabase.NoSQLCursor.One(ctx context.Context, obj interface{}),
+    NoSQLDatabase.NoSQLCursor.All(ctx context.Context, obj interface{})}
+  - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
+- parsed methods:
+  - (*digota.OrderItem).GetType() int32
+  - (*digota.OrderItem).IsTypeDiscount() bool
+  - (*digota.OrderItem).IsTypeReserved() bool
+  - (*digota.OrderItem).IsTypeShipping() bool
+  - (*digota.OrderItem).IsTypeSku() bool
+  - (*digota.OrderItem).IsTypeTax() bool
+  - (*digota.OrderServiceImpl).New(ctx context.Context, currency int32, items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), metadata map[string]string, email string, shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}),
+    Carrier string, TrackingNumber string})) ((*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata
+    map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}),
+    Carrier string, TrackingNumber string}), Created int64, Updated int64}), error)
+  - (*digota.OrderServiceImpl).getUpdatedOrderItems(ctx context.Context, items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})) ([](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), error)
+  - (*digota.PaymentServiceImpl).Get(ctx context.Context, id string) ((*digota.Charge struct{Id string, Statement string, ChargeAmount uint64, RefundAmount uint64, Refunds [](*digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}), Currency int32, Email string, Paid bool, Refunded
+    bool, ProviderId int32, ProviderChargeId string, Created int64, Updated int64}),
+    error)
+  - (*digota.PaymentServiceImpl).List(ctx context.Context, page int64, limit int64, sort int32) ((*digota.ChargeList struct{Charges [](*digota.Charge struct{Id string, Statement string, ChargeAmount uint64, RefundAmount uint64, Refunds [](*digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}),
+    Currency int32, Email string, Paid bool, Refunded bool, ProviderId int32, ProviderChargeId
+    string, Created int64, Updated int64}), Total int32}), error)
+  - (*digota.PaymentServiceImpl).NewCharge(ctx context.Context, currency int32, total uint64, card (*digota.Card struct{Number string, ExpireMonth string, ExpireYear string, FirstName string, LastName string, CVC string, Type int32}), email string,
+    statement string, paymentProviderId int32, metadata map[string]string) ((*digota.Charge struct{Id string, Statement string, ChargeAmount uint64, RefundAmount uint64, Refunds [](*digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}), Currency int32, Email string, Paid bool, Refunded
+    bool, ProviderId int32, ProviderChargeId string, Created int64, Updated int64}),
+    error)
+  - (*digota.PaymentServiceImpl).RefundCharge(ctx context.Context, id string, amount uint64, reason int32) ((*digota.Charge struct{Id string, Statement string, ChargeAmount uint64, RefundAmount uint64, Refunds [](*digota.Refund struct{RefundAmount uint64, ProviderRefundId string, Reason int32, Created int64}), Currency int32, Email
+    string, Paid bool, Refunded bool, ProviderId int32, ProviderChargeId string, Created
+    int64, Updated int64}), error)
+  - (*digota.ProductServiceImpl).Delete(ctx context.Context, id string) error
+  - (*digota.ProductServiceImpl).Get(ctx context.Context, id string) ((*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64,
+    Updated int64}), error)
+  - (*digota.ProductServiceImpl).List(ctx context.Context, page int64, limit int64, sort int32) ((*digota.ProductList struct{Products [](*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}),
+    Total int32}), error)
+  - (*digota.ProductServiceImpl).New(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) ((*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
+    (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated
+    int64}), Created int64, Updated int64}), error)
+  - (*digota.ProductServiceImpl).Update(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) ((*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}),
+    Created int64, Updated int64}), Created int64, Updated int64}), error)
+  - (*digota.SkuServiceImpl).Get(ctx context.Context, id string) ((*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}),
+    Created int64, Updated int64}), error)
+  - (*digota.SkuServiceImpl).New(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), inventory (*digota.Inventory struct{Quantity int64, Type int32}), attributes map[string]string) ((*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}),
+    Created int64, Updated int64}), error)
+  - digota.CurrencyIsReserved(currency int32) bool
+  - digota.NewOrderServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase) (digota.OrderService, error)
+  - digota.NewPaymentServiceImpl(ctx context.Context, db NoSQLDatabase) (digota.PaymentService, error)
+  - digota.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase) (digota.ProductService, error)
+  - digota.NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase) (digota.SkuService, error)
+  - digota.calculateTotal(currency int32, orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})) (int64, error)
+
+validation:
+- package: validation
+- package path: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota/validation
+- module: github.com/blueprint-uservices/blueprint/examples/digota/workflow
+- files:
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/digota/workflow/digota/validation/validate.go
+- imports (extracted from package):
+  - google.golang.org/grpc/codes
+  - google.golang.org/grpc/status
+  - gopkg.in/go-playground/validator.v9
+- imports (extracted from source files):
+  - (codes) google.golang.org/grpc/codes
+  - (status) google.golang.org/grpc/status
+  - (validator.v9) gopkg.in/go-playground/validator.v9
+- imported types:
+  - .error
+  - atomic.Value
+  - reflect.Type interface{Comparable, NumMethod, OverflowUint, String, common, NumOut, IsVariadic, NumField, OverflowInt, Align, AssignableTo, FieldByName, In, Len, Size, FieldByIndex, FieldByNameFunc, Key, Name, CanSeq, MethodByName, PkgPath, uncommon, Bits, CanSeq2, ChanDir, Elem, FieldAlign, Implements, Kind, Method, Field, Out, OverflowComplex, ConvertibleTo, NumIn, OverflowFloat, }
+  - sync.Mutex
+  - sync.Mutex struct{state int32, sema uint32}
+  - sync.Pool
+  - sync.noCopy
+  - universal-translator.Translator interface{C, FmtAccounting, FmtCurrency, FmtDateShort, FmtNumber, FmtTimeFull, FmtTimeLong, AddRange, MonthWide, T, O, Add, AddOrdinal, FmtTimeShort, MonthsAbbreviated, MonthsWide, WeekdayAbbreviated, WeekdayNarrow, AddCardinal, FmtDateMedium, WeekdayShort, WeekdaysAbbreviated, WeekdaysNarrow, WeekdaysShort, WeekdaysWide, VerifyTranslations, CardinalPluralRule, FmtDateLong, MonthAbbreviated, MonthNarrow, PluralsOrdinal, R, OrdinalPluralRule, PluralsCardinal, FmtTimeMedium, Locale, MonthsNarrow, WeekdayWide, FmtDateFull, FmtPercent, PluralsRange, RangePluralRule, }
+  - validator.v9.CustomTypeFunc interface{}
+  - validator.v9.FieldError interface{Tag, Translate, Value, Kind, Param, Type, ActualTag, Field, Namespace, StructField, StructNamespace, }
+  - validator.v9.FuncCtx bool
+  - 'validator.v9.StructLevelFuncCtx '
+  - validator.v9.TagNameFunc string
+  - validator.v9.TranslationFunc string
+  - validator.v9.Validate struct{tagName string, pool (*sync.Pool), hasCustomFuncs bool, hasTagNameFunc bool, tagNameFunc validator.v9.TagNameFunc string, structLevelFuncs map[reflect.Type interface{Comparable, NumMethod, OverflowUint, String, common, NumOut, IsVariadic, NumField, OverflowInt, Align, AssignableTo, FieldByName, In, Len, Size, FieldByIndex, FieldByNameFunc, Key, Name, CanSeq, MethodByName, PkgPath, uncommon, Bits, CanSeq2, ChanDir, Elem, FieldAlign, Implements, Kind, Method, Field, Out, OverflowComplex, ConvertibleTo, NumIn, OverflowFloat, }]validator.v9.StructLevelFuncCtx
+    , customFuncs map[reflect.Type interface{In, NumOut, IsVariadic, FieldByIndex, FieldByNameFunc, uncommon, ChanDir, Implements, ConvertibleTo, CanSeq2, OverflowComplex, NumMethod, Elem, Method, String, NumField, Len, Size, Key, Comparable, Align, Bits, FieldAlign, Field, OverflowFloat, OverflowUint, common, OverflowInt, AssignableTo, Name, MethodByName, PkgPath, NumIn, CanSeq, Kind, Out, FieldByName, }]validator.v9.CustomTypeFunc
+    interface{}, aliases map[string]string, validations map[string]validator.v9.internalValidationFuncWrapper
+    struct{fn validator.v9.FuncCtx bool, runValidatinOnNil bool}, transTagFunc map[universal-translator.Translator
+    interface{CardinalPluralRule, FmtDateLong, MonthAbbreviated, MonthNarrow, PluralsOrdinal, R, OrdinalPluralRule, PluralsCardinal, FmtTimeMedium, Locale, MonthsNarrow, WeekdayWide, FmtDateFull, FmtPercent, PluralsRange, RangePluralRule, C, FmtAccounting, FmtCurrency, FmtDateShort, FmtNumber, FmtTimeFull, FmtTimeLong, AddRange, MonthWide, T, O, Add, AddOrdinal, FmtTimeShort, MonthsAbbreviated, MonthsWide, WeekdayAbbreviated, WeekdayNarrow, AddCardinal, FmtDateMedium, WeekdayShort, WeekdaysAbbreviated, WeekdaysNarrow, WeekdaysShort, WeekdaysWide, VerifyTranslations, }]map[string]validator.v9.TranslationFunc
+    string, tagCache (*validator.v9.tagCache struct{lock sync.Mutex, m atomic.Value}),
+    structCache (*validator.v9.structCache struct{lock sync.Mutex, m atomic.Value})}
+  - validator.v9.ValidationErrors []validator.v9.FieldError interface{ interface{ActualTag() string; Field() string; Kind() reflect.Kind; Namespace() string; Param() string; StructField() string; StructNamespace() string; Tag() string; Translate(ut github.com/go-playground/universal-translator.Translator) string; Type() reflect.Type; Value() interface{}} }
+  - validator.v9.internalValidationFuncWrapper struct{fn validator.v9.FuncCtx bool, runValidatinOnNil bool}
+  - validator.v9.structCache struct{lock sync.Mutex, m atomic.Value}
+  - validator.v9.tagCache struct{lock sync.Mutex, m atomic.Value}
+- imported constants: []
+- imported variables: []
+- declared types: []
+- declared variables:
+  - github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota/validation.v
+    (*validator.v9.Validate struct{tagName string, pool (*sync.Pool), hasCustomFuncs bool, hasTagNameFunc bool, tagNameFunc validator.v9.TagNameFunc string, structLevelFuncs map[reflect.Type interface{ interface{Align() int; AssignableTo(u reflect.Type) bool; Bits() int; CanSeq() bool; CanSeq2() bool; ChanDir() reflect.ChanDir; Comparable() bool; ConvertibleTo(u reflect.Type) bool; Elem() reflect.Type; Field(i int) reflect.StructField; FieldAlign() int; FieldByIndex(index []int) reflect.StructField; FieldByName(name string) (reflect.StructField, bool); FieldByNameFunc(match func(string) bool) (reflect.StructField, bool); Implements(u reflect.Type) bool; In(i int) reflect.Type; IsVariadic() bool; Key() reflect.Type; Kind() reflect.Kind; Len() int; Method(int) reflect.Method; MethodByName(string) (reflect.Method, bool); Name() string; NumField() int; NumIn() int; NumMethod() int; NumOut() int; Out(i int) reflect.Type; OverflowComplex(x complex128) bool; OverflowFloat(x float64) bool; OverflowInt(x int64) bool; OverflowUint(x uint64) bool; PkgPath() string; Size() uintptr; String() string; common() *internal/abi.Type; uncommon() *reflect.uncommonType} }]validator.v9.StructLevelFuncCtx , customFuncs
+    map[reflect.Type interface{ interface{Align() int; AssignableTo(u reflect.Type) bool; Bits() int; CanSeq() bool; CanSeq2() bool; ChanDir() reflect.ChanDir; Comparable() bool; ConvertibleTo(u reflect.Type) bool; Elem() reflect.Type; Field(i int) reflect.StructField; FieldAlign() int; FieldByIndex(index []int) reflect.StructField; FieldByName(name string) (reflect.StructField, bool); FieldByNameFunc(match func(string) bool) (reflect.StructField, bool); Implements(u reflect.Type) bool; In(i int) reflect.Type; IsVariadic() bool; Key() reflect.Type; Kind() reflect.Kind; Len() int; Method(int) reflect.Method; MethodByName(string) (reflect.Method, bool); Name() string; NumField() int; NumIn() int; NumMethod() int; NumOut() int; Out(i int) reflect.Type; OverflowComplex(x complex128) bool; OverflowFloat(x float64) bool; OverflowInt(x int64) bool; OverflowUint(x uint64) bool; PkgPath() string; Size() uintptr; String() string; common() *internal/abi.Type; uncommon() *reflect.uncommonType} }]validator.v9.CustomTypeFunc interface{}, aliases
+    map[string]string, validations map[string]validator.v9.internalValidationFuncWrapper
+    struct{fn validator.v9.FuncCtx bool, runValidatinOnNil bool}, transTagFunc map[universal-translator.Translator
+    interface{ interface{Add(key interface{}, text string, override bool) error; AddCardinal(key interface{}, text string, rule github.com/go-playground/locales.PluralRule, override bool) error; AddOrdinal(key interface{}, text string, rule github.com/go-playground/locales.PluralRule, override bool) error; AddRange(key interface{}, text string, rule github.com/go-playground/locales.PluralRule, override bool) error; C(key interface{}, num float64, digits uint64, param string)
+    (string, error); O(key interface{}, num float64, digits uint64, param string)
+    (string, error); R(key interface{}, num1 float64, digits1 uint64, num2 float64, digits2 uint64, param1 string, param2 string) (string, error); T(key interface{}, params ...string) (string, error); VerifyTranslations() error; github.com/go-playground/locales.Translator}
+    }]map[string]validator.v9.TranslationFunc string, tagCache (*validator.v9.tagCache struct{lock sync.Mutex, m atomic.Value}), structCache (*validator.v9.structCache struct{lock sync.Mutex, m atomic.Value})})
+- declared constants: []
+- service types: []
+- datastore types: []
+- parsed methods:
+  - validation.Validate(req interface{}) error

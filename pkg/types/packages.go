@@ -88,6 +88,16 @@ func (p *Package) GetImportedPackageByAliasIfExists(alias string) *Package {
 	if pkg, exists := p.ImportedPackagesByAlias[alias]; exists {
 		return pkg
 	}
+
+	// alternative:
+	// packages whose name contains "-" (e.g., "github.com/Rhymond/go-money"), can only be callable with the alias after "-"
+	for key, pkg := range p.ImportedPackagesByAlias {
+		splits := strings.Split(key, "-")
+		usableAlias := splits[len(splits)-1]
+		if alias == usableAlias {
+			return pkg
+		}
+	}
 	logger.Logger.Warnf("[PACKAGE] [%s] package with alias (%s) does not exist for import map: %s", p.GetName(), alias, p.ImportsByAliasMapStr())
 	return nil
 }
@@ -136,14 +146,14 @@ func (p *Package) GetDeclaredVariableOrConstIfExists(name string) objects.Object
 	if v, ok := p.DeclaredVariables[name]; ok {
 		return v
 	}
-	if v, ok := p.DeclaredVariables[p.PackagePath + "." + name]; ok {
+	if v, ok := p.DeclaredVariables[p.PackagePath+"."+name]; ok {
 		return v
 	}
 	logger.Logger.Warnf("[BLOCK] variable (%s) does not exist in declared variables list: %v", name, p.DeclaredVariables)
 	if v, ok := p.DeclaredConstants[name]; ok {
 		return v
 	}
-	if v, ok := p.DeclaredConstants[p.PackagePath + "." + name]; ok {
+	if v, ok := p.DeclaredConstants[p.PackagePath+"."+name]; ok {
 		return v
 	}
 	logger.Logger.Warnf("[BLOCK] variable (%s) does not exist in declared constants list: %v", name, p.DeclaredVariables)
@@ -268,10 +278,11 @@ func (p *Package) AddDeclaredType(e gotypes.Type) {
 	p.DeclaredTypes[e.GetName()] = e
 }
 
-func (p *Package) AddImportedType(e gotypes.Type) {
+func (p *Package) AddImportedTypeIfNotExists(e gotypes.Type) {
 	key := ImportedTypeKey(e.GetPackage(), e.GetName())
 	if _, exists := p.ImportedTypes[key]; exists {
-		logger.Logger.Fatalf("package %s already constains imported type %s", p.Name, e.String())
+		logger.Logger.Warnf("package %s already constains imported type %s", p.Name, e.String())
+		return
 	}
 	p.ImportedTypes[key] = e
 }

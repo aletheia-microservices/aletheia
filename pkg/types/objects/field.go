@@ -91,6 +91,17 @@ func (v *FieldObject) AssignVariable(rvariable Object) {
 		return
 	}
 
+	// e.g. some_slice = some_array
+	_, leftArrayOk := v.WrappedVariable.GetType().(*gotypes.ArrayType)
+	_, rightSliceOk := rvariable.GetType().(*gotypes.SliceType)
+	if leftArrayOk && rightSliceOk {
+		// maintain left slice and add copy right array
+		v.WrappedVariable = rvariable.Copy(false)
+		v.WrappedVariable.(*SliceObject).UpgradeToArray()
+		v.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, v)
+		return
+	}
+
 	logger.Logger.Fatalf("[VAR FIELD] cannot assign variable with unmatched types (%s --> %s) for lvariable (%s) and rvariable (%s)", utils.GetType(v.WrappedVariable), utils.GetType(rvariable), v.WrappedVariable.String(), rvariable.String())
 }
 

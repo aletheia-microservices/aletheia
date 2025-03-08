@@ -8,13 +8,13 @@
 [_1] (Reference UserType) ref <ctx context.Context> @ FrontendService
 [_1] (Reference UserType) ref <ctx context.Context> @ FrontendService
 
-    --> r-tainted: read(catalogue_db._.id) {1}
+    --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [0] (BasicObject BasicType) id string
-     --> r-tainted: read(catalogue_db._.id) {1}
+     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
-     --> r-tainted: read(catalogue_db._.id) {1}
+     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
-     --> r-tainted: read(catalogue_db._.id) {1}
+     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = catalogue, collection = catalogue}
@@ -26,13 +26,13 @@
 [__2] (FieldObject FieldType) Key "id" string
 [___3] (BasicObject BasicType) "id" string
 [__2] (FieldObject FieldType) Value string
-       --> r-tainted: read(catalogue_db._.id) {1}
+       --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [___3] (BasicObject BasicType) id string
-        --> r-tainted: read(catalogue_db._.id) {1}
+        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService
-        --> r-tainted: read(catalogue_db._.id) {1}
+        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService
-        --> r-tainted: read(catalogue_db._.id) {1}
+        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService
 
     --> r-tainted: read(catalogue_db.Sock, catalogue_db.Sock.ImageURL, catalogue_db.Sock.string, catalogue_db.Sock.ImageURL_1, catalogue_db.Sock.ImageURL_2, catalogue_db.Sock.TagString, catalogue_db.Sock.Tags) {7}
@@ -70,7 +70,7 @@
        --> r-tainted: read(catalogue_db.Sock.string) {1}
 [___3] (BasicObject BasicType) "," string
 
-    --> r-tainted: read(catalogue_db._) {1}
+    --> r-tainted: read(catalogue_db.Sock.ID) {1}
 [0] (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database = catalogue, collection = catalogue}
      --> r-tainted: read(catalogue_db.Sock, catalogue_db.Sock.ImageURL, catalogue_db.Sock.string, catalogue_db.Sock.ImageURL_1, catalogue_db.Sock.ImageURL_2, catalogue_db.Sock.TagString, catalogue_db.Sock.Tags) {7}
 [_1] (StructObject UserType) sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}

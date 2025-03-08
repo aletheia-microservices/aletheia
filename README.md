@@ -67,20 +67,22 @@ go run main.go --app employee_app --auto --cascade
 go run main.go --app employee_app --auto --specialization
 
 # Unicity Constraints (NoSQL Database)
-go run main.go --app coupons_app --auto --unicity_individual
+go run main.go --app coupons_app --auto --unicity
 # > (STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)
-go run main.go --app coupons_app --auto --unicity_aggregate
 
 # Unicity Constraints (Relational Database)
-go run main.go --app coupons_app_sql --auto --unicity_individual
-go run main.go --app coupons_app_sql --auto --unicity_aggregate
+go run main.go --app coupons_app_sql --auto --unicity
 
 # Domain (Numerical) Constraints
-go run main.go --app coupons_app --auto --numerical_individual
-go run main.go --app coupons_app --auto --numerical_aggregate
+go run main.go --app coupons_app --auto --numerical
 
 # all applications and detection patterns
 go run main.go -all=true --auto --xcy --fk --cascade
+```
+
+
+```zsh
+go run main.go --app digota --auto
 ```
 
 Run the graph builder:
@@ -97,6 +99,7 @@ graphs.py [-h] [--app {postnotification,postnotification_simple,trainticket,shop
 ./graphs.py --app postnotification
 ./graphs.py --app employee_app
 ./graphs.py --app coupons_app
+./graphs.py --app digota
 
 # all applications
 ./graphs.py --all

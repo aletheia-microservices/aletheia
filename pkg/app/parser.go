@@ -13,8 +13,8 @@ import (
 	"analyzer/pkg/logger"
 	"analyzer/pkg/lookup"
 	"analyzer/pkg/types"
-	"analyzer/pkg/types/objects"
 	"analyzer/pkg/types/gotypes"
+	"analyzer/pkg/types/objects"
 	"analyzer/pkg/utils"
 )
 
@@ -122,7 +122,9 @@ func (app *App) saveNewPackageGoInfo(packagesInfo map[string]*packageGoInfo, goP
 }
 
 func (app *App) RegisterPackages() {
+	logger.Logger.Info("[APP] registering packages")
 	packagesPattern := app.PackagePath + "/..."
+	logger.Logger.Debug("[APP] loading packages")
 	pkgs, err := packages.Load(&packages.Config{Mode: packages.NeedName | packages.NeedModule | packages.NeedFiles | packages.NeedTypes | packages.NeedTypesInfo | packages.NeedSyntax | packages.NeedImports}, packagesPattern)
 	if err != nil {
 		logger.Logger.Fatalf("[APP PACKAGES] error loading packages from %s: %s", app.PackagePath, err.Error())
@@ -148,6 +150,7 @@ func (app *App) RegisterPackages() {
 		files := info.GoPackage.Syntax
 		for _, file := range files {
 			for _, impt := range file.Imports {
+				logger.Logger.Debugf("IMPT: %s", impt.Name.String())
 				imptAlias := ""
 				if impt.Name != nil {
 					imptAlias = impt.Name.Name
@@ -164,6 +167,8 @@ func (app *App) RegisterPackages() {
 			}
 		}
 	}
+
+	//logger.Logger.Fatal("EXIT")
 
 	for _, parsedPackage := range app.GetBlueprintPackages() {
 		parseBlueprintPackage(parsedPackage)

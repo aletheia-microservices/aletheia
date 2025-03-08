@@ -1,0 +1,43 @@
+(*OrderItem).GetType(): []
+
+(*OrderItem).IsTypeDiscount(): []
+
+(*OrderItem).IsTypeReserved(): []
+
+(*OrderItem).IsTypeShipping(): []
+
+(*OrderItem).IsTypeSku(): []
+
+(*OrderItem).IsTypeTax(): []
+
+(*ProductServiceImpl).Delete(ctx context.Context, id string):
+- DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D) interface{}
+
+(*ProductServiceImpl).Get(ctx context.Context, id string):
+- DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+
+(*ProductServiceImpl).List(ctx context.Context, page int64, limit int64, sort int32):
+- DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+
+(*ProductServiceImpl).New(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)
+:
+	- DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+(*ProductServiceImpl).Update(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)
+:
+	- DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+  - DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+.CurrencyIsReserved(currency int32): []
+
+.NewOrderServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase): []
+
+.NewPaymentServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.calculateTotal(currency int32, orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}))
+:
+ []

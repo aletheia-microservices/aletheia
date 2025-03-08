@@ -1,10 +1,10 @@
 module analyzer
 
-go 1.22
+go 1.23.0
 
-toolchain go1.22.2
+toolchain go1.24.0
 
-require golang.org/x/tools v0.21.0
+require golang.org/x/tools v0.30.0
 
 require github.com/blueprint-uservices/blueprint/plugins v0.0.0
 
@@ -27,6 +27,10 @@ require github.com/blueprint-uservices/blueprint/examples/app_constraints_refere
 require github.com/blueprint-uservices/blueprint/examples/employee_app/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/employee_app/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/digota/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/digota/wiring v0.0.0
 
 require github.com/blueprint-uservices/blueprint/examples/coupons_app/workflow v0.0.0 // indirect
 
@@ -64,18 +68,22 @@ require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0
 
 require (
 	github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
+	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/Rhymond/go-money v1.0.14 // indirect
 	github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workload v0.0.0-20240619221802-d064c5861c1e // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/go-logr/logr v1.4.1 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -83,38 +91,40 @@ require (
 	github.com/hailocab/go-geoindex v0.0.0-20160127134810-64631bfe9711 // indirect
 	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
-	github.com/mattn/go-sqlite3 v1.14.22 // indirect
+	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
-	github.com/openzipkin/zipkin-go v0.4.3 // indirect
+	github.com/onsi/gomega v1.27.10 // indirect
 	github.com/otiai10/copy v1.14.0 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rabbitmq/amqp091-go v1.9.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
-	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2 // indirect
-	github.com/youmark/pkcs8 v0.0.0-20240424034433-3c2c7870ae76 // indirect
+	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	go.mongodb.org/mongo-driver v1.15.0 // indirect
-	go.opentelemetry.io/otel v1.26.0 // indirect
+	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
+	go.opentelemetry.io/otel v1.34.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v1.26.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.26.0 // indirect
-	go.opentelemetry.io/otel/exporters/zipkin v1.26.0 // indirect
-	go.opentelemetry.io/otel/metric v1.26.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.26.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.26.0 // indirect
-	go.opentelemetry.io/otel/trace v1.26.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	go.opentelemetry.io/otel/metric v1.34.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.32.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v1.32.0 // indirect
+	go.opentelemetry.io/otel/trace v1.34.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250224174004-546df14abb99 // indirect
+	google.golang.org/grpc v1.70.0 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
+	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 )
 
 require (
 	github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3
 	github.com/sirupsen/logrus v1.9.3
-	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/mod v0.23.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
 )
 
 replace github.com/blueprint-uservices/blueprint/plugins => ./blueprint/plugins
@@ -146,6 +156,12 @@ replace github.com/blueprint-uservices/blueprint/examples/employee_app => ./blue
 replace github.com/blueprint-uservices/blueprint/examples/employee_app/workflow => ./blueprint/examples/employee_app/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/employee_app/wiring => ./blueprint/examples/employee_app/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/digota => ./blueprint/examples/digota
+
+replace github.com/blueprint-uservices/blueprint/examples/digota/workflow => ./blueprint/examples/digota/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/digota/wiring => ./blueprint/examples/digota/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/coupons_app => ./blueprint/examples/coupons_app
 

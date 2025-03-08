@@ -13,8 +13,8 @@ ACCOUNTS_DB:
     - Account.Username: string
     - Account.Timestamp: int64
   - constraints:
-    - REFERENCE(Account.ReqID --> User.ReqID) [+]
     - REFERENCE(Account.Username --> User.Username) [+]
+    - REFERENCE(Account.ReqID --> User.ReqID) [+]
     - REFERENCE(Account --> User.ReqID) [+]
     - REFERENCE(Account --> User.Username) [+]
 

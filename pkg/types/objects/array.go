@@ -85,14 +85,13 @@ func (v *ArrayObject) SetElementAt(idx int, elem Object) {
 func (v *ArrayObject) AppendElement(varElements Object) {
 	if varElementsSlice, ok := varElements.(*ArrayObject); ok {
 		v.Elements = append(v.Elements, varElementsSlice.GetElements()...)
+	} else if v.GetElementsType().IsSameType(varElements.GetType()) {
+		v.Elements = append(v.Elements, varElements)
+	} else if v.GetArrayType().ElementsTypeIsInterface() {
+		v.Elements = append(v.Elements, varElements)
 	} else {
-		if v.GetElementsType().IsSameType(varElements.GetType()) {
-			v.Elements = append(v.Elements, varElements)
-		} else if v.GetArrayType().ElementsTypeIsInterface() { // if array is []interface{} then we can include anything
-			v.Elements = append(v.Elements, varElements)
-		} else {
-			logger.Logger.Fatalf("[VARS SLICE] slice variable underlying type (%s) does not match elements type (%s)", utils.GetType(v.GetArrayType().ElementsType), utils.GetType(varElements.GetType()))
-		}
+		//logger.Logger.Fatalf("[VARS SLICE] slice variable underlying type (%s) does not match elements type (%s)", utils.GetType(v.GetArrayType().ElementsType), utils.GetType(varElements.GetType()))
+		v.Elements = append(v.Elements, varElements)
 	}
 }
 

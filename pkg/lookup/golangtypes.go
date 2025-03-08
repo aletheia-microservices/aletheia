@@ -45,24 +45,33 @@ func FindDefTypesAndAddToPackage(pkg *types.Package, object golangtypes.Object, 
 		}
 	} */
 
-	namedGoType, ok := goType.(*golangtypes.Named)
-	if !ok {
-		logger.Logger.Warnf("[APP GOTYPES] skipping %v with type %s", goType, utils.GetType(goType))
-		return nil
-	}
+	var typeName string
+	var objectPackage *golangtypes.Package
+	var objectPackagePath string
+	var namedGoType *golangtypes.Named
+	var ok bool
 
-	if visitedNamedTypes != nil {
-		if visitedNamedTypes[namedGoType] {
-			return nil
+	if namedGoType, ok = goType.(*golangtypes.Named); ok {
+		if visitedNamedTypes != nil {
+			if visitedNamedTypes[namedGoType] {
+				return nil
+			}
+			visitedNamedTypes[namedGoType] = true
 		}
-		visitedNamedTypes[namedGoType] = true
+
+		typeName = namedGoType.Obj().Name()
+		objectPackage = namedGoType.Obj().Pkg()
+		objectPackagePath = ""
+
+		logger.Logger.Tracef("[APP NAMED GOTYPE] [%s] %s", utils.GetType(namedGoType), namedGoType)
+	} else if aliasGoType, ok := goType.(*golangtypes.Alias); ok {
+		logger.Logger.Warnf("[APP GOTYPES] recursing alias for [%T] (%s); RHS = [%T] %s", aliasGoType, aliasGoType.String(), aliasGoType.Rhs(), aliasGoType.Rhs())
+		return FindDefTypesAndAddToPackage(pkg, object, aliasGoType.Rhs(), visitedNamedTypes, typeNameToFuncs, serviceTypes)
 	}
 
-	logger.Logger.Tracef("[APP GOTYPES] [%s] %s", utils.GetType(namedGoType), namedGoType)
-
-	typeName := namedGoType.Obj().Name()
-	objectPackage := namedGoType.Obj().Pkg()
-	objectPackagePath := ""
+	if namedGoType == nil {
+		logger.Logger.Fatalf("[APP GOTYPES] skipping %v with type %s", goType, utils.GetType(goType))
+	}
 
 	// built-in (e.g. error, make, println) golang types have no package
 	if objectPackage != nil {
@@ -75,13 +84,13 @@ func FindDefTypesAndAddToPackage(pkg *types.Package, object golangtypes.Object, 
 			if isBlueprintPackagePath(objectPackagePath) {
 				bpPackage := pkg.GetImportedPackage(objectPackagePath)
 				declaredType := bpPackage.GetDeclaredType(typeName).DeepCopy()
-				pkg.AddImportedType(declaredType)
+				pkg.AddImportedTypeIfNotExists(declaredType)
 				pkg.AddDatastoreType(declaredType)
 
 				logger.Logger.Infof("[APP GOTYPES] added imported blueprint type (%s)", declaredType.String())
 				return declaredType
 			} else if serviceType, ok := serviceTypes[typeName]; ok && serviceType.HasPackagePath(objectPackagePath) {
-				pkg.AddImportedType(serviceType)
+				pkg.AddImportedTypeIfNotExists(serviceType)
 				pkg.AddServiceType(serviceType)
 
 				logger.Logger.Infof("[APP GOTYPES] added imported service type (%s)", serviceType.String())
@@ -91,7 +100,7 @@ func FindDefTypesAndAddToPackage(pkg *types.Package, object golangtypes.Object, 
 					Name:        typeName,
 					PackagePath: objectPackagePath, // this is the real package name
 				}
-				pkg.AddImportedType(userType)
+				pkg.AddImportedTypeIfNotExists(userType)
 
 				userType.UserType = ComputeTypesForGoTypes(pkg, namedGoType.Underlying(), true, visitedNamedTypes, typeNameToFuncs, serviceTypes)
 				addMethodsIfStructOrInterface(userType, namedGoType)
@@ -259,6 +268,9 @@ func ComputeTypesForGoTypes(p *types.Package, goType golangtypes.Type, computeIf
 		chanType.KeyType = ComputeTypesForGoTypes(p, e.Key(), computeIfNotFound, visitedNamedTypes, typeNameToFuncs, serviceTypes)
 		chanType.ValueType = ComputeTypesForGoTypes(p, e.Elem(), computeIfNotFound, visitedNamedTypes, typeNameToFuncs, serviceTypes)
 		return chanType
+	case *golangtypes.Alias:
+		logger.Logger.Warnf("[APP GOTYPES] recursing alias for [%T] (%s); RHS = [%T] %s", e, e.String(), e.Rhs(), e.Rhs())
+		return ComputeTypesForGoTypes(p, e.Rhs(), computeIfNotFound, visitedNamedTypes, typeNameToFuncs, serviceTypes)
 	default:
 		if goType != nil {
 			logger.Logger.Fatalf("unknown gotype %s for %v", utils.GetType(goType), goType)

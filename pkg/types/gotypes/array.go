@@ -4,6 +4,7 @@ import (
 	"runtime"
 
 	"analyzer/pkg/logger"
+	"analyzer/pkg/utils"
 )
 
 type ArrayType struct {
@@ -64,7 +65,7 @@ func (t *ArrayType) AddValue(value string) {
 func (t *ArrayType) GetNestedFieldTypes(prefix string, noSQL bool) ([]Type, []string) {
 	logger.Logger.Warnf("[TYPES ARRAY] attempted to get nested fields and variables: %s", t.String())
 	var nestedTypes = []Type{t.ElementsType}
-	var nestedIDs = []string{prefix + ".*"}
+	var nestedIDs = []string{prefix + utils.DYNAMIC_FIELD}
 	return nestedTypes, nestedIDs
 }
 

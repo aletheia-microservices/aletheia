@@ -34,7 +34,7 @@
 
 [0] (SliceObject UserType) filter primitive.D
 
-    --> r-tainted: read(catalogue_db._) {1}
+    --> r-tainted: read(catalogue_db.Sock.ID) {1}
 [0] (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database = catalogue, collection = catalogue}
      --> r-tainted: read(catalogue_db.[]catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}) {1}
 [_1] (ArrayObject ArrayType) allSocks []catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}

@@ -25,6 +25,23 @@ func (v *SliceObject) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (v *SliceObject) UpgradeToArray() *ArrayObject {
+	if v.ObjectInfo.Name == "usermentions" {
+		logger.Logger.Infof("[ARRAY] upgrading array object to slice: %s", v.String())
+	}
+	v.ObjectInfo.Type = &gotypes.SliceType{
+		UnderlyingType: v.GetSliceType().UnderlyingType,
+	}
+	sliceVariable := &ArrayObject{
+		ObjectInfo: v.ObjectInfo,
+		Elements:   v.Elements,
+	}
+	for _, elem := range sliceVariable.Elements {
+		elem.GetVariableInfo().SetParent(elem, sliceVariable)
+	}
+	return sliceVariable
+}
+
 func (v *SliceObject) SetElementAt(idx int, elem Object) {
 	if idx > len(v.Elements)-1 {
 		logger.Logger.Fatalf("[ARRAY OBJECT] attempted to set new element (%s) at index (%d) out of bounds for array with elements: %v", elem.String(), idx, v.Elements)

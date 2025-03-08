@@ -1,0 +1,33 @@
+(*OrderItem).GetType(): []
+
+(*OrderItem).IsTypeDiscount(): []
+
+(*OrderItem).IsTypeReserved(): []
+
+(*OrderItem).IsTypeShipping(): []
+
+(*OrderItem).IsTypeSku(): []
+
+(*OrderItem).IsTypeTax(): []
+
+(*SkuServiceImpl).Get(ctx context.Context, id string):
+- DATASTORE CALL @ skus_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+
+(*SkuServiceImpl).New(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), inventory (*digota.Inventory struct{Quantity int64, Type int32}),
+  attributes map[string]string)
+:
+	- DATASTORE CALL @ skus_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+
+.CurrencyIsReserved(currency int32): []
+
+.NewOrderServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase): []
+
+.NewPaymentServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase): []
+
+.calculateTotal(currency int32, orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}))
+:
+ []

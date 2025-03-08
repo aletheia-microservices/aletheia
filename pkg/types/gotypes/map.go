@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"analyzer/pkg/logger"
+	"analyzer/pkg/utils"
 )
 
 type MapType struct {
@@ -15,6 +16,13 @@ type MapType struct {
 // ------------
 // Type Methods
 // ------------
+
+func (t *MapType) GetNestedFieldTypes(prefix string, noSQL bool) ([]Type, []string) {
+	logger.Logger.Warnf("[TYPES MAP] attempted to get nested fields and variables: %s", t.String())
+	var nestedTypes = []Type{t.ValueType}
+	var nestedIDs = []string{prefix + utils.DYNAMIC_FIELD}
+	return nestedTypes, nestedIDs
+}
 
 func (t *MapType) DeepCopy() Type {
 	return &MapType{

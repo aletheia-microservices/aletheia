@@ -81,13 +81,13 @@
 [__2] (FieldObject FieldType) EmployeeID string
        --> w-tainted: write(fulltimes_db.Fulltime.EmployeeID, employees_db.Employee.EmployeeID) {2}
 [___3] (BasicObject BasicType) employeeID string
-        --> w-tainted: write(employees_db.Employee.EmployeeID, fulltimes_db.Fulltime.EmployeeID) {2}
-[____4] (Reference BasicType) ref <employeeID string> @ EmployeeService
-         --> w-tainted: write(employees_db.Employee.EmployeeID, fulltimes_db.Fulltime.EmployeeID) {2}
-[_____5] (Reference BasicType) ref <employeeID string> @ Frontend
         --> w-tainted: write(fulltimes_db.Fulltime.EmployeeID) {1}
 [____4] (Reference BasicType) ref <employeeID string> @ EmployeeService
          --> w-tainted: write(fulltimes_db.Fulltime.EmployeeID) {1}
+[_____5] (Reference BasicType) ref <employeeID string> @ Frontend
+        --> w-tainted: write(employees_db.Employee.EmployeeID, fulltimes_db.Fulltime.EmployeeID) {2}
+[____4] (Reference BasicType) ref <employeeID string> @ EmployeeService
+         --> w-tainted: write(employees_db.Employee.EmployeeID, fulltimes_db.Fulltime.EmployeeID) {2}
 [_____5] (Reference BasicType) ref <employeeID string> @ Frontend
       --> w-tainted: write(fulltimes_db.Fulltime.FulltimeID) {1}
 [__2] (FieldObject FieldType) FulltimeID string

@@ -1,0 +1,24 @@
+SKUS_DB._:
+- read <result NoSQLCursor {database = skus, collection = skus} (BlueprintBackendObject)>
+
+SKUS_DB._.id:
+- read <id string (BasicObject)>
+- read <id string (BasicObject)> from <id string (BasicObject)>
+- read <ref <Parent string> @ OrderService (Reference)> from <id string (BasicObject)>
+- read <Parent string (BasicObject)> from <id string (BasicObject)>
+
+Sku:
+- read <digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64} (StructObject)> from <digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64} (StructObject)>
+
+string:
+- read <id string (BasicObject)>
+- read <id string (BasicObject)> from <id string (BasicObject)>
+- read <ref <Parent string> @ OrderService (Reference)> from <id string (BasicObject)>
+- read <Parent string (BasicObject)> from <id string (BasicObject)>
+- read <id string (BasicObject)>
+- read <id string (BasicObject)> from <id string (BasicObject)>
+- write <description string (BasicObject)> from <digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64} (StructObject)>
+- write <name string (BasicObject)> from <digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64} (StructObject)>
+- write <url string (BasicObject)> from <digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64} (StructObject)>
+- read <id string (BasicObject)>
+- read <id string (BasicObject)> from <id string (BasicObject)>

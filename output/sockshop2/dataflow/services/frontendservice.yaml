@@ -12,7 +12,7 @@
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BasicObject BasicType) sessionID string
-  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db._.id)'
+  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db.Sock.ID.id)'
   - '0 depth 0 (BasicObject BasicType) sessionID string --> w-tainted 1x: write(cart_db.cart.ID)'
   - 0 depth 0 (StructObject UserType) sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - '_1 depth 1 (Reference UserType) ref <sock catalogue.Sock struct{ID string, Name
@@ -164,7 +164,7 @@
   - __8 depth 2 (FieldObject FieldType) user user.UserService
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db._.id)'
+  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db.Sock.ID.id)'
 
 (*FrontendImpl).GetUser(ctx context.Context, userID string):
   block 0 (Body):
@@ -274,7 +274,7 @@
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - '0 depth 0 (BasicObject BasicType) userID string --> w-tainted 3x: write(shipqueue.Shipment.Name,
-    shipdb.Shipment.Name, order_db.Order.CustomerID) --> r-tainted 2x: read(user_db._.userid,
+    shipdb.Shipment.Name, order_db.Order.Shipment) --> r-tainted 2x: read(user_db._.userid,
     shipqueue.Shipment.Name)'
   - '0 depth 0 (BasicObject BasicType) addressID string --> r-tainted 1x: read(user_db._.addresses)'
   - '0 depth 0 (BasicObject BasicType) cardID string --> r-tainted 1x: read(user_db._.cards)'
@@ -369,7 +369,7 @@
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BasicObject BasicType) sessionID string
-  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db._.id)'
+  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db.Sock.ID.id)'
   - 0 depth 0 (BasicObject BasicType) quantity int
   - 0 depth 0 (StructObject UserType) item catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - '_1 depth 1 (Reference UserType) ref <sock catalogue.Sock struct{ID string, Name
