@@ -85,8 +85,10 @@ func (detector *UnicityDetector) OnUpdate(app *app.App, dbCall *abstractgraph.Ab
 func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
-	if schema.HasConstraintsUnique() {
-		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+	var unicityConstraints []*datastores.Constraint
+
+	if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		if schema.HasConstraintsUnique() {
 			var writtenFieldNames []string
 			params := dbCall.GetParams()
 			
@@ -110,7 +112,6 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 				logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
 			}
 			
-			var unicityConstraints []*datastores.Constraint
 			for _, writtenFieldName := range writtenFieldNames {
 				unicityConstraint := schema.GetConstraintsUniqueForFieldName(writtenFieldName)
 				unicityConstraints = append(unicityConstraints, unicityConstraint...)
@@ -121,10 +122,16 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 			}
 
 			requestInfo := detector.getCurrentRequestInfo()
-			if len(unicityConstraints) > 0 { // operation that may be affecting the following ones
+			if len(unicityConstraints) > 0 {
 				operation := NewOperationOnUnicityConstraint(dbCall, datastore)
 				requestInfo.addOperation(operation)
-			} else if requestInfo.hasOperations() { // operation that is affected by previous operations
+				requestInfo.writeOnConstraint = true
+
+			// OLD:
+			// if len(unicityConstraints) > 0 { ... } // operation that may be affecting the following ones
+			// else if requestInfo.hasOperations() { ... } // operation that is affected by previous 
+
+			} else {
 				operation := NewOperation(dbCall, datastore)
 				requestInfo.addOperation(operation)
 			}

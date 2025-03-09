@@ -5,8 +5,9 @@ import (
 )
 
 type RequestInfo struct {
-	entry      *abstractgraph.AbstractServiceCall
-	operations []*Operation
+	entry             *abstractgraph.AbstractServiceCall
+	operations        []*Operation
+	writeOnConstraint bool
 }
 
 func (info *RequestInfo) addOperation(operation *Operation) {

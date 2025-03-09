@@ -5,8 +5,9 @@ import (
 )
 
 type RequestInfo struct {
-	entry      *abstractgraph.AbstractServiceCall
-	operations []*Operation
+	entry             *abstractgraph.AbstractServiceCall
+	operations        []*Operation
+	writeOnConstraint bool
 }
 
 func (info *RequestInfo) addOperation(operation *Operation) {
@@ -18,7 +19,10 @@ func (info *RequestInfo) hasOperations() bool {
 }
 
 func (info *RequestInfo) hasPotentialInconsistencies() bool {
-	return len(info.operations) > 1 // only if we have more than 2 ops
+	// OLD:
+	// return len(info.operations) > 1 // only if we have more than 2 ops
+
+	return info.writeOnConstraint
 }
 
 func (info *RequestInfo) getOperations() []*Operation {

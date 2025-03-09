@@ -85,8 +85,10 @@ func (detector *NumericalDetector) OnUpdate(app *app.App, dbCall *abstractgraph.
 func (detector *NumericalDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
-	if schema.HasConstraintsNumerical() {
-		if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+	var numericalConstraints []*datastores.Constraint
+
+	if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		if schema.HasConstraintsNumerical() {
 			var writtenFieldNames []string
 			params := dbCall.GetParams()
 
@@ -110,7 +112,6 @@ func (detector *NumericalDetector) onWriteOrUpdate(dbCall *abstractgraph.Abstrac
 				logger.Logger.Fatalf("[NUMERICAL DETECTOR] TODO on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
 			}
 
-			var numericalConstraints []*datastores.Constraint
 			for _, writtenFieldName := range writtenFieldNames {
 				numericalConstraint := schema.GetConstraintsNumericalForFieldName(writtenFieldName)
 				numericalConstraints = append(numericalConstraints, numericalConstraint...)
@@ -119,15 +120,21 @@ func (detector *NumericalDetector) onWriteOrUpdate(dbCall *abstractgraph.Abstrac
 			for _, uc := range numericalConstraints {
 				logger.Logger.Warn("\t\t\t - " + uc.String())
 			}
+		}
 
-			requestInfo := detector.getCurrentRequestInfo()
-			if len(numericalConstraints) > 0 { // operation that may be affecting the following ones
-				operation := NewOperationOnNumericalConstraint(dbCall, datastore)
-				requestInfo.addOperation(operation)
-			} else if requestInfo.hasOperations() { // operation that is affected by previous operations
-				operation := NewOperation(dbCall, datastore)
-				requestInfo.addOperation(operation)
-			}
+		requestInfo := detector.getCurrentRequestInfo()
+		if len(numericalConstraints) > 0 {
+			operation := NewOperationOnNumericalConstraint(dbCall, datastore)
+			requestInfo.addOperation(operation)
+			requestInfo.writeOnConstraint = true
+
+		// OLD:
+		// if len(numericalConstraints) > 0 { ... } // operation that may be affecting the following ones
+		// else if requestInfo.hasOperations() { ... } // operation that is affected by previous 
+
+		} else {
+			operation := NewOperation(dbCall, datastore)
+			requestInfo.addOperation(operation)
 		}
 	}
 }
