@@ -10,10 +10,9 @@
     --> w-tainted: write(coupons_db.ClaimedCoupon.CouponID) {1}
 [0] (BasicObject BasicType) couponID int
 
-    --> r-tainted: read(coupons_db.Coupon.Category) {1}
 [0] (BasicObject BasicType) category string
 
-    --> w-tainted: write(coupons_db.ClaimedCoupon.UserID) {1}       --> w-tainted: write(coupons_db.ClaimedCoupon.UserID) {1} --> r-tainted: read(coupons_db.Coupon.userID) {1}
+    --> w-tainted: write(coupons_db.ClaimedCoupon.UserID) {1}
 [0] (BasicObject BasicType) studentID int
 
 [0] (BasicObject BasicType) value int

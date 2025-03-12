@@ -700,6 +700,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 		logger.Logger.Warnf("GOT BLUEPRINT BACKEND VAR: %s", blueprintBackendVar.String())
 		blueprintBackendType := blueprintBackendVar.GetBlueprintBackendType()
 		blueprintMethod := blueprintBackendType.GetMethod(funcIdent.Name)
+		blueprintMethod.SetCalledBackendType(blueprintBackendType)
 		parsedCall := &types.ParsedDatabaseCall{
 			ParsedCall: types.ParsedCall{
 				Ast:     callExpr,

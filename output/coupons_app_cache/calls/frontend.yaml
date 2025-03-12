@@ -1,0 +1,21 @@
+(*FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, studentID int):
+- SERVICE CALL @ ClaimCoupon >> (*coupons_app_cache.CouponServiceImpl).ClaimCoupon(ctx context.Context, couponID int, userID int) (int, error)
+- SERVICE CALL @ AddToBalance >> (*coupons_app_cache.StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, couponValue int) error
+
+(*FrontendImpl).CreateCoupon(ctx context.Context, category string, value int):
+- SERVICE CALL @ CreateCoupon >> (*coupons_app_cache.CouponServiceImpl).CreateCoupon(ctx context.Context, category string, value int) error
+
+(*FrontendImpl).CreateStudent(ctx context.Context, name string):
+- SERVICE CALL @ CreateStudent >> (*coupons_app_cache.StudentServiceImpl).CreateStudent(ctx context.Context, name string) error
+
+.NewCouponServiceImpl(ctx context.Context, couponsDB RelationalDB):
+- INTERNAL CALL >> (*coupons_app_cache.CouponServiceImpl).createTables(ctx context.Context)
+  error
+
+.NewFrontendImpl(ctx context.Context, StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService)
+:
+ []
+
+.NewStudentServiceImpl(ctx context.Context, studentsDB RelationalDB):
+- INTERNAL CALL >> (*coupons_app_cache.StudentServiceImpl).createTables(ctx context.Context)
+  error

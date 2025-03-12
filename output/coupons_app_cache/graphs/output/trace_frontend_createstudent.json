@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "Frontend",
+      "type": "service"
+    },
+    {
+      "id": "StudentService",
+      "type": "service"
+    },
+    {
+      "id": "students_db MySQL",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "Client",
+      "callee": "Frontend",
+      "call": "CreateStudent",
+      "depth": 0
+    },
+    {
+      "caller": "Frontend",
+      "callee": "StudentService",
+      "call": "CreateStudent",
+      "depth": 1
+    },
+    {
+      "caller": "StudentService",
+      "callee": "students_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    }
+  ]
+}

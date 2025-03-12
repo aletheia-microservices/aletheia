@@ -7,9 +7,6 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 
-    --> w-tainted: write(coupons_db.coupons.coupon_id) {1}
-[0] (BasicObject BasicType) couponID int
-
     --> w-tainted: write(coupons_db.coupons.category) {1}
 [0] (BasicObject BasicType) category string
 

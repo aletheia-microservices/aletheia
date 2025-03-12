@@ -7,9 +7,6 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 
-    --> w-tainted: write(students_db.students.student_id) {1}
-[0] (BasicObject BasicType) studentID int
-
     --> w-tainted: write(students_db.students.name) {1}
 [0] (BasicObject BasicType) name string
 

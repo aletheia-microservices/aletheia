@@ -40,6 +40,10 @@ require github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/workfl
 
 require github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring v0.0.0
 
+require github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring v0.0.0
+
 require github.com/blueprint-uservices/blueprint/examples/shopping_app/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/shopping_app/wiring v0.0.0
@@ -194,6 +198,12 @@ replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql => ./b
 replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/workflow => ./blueprint/examples/coupons_app_sql/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring => ./blueprint/examples/coupons_app_sql/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache => ./blueprint/examples/coupons_app_cache
+
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/workflow => ./blueprint/examples/coupons_app_cache/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring => ./blueprint/examples/coupons_app_cache/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/shopping_app => ./blueprint/examples/shopping_app
 

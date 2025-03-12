@@ -1,11 +1,11 @@
 [
   {
-    "method": "(*FrontendImpl).CreateStudent(ctx context.Context, studentID int, name string)",
+    "method": "(*FrontendImpl).CreateStudent(ctx context.Context, name string)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*StudentServiceImpl).CreateStudent(ctx context.Context, studentID int, name string)",
+        "method": "(*StudentServiceImpl).CreateStudent(ctx context.Context, name string)",
         "depth": 1,
         "caller": "Frontend",
         "edges": [
@@ -29,19 +29,7 @@
               {
                 "basic": {
                   "name": "",
-                  "type": "\"INSERT INTO students(student_id, name) VALUES (?, ?);\" string"
-                }
-              },
-              {
-                "basic": {
-                  "name": "studentID",
-                  "type": "int",
-                  "refs": [
-                    {
-                      "name": "studentID",
-                      "creator": "Frontend"
-                    }
-                  ]
+                  "type": "\"INSERT INTO students(name) VALUES (?);\" string"
                 }
               },
               {
@@ -83,12 +71,6 @@
           },
           {
             "basic": {
-              "name": "studentID",
-              "type": "int"
-            }
-          },
-          {
-            "basic": {
               "name": "name",
               "type": "string"
             }
@@ -119,12 +101,6 @@
       },
       {
         "basic": {
-          "name": "studentID",
-          "type": "int"
-        }
-      },
-      {
-        "basic": {
           "name": "name",
           "type": "string"
         }
@@ -132,12 +108,12 @@
     ]
   },
   {
-    "method": "(*FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int)",
+    "method": "(*FrontendImpl).CreateCoupon(ctx context.Context, category string, value int)",
     "depth": 0,
     "caller": "Client",
     "edges": [
       {
-        "method": "(*CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int)",
+        "method": "(*CouponServiceImpl).CreateCoupon(ctx context.Context, category string, value int)",
         "depth": 1,
         "caller": "Frontend",
         "edges": [
@@ -161,19 +137,7 @@
               {
                 "basic": {
                   "name": "",
-                  "type": "\"INSERT INTO coupons(coupon_id, category, value) VALUES (?, ?, ?);\" string"
-                }
-              },
-              {
-                "basic": {
-                  "name": "couponID",
-                  "type": "int",
-                  "refs": [
-                    {
-                      "name": "couponID",
-                      "creator": "Frontend"
-                    }
-                  ]
+                  "type": "\"INSERT INTO coupons(category, value) VALUES (?, ?);\" string"
                 }
               },
               {
@@ -227,12 +191,6 @@
           },
           {
             "basic": {
-              "name": "couponID",
-              "type": "int"
-            }
-          },
-          {
-            "basic": {
               "name": "category",
               "type": "string"
             }
@@ -265,12 +223,6 @@
         "interface": {
           "name": "ctx",
           "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "couponID",
-          "type": "int"
         }
       },
       {

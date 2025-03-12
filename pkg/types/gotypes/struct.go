@@ -126,6 +126,7 @@ func (t *StructType) GetNestedFieldTypes(prefix string, noSQL bool) ([]Type, []s
 
 	for _, f := range t.FieldTypes {
 		nestedFieldTypes, nestedFieldIDs := f.GetNestedFieldTypes(prefix, noSQL)
+		logger.Logger.Debugf("getting nested field types for field: %s", f.String())
 		nestedTypes = append(nestedTypes, nestedFieldTypes...)
 		nestedIDs = append(nestedIDs, nestedFieldIDs...)
 	}

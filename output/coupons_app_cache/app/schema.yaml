@@ -1,0 +1,26 @@
+COUPONS_DB:
+- type: RelationalDB
+- kind: MySQL
+- dependencies: []
+- schema:
+  - fields:
+    - coupons.category: string
+    - coupons.value: int
+    - claimed_coupons.coupon_id: int
+    - claimed_coupons.*: SQL Table
+    - claimed_coupons.user_id: int
+  - unfolded_fields: []
+
+STUDENTS_DB:
+- type: RelationalDB
+- kind: MySQL
+- dependencies: []
+- schema:
+  - fields:
+    - students.name: string
+    - students.student_id: <unknown type>
+    - students.*: SQL Table
+    - students.balance: int
+  - unfolded_fields: []
+  - constraints:
+    - REFERENCE(students.student_id --> claimed_coupons.user_id) [+]

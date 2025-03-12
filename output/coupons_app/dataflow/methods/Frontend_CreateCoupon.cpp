@@ -7,28 +7,21 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 
-    --> w-tainted: write(coupons_db.Coupon.CouponID) {1}
 [0] (BasicObject BasicType) couponID int
 
     --> w-tainted: write(coupons_db.Coupon.Category) {1}
 [0] (BasicObject BasicType) category string
 
     --> w-tainted: write(coupons_db.Coupon) {1}
-[0] (StructObject UserType) coupon coupons_app.Coupon struct{CouponID int, Category string}
+[0] (StructObject UserType) coupon coupons_app.Coupon struct{CouponID int, Category string, NumClaims int}
      --> w-tainted: write(coupons_db.Coupon) {1}
-[_1] (Reference UserType) ref <coupon coupons_app.Coupon struct{CouponID int, Category string}> @ CouponService
+[_1] (Reference UserType) ref <coupon coupons_app.Coupon struct{CouponID int, Category string, NumClaims int}> @ CouponService
       --> w-tainted: write(coupons_db.Coupon.Category) {1}
 [__2] (FieldObject FieldType) Category string
        --> w-tainted: write(coupons_db.Coupon.Category) {1}
 [___3] (BasicObject BasicType) category string
         --> w-tainted: write(coupons_db.Coupon.Category) {1}
 [____4] (Reference BasicType) ref <category string> @ Frontend
-      --> w-tainted: write(coupons_db.Coupon.CouponID) {1}
-[__2] (FieldObject FieldType) CouponID int
-       --> w-tainted: write(coupons_db.Coupon.CouponID) {1}
-[___3] (BasicObject BasicType) couponID int
-        --> w-tainted: write(coupons_db.Coupon.CouponID) {1}
-[____4] (Reference BasicType) ref <couponID int> @ Frontend
 
 [0] (InterfaceObject UserType) err .error
 [_1] (Reference UserType) ref <err .error> @ CouponService

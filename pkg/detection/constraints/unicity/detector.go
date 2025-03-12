@@ -85,7 +85,6 @@ func (detector *UnicityDetector) OnUpdate(app *app.App, dbCall *abstractgraph.Ab
 func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
-	var unicityConstraints []*datastores.Constraint
 
 	if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
 		if schema.HasConstraintsUnique() {
@@ -97,7 +96,11 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 				obj := params[1]
 				objType := obj.GetType()
 				logger.Logger.Infof("[UNICITY DETECTOR] found WRITE/UPDATE on database (%s)", dbCall.DbInstance.GetName())
+
+				// FIXME: this is getting all fields for the structure and not actually the ones that are written
 				_, writtenFieldNames = objType.GetNestedFieldTypes(objType.GetName(), datastore.IsNoSQLDatabase())
+				logger.Logger.Debugf("[UNICITY DETECTOR] got written fieldnames: %v", writtenFieldNames)
+
 			case datastores.RelationalDB:
 				if blueprintBackendMethod.IsRelationalDBExecCall() {
 					query, args := params[1], params[2:]
@@ -105,17 +108,16 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 					for _, field := range writtenFields {
 						writtenFieldNames = append(writtenFieldNames, field.GetName())
 					}
+					logger.Logger.Debugf("[UNICITY DETECTOR] got written fields: %v", writtenFields)
 				} else {
 					logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
 				}
 			default:
 				logger.Logger.Fatalf("[UNICITY DETECTOR] TODO on write/update for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
 			}
-			
-			for _, writtenFieldName := range writtenFieldNames {
-				unicityConstraint := schema.GetConstraintsUniqueForFieldName(writtenFieldName)
-				unicityConstraints = append(unicityConstraints, unicityConstraint...)
-			}
+
+			unicityConstraints := schema.GetConstraintsUniqueForFieldNames(writtenFieldNames)
+
 			logger.Logger.Warnf("[UNICITY DETECTOR] WRITE/UPDATE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
 			for _, uc := range unicityConstraints {
 				logger.Logger.Warn("\t\t\t - " + uc.String())
@@ -123,13 +125,9 @@ func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractD
 
 			requestInfo := detector.getCurrentRequestInfo()
 			if len(unicityConstraints) > 0 {
-				operation := NewOperationOnUnicityConstraint(dbCall, datastore)
+				operation := NewOperationOnUnicityConstraint(dbCall, datastore, unicityConstraints)
 				requestInfo.addOperation(operation)
 				requestInfo.writeOnConstraint = true
-
-			// OLD:
-			// if len(unicityConstraints) > 0 { ... } // operation that may be affecting the following ones
-			// else if requestInfo.hasOperations() { ... } // operation that is affected by previous 
 
 			} else {
 				operation := NewOperation(dbCall, datastore)
@@ -143,38 +141,6 @@ func (detector *UnicityDetector) OnDelete(app *app.App, dbCall *abstractgraph.Ab
 	// no-op
 }
 
-func (detector *UnicityDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "---------------------- UNICITY ANALYSIS --------------------\n"
-	header += "------------------------------------------------------------\n"
-
-	var numRequests, numOps int
-
-	for detector.requestInfoStack.Len() > 0 {
-		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
-		if requestInfo.hasPotentialInconsistencies() {
-			detector.results += fmt.Sprintf("\n[ENTRY] %s\n", requestInfo.entry.String())
-			numRequests++
-			for _, op := range requestInfo.getOperations() {
-				if op.onUnicityConstraint {
-					detector.results += "\t* "
-				} else {
-					detector.results += "\t- "
-				}
-				detector.results += fmt.Sprintf("(%s, %s) -> %s\n", op.call.Service, op.datastore.GetName(), op.call.String())
-				numOps++
-			}
-		}
-	}
-
-	header += fmt.Sprintf(">> SUMMARY (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
-	detector.results = header + detector.results
-}
-
 func (detector *UnicityDetector) GetAnalysisTypeString() string {
 	return "unicity"
-}
-
-func (detector *UnicityDetector) GetResults() string {
-	return detector.results
 }

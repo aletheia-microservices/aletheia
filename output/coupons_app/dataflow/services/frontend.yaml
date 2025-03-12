@@ -8,9 +8,8 @@
   - ___5 depth 3 (ServiceObject ServiceType) StudentService coupons_app.StudentService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.CouponID)'
-  - '0 depth 0 (BasicObject BasicType) category string --> r-tainted 1x: read(coupons_db.Coupon.Category)'
-  - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.UserID)
-    --> r-tainted 1x: read(coupons_db.Coupon.userID)'
+  - 0 depth 0 (BasicObject BasicType) category string
+  - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(coupons_db.ClaimedCoupon.UserID)'
   - 0 depth 0 (BasicObject BasicType) value int
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference UserType) ref <err .error> @ CouponService
@@ -26,20 +25,16 @@
   - __4 depth 2 (FieldObject FieldType) StudentService coupons_app.StudentService
   - ___5 depth 3 (ServiceObject ServiceType) StudentService coupons_app.StudentService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.Coupon.CouponID)'
+  - 0 depth 0 (BasicObject BasicType) couponID int
   - '0 depth 0 (BasicObject BasicType) category string --> w-tainted 1x: write(coupons_db.Coupon.Category)'
   - '0 depth 0 (StructObject UserType) coupon coupons_app.Coupon struct{CouponID int,
-    Category string} --> w-tainted 1x: write(coupons_db.Coupon)'
+    Category string, NumClaims int} --> w-tainted 1x: write(coupons_db.Coupon)'
   - '_1 depth 1 (Reference UserType) ref <coupon coupons_app.Coupon struct{CouponID
-    int, Category string}> @ CouponService --> w-tainted 1x: write(coupons_db.Coupon)'
+    int, Category string, NumClaims int}> @ CouponService --> w-tainted 1x: write(coupons_db.Coupon)'
   - '__2 depth 2 (FieldObject FieldType) Category string --> w-tainted 1x: write(coupons_db.Coupon.Category)'
   - '___3 depth 3 (BasicObject BasicType) category string --> w-tainted 1x: write(coupons_db.Coupon.Category)'
   - '____4 depth 4 (Reference BasicType) ref <category string> @ Frontend --> w-tainted
     1x: write(coupons_db.Coupon.Category)'
-  - '__5 depth 2 (FieldObject FieldType) CouponID int --> w-tainted 1x: write(coupons_db.Coupon.CouponID)'
-  - '___6 depth 3 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.Coupon.CouponID)'
-  - '____7 depth 4 (Reference BasicType) ref <couponID int> @ Frontend --> w-tainted
-    1x: write(coupons_db.Coupon.CouponID)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference UserType) ref <err .error> @ CouponService
 
@@ -52,20 +47,20 @@
   - __4 depth 2 (FieldObject FieldType) StudentService coupons_app.StudentService
   - ___5 depth 3 (ServiceObject ServiceType) StudentService coupons_app.StudentService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(students_db.Student.StudentID)'
+  - 0 depth 0 (BasicObject BasicType) studentID int
   - '0 depth 0 (BasicObject BasicType) name string --> w-tainted 1x: write(students_db.Student.Name)'
   - '0 depth 0 (StructObject UserType) student coupons_app.Student struct{StudentID
-    int, Name string, Balance int} --> w-tainted 1x: write(students_db.Student)'
+    int, Name string, Balance int, NumClaimedCoupons int} --> w-tainted 1x: write(students_db.Student)'
   - '_1 depth 1 (Reference UserType) ref <coupon coupons_app.Student struct{StudentID
-    int, Name string, Balance int}> @ StudentService --> w-tainted 1x: write(students_db.Student)'
+    int, Name string, Balance int, NumClaimedCoupons 0 int}> @ StudentService -->
+    w-tainted 1x: write(students_db.Student)'
   - '__2 depth 2 (FieldObject FieldType) Name string --> w-tainted 1x: write(students_db.Student.Name)'
   - '___3 depth 3 (BasicObject BasicType) name string --> w-tainted 1x: write(students_db.Student.Name)'
   - '____4 depth 4 (Reference BasicType) ref <name string> @ Frontend --> w-tainted
     1x: write(students_db.Student.Name)'
-  - '__5 depth 2 (FieldObject FieldType) StudentID int --> w-tainted 1x: write(students_db.Student.StudentID)'
-  - '___6 depth 3 (BasicObject BasicType) studentID int --> w-tainted 1x: write(students_db.Student.StudentID)'
-  - '____7 depth 4 (Reference BasicType) ref <studentID int> @ Frontend --> w-tainted
-    1x: write(students_db.Student.StudentID)'
+  - '__5 depth 2 (FieldObject FieldType) NumClaimedCoupons 0 int --> w-tainted 1x:
+    write(students_db.Student.NumClaimedCoupons)'
+  - '___6 depth 3 (BasicObject BasicType) 0 int --> w-tainted 1x: write(students_db.Student.NumClaimedCoupons)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference UserType) ref <err .error> @ StudentService
 

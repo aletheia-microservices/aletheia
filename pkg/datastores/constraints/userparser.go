@@ -39,3 +39,26 @@ func parseUserUniqueConstraints(app *app.App, targetFieldsByDatastore map[string
 
 	summarize(app, "USER_PARSER")
 }
+
+func parseAppDatabaseSQLUserInput(input string) map[string][]string {
+	input = strings.TrimSpace(input)
+	targetFields := strings.Split(input, ";")
+	targetFieldsByDatastore := make(map[string][]string)
+	fmt.Printf("\n%s[WARNING] Unicity constraint will be added to each of the following fields:\n", TEXT_BOLD_LIGHT_RED)
+
+	if len(targetFields) > 0 && strings.TrimSpace(targetFields[0]) != "" {
+		for _, targetField := range targetFields {
+			// remove parentheses
+			targetField = targetField[1 : len(targetField)-1]
+
+			splits := strings.SplitN(targetField, ".", 2)
+			dbName := splits[0]
+			fieldName := targetField
+			targetFieldsByDatastore[dbName] = append(targetFieldsByDatastore[dbName], fieldName)
+
+			fmt.Println("- " + targetField)
+		}
+		fmt.Println(TEXT_RESET_COLOR)
+	}
+	return targetFieldsByDatastore
+}

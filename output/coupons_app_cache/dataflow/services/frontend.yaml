@@ -1,0 +1,70 @@
+(*FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, studentID int):
+  block 2 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) u (*coupons_app_cache.FrontendImpl struct{StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService})
+  - _1 depth 1 (StructObject UserType) coupons_app_cache.FrontendImpl struct{StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService}
+  - __2 depth 2 (FieldObject FieldType) CouponService coupons_app_cache.CouponService
+  - ___3 depth 3 (ServiceObject ServiceType) CouponService coupons_app_cache.CouponService
+  - __4 depth 2 (FieldObject FieldType) StudentService coupons_app_cache.StudentService
+  - ___5 depth 3 (ServiceObject ServiceType) StudentService coupons_app_cache.StudentService
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - '0 depth 0 (BasicObject BasicType) couponID int --> w-tainted 1x: write(coupons_db.claimed_coupons.coupon_id)
+    --> r-tainted 1x: read(coupons_db.int)'
+  - '0 depth 0 (BasicObject BasicType) studentID int --> w-tainted 1x: write(coupons_db.claimed_coupons.user_id)
+    --> r-tainted 1x: read(students_db.int)'
+  - 0 depth 0 (BasicObject BasicType) value int
+  - '_1 depth 1 (Reference BasicType) ref <Value int> @ CouponService --> r-tainted
+    1x: read(coupons_db.int)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - _1 depth 1 (Reference UserType) ref <err .error> @ CouponService
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - _1 depth 1 (Reference UserType) ref <err .error> @ StudentService
+
+(*FrontendImpl).CreateCoupon(ctx context.Context, category string, value int):
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) u (*coupons_app_cache.FrontendImpl struct{StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService})
+  - _1 depth 1 (StructObject UserType) coupons_app_cache.FrontendImpl struct{StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService}
+  - __2 depth 2 (FieldObject FieldType) CouponService coupons_app_cache.CouponService
+  - ___3 depth 3 (ServiceObject ServiceType) CouponService coupons_app_cache.CouponService
+  - __4 depth 2 (FieldObject FieldType) StudentService coupons_app_cache.StudentService
+  - ___5 depth 3 (ServiceObject ServiceType) StudentService coupons_app_cache.StudentService
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - '0 depth 0 (BasicObject BasicType) category string --> w-tainted 1x: write(coupons_db.coupons.category)'
+  - '0 depth 0 (BasicObject BasicType) value int --> w-tainted 1x: write(coupons_db.coupons.value)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - _1 depth 1 (Reference UserType) ref <err .error> @ CouponService
+
+(*FrontendImpl).CreateStudent(ctx context.Context, name string):
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) u (*coupons_app_cache.FrontendImpl struct{StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService})
+  - _1 depth 1 (StructObject UserType) coupons_app_cache.FrontendImpl struct{StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService}
+  - __2 depth 2 (FieldObject FieldType) CouponService coupons_app_cache.CouponService
+  - ___3 depth 3 (ServiceObject ServiceType) CouponService coupons_app_cache.CouponService
+  - __4 depth 2 (FieldObject FieldType) StudentService coupons_app_cache.StudentService
+  - ___5 depth 3 (ServiceObject ServiceType) StudentService coupons_app_cache.StudentService
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - '0 depth 0 (BasicObject BasicType) name string --> w-tainted 1x: write(students_db.students.name)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - _1 depth 1 (Reference UserType) ref <err .error> @ StudentService
+
+.NewCouponServiceImpl(ctx context.Context, couponsDB RelationalDB):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) couponsDB RelationalDB
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app_cache.CouponServiceImpl struct{couponsDB RelationalDB})
+  - _1 depth 1 (StructObject UserType) coupons_app_cache.CouponServiceImpl struct{couponsDB RelationalDB}
+  - __2 depth 2 (FieldObject FieldType) couponsDB RelationalDB
+
+.NewFrontendImpl(ctx context.Context, StudentService coupons_app_cache.StudentService, CouponService coupons_app_cache.CouponService)
+:
+ block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) StudentService coupons_app_cache.StudentService
+  - 0 depth 0 (ServiceObject ServiceType) CouponService coupons_app_cache.CouponService
+
+.NewStudentServiceImpl(ctx context.Context, studentsDB RelationalDB):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) studentsDB RelationalDB
+  - 0 depth 0 (PointerObject PointerType) s (*coupons_app_cache.StudentServiceImpl struct{studentsDB RelationalDB})
+  - _1 depth 1 (StructObject UserType) coupons_app_cache.StudentServiceImpl struct{studentsDB RelationalDB}
+  - __2 depth 2 (FieldObject FieldType) studentsDB RelationalDB

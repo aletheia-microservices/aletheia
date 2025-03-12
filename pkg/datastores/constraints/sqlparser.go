@@ -1,6 +1,7 @@
 package constraints
 
 import (
+	"os"
 	"strings"
 
 	"github.com/auxten/postgresql-parser/pkg/sql/parser"
@@ -24,6 +25,35 @@ type SQLColumn struct {
 	IsPrimaryKey bool
 }
 
+type SQLDbStmt struct {
+	db   string
+	stmt string
+}
+
+// Parse SQL files and return slice of SQL statements
+func parseAppDatabaseSQLStmts(input string) []SQLDbStmt {
+	var dbStmts []SQLDbStmt
+	targetDbPaths := strings.Split(input, ";")
+	for _, dbPath := range targetDbPaths {
+		splits := strings.Split(dbPath, ":")
+		db := splits[0]
+		sqlStmt := splits[1]
+		sqlBytes, err := os.ReadFile(sqlStmt)
+		if err != nil {
+			logger.Logger.Fatalf("error reading sql files: %s", err.Error())
+			return nil
+		}
+		sqlStmts := strings.Split(string(sqlBytes), ";")
+		for _, stmt := range sqlStmts {
+			if stmt == "\n" {
+				continue
+			}
+			dbStmts = append(dbStmts, SQLDbStmt{db, stmt})
+		}
+	}
+	return dbStmts
+}
+
 func parseSQLStatement(database *datastores.Datastore, sql string) {
 	logger.Logger.Infof("[SQL PARSER] parsing statement: %s", sql)
 
@@ -42,7 +72,7 @@ func parseSQLStatement(database *datastores.Datastore, sql string) {
 			case *tree.CreateTable:
 				tableName = stmt.Table.Table()
 				fields = make(map[string]*datastores.Field, 0)
-				
+
 			case *tree.ColumnTableDef:
 				columnName := stmt.Name.String()
 				fieldName := tableName + "." + columnName
@@ -84,17 +114,17 @@ func parseSQLStatement(database *datastores.Datastore, sql string) {
 			return false
 		},
 	}
-	
+
 	stmts, err := parser.Parse(sql)
 	if err != nil {
 		logger.Logger.Fatalf("[SQL PARSER] %s", err.Error())
 		return
 	}
-	
+
 	ok, err := w.Walk(stmts, nil)
 	if err != nil {
 		logger.Logger.Fatalf("[SQL PARSER] %s", err.Error())
-	} else if !ok{
+	} else if !ok {
 		logger.Logger.Fatalf("[SQL PARSER] UNEXPECTED!")
 	}
 

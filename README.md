@@ -67,13 +67,15 @@ go run main.go --app employee_app --auto --cascade
 go run main.go --app employee_app --auto --specialization
 
 # Unicity Constraints
-go run main.go --app coupons_app --auto --unicity
 # > (STUDENTS_DB.Student.StudentID);(COUPONS_DB.Coupon.CouponID);(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)
+go run main.go --app coupons_app --auto --unicity
 go run main.go --app coupons_app_sql --auto --unicity
+go run main.go --app coupons_app_cache --auto --unicity
 
 # Domain (Numerical) Constraints
 go run main.go --app coupons_app --auto --numerical
 go run main.go --app coupons_app_sql --auto --numerical
+go run main.go --app coupons_app_cache --auto --numerical
 
 # all applications and detection patterns
 go run main.go -all=true --auto --xcy --fk --cascade

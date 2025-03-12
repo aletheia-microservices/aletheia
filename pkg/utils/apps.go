@@ -8,6 +8,7 @@ import (
 	specs_app_constraints_referential_integrity "github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring/specs"
 	specs_coupons_app "github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring/specs"
 	specs_coupons_app_sql "github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring/specs"
+	specs_coupons_app_cache "github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring/specs"
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	dsb_hotel "github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring/specs"
 	dsb_sn "github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring/specs"
@@ -30,11 +31,16 @@ const TEXT_RESET_COLOR = "\033[0m"
 const (
 	PATH_BLUEPRINT_EXAMPLES     string = "github.com/blueprint-uservices/blueprint/examples/"
 	PATH_BLUEPRINT_CORE_BACKEND string = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
-	COUPONS_DB_SQL_PATH         string = "coupons_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/coupons.sql"
-	STUDENTS_DB_SQL_PATH        string = "students_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/students.sql"
+	// <database_name>:<collection_name>:<sql_filepath>
+	COUPONS_DB_SQL_PATH  string = "coupons_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/coupons.sql"
+	STUDENTS_DB_SQL_PATH string = "students_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/students.sql"
+	// <database_name>:<collection_name>:<json_filepath>
+	COUPONS_DB_JSON_PATH         string = "coupons_db:Coupon:blueprint/examples/coupons_app/workflow/coupons_app/database/coupons.json"
+	CLAIMED_COUPONS_DB_JSON_PATH string = "coupons_db:ClaimedCoupon:blueprint/examples/coupons_app/workflow/coupons_app/database/claimed_coupons.json"
+	STUDENTS_DB_JSON_PATH        string = "students_db:Student:blueprint/examples/coupons_app/workflow/coupons_app/database/students.json"
 )
 
-var Apps = []string{"foobar", "shopping_simple", "shopping_app", "postnotification_simple", "postnotification", "sockshop2", "trainticket", "app_constraints_referential_integrity", "employee_app", "dsb_sn", "dsb_hotel", "coupons_app", "coupons_app_sql", "digota"}
+var Apps = []string{"foobar", "shopping_simple", "shopping_app", "postnotification_simple", "postnotification", "sockshop2", "trainticket", "app_constraints_referential_integrity", "employee_app", "dsb_sn", "dsb_hotel", "coupons_app", "coupons_app_sql", "coupons_app_cache", "digota"}
 
 type AppInfo struct {
 	PackagePath   string
@@ -49,6 +55,7 @@ var APPS_INFO = map[string]AppInfo{
 	"digota":                                {PATH_BLUEPRINT_EXAMPLES + "digota/workflow/digota", specs_digota.Docker},
 	"coupons_app":                           {PATH_BLUEPRINT_EXAMPLES + "coupons_app/workflow/coupons_app", specs_coupons_app.Docker},
 	"coupons_app_sql":                       {PATH_BLUEPRINT_EXAMPLES + "coupons_app_sql/workflow/coupons_app_sql", specs_coupons_app_sql.Docker},
+	"coupons_app_cache":                     {PATH_BLUEPRINT_EXAMPLES + "coupons_app_cache/workflow/coupons_app_cache", specs_coupons_app_cache.Docker},
 	"foobar":                                {PATH_BLUEPRINT_EXAMPLES + "foobar/workflow/foobar", specs_foobar.Docker},
 	"sockshop2":                             {PATH_BLUEPRINT_EXAMPLES + "sockshop2/workflow", specs_sockshop2.Docker},
 	"trainticket":                           {PATH_BLUEPRINT_EXAMPLES + "train_ticket/workflow", specs_trainticket.Docker},
@@ -63,6 +70,27 @@ func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {
 		if app == "coupons_app_sql" {
 			return true, COUPONS_DB_SQL_PATH + ";" + STUDENTS_DB_SQL_PATH
 		} else if app == "coupons_app" {
+			return false, "" //skip
+		}
+		return false, ""
+	}
+
+	fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
+	reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		logger.Logger.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
+		return false, ""
+	}
+
+	return true, input
+}
+
+func GetAppDatabaseDocPaths(app string, autofill bool) (bool, string) {
+	if autofill {
+		if app == "coupons_app" {
+			return true, COUPONS_DB_JSON_PATH + ";" + CLAIMED_COUPONS_DB_JSON_PATH + ";" + STUDENTS_DB_JSON_PATH
+		} else if app == "coupons_app_sql" {
 			return false, "" //skip
 		}
 		return false, ""

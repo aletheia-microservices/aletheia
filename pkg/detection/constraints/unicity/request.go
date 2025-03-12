@@ -14,12 +14,9 @@ func (info *RequestInfo) addOperation(operation *Operation) {
 	info.operations = append(info.operations, operation)
 }
 
-func (info *RequestInfo) hasOperations() bool {
-	return len(info.operations) > 0
-}
-
+// flags potential inconsistency if there is a write on a numerical constraint
 func (info *RequestInfo) hasPotentialInconsistencies() bool {
-	return len(info.operations) > 1 // only if we have more than 2 ops
+	return info.writeOnConstraint // && len(info.operations) != 1
 }
 
 func (info *RequestInfo) getOperations() []*Operation {

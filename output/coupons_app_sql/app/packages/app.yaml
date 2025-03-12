@@ -44,13 +44,14 @@ coupons_app_sql:
   - RelationalDB interface{RelationalDB.Select(ctx context.Context, dst interface{}, query string, dst []interface{}), RelationalDB.Exec(ctx context.Context, query string, dst []interface{})}
 - parsed methods:
   - (*coupons_app_sql.CouponServiceImpl).ClaimCoupon(ctx context.Context, couponID int, userID int) (int, error)
-  - (*coupons_app_sql.CouponServiceImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int) error
+  - (*coupons_app_sql.CouponServiceImpl).CreateCoupon(ctx context.Context, category string, value int) error
   - (*coupons_app_sql.CouponServiceImpl).createTables(ctx context.Context) error
   - (*coupons_app_sql.FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, studentID int) error
-  - (*coupons_app_sql.FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string, value int) error
-  - (*coupons_app_sql.FrontendImpl).CreateStudent(ctx context.Context, studentID int, name string) error
+  - (*coupons_app_sql.FrontendImpl).CreateCoupon(ctx context.Context, category string, value int) error
+  - (*coupons_app_sql.FrontendImpl).CreateStudent(ctx context.Context, name string)
+    error
   - (*coupons_app_sql.StudentServiceImpl).AddToBalance(ctx context.Context, studentID int, couponValue int) error
-  - (*coupons_app_sql.StudentServiceImpl).CreateStudent(ctx context.Context, studentID int, name string) error
+  - (*coupons_app_sql.StudentServiceImpl).CreateStudent(ctx context.Context, name string) error
   - (*coupons_app_sql.StudentServiceImpl).createTables(ctx context.Context) error
   - coupons_app_sql.NewCouponServiceImpl(ctx context.Context, couponsDB RelationalDB)
     (coupons_app_sql.CouponService, error)

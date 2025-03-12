@@ -2,4 +2,17 @@
 --------------------- NUMERICAL ANALYSIS -------------------
 ------------------------------------------------------------
 >> SUMMARY (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):
->> (0;0)
+>> (1;3)
+
+[ENTRY] (*FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, category string, studentID int, value int)
+	* (CouponService, coupons_db)
+	 -> collection.UpdateOne(ctx context.Context, filter primitive.D, update primitive.D)
+		 {$inc(NumClaims, 1)}
+		 @ CHECK(Coupon.NumClaims <= 100)
+
+	- (CouponService, coupons_db)
+	 -> collection.InsertOne(ctx context.Context, claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int})
+
+	- (StudentService, students_db)
+	 -> collection.UpdateOne(ctx context.Context, filter primitive.D, update primitive.D)
+

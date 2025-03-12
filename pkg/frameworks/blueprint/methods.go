@@ -21,12 +21,21 @@ const (
 
 type BackendMethod struct {
 	types.Method
-	Name      string
-	Backend   string
-	Component string
-	Params    []*types.MethodField
-	Returns   []*types.MethodField
-	Operation OperationType
+	Name              string
+	Backend           string
+	Component         string
+	Params            []*types.MethodField
+	Returns           []*types.MethodField
+	Operation         OperationType
+	calledBackendType *BlueprintBackendType
+}
+
+func (b *BackendMethod) SetCalledBackendType(t *BlueprintBackendType) {
+	b.calledBackendType = t
+}
+
+func (b *BackendMethod) GetCalledBackendType() *BlueprintBackendType {
+	return b.calledBackendType
 }
 
 func (b *BackendMethod) Copy() *BackendMethod {
@@ -459,7 +468,7 @@ var argsParam = types.MethodField{
 	FieldInfo: types.FieldInfo{
 		Name: "dst",
 		Type: &gotypes.SliceType{
-			UnderlyingType:  &gotypes.InterfaceType{Methods: make(map[string]string)},
+			UnderlyingType: &gotypes.InterfaceType{Methods: make(map[string]string)},
 		},
 	},
 }

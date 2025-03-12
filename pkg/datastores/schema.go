@@ -49,6 +49,24 @@ func (s *Schema) GetConstraintsUniqueForFieldName(fieldName string) []*Constrain
 	return constraints
 }
 
+// GetConstraintsUniqueForFieldNames checks if there is any constraint for the written fields
+// note that we can have constraints that are composed by two or more fields so we cannot simply 
+// so we cannot simply check if a single written field exists in a certain constraint
+func (s *Schema) GetConstraintsUniqueForFieldNames(fieldNames []string) []*Constraint {
+	var constraints []*Constraint
+
+	OuterLoop:
+		for _, constraintUnique := range s.GetConstraintsUnique() {
+			for _, field := range constraintUnique.GetFields() {
+				if !slices.Contains(fieldNames, field.GetName()) {
+					continue OuterLoop
+				}
+			}
+			constraints = append(constraints, constraintUnique)
+		}
+	return constraints
+}
+
 func (s *Schema) GetConstraintsNumericalForFieldName(fieldName string) []*Constraint {
 	var constraints []*Constraint
 	for _, constraintUnique := range s.GetConstraintsNumerical() {
@@ -272,20 +290,32 @@ type Constraint struct {
 	numerical *NumericalConstraint
 }
 
+func (c *Constraint) GetNumerical() *NumericalConstraint {
+	return c.numerical
+}
+
 type ComparisonOperator int
 
 const (
 	EQ ComparisonOperator = iota // ==
-	LT // <
-	GT // >
-	LE // <=
-	GE // >=
-	NE // !=
+	LT                           // <
+	GT                           // >
+	LE                           // <=
+	GE                           // >=
+	NE                           // !=
 )
 
 type NumericalConstraint struct {
 	value    string
 	operator ComparisonOperator
+}
+
+func (nc *NumericalConstraint) ComparesIfLowerOrEqual() bool {
+	return nc.operator == LE || nc.operator == LT
+}
+
+func (nc *NumericalConstraint) ComparesIfGreaterOrEqual() bool {
+	return nc.operator == GE || nc.operator == GT
 }
 
 func NewNumericalConstraint(value string, operator ComparisonOperator) *NumericalConstraint {
