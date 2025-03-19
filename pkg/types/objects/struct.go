@@ -251,6 +251,22 @@ func (v *StructObject) Copy(force bool) Object {
 	return copy
 }
 
+func (v *StructObject) NewObject() Object {
+	logger.Logger.Debugf("[OBJ STRUCT - NEW COPY] (%s) %s", VariableTypeName(v), v.String())
+	newObject := NewStructObject(NewObjectInfo(v.GetType()))
+	for k, p := range v.GetFieldsMap() {
+		newField := p.NewObject()
+		newObject.SetFieldByKey(k, newField)
+		newFieldInfo := newObject.GetFieldByKey(k).GetVariableInfo()
+		newFieldInfo.SetParent(newField, newObject)
+	}
+	for _, f := range v.GetFieldsList() {
+		newObject.AddFieldToList(f)
+	}
+	newObject.GetVariableInfo().AddDependency(v)
+	return newObject
+}
+
 func (v *StructObject) DeepCopy() Object {
 	logger.Logger.Debugf("[VARS STRUCT - DEEP COPY] (%s) %s", VariableTypeName(v), v.String())
 	copy := &StructObject{

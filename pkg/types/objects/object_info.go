@@ -40,6 +40,12 @@ func NewObjectInfoInline(t gotypes.Type) *ObjectInfo {
 	}
 }
 
+func NewObjectInfo(t gotypes.Type) *ObjectInfo {
+	return &ObjectInfo{
+		Type: t,
+	}
+}
+
 func (vinfo *ObjectInfo) SetDynamic() {
 	vinfo.Dynamic = true
 }

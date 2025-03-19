@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"strings"
 
 	"golang.org/x/tools/go/cfg"
 
@@ -80,6 +81,27 @@ func (block *Block) VarsString() string {
 
 	}
 	return s + "]"
+}
+
+func (block *Block) ListObjectsString() string {
+	s := fmt.Sprintf("[#%d, %s] BLOCK:\n", block.GetIndex(), block.Block.Kind)
+	for i, v := range block.Objs {
+		deps := v.GetDependencies()
+		depsStr := "None"
+		if len(deps) > 0 {
+			depStrings := make([]string, len(deps))
+			for j, d := range deps {
+				depStrings[j] = fmt.Sprintf("%v", d)
+			}
+			depsStr = strings.Join(depStrings, ", ")
+		}
+		
+		s += fmt.Sprintf("\t [%d] %s ---> depends on: %v", i, v.String(), depsStr)
+		if i < len(block.Objs)-1 {
+			s += "\n"
+		}
+	}
+	return s
 }
 
 func (block *Block) DeepCopy() *Block {
@@ -161,7 +183,7 @@ func (block *Block) IsReceiverVariable(v objects.Object) bool {
 	return false
 }
 
-func (block *Block) GetLastestVariable(name string) objects.Object {
+func (block *Block) GetLatestObjectByName(name string) objects.Object {
 	for i := len(block.Objs) - 1; i >= 0; i-- {
 		v := block.Objs[i]
 		if name == v.GetVariableInfo().GetName() {
@@ -188,7 +210,7 @@ func (block *Block) AddVariables(objects []objects.Object) {
 	block.Objs = append(block.Objs, objects...)
 }
 
-func (block *Block) AddVariable(variable objects.Object) {
+func (block *Block) AddObject(variable objects.Object) {
 	if variable.GetVariableInfo().Id == objects.VARIABLE_INLINE_ID {
 		logger.Logger.Warnf("[BLOCK] skipping addition of new inline variable (%s) to block", variable.String())
 		return

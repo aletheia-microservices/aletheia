@@ -13,6 +13,10 @@ type BasicObject struct {
 	UnderlyingObjects []Object // variables that influence the value of basic variables - e.g. "some_variable" in len(some_variable)
 }
 
+func NewBasicObject(info *ObjectInfo) *BasicObject {
+	return &BasicObject{ObjectInfo: info}
+}
+
 func (v *BasicObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo          *ObjectInfo `json:"basic"`
@@ -77,6 +81,12 @@ func (v *BasicObject) AddReferenceWithID(target Object, creator string) {
 	for _, v := range v.UnderlyingObjects {
 		v.AddReferenceWithID(target, creator)
 	}
+}
+
+func (v *BasicObject) NewObject() Object {
+	newObject := NewBasicObject(NewObjectInfo(v.GetType()))
+	newObject.GetVariableInfo().AddDependency(v)
+	return newObject
 }
 
 func (v *BasicObject) Copy(force bool) Object {

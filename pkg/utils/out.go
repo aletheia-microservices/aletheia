@@ -1,0 +1,7 @@
+package utils
+
+const TEXT_BOLD_LIGHT_YELLOW = "\033[1;38;5;179m"
+const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
+const TEXT_RESET_COLOR = "\033[0m"
+const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;75m"
+const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"

@@ -25,9 +25,6 @@ import (
 	"analyzer/pkg/logger"
 )
 
-const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
-const TEXT_RESET_COLOR = "\033[0m"
-
 const (
 	PATH_BLUEPRINT_EXAMPLES     string = "github.com/blueprint-uservices/blueprint/examples/"
 	PATH_BLUEPRINT_CORE_BACKEND string = "github.com/blueprint-uservices/blueprint/runtime/core/backend"

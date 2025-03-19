@@ -21,6 +21,7 @@ type Object interface {
 	GetUnassaignedVariables() []Object
 	Copy(force bool) Object
 	DeepCopy() Object
+	NewObject() Object
 	NewVersion() Object
 	GetId() int64
 	GetType() gotypes.Type

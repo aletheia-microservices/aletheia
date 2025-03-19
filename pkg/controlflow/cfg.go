@@ -29,7 +29,7 @@ func GenerateMethodCFG(parsedMethod *types.ParsedMethod) {
 	receiver := parsedMethod.GetReceiverIfExists()
 	if receiver != nil {
 		receiver := lookup.CreateObjectFromType(parsedMethod.Receiver.GetName(), parsedMethod.Receiver.GetType())
-		entryBlock.AddVariable(receiver)
+		entryBlock.AddObject(receiver)
 		parsedCfg.HasReceiver = true
 		parsedCfg.ReceiverType = receiver.GetType()
 		logger.Logger.Tracef("[CFG] added receiver (%s) %s", objects.VariableTypeName(receiver), receiver.String())
@@ -82,7 +82,7 @@ func GenerateMethodCFGForService(service *service.Service, parsedMethod *types.P
 	entryBlock := parsedCfg.GetEntryParsedBlock()
 
 	receiver := lookup.CreateObjectFromType(parsedMethod.Receiver.GetName(), parsedMethod.Receiver.GetType())
-	entryBlock.AddVariable(receiver)
+	entryBlock.AddObject(receiver)
 
 	variable := receiver
 	if pointerVar, ok := variable.(*objects.PointerObject); ok {

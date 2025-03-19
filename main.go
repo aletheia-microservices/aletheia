@@ -98,6 +98,7 @@ func initAnalyzer(analysis analysisConfig) {
 	app.BuildServiceNodes()
 	/* app.PreDump()
 	logger.Logger.Fatalf("EXIT!") */
+	
 
 	fmt.Println()
 	fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")
