@@ -13,6 +13,12 @@ type TupleObject struct {
 	Objects    []Object
 }
 
+func NewTupleObject(info *ObjectInfo) *TupleObject {
+	return &TupleObject{
+		ObjectInfo: info,
+	}
+}
+
 func (v *TupleObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"tuple"`
@@ -27,7 +33,7 @@ func (v *TupleObject) GetVariableInfo() *ObjectInfo {
 	return nil
 }
 
-func (v *TupleObject) AddVariableAndType(variable Object) {
+func (v *TupleObject) AddObjectAndType(variable Object) {
 	logger.Logger.Warnf("[VARS TUPLE] adding variable (%s) to tuple variable (%s)", variable.String(), v.String())
 	v.Objects = append(v.Objects, variable)
 	v.GetTupleType().AddType(variable.GetType())
@@ -118,12 +124,24 @@ func (v *TupleObject) LongString() string {
 	return s + ")"
 }
 
+func (v *TupleObject) NewObject() Object {
+	newObject := NewTupleObject(NewObjectInfo(v.GetType()))
+	// (1) new array points to the same elements as the original one
+	// (2) we don't add new dependency edge from new to old object
+	// because we keep the same elements
+	for _, elem := range v.Objects {
+		newObject.AddObjectAndType(elem)
+		elem.GetVariableInfo().AddParent(elem, newObject)
+	}
+	return newObject
+}
+
 func (v *TupleObject) Copy(force bool) Object {
 	copy := &TupleObject{ObjectInfo: v.ObjectInfo.Copy(force)}
 	for _, v := range v.Objects {
 		newElem := v.Copy(force)
 		copy.Objects = append(copy.Objects, newElem)
-		newElem.GetVariableInfo().SetParent(newElem, copy)
+		newElem.GetVariableInfo().AddParent(newElem, copy)
 	}
 	return copy
 }
@@ -134,7 +152,7 @@ func (v *TupleObject) DeepCopy() Object {
 	for _, v := range v.Objects {
 		newElem := v.DeepCopy()
 		copy.Objects = append(copy.Objects, newElem)
-		newElem.GetVariableInfo().SetParent(newElem, copy)
+		newElem.GetVariableInfo().AddParent(newElem, copy)
 	}
 	return copy
 }

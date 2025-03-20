@@ -57,7 +57,7 @@ func CreateObjectFromType(name string, t gotypes.Type) objects.Object {
 		addressVariable := &objects.AddressObject{
 			ObjectInfo: info, AddressOf: CreateObjectFromType("", e.AddressOf),
 		}
-		addressOfVariable.GetVariableInfo().SetParent(addressOfVariable, addressVariable)
+		addressOfVariable.GetVariableInfo().AddParent(addressOfVariable, addressVariable)
 		return addressVariable
 	case *gotypes.PointerType:
 		v := &objects.PointerObject{
@@ -79,7 +79,7 @@ func CreateObjectFromType(name string, t gotypes.Type) objects.Object {
 			ObjectInfo:      info,
 			WrappedVariable: wrappedFieldVariable,
 		}
-		wrappedFieldVariable.GetVariableInfo().SetParent(wrappedFieldVariable, fieldVariable)
+		wrappedFieldVariable.GetVariableInfo().AddParent(wrappedFieldVariable, fieldVariable)
 		return fieldVariable
 	case *blueprint.BlueprintBackendType:
 		info.Type = e.Copy(true)

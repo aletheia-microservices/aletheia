@@ -355,10 +355,6 @@ func (vinfo *ObjectInfo) GetReferences() []*Reference {
 	return vinfo.References
 }
 
-func (vinfo *ObjectInfo) SetParent(current Object, parent Object) {
-	vinfo.AddParent(current, parent)
-}
-
 func (vinfo *ObjectInfo) AddParent(current Object, parent Object) {
 	if current == parent || vinfo == parent.GetVariableInfo() {
 		pc, file, line, ok := runtime.Caller(1)

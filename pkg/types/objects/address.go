@@ -87,7 +87,7 @@ func (v *AddressObject) Copy(force bool) Object {
 		ObjectInfo: v.ObjectInfo.Copy(force),
 		AddressOf:  v.AddressOf, // underlying values of addresses are never deep copied
 	}
-	copy.AddressOf.GetVariableInfo().SetParent(copy.AddressOf, copy)
+	copy.AddressOf.GetVariableInfo().AddParent(copy.AddressOf, copy)
 	return copy
 }
 
@@ -97,7 +97,7 @@ func (v *AddressObject) DeepCopy() Object {
 		ObjectInfo: v.ObjectInfo.DeepCopy(),
 		AddressOf:  v.AddressOf.DeepCopy(), // underlying values of addresses are never deep copied
 	}
-	copy.AddressOf.GetVariableInfo().SetParent(copy.AddressOf, copy)
+	copy.AddressOf.GetVariableInfo().AddParent(copy.AddressOf, copy)
 	return copy
 }
 

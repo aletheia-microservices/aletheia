@@ -13,7 +13,7 @@ type Type interface {
 	GetNestedFieldTypes(prefix string, noSQL bool) ([]Type, []string)
 	GetLongFieldName() string
 	GetParentUserType() *UserType
-	SetParentUserType(userType *UserType)
+	AddParentUserType(userType *UserType)
 	IsSameType(t Type) bool
 	DeepCopy() Type
 }

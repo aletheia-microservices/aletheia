@@ -47,7 +47,10 @@
 [0] (InterfaceObject UserType) err .error
 
 [0] (FieldObject FieldType) user_id int64
-[_1] (BasicObject BasicType) UserID int64
+[_1] (FieldObject FieldType) UserID int64
+[__2] (BasicObject BasicType) UserID int64
+[_1] (BasicObject BasicType) int64
+[__2] (BasicObject BasicType) UserID int64
 
 [0] (InterfaceObject UserType) err .error
 

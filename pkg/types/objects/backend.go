@@ -48,6 +48,11 @@ func (v *BackendObject) GetNestedDependencies(includeRefBy bool) []Object {
 	return nil
 }
 
+func (v *BackendObject) NewObject() Object {
+	logger.Logger.Fatalf("[OBJ BACKEND] attempted to create new backend: %s", v.String())
+	return nil
+}
+
 func (v *BackendObject) Copy(force bool) Object {
 	return &BackendObject{
 		ObjectInfo: v.ObjectInfo.Copy(force),

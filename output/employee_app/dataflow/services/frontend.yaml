@@ -128,11 +128,11 @@
   - '____4 depth 4 (BasicObject BasicType) employeeID string --> w-tainted 2x: write(fulltimes_db.Fulltime.EmployeeID,
     employees_db.Employee.EmployeeID)'
   - '_____5 depth 5 (Reference BasicType) ref <employeeID string> @ EmployeeService
-    --> w-tainted 1x: write(fulltimes_db.Fulltime.EmployeeID)'
-  - '______6 depth 6 (Reference BasicType) ref <employeeID string> @ Frontend -->
-    w-tainted 1x: write(fulltimes_db.Fulltime.EmployeeID)'
-  - '_____7 depth 5 (Reference BasicType) ref <employeeID string> @ EmployeeService
     --> w-tainted 2x: write(employees_db.Employee.EmployeeID, fulltimes_db.Fulltime.EmployeeID)'
+  - '_____7 depth 5 (Reference BasicType) ref <employeeID string> @ EmployeeService
+    --> w-tainted 1x: write(fulltimes_db.Fulltime.EmployeeID)'
+  - '______8 depth 6 (Reference BasicType) ref <employeeID string> @ Frontend -->
+    w-tainted 1x: write(fulltimes_db.Fulltime.EmployeeID)'
   - '___9 depth 3 (FieldObject FieldType) FulltimeID string --> w-tainted 1x: write(fulltimes_db.Fulltime.FulltimeID)'
   - '____10 depth 4 (BasicObject BasicType) fulltimeID string --> w-tainted 1x: write(fulltimes_db.Fulltime.FulltimeID)'
   - '_____11 depth 5 (Reference BasicType) ref <fulltimeID string> @ EmployeeService

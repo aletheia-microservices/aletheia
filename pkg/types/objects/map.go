@@ -10,9 +10,17 @@ import (
 
 type MapObject struct {
 	Object
-	ObjectInfo *ObjectInfo
-	KeyValues  map[Object]Object
+	ObjectInfo       *ObjectInfo
+	KeyValues        map[Object]Object
 	DynamicKeyValues map[Object]Object
+}
+
+func NewMapObject(info *ObjectInfo) *MapObject {
+	return &MapObject{
+		ObjectInfo: info,
+		KeyValues: make(map[Object]Object),
+		DynamicKeyValues: make(map[Object]Object),
+	}
 }
 
 /* func (v *MapVariable) MarshalJSON() ([]byte, error) {
@@ -76,7 +84,7 @@ func (v *MapObject) GetKeyValueIfExists(targetKey Object) Object {
 
 func (v *MapObject) AddKeyValue(key Object, value Object) {
 	v.KeyValues[key] = value
-	value.GetVariableInfo().SetParent(value, v)
+	value.GetVariableInfo().AddParent(value, v)
 }
 
 func (v *MapObject) GetId() int64 {
@@ -111,7 +119,7 @@ func (v *MapObject) GetVariableInfo() *ObjectInfo {
 
 func (v *MapObject) AddKeyValuePair(key Object, value Object) {
 	v.KeyValues[key] = value
-	value.GetVariableInfo().SetParent(value, v)
+	value.GetVariableInfo().AddParent(value, v)
 }
 
 func (v *MapObject) GetDependencies() []Object {
@@ -140,26 +148,40 @@ func (v *MapObject) GetNestedDependencies(includeRefBy bool) []Object {
 
 func (v *MapObject) NewVersion() Object {
 	copy := &MapObject{
-		KeyValues:  make(map[Object]Object, 0),
+		KeyValues:        make(map[Object]Object, 0),
 		DynamicKeyValues: make(map[Object]Object),
-		ObjectInfo: v.ObjectInfo.Copy(true),
+		ObjectInfo:       v.ObjectInfo.Copy(true),
 	}
 	for k, v := range v.KeyValues { // FIXME: this is not 100% correct
 		copy.KeyValues[k] = v
-		copy.KeyValues[k].GetVariableInfo().SetParent(copy.KeyValues[k], copy)
+		copy.KeyValues[k].GetVariableInfo().AddParent(copy.KeyValues[k], copy)
 	}
 	return copy
 }
 
+func (v *MapObject) NewObject() Object {
+	newObject := NewMapObject(NewObjectInfo(v.GetType()))
+	// new map points to the same key-value pairs as the original one
+	for k, v := range v.KeyValues {
+		newObject.AddKeyValue(k, v)
+		v.GetVariableInfo().AddParent(v, newObject)
+	}
+	for k, v := range v.DynamicKeyValues {
+		newObject.AddKeyValue(k, v)
+		v.GetVariableInfo().AddParent(v, newObject)
+	}
+	return newObject
+}
+
 func (v *MapObject) Copy(force bool) Object {
 	copy := &MapObject{
-		KeyValues:  make(map[Object]Object, 0),
+		KeyValues:        make(map[Object]Object, 0),
 		DynamicKeyValues: make(map[Object]Object),
-		ObjectInfo: v.ObjectInfo.Copy(force),
+		ObjectInfo:       v.ObjectInfo.Copy(force),
 	}
 	for k, v := range v.KeyValues {
 		copy.KeyValues[k] = v.Copy(force)
-		copy.KeyValues[k].GetVariableInfo().SetParent(copy.KeyValues[k], copy)
+		copy.KeyValues[k].GetVariableInfo().AddParent(copy.KeyValues[k], copy)
 	}
 	return copy
 }
@@ -167,13 +189,13 @@ func (v *MapObject) Copy(force bool) Object {
 func (v *MapObject) DeepCopy() Object {
 	logger.Logger.Debugf("[VARS MAP - DEEP COPY] (%s) %s", VariableTypeName(v), v.String())
 	copy := &MapObject{
-		KeyValues:  make(map[Object]Object, 0),
+		KeyValues:        make(map[Object]Object, 0),
 		DynamicKeyValues: make(map[Object]Object),
-		ObjectInfo: v.ObjectInfo.DeepCopy(),
+		ObjectInfo:       v.ObjectInfo.DeepCopy(),
 	}
 	for k, v := range v.KeyValues {
 		copy.KeyValues[k] = v.DeepCopy()
-		copy.KeyValues[k].GetVariableInfo().SetParent(copy.KeyValues[k], copy)
+		copy.KeyValues[k].GetVariableInfo().AddParent(copy.KeyValues[k], copy)
 	}
 	return copy
 }

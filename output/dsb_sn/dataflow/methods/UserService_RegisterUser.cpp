@@ -38,6 +38,11 @@
 [_1] (BasicObject BasicType) 16 int
 
 [0] (BasicObject BasicType) timestamp_hex string
+[_1] (BasicObject BasicType) timestamp_hex string
+[__2] (BasicObject BasicType) timestamp int64
+[__2] (BasicObject BasicType) 16 int
+[__2] (BasicObject BasicType) timestamp int64
+[__2] (BasicObject BasicType) 16 int
 
 [0] (BasicObject BasicType) counter_hex string
 [_1] (BasicObject BasicType) idx int64
@@ -46,6 +51,11 @@
 [_1] (BasicObject BasicType) 16 int
 
 [0] (BasicObject BasicType) counter_hex string
+[_1] (BasicObject BasicType) counter_hex string
+[__2] (BasicObject BasicType) idx int64
+[__2] (BasicObject BasicType) 16 int
+[__2] (BasicObject BasicType) idx int64
+[__2] (BasicObject BasicType) 16 int
 
 [0] (BasicObject BasicType) user_id_str string
 

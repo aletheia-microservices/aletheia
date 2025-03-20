@@ -12,6 +12,12 @@ type ChanObject struct {
 	ObjectInfo *ObjectInfo
 }
 
+func NewChanObject(info *ObjectInfo) *ChanObject {
+	return &ChanObject{
+		ObjectInfo: info,
+	}
+}
+
 func (v *ChanObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"chan"`
@@ -64,6 +70,13 @@ func (v *ChanObject) GetNestedDependencies(includeRefBy bool) []Object {
 
 func (v *ChanObject) AddReferenceWithID(target Object, creator string) {
 	v.ObjectInfo.AddReferenceWithID(v, target, creator)
+}
+
+func (v *ChanObject) NewObject() Object {
+	newObject := NewChanObject(NewObjectInfo(v.GetType()))
+	// we attach the dependency because we created a fully new object
+	newObject.ObjectInfo.AddDependency(v)
+	return newObject
 }
 
 func (v *ChanObject) Copy(force bool) Object {

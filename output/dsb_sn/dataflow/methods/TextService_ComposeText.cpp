@@ -39,6 +39,11 @@
 
 [0] (ArrayObject ArrayType) usernames []string
 [_1] (BasicObject BasicType) m string
+[__2] (SliceObject SliceType) matches []string
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
 
 [0] (PointerObject PointerType) t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService})
 [_1] (StructObject UserType) socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}
@@ -101,6 +106,7 @@
 [0] (StructObject UserType) wg sync.WaitGroup
 
 [0] (BasicObject BasicType) updated_text string
+[_1] (BasicObject BasicType) text string
 
 [0] (BasicObject BasicType) idx string
 [_1] (SliceObject SliceType) url_strings []string
@@ -113,9 +119,11 @@
 
 [0] (BasicObject BasicType) updated_text string
 [_1] (BasicObject BasicType) updated_text string
+[__2] (BasicObject BasicType) text string
 [_1] (BasicObject BasicType) url_string 0 int
 [_1] (BasicObject BasicType) ShortenedUrl string
 [_1] (BasicObject BasicType) updated_text string
+[__2] (BasicObject BasicType) text string
 [_1] (BasicObject BasicType) url_string 0 int
 [_1] (BasicObject BasicType) ShortenedUrl string
 
@@ -160,6 +168,11 @@
 
 [0] (ArrayObject ArrayType) usernames []string
 [_1] (BasicObject BasicType) m string
+[__2] (SliceObject SliceType) matches []string
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
 
 [0] (PointerObject PointerType) t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService})
 [_1] (StructObject UserType) socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}
@@ -222,6 +235,7 @@
 [0] (StructObject UserType) wg sync.WaitGroup
 
 [0] (BasicObject BasicType) updated_text string
+[_1] (BasicObject BasicType) text string
 
 [0] (BasicObject BasicType) idx string
 [_1] (SliceObject SliceType) url_strings []string

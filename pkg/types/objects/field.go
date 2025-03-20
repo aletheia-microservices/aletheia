@@ -69,14 +69,14 @@ func (v *FieldObject) AssignVariable(rvariable Object) {
 	if v.GetType().IsSameType(rvariable.GetType()) {
 		logger.Logger.Infof("[VAR FIELD] (a) assigning variables with types (%s --> %s) for lvariable (%s) and rvariable (%s)", utils.GetType(v.WrappedVariable), utils.GetType(rvariable), v.WrappedVariable.String(), rvariable.String())
 		v.WrappedVariable = rvariable.(*FieldObject).WrappedVariable.Copy(false)
-		v.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, v)
+		v.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, v)
 		return
 	}
 	// e.g. post.Text = text
 	if v.WrappedVariable.GetType().IsSameType(rvariable.GetType()) {
 		logger.Logger.Infof("[VAR FIELD] (b) assigning variables with types (%s --> %s) for lvariable (%s) and rvariable (%s)", utils.GetType(v.WrappedVariable), utils.GetType(rvariable), v.WrappedVariable.String(), rvariable.String())
 		v.WrappedVariable = rvariable.Copy(false)
-		v.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, v)
+		v.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, v)
 		return
 	}
 
@@ -87,7 +87,7 @@ func (v *FieldObject) AssignVariable(rvariable Object) {
 		// maintain left slice and add copy right array
 		v.WrappedVariable = rvariable.Copy(false)
 		v.WrappedVariable.(*ArrayObject).UpgradeToSlice()
-		v.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, v)
+		v.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, v)
 		return
 	}
 
@@ -98,7 +98,7 @@ func (v *FieldObject) AssignVariable(rvariable Object) {
 		// maintain left slice and add copy right array
 		v.WrappedVariable = rvariable.Copy(false)
 		v.WrappedVariable.(*SliceObject).UpgradeToArray()
-		v.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, v)
+		v.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, v)
 		return
 	}
 
@@ -138,14 +138,14 @@ func (v *FieldObject) AddReferenceWithID(target Object, creator string) {
 		ObjectInfo:      v.ObjectInfo.Copy(true),
 		WrappedVariable: v.WrappedVariable.Copy(true),
 	}
-	copy.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, copy)
+	copy.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, copy)
 	return copy
 } */
 
 func (v *FieldObject) NewObject() Object {
 	newWrappedObject := v.GetWrappedVariable().NewObject()
 	newObject := NewFieldObject(NewObjectInfo(v.GetType()), newWrappedObject)
-	newWrappedObject.GetVariableInfo().SetParent(v.WrappedVariable, newObject)
+	newWrappedObject.GetVariableInfo().AddParent(v.WrappedVariable, newObject)
 	newObject.GetVariableInfo().AddDependency(v)
 	return newObject
 }
@@ -155,7 +155,7 @@ func (v *FieldObject) Copy(force bool) Object {
 		ObjectInfo:      v.ObjectInfo.Copy(force),
 		WrappedVariable: v.WrappedVariable.Copy(force),
 	}
-	copy.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, copy)
+	copy.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, copy)
 	return copy
 }
 
@@ -165,7 +165,7 @@ func (v *FieldObject) DeepCopy() Object {
 		ObjectInfo:      v.ObjectInfo.DeepCopy(),
 		WrappedVariable: v.WrappedVariable.DeepCopy(),
 	}
-	copy.WrappedVariable.GetVariableInfo().SetParent(v.WrappedVariable, copy)
+	copy.WrappedVariable.GetVariableInfo().AddParent(v.WrappedVariable, copy)
 	return copy
 }
 

@@ -58,6 +58,11 @@ func (v *ServiceObject) GetNestedDependencies(includeRefBy bool) []Object {
 	return nil
 }
 
+func (v *ServiceObject) NewObject() Object {
+	logger.Logger.Fatalf("[OBJ SERVICE] attempted to create new object: %s", v.String())
+	return nil
+}
+
 func (v *ServiceObject) Copy(force bool) Object {
 	return &ServiceObject{
 		ObjectInfo: v.ObjectInfo.Copy(force),

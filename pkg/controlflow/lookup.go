@@ -268,7 +268,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 				},
 				WrappedVariable: variable,
 			}
-			variable.GetVariableInfo().SetParent(variable, fieldVariable)
+			variable.GetVariableInfo().AddParent(variable, fieldVariable)
 			logger.Logger.Debugf("KEY VALUE EXPR - RETURNING VARIABLE WITH TYPE (%s): %s", utils.GetType(variable), variable.String())
 			return fieldVariable, nil
 		}
@@ -334,7 +334,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			for _, elt := range e.Elts {
 				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
 				arrayVariable.AddElement(eltVar)
-				eltVar.GetVariableInfo().SetParent(eltVar, arrayVariable)
+				eltVar.GetVariableInfo().AddParent(eltVar, arrayVariable)
 			}
 			return arrayVariable, nil
 		case *gotypes.SliceType:
@@ -347,7 +347,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			for _, elt := range e.Elts {
 				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
 				sliceVariable.AddElement(eltVar)
-				eltVar.GetVariableInfo().SetParent(eltVar, sliceVariable)
+				eltVar.GetVariableInfo().AddParent(eltVar, sliceVariable)
 			}
 			return sliceVariable, nil
 		default:
@@ -467,7 +467,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 					Name: variable.GetVariableInfo().Name,
 				},
 			}
-			variable.GetVariableInfo().SetParent(variable, ptrVariable)
+			variable.GetVariableInfo().AddParent(variable, ptrVariable)
 			return ptrVariable, packageType
 		} else if e.Op == token.MUL { // e.g. *post
 			// dereferences the pointer and gets the value of the variable
@@ -487,7 +487,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 					Name: variable.GetVariableInfo().Name,
 				},
 			}
-			variable.GetVariableInfo().SetParent(variable, pointerVariable)
+			variable.GetVariableInfo().AddParent(variable, pointerVariable)
 			return pointerVariable, packageType */
 		} else if e.Op == token.NOT { // e.g. !exists
 			variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
@@ -550,7 +550,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 					Name: variable_x.GetVariableInfo().Name,
 				},
 			}
-			variable_x.GetVariableInfo().SetParent(variable_x, address_variable_x)
+			variable_x.GetVariableInfo().AddParent(variable_x, address_variable_x)
 
 			variable_y, t_y := lookupObjectFromAstExpression(service, method, block, e.Y, nil, inAssignment)
 			address_variable_y := &objects.AddressObject{
@@ -563,7 +563,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 					Name: variable_y.GetVariableInfo().Name,
 				},
 			}
-			variable_y.GetVariableInfo().SetParent(variable_y, address_variable_y)
+			variable_y.GetVariableInfo().AddParent(variable_y, address_variable_y)
 
 			if !t_x.IsSameType(t_y) {
 				logger.Logger.Fatalf("x expr (%v) and y expr (%v) differ types (%v vs %v)", e.X, e.Y, t_x, t_y)

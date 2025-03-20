@@ -15,6 +15,12 @@ type ArrayObject struct {
 	DynamicElements []Object
 }
 
+func NewArrayObject(info *ObjectInfo) *ArrayObject {
+	return &ArrayObject{
+		ObjectInfo: info,
+	}
+}
+
 func (v *ArrayObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"array"`
@@ -45,7 +51,7 @@ func (v *ArrayObject) UpgradeToSlice() *SliceObject {
 		Elements:   v.Elements,
 	}
 	for _, elem := range sliceVariable.Elements {
-		elem.GetVariableInfo().SetParent(elem, sliceVariable)
+		elem.GetVariableInfo().AddParent(elem, sliceVariable)
 	}
 	return sliceVariable
 }
@@ -206,9 +212,25 @@ func (v *ArrayObject) NewVersion() Object {
 	}
 	for k, v := range v.Elements { // FIXME: this is not 100% correct
 		copy.Elements[k] = v
-		copy.Elements[k].GetVariableInfo().SetParent(copy.Elements[k], copy)
+		copy.Elements[k].GetVariableInfo().AddParent(copy.Elements[k], copy)
 	}
 	return copy
+}
+
+func (v *ArrayObject) NewObject() Object {
+	newObject := NewArrayObject(NewObjectInfo(v.GetType()))
+	// (1) new array points to the same elements as the original one
+	// (2) we don't add new dependency edge from new to old object
+	// because we keep the same elements
+	for _, elem := range v.Elements {
+		newObject.AddElement(elem)
+		elem.GetVariableInfo().AddParent(elem, newObject)
+	}
+	for _, elem := range v.DynamicElements {
+		newObject.AddDynamicElement(elem)
+		elem.GetVariableInfo().AddParent(elem, newObject)
+	}
+	return newObject
 }
 
 func (v *ArrayObject) Copy(force bool) Object {
@@ -218,7 +240,7 @@ func (v *ArrayObject) Copy(force bool) Object {
 	for _, elem := range v.Elements {
 		newElem := elem.Copy(force)
 		copy.Elements = append(copy.Elements, newElem)
-		newElem.GetVariableInfo().SetParent(newElem, copy)
+		newElem.GetVariableInfo().AddParent(newElem, copy)
 	}
 	return copy
 }
@@ -231,7 +253,7 @@ func (v *ArrayObject) DeepCopy() Object {
 	for _, elem := range v.Elements {
 		newElem := elem.DeepCopy()
 		copy.Elements = append(copy.Elements, newElem)
-		newElem.GetVariableInfo().SetParent(newElem, copy)
+		newElem.GetVariableInfo().AddParent(newElem, copy)
 	}
 	return copy
 }

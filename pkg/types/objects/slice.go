@@ -15,6 +15,12 @@ type SliceObject struct {
 	DynamicElements []Object
 }
 
+func NewSliceObject(info *ObjectInfo) *SliceObject {
+	return &SliceObject{
+		ObjectInfo: info,
+	}
+}
+
 func (v *SliceObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"slice"`
@@ -37,7 +43,7 @@ func (v *SliceObject) UpgradeToArray() *ArrayObject {
 		Elements:   v.Elements,
 	}
 	for _, elem := range sliceVariable.Elements {
-		elem.GetVariableInfo().SetParent(elem, sliceVariable)
+		elem.GetVariableInfo().AddParent(elem, sliceVariable)
 	}
 	return sliceVariable
 }
@@ -82,13 +88,13 @@ func (v *SliceObject) AppendElements(varElements Object) {
 
 func (v *SliceObject) AddElement(element Object) {
 	v.Elements = append(v.Elements, element)
-	element.GetVariableInfo().SetParent(element, v)
+	element.GetVariableInfo().AddParent(element, v)
 }
 
 func (v *SliceObject) AddElements(elements []Object) {
 	v.Elements = append(v.Elements, elements...)
 	for _, elem := range elements {
-		elem.GetVariableInfo().SetParent(elem, v)
+		elem.GetVariableInfo().AddParent(elem, v)
 	}
 }
 
@@ -178,9 +184,25 @@ func (v *SliceObject) NewVersion() Object {
 	}
 	for k, v := range v.Elements { // FIXME: this is not 100% correct
 		copy.Elements[k] = v
-		copy.Elements[k].GetVariableInfo().SetParent(copy.Elements[k], copy)
+		copy.Elements[k].GetVariableInfo().AddParent(copy.Elements[k], copy)
 	}
 	return copy
+}
+
+func (v *SliceObject) NewObject() Object {
+	newObject := NewSliceObject(NewObjectInfo(v.GetType()))
+	// (1) new slice points to the same elements as the original one
+	// (2) we don't add new dependency edge from new to old object
+	// because we keep the same elements
+	for _, elem := range v.Elements {
+		newObject.AddElement(elem)
+		elem.GetVariableInfo().AddParent(elem, newObject)
+	}
+	for _, elem := range v.DynamicElements {
+		newObject.AddDynamicElement(elem)
+		elem.GetVariableInfo().AddParent(elem, newObject)
+	}
+	return newObject
 }
 
 func (v *SliceObject) Copy(force bool) Object {
@@ -188,7 +210,7 @@ func (v *SliceObject) Copy(force bool) Object {
 	for _, v := range v.Elements {
 		newElem := v.Copy(force)
 		copy.Elements = append(copy.Elements, newElem)
-		newElem.GetVariableInfo().SetParent(newElem, copy)
+		newElem.GetVariableInfo().AddParent(newElem, copy)
 	}
 	return copy
 }
@@ -199,7 +221,7 @@ func (v *SliceObject) DeepCopy() Object {
 	for _, v := range v.Elements {
 		newElem := v.DeepCopy()
 		copy.Elements = append(copy.Elements, newElem)
-		newElem.GetVariableInfo().SetParent(newElem, copy)
+		newElem.GetVariableInfo().AddParent(newElem, copy)
 	}
 	return copy
 }

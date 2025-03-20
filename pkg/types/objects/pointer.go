@@ -93,7 +93,7 @@ func (v *PointerObject) Copy(force bool) Object {
 		ObjectInfo: v.ObjectInfo.Copy(force),
 		PointerTo:  v.PointerTo, // underlying values of pointers are never deep copied
 	}
-	copy.PointerTo.GetVariableInfo().SetParent(copy.PointerTo, copy)
+	copy.PointerTo.GetVariableInfo().AddParent(copy.PointerTo, copy)
 	return copy
 }
 
@@ -103,7 +103,7 @@ func (v *PointerObject) DeepCopy() Object {
 		ObjectInfo: v.ObjectInfo.DeepCopy(),
 		PointerTo:  v.PointerTo.DeepCopy(), // underlying values of pointers are never deep copied
 	}
-	copy.PointerTo.GetVariableInfo().SetParent(copy.PointerTo, copy)
+	copy.PointerTo.GetVariableInfo().AddParent(copy.PointerTo, copy)
 	return copy
 }
 

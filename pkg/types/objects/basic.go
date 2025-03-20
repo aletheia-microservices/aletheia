@@ -85,6 +85,7 @@ func (v *BasicObject) AddReferenceWithID(target Object, creator string) {
 
 func (v *BasicObject) NewObject() Object {
 	newObject := NewBasicObject(NewObjectInfo(v.GetType()))
+	// we attach the dependency because we created a fully new object
 	newObject.GetVariableInfo().AddDependency(v)
 	return newObject
 }

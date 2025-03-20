@@ -13,6 +13,13 @@ type FuncObject struct {
 	Name       string
 }
 
+func NewFuncObject(info *ObjectInfo, name string) *FuncObject {
+	return &FuncObject{
+		ObjectInfo: info,
+		Name:       name,
+	}
+}
+
 func (v *FuncObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"func"`
@@ -67,6 +74,13 @@ func (v *FuncObject) Copy(force bool) Object {
 		ObjectInfo: v.ObjectInfo.Copy(force),
 	}
 	return copy
+}
+
+func (v *FuncObject) NewObject() Object {
+	newObject := NewFuncObject(NewObjectInfo(v.GetType()), v.Name)
+	// add dependency edge since object is completely new
+	newObject.ObjectInfo.AddDependency(v)
+	return newObject
 }
 
 func (v *FuncObject) DeepCopy() Object {

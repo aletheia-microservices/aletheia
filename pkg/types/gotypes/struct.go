@@ -10,13 +10,13 @@ type StructType struct {
 	ParentUserType *UserType
 	FieldTypes     []*FieldType
 	//FieldTypesMap  map[string]*FieldType
-	Methods        map[string]string // maps method name to package path
+	Methods map[string]string // maps method name to package path
 }
 
 func NewStructType() *StructType {
 	return &StructType{
 		//FieldTypesMap: make(map[string]*FieldType),
-		Methods:       make(map[string]string),
+		Methods: make(map[string]string),
 	}
 }
 
@@ -137,7 +137,7 @@ func (t *StructType) GetParentUserType() *UserType {
 	return t.ParentUserType
 }
 
-func (t *StructType) SetParentUserType(userType *UserType) {
+func (t *StructType) AddParentUserType(userType *UserType) {
 	t.ParentUserType = userType
 }
 
@@ -192,7 +192,7 @@ func (t *StructType) GetFieldTypeAt(index int) *FieldType {
 
 func (t *StructType) UpdateFieldAtIfExists(fieldType *FieldType) {
 	logger.Logger.Warnf("[TYPES STRUCT] updating field type at for struct type (%s): NEW [%s] = %s", t.String(), fieldType.LongString(), utils.GetType(fieldType))
-	
+
 	index := -1
 	// search for the field (created when struct type was created for the first time e.g. for a user type) whose
 	// field name matches the current field type for the field object that is being used

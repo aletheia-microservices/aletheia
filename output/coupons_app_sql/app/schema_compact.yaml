@@ -4,12 +4,12 @@ COUPONS_DB:
 - dependencies: []
 - schema:
   - fields:
-    - coupons.coupon_id: int
     - coupons.category: string
     - coupons.value: int
     - claimed_coupons.coupon_id: int
     - claimed_coupons.*: SQL Table
     - claimed_coupons.user_id: int
+    - coupons.coupon_id: int
   - unfolded_fields: []
   - constraints:
     - PRIMARY(coupons.coupon_id)
@@ -21,8 +21,8 @@ STUDENTS_DB:
 - dependencies: []
 - schema:
   - fields:
-    - students.student_id: int
     - students.name: string
+    - students.student_id: <unknown type>
     - students.*: SQL Table
     - students.balance: int
     - students.claimed_coupons: int
@@ -30,4 +30,4 @@ STUDENTS_DB:
   - constraints:
     - REFERENCE(students.student_id --> claimed_coupons.user_id) [+]
     - CHECK(students.balance > 0)
-    - CHECK(students.claimed_coupons < 10) - PRIMARY(students.student_id) 
+    - CHECK(students.claimed_coupons < 10) 

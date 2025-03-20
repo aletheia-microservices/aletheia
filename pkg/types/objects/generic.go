@@ -13,6 +13,12 @@ type GenericObject struct {
 	Params     []Object
 }
 
+func NewGenericObject(info *ObjectInfo) *GenericObject {
+	return &GenericObject{
+		ObjectInfo: info,
+	}
+}
+
 func (v *GenericObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"generic"`
@@ -79,6 +85,13 @@ func (v *GenericObject) AddReferenceWithID(target Object, creator string) {
 		logger.Logger.Fatalf("[VARS GENERIC - REF] skipping referenced variables with different types (%s vs %s) (%s vs %s)", v.String(), target.String(), VariableTypeName(v), VariableTypeName(target))
 	}
 	logger.Logger.Tracef("[VARS GENERIC - REF] added reference (%s) -> (%s) with id = %d (creator: %s)", v.ObjectInfo.Name, target.GetVariableInfo().GetName(), v.ObjectInfo.Id, creator)
+}
+
+func (v *GenericObject) NewObject() Object {
+	newObject := NewGenericObject(NewObjectInfo(v.GetType()))
+	// add dependency edge since object is completely new
+	newObject.ObjectInfo.AddDependency(v)
+	return newObject
 }
 
 func (v *GenericObject) Copy(force bool) Object {

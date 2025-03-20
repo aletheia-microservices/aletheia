@@ -43,6 +43,7 @@
 [_1] (StructObject UserType) target_url socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}
 [__2] (FieldObject FieldType) ExpandedUrl string
 [___3] (BasicObject BasicType) url string
+[____4] (ArrayObject ArrayType) urls []string
 [__2] (FieldObject FieldType) ShortenedUrl string
 [___3] (BasicObject BasicType) shortened_url string
 
@@ -50,6 +51,7 @@
 [_1] (StructObject UserType) target_url socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}
 [__2] (FieldObject FieldType) ExpandedUrl string
 [___3] (BasicObject BasicType) url string
+[____4] (ArrayObject ArrayType) urls []string
 [__2] (FieldObject FieldType) ShortenedUrl string
 [___3] (BasicObject BasicType) shortened_url string
 

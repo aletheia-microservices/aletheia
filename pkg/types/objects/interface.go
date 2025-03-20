@@ -13,6 +13,13 @@ type InterfaceObject struct {
 	UnderlyingVariable Object
 }
 
+func NewInterfaceObject(info *ObjectInfo, underlying Object) *InterfaceObject {
+	return &InterfaceObject{
+		ObjectInfo:         info,
+		UnderlyingVariable: underlying,
+	}
+}
+
 func (v *InterfaceObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"interface"`
@@ -72,6 +79,13 @@ func (v *InterfaceObject) AddReferenceWithID(target Object, creator string) {
 	if v.UnderlyingVariable != nil {
 		v.UnderlyingVariable.AddReferenceWithID(target, creator)
 	}
+}
+
+func (v *InterfaceObject) NewObject() Object {
+	// (1) new interface keeps pointing to the origin underlying object
+	// (2) do not add any dependency edge because of that
+	newObject := NewInterfaceObject(NewObjectInfo(v.GetType()), v.UnderlyingVariable)
+	return newObject
 }
 
 func (v *InterfaceObject) Copy(force bool) Object {

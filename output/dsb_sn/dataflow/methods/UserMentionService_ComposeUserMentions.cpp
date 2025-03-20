@@ -30,6 +30,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -106,6 +107,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -207,6 +209,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -283,6 +286,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -381,6 +385,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -457,6 +462,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -558,6 +564,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})
@@ -634,6 +641,7 @@
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) :UserID 
 [__2] (BasicObject BasicType) name string
+[___3] (ArrayObject ArrayType) usernames []string
 [__2] (BasicObject BasicType) ":UserID" string
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserMentionServiceImpl struct{userCache Cache, userDB NoSQLDatabase})

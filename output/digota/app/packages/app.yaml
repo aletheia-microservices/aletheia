@@ -39,10 +39,6 @@ digota:
   - atomic.align64
   - atomic.noCopy
   - context.Context
-  - go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string}
-  - go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
-  - primitive.D
-  - primitive.E
   - sync.WaitGroup
   - sync.noCopy
   - time.Duration int64
@@ -174,23 +170,23 @@ validation:
 - imported types:
   - .error
   - atomic.Value
-  - reflect.Type interface{Comparable, NumMethod, OverflowUint, String, common, NumOut, IsVariadic, NumField, OverflowInt, Align, AssignableTo, FieldByName, In, Len, Size, FieldByIndex, FieldByNameFunc, Key, Name, CanSeq, MethodByName, PkgPath, uncommon, Bits, CanSeq2, ChanDir, Elem, FieldAlign, Implements, Kind, Method, Field, Out, OverflowComplex, ConvertibleTo, NumIn, OverflowFloat, }
+  - reflect.Type interface{Method, uncommon, ChanDir, Name, NumOut, OverflowComplex, Elem, Field, Kind, MethodByName, NumField, PkgPath, Len, Align, AssignableTo, Bits, Comparable, FieldAlign, FieldByName, Key, ConvertibleTo, FieldByIndex, In, NumIn, OverflowFloat, OverflowUint, Size, FieldByNameFunc, OverflowInt, String, common, CanSeq2, Implements, NumMethod, Out, CanSeq, IsVariadic, }
   - sync.Mutex
   - sync.Mutex struct{state int32, sema uint32}
   - sync.Pool
   - sync.noCopy
-  - universal-translator.Translator interface{C, FmtAccounting, FmtCurrency, FmtDateShort, FmtNumber, FmtTimeFull, FmtTimeLong, AddRange, MonthWide, T, O, Add, AddOrdinal, FmtTimeShort, MonthsAbbreviated, MonthsWide, WeekdayAbbreviated, WeekdayNarrow, AddCardinal, FmtDateMedium, WeekdayShort, WeekdaysAbbreviated, WeekdaysNarrow, WeekdaysShort, WeekdaysWide, VerifyTranslations, CardinalPluralRule, FmtDateLong, MonthAbbreviated, MonthNarrow, PluralsOrdinal, R, OrdinalPluralRule, PluralsCardinal, FmtTimeMedium, Locale, MonthsNarrow, WeekdayWide, FmtDateFull, FmtPercent, PluralsRange, RangePluralRule, }
+  - universal-translator.Translator interface{Add, FmtCurrency, MonthNarrow, WeekdayShort, CardinalPluralRule, FmtNumber, MonthWide, RangePluralRule, WeekdayAbbreviated, WeekdaysShort, AddCardinal, FmtDateFull, FmtDateLong, FmtTimeShort, MonthAbbreviated, MonthsAbbreviated, O, FmtDateShort, OrdinalPluralRule, VerifyTranslations, WeekdayWide, WeekdaysAbbreviated, WeekdaysNarrow, WeekdaysWide, FmtAccounting, FmtTimeLong, Locale, MonthsNarrow, C, FmtDateMedium, FmtTimeFull, MonthsWide, PluralsOrdinal, WeekdayNarrow, AddRange, PluralsCardinal, AddOrdinal, FmtPercent, FmtTimeMedium, PluralsRange, R, T, }
   - validator.v9.CustomTypeFunc interface{}
-  - validator.v9.FieldError interface{Tag, Translate, Value, Kind, Param, Type, ActualTag, Field, Namespace, StructField, StructNamespace, }
+  - validator.v9.FieldError interface{Value, ActualTag, Field, Namespace, Param, Tag, Kind, StructField, StructNamespace, Translate, Type, }
   - validator.v9.FuncCtx bool
   - 'validator.v9.StructLevelFuncCtx '
   - validator.v9.TagNameFunc string
   - validator.v9.TranslationFunc string
-  - validator.v9.Validate struct{tagName string, pool (*sync.Pool), hasCustomFuncs bool, hasTagNameFunc bool, tagNameFunc validator.v9.TagNameFunc string, structLevelFuncs map[reflect.Type interface{Comparable, NumMethod, OverflowUint, String, common, NumOut, IsVariadic, NumField, OverflowInt, Align, AssignableTo, FieldByName, In, Len, Size, FieldByIndex, FieldByNameFunc, Key, Name, CanSeq, MethodByName, PkgPath, uncommon, Bits, CanSeq2, ChanDir, Elem, FieldAlign, Implements, Kind, Method, Field, Out, OverflowComplex, ConvertibleTo, NumIn, OverflowFloat, }]validator.v9.StructLevelFuncCtx
-    , customFuncs map[reflect.Type interface{In, NumOut, IsVariadic, FieldByIndex, FieldByNameFunc, uncommon, ChanDir, Implements, ConvertibleTo, CanSeq2, OverflowComplex, NumMethod, Elem, Method, String, NumField, Len, Size, Key, Comparable, Align, Bits, FieldAlign, Field, OverflowFloat, OverflowUint, common, OverflowInt, AssignableTo, Name, MethodByName, PkgPath, NumIn, CanSeq, Kind, Out, FieldByName, }]validator.v9.CustomTypeFunc
+  - validator.v9.Validate struct{tagName string, pool (*sync.Pool), hasCustomFuncs bool, hasTagNameFunc bool, tagNameFunc validator.v9.TagNameFunc string, structLevelFuncs map[reflect.Type interface{CanSeq2, Implements, NumMethod, Out, CanSeq, IsVariadic, Method, uncommon, ChanDir, Name, NumOut, OverflowComplex, Elem, Field, Kind, MethodByName, NumField, PkgPath, Len, Align, AssignableTo, Bits, Comparable, FieldAlign, FieldByName, Key, ConvertibleTo, FieldByIndex, In, NumIn, OverflowFloat, OverflowUint, Size, FieldByNameFunc, OverflowInt, String, common, }]validator.v9.StructLevelFuncCtx
+    , customFuncs map[reflect.Type interface{String, OverflowFloat, common, Len, FieldAlign, Key, Size, CanSeq, uncommon, OverflowComplex, Field, NumField, FieldByName, FieldByIndex, Align, Out, ChanDir, PkgPath, Comparable, FieldByNameFunc, Implements, IsVariadic, NumOut, Bits, ConvertibleTo, OverflowInt, MethodByName, CanSeq2, Method, Elem, NumIn, AssignableTo, OverflowUint, NumMethod, Name, Kind, In, }]validator.v9.CustomTypeFunc
     interface{}, aliases map[string]string, validations map[string]validator.v9.internalValidationFuncWrapper
     struct{fn validator.v9.FuncCtx bool, runValidatinOnNil bool}, transTagFunc map[universal-translator.Translator
-    interface{CardinalPluralRule, FmtDateLong, MonthAbbreviated, MonthNarrow, PluralsOrdinal, R, OrdinalPluralRule, PluralsCardinal, FmtTimeMedium, Locale, MonthsNarrow, WeekdayWide, FmtDateFull, FmtPercent, PluralsRange, RangePluralRule, C, FmtAccounting, FmtCurrency, FmtDateShort, FmtNumber, FmtTimeFull, FmtTimeLong, AddRange, MonthWide, T, O, Add, AddOrdinal, FmtTimeShort, MonthsAbbreviated, MonthsWide, WeekdayAbbreviated, WeekdayNarrow, AddCardinal, FmtDateMedium, WeekdayShort, WeekdaysAbbreviated, WeekdaysNarrow, WeekdaysShort, WeekdaysWide, VerifyTranslations, }]map[string]validator.v9.TranslationFunc
+    interface{AddOrdinal, FmtPercent, FmtTimeMedium, PluralsRange, R, T, Add, FmtCurrency, MonthNarrow, WeekdayShort, CardinalPluralRule, FmtNumber, MonthWide, RangePluralRule, WeekdayAbbreviated, WeekdaysShort, AddCardinal, FmtDateFull, FmtDateLong, FmtTimeShort, MonthAbbreviated, MonthsAbbreviated, O, FmtDateShort, OrdinalPluralRule, VerifyTranslations, WeekdayWide, WeekdaysAbbreviated, WeekdaysNarrow, WeekdaysWide, FmtAccounting, FmtTimeLong, Locale, MonthsNarrow, C, FmtDateMedium, FmtTimeFull, MonthsWide, PluralsOrdinal, WeekdayNarrow, AddRange, PluralsCardinal, }]map[string]validator.v9.TranslationFunc
     string, tagCache (*validator.v9.tagCache struct{lock sync.Mutex, m atomic.Value}),
     structCache (*validator.v9.structCache struct{lock sync.Mutex, m atomic.Value})}
   - validator.v9.ValidationErrors []validator.v9.FieldError interface{ interface{ActualTag() string; Field() string; Kind() reflect.Kind; Namespace() string; Param() string; StructField() string; StructNamespace() string; Tag() string; Translate(ut github.com/go-playground/universal-translator.Translator) string; Type() reflect.Type; Value() interface{}} }

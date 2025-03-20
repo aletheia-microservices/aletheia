@@ -153,7 +153,7 @@ func (v *StructObject) AddOrGetFieldVariable(fieldVariable *FieldObject) {
 	//v.SetFieldByKey(key, fieldVariable)
 	v.AddFieldToList(fieldVariable)
 	v.attachFieldVariable(fieldVariable)
-	fieldVariable.GetVariableInfo().SetParent(fieldVariable, v)
+	fieldVariable.GetVariableInfo().AddParent(fieldVariable, v)
 
 	v.GetStructType().UpdateFieldAtIfExists(fieldVariable.GetFieldType())
 }
@@ -161,7 +161,7 @@ func (v *StructObject) AddOrGetFieldVariable(fieldVariable *FieldObject) {
 func (v *StructObject) AddOrGetFieldVariableAndType(fieldVariable *FieldObject) {
 	v.AddOrGetFieldVariable(fieldVariable)
 	v.GetStructType().AddOrGetFieldType(fieldVariable.GetFieldType())
-	fieldVariable.GetVariableInfo().SetParent(fieldVariable, v)
+	fieldVariable.GetVariableInfo().AddParent(fieldVariable, v)
 }
 
 func (v *StructObject) GetId() int64 {
@@ -226,14 +226,13 @@ func (v *StructObject) NewVersion() Object {
 	}
 	for n, p := range v.GetFieldsMap() { // FIXME: this is not 100% correct
 		copy.SetFieldByKey(n, p)
-		copy.GetFieldByKey(n).GetVariableInfo().SetParent(copy.GetFieldByKey(n), copy)
+		copy.GetFieldByKey(n).GetVariableInfo().AddParent(copy.GetFieldByKey(n), copy)
 	}
 	for _, f := range v.GetFieldsList() {
 		copy.AddFieldToList(f)
 	}
 	return copy
 }
-
 
 func (v *StructObject) Copy(force bool) Object {
 	logger.Logger.Debugf("[VARS STRUCT - COPY] (%s) %s", VariableTypeName(v), v.String())
@@ -243,7 +242,7 @@ func (v *StructObject) Copy(force bool) Object {
 	}
 	for n, p := range v.GetFieldsMap() {
 		copy.SetFieldByKey(n, p.Copy(force))
-		copy.GetFieldByKey(n).GetVariableInfo().SetParent(copy.GetFieldByKey(n), copy)
+		copy.GetFieldByKey(n).GetVariableInfo().AddParent(copy.GetFieldByKey(n), copy)
 	}
 	for _, f := range v.GetFieldsList() {
 		copy.AddFieldToList(f)
@@ -258,7 +257,7 @@ func (v *StructObject) NewObject() Object {
 		newField := p.NewObject()
 		newObject.SetFieldByKey(k, newField)
 		newFieldInfo := newObject.GetFieldByKey(k).GetVariableInfo()
-		newFieldInfo.SetParent(newField, newObject)
+		newFieldInfo.AddParent(newField, newObject)
 	}
 	for _, f := range v.GetFieldsList() {
 		newObject.AddFieldToList(f)
@@ -275,7 +274,7 @@ func (v *StructObject) DeepCopy() Object {
 	}
 	for n, p := range v.GetFieldsMap() {
 		copy.SetFieldByKey(n, p.DeepCopy())
-		copy.GetFieldByKey(n).GetVariableInfo().SetParent(copy.GetFieldByKey(n), copy)
+		copy.GetFieldByKey(n).GetVariableInfo().AddParent(copy.GetFieldByKey(n), copy)
 	}
 	for _, f := range v.GetFieldsList() {
 		copy.AddFieldToList(f)
@@ -294,14 +293,14 @@ func (v *StructObject) GetFieldVariableIfExists(name string) Object {
 func (v *StructObject) AddOrGetFieldKeyVariable(name string, field Object) {
 	v.fields[name] = field
 	v.AddFieldToList(field)
-	field.GetVariableInfo().SetParent(field, v)
+	field.GetVariableInfo().AddParent(field, v)
 }
 
 func (v *StructObject) AddOrGetFieldKeyVariableIfNotExists(name string, field Object) bool {
 	if _, exists := v.fields[name]; !exists {
 		v.fields[name] = field
 		v.AddFieldToList(field)
-		field.GetVariableInfo().SetParent(field, v)
+		field.GetVariableInfo().AddParent(field, v)
 		return true
 	} else {
 		logger.Logger.Warnf("[VARS STRUCT] field (%s) already exists in structure (%s)", name, v.String())

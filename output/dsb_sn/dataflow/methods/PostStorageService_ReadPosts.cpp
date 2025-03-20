@@ -58,6 +58,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -190,6 +196,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -271,6 +283,7 @@
 
 [0] (ArrayObject ArrayType) retposts []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [_1] (StructObject UserType) post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
+[__2] (ArrayObject ArrayType) values []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [__2] (FieldObject FieldType) PostID int64
 [___3] (BasicObject BasicType) PostID int64
 
@@ -334,6 +347,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -466,6 +485,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -558,6 +583,8 @@
 
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
+[__2] (MapObject MapType) unique_post_ids map[int64]bool
+[___3] (BasicObject BasicType) true bool
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -619,6 +646,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -751,6 +784,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -832,6 +871,7 @@
 
 [0] (ArrayObject ArrayType) retposts []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [_1] (StructObject UserType) post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
+[__2] (ArrayObject ArrayType) values []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [__2] (FieldObject FieldType) PostID int64
 [___3] (BasicObject BasicType) PostID int64
 
@@ -895,6 +935,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1027,6 +1073,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1178,6 +1230,7 @@
 
 [0] (ArrayObject ArrayType) retposts []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [_1] (StructObject UserType) post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
+[__2] (ArrayObject ArrayType) values []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [__2] (FieldObject FieldType) PostID int64
 [___3] (BasicObject BasicType) PostID int64
 
@@ -1246,6 +1299,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1378,6 +1437,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1459,6 +1524,7 @@
 
 [0] (ArrayObject ArrayType) retposts []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [_1] (StructObject UserType) post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
+[__2] (ArrayObject ArrayType) values []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [__2] (FieldObject FieldType) PostID int64
 [___3] (BasicObject BasicType) PostID int64
 
@@ -1522,6 +1588,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1654,6 +1726,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1746,6 +1824,8 @@
 
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
+[__2] (MapObject MapType) unique_post_ids map[int64]bool
+[___3] (BasicObject BasicType) true bool
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1807,6 +1887,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1939,6 +2025,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -2020,6 +2112,7 @@
 
 [0] (ArrayObject ArrayType) retposts []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [_1] (StructObject UserType) post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
+[__2] (ArrayObject ArrayType) values []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [__2] (FieldObject FieldType) PostID int64
 [___3] (BasicObject BasicType) PostID int64
 
@@ -2083,6 +2176,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -2215,6 +2314,12 @@
 
 [0] (ArrayObject ArrayType) keys []string
 [_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -2366,6 +2471,7 @@
 
 [0] (ArrayObject ArrayType) retposts []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [_1] (StructObject UserType) post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
+[__2] (ArrayObject ArrayType) values []socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}
 [__2] (FieldObject FieldType) PostID int64
 [___3] (BasicObject BasicType) PostID int64
 

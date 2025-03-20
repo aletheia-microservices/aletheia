@@ -485,8 +485,8 @@ func computeInternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 			signatureResults := lookup.LookupTypesForGoTypes(service.GetPackage(), signatureGoType.Results())
 			for _, t := range signatureResults.(*gotypes.TupleType).Types {
 				newVar := lookup.CreateObjectFromType("", t)
-				tupleVar.AddVariableAndType(newVar)
-				newVar.GetVariableInfo().SetParent(newVar, tupleVar)
+				tupleVar.AddObjectAndType(newVar)
+				newVar.GetVariableInfo().AddParent(newVar, tupleVar)
 
 				if call != nil {
 					call.AddReturn(newVar)
@@ -516,7 +516,7 @@ func computeExternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 				newVar := lookup.CreateObjectFromType("", signatureResults.(*gotypes.TupleType).Types[0])
 				logger.Logger.Warnf("[FIXMEEEEEEE!!!!!!] (IS THIS EVEN CORRECT???) CREATED VAR FOR RETURNED TUPLE IN EXTERNAL FUNC CALL: %s", newVar.String())
 				tupleVar.Objects = append(tupleVar.Objects, newVar)
-				newVar.GetVariableInfo().SetParent(newVar, tupleVar)
+				newVar.GetVariableInfo().AddParent(newVar, tupleVar)
 			} else {
 				logger.Logger.Warnf("[CFG CALLS] call returns tuple with len %d and depends on %d variables: %v", len(signatureResults.(*gotypes.TupleType).Types), len(deps), deps)
 				for _, t := range signatureResults.(*gotypes.TupleType).Types {
@@ -534,7 +534,7 @@ func computeExternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 						objects.AddVariableInfoDependencies(newVar, deps)
 					}
 					tupleVar.Objects = append(tupleVar.Objects, newVar)
-					newVar.GetVariableInfo().SetParent(newVar, tupleVar)
+					newVar.GetVariableInfo().AddParent(newVar, tupleVar)
 				}
 				logger.Logger.Warnf("CREATED COMPOSITE VAR FOR (%d) TUPLE: %s", len(deps), tupleVar.String())
 			}
@@ -598,7 +598,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 		}
 		results := parseInlineFuncCall(service, method, block, inlineFunc.CFG, funcVar.GetFuncType().Params, callExpr.Args)
 		for _, r := range results {
-			tupleVar.AddVariableAndType(r)
+			tupleVar.AddObjectAndType(r)
 		}
 		return tupleVar
 	}

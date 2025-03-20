@@ -79,7 +79,7 @@ func (t *InterfaceType) GetParentType() Type { //TODO
 	}
 	return t
 }
-func (t *InterfaceType) SetParentUserType(userType *UserType) {
+func (t *InterfaceType) AddParentUserType(userType *UserType) {
 	t.ParentUserType = userType
 }
 

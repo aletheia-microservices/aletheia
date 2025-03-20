@@ -148,6 +148,7 @@
 [__2] (BasicObject BasicType) PostID int64
 
 [0] (BasicObject BasicType) _ bool
+[_1] (BasicObject BasicType) * bool
 
 [0] (ArrayObject ArrayType) new_post_ids []int64
 [_1] (BasicObject BasicType) PostID int64
@@ -302,6 +303,7 @@
 [__2] (BasicObject BasicType) PostID int64
 
 [0] (BasicObject BasicType) _ bool
+[_1] (BasicObject BasicType) * bool
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64})
 [_1] (StructObject UserType) socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}
@@ -463,4 +465,5 @@
 [0] (InterfaceObject UserType) err .error
 
 [0] (BasicObject BasicType) err error
+[_1] (BasicObject BasicType) err_post_channel error
 
