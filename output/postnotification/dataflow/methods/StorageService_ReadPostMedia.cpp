@@ -24,9 +24,9 @@
 
     --> r-tainted: read(posts_cache.Post) {1}
 [0] (StructObject UserType) post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}}
-     --> r-tainted: read(posts_cache.PostID) {1}
+     --> r-tainted: read(posts_cache.PostID, media_db._.mediaid) {2}
 [_1] (FieldObject FieldType) PostID int64
-      --> r-tainted: read(posts_cache.int64) {1}
+      --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
 [__2] (BasicObject BasicType) PostID int64
 
     --> r-tainted: read(posts_cache.key, posts_cache.string, posts_cache.int64, posts_cache.int) {4}
@@ -48,8 +48,14 @@
 
     --> r-tainted: read(media_db._.mediaid) {1}
 [0] (FieldObject FieldType) mediaID int64
+     --> r-tainted: read(posts_cache.PostID, media_db._.mediaid) {2}
+[_1] (FieldObject FieldType) PostID int64
+      --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
+[__2] (BasicObject BasicType) PostID int64
      --> r-tainted: read(media_db._.mediaid) {1}
-[_1] (BasicObject BasicType) PostID int64
+[_1] (BasicObject BasicType) int64
+      --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
+[__2] (BasicObject BasicType) PostID int64
 
 [0] (StructObject UserType) media postnotification.Media struct{MediaID int64, Content string}
      --> r-tainted: read(media_db.Media) {1}

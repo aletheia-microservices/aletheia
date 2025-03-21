@@ -14,8 +14,8 @@ CART_DB:
     - Cart.Products: '[]string'
     - Cart.Products[*]: string
   - constraints:
-    - REFERENCE(Cart.Products --> Product.ProductID)
     - REFERENCE(Cart.LastProductID --> Product.ProductID)
+    - REFERENCE(Cart.Products --> Product.ProductID)
     - REFERENCE(Cart --> Product.ProductID)
 
 PRODUCT_DB:

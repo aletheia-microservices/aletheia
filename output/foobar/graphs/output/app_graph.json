@@ -11,9 +11,25 @@
     {
       "id": "FrontendService",
       "type": "service"
+    },
+    {
+      "id": "bar_db MongoDB",
+      "type": "datastore"
+    },
+    {
+      "id": "foo_db MongoDB",
+      "type": "datastore"
     }
   ],
   "edges": [
+    {
+      "caller": "BarService",
+      "callee": "bar_db MongoDB"
+    },
+    {
+      "caller": "FooService",
+      "callee": "foo_db MongoDB"
+    },
     {
       "caller": "FrontendService",
       "callee": "BarService"

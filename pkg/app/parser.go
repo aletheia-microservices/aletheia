@@ -168,8 +168,6 @@ func (app *App) RegisterPackages() {
 		}
 	}
 
-	//logger.Logger.Fatal("EXIT")
-
 	for _, parsedPackage := range app.GetBlueprintPackages() {
 		parseBlueprintPackage(parsedPackage)
 	}
@@ -177,13 +175,39 @@ func (app *App) RegisterPackages() {
 		app.ParseAppPackage(parsedPackage, packagesInfo[parsedPackage.PackagePath].GoPackage)
 	}
 
-	for _, pkg := range app.AppPackages {
+	for _, pkg := range app.GetAppPackages() {
 		for _, m := range pkg.GetAllParsedMethods() {
 			controlflow.GenerateMethodCFG(m)
 		}
 	}
 
 	app.dumpYamlPackages()
+}
+
+
+//FIXME: we should actually be careful with methods that call other methods
+func (app *App) ParseMethods() {
+	for _, pkg := range app.GetAppPackages() {
+		// (1) parse top-level methods
+		for _, method := range pkg.GetUnparsedMethods() {
+			if !method.HasReceiver() {
+				controlflow.ParseMethodCFG(pkg, nil, method)
+			}
+		}
+		// (2) parse methods that implement declared types
+		for _, method := range pkg.GetUnparsedMethods() {
+			if method.HasReceiver() && !method.HasAttachedService() {
+				controlflow.ParseMethodCFG(pkg, nil, method)
+			}
+		}
+	}
+
+	// (3) parse all services' exposed methods
+	for _, node := range app.Services {
+		for _, method := range node.GetMethods() {
+			controlflow.ParseMethodCFG(node.GetPackage(), node, method)
+		}
+	}
 }
 
 func parseGolangFuncTypes(pkg *types.Package, def golangtypes.Object, typeNameToFuncs map[string][]*golangtypes.Func) []*golangtypes.Func {

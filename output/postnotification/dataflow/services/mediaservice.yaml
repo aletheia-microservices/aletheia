@@ -10,7 +10,11 @@
   - '0 depth 0 (BasicObject BasicType) mediaID int64 --> r-tainted 1x: read(media_db._.mediaid)'
   - '_1 depth 1 (Reference FieldType) ref <mediaID int64> @ StorageService --> r-tainted
     1x: read(media_db._.mediaid)'
-  - '__2 depth 2 (BasicObject BasicType) PostID int64 --> r-tainted 1x: read(media_db._.mediaid)'
+  - '__2 depth 2 (FieldObject FieldType) PostID int64 --> r-tainted 2x: read(posts_cache.PostID,
+    media_db._.mediaid)'
+  - '___3 depth 3 (BasicObject BasicType) PostID int64 --> r-tainted 2x: read(posts_cache.int64,
+    media_db._.mediaid)'
+  - '__4 depth 2 (BasicObject BasicType) int64 --> r-tainted 1x: read(media_db._.mediaid)'
   - '0 depth 0 (StructObject UserType) media postnotification.Media struct{MediaID
     int64, Content string} --> r-tainted 1x: read(media_db.Media)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection

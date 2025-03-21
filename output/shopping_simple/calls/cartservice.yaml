@@ -8,6 +8,7 @@
 
 (*CartServiceImpl).GetCart(ctx context.Context, cartID string):
 - DATASTORE CALL @ cart_db >> NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})
+- SERVICE CALL @ GetProduct >> (*shopping_simple.ProductServiceImpl).GetProduct(ctx context.Context, productID string) (shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}, error)
 
 (*CartServiceImpl).Run(ctx context.Context):
 - INTERNAL CALL >> (*shopping_simple.CartServiceImpl).workerThread(ctx context.Context)

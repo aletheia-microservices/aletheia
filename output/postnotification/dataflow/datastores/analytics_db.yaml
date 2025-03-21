@@ -10,7 +10,7 @@ ANALYTICS_DB.Analytics.PostID:
 - write <ref <PostID string> @ AnalyticsService (Reference)> from <analytics postnotification.Analytics struct{PostID int64} (StructObject)>
 - write <PostID string (FieldObject)> from <analytics postnotification.Analytics struct{PostID int64} (StructObject)>
 - write <string (BasicObject)> from <analytics postnotification.Analytics struct{PostID int64} (StructObject)>
-- write <postID_STORAGE_SVC int64 (BasicObject)> from <analytics postnotification.Analytics struct{PostID int64} (StructObject)>
+- write <int64 (BasicObject)> from <analytics postnotification.Analytics struct{PostID int64} (StructObject)>
 - write <PostID string (FieldObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
 - write <PostID string (FieldObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
 - write <PostID string (BasicObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
@@ -20,12 +20,10 @@ ANALYTICS_DB.Analytics.PostID:
 - write <PostID string (BasicObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
 - read <PostID string (FieldObject)> from <analyticsEvent (*postnotification.TriggerAnalyticsMessage struct{PostID string}) (PointerObject)>
 - write <string (BasicObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
-- write <postID_STORAGE_SVC int64 (BasicObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
-- write <postID_UPLOAD_SVC int64 (BasicObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
+- write <int64 (BasicObject)> from <message postnotification.TriggerAnalyticsMessage struct{PostID string} (StructObject)>
 - read <string (BasicObject)> from <analyticsEvent (*postnotification.TriggerAnalyticsMessage struct{PostID string}) (PointerObject)>
-- read <postID_STORAGE_SVC int64 (BasicObject)> from <analyticsEvent (*postnotification.TriggerAnalyticsMessage struct{PostID string}) (PointerObject)>
-- write <postID_STORAGE_SVC int64 (BasicObject)> from <post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} (StructObject)>
-- write <postID_UPLOAD_SVC int64 (BasicObject)> from <post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} (StructObject)>
+- read <int64 (BasicObject)> from <analyticsEvent (*postnotification.TriggerAnalyticsMessage struct{PostID string}) (PointerObject)>
+- write <int64 (BasicObject)> from <post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} (StructObject)>
 - write <PostID int64 (FieldObject)> from <analytics postnotification.Analytics struct{PostID int64} (StructObject)>
 - read <postID int64 (BasicObject)>
 - read <postID int64 (BasicObject)> from <postID int64 (BasicObject)>

@@ -18,33 +18,28 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func ParseServiceMethodCFG(service *service.Service, method *types.ParsedMethod) {
-	if method.IsParsed() {
-		logger.Logger.Warnf("[CFG] [%s] method ignoring parsed method: %s", service.GetName(), method.String())
+
+func ParseMethodCFG(pkg *types.Package, service *service.Service, method *types.ParsedMethod) {
+	if method.IsParsed() { // sanity check
+		logger.Logger.Warnf("[CFG] [%s] method ignoring parsed method: %s", pkg.String(), method.String())
 		return
 	}
 	method.SetParsed()
 
+	ctx := NewControlflowContext(pkg, service, method.GetParsedCfg())
+
 	var blocksStr string
-	for _, block := range method.ParsedCfg.GetParsedBlocks() {
+	for _, block := range method.GetParsedCfg().GetParsedBlocks() {
 		blocksStr += "\t\t\t\t\t - " + block.AstInfoString() + "\n"
 	}
 
-	/* if method.GetName() == "StorePostNoSQL" {
-		logger.Logger.Fatal("EXIT!")
-	} */
+	logger.Logger.Debugf("[CFG PARSER @ %s] parsing method CFG: %s\n%s", ctx.String(), method.String(), blocksStr)
 
-	logger.Logger.Debugf("[CFG] [%s] parsing service method cfg for (%s):\n%s", service.GetName(), method.String(), blocksStr)
-
-	entryBlock := method.ParsedCfg.GetEntryParsedBlock()
-	visitBasicBlock(service, method, entryBlock)
-
-	/* if method.GetName() == "StorePostNoSQL" {
-		logger.Logger.Fatal("EXIT!")
-	} */
+	entryBlock := method.GetParsedCfg().GetEntryParsedBlock()
+	visitBasicBlock(ctx, method, entryBlock)
 }
 
-func visitBasicBlock(service *service.Service, method *types.ParsedMethod, block *types.Block) {
+func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block) {
 	if block.Visited {
 		return
 	}
@@ -69,9 +64,9 @@ func visitBasicBlock(service *service.Service, method *types.ParsedMethod, block
 	var rangeKeyType gotypes.Type
 	var rangeValueType gotypes.Type
 	var rangeObj objects.Object
-
+	
 	fmt.Println(utils.TEXT_BOLD_LIGHT_BLUE + "[BEFORE] ---------------------\n" +
-		service.GetName() + "." + method.GetName() + "()\n" + block.ListObjectsString() +
+	ctx.String() + method.GetName() + "()\n" + block.ListObjectsString() +
 		"\n------------------------------" + utils.TEXT_RESET_COLOR)
 
 	for i, node := range block.GetNodes() { //FIXME????
@@ -97,22 +92,22 @@ func visitBasicBlock(service *service.Service, method *types.ParsedMethod, block
 		//logger.Logger.Warnf("\n----------------------------------------------\nPARSING BLOCK [%d] W/ KIND = %s; NODE [%d]: %v \n\t@ METHOD: %s.%s\n%s\n----------------------------------------------", block.Block.Index, block.Block.Kind.String(), i, node, service.Name, method.Name, initialObjsStr)
 
 		var parsingLoop bool
-		parsingLoop, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType = visitBasicBlockRangeHelper(service, method, block, node, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType)
+		parsingLoop, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType = visitBasicBlockRangeHelper(ctx, method, block, node, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType)
 
 		if !parsingLoop {
-			stmts := parseNodeBody(service, method, block, node)
+			stmts := parseNodeBody(ctx, method, block, node)
 			deferStmts = append(deferStmts, stmts...)
 		}
 
 		fmt.Println(utils.TEXT_BOLD_LIGHT_GREEN + "------------------------------\n" +
-			service.GetName() + "." + method.GetName() + "()\n" +
+			ctx.String() + "." + method.GetName() + "()\n" +
 			fmt.Sprintf("[#%d, %T] NODE:\n", i, node) +
 			block.ListObjectsString() +
 			"\n------------------------------" + utils.TEXT_RESET_COLOR)
 	}
 
 	for _, deferStmt := range deferStmts {
-		parseAndSaveCall(service, method, block, deferStmt.Call)
+		parseAndSaveCall(ctx, method, block, deferStmt.Call)
 	}
 
 	if block.Block.Kind == cfg.KindForPost { // FIXME: skip going again for loop
@@ -125,12 +120,12 @@ func visitBasicBlock(service *service.Service, method *types.ParsedMethod, block
 		parsedSucc.AppendInlineFuncsFromPredecessor(block)
 		logger.Logger.Debugf("\n\n----------------------------------------------\nFOUND BLOCK SUCC [%d -> %d]: %s \n----------------------------------------------", block.Block.Index, parsedSucc.Block.Index, parsedSucc.String())
 
-		visitBasicBlock(service, method, parsedSucc)
+		visitBasicBlock(ctx, method, parsedSucc)
 	}
 }
 
-func visitBasicBlockRangeHelper(service *service.Service, method *types.ParsedMethod, block *types.Block, node ast.Node, visitedRangeType bool, visitedRangeElem bool, rangeObj objects.Object, rangeKeyType gotypes.Type, rangeValueType gotypes.Type) (bool, bool, bool, objects.Object, gotypes.Type, gotypes.Type) {
-	logger.Logger.Debugf("[CFG - VISIT BASIC BLOCK] [%s.%s] visiting block [%T]: %v", service.GetName(), method.GetName(), block, block)
+func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, node ast.Node, visitedRangeType bool, visitedRangeElem bool, rangeObj objects.Object, rangeKeyType gotypes.Type, rangeValueType gotypes.Type) (bool, bool, bool, objects.Object, gotypes.Type, gotypes.Type) {
+	logger.Logger.Debugf("[CFG - VISIT BASIC BLOCK] [%s.%s] visiting block [%T]: %v", ctx.String(), method.GetName(), block, block)
 
 	succ := block.GetNextSuccessorIfExists()
 
@@ -140,7 +135,7 @@ func visitBasicBlockRangeHelper(service *service.Service, method *types.ParsedMe
 
 		if !visitedRangeType { // range object
 			if expr, ok := node.(ast.Expr); ok {
-				rangeObj, _ = lookupObjectFromAstExpression(service, method, block, expr, nil, false)
+				rangeObj, _ = lookupObjectFromAstExpression(ctx, method, block, expr, nil, false)
 
 				visitedRangeType = true
 				if rangeObjSlice, ok := rangeObj.(*objects.SliceObject); ok {
@@ -187,10 +182,10 @@ func visitBasicBlockRangeHelper(service *service.Service, method *types.ParsedMe
 	return parsingLoop, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType
 }
 
-func getAssignmentRightObjects(service *service.Service, method *types.ParsedMethod, block *types.Block, rightExprs []ast.Expr) []objects.Object {
+func getAssignmentRightObjects(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, rightExprs []ast.Expr) []objects.Object {
 	var robjs []objects.Object
 	for _, rvalue := range rightExprs {
-		obj, _ := lookupObjectFromAstExpression(service, method, block, rvalue, nil, true)
+		obj, _ := lookupObjectFromAstExpression(ctx, method, block, rvalue, nil, true)
 		if tupleVariable, ok := obj.(*objects.TupleObject); ok {
 			robjs = append(robjs, tupleVariable.Objects...)
 		} else {
@@ -209,8 +204,8 @@ func declareLeftIdents(service *service.Service, block *types.Block, leftIdents 
 	}
 }
 
-func assignLeftIdents(service *service.Service, method *types.ParsedMethod, block *types.Block, leftIdents []*ast.Ident, rightExprs []ast.Expr) {
-	rightObjects := getAssignmentRightObjects(service, method, block, rightExprs)
+func assignLeftIdents(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, leftIdents []*ast.Ident, rightExprs []ast.Expr) {
+	rightObjects := getAssignmentRightObjects(ctx, method, block, rightExprs)
 	for i, rObj := range rightObjects {
 		leftIdent := leftIdents[i]
 		rObj.GetVariableInfo().SetUnassigned()
@@ -219,8 +214,8 @@ func assignLeftIdents(service *service.Service, method *types.ParsedMethod, bloc
 	}
 }
 
-func incDecLeftValues(service *service.Service, method *types.ParsedMethod, block *types.Block, leftExpr ast.Expr, tok token.Token) {
-	lvariable, _ := lookupObjectFromAstExpression(service, method, block, leftExpr, nil, true)
+func incDecLeftValues(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, leftExpr ast.Expr, tok token.Token) {
+	lvariable, _ := lookupObjectFromAstExpression(ctx, method, block, leftExpr, nil, true)
 	switch tok {
 	case token.INC:
 		lvariable.GetType().AddValue("1")
@@ -231,12 +226,12 @@ func incDecLeftValues(service *service.Service, method *types.ParsedMethod, bloc
 	}
 }
 
-func parseAssignmentStatement(service *service.Service, method *types.ParsedMethod, block *types.Block, assignStmt *ast.AssignStmt) {
-	logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] visiting stmt (%s): %v", service.GetName(), utils.GetType(assignStmt), assignStmt)
-	rvariables := getAssignmentRightObjects(service, method, block, assignStmt.Rhs)
+func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, assignStmt *ast.AssignStmt) {
+	logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] visiting stmt (%s): %v", ctx.String(), utils.GetType(assignStmt), assignStmt)
+	rvariables := getAssignmentRightObjects(ctx, method, block, assignStmt.Rhs)
 	for i, rObj := range rvariables {
 		lvalue := assignStmt.Lhs[i]
-		logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] assigning left value: \n\t\t\t\t\t\t - (lvalue) [%T] %v \n\t\t\t\t\t\t - (rvalue) [%T] %s", service.GetName(), lvalue, lvalue, rObj, rObj.LongString())
+		logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] assigning left value: \n\t\t\t\t\t\t - (lvalue) [%T] %v \n\t\t\t\t\t\t - (rvalue) [%T] %s", ctx.String(), lvalue, lvalue, rObj, rObj.LongString())
 		switch e := lvalue.(type) {
 		case *ast.Ident:
 			if assignStmt.Tok == token.DEFINE || assignStmt.Tok == token.ASSIGN { // := OR =
@@ -263,31 +258,31 @@ func parseAssignmentStatement(service *service.Service, method *types.ParsedMeth
 				lObj := block.GetLatestObjectByName(e.Name)
 				logger.Logger.Warnf("[CFG - ASSIGN LEFT] ignoring token (%v) for lobj (%s) in assignment: %v", assignStmt.Tok, lObj.String(), assignStmt)
 			} else {
-				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected token (%v) for assignment: %v", service.GetName(), assignStmt.Tok, assignStmt)
+				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected token (%v) for assignment: %v", ctx.String(), assignStmt.Tok, assignStmt)
 			}
 		case *ast.SelectorExpr:
-			lObj, _ := lookupObjectFromAstExpression(service, method, block, e, nil, true)
+			lObj, _ := lookupObjectFromAstExpression(ctx, method, block, e, nil, true)
 			switch ee := lObj.(type) {
 			case *objects.FieldObject:
 				logger.Logger.Debugf("[CFG - ASSIGN LEFT] got lvariable (%s) in assignStmt: %v", lObj.String(), assignStmt)
 				//newLeftVariable := lvariable.NewVersion()
 				lObj.AssignVariable(rObj)
 			default:
-				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", service.GetName(), utils.GetType(ee), lObj.String())
+				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lObj.String())
 			}
 		case *ast.IndexExpr: // e.g. res[rt] = pc
-			lvariable, _ := lookupObjectFromAstExpression(service, method, block, e.X, nil, true)
+			lvariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, true)
 			//newLeftVariable := lvariable.NewVersion()
 			switch ee := lvariable.(type) {
 			case *objects.MapObject:
-				keyVariable, _ := lookupObjectFromAstExpression(service, method, block, e.Index, nil, true)
+				keyVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
 				if basicObj, ok := getUnderlyingBasicObjectIfExists(keyVariable); ok {
 					ee.AddKeyValue(basicObj, rObj)
 				} else {
 					ee.AddDynamicKeyValue(keyVariable, rObj)
 				}
 			case *objects.ArrayObject:
-				idxVariable, _ := lookupObjectFromAstExpression(service, method, block, e.Index, nil, true)
+				idxVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
 				idx, ok := computeArrayIndexFromObject(idxVariable)
 				if ok {
 					ee.SetElementAt(idx, rObj)
@@ -296,7 +291,7 @@ func parseAssignmentStatement(service *service.Service, method *types.ParsedMeth
 					rObj.GetVariableInfo().SetDynamic()
 				}
 			case *objects.SliceObject:
-				idxVariable, _ := lookupObjectFromAstExpression(service, method, block, e.Index, nil, true)
+				idxVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
 				idx, ok := computeArrayIndexFromObject(idxVariable)
 				if ok {
 					ee.SetElementAt(idx, rObj)
@@ -305,7 +300,7 @@ func parseAssignmentStatement(service *service.Service, method *types.ParsedMeth
 					rObj.GetVariableInfo().SetDynamic()
 				}
 			default:
-				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", service.GetName(), utils.GetType(ee), lvariable.String())
+				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lvariable.String())
 			}
 		default:
 			logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected type (%s) for left value (%v) in assignment with token (%v): %v", method.Name, utils.GetType(lvalue), lvalue, assignStmt.Tok, assignStmt)
@@ -321,14 +316,14 @@ func parseInlineFuncDeclaration(block *types.Block, body *ast.BlockStmt, name st
 	return inlineCFG
 }
 
-func parseInlineFuncCall(service *service.Service, method *types.ParsedMethod, block *types.Block, inlineCFG *types.CFG, params *ast.FieldList, args []ast.Expr) []objects.Object {
+func parseInlineFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, inlineCFG *types.CFG, params *ast.FieldList, args []ast.Expr) []objects.Object {
 	entryBlock := inlineCFG.GetEntryParsedBlock()
 	entryBlock.AppendVarsFromPredecessor(block)
 	entryBlock.AppendInlineFuncsFromPredecessor(block)
 
 	var variables []objects.Object
 	for i, arg := range args {
-		v, _ := lookupObjectFromAstExpression(service, method, block, arg, nil, true)
+		v, _ := lookupObjectFromAstExpression(ctx, method, block, arg, nil, true)
 		v = v.DeepCopy()
 		v.GetVariableInfo().SetName(params.List[i].Names[0].Name)
 		variables = append(variables, v)
@@ -340,13 +335,13 @@ func parseInlineFuncCall(service *service.Service, method *types.ParsedMethod, b
 		blocksStr += "\t\t\t\t\t - " + block.AstInfoString() + "\n"
 	}
 
-	visitBasicBlock(service, method, entryBlock)
+	visitBasicBlock(ctx, method, entryBlock)
 	return entryBlock.Results
 
-	//logger.Logger.Fatalf("[CFG] [%s] parsing service method cfg for (%s):\n%s", service.GetName(), method.String(), blocksStr)
+	//logger.Logger.Fatalf("[CFG] [%s] parsing service method cfg for (%s):\n%s", ctx.String(), method.String(), blocksStr)
 }
 
-func parseNodeBody(service *service.Service, method *types.ParsedMethod, block *types.Block, node ast.Node) []*ast.DeferStmt {
+func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, node ast.Node) []*ast.DeferStmt {
 	var deferStmts []*ast.DeferStmt
 	logger.Logger.Debugf("[CFG - PARSE NODE BODY] (%s) visiting node (%v)", utils.GetType(node), node)
 	switch e := node.(type) {
@@ -356,50 +351,50 @@ func parseNodeBody(service *service.Service, method *types.ParsedMethod, block *
 	case *ast.GoStmt:
 		if funcLit, ok := e.Call.Fun.(*ast.FuncLit); ok {
 			cfg := parseInlineFuncDeclaration(block, funcLit.Body, "")
-			parseInlineFuncCall(service, method, block, cfg, funcLit.Type.Params, e.Call.Args)
+			parseInlineFuncCall(ctx, method, block, cfg, funcLit.Type.Params, e.Call.Args)
 		} else { // e.g. we can have a previous assignment to a variable function and then call it here
-			parseAndSaveCall(service, method, block, e.Call)
+			parseAndSaveCall(ctx, method, block, e.Call)
 		}
 	// ----------------------------
 	// Declarations and Assignments
 	// ----------------------------
 	case *ast.DeclStmt: // e.g. `foobar := "foobar"`
 		for _, spec := range e.Decl.(*ast.GenDecl).Specs {
-			parseNodeBody(service, method, block, spec)
+			parseNodeBody(ctx, method, block, spec)
 		}
 	case *ast.ValueSpec: // e.g. var foobar OR var foobar = "foobar"
 		logger.Logger.Warnf("[CFG - PARSE EXPR] parsing value spec with names = (%v) and values = (%v)", e.Names, e.Values)
 		if len(e.Values) == 0 { // variables are being declared with types e.g., `var foobar string`
-			declareLeftIdents(service, block, e.Names, e.Type)
+			declareLeftIdents(ctx.GetService(), block, e.Names, e.Type)
 		} else { // variables are being declared and assigned e.g., `var foobar := "foobar"`
-			assignLeftIdents(service, method, block, e.Names, e.Values)
+			assignLeftIdents(ctx, method, block, e.Names, e.Values)
 		}
 	case *ast.AssignStmt: // e.g. `for i := 0`
-		parseAssignmentStatement(service, method, block, e)
+		parseAssignmentStatement(ctx, method, block, e)
 	// -----------------------------------
 	// Calls and Parenthesized Expressions
 	// -----------------------------------
 	case *ast.CallExpr:
 		// a call expr can also happen upon a structure assignment
 		// e.g. post := Post { ... }
-		parseAndSaveCall(service, method, block, e)
+		parseAndSaveCall(ctx, method, block, e)
 	case *ast.ParenExpr:
 		// e.g. when used as a bool value in an if statement (assumes it is inside a parentheses)
 		// in this case, the unfolded service from ParenExpr is a CallExpr
-		parseNodeBody(service, method, block, e.X)
+		parseNodeBody(ctx, method, block, e.X)
 	// -----------------
 	// Other Expressions
 	// -----------------
 	case *ast.ExprStmt:
-		parseNodeBody(service, method, block, e.X)
+		parseNodeBody(ctx, method, block, e.X)
 	case *ast.UnaryExpr: // e.g. <-forever
-		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", service.GetName(), method.GetName(), utils.GetType(node), node)
+		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", ctx.String(), method.GetName(), utils.GetType(node), node)
 	// -------
 	// Returns
 	// -------
 	case *ast.ReturnStmt:
 		for _, resultExpr := range e.Results {
-			v, _ := lookupObjectFromAstExpression(service, method, block, resultExpr, nil, false)
+			v, _ := lookupObjectFromAstExpression(ctx, method, block, resultExpr, nil, false)
 			logger.Logger.Infof("ADDED RESULT: %s", v.String())
 			block.AddResult(v)
 		}
@@ -407,19 +402,19 @@ func parseNodeBody(service *service.Service, method *types.ParsedMethod, block *
 	// If Statements
 	// -------------
 	case *ast.IfStmt: // FIXME: we should not needs this! we are only encountering this because we are fully parsing the GoStmt
-		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", service.GetName(), method.GetName(), utils.GetType(node), node)
+		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", ctx.String(), method.GetName(), utils.GetType(node), node)
 	case *ast.BinaryExpr: // FIXME: same... e.g. if err != nil
-		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", service.GetName(), method.GetName(), utils.GetType(node), node)
+		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", ctx.String(), method.GetName(), utils.GetType(node), node)
 	case *ast.Ident: // FIXME: same... e.g. if flag ...
-		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", service.GetName(), method.GetName(), utils.GetType(node), node)
+		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", ctx.String(), method.GetName(), utils.GetType(node), node)
 	case *ast.SelectorExpr: // FIXME: same... e.g. for ... range userInfo.Followers
-		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", service.GetName(), method.GetName(), utils.GetType(node), node)
+		logger.Logger.Warnf("[CFG - PARSE EXPR] [%s.%s] ignoring %s: %s", ctx.String(), method.GetName(), utils.GetType(node), node)
 
 	// ---------
 	// For Loops
 	// ---------
 	case *ast.IncDecStmt: // e.g. increment in ForPost block (e.g. i++)
-		incDecLeftValues(service, method, block, e.X, e.Tok)
+		incDecLeftValues(ctx, method, block, e.X, e.Tok)
 
 	// ----------------
 	// Other Statements
@@ -431,18 +426,18 @@ func parseNodeBody(service *service.Service, method *types.ParsedMethod, block *
 	// Ignore Remaining
 	// ----------------
 	default:
-		logger.Logger.Fatalf("[CFG - PARSE EXPR] [%s.%s] unknown type in parseExpressions: %s", service.GetName(), method.GetName(), utils.GetType(node))
+		logger.Logger.Fatalf("[CFG - PARSE EXPR] [%s.%s] unknown type in parseExpressions: %s", ctx.String(), method.GetName(), utils.GetType(node))
 	}
 	return deferStmts
 }
 
-func saveParsedFuncCallParams(service *service.Service, method *types.ParsedMethod, block *types.Block, parsedCall types.Call, args []ast.Expr) {
+func saveParsedFuncCallParams(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, parsedCall types.Call, args []ast.Expr) {
 	if parsedCall.GetName() == "StorePost" {
 		logger.Logger.Tracef("(1) FOUND CALL TO SERVICE VAR %s", parsedCall.GetName())
 	}
 	for i, arg := range args {
 		logger.Logger.Tracef("[CFG] inside save func call params")
-		param, _ := lookupObjectFromAstExpression(service, method, block, arg, nil, false)
+		param, _ := lookupObjectFromAstExpression(ctx, method, block, arg, nil, false)
 
 		// upgrade variable with known type from function method
 		if _, ok := param.GetType().(*gotypes.GenericType); ok {
@@ -457,11 +452,11 @@ func saveParsedFuncCallParams(service *service.Service, method *types.ParsedMeth
 	}
 }
 
-func getFuncCallDeps(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr) []objects.Object {
+func getFuncCallDeps(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr) []objects.Object {
 	var deps []objects.Object
 	for _, expr := range callExpr.Args {
-		logger.Logger.Warnf("[CFG] [%s] searching for function call deps in expression %v", service.GetName(), expr)
-		if v, _ := lookupObjectFromAstExpression(service, method, block, expr, nil, false); v != nil {
+		logger.Logger.Warnf("[CFG] [%s] searching for function call deps in expression %v", ctx.String(), expr)
+		if v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, nil, false); v != nil {
 			deps = append(deps, v)
 		}
 	}
@@ -472,7 +467,7 @@ func getFuncCallDeps(service *service.Service, method *types.ParsedMethod, block
 // 2. returns new tuple variable that encompasses all the new created variables
 // 3. add the new tuple variable to the return parameter of the call argument if not nil
 // (the call argument will be nil when we encounter built-in calls - TO BE FIXED)
-func computeInternalFuncCallReturns(service *service.Service, callExpr *ast.CallExpr, call types.Call) *objects.TupleObject {
+func computeInternalFuncCallReturns(ctx *ControlflowContext, callExpr *ast.CallExpr, call types.Call) *objects.TupleObject {
 	tupleVar := &objects.TupleObject{
 		ObjectInfo: &objects.ObjectInfo{
 			Type: &gotypes.TupleType{},
@@ -480,9 +475,9 @@ func computeInternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 		},
 	}
 
-	if signatureGoType, ok := service.GetPackage().GetTypeInfo(callExpr.Fun).(*golangtypes.Signature); ok {
+	if signatureGoType, ok := ctx.GetPackage().GetTypeInfo(callExpr.Fun).(*golangtypes.Signature); ok {
 		if signatureGoType.Results() != nil {
-			signatureResults := lookup.LookupTypesForGoTypes(service.GetPackage(), signatureGoType.Results())
+			signatureResults := lookup.LookupTypesForGoTypes(ctx.GetPackage(), signatureGoType.Results())
 			for _, t := range signatureResults.(*gotypes.TupleType).Types {
 				newVar := lookup.CreateObjectFromType("", t)
 				tupleVar.AddObjectAndType(newVar)
@@ -499,7 +494,7 @@ func computeInternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 	return tupleVar
 }
 
-func computeExternalFuncCallReturns(service *service.Service, callExpr *ast.CallExpr, deps []objects.Object) *objects.TupleObject {
+func computeExternalFuncCallReturns(ctx *ControlflowContext, callExpr *ast.CallExpr, deps []objects.Object) *objects.TupleObject {
 	tupleType := &gotypes.TupleType{}
 	tupleVar := &objects.TupleObject{
 		ObjectInfo: &objects.ObjectInfo{
@@ -508,9 +503,9 @@ func computeExternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 		},
 	}
 
-	if signatureGoType, ok := service.GetPackage().GetTypeInfo(callExpr.Fun).(*golangtypes.Signature); ok {
+	if signatureGoType, ok := ctx.GetPackage().GetTypeInfo(callExpr.Fun).(*golangtypes.Signature); ok {
 		if signatureGoType.Results() != nil {
-			signatureResults := lookup.LookupTypesForGoTypes(service.GetPackage(), signatureGoType.Results())
+			signatureResults := lookup.LookupTypesForGoTypes(ctx.GetPackage(), signatureGoType.Results())
 
 			if len(signatureResults.(*gotypes.TupleType).Types) == 1 && len(deps) == 0 {
 				newVar := lookup.CreateObjectFromType("", signatureResults.(*gotypes.TupleType).Types[0])
@@ -545,23 +540,23 @@ func computeExternalFuncCallReturns(service *service.Service, callExpr *ast.Call
 	return tupleVar
 }
 
-func saveCallToStructOrInterface(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, leftVariableTypeName string, methodName string, pkgPath string) (*types.ParsedInternalCall, *objects.TupleObject, *objects.TupleObject) {
-	logger.Logger.Debugf("[CFG CALLS] [%s] saving call in (%s) for ast CallExpr: %v", service.GetName(), method.GetName(), callExpr)
+func saveCallToStructOrInterface(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, leftVariableTypeName string, methodName string, pkgPath string) (*types.ParsedInternalCall, *objects.TupleObject, *objects.TupleObject) {
+	logger.Logger.Debugf("[CFG CALLS] [%s] saving call in (%s) for ast CallExpr: %v", ctx.String(), method.GetName(), callExpr)
 	if pkgPath == "" {
 		logger.Logger.Debugf("FIX ME: WE ENCOUNTER BUILT-IN PACKAGES e.g. err.Error() -> string")
-		tupleVar := computeInternalFuncCallReturns(service, callExpr, nil)
+		tupleVar := computeInternalFuncCallReturns(ctx, callExpr, nil)
 		return nil, nil, tupleVar
 	}
 	var parsedMethod *types.ParsedMethod
 
-	pkg := service.GetPackage().GetImportedPackageIfExists(pkgPath)
+	imptPkg := ctx.GetPackage().GetImportedPackageIfExists(pkgPath)
 
-	if pkg != nil {
-		parsedMethod = pkg.GetParsedMethodIfExists(methodName, leftVariableTypeName)
+	if imptPkg != nil {
+		parsedMethod = imptPkg.GetParsedMethodIfExists(methodName, leftVariableTypeName)
 	}
 
 	if parsedMethod != nil {
-		logger.Logger.Warnf("[CFG CALLS] [%s] !!!!!!!!!!!! GOT PARSED METHOD (%s): %v", service.GetName(), methodName, parsedMethod.GetParsedCfg())
+		logger.Logger.Warnf("[CFG CALLS] [%s] !!!!!!!!!!!! GOT PARSED METHOD (%s): %v", ctx.String(), methodName, parsedMethod.GetParsedCfg())
 		//logger.Logger.Debugf("[CFG CALLS] got parsed method %s", parsedMethod.String())
 		parsedCall := &types.ParsedInternalCall{
 			ParsedCall: types.ParsedCall{
@@ -569,23 +564,23 @@ func saveCallToStructOrInterface(service *service.Service, method *types.ParsedM
 				Name:   parsedMethod.Name,
 				Method: parsedMethod,
 			},
-			ServiceTypeName: &gotypes.ServiceType{Name: service.Name, PackagePath: service.GetPackageName()},
+			ServiceTypeName: &gotypes.ServiceType{Name: ctx.GetService().GetName(), PackagePath: ctx.GetService().GetPackageName()},
 		}
-		saveParsedFuncCallParams(service, method, block, parsedCall, callExpr.Args)
+		saveParsedFuncCallParams(ctx, method, block, parsedCall, callExpr.Args)
 		method.Calls = append(method.Calls, parsedCall)
-		variable := computeInternalFuncCallReturns(service, callExpr, parsedCall)
-		logger.Logger.Infof("[CFG CALLS] [%s] found internal call (%s) in package (%s) -- returned tuple: %s", service.GetName(), parsedCall.GetName(), pkg.GetName(), variable.String())
+		variable := computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
+		logger.Logger.Infof("[CFG CALLS] [%s] found internal call (%s) in package (%s) -- returned tuple: %s", ctx.String(), parsedCall.GetName(), ctx.GetPackage().GetName(), variable.String())
 		return parsedCall, variable, nil
 	}
-	deps := getFuncCallDeps(service, method, block, callExpr)
-	tupleVar := computeExternalFuncCallReturns(service, callExpr, deps)
+	deps := getFuncCallDeps(ctx, method, block, callExpr)
+	tupleVar := computeExternalFuncCallReturns(ctx, callExpr, deps)
 	return nil, nil, tupleVar
 }
 
 // (b1) call to variable (including receiver) in block
-func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, variable objects.Object, idents []*ast.Ident, identsStr string) *objects.TupleObject {
+func parseCallToVariableInBlock(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, variable objects.Object, idents []*ast.Ident, identsStr string) *objects.TupleObject {
 	funcIdent := idents[len(idents)-1]
-	logger.Logger.Infof("[CFG] [%s.%s] parsing call to variable (%s) in block for method (%s): %v", service.GetName(), method.Name, variable.String(), funcIdent, callExpr)
+	logger.Logger.Infof("[CFG] [%s.%s] parsing call to variable (%s) in block for method (%s): %v", ctx.String(), method.Name, variable.String(), funcIdent, callExpr)
 
 	// check if variable is a declared func
 	if funcVar, ok := variable.(*objects.FuncObject); ok {
@@ -596,7 +591,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 				Type: &gotypes.TupleType{},
 			},
 		}
-		results := parseInlineFuncCall(service, method, block, inlineFunc.CFG, funcVar.GetFuncType().Params, callExpr.Args)
+		results := parseInlineFuncCall(ctx, method, block, inlineFunc.CFG, funcVar.GetFuncType().Params, callExpr.Args)
 		for _, r := range results {
 			tupleVar.AddObjectAndType(r)
 		}
@@ -626,7 +621,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 					pkgPath := structVar.GetStructType().GetMethodPackagePath(methodName)
 
 					var externalCallTupleVar *objects.TupleObject
-					_, variable, externalCallTupleVar = saveCallToStructOrInterface(service, method, block, callExpr, leftVariableTypeName, methodName, pkgPath)
+					_, variable, externalCallTupleVar = saveCallToStructOrInterface(ctx, method, block, callExpr, leftVariableTypeName, methodName, pkgPath)
 					if externalCallTupleVar != nil {
 						return externalCallTupleVar
 					}
@@ -634,8 +629,8 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 			}
 		} else if genericVar, ok := variable.(*objects.GenericObject); ok {
 			logger.Logger.Warnf("[CFG CALLS] ignoring generic var %s", genericVar.LongString())
-			if deps := getFuncCallDeps(service, method, block, callExpr); deps != nil {
-				tupleVar := computeExternalFuncCallReturns(service, callExpr, deps)
+			if deps := getFuncCallDeps(ctx, method, block, callExpr); deps != nil {
+				tupleVar := computeExternalFuncCallReturns(ctx, callExpr, deps)
 				return tupleVar
 			}
 			parsedCall := &types.ParsedInternalCall{
@@ -646,14 +641,14 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 					Pos:     callExpr.Pos(),
 				},
 			}
-			tupleVar := computeInternalFuncCallReturns(service, callExpr, parsedCall)
+			tupleVar := computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
 			return tupleVar
 		} else if interfaceVar, ok := variable.(*objects.InterfaceObject); ok {
-			logger.Logger.Debugf("[CFG CALLS] call to interface variable %s: %v", interfaceVar.LongString(), service.GetPackage().GetTypeInfo(callExpr.Fun))
+			logger.Logger.Debugf("[CFG CALLS] call to interface variable %s: %v", interfaceVar.LongString(), ctx.GetPackage().GetTypeInfo(callExpr.Fun))
 			methodName := ident.Name
 			pkgPath := interfaceVar.GetInterfaceType().GetMethodPackagePath(methodName)
 			var externalCallTupleVar *objects.TupleObject
-			_, variable, externalCallTupleVar = saveCallToStructOrInterface(service, method, block, callExpr, leftVariableTypeName, methodName, pkgPath)
+			_, variable, externalCallTupleVar = saveCallToStructOrInterface(ctx, method, block, callExpr, leftVariableTypeName, methodName, pkgPath)
 			if externalCallTupleVar != nil {
 				logger.Logger.Debugf("[CFG CALLS] EXTERNAL TUPLE VAR: %s (%s)", externalCallTupleVar.String(), utils.GetType(externalCallTupleVar.Objects[0]))
 				return externalCallTupleVar
@@ -684,7 +679,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 		// 1. extract the service field from the current service
 		// 2. get the target service service for the type
 		// 3. add the targeted method of the other service for the current call expression
-		targetService := service.Services[serviceVar.GetServiceName()]
+		targetService := ctx.GetService().Services[serviceVar.GetServiceName()]
 		targetMethod := targetService.GetExportedMethod(funcIdent.Name)
 		parsedCall := &types.ParsedServiceCall{
 			ParsedCall: types.ParsedCall{
@@ -694,13 +689,13 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 				Pos:     callExpr.Pos(),
 				Method:  targetMethod,
 			},
-			CallerTypeName: &gotypes.ServiceType{Name: service.Name, PackagePath: service.GetPackageName()},
+			CallerTypeName: &gotypes.ServiceType{Name: ctx.GetService().GetName(), PackagePath: ctx.GetService().GetPackageName()},
 			CalleeTypeName: serviceVar.GetType(),
 		}
-		saveParsedFuncCallParams(service, method, block, parsedCall, callExpr.Args)
-		tupleVar := computeInternalFuncCallReturns(service, callExpr, parsedCall)
+		saveParsedFuncCallParams(ctx, method, block, parsedCall, callExpr.Args)
+		tupleVar := computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
 		method.Calls = append(method.Calls, parsedCall)
-		logger.Logger.Infof("[CFG CALLS] [%s] found service call (%s) -- returned tuple: %s", service.GetName(), parsedCall.Name, tupleVar.String())
+		logger.Logger.Infof("[CFG CALLS] [%s] found service call (%s) -- returned tuple: %s", ctx.String(), parsedCall.Name, tupleVar.String())
 		return tupleVar
 	}
 	if blueprintBackendVar, ok := variable.(*blueprint.BlueprintBackendObject); ok {
@@ -716,7 +711,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 				Pos:     callExpr.Pos(),
 				Method:  blueprintMethod,
 			},
-			CallerTypeName: &gotypes.ServiceType{Name: service.Name, PackagePath: service.GetPackageName()},
+			CallerTypeName: &gotypes.ServiceType{Name: ctx.GetService().GetName(), PackagePath: ctx.GetService().GetPackageName()},
 			DbInstance:     blueprintBackendType.DatastoreInstance,
 		}
 
@@ -724,8 +719,8 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 			logger.Logger.Fatalf("[CFG CALLS] unexpected nil db instance for backend type (%s)", blueprintBackendType.String())
 		}
 
-		saveParsedFuncCallParams(service, method, block, parsedCall, callExpr.Args)
-		tupleVar := computeInternalFuncCallReturns(service, callExpr, parsedCall)
+		saveParsedFuncCallParams(ctx, method, block, parsedCall, callExpr.Args)
+		tupleVar := computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
 
 		// maybe user is just getting the collection
 		if blueprintMethod.IsNoSQLBackendCall() {
@@ -747,7 +742,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 			collectionName := blueprintBackendType.NoSQLComponent.Collection
 
 			if ok, index := blueprintMethod.ReturnsNoSQLCursor(); ok {
-				fmt.Printf("[%s] HERE: %s (DATABASE = %s, COLLECTION = %s)", service.GetName(), blueprintMethod.String(), databaseName, collectionName)
+				fmt.Printf("[%s] HERE: %s (DATABASE = %s, COLLECTION = %s)", ctx.String(), blueprintMethod.String(), databaseName, collectionName)
 				collectionType := tupleVar.GetVariableAt(index).(*blueprint.BlueprintBackendObject).GetBlueprintBackendType()
 				collectionType.SetNoSQLDatabaseCursor(databaseName, collectionName, blueprintBackendType.DatastoreInstance)
 
@@ -768,7 +763,7 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 			// so that we can latter taint the target variable as well
 			targetVariable := parsedCall.GetParam(1)
 			blueprintBackendVar.SetTargetVariable(targetVariable)
-			logger.Logger.Infof("[CFG CALLS] [%s] found NoSQLCursor call (%s) to instance (%s) -- returned tuple: %s // %s", service.GetName(), parsedCall.Name, parsedCall.DbInstance.String(), tupleVar.String(), parsedCall.Method.LongString())
+			logger.Logger.Infof("[CFG CALLS] [%s] found NoSQLCursor call (%s) to instance (%s) -- returned tuple: %s // %s", ctx.String(), parsedCall.Name, parsedCall.DbInstance.String(), tupleVar.String(), parsedCall.Method.LongString())
 			return tupleVar
 		}
 		method.Calls = append(method.Calls, parsedCall)
@@ -779,13 +774,13 @@ func parseCallToVariableInBlock(service *service.Service, method *types.ParsedMe
 	return nil
 }
 
-func searchCallToMethodInImportedPackage(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, pkg *types.Package, idents []*ast.Ident, identsStr string) (*objects.TupleObject, *types.Package, bool) {
+func searchCallToMethodInImportedPackage(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, imptPackage *types.Package, idents []*ast.Ident, identsStr string) (*objects.TupleObject, *types.Package, bool) {
 	funcIdent := idents[len(idents)-1]
-	logger.Logger.Infof("[CFG CALLS] [%s.%s] searching call to method (%s) in imported package (%s) (type = %d)", service.GetName(), method.Name, funcIdent, pkg.GetName(), pkg.Type)
-	switch pkg.Type {
+	logger.Logger.Infof("[CFG CALLS] [%s.%s] searching call to method (%s) in imported package (%s) (type = %d)", ctx.String(), method.Name, funcIdent, imptPackage.GetName(), imptPackage.Type)
+	switch imptPackage.Type {
 	case types.EXTERNAL:
-		if deps := getFuncCallDeps(service, method, block, callExpr); deps != nil {
-			tupleVar := computeExternalFuncCallReturns(service, callExpr, deps)
+		if deps := getFuncCallDeps(ctx, method, block, callExpr); deps != nil {
+			tupleVar := computeExternalFuncCallReturns(ctx, callExpr, deps)
 			return tupleVar, nil, false
 		}
 		parsedCall := &types.ParsedInternalCall{
@@ -796,36 +791,36 @@ func searchCallToMethodInImportedPackage(service *service.Service, method *types
 				Pos:     callExpr.Pos(),
 			},
 		}
-		tupleVar := computeInternalFuncCallReturns(service, callExpr, parsedCall)
-		logger.Logger.Infof("[CFG CALLS] [%s.%s] found call (%s) to method in imported external package (%s) -- returned tuple: %s", service.GetName(), method.Name, parsedCall.CallStr, pkg.GetName(), tupleVar.String())
+		tupleVar := computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
+		logger.Logger.Infof("[CFG CALLS] [%s.%s] found call (%s) to method in imported external package (%s) -- returned tuple: %s", ctx.String(), method.Name, parsedCall.CallStr, imptPackage.GetName(), tupleVar.String())
 		return tupleVar, nil, false
 	case types.BLUEPRINT:
-		logger.Logger.Warnf("[CFG CALLS] [%s.%s] ignoring call with idents (%v) in blueprint package", service.GetName(), method.Name, identsStr)
+		logger.Logger.Warnf("[CFG CALLS] [%s.%s] ignoring call with idents (%v) in blueprint package", ctx.String(), method.Name, identsStr)
 		// ignore direct calls to blueprint package
 		// we only care about backend calls to functions of well-defined interfaces (cache, queue, nosqldatabase)
 		return nil, nil, true
 	case types.APP:
-		if parsedMethod := pkg.GetParsedMethodIfExists(funcIdent.Name, ""); parsedMethod != nil {
-			return nil, pkg, false
+		if parsedMethod := imptPackage.GetParsedMethodIfExists(funcIdent.Name, ""); parsedMethod != nil {
+			return nil, imptPackage, false
 
 		}
 	}
 	return nil, nil, false
 }
 
-func searchCallToMethodInImport(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, impt *types.Import, idents []*ast.Ident, identsStr string) (*objects.TupleObject, *types.Package, bool) {
+func searchCallToMethodInImport(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, impt *types.Import, idents []*ast.Ident, identsStr string) (*objects.TupleObject, *types.Package, bool) {
 	funcIdent := idents[len(idents)-1]
-	logger.Logger.Infof("[CFG CALLS] [%s.%s] searching call to method (%s) in imported package (%s)", service.GetName(), method.Name, funcIdent, impt.Alias)
+	logger.Logger.Infof("[CFG CALLS] [%s.%s] searching call to method (%s) in imported package (%s)", ctx.String(), method.Name, funcIdent, impt.Alias)
 
-	if pkg := service.GetPackage().GetImportedPackage(impt.PackagePath); pkg != nil {
-		return searchCallToMethodInImportedPackage(service, method, block, callExpr, pkg, idents, identsStr)
+	if imptPkg := ctx.GetPackage().GetImportedPackage(impt.PackagePath); imptPkg != nil {
+		return searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
 	}
 	return nil, nil, false
 }
 
-func parseCallToMethodInImportedOrCurrentPackage(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, callPkg *types.Package, idents []*ast.Ident, identsStr string) *objects.TupleObject {
+func parseCallToMethodInImportedOrCurrentPackage(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, callPkg *types.Package, idents []*ast.Ident, identsStr string) *objects.TupleObject {
 	funcIdent := idents[len(idents)-1]
-	logger.Logger.Infof("[CFG CALLS] [%s.%s] parsing call to method (%s) in imported or current package (%s): %v", service.GetName(), method.Name, funcIdent, callPkg.Name, callExpr)
+	logger.Logger.Infof("[CFG CALLS] [%s.%s] parsing call to method (%s) in imported or current package (%s): %v", ctx.String(), method.Name, funcIdent, callPkg.Name, callExpr)
 
 	if parsedMethod := callPkg.GetParsedMethodIfExists(funcIdent.Name, ""); parsedMethod != nil {
 		parsedCall := &types.ParsedInternalCall{
@@ -835,19 +830,19 @@ func parseCallToMethodInImportedOrCurrentPackage(service *service.Service, metho
 				Name:    funcIdent.Name,
 				Method:  parsedMethod,
 			},
-			ServiceTypeName: &gotypes.ServiceType{Name: service.Name, PackagePath: service.GetPackageName()},
+			ServiceTypeName: &gotypes.ServiceType{Name: ctx.GetService().GetName(), PackagePath: ctx.GetService().GetPackageName()},
 		}
-		saveParsedFuncCallParams(service, method, block, parsedCall, callExpr.Args)
-		tupleVar := computeInternalFuncCallReturns(service, callExpr, parsedCall)
-		if callPkg == service.GetPackage() {
-			logger.Logger.Infof("[CFG CALLS] [%s.%s] found call (%s) to method in current package (%s) -- returned tuple: %s", service.GetName(), method.Name, parsedCall.CallStr, callPkg.Name, tupleVar.String())
+		saveParsedFuncCallParams(ctx, method, block, parsedCall, callExpr.Args)
+		tupleVar := computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
+		if callPkg == ctx.GetPackage() {
+			logger.Logger.Infof("[CFG CALLS] [%s.%s] found call (%s) to method in current package (%s) -- returned tuple: %s", ctx.String(), method.Name, parsedCall.CallStr, callPkg.Name, tupleVar.String())
 			method.Calls = append(method.Calls, parsedCall)
 			return tupleVar
 		}
 
-		logger.Logger.Infof("[CFG CALLS] [%s.%s] found call (%s) to method in imported app package (%s) -- returned tuple: %s", service.GetName(), method.Name, parsedCall.CallStr, callPkg.Name, tupleVar.String())
-		if deps := getFuncCallDeps(service, method, block, callExpr); deps != nil {
-			tupleVar := computeExternalFuncCallReturns(service, callExpr, deps)
+		logger.Logger.Infof("[CFG CALLS] [%s.%s] found call (%s) to method in imported app package (%s) -- returned tuple: %s", ctx.String(), method.Name, parsedCall.CallStr, callPkg.Name, tupleVar.String())
+		if deps := getFuncCallDeps(ctx, method, block, callExpr); deps != nil {
+			tupleVar := computeExternalFuncCallReturns(ctx, callExpr, deps)
 			return tupleVar
 		}
 		parsedCall = &types.ParsedInternalCall{
@@ -858,7 +853,7 @@ func parseCallToMethodInImportedOrCurrentPackage(service *service.Service, metho
 				Pos:     callExpr.Pos(),
 			},
 		}
-		tupleVar = computeInternalFuncCallReturns(service, callExpr, parsedCall)
+		tupleVar = computeInternalFuncCallReturns(ctx, callExpr, parsedCall)
 		return tupleVar
 	}
 	return nil
@@ -915,24 +910,24 @@ func wrapValueInBasicVariable(basicValue string, typeName string, objName string
 }
 
 // call to golang built-in func or type
-func parseBuiltInGoFuncOrTypeCall(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, funcIdent *ast.Ident) objects.Object {
-	logger.Logger.Infof("[CFG] [%s.%s] parsing built-in go function or type call (%s) in imported or current package: %v", service.GetName(), method.Name, funcIdent.Name, callExpr)
+func parseBuiltInGoFuncOrTypeCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, funcIdent *ast.Ident) objects.Object {
+	logger.Logger.Infof("[CFG] [%s.%s] parsing built-in go function or type call (%s) in imported or current package: %v", ctx.String(), method.Name, funcIdent.Name, callExpr)
 
 	if utils.IsBuiltInGoFunc(funcIdent.Name) {
-		return parseBuiltInGoFuncCall(service, method, block, callExpr, funcIdent)
+		return parseBuiltInGoFuncCall(ctx, method, block, callExpr, funcIdent)
 	} else if utils.IsBuiltInGoType(funcIdent.Name) {
-		return parseBuiltInGoTypeCall(service, method, block, callExpr, funcIdent)
+		return parseBuiltInGoTypeCall(ctx, method, block, callExpr, funcIdent)
 	}
-	logger.Logger.Fatalf("[CFG] [%s.%s] unexpected built-in go func or type (%s): %v", service.GetName(), method.Name, funcIdent.Name, callExpr)
+	logger.Logger.Fatalf("[CFG] [%s.%s] unexpected built-in go func or type (%s): %v", ctx.String(), method.Name, funcIdent.Name, callExpr)
 	return nil
 }
 
 // FIXME: we could actually parse the builtin.go file
 // call to golang built-in func e.g. make(...), println(...), append(...)
-func parseBuiltInGoFuncCall(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, funcIdent *ast.Ident) objects.Object {
-	logger.Logger.Infof("[CFG] [%s.%s] parsing built-in go function call (%s) in imported or current package: %v", service.GetName(), method.Name, funcIdent.Name, callExpr)
+func parseBuiltInGoFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, funcIdent *ast.Ident) objects.Object {
+	logger.Logger.Infof("[CFG] [%s.%s] parsing built-in go function call (%s) in imported or current package: %v", ctx.String(), method.Name, funcIdent.Name, callExpr)
 
-	deps := getFuncCallDeps(service, method, block, callExpr)
+	deps := getFuncCallDeps(ctx, method, block, callExpr)
 	switch funcIdent.Name {
 	case "make":
 		return wrapInTupleVariable(deps[0])
@@ -958,51 +953,51 @@ func parseBuiltInGoFuncCall(service *service.Service, method *types.ParsedMethod
 		} else if arrayVariable, ok := slice.(*objects.ArrayObject); ok {
 			arrayVariable.AppendElement(elems)
 		} else {
-			logger.Logger.Fatalf("[CFG] [%s] unexpected slice type (%s) in \"append\" call (%v)", service.GetName(), utils.GetType(slice), callExpr)
+			logger.Logger.Fatalf("[CFG] [%s] unexpected slice type (%s) in \"append\" call (%v)", ctx.String(), utils.GetType(slice), callExpr)
 		}
 		return wrapInTupleVariable(slice)
 	case "println":
 		return nil
 	default:
-		logger.Logger.Fatalf("[CFG] [%s] unexpected built-in go func (%s) for function call (%v)", service.GetName(), funcIdent.Name, callExpr)
+		logger.Logger.Fatalf("[CFG] [%s] unexpected built-in go func (%s) for function call (%v)", ctx.String(), funcIdent.Name, callExpr)
 	}
 	return nil
 }
 
 // call to golang built-in type e.g. []byte(...)
-func parseBuiltInGoTypeCall(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, funcIdent *ast.Ident) objects.Object {
-	logger.Logger.Infof("[CFG] [%s.%s] parsing built-in go type call (%s) in imported or current package: %v", service.GetName(), method.Name, funcIdent.Name, callExpr)
+func parseBuiltInGoTypeCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, funcIdent *ast.Ident) objects.Object {
+	logger.Logger.Infof("[CFG] [%s.%s] parsing built-in go type call (%s) in imported or current package: %v", ctx.String(), method.Name, funcIdent.Name, callExpr)
 
-	deps := getFuncCallDeps(service, method, block, callExpr)
+	deps := getFuncCallDeps(ctx, method, block, callExpr)
 	switch funcIdent.Name {
 	case "byte", "string", "float32", "int64", "uint16", "uint64", "int32":
 		return wrapInBasicVariable(deps[0], funcIdent.Name)
 	case "delete":
 		return nil
 	default:
-		logger.Logger.Fatalf("[CFG] [%s] unexpected built-in go type (%s) for function call (%v)", service.GetName(), funcIdent.Name, callExpr)
+		logger.Logger.Fatalf("[CFG] [%s] unexpected built-in go type (%s) for function call (%v)", ctx.String(), funcIdent.Name, callExpr)
 	}
 	return nil
 }
 
 // FIXME: this does not support nested calls!!!!
-func parseAndSaveCall(service *service.Service, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr) objects.Object {
-	logger.Logger.Infof("[CFG CALLS] [%s] parsing call (%s) for args (%v)", service.GetName(), callExpr.Fun, callExpr.Args)
+func parseAndSaveCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr) objects.Object {
+	logger.Logger.Infof("[CFG CALLS] [%s] parsing call (%s) for args (%v)", ctx.String(), callExpr.Fun, callExpr.Args)
 	idents, identsStr := lookup.GetAllSelectorIdents(callExpr.Fun)
 	leftIdent := idents[0]
 	funcIdent := idents[len(idents)-1]
 
 	var varsStr = ""
 	for i, expr := range callExpr.Args {
-		v, _ := lookupObjectFromAstExpression(service, method, block, expr, nil, false)
+		v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, nil, false)
 		varsStr += fmt.Sprintf("\t\t\t\t\t\t\t - argument %d: (%s)\n", i, v.String())
 	}
 
-	logger.Logger.Infof("[CFG CALLS] [%s] found arguments for call with idents (%s):\n%s", service.GetName(), identsStr, varsStr)
+	logger.Logger.Infof("[CFG CALLS] [%s] found arguments for call with idents (%s):\n%s", ctx.String(), identsStr, varsStr)
 
 	// call to variable (including receiver) in block
 	if variable := block.GetLastestVariableIfExists(leftIdent.Name); variable != nil {
-		tupleVar := parseCallToVariableInBlock(service, method, block, callExpr, variable, idents, identsStr)
+		tupleVar := parseCallToVariableInBlock(ctx, method, block, callExpr, variable, idents, identsStr)
 		if tupleVar != nil {
 			return tupleVar
 		}
@@ -1010,7 +1005,7 @@ func parseAndSaveCall(service *service.Service, method *types.ParsedMethod, bloc
 
 	// call to golang built-in type (e.g. make, println, append)
 	if utils.IsBuiltInGoTypeOrFunc(funcIdent.Name) {
-		return parseBuiltInGoFuncOrTypeCall(service, method, block, callExpr, funcIdent)
+		return parseBuiltInGoFuncOrTypeCall(ctx, method, block, callExpr, funcIdent)
 	}
 
 	var callInPackage bool
@@ -1018,10 +1013,10 @@ func parseAndSaveCall(service *service.Service, method *types.ParsedMethod, bloc
 	var tupleVar *objects.TupleObject
 
 	// call to method in imported package of file
-	logger.Logger.Debugf("[CFG CALLS] check if call is to imported package (%s) for package import map:\n%v", leftIdent.Name, service.GetPackage().ImportsByAliasMapStr())
-	if pkg := service.GetPackage().GetImportedPackageByAliasIfExists(leftIdent.Name); pkg != nil {
+	logger.Logger.Debugf("[CFG CALLS] check if call is to imported package (%s) for package import map:\n%v", leftIdent.Name, ctx.GetPackage().ImportsByAliasMapStr())
+	if imptPkg := ctx.GetPackage().GetImportedPackageByAliasIfExists(leftIdent.Name); imptPkg != nil {
 		var isBlueprintCall bool
-		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImportedPackage(service, method, block, callExpr, pkg, idents, identsStr)
+		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
 		logger.Logger.Warnf("!!!!!!!!!!!!!!! FOUND CALL TO METHOD IN IMPORTED PACKAGE: %v // %v // %v", tupleVar, callPkg, isBlueprintCall)
 		if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
 			return nil
@@ -1032,9 +1027,9 @@ func parseAndSaveCall(service *service.Service, method *types.ParsedMethod, bloc
 		if callPkg != nil {
 			callInPackage = true
 		}
-	} else if impt := service.File.GetImportIfExists(leftIdent.Name); impt != nil {
+	} else if impt := ctx.GetService().GetFile().GetImportIfExists(leftIdent.Name); impt != nil {
 		var isBlueprintCall bool
-		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImport(service, method, block, callExpr, impt, idents, identsStr)
+		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImport(ctx, method, block, callExpr, impt, idents, identsStr)
 		if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
 			return nil
 		}
@@ -1047,14 +1042,14 @@ func parseAndSaveCall(service *service.Service, method *types.ParsedMethod, bloc
 	}
 
 	// call to method in current package
-	logger.Logger.Infof("[CFG CALLS] [%s.%s] try parsing call to method (%s) in current package (%s): %v", service.GetName(), method.Name, funcIdent.Name, service.GetPackageName(), callExpr)
-	if parsedMethod := service.GetPackage().GetParsedMethodIfExists(funcIdent.Name, ""); parsedMethod != nil {
+	logger.Logger.Infof("[CFG CALLS] [%s.%s] try parsing call to method (%s) in current package (%s): %v", ctx.String(), method.Name, funcIdent.Name, ctx.GetService().GetPackageName(), callExpr)
+	if parsedMethod := ctx.GetPackage().GetParsedMethodIfExists(funcIdent.Name, ""); parsedMethod != nil {
 		callInPackage = true
-		callPkg = service.GetPackage()
+		callPkg = ctx.GetPackage()
 	}
 
 	if callInPackage && callPkg != nil {
-		tupleVar := parseCallToMethodInImportedOrCurrentPackage(service, method, block, callExpr, callPkg, idents, identsStr)
+		tupleVar := parseCallToMethodInImportedOrCurrentPackage(ctx, method, block, callExpr, callPkg, idents, identsStr)
 		if tupleVar != nil {
 			return tupleVar
 		}

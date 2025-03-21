@@ -19,7 +19,7 @@
   - '0 depth 0 (BasicObject BasicType) productID string --> w-tainted 2x: write(cart_db.Cart.LastProductID,
     cart_db.Cart.Products) --> r-tainted 1x: read(product_db.Product.ProductID)'
   - '_1 depth 1 (Reference BasicType) ref <productID string> @ Frontend --> w-tainted
-    1x: write(cart_db.Cart.LastProductID) --> r-tainted 1x: read(product_db.Product.ProductID)'
+    1x: write(cart_db.Cart.Products) --> r-tainted 1x: read(product_db.Product.ProductID)'
   - 0 depth 0 (StructObject UserType) product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}
   - 0 depth 0 (StructObject UserType) product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}
   - '_1 depth 1 (Reference UserType) ref <product shopping_simple.Product struct{ProductID
@@ -80,7 +80,7 @@
   - 0 depth 0 (InterfaceObject UserType) err .error
 
 (*CartServiceImpl).GetCart(ctx context.Context, cartID string):
-  block 5 (IfDone):
+  block 8 (IfDone):
   - 0 depth 0 (PointerObject PointerType) s (*shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers int})
   - _1 depth 1 (StructObject UserType) shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers 4 int}
   - __2 depth 2 (FieldObject FieldType) cart_db NoSQLDatabase
@@ -97,8 +97,11 @@
   - '_1 depth 1 (Reference BasicType) ref <cartID string> @ Frontend --> r-tainted
     1x: read(cart_db.Cart.CartID)'
   - '0 depth 0 (StructObject UserType) cart shopping_simple.Cart struct{CartID string,
-    LastProductID string, TotalQuantity int, Products []string} --> r-tainted 1x:
-    read(cart_db.Cart)'
+    LastProductID string, TotalQuantity int, Products []string} --> r-tainted 2x:
+    read(cart_db.Cart, cart_db.Cart.Products)'
+  - '_1 depth 1 (FieldObject FieldType) Products []string --> r-tainted 1x: read(cart_db.Cart.Products)'
+  - '__2 depth 2 (SliceObject SliceType) Products []string --> r-tainted 2x: read(product_db.Product.ProductID,
+    cart_db.Cart.Products)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
     {database = cart_database, collection = cart_database}
   - 0 depth 0 (InterfaceObject UserType) _ .error
@@ -112,6 +115,7 @@
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (BasicObject BasicType) exists bool
   - 0 depth 0 (InterfaceObject UserType) err .error
+  - '0 depth 0 (BasicObject BasicType) p string --> r-tainted 1x: read(product_db.Product.ProductID)'
 
 (*CartServiceImpl).Run(ctx context.Context):
   block 4 (ForPost):

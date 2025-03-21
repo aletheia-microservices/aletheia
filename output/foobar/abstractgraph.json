@@ -8,7 +8,74 @@
         "method": "(*FooServiceImpl).Foo(ctx context.Context, text string)",
         "depth": 1,
         "caller": "FrontendService",
-        "edges": null,
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "FooService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "FrontendService"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "foo",
+                  "type": "foo.Foo struct{ID \"id\" string, Text string}"
+                },
+                "struct_fields": {
+                  "ID": {
+                    "field": {
+                      "name": "ID",
+                      "type": "\"id\" string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "",
+                        "type": "\"id\" string"
+                      }
+                    }
+                  },
+                  "Text": {
+                    "field": {
+                      "name": "Text",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "text",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "",
+                            "creator": "FrontendService"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "foo_db"
+          }
+        ],
         "params": [
           {
             "interface": {
@@ -25,15 +92,41 @@
         ],
         "returns": [
           {
-            "basic": {
-              "name": "f",
-              "type": "string",
+            "struct": {
+              "name": "foo",
+              "type": "foo.Foo struct{ID string, Text string}",
               "refs": [
                 {
-                  "name": "",
+                  "name": "foo",
                   "creator": "FooService"
                 }
               ]
+            },
+            "struct_fields": {
+              "Text": {
+                "field": {
+                  "name": "Text",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "Text",
+                      "creator": "FooService"
+                    }
+                  ]
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "Text",
+                    "type": "string",
+                    "refs": [
+                      {
+                        "name": "Text",
+                        "creator": "FooService"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           {
@@ -54,7 +147,68 @@
         "method": "(*BarServiceImpl).Bar(ctx context.Context, text string)",
         "depth": 1,
         "caller": "FrontendService",
-        "edges": null,
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "BarService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "FrontendService"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "bar",
+                  "type": "bar.Bar struct{ID \"id\" string, Text string}"
+                },
+                "struct_fields": {
+                  "ID": {
+                    "field": {
+                      "name": "ID",
+                      "type": "\"id\" string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "",
+                        "type": "\"id\" string"
+                      }
+                    }
+                  },
+                  "Text": {
+                    "field": {
+                      "name": "Text",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "newText",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "bar_db"
+          }
+        ],
         "params": [
           {
             "interface": {
@@ -64,22 +218,54 @@
           },
           {
             "basic": {
-              "name": "",
-              "type": "\"Frontend\" string"
+              "name": "Text",
+              "type": "string",
+              "refs": [
+                {
+                  "name": "Text",
+                  "creator": "FooService"
+                }
+              ]
             }
           }
         ],
         "returns": [
           {
-            "basic": {
-              "name": "b",
-              "type": "string",
+            "struct": {
+              "name": "bar",
+              "type": "bar.Bar struct{ID string, Text string}",
               "refs": [
                 {
-                  "name": "",
+                  "name": "bar",
                   "creator": "BarService"
                 }
               ]
+            },
+            "struct_fields": {
+              "Text": {
+                "field": {
+                  "name": "Text",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "Text",
+                      "creator": "BarService"
+                    }
+                  ]
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "Text",
+                    "type": "string",
+                    "refs": [
+                      {
+                        "name": "Text",
+                        "creator": "BarService"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           {

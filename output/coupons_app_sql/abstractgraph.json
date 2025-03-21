@@ -1,113 +1,5 @@
 [
   {
-    "method": "(*FrontendImpl).CreateStudent(ctx context.Context, name string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*StudentServiceImpl).CreateStudent(ctx context.Context, name string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "RelationalDB.Exec(ctx context.Context, query string, dst []interface{})",
-            "depth": 2,
-            "caller": "StudentService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "basic": {
-                  "name": "",
-                  "type": "\"INSERT INTO students(name) VALUES (?);\" string"
-                }
-              },
-              {
-                "basic": {
-                  "name": "name",
-                  "type": "string",
-                  "refs": [
-                    {
-                      "name": "name",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "_",
-                  "type": "sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }"
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "students_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "name",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "StudentService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "name",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
     "method": "(*FrontendImpl).CreateCoupon(ctx context.Context, category string, value int)",
     "depth": 0,
     "caller": "Client",
@@ -614,6 +506,114 @@
         "basic": {
           "name": "studentID",
           "type": "int"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).CreateStudent(ctx context.Context, name string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*StudentServiceImpl).CreateStudent(ctx context.Context, name string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "RelationalDB.Exec(ctx context.Context, query string, dst []interface{})",
+            "depth": 2,
+            "caller": "StudentService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "basic": {
+                  "name": "",
+                  "type": "\"INSERT INTO students(name) VALUES (?);\" string"
+                }
+              },
+              {
+                "basic": {
+                  "name": "name",
+                  "type": "string",
+                  "refs": [
+                    {
+                      "name": "name",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "_",
+                  "type": "sql.Result interface{ interface{LastInsertId() (int64, error); RowsAffected() (int64, error)} }"
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "students_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "name",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "StudentService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "name",
+          "type": "string"
         }
       }
     ]

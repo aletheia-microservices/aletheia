@@ -89,6 +89,14 @@
       "type": "service"
     },
     {
+      "id": "ProductService",
+      "type": "service"
+    },
+    {
+      "id": "cart_db MongoDB",
+      "type": "datastore"
+    },
+    {
       "id": "cart_db MongoDB",
       "type": "datastore"
     },
@@ -97,7 +105,7 @@
       "type": "datastore"
     },
     {
-      "id": "cart_db MongoDB",
+      "id": "product_db MongoDB",
       "type": "datastore"
     },
     {
@@ -122,6 +130,12 @@
     }
   ],
   "edges": [
+    {
+      "caller": "CartService",
+      "callee": "ProductService",
+      "call": "GetProduct",
+      "depth": 2
+    },
     {
       "caller": "CartService",
       "callee": "ProductService",
@@ -259,6 +273,12 @@
       "callee": "product_db MongoDB",
       "call": "InsertOne",
       "depth": 2
+    },
+    {
+      "caller": "ProductService",
+      "callee": "product_db MongoDB",
+      "call": "FindOne",
+      "depth": 3
     },
     {
       "caller": "ProductService",

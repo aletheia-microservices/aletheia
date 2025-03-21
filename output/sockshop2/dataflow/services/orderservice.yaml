@@ -104,7 +104,7 @@
     shipdb.Shipment.Name, order_db.Order.CustomerID, order_db.Order.Shipment) -->
     r-tainted 2x: read(shipqueue.Shipment.Name, user_db._.userid)'
   - '_1 depth 1 (Reference BasicType) ref <userID string> @ FrontendService --> w-tainted
-    3x: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.Shipment)
+    3x: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.CustomerID)
     --> r-tainted 2x: read(user_db._.userid, shipqueue.Shipment.Name)'
   - '0 depth 0 (BasicObject BasicType) addressID string --> r-tainted 1x: read(user_db._.addresses)'
   - '_1 depth 1 (Reference BasicType) ref <addressID string> @ FrontendService -->
@@ -123,10 +123,11 @@
   - '0 depth 0 (StructObject UserType) shipment shipping.Shipment struct{ID string,
     Name string, Status "awaiting shipment" string} --> w-tainted 3x: write(shipqueue.Shipment,
     shipdb.Shipment, order_db.Order.Shipment) --> r-tainted 1x: read(shipqueue.Shipment)'
-  - '_1 depth 1 (FieldObject FieldType) ID string --> w-tainted 3x: write(shipqueue.Shipment.ID,
-    shipdb.Shipment.ID, order_db.Order.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
+  - '_1 depth 1 (FieldObject FieldType) ID string --> w-tainted 4x: write(shipqueue.Shipment.ID,
+    shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) --> r-tainted
+    1x: read(shipqueue.Shipment.ID)'
   - '__2 depth 2 (BasicObject BasicType) string --> w-tainted 3x: write(shipqueue.Shipment.ID,
-    shipdb.Shipment.ID, order_db.Order.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
+    shipdb.Shipment.ID, order_db.Order.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '_3 depth 1 (FieldObject FieldType) Name string --> w-tainted 3x: write(shipqueue.Shipment.Name,
     shipdb.Shipment.Name, order_db.Order.Shipment) --> r-tainted 1x: read(shipqueue.Shipment.Name)'
   - '_6 depth 1 (FieldObject FieldType) Status "awaiting shipment" string --> w-tainted
@@ -145,10 +146,11 @@
     Name string, Status "awaiting shipment" string}> @ OrderService --> w-tainted
     3x: write(shipqueue.Shipment, shipdb.Shipment, order_db.Order.Shipment) --> r-tainted
     1x: read(shipqueue.Shipment)'
-  - '___3 depth 3 (FieldObject FieldType) ID string --> w-tainted 3x: write(shipqueue.Shipment.ID,
-    shipdb.Shipment.ID, order_db.Order.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
+  - '___3 depth 3 (FieldObject FieldType) ID string --> w-tainted 4x: write(shipqueue.Shipment.ID,
+    shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) --> r-tainted
+    1x: read(shipqueue.Shipment.ID)'
   - '____4 depth 4 (BasicObject BasicType) string --> w-tainted 3x: write(shipqueue.Shipment.ID,
-    shipdb.Shipment.ID, order_db.Order.Shipment.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
+    shipdb.Shipment.ID, order_db.Order.ID) --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - '___5 depth 3 (FieldObject FieldType) Name string --> w-tainted 3x: write(shipqueue.Shipment.Name,
     shipdb.Shipment.Name, order_db.Order.Shipment) --> r-tainted 1x: read(shipqueue.Shipment.Name)'
   - '____6 depth 4 (BasicObject BasicType) customerID string --> w-tainted 4x: write(shipqueue.Shipment.Name,
@@ -167,12 +169,12 @@
   - '_18 depth 1 (FieldObject FieldType) ID string --> w-tainted 3x: write(order_db.Order.Shipment.ID,
     shipqueue.Shipment.ID, shipdb.Shipment.ID)'
   - '__19 depth 2 (Reference FieldType) ref <ID string> @ OrderService --> w-tainted
-    3x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID)
+    4x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID)
     --> r-tainted 1x: read(shipqueue.Shipment.ID)'
-  - '__21 depth 2 (BasicObject BasicType) ID string --> w-tainted 4x: write(order_db.Order.Shipment.ID,
-    order_db.Order.ID, shipqueue.Shipment.ID, shipdb.Shipment.ID)'
+  - '__21 depth 2 (BasicObject BasicType) ID string --> w-tainted 4x: write(order_db.Order.ID,
+    order_db.Order.Shipment.ID, shipqueue.Shipment.ID, shipdb.Shipment.ID)'
   - '___22 depth 3 (Reference FieldType) ref <ID string> @ OrderService --> w-tainted
-    3x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID)
+    4x: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID)
     --> r-tainted 1x: read(shipqueue.Shipment.ID)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference UserType) ref <.error> @ ShippingService

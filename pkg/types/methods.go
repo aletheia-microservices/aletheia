@@ -6,6 +6,7 @@ import (
 
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/logger"
+	"analyzer/pkg/types/gotypes"
 )
 
 type Method interface {
@@ -92,6 +93,12 @@ func (f *ParsedMethod) GetReceiverIfExists() *MethodField {
 }
 func (f *ParsedMethod) HasReceiver() bool {
 	return f.Receiver != nil
+}
+func (f *ParsedMethod) GetReceiverType() gotypes.Type {
+	return f.Receiver.GetType()
+}
+func (f *ParsedMethod) GetReceiver() *MethodField {
+	return f.Receiver
 }
 func (f *ParsedMethod) GetBody() *ast.BlockStmt {
 	return f.Ast.Body

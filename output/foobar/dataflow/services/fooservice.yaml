@@ -1,21 +1,51 @@
-(*FooServiceImpl).Foo(ctx context.Context, text string):
+(*Foo).GetID():
   block 0 (Body):
-  - 0 depth 0 (PointerObject PointerType) d (*foo.FooServiceImpl struct{})
-  - _1 depth 1 (StructObject UserType) foo.FooServiceImpl struct{}
+  - 0 depth 0 (PointerObject PointerType) f (*foo.Foo struct{ID string, Text string})
+  - _1 depth 1 (StructObject UserType) foo.Foo struct{ID string, Text string}
+  - __2 depth 2 (FieldObject FieldType) ID string
+  - ___3 depth 3 (BasicObject BasicType) ID string
+
+(*Foo).GetText():
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) f (*foo.Foo struct{ID string, Text string})
+  - _1 depth 1 (StructObject UserType) foo.Foo struct{ID string, Text string}
+  - __2 depth 2 (FieldObject FieldType) Text string
+  - ___3 depth 3 (BasicObject BasicType) Text string
+
+(*FooServiceImpl).Foo(ctx context.Context, text string):
+  block 5 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) s (*foo.FooServiceImpl struct{fooDb NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) foo.FooServiceImpl struct{fooDb NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) fooDb NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) fooDb NoSQLDatabase
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ FrontendService
-  - 0 depth 0 (BasicObject BasicType) text string
-  - _1 depth 1 (Reference BasicType) ref <"Frontend" string> @ FrontendService
+  - '0 depth 0 (BasicObject BasicType) text string --> w-tainted 2x: write(foo_db.Foo.Text,
+    bar_db.Bar.Text)'
+  - '_1 depth 1 (Reference BasicType) ref <"Frontend" string> @ FrontendService -->
+    w-tainted 2x: write(foo_db.Foo.Text, bar_db.Bar.Text)'
+  - '0 depth 0 (StructObject UserType) foo foo.Foo struct{ID "id" string, Text string}
+    --> w-tainted 1x: write(foo_db.Foo)'
+  - '_1 depth 1 (FieldObject FieldType) ID "id" string --> w-tainted 1x: write(foo_db.Foo.ID)'
+  - '__2 depth 2 (BasicObject BasicType) "id" string --> w-tainted 1x: write(foo_db.Foo.ID)'
+  - '_3 depth 1 (FieldObject FieldType) Text string --> w-tainted 2x: write(foo_db.Foo.Text,
+    bar_db.Bar.Text)'
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = foo, collection = foo}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (InterfaceObject UserType) err .error
 
 .Int64ToString(i int64):
   block 0 (Body):
   - 0 depth 0 (BasicObject BasicType) i int64
 
-.NewFooServiceImpl(ctx context.Context):
+.NewFooServiceImpl(ctx context.Context, fooDb NoSQLDatabase):
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - 0 depth 0 (PointerObject PointerType) d (*foo.FooServiceImpl struct{})
-  - _1 depth 1 (StructObject UserType) foo.FooServiceImpl struct{}
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) fooDb NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) d (*foo.FooServiceImpl struct{fooDb NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) foo.FooServiceImpl struct{fooDb NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) fooDb NoSQLDatabase
 
 .StringToInt64(s string):
   block 2 (IfDone):

@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 
@@ -12,8 +13,8 @@ import (
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types"
 	"analyzer/pkg/types/gotypes"
-	"analyzer/pkg/utils"
 	"analyzer/pkg/types/objects"
+	"analyzer/pkg/utils"
 )
 
 type Context struct {
@@ -57,6 +58,18 @@ type Service struct {
 	// helps tracking which ones appear first so we can then build schema
 	// -> THIS COULD BE IMPROVED!! BECAUSE IT IS TRACKING THE ORDER OF IMPLEMENTATION AND NOT THE ORDER OF DEFINITION
 	ExposedMethodsLst []*types.ParsedMethod
+}
+
+func (node *Service) GetMethods() map[string]*types.ParsedMethod {
+	methods := make(map[string]*types.ParsedMethod, 0)
+	maps.Copy(methods, node.ExposedMethods)
+	maps.Copy(methods, node.InternalMethods) // internal methods already contain queue handlers methods
+	maps.Copy(methods, node.PackageMethods)
+	return methods
+}
+
+func (node *Service) SetConstructor(constructor *types.ParsedMethod) {
+	node.Constructor = constructor
 }
 
 func (node *Service) HasDatastore(datastore *datastores.Datastore) bool {

@@ -1,1 +1,28 @@
-{}
+BAR_DB:
+- type: NoSQLDatabase
+- kind: MongoDB
+- dependencies: []
+- schema:
+  - fields:
+    - _: bar.Bar struct{ID "id" string, Text string}
+    - Bar: bar.Bar struct{ID "id" string, Text string}
+  - unfolded_fields:
+    - Bar: bar.Bar struct{ID "id" string, Text string}
+    - Bar.ID: '"id" string'
+    - Bar.Text: string
+  - constraints:
+    - REFERENCE(Bar.Text --> Foo.Text) [+]
+    - REFERENCE(Bar --> Foo.Text) [+]
+
+FOO_DB:
+- type: NoSQLDatabase
+- kind: MongoDB
+- dependencies: []
+- schema:
+  - fields:
+    - _: foo.Foo struct{ID "id" string, Text string}
+    - Foo: foo.Foo struct{ID "id" string, Text string}
+  - unfolded_fields:
+    - Foo: foo.Foo struct{ID "id" string, Text string}
+    - Foo.ID: '"id" string'
+    - Foo.Text: string

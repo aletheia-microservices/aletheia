@@ -93,12 +93,12 @@ func initAnalyzer(analysis analysisConfig) {
 		logger.Logger.Fatalf("error initializing app: %s", err.Error())
 	}
 	app.RegisterPackages()
-	app.RegisterDatastoreInstances(databaseInstances)
-	app.RegisterServiceNodes(servicesInfo)
-	app.BuildServiceNodes()
-	/* app.PreDump()
-	logger.Logger.Fatalf("EXIT!") */
-	
+	app.RegisterDatastores(databaseInstances)
+	app.RegisterServices(servicesInfo)
+	app.BuildServices()
+	app.ParseMethods()
+	app.Dump()
+	/* logger.Logger.Fatalf("EXIT!") */
 
 	fmt.Println()
 	fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")

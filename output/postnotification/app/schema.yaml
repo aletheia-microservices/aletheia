@@ -58,13 +58,7 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID: string
     - Message.Timestamp: string
   - constraints:
-    - REFERENCE(Message.PostID --> Post.PostID) [+]
-    - REFERENCE(Message.PostID --> TriggerAnalyticsMessage.PostID) [+]
-    - REFERENCE(Message.PostID --> Analytics.PostID) [+]
     - REFERENCE(Message.ReqID --> Post.ReqID) [+]
-    - REFERENCE(Message --> Post.PostID) [+]
-    - REFERENCE(Message --> TriggerAnalyticsMessage.PostID) [+]
-    - REFERENCE(Message --> Analytics.PostID) [+]
     - REFERENCE(Message --> Post.ReqID) [+]
 
 POSTS_CACHE:
@@ -108,9 +102,8 @@ TIMELINE_CACHE:
   - constraints:
     - REFERENCE(key --> Post.ReqID) [+]
     - REFERENCE(key --> Message.ReqID) [+]
-    - REFERENCE(value --> Post.PostID) [+]
-    - REFERENCE(value --> TriggerAnalyticsMessage.PostID) [+]
     - REFERENCE(value --> Message.PostID) [+]
+    - REFERENCE(value --> Post.PostID) [+]
     - REFERENCE(value --> Analytics.PostID) [+]
     - REFERENCE(value --> Post.ReqID) [+]
     - REFERENCE(value --> Message.ReqID) [+]

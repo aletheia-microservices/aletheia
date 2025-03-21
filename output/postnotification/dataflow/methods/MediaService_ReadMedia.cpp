@@ -11,8 +11,14 @@
 [0] (BasicObject BasicType) mediaID int64
      --> r-tainted: read(media_db._.mediaid) {1}
 [_1] (Reference FieldType) ref <mediaID int64> @ StorageService
+      --> r-tainted: read(posts_cache.PostID, media_db._.mediaid) {2}
+[__2] (FieldObject FieldType) PostID int64
+       --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
+[___3] (BasicObject BasicType) PostID int64
       --> r-tainted: read(media_db._.mediaid) {1}
-[__2] (BasicObject BasicType) PostID int64
+[__2] (BasicObject BasicType) int64
+       --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
+[___3] (BasicObject BasicType) PostID int64
 
     --> r-tainted: read(media_db.Media) {1}
 [0] (StructObject UserType) media postnotification.Media struct{MediaID int64, Content string}
@@ -30,8 +36,14 @@
 [___3] (BasicObject BasicType) mediaID int64
         --> r-tainted: read(media_db._.mediaid) {1}
 [____4] (Reference FieldType) ref <mediaID int64> @ StorageService
+         --> r-tainted: read(posts_cache.PostID, media_db._.mediaid) {2}
+[_____5] (FieldObject FieldType) PostID int64
+          --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
+[______6] (BasicObject BasicType) PostID int64
          --> r-tainted: read(media_db._.mediaid) {1}
-[_____5] (BasicObject BasicType) PostID int64
+[_____5] (BasicObject BasicType) int64
+          --> r-tainted: read(posts_cache.int64, media_db._.mediaid) {2}
+[______6] (BasicObject BasicType) PostID int64
 
     --> r-tainted: read(media_db._) {1}
 [0] (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database = media, collection = media}

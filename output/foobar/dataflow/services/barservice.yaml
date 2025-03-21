@@ -1,14 +1,50 @@
-(*BarServiceImpl).Bar(ctx context.Context, text string):
+(*Bar).GetID():
   block 0 (Body):
-  - 0 depth 0 (PointerObject PointerType) d (*bar.BarServiceImpl struct{})
-  - _1 depth 1 (StructObject UserType) bar.BarServiceImpl struct{}
+  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string})
+  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string}
+  - __2 depth 2 (FieldObject FieldType) ID string
+  - ___3 depth 3 (BasicObject BasicType) ID string
+
+(*Bar).GetText():
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string})
+  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string}
+  - __2 depth 2 (FieldObject FieldType) Text string
+  - ___3 depth 3 (BasicObject BasicType) Text string
+
+(*BarServiceImpl).Bar(ctx context.Context, text string):
+  block 5 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) s (*bar.BarServiceImpl struct{barDb NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) bar.BarServiceImpl struct{barDb NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) barDb NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) barDb NoSQLDatabase
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ FrontendService
-  - 0 depth 0 (BasicObject BasicType) text string
-  - _1 depth 1 (Reference BasicType) ref <"Frontend" string> @ FrontendService
+  - '0 depth 0 (BasicObject BasicType) text string --> w-tainted 2x: write(foo_db.Foo.Text,
+    bar_db.Bar.Text)'
+  - '_1 depth 1 (Reference BasicType) ref <Text string> @ FrontendService --> w-tainted
+    2x: write(foo_db.Foo.Text, bar_db.Bar.Text)'
+  - '__2 depth 2 (Reference FieldType) ref <Text string> @ FooService --> w-tainted
+    2x: write(foo_db.Foo.Text, bar_db.Bar.Text)'
+  - '___3 depth 3 (BasicObject BasicType) text string --> w-tainted 2x: write(foo_db.Foo.Text,
+    bar_db.Bar.Text)'
+  - '____4 depth 4 (Reference BasicType) ref <"Frontend" string> @ FrontendService
+    --> w-tainted 2x: write(foo_db.Foo.Text, bar_db.Bar.Text)'
+  - '0 depth 0 (BasicObject BasicType) newText string --> w-tainted 1x: write(bar_db.Bar.Text)'
+  - '0 depth 0 (StructObject UserType) bar bar.Bar struct{ID "id" string, Text string}
+    --> w-tainted 1x: write(bar_db.Bar)'
+  - '_1 depth 1 (FieldObject FieldType) ID "id" string --> w-tainted 1x: write(bar_db.Bar.ID)'
+  - '__2 depth 2 (BasicObject BasicType) "id" string --> w-tainted 1x: write(bar_db.Bar.ID)'
+  - '_3 depth 1 (FieldObject FieldType) Text string --> w-tainted 1x: write(bar_db.Bar.Text)'
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = bar, collection = bar}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (InterfaceObject UserType) err .error
 
-.NewBarServiceImpl(ctx context.Context):
+.NewBarServiceImpl(ctx context.Context, barDb NoSQLDatabase):
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - 0 depth 0 (PointerObject PointerType) d (*bar.BarServiceImpl struct{})
-  - _1 depth 1 (StructObject UserType) bar.BarServiceImpl struct{}
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) barDb NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) d (*bar.BarServiceImpl struct{barDb NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) bar.BarServiceImpl struct{barDb NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) barDb NoSQLDatabase

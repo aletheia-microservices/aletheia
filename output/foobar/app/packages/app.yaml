@@ -6,25 +6,35 @@ bar:
   - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/foobar/workflow/foobar/bar/BarService.go
 - imports (extracted from package):
   - context
+  - github.com/blueprint-uservices/blueprint/runtime/core/backend
 - imports (extracted from source files):
+  - (backend) github.com/blueprint-uservices/blueprint/runtime/core/backend
   - context
 - imported types:
+  - .error
+  - NoSQLCollection interface{NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}), NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.UpdateMany(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{}), NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}), NoSQLDatabase.NoSQLCollection.InsertMany(ctx context.Context, key []interface{}), NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D), NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)}
+  - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
   - context.Context
 - imported constants: []
 - imported variables: []
 - declared types:
+  - bar.Bar struct{ID string, Text string}
   - bar.BarService
-  - bar.BarServiceImpl struct{}
+  - bar.BarServiceImpl struct{barDb NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
 - declared variables:
   - HelloBarVariable string
 - declared constants:
   - HELLO_BAR_CONST "Hello Bar (CONST)!" untyped string
 - service types:
   - bar.BarService
-- datastore types: []
+- datastore types:
+  - NoSQLCollection interface{NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}), NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.UpdateMany(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{}), NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}), NoSQLDatabase.NoSQLCollection.InsertMany(ctx context.Context, key []interface{}), NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D), NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)}
+  - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
 - parsed methods:
-  - (*bar.BarServiceImpl).Bar(ctx context.Context, text string) (string, error)
-  - bar.NewBarServiceImpl(ctx context.Context) (bar.BarService, error)
+  - (*bar.Bar).GetID() string
+  - (*bar.Bar).GetText() string
+  - (*bar.BarServiceImpl).Bar(ctx context.Context, text string) (bar.Bar struct{ID string, Text string}, error)
+  - bar.NewBarServiceImpl(ctx context.Context, barDb NoSQLDatabase) (bar.BarService, error)
 
 foo:
 - package: foo
@@ -37,20 +47,24 @@ foo:
   - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/foobar/workflow/foobar/foo/foo_2.go
 - imports (extracted from package):
   - context
+  - github.com/blueprint-uservices/blueprint/runtime/core/backend
   - strconv
 - imports (extracted from source files):
+  - (backend) github.com/blueprint-uservices/blueprint/runtime/core/backend
   - (strconvpkg_1) strconv
   - (strconvpkg_2) strconv
   - context
 - imported types:
   - .error
+  - NoSQLCollection interface{NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}), NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.UpdateMany(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{}), NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}), NoSQLDatabase.NoSQLCollection.InsertMany(ctx context.Context, key []interface{}), NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D), NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)}
+  - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
   - context.Context
 - imported constants: []
 - imported variables: []
 - declared types:
+  - foo.Foo struct{ID string, Text string}
   - foo.FooService
-  - foo.FooServiceImpl struct{}
-  - foo.FooStruct struct{Value string}
+  - foo.FooServiceImpl struct{fooDb NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
 - declared variables:
   - HelloFooVariable string
   - Hello_World_Variable string
@@ -59,11 +73,15 @@ foo:
   - HELLO_WORLD_CONST "HELLO WORLD!" untyped string
 - service types:
   - foo.FooService
-- datastore types: []
+- datastore types:
+  - NoSQLCollection interface{NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D), NoSQLDatabase.NoSQLCollection.Upsert(ctx context.Context, filter bson.D, document interface{}), NoSQLDatabase.NoSQLCollection.UpdateOne(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.UpdateMany(ctx context.Context, filter bson.D, update bson.D), NoSQLDatabase.NoSQLCollection.ReplaceOne(ctx context.Context, filter bson.D, interface{}), NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}), NoSQLDatabase.NoSQLCollection.InsertMany(ctx context.Context, key []interface{}), NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D), NoSQLDatabase.NoSQLCollection.DeleteMany(ctx context.Context, filter bson.D)}
+  - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
 - parsed methods:
-  - (*foo.FooServiceImpl).Foo(ctx context.Context, text string) (string, error)
+  - (*foo.Foo).GetID() string
+  - (*foo.Foo).GetText() string
+  - (*foo.FooServiceImpl).Foo(ctx context.Context, text string) (foo.Foo struct{ID string, Text string}, error)
   - foo.Int64ToString(i int64) string
-  - foo.NewFooServiceImpl(ctx context.Context) (foo.FooService, error)
+  - foo.NewFooServiceImpl(ctx context.Context, fooDb NoSQLDatabase) (foo.FooService, error)
   - foo.StringToInt64(s string) (int64, error)
 
 foobar:
@@ -74,16 +92,20 @@ foobar:
   - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/foobar/workflow/foobar/FrontendService.go
 - imports (extracted from package):
   - context
+  - fmt
   - github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar/bar
   - github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar/foo
 - imports (extracted from source files):
   - (bar) github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar/bar
   - (foo) github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar/foo
   - context
+  - fmt
 - imported types:
   - .error
+  - bar.Bar struct{ID string, Text string}
   - bar.BarService
   - context.Context
+  - foo.Foo struct{ID string, Text string}
   - foo.FooService
 - imported constants: []
 - imported variables: []

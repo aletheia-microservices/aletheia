@@ -3,6 +3,7 @@ package controlflow
 import (
 	"go/ast"
 
+	"github.com/golang-collections/collections/stack"
 	"golang.org/x/tools/go/cfg"
 
 	"analyzer/pkg/logger"
@@ -12,6 +13,59 @@ import (
 	"analyzer/pkg/types/objects"
 	"analyzer/pkg/utils"
 )
+
+type ControlflowContext struct {
+	pkg     *types.Package
+	service *service.Service
+	cfg     *stack.Stack
+}
+
+func NewControlflowContext(pkg *types.Package, service *service.Service, initialCfg *types.CFG) *ControlflowContext {
+	ctx := &ControlflowContext{
+		pkg:     pkg,
+		service: service,
+		cfg:     stack.New(),
+	}
+	ctx.PushCFG(initialCfg)
+	return ctx
+}
+
+func (ctx *ControlflowContext) String() string {
+	out := ""
+	if ctx.pkg != nil {
+		out += ctx.pkg.GetName()
+	}
+	if ctx.pkg != nil && ctx.service != nil {
+		out += "."
+	}
+	if ctx.service != nil {
+		out += ctx.service.GetName()
+	}
+	return out
+}
+
+func (ctx *ControlflowContext) GetPackage() *types.Package {
+	if ctx.pkg != nil {
+		return ctx.pkg
+	}
+	return ctx.pkg
+}
+
+func (ctx *ControlflowContext) GetService() *service.Service {
+	return ctx.service
+}
+
+func (ctx *ControlflowContext) CurrentCFG() *types.CFG {
+	return ctx.cfg.Peek().(*types.CFG)
+}
+
+func (ctx *ControlflowContext) PushCFG(new *types.CFG) {
+	ctx.cfg.Push(new)
+}
+
+func (ctx *ControlflowContext) PopCFG() *types.CFG {
+	return ctx.cfg.Pop().(*types.CFG)
+}
 
 // if func is anonymous than name is empty
 func GenerateInlineFuncCFG(inlineBlock *ast.BlockStmt, name string) *types.CFG {
@@ -28,7 +82,7 @@ func GenerateMethodCFG(parsedMethod *types.ParsedMethod) {
 
 	receiver := parsedMethod.GetReceiverIfExists()
 	if receiver != nil {
-		receiver := lookup.CreateObjectFromType(parsedMethod.Receiver.GetName(), parsedMethod.Receiver.GetType())
+		receiver := lookup.CreateObjectFromType(parsedMethod.GetReceiver().GetName(), parsedMethod.GetReceiver().GetType())
 		entryBlock.AddObject(receiver)
 		parsedCfg.HasReceiver = true
 		parsedCfg.ReceiverType = receiver.GetType()
@@ -49,10 +103,6 @@ func GenerateMethodCFG(parsedMethod *types.ParsedMethod) {
 			entryBlock.Objs = append(entryBlock.Objs, v)
 		}
 	}
-
-	/* if parsedMethod.GetName() == "ReadPostMedia" {
-		logger.Logger.Fatal("EXIT!")
-	} */
 
 	// note that parameters also include receiver
 	logger.Logger.Infof("[CFG] parsed CFG with receiver (%v) and (%d) initial variables for method (%s)", receiver, len(entryBlock.Objs), parsedMethod.String())
@@ -81,7 +131,7 @@ func GenerateMethodCFGForService(service *service.Service, parsedMethod *types.P
 	parsedMethod.SetParsedCFG(parsedCfg)
 	entryBlock := parsedCfg.GetEntryParsedBlock()
 
-	receiver := lookup.CreateObjectFromType(parsedMethod.Receiver.GetName(), parsedMethod.Receiver.GetType())
+	receiver := lookup.CreateObjectFromType(parsedMethod.GetReceiver().GetName(), parsedMethod.GetReceiver().GetType())
 	entryBlock.AddObject(receiver)
 
 	variable := receiver

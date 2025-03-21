@@ -67,8 +67,7 @@ func (service *Service) AttachAllPackageMethods() {
 	for _, parsedMethod := range service.GetPackage().GetAllParsedMethods() {
 		if !parsedMethod.HasAttachedService() {
 			service.PackageMethods[parsedMethod.Name] = parsedMethod
-			logger.Logger.Warnf("[PARSER] [%s] attached package method: %s", service.Name, parsedMethod.String())
-			//logger.Logger.Warnf("[PARSER] [%s] package methods list: %v", service.Name, service.PackageMethods)
+			logger.Logger.Warnf("[PARSER] [%s] attached package method: %s", service.Name, parsedMethod.LongString())
 		}
 	}
 }
@@ -130,7 +129,7 @@ func (service *Service) computeServiceFieldFromVariable(fieldVariable *objects.F
 func (service *Service) RegisterConstructor() {
 	method := service.GetPackage().GetParsedMethod(service.ConstructorName, "")
 	method.EnableConstructorFlag()
-	service.Constructor = method
+	service.SetConstructor(method)
 	logger.Logger.Infof("[PARSER] [%s] registered constructor (%s)", service.GetName(), service.ConstructorName)
 }
 

@@ -60,8 +60,8 @@ func getUnderlyingBasicObjectIfExists(obj objects.Object) (*objects.BasicObject,
 	return nil, false
 }
 
-func lookupVariableFromIdentIfExists(service *service.Service, block *types.Block, ident *ast.Ident) objects.Object {
-	logger.Logger.Debugf("[CFG - LOOKUP IDENT] (%s) looking up variable for ident (%s)", service.GetName(), ident.Name)
+func lookupVariableFromIdentIfExists(ctx *ControlflowContext, block *types.Block, ident *ast.Ident) objects.Object {
+	logger.Logger.Debugf("[CFG - LOOKUP IDENT] (%s) looking up variable for ident (%s)", ctx.String(), ident.Name)
 
 	if utils.IsBuiltInGoFunc(ident.Name) {
 		logger.Logger.Warnf("[CFG - LOOKUP IDENT] FIXME: IDENTIFIED BUILT IN FUNC FOR (%s)", ident.Name)
@@ -101,7 +101,7 @@ func lookupVariableFromIdentIfExists(service *service.Service, block *types.Bloc
 	// if its not a variable in the block then it can be either
 	// 1. a declared variable in the package
 	// 2. a ident from a import (which is dealt with in the switch case for the selectorExpr)
-	variable = service.GetPackage().GetDeclaredVariableOrConstIfExists(ident.Name)
+	variable = ctx.GetPackage().GetDeclaredVariableOrConstIfExists(ident.Name)
 	if variable != nil {
 		logger.Logger.Debugf("variable found in package declarations: %s", variable.String())
 		return variable
@@ -180,14 +180,14 @@ func findTypeFromSelectedImportedPackage(pkg *types.Package, typeExpr ast.Expr) 
 	return nil
 }
 
-func lookupObjectFromAstExpression(service *service.Service, method *types.ParsedMethod, block *types.Block, expr ast.Expr, expectedType gotypes.Type, inAssignment bool) (variable objects.Object, packageType *gotypes.PackageType) {
-	logger.Logger.Infof("[CFG - LOOKUP OBJ] (%s) visiting expression (%v)", utils.GetType(expr), expr)
-	if service.GetPackage().TypesInfo.Types[expr].Type != nil {
-		logger.Logger.Debugf("[CFG - LOOKUP OBJ GOTYPE] (%s) visiting go expression (%v)", utils.GetType(service.GetPackage().TypesInfo.Types[expr].Type), utils.GetType(service.GetPackage().TypesInfo.Types[expr].Type))
+func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, expr ast.Expr, expectedType gotypes.Type, inAssignment bool) (variable objects.Object, packageType *gotypes.PackageType) {
+	logger.Logger.Infof("[CFG - LOOKUP OBJ] (%T) visiting expression (%v)", expr, expr)
+	if ctx.GetPackage() != nil && ctx.GetPackage().GetTypeInfo(expr) != nil || ctx.GetService() != nil && ctx.GetPackage().GetTypeInfo(expr) != nil {
+		logger.Logger.Debugf("[CFG - LOOKUP OBJ GOTYPE] (%T) visiting go expression (%v)", ctx.GetPackage().GetTypeInfo(expr), ctx.GetPackage().GetTypeInfo(expr))
 	}
 	switch e := expr.(type) {
 	case *ast.CallExpr:
-		variable = parseAndSaveCall(service, method, block, e)
+		variable = parseAndSaveCall(ctx, method, block, e)
 		variable = objects.UnwrapTupleIfSingleElement(variable)
 		/* if _, ok := variable.(*objects.BasicVariable); ok {
 			logger.Logger.Fatalf("GOT CALL EXPR IN METHOD (%s): %v", method.String(), e.Fun)
@@ -204,32 +204,32 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			},
 		}
 	case *ast.Ident:
-		variable = lookupVariableFromIdentIfExists(service, block, e)
+		variable = lookupVariableFromIdentIfExists(ctx, block, e)
 		if variable != nil {
 			return variable, nil
 		}
 
-		packageType = lookupImportedPackageFromIdent(service, e)
+		packageType = lookupImportedPackageFromIdent(ctx.GetService(), e)
 		if packageType != nil {
 			return nil, packageType
 		}
 		logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected nil variable (or package) with type (%s) for expr (%v)", utils.GetType(expr), expr)
 		return nil, nil
 	case *ast.SelectorExpr:
-		variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+		variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 		if packageType != nil {
-			t := findTypeFromSelectedImportedPackage(service.GetPackage(), expr)
+			t := findTypeFromSelectedImportedPackage(ctx.GetPackage(), expr)
 			if t != nil {
 				variable = lookup.CreateObjectFromType("", t)
 				return variable, nil
 			}
 
-			importedPkg := service.GetPackage().GetImportedPackage(packageType.Path)
+			importedPkg := ctx.GetPackage().GetImportedPackage(packageType.Path)
 			if importedPkg.IsExternalPackage() {
 				// note that variable can be either inline and thus we need to compute if type not found
 				// in case of declarations with assignments, we don't reach this function
 				// e.g. inline "bson.D{{"id", payment.ID}}" in coll.FindOne(ctx, bson.D{{"id", payment.ID}})
-				t := lookup.LookupAndComputeTypesForGoTypes(service.GetPackage(), service.GetPackage().GetTypeInfo(e.Sel))
+				t := lookup.LookupAndComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e.Sel))
 				variable = lookup.CreateObjectFromType("", t)
 				return variable, nil
 			}
@@ -256,7 +256,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 
 	case *ast.KeyValueExpr:
 		if key, ok := e.Key.(*ast.Ident); ok {
-			variable, _ = lookupObjectFromAstExpression(service, method, block, e.Value, nil, false)
+			variable, _ = lookupObjectFromAstExpression(ctx, method, block, e.Value, nil, false)
 			fieldVariable := &objects.FieldObject{
 				ObjectInfo: &objects.ObjectInfo{
 					Name: key.Name,
@@ -296,8 +296,8 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			logger.Logger.Debugf("[COMPOSITE LIT - TYPE NIL] e.Type (%v), and e.Elts (%v)", e.Type, e.Elts)
 			structVariable := objects.NewStructObject(objects.NewObjectInfoInline(gotypes.NewStructType()))
 			for _, elt := range e.Elts {
-				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
-				logger.Logger.Debugf("[%s.%s] FOUND ELT VAR (%s) FOR COMPOSITE LIT (%v)", service.GetName(), method.GetName(), eltVar.String(), e)
+				eltVar, _ := lookupObjectFromAstExpression(ctx, method, block, elt, nil, false)
+				logger.Logger.Debugf("[%s.%s] FOUND ELT VAR (%s) FOR COMPOSITE LIT (%v)", ctx.GetService().GetName(), method.GetName(), eltVar.String(), e)
 				objects.WrapObjectToField(eltVar, structVariable, true)
 			}
 			logger.Logger.Infof("%s", structVariable.LongString())
@@ -305,7 +305,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 		}
 
 		logger.Logger.Debugf("[COMPOSITE LIT] e.Type (%v), and e.Elts (%v)", e.Type, e.Elts)
-		eType := lookup.ComputeTypeForAstExpr(service.GetFile(), e.Type)
+		eType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Type)
 		logger.Logger.Debugf("BEFORE eType = %s", eType.String())
 		eType, eTypeOrUserType := gotypes.UnwrapUserType(eType)
 		logger.Logger.Debugf("AFTER eType = %s", eType.String())
@@ -315,13 +315,13 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			structVariable := objects.NewStructObject(objects.NewObjectInfoInline(eTypeOrUserType))
 			logger.Logger.Debugf("????? struct Type = %s", structVariable.GetType().String())
 			for _, elt := range e.Elts {
-				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
+				eltVar, _ := lookupObjectFromAstExpression(ctx, method, block, elt, nil, false)
 				objects.WrapObjectToField(eltVar, structVariable, false)
 			}
 			logger.Logger.Infof("GOT STRUCT VARIABLE: %s", structVariable.String())
-			if userType, ok := eTypeOrUserType.(*gotypes.UserType); ok && userType.Name == "Post" && service.Name == "UploadService" && method.Name == "UploadPost" {
+			if userType, ok := eTypeOrUserType.(*gotypes.UserType); ok && userType.Name == "Post" && ctx.GetService().GetName() == "UploadService" && method.Name == "UploadPost" {
 				logger.Logger.Warnf("!!!!! struct Type = %s", structVariable.GetType().String())
-				logger.Logger.Warnf("[%s.%s()] eType [%s]: %s", service.Name, method.Name, utils.GetType(eType), eType.String())
+				logger.Logger.Warnf("[%s.%s()] eType [%s]: %s", ctx.GetService().GetName(), method.GetName(), utils.GetType(eType), eType.String())
 			}
 			return structVariable, nil
 		case *gotypes.ArrayType:
@@ -332,7 +332,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 				},
 			}
 			for _, elt := range e.Elts {
-				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
+				eltVar, _ := lookupObjectFromAstExpression(ctx, method, block, elt, nil, false)
 				arrayVariable.AddElement(eltVar)
 				eltVar.GetVariableInfo().AddParent(eltVar, arrayVariable)
 			}
@@ -345,23 +345,23 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 				},
 			}
 			for _, elt := range e.Elts {
-				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
+				eltVar, _ := lookupObjectFromAstExpression(ctx, method, block, elt, nil, false)
 				sliceVariable.AddElement(eltVar)
 				eltVar.GetVariableInfo().AddParent(eltVar, sliceVariable)
 			}
 			return sliceVariable, nil
 		default:
-			logger.Logger.Warnf("[CFG - LOOKUP VAR] [%s.%s] unsupported type for eType (%s): %s", service.GetName(), method.GetName(), utils.GetType(eType), eType.String())
+			logger.Logger.Warnf("[CFG - LOOKUP VAR] [%s.%s] unsupported type for eType (%s): %s", ctx.GetService().GetName(), method.GetName(), utils.GetType(eType), eType.String())
 		}
 		if selectorExpr, ok := e.Type.(*ast.SelectorExpr); ok {
-			logger.Logger.Debugf("[CFG - LOOKUP VAR] [%s.%s] lookup up selector (%v.%v)", service.GetName(), method.GetName(), selectorExpr.X, selectorExpr.Sel)
-			logger.Logger.Fatalf("[CFG - LOOKUP VAR] [%s.%s] lookup up selector (%v.%v)", service.GetName(), method.GetName(), selectorExpr.X, selectorExpr.Sel)
-			variable, packageType = lookupObjectFromAstExpression(service, method, block, selectorExpr, nil, inAssignment)
+			logger.Logger.Debugf("[CFG - LOOKUP VAR] [%s.%s] lookup up selector (%v.%v)", ctx.GetService().GetName(), method.GetName(), selectorExpr.X, selectorExpr.Sel)
+			logger.Logger.Fatalf("[CFG - LOOKUP VAR] [%s.%s] lookup up selector (%v.%v)", ctx.GetService().GetName(), method.GetName(), selectorExpr.X, selectorExpr.Sel)
+			variable, packageType = lookupObjectFromAstExpression(ctx, method, block, selectorExpr, nil, inAssignment)
 			if variable == nil {
 				logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected nil variable for expr (%s): %v", utils.GetType(e.Type), e.Type)
 			}
 			for _, elt := range e.Elts {
-				eltVar, _ := lookupObjectFromAstExpression(service, method, block, elt, nil, false)
+				eltVar, _ := lookupObjectFromAstExpression(ctx, method, block, elt, nil, false)
 				if sliceVariable, ok := variable.(*objects.SliceObject); ok {
 					sliceVariable.AddElement(eltVar)
 				} else if arrayVariable, ok := variable.(*objects.ArrayObject); ok {
@@ -375,14 +375,14 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			logger.Logger.Fatalf("[CFG - LOOKUP VAR] nil variable for composite lit (e.Type = %s): %v", utils.GetType(e.Type), e)
 		}
 	case *ast.TypeAssertExpr:
-		variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+		variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 
 		// in a switch case we have nil types for e.g. f.(type)
 		var assertedType gotypes.Type
 		if e.Type == nil {
 			logger.Logger.Debugf("[CFG - LOOKUP VAR] found nil type in TypeAssertExpr: %v", e)
 		} else {
-			assertedType = lookup.ComputeTypeForAstExpr(service.File, e.Type)
+			assertedType = lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Type)
 		}
 		if interfaceVariable, ok := variable.(*objects.InterfaceObject); ok {
 			// FIXME: it is creating two duplicates:
@@ -405,7 +405,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected type (%s) for variable (%s)", utils.GetType(variable), variable.String())
 		}
 	case *ast.IndexExpr:
-		variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+		variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 		if variable == nil {
 			logger.Logger.Fatalf("[CFG - LOOKUP VAR] nil variable for index expr: %v (e.X type = %s)", e, utils.GetType(e.X))
 		}
@@ -426,7 +426,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			}
 		}
 		if mapVar, ok := variable.(*objects.MapObject); ok {
-			key, _ := lookupObjectFromAstExpression(service, method, block, e.Index, nil, false)
+			key, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, false)
 			variable, ok = mapVar.KeyValues[key]
 
 			if !ok {
@@ -439,23 +439,23 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 
 	case *ast.StarExpr: // e.g. *post
 		if !objOnExpr(e, block) {
-			t := lookup.LookupTypesForGoTypes(service.GetPackage(), service.GetPackage().TypesInfo.Types[e].Type)
+			t := lookup.LookupTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().TypesInfo.Types[e].Type)
 			return lookup.CreateObjectFromType("", t), nil
 		}
 
-		variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+		variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 		if ptrVariable, ok := variable.(*objects.PointerObject); ok {
 			return ptrVariable.PointerTo, packageType
 		}
 
-		logger.Logger.Fatalf("unknown token (%v) for star expr %v: [%s] %v", e.Star, e, utils.GetType(service.GetPackage().TypesInfo.Types[e].Type), service.GetPackage().TypesInfo.Types[e])
+		logger.Logger.Fatalf("unknown token (%v) for star expr %v: [%s] %v", e.Star, e, utils.GetType(ctx.GetPackage().TypesInfo.Types[e].Type), ctx.GetPackage().TypesInfo.Types[e])
 
 	case *ast.UnaryExpr:
-		logger.Logger.Debugf("[CFG - LOOKUP VAR] UNARY EXPR for [%s]: %v", utils.GetType(service.GetPackage().TypesInfo.Types[e].Type), service.GetPackage().TypesInfo.Types[e])
+		logger.Logger.Debugf("[CFG - LOOKUP VAR] UNARY EXPR for [%s]: %v", utils.GetType(ctx.GetPackage().TypesInfo.Types[e].Type), ctx.GetPackage().TypesInfo.Types[e])
 
 		if e.Op == token.AND { // e.g. &post
 			// creates a pointer to the variable
-			variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+			variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 			ptrType := &gotypes.PointerType{
 				PointerTo: variable.GetType(),
 			}
@@ -471,11 +471,11 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			return ptrVariable, packageType
 		} else if e.Op == token.MUL { // e.g. *post
 			// dereferences the pointer and gets the value of the variable
-			variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+			variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 			if ptrVariable, ok := variable.(*objects.PointerObject); ok {
 				return ptrVariable.PointerTo, packageType
 			}
-			logger.Logger.Fatalf("[LOOKUP] [%s] unexpected variable (%s) for unary token '*': %s", service.GetName(), utils.GetType(variable), variable.LongString())
+			logger.Logger.Fatalf("[LOOKUP] [%s] unexpected variable (%s) for unary token '*': %s", ctx.GetService().GetName(), utils.GetType(variable), variable.LongString())
 			/* addrType := &gotypes.AddressType{
 				AddressOf: variable.GetType(),
 			}
@@ -490,7 +490,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			variable.GetVariableInfo().AddParent(variable, pointerVariable)
 			return pointerVariable, packageType */
 		} else if e.Op == token.NOT { // e.g. !exists
-			variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+			variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 			if basicVariable, ok := variable.(*objects.BasicObject); ok {
 				basicVariable.GetBasicType().InvertBool()
 			} else {
@@ -498,27 +498,27 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			}
 			return variable, packageType
 		} else if e.Op == token.ARROW { // e.g. err_post_channel <- err
-			variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+			variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 			logger.Logger.Warnf("[LOOKUP] ignoring unary expr with token (%v): %v", e.Op, e)
 			return variable, packageType
 		}
 
 		if !objOnExpr(e, block) {
-			t := lookup.LookupTypesForGoTypes(service.GetPackage(), service.GetPackage().TypesInfo.Types[e].Type)
+			t := lookup.LookupTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().TypesInfo.Types[e].Type)
 			return lookup.CreateObjectFromType("", t), nil
 		}
 
-		logger.Logger.Fatalf("unknown token (%v) for unary expr %v: [%s] %v", e.Op, e, utils.GetType(service.GetPackage().TypesInfo.Types[e].Type), service.GetPackage().TypesInfo.Types[e])
+		logger.Logger.Fatalf("unknown token (%v) for unary expr %v: [%s] %v", e.Op, e, utils.GetType(ctx.GetPackage().TypesInfo.Types[e].Type), ctx.GetPackage().TypesInfo.Types[e])
 
 	case *ast.BinaryExpr:
 		if !objOnExpr(e, block) {
-			t := lookup.LookupTypesForGoTypes(service.GetPackage(), service.GetPackage().TypesInfo.Types[e].Type)
+			t := lookup.LookupTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().TypesInfo.Types[e].Type)
 			return lookup.CreateObjectFromType("", t), nil
 		}
 
 		if e.Op == token.ADD || e.Op == token.SUB || e.Op == token.QUO || e.Op == token.MUL || e.Op == token.AND { // "+", "-", "/", "*", "&"
-			objX, _ := lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
-			objY, _ := lookupObjectFromAstExpression(service, method, block, e.Y, nil, inAssignment)
+			objX, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
+			objY, _ := lookupObjectFromAstExpression(ctx, method, block, e.Y, nil, inAssignment)
 			typeX := objX.GetType()
 			typeY := objX.GetType()
 			if typeX.IsSameType(typeY) {
@@ -539,7 +539,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 		} else if e.Op == token.LEQ || e.Op == token.GEQ || e.Op == token.NEQ || e.Op == token.EQL { // "<=", ">=", "!=", "=="
 
 			// FIXME!!!
-			variable_x, t_x := lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+			variable_x, t_x := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 			address_variable_x := &objects.AddressObject{
 				AddressOf: variable_x,
 				ObjectInfo: &objects.ObjectInfo{
@@ -552,7 +552,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			}
 			variable_x.GetVariableInfo().AddParent(variable_x, address_variable_x)
 
-			variable_y, t_y := lookupObjectFromAstExpression(service, method, block, e.Y, nil, inAssignment)
+			variable_y, t_y := lookupObjectFromAstExpression(ctx, method, block, e.Y, nil, inAssignment)
 			address_variable_y := &objects.AddressObject{
 				AddressOf: variable_y,
 				ObjectInfo: &objects.ObjectInfo{
@@ -575,21 +575,21 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			logger.Logger.Warnf("FIXMEEEEEEE!!!!!!!!")
 		} else {
 			logger.Logger.Fatalf("unknown token %v for binary expr %v", e.Op, e)
-			variable, packageType = lookupObjectFromAstExpression(service, method, block, e.X, nil, inAssignment)
+			variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 		}
 	case *ast.SliceExpr: //e.g. timestamp_hex[:10]
 		//TODO
-		variable, _ := lookupObjectFromAstExpression(service, method, block, e.X, nil, false)
+		variable, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, false)
 		variable.GetVariableInfo().Id = objects.VARIABLE_INLINE_ID
 		return variable, nil
 
 	case *ast.ChanType:
-		variable, _ := lookupObjectFromAstExpression(service, method, block, e.Value, nil, false)
+		variable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Value, nil, false)
 		variable.GetVariableInfo().Id = objects.VARIABLE_INLINE_ID
 		return variable, nil
 
 	case *ast.ArrayType: //e.g. []rune
-		elemtsType := lookup.ComputeTypeForAstExpr(service.File, e.Elt)
+		elemtsType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Elt)
 
 		// when length is not specified then e.len is nil
 		var numElemsInt int
@@ -597,7 +597,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			logger.Logger.Warnf("e.LEN IS NIL!")
 			numElemsInt = -1
 		} else {
-			numElemsType := lookup.ComputeTypeForAstExpr(service.File, e.Len)
+			numElemsType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Len)
 			numElemsInt, _ = strconv.Atoi(numElemsType.GetBasicValue())
 		}
 
@@ -611,8 +611,8 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			},
 		}
 	case *ast.MapType: //e.g. make(map[string]PriceConfig)
-		keyType := lookup.ComputeTypeForAstExpr(service.File, e.Key)
-		valueType := lookup.ComputeTypeForAstExpr(service.File, e.Value)
+		keyType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Key)
+		valueType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Value)
 		variable = &objects.MapObject{
 			KeyValues: make(map[objects.Object]objects.Object, 0),
 			ObjectInfo: &objects.ObjectInfo{
@@ -624,7 +624,7 @@ func lookupObjectFromAstExpression(service *service.Service, method *types.Parse
 			},
 		}
 	case *ast.ParenExpr: // e.g. "(weight - cp.InitialWeight)" in: price += (weight - cp.InitialWeight) * cp.WithinPrice
-		variable, _ := lookupObjectFromAstExpression(service, method, block, e.X, nil, false)
+		variable, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, false)
 		variable.GetVariableInfo().Id = objects.VARIABLE_INLINE_ID
 		return variable, nil
 	case *ast.FuncLit:

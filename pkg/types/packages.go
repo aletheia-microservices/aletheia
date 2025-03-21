@@ -73,6 +73,16 @@ func getLastWordAfterSlash(input string) string {
 	return input
 }
 
+func (p *Package) GetUnparsedMethods() []*ParsedMethod {
+	var lst []*ParsedMethod
+	for _, m := range p.ParsedMethods {
+		if !m.IsParsed() {
+			lst = append(lst, m)
+		}
+	}
+	return lst
+}
+
 // AddImportedPackageByAliasIfNotExists adds an entry that maps the imported alias to the loaded package
 // The ImportedPackagesByAlias can have many different keys from different source files that map to the same package
 // e.g. in "encoding/json" the alias is just "json"
@@ -170,7 +180,7 @@ func (p *Package) GetAllParsedMethods() []*ParsedMethod {
 
 func (p *Package) GetParsedMethod(methodName string, recvTypeName string) *ParsedMethod {
 	for _, m := range p.ParsedMethods {
-		if m.Name == methodName && (m.Receiver == nil || m.Receiver.GetType() == nil || m.Receiver.GetType().GetName() == recvTypeName) {
+		if m.Name == methodName && (!m.HasReceiver() || m.GetReceiver().GetType() == nil || m.GetReceiver().GetType().GetName() == recvTypeName) {
 			if m.ParsedCfg == nil {
 				logger.Logger.Warnf("[TYPES PACKAGES] encountered nil cfg - method (%s) is not yet parsed", methodName)
 			}
@@ -185,7 +195,7 @@ func (p *Package) GetParsedMethodIfExists(methodName string, recvTypeName string
 	// only internal methods are parsed
 	// if method is not found the it must be from an external package
 	for _, m := range p.ParsedMethods {
-		if m.Name == methodName && (m.Receiver == nil || m.Receiver.GetType() == nil || m.Receiver.GetType().GetName() == recvTypeName) {
+		if m.Name == methodName && (!m.HasReceiver() || m.GetReceiver().GetType() == nil || m.GetReceiver().GetType().GetName() == recvTypeName) {
 			lst := ""
 			for _, m := range p.ParsedMethods {
 				lst += fmt.Sprintf("\t\t\t\t\t\t - %s\n", m)
@@ -201,6 +211,10 @@ func (p *Package) GetParsedMethodIfExists(methodName string, recvTypeName string
 
 func (p *Package) String() string {
 	return p.Name
+}
+
+func (p *Package) GetAllDeclaredTypes() map[string]gotypes.Type {
+	return p.DeclaredTypes
 }
 
 func (p *Package) GetDeclaredType(name string) gotypes.Type {
@@ -236,6 +250,9 @@ func (p *Package) GetImportedPackage(pkgPath string) *Package {
 }
 
 func (p *Package) GetTypeInfo(expr ast.Expr) golangtypes.Type {
+	if p.TypesInfo == nil {
+		logger.Logger.Fatalf("[PACKAGE] unexpected nil types info for package: %s", p.String())
+	}
 	return p.TypesInfo.TypeOf(expr)
 }
 
@@ -356,6 +373,14 @@ func (p *Package) GetDeclaredTypeIfExists(typeNameIdent *ast.Ident) gotypes.Type
 		}
 	}
 	logger.Logger.Warnf("[PACKAGE] unknown declared type (%s) in package (%s)", typeNameIdent.Name, p.Name)
+	return nil
+}
+
+func (p *Package) GetDeclaredTypeByName(name string) gotypes.Type {
+	if t, ok := p.DeclaredTypes[name]; ok {
+		return t
+	}
+	logger.Logger.Fatalf("[PACKAGE] unknown declared type (%s) for package: %s", name, p.String())
 	return nil
 }
 

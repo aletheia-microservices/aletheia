@@ -1,9 +1,6 @@
 package app
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/golang-collections/collections/stack"
 
 	"analyzer/pkg/controlflow"
@@ -17,14 +14,14 @@ import (
 	"analyzer/pkg/types/gotypes"
 )
 
-func (app *App) RegisterDatastoreInstances(instances []datastores.DatabaseInstance) {
+func (app *App) RegisterDatastores(instances []datastores.DatabaseInstance) {
 	for _, instance := range instances {
 		app.Databases[instance.GetName()] = instance
 		logger.Logger.Infof("[APP] registered database instance %s", instance.String())
 	}
 }
 
-func (app *App) RegisterServiceNodes(servicesInfo []*frameworks.ServiceInfo) {
+func (app *App) RegisterServices(servicesInfo []*frameworks.ServiceInfo) {
 	app.createServiceNodes(servicesInfo)
 	app.matchServiceEdges()
 	app.buildServiceInfo()
@@ -85,7 +82,7 @@ func (app *App) buildServiceInfo() {
 	}
 }
 
-func (app *App) BuildServiceNodes() {
+func (app *App) BuildServices() {
 	// 1. attach all methods to corresponding services
 	for _, node := range app.Services {
 		serviceImplementedMethods := node.AttachParsedMethods()
@@ -96,27 +93,6 @@ func (app *App) BuildServiceNodes() {
 	// 2. attach all package methods that have no service assigned
 	for _, node := range app.Services {
 		node.AttachAllPackageMethods()
-	}
-
-	var parser = func(node *service.Service, methods map[string]*types.ParsedMethod, visibility string) {
-		for _, method := range methods {
-			// constructors are already parsed
-			if !method.IsConstructor() {
-				fmt.Println("----------------------------------------------------------------------------------------------------------------------------------")
-				fmt.Println("----------------------------------------------------------------------------------------------------------------------------------")
-				logger.Logger.Infof("[PARSER - %s] [%s] %s", strings.ToUpper(visibility), node.GetName(), method)
-				fmt.Println("----------------------------------------------------------------------------------------------------------------------------------")
-				controlflow.ParseServiceMethodCFG(node, method)
-			}
-			fmt.Println()
-		}
-	}
-
-	// 3. parse all attached methods for each service
-	for _, node := range app.Services {
-		parser(node, node.ExposedMethods, "exposed")
-		parser(node, node.InternalMethods, "internal") // internal already contains workers
-		parser(node, node.PackageMethods, "package")
 	}
 }
 
@@ -136,7 +112,7 @@ func (app *App) loadFields(servicesInfo []*frameworks.ServiceInfo) {
 			}
 		}
 
-		controlflow.ParseServiceMethodCFG(service, service.GetConstructor())
+		controlflow.ParseMethodCFG(service.GetPackage(), service, service.GetConstructor())
 		logger.Logger.Infof("[APP] loading fields for entry block: %s", entryBlock.String())
 		serviceImplVar := entryBlock.GetFirstResult()
 		service.SetImplVariableWithType(serviceImplVar)

@@ -1,7 +1,12 @@
-(*FooServiceImpl).Foo(ctx context.Context, text string): []
+(*Foo).GetID(): []
+
+(*Foo).GetText(): []
+
+(*FooServiceImpl).Foo(ctx context.Context, text string):
+- DATASTORE CALL @ foo_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
 
 .Int64ToString(i int64): []
 
-.NewFooServiceImpl(ctx context.Context): []
+.NewFooServiceImpl(ctx context.Context, fooDb NoSQLDatabase): []
 
 .StringToInt64(s string): []
