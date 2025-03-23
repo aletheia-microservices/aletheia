@@ -1,0 +1,9 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.ExprStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_app.StockServiceImpl struct{stock_db NoSQLDatabase}) ---> depends on: {shopping_app.StockServiceImpl struct{stock_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] quantity int ---> depends on: {}
+	 [4] collection NoSQLCollection {database = stock_database, collection = stock_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] stock shopping_app.Stock struct{ProductID string, Quantity int} ---> depends on: {ProductID string, Quantity int}
+

@@ -1,0 +1,33 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers 4 int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] message shopping_simple.ProductQueueMessage struct{ProductID string, Remove bool} ---> depends on: {ProductID string}
+	 [3] collection NoSQLCollection {database = cart_database, collection = cart_database} ---> depends on: {}
+	 [4] _ .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {}
+	 [6] update primitive.D ---> depends on: {struct{Key "$dec" string, Key "$dec" string, Value primitive.D, Value primitive.D}, struct{Key "$pull" string, Key "$pull" string, Value primitive.D, Value primitive.D}}
+	 [7] updated int ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers 4 int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] message shopping_simple.ProductQueueMessage struct{ProductID string, Remove bool} ---> depends on: {ProductID string}
+	 [3] collection NoSQLCollection {database = cart_database, collection = cart_database} ---> depends on: {}
+	 [4] _ .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {}
+	 [6] update primitive.D ---> depends on: {struct{Key "$dec" string, Key "$dec" string, Value primitive.D, Value primitive.D}, struct{Key "$pull" string, Key "$pull" string, Value primitive.D, Value primitive.D}}
+	 [7] updated int ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers 4 int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] message shopping_simple.ProductQueueMessage struct{ProductID string, Remove bool} ---> depends on: {ProductID string}
+	 [3] collection NoSQLCollection {database = cart_database, collection = cart_database} ---> depends on: {}
+	 [4] _ .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {}
+	 [6] update primitive.D ---> depends on: {struct{Key "$dec" string, Key "$dec" string, Value primitive.D, Value primitive.D}, struct{Key "$pull" string, Key "$pull" string, Value primitive.D, Value primitive.D}}
+	 [7] updated int ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+

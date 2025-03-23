@@ -1,0 +1,13 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] u (*employee_app.FrontendImpl struct{employeeService employee_app.EmployeeService, freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService}) ---> depends on: {employee_app.FrontendImpl struct{employeeService employee_app.EmployeeService, freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] freelancerID string ---> depends on: {}
+	 [6] rate string ---> depends on: {}
+	 [7] terms string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag string} ---> depends on: {}
+	 [9] freelancer employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+

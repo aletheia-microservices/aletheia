@@ -5,6 +5,8 @@ import (
 	"sort"
 	"strings"
 
+	"analyzer/pkg/logger"
+	"analyzer/pkg/types"
 	"analyzer/pkg/utils"
 )
 
@@ -13,6 +15,7 @@ import (
 // -------
 
 func (app *App) Dump() {
+	app.DumpControlflowBlocksObjects()
 	app.dumpDiGraph()
 	app.dumpYamlPackages()
 	app.dumpYamlServices()
@@ -25,6 +28,43 @@ func (app *App) PreDump() {
 	app.dumpYamlPackages()
 	//app.dumpYamlServices()
 	//app.dumpYamlCalls()
+}
+
+var visitedBlocks map[*types.Block]bool
+
+func (app *App) DumpControlflowBlocksObjects() {
+	visitedBlocks = make(map[*types.Block]bool)
+	for _, pkg := range app.GetAllAppPackages() {
+		for _, method := range pkg.GetAllParsedMethods() {
+			entryBlock := method.GetParsedCfg().GetEntryParsedBlock()
+			// methodCFGStr := "CFG:\n" + method.GetParsedCfg().LongString() + "\n-----------------\n"
+			//logger.Logger.Debug(methodCFGStr)
+			methodCFGStr := recurseCFGBlocks(method, entryBlock)
+			filepath := "controlflow/" + pkg.GetName() + "/"
+			if method.HasReceiver() {
+				filepath += method.GetReceiver().GetTypeName() + "."
+			}
+			filepath += method.GetName()
+			utils.DumpOutput(methodCFGStr, app.Name, filepath)
+		}
+	}
+}
+
+func recurseCFGBlocks(method *types.ParsedMethod, block *types.Block) string {
+	if visitedBlocks[block] {
+		return ""
+	}
+	visitedBlocks[block] = true
+
+	repr := block.LongStringWithObjects() + "\n\n"
+	logger.Logger.Infof(block.LongStringWithObjects() + "\n\n")
+
+	for idx, succ := range block.GetSuccs() {
+		logger.Logger.Debugf("VISITING SUCCESSOR %d", idx)
+		parsedSucc := method.ParsedCfg.GetParsedBlockAtIndex(succ.Index)
+		repr += recurseCFGBlocks(method, parsedSucc)
+	}
+	return repr
 }
 
 func (app *App) dumpDiGraph() {

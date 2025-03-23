@@ -1,0 +1,37 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*employee_app.InternServiceImpl struct{internsDB NoSQLDatabase}) ---> depends on: {employee_app.InternServiceImpl struct{internsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] internID string ---> depends on: {}
+	 [4] mentorID string ---> depends on: {}
+	 [5] stipend string ---> depends on: {}
+	 [6] duration string ---> depends on: {}
+	 [7] employee employee_app.Intern struct{EmployeeID string, InternID string, Stipend string, Duration string, Mentor string} ---> depends on: {Duration string, EmployeeID string, InternID string, Mentor string, Stipend string}
+	 [8] collection NoSQLCollection {database = interns, collection = interns} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.InternServiceImpl struct{internsDB NoSQLDatabase}) ---> depends on: {employee_app.InternServiceImpl struct{internsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] internID string ---> depends on: {}
+	 [4] mentorID string ---> depends on: {}
+	 [5] stipend string ---> depends on: {}
+	 [6] duration string ---> depends on: {}
+	 [7] employee employee_app.Intern struct{EmployeeID string, InternID string, Stipend string, Duration string, Mentor string} ---> depends on: {Duration string, EmployeeID string, InternID string, Mentor string, Stipend string}
+	 [8] collection NoSQLCollection {database = interns, collection = interns} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.InternServiceImpl struct{internsDB NoSQLDatabase}) ---> depends on: {employee_app.InternServiceImpl struct{internsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] internID string ---> depends on: {}
+	 [4] mentorID string ---> depends on: {}
+	 [5] stipend string ---> depends on: {}
+	 [6] duration string ---> depends on: {}
+	 [7] employee employee_app.Intern struct{EmployeeID string, InternID string, Stipend string, Duration string, Mentor string} ---> depends on: {Duration string, EmployeeID string, InternID string, Mentor string, Stipend string}
+	 [8] collection NoSQLCollection {database = interns, collection = interns} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+

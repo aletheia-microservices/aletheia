@@ -1,0 +1,28 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}) ---> depends on: {coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] couponID int ---> depends on: {}
+	 [3] category string ---> depends on: {}
+	 [4] coupon coupons_app.Coupon struct{CouponID int, Category string, NumClaims int} ---> depends on: {Category string}
+	 [5] collection NoSQLCollection {database = coupons, collection = Coupon} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}) ---> depends on: {coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] couponID int ---> depends on: {}
+	 [3] category string ---> depends on: {}
+	 [4] coupon coupons_app.Coupon struct{CouponID int, Category string, NumClaims int} ---> depends on: {Category string}
+	 [5] collection NoSQLCollection {database = coupons, collection = Coupon} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}) ---> depends on: {coupons_app.CouponServiceImpl struct{couponsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] couponID int ---> depends on: {}
+	 [3] category string ---> depends on: {}
+	 [4] coupon coupons_app.Coupon struct{CouponID int, Category string, NumClaims int} ---> depends on: {Category string}
+	 [5] collection NoSQLCollection {database = coupons, collection = Coupon} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+

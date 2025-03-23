@@ -83,19 +83,34 @@ func (block *Block) VarsString() string {
 	return s + "]"
 }
 
-func (block *Block) ListObjectsString() string {
-	s := fmt.Sprintf("[#%d, %s] BLOCK:\n", block.GetIndex(), block.Block.Kind)
+func (block *Block) LongStringWithObjects() string {
+	s := fmt.Sprintf("[BLOCK, #%d, %s] NODES = ", block.GetIndex(), block.Block.Kind)
+
+	nodesStrings := make([]string, len(block.GetNodes()))
+	for j, d := range block.GetNodes() {
+		nodesStrings[j] = fmt.Sprintf("%T", d)
+	}
+	s += "[" + strings.Join(nodesStrings, ", ") + "]"
+
+	s += "; SUCCS = "
+	succsString := make([]string, len(block.GetSuccs()))
+	for j, s := range block.GetSuccs() {
+		succsString[j] = fmt.Sprintf("Block #%d", s.Index)
+	}
+	s += "[" + strings.Join(succsString, ", ") + "]\n"
+
 	for i, v := range block.Objs {
 		deps := v.GetDependencies()
-		depsStr := "None"
+		depsStr := "{}"
 		if len(deps) > 0 {
 			depStrings := make([]string, len(deps))
 			for j, d := range deps {
 				depStrings[j] = fmt.Sprintf("%v", d)
 			}
 			depsStr = strings.Join(depStrings, ", ")
+			depsStr = "{" + depsStr + "}"
 		}
-		
+
 		s += fmt.Sprintf("\t [%d] %s ---> depends on: %v", i, v.String(), depsStr)
 		if i < len(block.Objs)-1 {
 			s += "\n"

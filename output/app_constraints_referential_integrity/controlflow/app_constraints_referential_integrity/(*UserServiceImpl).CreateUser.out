@@ -1,0 +1,31 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*app_constraints_referential_integrity.UserServiceImpl struct{usersDB NoSQLDatabase}) ---> depends on: {app_constraints_referential_integrity.UserServiceImpl struct{usersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID string ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] timestamp int64 ---> depends on: {}
+	 [5] user app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64} ---> depends on: {ReqID string, Timestamp int64, Username string}
+	 [6] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*app_constraints_referential_integrity.UserServiceImpl struct{usersDB NoSQLDatabase}) ---> depends on: {app_constraints_referential_integrity.UserServiceImpl struct{usersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID string ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] timestamp int64 ---> depends on: {}
+	 [5] user app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64} ---> depends on: {ReqID string, Timestamp int64, Username string}
+	 [6] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*app_constraints_referential_integrity.UserServiceImpl struct{usersDB NoSQLDatabase}) ---> depends on: {app_constraints_referential_integrity.UserServiceImpl struct{usersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID string ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] timestamp int64 ---> depends on: {}
+	 [5] user app_constraints_referential_integrity.User struct{ReqID string, UserID string, Username string, Timestamp int64} ---> depends on: {ReqID string, Timestamp int64, Username string}
+	 [6] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+

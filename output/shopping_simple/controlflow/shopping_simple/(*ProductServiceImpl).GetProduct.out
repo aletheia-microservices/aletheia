@@ -1,0 +1,87 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] err .error ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+

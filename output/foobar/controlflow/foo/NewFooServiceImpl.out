@@ -1,0 +1,5 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] fooDb NoSQLDatabase ---> depends on: {}
+	 [2] d (*foo.FooServiceImpl struct{fooDb NoSQLDatabase}) ---> depends on: {foo.FooServiceImpl struct{fooDb NoSQLDatabase}}
+

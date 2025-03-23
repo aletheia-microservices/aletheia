@@ -1,0 +1,8 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] freelancerService employee_app.FreelancerService ---> depends on: {}
+	 [2] fulltimeService employee_app.FulltimeService ---> depends on: {}
+	 [3] internService employee_app.InternService ---> depends on: {}
+	 [4] employeesDB NoSQLDatabase ---> depends on: {}
+	 [5] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+

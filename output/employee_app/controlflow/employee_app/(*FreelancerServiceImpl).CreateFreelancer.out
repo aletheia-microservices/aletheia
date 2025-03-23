@@ -1,0 +1,34 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] freelancerID string ---> depends on: {}
+	 [4] rate string ---> depends on: {}
+	 [5] terms string ---> depends on: {}
+	 [6] employee employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string} ---> depends on: {EmployeeID string, FreelancerID string, Rate string, Terms string}
+	 [7] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] freelancerID string ---> depends on: {}
+	 [4] rate string ---> depends on: {}
+	 [5] terms string ---> depends on: {}
+	 [6] employee employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string} ---> depends on: {EmployeeID string, FreelancerID string, Rate string, Terms string}
+	 [7] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] freelancerID string ---> depends on: {}
+	 [4] rate string ---> depends on: {}
+	 [5] terms string ---> depends on: {}
+	 [6] employee employee_app.Freelancer struct{EmployeeID string, FreelancerID string, Rate string, Terms string} ---> depends on: {EmployeeID string, FreelancerID string, Rate string, Terms string}
+	 [7] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+

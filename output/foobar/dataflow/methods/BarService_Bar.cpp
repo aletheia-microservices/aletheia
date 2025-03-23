@@ -31,7 +31,7 @@
 [_____5] (Reference BasicType) ref <"Frontend" string> @ FrontendService
 
     --> w-tainted: write(bar_db.Bar) {1}
-[0] (StructObject UserType) bar bar.Bar struct{ID "id" string, Text string}
+[0] (StructObject UserType) bar bar.Bar struct{ID "id" string, Text string, Flag bool}
      --> w-tainted: write(bar_db.Bar.ID) {1}
 [_1] (FieldObject FieldType) ID "id" string
       --> w-tainted: write(bar_db.Bar.ID) {1}

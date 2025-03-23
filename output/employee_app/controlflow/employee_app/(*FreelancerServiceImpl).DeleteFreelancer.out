@@ -1,0 +1,41 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {struct{Key "employeeID" string, Key "employeeID" string, Value string, Value string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {struct{Key "employeeID" string, Key "employeeID" string, Value string, Value string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}) ---> depends on: {employee_app.FreelancerServiceImpl struct{freelancersDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = freelancers, collection = freelancers} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {struct{Key "employeeID" string, Key "employeeID" string, Value string, Value string}}
+	 [6] err .error ---> depends on: {}
+

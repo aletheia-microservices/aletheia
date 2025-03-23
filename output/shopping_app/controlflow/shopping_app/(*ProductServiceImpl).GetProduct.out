@@ -1,0 +1,13 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_app.ProductServiceImpl struct{product_db NoSQLDatabase}) ---> depends on: {shopping_app.ProductServiceImpl struct{product_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] productID string ---> depends on: {}
+	 [3] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = product_database, collection = product_collection} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "productID" string, Key "productID" string, Value string, Value string}}
+	 [7] result NoSQLCursor {database = product_database, collection = product_collection} ---> depends on: {product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string}}
+	 [8] _ .error ---> depends on: {}
+	 [9] _ bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+

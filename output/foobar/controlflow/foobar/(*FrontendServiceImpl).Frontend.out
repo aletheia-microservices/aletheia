@@ -1,0 +1,41 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] d (*foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}) ---> depends on: {foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] foo foo.Foo struct{ID string, Text string} ---> depends on: {Text string}
+	 [3] err1 .error ---> depends on: {}
+	 [4] bar bar.Bar struct{ID string, Text string, Flag bool} ---> depends on: {Text string}
+	 [5] err2 .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] d (*foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}) ---> depends on: {foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] foo foo.Foo struct{ID string, Text string} ---> depends on: {Text string}
+	 [3] err1 .error ---> depends on: {}
+	 [4] bar bar.Bar struct{ID string, Text string, Flag bool} ---> depends on: {Text string}
+	 [5] err2 .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] d (*foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}) ---> depends on: {foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] foo foo.Foo struct{ID string, Text string} ---> depends on: {Text string}
+	 [3] err1 .error ---> depends on: {}
+	 [4] bar bar.Bar struct{ID string, Text string, Flag bool} ---> depends on: {Text string}
+	 [5] err2 .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] d (*foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}) ---> depends on: {foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] foo foo.Foo struct{ID string, Text string} ---> depends on: {Text string}
+	 [3] err1 .error ---> depends on: {}
+	 [4] bar bar.Bar struct{ID string, Text string, Flag bool} ---> depends on: {Text string}
+	 [5] err2 .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] d (*foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}) ---> depends on: {foobar.FrontendServiceImpl struct{barService bar.BarService, fooService foo.FooService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] foo foo.Foo struct{ID string, Text string} ---> depends on: {Text string}
+	 [3] err1 .error ---> depends on: {}
+	 [4] bar bar.Bar struct{ID string, Text string, Flag bool} ---> depends on: {Text string}
+	 [5] err2 .error ---> depends on: {}
+	 [6] out string ---> depends on: {"%s, %s" string, Text string, Text string, "%s, %s" string, Text string, Text string}
+

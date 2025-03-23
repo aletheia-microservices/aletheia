@@ -4,12 +4,13 @@ BAR_DB:
 - dependencies: []
 - schema:
   - fields:
-    - _: bar.Bar struct{ID "id" string, Text string}
-    - Bar: bar.Bar struct{ID "id" string, Text string}
+    - _: bar.Bar struct{ID "id" string, Text string, Flag bool}
+    - Bar: bar.Bar struct{ID "id" string, Text string, Flag bool}
   - unfolded_fields:
-    - Bar: bar.Bar struct{ID "id" string, Text string}
+    - Bar: bar.Bar struct{ID "id" string, Text string, Flag bool}
     - Bar.ID: '"id" string'
     - Bar.Text: string
+    - Bar.Flag: bool
   - constraints:
     - REFERENCE(Bar.Text --> Foo.Text) [+]
     - REFERENCE(Bar --> Foo.Text) [+]

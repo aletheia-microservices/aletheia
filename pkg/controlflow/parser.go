@@ -18,7 +18,6 @@ import (
 	"analyzer/pkg/utils"
 )
 
-
 func ParseMethodCFG(pkg *types.Package, service *service.Service, method *types.ParsedMethod) {
 	if method.IsParsed() { // sanity check
 		logger.Logger.Warnf("[CFG] [%s] method ignoring parsed method: %s", pkg.String(), method.String())
@@ -64,10 +63,10 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	var rangeKeyType gotypes.Type
 	var rangeValueType gotypes.Type
 	var rangeObj objects.Object
-	
-	fmt.Println(utils.TEXT_BOLD_LIGHT_BLUE + "[BEFORE] ---------------------\n" +
+
+	/* fmt.Println(utils.TEXT_BOLD_LIGHT_BLUE + "[BEFORE] ---------------------\n" +
 	ctx.String() + method.GetName() + "()\n" + block.ListObjectsString() +
-		"\n------------------------------" + utils.TEXT_RESET_COLOR)
+		"\n------------------------------" + utils.TEXT_RESET_COLOR) */
 
 	for i, node := range block.GetNodes() { //FIXME????
 		/* if block.Block.Kind == cfg.KindBody && i == len(block.GetNodes())-1 {
@@ -102,7 +101,7 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 		fmt.Println(utils.TEXT_BOLD_LIGHT_GREEN + "------------------------------\n" +
 			ctx.String() + "." + method.GetName() + "()\n" +
 			fmt.Sprintf("[#%d, %T] NODE:\n", i, node) +
-			block.ListObjectsString() +
+			block.LongStringWithObjects() +
 			"\n------------------------------" + utils.TEXT_RESET_COLOR)
 	}
 

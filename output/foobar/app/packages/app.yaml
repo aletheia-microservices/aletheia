@@ -18,7 +18,7 @@ bar:
 - imported constants: []
 - imported variables: []
 - declared types:
-  - bar.Bar struct{ID string, Text string}
+  - bar.Bar struct{ID string, Text string, Flag bool}
   - bar.BarService
   - bar.BarServiceImpl struct{barDb NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
 - declared variables:
@@ -33,7 +33,8 @@ bar:
 - parsed methods:
   - (*bar.Bar).GetID() string
   - (*bar.Bar).GetText() string
-  - (*bar.BarServiceImpl).Bar(ctx context.Context, text string) (bar.Bar struct{ID string, Text string}, error)
+  - (*bar.Bar).Test() int
+  - (*bar.BarServiceImpl).Bar(ctx context.Context, text string) (bar.Bar struct{ID string, Text string, Flag bool}, error)
   - bar.NewBarServiceImpl(ctx context.Context, barDb NoSQLDatabase) (bar.BarService, error)
 
 foo:
@@ -102,7 +103,7 @@ foobar:
   - fmt
 - imported types:
   - .error
-  - bar.Bar struct{ID string, Text string}
+  - bar.Bar struct{ID string, Text string, Flag bool}
   - bar.BarService
   - context.Context
   - foo.Foo struct{ID string, Text string}

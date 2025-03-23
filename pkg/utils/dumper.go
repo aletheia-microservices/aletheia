@@ -89,17 +89,17 @@ func DeleteFolder(appname string, foldername string) {
 }
 
 func addNewLinesToYaml(input []byte) []byte {
-    lines := strings.Split(string(input), "\n")
-    
-    var result []string
-    for i, line := range lines {
-        if i > 0 && line != "" && !strings.HasPrefix(line, " ") && !strings.HasPrefix(line, "-") {
-            result = append(result, "")
-        }
-        result = append(result, line)
-    }
-    
-    return []byte(strings.Join(result, "\n"))
+	lines := strings.Split(string(input), "\n")
+
+	var result []string
+	for i, line := range lines {
+		if i > 0 && line != "" && !strings.HasPrefix(line, " ") && !strings.HasPrefix(line, "-") {
+			result = append(result, "")
+		}
+		result = append(result, line)
+	}
+
+	return []byte(strings.Join(result, "\n"))
 }
 
 func DumpToYamlFile(data interface{}, appname string, filename string) {
@@ -125,6 +125,25 @@ func DumpToYamlFile(data interface{}, appname string, filename string) {
 		logger.Logger.Fatalf("error writing yaml data to %s: %s", path, err.Error())
 	}
 	logger.Logger.Tracef("[YAML] saved file %s", path)
+}
+
+func DumpOutput(data string, appname string, filename string) {
+	//yamlStr := string(yamlData)
+	path := fmt.Sprintf("%s/%s/%s.out", BASE_FOLDER, appname, filename)
+
+	// ensure the directory exists
+	dir := filepath.Dir(path)
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		logger.Logger.Fatalf("[OUT] error creating directory %s: %s", dir, err.Error())
+	}
+
+	// write the YAML data to the file
+	err = os.WriteFile(path, []byte(data), 0644)
+	if err != nil {
+		logger.Logger.Fatalf("[OUT] error writing data to %s: %s", path, err.Error())
+	}
+	logger.Logger.Tracef("[OUT] saved file %s", path)
 }
 
 // remove unwanted new lines within items with braces

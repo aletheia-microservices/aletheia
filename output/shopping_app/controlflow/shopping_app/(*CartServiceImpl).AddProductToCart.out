@@ -1,0 +1,58 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ExprStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] c (*shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}) ---> depends on: {shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] cartID string ---> depends on: {}
+	 [3] productID string ---> depends on: {}
+	 [4] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [5] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {PricePerUnit int, ProductID string}
+	 [6] _ .error ---> depends on: {}
+	 [7] cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string} ---> depends on: {PricePerUnit int, ProductID string, Quantity int}
+	 [8] collection NoSQLCollection {database = cart_database, collection = cart_collection} ---> depends on: {}
+	 [9] _ .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{Key "cartID" string, Key "cartID" string, Value string, Value string}}
+	 [11] result NoSQLCursor {database = cart_database, collection = cart_collection} ---> depends on: {cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string}}
+	 [12] _ .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.AssignStmt]; SUCCS = [Block #2]
+	 [0] c (*shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}) ---> depends on: {shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] cartID string ---> depends on: {}
+	 [3] productID string ---> depends on: {}
+	 [4] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [5] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {PricePerUnit int, ProductID string}
+	 [6] _ .error ---> depends on: {}
+	 [7] cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string} ---> depends on: {PricePerUnit int, ProductID string, Quantity int}
+	 [8] collection NoSQLCollection {database = cart_database, collection = cart_collection} ---> depends on: {}
+	 [9] _ .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{Key "cartID" string, Key "cartID" string, Value string, Value string}}
+	 [11] result NoSQLCursor {database = cart_database, collection = cart_collection} ---> depends on: {cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string}}
+	 [12] _ .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] c (*shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}) ---> depends on: {shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] cartID string ---> depends on: {}
+	 [3] productID string ---> depends on: {}
+	 [4] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [5] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {PricePerUnit int, ProductID string}
+	 [6] _ .error ---> depends on: {}
+	 [7] cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string} ---> depends on: {PricePerUnit int, ProductID string, Quantity int}
+	 [8] collection NoSQLCollection {database = cart_database, collection = cart_collection} ---> depends on: {}
+	 [9] _ .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{Key "cartID" string, Key "cartID" string, Value string, Value string}}
+	 [11] result NoSQLCursor {database = cart_database, collection = cart_collection} ---> depends on: {cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string}}
+	 [12] _ .error ---> depends on: {}
+	 [13] c (*shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}) ---> depends on: {shopping_app.CartServiceImpl struct{order_service shopping_app.OrderService, product_service shopping_app.ProductService, cart_db NoSQLDatabase}}
+	 [14] ctx context.Context ---> depends on: {}
+	 [15] cartID string ---> depends on: {}
+	 [16] productID string ---> depends on: {}
+	 [17] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {}
+	 [18] product shopping_app.Product struct{ProductID string, Description string, PricePerUnit int, Category string} ---> depends on: {PricePerUnit int, ProductID string}
+	 [19] _ .error ---> depends on: {}
+	 [20] cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string} ---> depends on: {PricePerUnit int, ProductID string, Quantity int}
+	 [21] collection NoSQLCollection {database = cart_database, collection = cart_collection} ---> depends on: {}
+	 [22] _ .error ---> depends on: {}
+	 [23] query primitive.D ---> depends on: {struct{Key "cartID" string, Key "cartID" string, Value string, Value string}}
+	 [24] result NoSQLCursor {database = cart_database, collection = cart_collection} ---> depends on: {cart shopping_app.Cart struct{CartID string, UserID string, ProductID string, Quantity int, PricePerUnit int, Status string}}
+	 [25] _ .error ---> depends on: {}
+

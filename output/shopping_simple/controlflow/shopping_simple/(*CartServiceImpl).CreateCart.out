@@ -1,0 +1,9 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.CartServiceImpl struct{product_service shopping_simple.ProductService, cart_db NoSQLDatabase, product_queue Queue, num_workers 4 int}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] cartID string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = cart_database, collection = cart_database} ---> depends on: {}
+	 [4] _ .error ---> depends on: {}
+	 [5] cart shopping_simple.Cart struct{CartID string, LastProductID string, TotalQuantity int, Products []string} ---> depends on: {CartID string}
+	 [6] err .error ---> depends on: {}
+

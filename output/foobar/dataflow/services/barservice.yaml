@@ -1,16 +1,23 @@
 (*Bar).GetID():
   block 0 (Body):
-  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string})
-  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string}
+  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string, Flag bool})
+  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string, Flag bool}
   - __2 depth 2 (FieldObject FieldType) ID string
   - ___3 depth 3 (BasicObject BasicType) ID string
 
 (*Bar).GetText():
   block 0 (Body):
-  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string})
-  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string}
+  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string, Flag bool})
+  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string, Flag bool}
   - __2 depth 2 (FieldObject FieldType) Text string
   - ___3 depth 3 (BasicObject BasicType) Text string
+
+(*Bar).Test():
+  block 3 (IfElse):
+  - 0 depth 0 (PointerObject PointerType) b (*bar.Bar struct{ID string, Text string, Flag bool})
+  - _1 depth 1 (StructObject UserType) bar.Bar struct{ID string, Text string, Flag bool}
+  - 0 depth 0 (BasicObject BasicType) ID0 6 int
+  - 0 depth 0 (BasicObject BasicType) ID2 2 int
 
 (*BarServiceImpl).Bar(ctx context.Context, text string):
   block 5 (IfDone):
@@ -31,8 +38,8 @@
   - '____4 depth 4 (Reference BasicType) ref <"Frontend" string> @ FrontendService
     --> w-tainted 2x: write(foo_db.Foo.Text, bar_db.Bar.Text)'
   - '0 depth 0 (BasicObject BasicType) newText string --> w-tainted 1x: write(bar_db.Bar.Text)'
-  - '0 depth 0 (StructObject UserType) bar bar.Bar struct{ID "id" string, Text string}
-    --> w-tainted 1x: write(bar_db.Bar)'
+  - '0 depth 0 (StructObject UserType) bar bar.Bar struct{ID "id" string, Text string,
+    Flag bool} --> w-tainted 1x: write(bar_db.Bar)'
   - '_1 depth 1 (FieldObject FieldType) ID "id" string --> w-tainted 1x: write(bar_db.Bar.ID)'
   - '__2 depth 2 (BasicObject BasicType) "id" string --> w-tainted 1x: write(bar_db.Bar.ID)'
   - '_3 depth 1 (FieldObject FieldType) Text string --> w-tainted 1x: write(bar_db.Bar.Text)'

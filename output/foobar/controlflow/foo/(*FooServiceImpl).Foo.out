@@ -1,0 +1,43 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*foo.FooServiceImpl struct{fooDb NoSQLDatabase}) ---> depends on: {foo.FooServiceImpl struct{fooDb NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] text string ---> depends on: {}
+	 [3] foo foo.Foo struct{ID "id" string, Text string} ---> depends on: {ID "id" string, Text string}
+	 [4] collection NoSQLCollection {database = foo, collection = foo} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*foo.FooServiceImpl struct{fooDb NoSQLDatabase}) ---> depends on: {foo.FooServiceImpl struct{fooDb NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] text string ---> depends on: {}
+	 [3] foo foo.Foo struct{ID "id" string, Text string} ---> depends on: {ID "id" string, Text string}
+	 [4] collection NoSQLCollection {database = foo, collection = foo} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*foo.FooServiceImpl struct{fooDb NoSQLDatabase}) ---> depends on: {foo.FooServiceImpl struct{fooDb NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] text string ---> depends on: {}
+	 [3] foo foo.Foo struct{ID "id" string, Text string} ---> depends on: {ID "id" string, Text string}
+	 [4] collection NoSQLCollection {database = foo, collection = foo} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*foo.FooServiceImpl struct{fooDb NoSQLDatabase}) ---> depends on: {foo.FooServiceImpl struct{fooDb NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] text string ---> depends on: {}
+	 [3] foo foo.Foo struct{ID "id" string, Text string} ---> depends on: {ID "id" string, Text string}
+	 [4] collection NoSQLCollection {database = foo, collection = foo} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*foo.FooServiceImpl struct{fooDb NoSQLDatabase}) ---> depends on: {foo.FooServiceImpl struct{fooDb NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] text string ---> depends on: {}
+	 [3] foo foo.Foo struct{ID "id" string, Text string} ---> depends on: {ID "id" string, Text string}
+	 [4] collection NoSQLCollection {database = foo, collection = foo} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+

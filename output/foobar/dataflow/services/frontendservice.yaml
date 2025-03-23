@@ -28,10 +28,10 @@
     2x: write(foo_db.Foo.Text, bar_db.Bar.Text)'
   - 0 depth 0 (InterfaceObject UserType) err1 .error
   - _1 depth 1 (Reference BasicType) ref <nil> @ FooService
-  - '0 depth 0 (StructObject UserType) bar bar.Bar struct{ID string, Text string}
-    --> w-tainted 1x: write(bar_db.Bar)'
+  - '0 depth 0 (StructObject UserType) bar bar.Bar struct{ID string, Text string,
+    Flag bool} --> w-tainted 1x: write(bar_db.Bar)'
   - '_1 depth 1 (Reference UserType) ref <bar bar.Bar struct{ID "id" string, Text
-    string}> @ BarService --> w-tainted 1x: write(bar_db.Bar)'
+    string, Flag bool}> @ BarService --> w-tainted 1x: write(bar_db.Bar)'
   - '__2 depth 2 (FieldObject FieldType) ID "id" string --> w-tainted 1x: write(bar_db.Bar.ID)'
   - '___3 depth 3 (BasicObject BasicType) "id" string --> w-tainted 1x: write(bar_db.Bar.ID)'
   - '__4 depth 2 (FieldObject FieldType) Text string --> w-tainted 1x: write(bar_db.Bar.Text)'

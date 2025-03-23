@@ -1,0 +1,22 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.SelectorExpr]; SUCCS = [Block #1, Block #3]
+	 [0] b (*bar.Bar struct{ID string, Text string, Flag bool}) ---> depends on: {bar.Bar struct{ID string, Text string, Flag bool}}
+	 [1] ID0 6 int ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.AssignStmt, *ast.AssignStmt]; SUCCS = [Block #2]
+	 [0] b (*bar.Bar struct{ID string, Text string, Flag bool}) ---> depends on: {bar.Bar struct{ID string, Text string, Flag bool}}
+	 [1] ID0 6 int ---> depends on: {}
+	 [2] ID1 1 int ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] b (*bar.Bar struct{ID string, Text string, Flag bool}) ---> depends on: {bar.Bar struct{ID string, Text string, Flag bool}}
+	 [1] ID0 6 int ---> depends on: {}
+	 [2] ID2 2 int ---> depends on: {}
+	 [3] b (*bar.Bar struct{ID string, Text string, Flag bool}) ---> depends on: {bar.Bar struct{ID string, Text string, Flag bool}}
+	 [4] ID0 6 int ---> depends on: {}
+	 [5] ID1 1 int ---> depends on: {}
+
+[BLOCK, #3, IfElse] NODES = [*ast.AssignStmt, *ast.AssignStmt]; SUCCS = [Block #2]
+	 [0] b (*bar.Bar struct{ID string, Text string, Flag bool}) ---> depends on: {bar.Bar struct{ID string, Text string, Flag bool}}
+	 [1] ID0 6 int ---> depends on: {}
+	 [2] ID2 2 int ---> depends on: {}
+

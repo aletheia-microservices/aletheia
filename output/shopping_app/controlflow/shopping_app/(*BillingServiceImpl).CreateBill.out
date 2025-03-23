@@ -1,0 +1,11 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.ExprStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*shopping_app.BillingServiceImpl struct{bill_db NoSQLDatabase}) ---> depends on: {shopping_app.BillingServiceImpl struct{bill_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] userID string ---> depends on: {}
+	 [3] productID string ---> depends on: {}
+	 [4] quantity int ---> depends on: {}
+	 [5] pricePerUnit int ---> depends on: {}
+	 [6] collection NoSQLCollection {database = bill_database, collection = bill_collection} ---> depends on: {}
+	 [7] _ .error ---> depends on: {}
+	 [8] bill shopping_app.Bill struct{UserID string, ProductID string, Quantity int, PricePerUnit int, TotalCost } ---> depends on: {PricePerUnit int, ProductID string, Quantity int, TotalCost , UserID string}
+

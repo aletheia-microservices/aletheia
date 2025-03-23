@@ -1,0 +1,102 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] fulltime employee_app.Fulltime struct{EmployeeID string, FulltimeID string, Salary string, Position string} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] fulltime employee_app.Fulltime struct{EmployeeID string, FulltimeID string, Salary string, Position string} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}) ---> depends on: {employee_app.EmployeeServiceImpl struct{freelancerService employee_app.FreelancerService, fulltimeService employee_app.FulltimeService, internService employee_app.InternService, employeesDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] employeeID string ---> depends on: {}
+	 [3] name string ---> depends on: {}
+	 [4] IBAN string ---> depends on: {}
+	 [5] fulltimeID string ---> depends on: {}
+	 [6] salary string ---> depends on: {}
+	 [7] position string ---> depends on: {}
+	 [8] employee employee_app.Employee struct{EmployeeID string, Name string, IBAN string, SpecFlag "fulltime" string} ---> depends on: {EmployeeID string, IBAN string, Name string, SpecFlag "fulltime" string}
+	 [9] collection NoSQLCollection {database = employees, collection = employees} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] fulltime employee_app.Fulltime struct{EmployeeID string, FulltimeID string, Salary string, Position string} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+

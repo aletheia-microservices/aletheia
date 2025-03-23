@@ -42,9 +42,9 @@
 [_1] (Reference BasicType) ref <nil> @ FooService
 
     --> w-tainted: write(bar_db.Bar) {1}
-[0] (StructObject UserType) bar bar.Bar struct{ID string, Text string}
+[0] (StructObject UserType) bar bar.Bar struct{ID string, Text string, Flag bool}
      --> w-tainted: write(bar_db.Bar) {1}
-[_1] (Reference UserType) ref <bar bar.Bar struct{ID "id" string, Text string}> @ BarService
+[_1] (Reference UserType) ref <bar bar.Bar struct{ID "id" string, Text string, Flag bool}> @ BarService
       --> w-tainted: write(bar_db.Bar.ID) {1}
 [__2] (FieldObject FieldType) ID "id" string
        --> w-tainted: write(bar_db.Bar.ID) {1}

@@ -1,0 +1,9 @@
+[BLOCK, #0, Body] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] stock_service shopping_app.StockService ---> depends on: {}
+	 [2] billing_service shopping_app.BillingService ---> depends on: {}
+	 [3] product_service shopping_app.ProductService ---> depends on: {}
+	 [4] order_db NoSQLDatabase ---> depends on: {}
+	 [5] shipment_queue Queue ---> depends on: {}
+	 [6] analytics_queue Queue ---> depends on: {}
+
