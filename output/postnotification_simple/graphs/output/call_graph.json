@@ -5,11 +5,23 @@
       "type": "client"
     },
     {
+      "id": "Client",
+      "type": "client"
+    },
+    {
       "id": "NotifyService",
       "type": "service"
     },
     {
       "id": "StorageService",
+      "type": "service"
+    },
+    {
+      "id": "StorageService",
+      "type": "service"
+    },
+    {
+      "id": "UploadService",
       "type": "service"
     },
     {
@@ -23,9 +35,19 @@
     {
       "id": "posts_db MongoDB",
       "type": "datastore"
+    },
+    {
+      "id": "posts_db MongoDB",
+      "type": "datastore"
     }
   ],
   "edges": [
+    {
+      "caller": "Client",
+      "callee": "UploadService",
+      "call": "DeletePost",
+      "depth": 0
+    },
     {
       "caller": "Client",
       "callee": "UploadService",
@@ -47,6 +69,12 @@
     {
       "caller": "StorageService",
       "callee": "posts_db MongoDB",
+      "call": "DeleteOne",
+      "depth": 2
+    },
+    {
+      "caller": "StorageService",
+      "callee": "posts_db MongoDB",
       "call": "InsertOne",
       "depth": 2
     },
@@ -55,6 +83,12 @@
       "callee": "posts_db MongoDB",
       "call": "FindOne",
       "depth": 4
+    },
+    {
+      "caller": "UploadService",
+      "callee": "StorageService",
+      "call": "DeletePost",
+      "depth": 1
     },
     {
       "caller": "UploadService",

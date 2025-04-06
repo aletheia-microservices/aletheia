@@ -1,3 +1,6 @@
+(*UploadServiceImpl).DeletePost(ctx context.Context, postID int64):
+- SERVICE CALL @ DeletePost >> (*postnotification_simple.StorageServiceImpl).DeletePost(ctx context.Context, postID int64) error
+
 (*UploadServiceImpl).UploadPost(ctx context.Context, username string, text string):
 - SERVICE CALL @ StorePost >> (*postnotification_simple.StorageServiceImpl).StorePost(ctx context.Context, reqID int64, text string) (int64, error)
 - DATASTORE CALL @ notifications_queue >> Queue.Push(ctx context.Context, item interface{})

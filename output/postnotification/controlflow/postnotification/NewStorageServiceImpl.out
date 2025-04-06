@@ -1,0 +1,9 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] analyticsService postnotification.AnalyticsService ---> depends on: {}
+	 [2] mediaService postnotification.MediaService ---> depends on: {}
+	 [3] posts_cache Cache ---> depends on: {}
+	 [4] postsDb NoSQLDatabase ---> depends on: {}
+	 [5] analyticsQueue Queue ---> depends on: {}
+	 [6] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+

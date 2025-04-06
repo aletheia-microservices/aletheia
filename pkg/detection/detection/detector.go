@@ -1,4 +1,4 @@
-package detector
+package detection
 
 import (
 	"fmt"
@@ -8,6 +8,8 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/datastores"
+	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 )
 
@@ -95,4 +97,38 @@ func SaveResults(app *app.App, detector Detector) string {
 
 	detector.SetSummary(color + strings.ToUpper(detector.GetAnalysisTypeString()) + ": " + summary + TEXT_RESET_COLOR + "\n")
 	return fmt.Sprintf("%s(modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
+}
+
+func GetWrittenFieldNamesForOperation(dbCall *abstractgraph.AbstractDatabaseCall) []string {
+	var writtenFieldNames []string
+	datastore := dbCall.DbInstance.GetDatastore()
+
+	if blueprintBackendMethod := dbCall.ParsedCall.Method.(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		params := dbCall.GetParams()
+
+		switch datastore.Type {
+		case datastores.NoSQL, datastores.Queue:
+			obj := params[1]
+			objType := obj.GetType()
+
+			// FIXME: this is getting all fields for the structure and not actually the ones that are written
+			_, writtenFieldNames = objType.GetNestedFieldTypes(objType.GetName(), datastore.IsNoSQLDatabase())
+
+		case datastores.RelationalDB:
+			if blueprintBackendMethod.IsRelationalDBExecCall() {
+				query, args := params[1], params[2:]
+				writtenFields, _ := abstractgraph.ParseSQLWrite(query, args)
+				for _, field := range writtenFields {
+					writtenFieldNames = append(writtenFieldNames, field.GetName())
+				}
+			} else {
+				logger.Logger.Fatalf("[DETECTOR] TODO getWrittenFieldNamesForOperation() for RelationalDB (%s) call: %s", datastore.GetName(), dbCall.LongString())
+			}
+		default:
+			logger.Logger.Fatalf("[DETECTOR] TODO getWrittenFieldNamesForOperation() for datastore (%s) call: %s", datastore.GetName(), dbCall.LongString())
+		}
+	}
+
+	logger.Logger.Infof("[DETECTOR] got written fieldnames: %v", writtenFieldNames)
+	return writtenFieldNames
 }

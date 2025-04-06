@@ -5,12 +5,12 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/logger"
 )
 
 type CascadeDetector struct {
-	detector.Detector
+	detection.Detector
 	results          string
 	summary          string
 	deleteOperations []*deleteOperation
@@ -27,7 +27,6 @@ func (detector *CascadeDetector) getDeleteOperations() []*deleteOperation {
 func (detector *CascadeDetector) GetSummary() string {
 	return detector.summary
 }
-
 
 func (detector *CascadeDetector) SetSummary(summary string) {
 	detector.summary = summary

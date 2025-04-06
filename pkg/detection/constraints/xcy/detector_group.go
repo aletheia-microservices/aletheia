@@ -8,11 +8,11 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 )
 
 type DetectorGroup struct {
-	detector.Detector
+	detection.Detector
 	detectors []*XCYDetector
 	results   string
 	summary   string

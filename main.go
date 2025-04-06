@@ -12,11 +12,12 @@ import (
 	"analyzer/pkg/datastores/constraints"
 	"analyzer/pkg/detection/constraints/cascade"
 	"analyzer/pkg/detection/constraints/foreign_key"
+	"analyzer/pkg/detection/constraints/foreign_key_concurrency"
 	"analyzer/pkg/detection/constraints/numerical"
 	"analyzer/pkg/detection/constraints/specialization"
 	"analyzer/pkg/detection/constraints/unicity"
 	"analyzer/pkg/detection/constraints/xcy"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/detection/iterator"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
@@ -30,16 +31,17 @@ const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;75m"
 const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 
 type analysisConfig struct {
-	allFlag                 string
-	appName                 string
-	autofill                bool
-	detectOnly              bool
-	xcyDetection            bool
-	foreignKeyDetection     bool
-	cascadeDetection        bool
-	unicityDetection        bool
-	numericalDetection      bool
-	specializationDetection bool
+	allFlag                        string
+	appName                        string
+	autofill                       bool
+	detectOnly                     bool
+	xcyDetection                   bool
+	foreignKeyDetection            bool
+	foreignKeyConcurrencyDetection bool
+	cascadeDetection               bool
+	unicityDetection               bool
+	numericalDetection             bool
+	specializationDetection        bool
 }
 
 func main() {
@@ -49,6 +51,7 @@ func main() {
 	detectOnly := flag.Bool("detect_only", false, "Only perform detection (assume parsing is already done)")
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
 	foreignKeyDetection := flag.Bool("fk", false, "Enable detection of anomalies in foreign key constraints")
+	foreignKeyConcurrencyDetection := flag.Bool("fk_concurrency", false, "Enable detection of concurrency anomalies in foreign key constraints")
 	cascadeDetection := flag.Bool("cascade", false, "Enable detection of the absence of cascading delete logic")
 	unicityDetection := flag.Bool("unicity", false, "Enable detection of inconsistencies for unicity constraints")
 	numericalDetection := flag.Bool("numerical", false, "Enable detection of inconsistencies for numerical constraints")
@@ -56,16 +59,17 @@ func main() {
 
 	flag.Parse()
 	analysis := analysisConfig{
-		allFlag:                 *allFlag,
-		appName:                 *appName,
-		autofill:                *autofill,
-		detectOnly:              *detectOnly,
-		xcyDetection:            *xcyDetection,
-		foreignKeyDetection:     *foreignKeyDetection,
-		cascadeDetection:        *cascadeDetection,
-		unicityDetection:        *unicityDetection,
-		numericalDetection:      *numericalDetection,
-		specializationDetection: *specializationDetection,
+		allFlag:                        *allFlag,
+		appName:                        *appName,
+		autofill:                       *autofill,
+		detectOnly:                     *detectOnly,
+		xcyDetection:                   *xcyDetection,
+		foreignKeyDetection:            *foreignKeyDetection,
+		foreignKeyConcurrencyDetection: *foreignKeyConcurrencyDetection,
+		cascadeDetection:               *cascadeDetection,
+		unicityDetection:               *unicityDetection,
+		numericalDetection:             *numericalDetection,
+		specializationDetection:        *specializationDetection,
 	}
 
 	if analysis.allFlag == "true" || analysis.allFlag == "True" || analysis.allFlag == "1" {
@@ -149,7 +153,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 			cumulativeDatastoreOps = xcyDetector.GetDatastoreOps()
 		}
 
-		results += detector.SaveResults(app, xcyDetectorGroup)
+		results += detection.SaveResults(app, xcyDetectorGroup)
 		summary += xcyDetectorGroup.GetSummary()
 	}
 
@@ -160,17 +164,25 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyDetector)
 		iterator.Run()
 
-		results += detector.SaveResults(app, foreignKeyDetector)
+		results += detection.SaveResults(app, foreignKeyDetector)
 		summary += foreignKeyDetector.GetSummary()
 
 		foreignKeyDetector.CompactSchema(app)
+	}
+
+	if analysis.foreignKeyConcurrencyDetection {
+		foreignKeyConcurrencyDetector := foreign_key_concurrency.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyConcurrencyDetector)
+		iterator.Run()
+		results += detection.SaveResults(app, foreignKeyConcurrencyDetector)
+		summary += foreignKeyConcurrencyDetector.GetSummary()
 	}
 
 	if analysis.cascadeDetection {
 		cascadeDetector := cascade.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, cascadeDetector)
 		iterator.Run()
-		results += detector.SaveResults(app, cascadeDetector)
+		results += detection.SaveResults(app, cascadeDetector)
 		summary += cascadeDetector.GetSummary()
 	}
 
@@ -178,7 +190,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		specializationDetector := specialization.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, specializationDetector)
 		iterator.Run()
-		results += detector.SaveResults(app, specializationDetector)
+		results += detection.SaveResults(app, specializationDetector)
 		summary += specializationDetector.GetSummary()
 	}
 
@@ -186,7 +198,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		unicityDetector := unicity.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, unicityDetector)
 		iterator.Run()
-		results += detector.SaveResults(app, unicityDetector)
+		results += detection.SaveResults(app, unicityDetector)
 		summary += unicityDetector.GetSummary()
 	}
 
@@ -194,7 +206,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		numericalDetector := numerical.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, numericalDetector)
 		iterator.Run()
-		results += detector.SaveResults(app, numericalDetector)
+		results += detection.SaveResults(app, numericalDetector)
 		summary += numericalDetector.GetSummary()
 	}
 

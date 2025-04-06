@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "StorageService",
+      "type": "service"
+    },
+    {
+      "id": "UploadService",
+      "type": "service"
+    },
+    {
+      "id": "posts_db MongoDB",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "Client",
+      "callee": "UploadService",
+      "call": "DeletePost",
+      "depth": 0
+    },
+    {
+      "caller": "StorageService",
+      "callee": "posts_db MongoDB",
+      "call": "DeleteOne",
+      "depth": 2
+    },
+    {
+      "caller": "UploadService",
+      "callee": "StorageService",
+      "call": "DeletePost",
+      "depth": 1
+    }
+  ]
+}

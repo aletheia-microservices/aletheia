@@ -9,7 +9,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types/objects"
@@ -17,7 +17,7 @@ import (
 )
 
 type XCYDetector struct {
-	detector.Detector
+	detection.Detector
 
 	currentRequest *Request
 	requests       []*Request

@@ -50,21 +50,36 @@ func (s *Schema) GetConstraintsUniqueForFieldName(fieldName string) []*Constrain
 }
 
 // GetConstraintsUniqueForFieldNames checks if there is any constraint for the written fields
-// note that we can have constraints that are composed by two or more fields so we cannot simply 
+// note that we can have constraints that are composed by two or more fields so we cannot simply
 // so we cannot simply check if a single written field exists in a certain constraint
 func (s *Schema) GetConstraintsUniqueForFieldNames(fieldNames []string) []*Constraint {
 	var constraints []*Constraint
 
-	OuterLoop:
-		for _, constraintUnique := range s.GetConstraintsUnique() {
-			for _, field := range constraintUnique.GetFields() {
-				if !slices.Contains(fieldNames, field.GetName()) {
-					continue OuterLoop
-				}
+OuterLoop:
+	for _, constraintUnique := range s.GetConstraintsUnique() {
+		for _, field := range constraintUnique.GetFields() {
+			if !slices.Contains(fieldNames, field.GetName()) {
+				continue OuterLoop
 			}
-			constraints = append(constraints, constraintUnique)
 		}
+		constraints = append(constraints, constraintUnique)
+	}
 	return constraints
+}
+
+// GetConstraintsForeignKeyForFieldNames checks if there is any constraint for the written fields
+func (s *Schema) GetConstraintsForeignKeyForFieldNames(fieldNames []string) map[*Field][]*Constraint {
+	res := make(map[*Field][]*Constraint, 0)
+
+	for _, fieldName := range fieldNames {
+		field := s.GetField(fieldName)
+		foreignKeyConstraints := field.GetConstraints(ConstraintFilter{Reference: utils.BoolPtr(true)})
+		if len(foreignKeyConstraints) > 0 {
+			res[field] = foreignKeyConstraints
+		}
+	}
+
+	return res
 }
 
 func (s *Schema) GetConstraintsNumericalForFieldName(fieldName string) []*Constraint {
@@ -92,6 +107,16 @@ func (s *Schema) GetConstraintsUnique() []*Constraint {
 	return constraints
 }
 
+func (s *Schema) GetConstraintsForeignKey() []*Constraint {
+	var constraints []*Constraint
+	for _, c := range s.Constraints {
+		if c.reference {
+			constraints = append(constraints, c)
+		}
+	}
+	return constraints
+}
+
 func (s *Schema) GetConstraintsNumerical() []*Constraint {
 	var constraints []*Constraint
 	for _, c := range s.Constraints {
@@ -108,6 +133,15 @@ func (s *Schema) HasConstraintsUnique() bool {
 		if c.unique {
 			return true
 		} else if c.primary {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Schema) HasConstraintsForeignKey() bool {
+	for _, c := range s.Constraints {
+		if c.reference {
 			return true
 		}
 	}
@@ -365,7 +399,7 @@ func (constraint *Constraint) String() string {
 	} */
 	fieldsStr += "("
 	for i, field := range constraint.fields {
-		fieldsStr += field.GetName()
+		fieldsStr += field.GetFullName()
 		if i < len(constraint.fields)-1 {
 			fieldsStr += delimiter
 		}
@@ -475,6 +509,15 @@ type Field struct {
 
 func (field *Field) GetName() string {
 	return field.Name
+}
+
+func (field *Field) GetReferenceForDatastore(ds string) *Field {
+	for _, ref := range field.References {
+		if ref.GetDatastoreName() == ds {
+			return ref
+		}
+	}
+	return nil
 }
 
 type ConstraintFilter struct {

@@ -1,0 +1,12 @@
+------------------------------------------------------------
+------------ FOREIGN KEY CONCURRENCY ANALYSIS --------------
+------------------------------------------------------------
+>> SUMMARY (# WRITES; # CONSTRAINTS AFFECTED BY DELETES):
+>> (1;2)
+[#1] write with referential constraints affected by deletes
+- NOTIFICATIONS_QUEUE.Message.ReqID
+	- foreign key:	POSTS_DB.Post.ReqID
+	- delete:	posts_db.DeleteOne()
+- NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE
+	- foreign key:	POSTS_DB.Post.PostID
+	- delete:	posts_db.DeleteOne()

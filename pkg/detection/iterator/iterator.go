@@ -5,21 +5,21 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/logger"
 )
 
 type Iterator struct {
 	app      *app.App
 	graph    *abstractgraph.AbstractGraph
-	detector detector.Detector
+	detector detection.Detector
 }
 
 func (iterator *Iterator) getGraph() *abstractgraph.AbstractGraph {
 	return iterator.graph
 }
 
-func NewIterator(app *app.App, graph *abstractgraph.AbstractGraph, detector detector.Detector) *Iterator {
+func NewIterator(app *app.App, graph *abstractgraph.AbstractGraph, detector detection.Detector) *Iterator {
 	return &Iterator{
 		app:      app,
 		graph:    graph,

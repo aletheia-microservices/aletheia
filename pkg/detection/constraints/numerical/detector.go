@@ -8,7 +8,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/frameworks/blueprint"
 )
 
@@ -25,7 +25,7 @@ func NewDetector() *NumericalDetector {
 }
 
 type NumericalDetector struct {
-	detector.Detector
+	detection.Detector
 	results          string
 	summary          string
 	requestInfoStack *stack.Stack
@@ -80,7 +80,6 @@ func (detector *NumericalDetector) OnWrite(app *app.App, dbCall *abstractgraph.A
 	operation := NewOperation(dbCall, datastore)
 	requestInfo.addOperation(operation)
 }
-
 
 func (detector *NumericalDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()

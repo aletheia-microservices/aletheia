@@ -1,0 +1,93 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] postsQuery primitive.D ---> depends on: {struct{Key "postid" string, Key "postid" string, Value int64, Value int64}}
+	 [9] result NoSQLCursor {database = post, collection = post} ---> depends on: {post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}}}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] postsQuery primitive.D ---> depends on: {struct{Key "postid" string, Key "postid" string, Value int64, Value int64}}
+	 [9] result NoSQLCursor {database = post, collection = post} ---> depends on: {post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}}}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] postsQuery primitive.D ---> depends on: {struct{Key "postid" string, Key "postid" string, Value int64, Value int64}}
+	 [9] result NoSQLCursor {database = post, collection = post} ---> depends on: {post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}}}
+	 [10] err .error ---> depends on: {}
+	 [11] res bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] postsQuery primitive.D ---> depends on: {struct{Key "postid" string, Key "postid" string, Value int64, Value int64}}
+	 [9] result NoSQLCursor {database = post, collection = post} ---> depends on: {post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}}}
+	 [10] err .error ---> depends on: {}
+	 [11] res bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID_STORAGE_SVC_READ int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {}
+	 [5] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [6] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] postsQuery primitive.D ---> depends on: {struct{Key "postid" string, Key "postid" string, Value int64, Value int64}}
+	 [9] result NoSQLCursor {database = post, collection = post} ---> depends on: {post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}}}
+	 [10] err .error ---> depends on: {}
+	 [11] res bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+	 [13] analytics postnotification.Analytics struct{PostID int64} ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+

@@ -1,0 +1,12 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.ExprStmt, *ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification.StorageServiceImpl struct{analyticsService postnotification.AnalyticsService, mediaService postnotification.MediaService, posts_cache Cache, postsDb NoSQLDatabase, analyticsQueue Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post postnotification.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification.Creator struct{Username string}} ---> depends on: {PostID int64}
+	 [5] postIDStr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [6] media postnotification.Media struct{MediaID int64, Content string} ---> depends on: {}
+	 [7] mediaID int64 ---> depends on: {PostID int64, int64}
+	 [8] media postnotification.Media struct{MediaID int64, Content string} ---> depends on: {}
+	 [9] _ .error ---> depends on: {}
+

@@ -7,7 +7,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
-	"analyzer/pkg/detection/detector"
+	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types/objects"
@@ -15,7 +15,7 @@ import (
 )
 
 type ForeignKeyDetector struct {
-	detector.Detector
+	detection.Detector
 	results string
 	summary string
 	reads   []*ForeignKeyRead
@@ -83,7 +83,7 @@ func (detector *ForeignKeyDetector) OnEndRequest(app *app.App) {
 // then we detect a new foreignkey-based read
 func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj objects.Object, originFieldName string, datastore *datastores.Datastore, dbCall *abstractgraph.AbstractDatabaseCall) {
 	originField := datastore.Schema.GetField(originFieldName)
-	
+
 	logger.Logger.Infof("[FOREIGN KEY] check foreign key read for origin field (%s) and object: %s", originField.String(), obj.String())
 	var savedOriginFieldName []string
 	//datastore := dbCall.DbInstance.GetDatastore()
