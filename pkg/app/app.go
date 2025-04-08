@@ -74,6 +74,34 @@ func (app *App) GetDbInstances() map[string]datastores.DatabaseInstance {
 	return app.Databases
 }
 
+// GetDatabasesReferencingCurrent discards any queue or cache
+func (app *App) GetDatabasesReferencingCurrent(curr *datastores.Datastore) []*datastores.Datastore {
+	var refs []*datastores.Datastore
+	for _, dbInstance := range app.GetDbInstances() {
+		ds := dbInstance.GetDatastore()
+
+		// discard any queue or cache
+		if ds.IsCache() || ds.IsQueue() {
+			continue
+		}
+		if ds != curr && ds.IsReferencingDatastore(curr) {
+			refs = append(refs, ds)
+		}
+	}
+
+	return refs
+}
+
+func (app *App) GetServicesUsingDatastore(ds *datastores.Datastore) []*service.Service {
+	var svcs []*service.Service
+	for _, service := range app.GetServices() {
+		if service.HasDatastore(ds) {
+			svcs = append(svcs, service)
+		}
+	}
+	return svcs
+}
+
 func (app *App) String() string {
 	str, _ := app.MarshalJSON()
 	return string(str)

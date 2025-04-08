@@ -2,7 +2,8 @@
 -------------------- FOREIGN KEY CASCADE ANALYSIS -------------------
 ---------------------------------------------------------------------
 >> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
->> (1;0)
+>> (1;1)
 ---------------------------------------------------------------------
-[0m[1] delete with 0 missing cascades:
-StorageService: posts_db.DeleteOne()
+[0m[1] delete with 1 missing cascades:
+ProductService: product_db.DeleteOne()
+	- (cart_db, CartService)

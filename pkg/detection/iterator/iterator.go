@@ -45,9 +45,10 @@ func (iterator *Iterator) transverseNode(child_idx int, lastServiceCallNode *abs
 
 	iterator.detector.OnNewNode(iterator.app, node)
 
+	fmt.Println()
+	logger.Logger.Debugf("[ITERATOR #%d] [%T] %s", child_idx, node, node.String())
+
 	if dbCall, ok := node.(*abstractgraph.AbstractDatabaseCall); ok {
-		fmt.Println()
-		logger.Logger.Debugf("[ITERATOR #%d] %s", child_idx, dbCall.String())
 		if dbCall.ParsedCall.Method.IsRead() {
 			iterator.detector.OnRead(iterator.app, dbCall, lastServiceCallNode, child_idx)
 		} else if dbCall.ParsedCall.Method.IsWrite() {

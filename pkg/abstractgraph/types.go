@@ -33,6 +33,7 @@ type AbstractNode interface {
 	LongString() string
 	GetName() string
 	GetChildren() []AbstractNode
+	GetDatabaseCalls() []*AbstractDatabaseCall
 	AddChild(AbstractNode)
 	SetVisited(bool)
 	IsVisited() bool
@@ -124,6 +125,18 @@ func (call *AbstractServiceCall) LongString() string {
 func (call *AbstractServiceCall) GetChildren() []AbstractNode {
 	return call.Children
 }
+func (call *AbstractServiceCall) GetDatabaseCalls() []*AbstractDatabaseCall {
+	var lst []*AbstractDatabaseCall
+	for _, child := range call.Children {
+		if dbCall, ok := child.(*AbstractDatabaseCall); ok {
+			lst = append(lst, dbCall)
+		}
+	}
+	return lst
+}
+func (call *AbstractServiceCall) GetChildAt(idx int) AbstractNode {
+	return call.Children[idx]
+}
 func (call *AbstractServiceCall) AddChild(child AbstractNode) {
 	logger.Logger.Tracef("[ABSTRACT CALL] adding child %s (%s) > %s (%s)", call.GetName(), utils.GetType(call), child.GetName(), utils.GetType(child))
 	call.Children = append(call.Children, child)
@@ -193,6 +206,15 @@ func (call *AbstractTempInternalCall) GetNextDepth() int {
 }
 func (call *AbstractTempInternalCall) GetChildren() []AbstractNode {
 	return call.Children
+}
+func (call *AbstractTempInternalCall) GetDatabaseCalls() []*AbstractDatabaseCall {
+	var lst []*AbstractDatabaseCall
+	for _, child := range call.Children {
+		if dbCall, ok := child.(*AbstractDatabaseCall); ok {
+			lst = append(lst, dbCall)
+		}
+	}
+	return lst
 }
 func (call *AbstractTempInternalCall) GetMethodStr() string {
 	return call.ParsedCall.Method.String()
@@ -302,6 +324,14 @@ func (call *AbstractDatabaseCall) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (call *AbstractDatabaseCall) IsPushToQueue() bool {
+	return call.DbInstance.GetDatastore().IsQueue() && call.ParsedCall.Method.IsWrite()
+}
+
+func (call *AbstractDatabaseCall) IsUpdateOrDelete() bool {
+	return call.ParsedCall.Method.IsUpdate() || call.ParsedCall.Method.IsDelete()
+}
+
 func (call *AbstractDatabaseCall) SetID(id string) {
 	call.ID = id
 }
@@ -356,6 +386,15 @@ func (call *AbstractDatabaseCall) LongString() string {
 }
 func (call *AbstractDatabaseCall) GetChildren() []AbstractNode {
 	return call.Children
+}
+func (call *AbstractDatabaseCall) GetDatabaseCalls() []*AbstractDatabaseCall {
+	var lst []*AbstractDatabaseCall
+	for _, child := range call.Children {
+		if dbCall, ok := child.(*AbstractDatabaseCall); ok {
+			lst = append(lst, dbCall)
+		}
+	}
+	return lst
 }
 func (call *AbstractDatabaseCall) AddChild(child AbstractNode) {
 	logger.Logger.Tracef("[ABSTRACT CALL] adding child %s (%s) > %s (%s)", call.GetName(), utils.GetType(call), child.GetName(), utils.GetType(child))
