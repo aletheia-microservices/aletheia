@@ -91,6 +91,16 @@ func (s *Schema) GetConstraintsForeignKeyForFieldNames(fieldNames []string) map[
 	return res
 }
 
+func (s *Schema) GetConstraintsForeignKeyForFieldName(fieldName string) []*Constraint {
+	field := s.GetField(fieldName)
+	foreignKeyConstraints := field.GetConstraints(ConstraintFilter{Reference: utils.BoolPtr(true)})
+	if len(foreignKeyConstraints) > 0 {
+		return foreignKeyConstraints
+	}
+
+	return nil
+}
+
 func (s *Schema) GetConstraintsNumericalForFieldName(fieldName string) []*Constraint {
 	var constraints []*Constraint
 	for _, constraintUnique := range s.GetConstraintsNumerical() {
@@ -120,6 +130,16 @@ func (s *Schema) GetConstraintsForeignKey() []*Constraint {
 	var constraints []*Constraint
 	for _, c := range s.Constraints {
 		if c.reference {
+			constraints = append(constraints, c)
+		}
+	}
+	return constraints
+}
+
+func (s *Schema) GetConstraintsForeignKeyToDatastore(ds *Datastore) []*Constraint {
+	var constraints []*Constraint
+	for _, c := range s.Constraints {
+		if c.reference && c.GetReferencedByField().GetDatastore() == ds {
 			constraints = append(constraints, c)
 		}
 	}

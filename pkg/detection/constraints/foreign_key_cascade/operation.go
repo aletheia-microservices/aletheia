@@ -9,9 +9,9 @@ import (
 )
 
 type deleteOperation struct {
-	call         *abstractgraph.AbstractDatabaseCall
-	datastore    *datastores.Datastore
-	dependencies []*deleteDependency
+	call           *abstractgraph.AbstractDatabaseCall
+	datastore      *datastores.Datastore
+	pendingDeletes []*pendingDelete
 }
 
 func newDeleteOperation(call *abstractgraph.AbstractDatabaseCall, datastore *datastores.Datastore) *deleteOperation {
@@ -26,13 +26,13 @@ func (op *deleteOperation) getCall() *abstractgraph.AbstractDatabaseCall {
 	return op.call
 }
 
-func (op *deleteOperation) getDependencies() []*deleteDependency {
-	return op.dependencies
+func (op *deleteOperation) getPendingDeletes() []*pendingDelete {
+	return op.pendingDeletes
 }
 
-func (op *deleteOperation) getDependenciesWithMissingCascade() []*deleteDependency {
-	var lst []*deleteDependency
-	for _, dep := range op.dependencies {
+func (op *deleteOperation) getDependenciesWithMissingCascade() []*pendingDelete {
+	var lst []*pendingDelete
+	for _, dep := range op.pendingDeletes {
 		if !dep.hasCascadingAction() {
 			lst = append(lst, dep)
 		}
@@ -40,29 +40,30 @@ func (op *deleteOperation) getDependenciesWithMissingCascade() []*deleteDependen
 	return lst
 }
 
-func (op *deleteOperation) addDependency(dep *deleteDependency) {
-	op.dependencies = append(op.dependencies, dep)
+func (op *deleteOperation) addDependency(dep *pendingDelete) {
+	op.pendingDeletes = append(op.pendingDeletes, dep)
 }
 
-func (op *deleteOperation) addDependencyIfNotExists(dep *deleteDependency) {
+func (op *deleteOperation) addPendingDeleteIfNotExists(dep *pendingDelete) {
 	if !op.hasDependency(dep) {
 		op.addDependency(dep)
 		//logger.Logger.Debugf("[CASCADE DETECTOR] added dependency %s to %s", dep.String(), op.String())
 	}
 }
 
-func (op *deleteOperation) hasDependency(other *deleteDependency) bool {
-	for _, dep := range op.getDependencies() {
-		if dep.hasDatastore(other.datastore) {
+func (op *deleteOperation) hasDependency(other *pendingDelete) bool {
+	for _, dep := range op.getPendingDeletes() {
+		if dep.isOnDatastore(other.datastore) && dep.isOnConstraint(other.constraint) {
 			return true
 		}
 	}
 	return false
 }
 
-func (op *deleteOperation) getDependency(datastore *datastores.Datastore) *deleteDependency {
-	for _, dep := range op.getDependencies() {
-		if dep.hasDatastore(datastore) {
+// DEPRECATED
+func (op *deleteOperation) getDependency(datastore *datastores.Datastore) *pendingDelete {
+	for _, dep := range op.getPendingDeletes() {
+		if dep.isOnDatastore(datastore) {
 			return dep
 		}
 	}

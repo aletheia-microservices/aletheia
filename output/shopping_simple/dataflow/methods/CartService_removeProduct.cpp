@@ -37,9 +37,19 @@
 [___3] (BasicObject BasicType) "$pull" string
 [__2] (FieldObject FieldType) Value primitive.D
 [___3] (SliceObject UserType) primitive.D
-[____4] (StructObject StructType) struct{Key "products" string, Key "products" string, Value string, Value string}
-[_____5] (FieldObject FieldType) Key "products" string
-[______6] (BasicObject BasicType) "products" string
+[____4] (StructObject StructType) struct{Key "Products" string, Key "Products" string, Value string, Value string}
+[_____5] (FieldObject FieldType) Key "Products" string
+[______6] (BasicObject BasicType) "Products" string
+[_____5] (FieldObject FieldType) Value string
+[______6] (BasicObject BasicType) ProductID string
+[_1] (StructObject StructType) struct{Key "$pull" string, Key "$pull" string, Value primitive.D, Value primitive.D}
+[__2] (FieldObject FieldType) Key "$pull" string
+[___3] (BasicObject BasicType) "$pull" string
+[__2] (FieldObject FieldType) Value primitive.D
+[___3] (SliceObject UserType) primitive.D
+[____4] (StructObject StructType) struct{Key "LastProductID" string, Key "LastProductID" string, Value string, Value string}
+[_____5] (FieldObject FieldType) Key "LastProductID" string
+[______6] (BasicObject BasicType) "LastProductID" string
 [_____5] (FieldObject FieldType) Value string
 [______6] (BasicObject BasicType) ProductID string
 

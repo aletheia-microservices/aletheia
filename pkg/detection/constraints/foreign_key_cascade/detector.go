@@ -7,7 +7,9 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/datastores"
 	"analyzer/pkg/detection/detection"
+	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
 	"analyzer/pkg/utils"
 )
@@ -24,6 +26,10 @@ type CascadeDetector struct {
 
 func (detector *CascadeDetector) addDeleteOperation(op *deleteOperation) {
 	detector.deleteOperations = append(detector.deleteOperations, op)
+}
+
+func (detector *CascadeDetector) getCurrentRequestInfo() *RequestInfo {
+	return detector.requestInfoStack.Peek().(*RequestInfo)
 }
 
 func (detector *CascadeDetector) getDeleteOperations() []*deleteOperation {
@@ -59,6 +65,7 @@ func (detector *CascadeDetector) OnEndRun(app *app.App) {
 
 func (detector *CascadeDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
 	detector.requestInfoStack.Push(&RequestInfo{
+		index: detector.requestInfoStack.Len(),
 		entry: entryNode,
 	})
 }
@@ -84,7 +91,16 @@ func (detector *CascadeDetector) OnWrite(app *app.App, dbCall *abstractgraph.Abs
 }
 
 func (detector *CascadeDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	//no-op
+	datastore := dbCall.DbInstance.GetDatastore()
+	params := dbCall.GetParams()
+	update := params[2]
+	method := dbCall.ParsedCall.Method.(*blueprint.BackendMethod)
+
+	if dbCall.DbInstance.GetDatastore().IsNoSQLDatabase() {
+		if constraints, _ := parseNoSQLUpdateOnRemovedFields(method, datastore.GetSchema(), update); constraints != nil {
+			detector.markAsCascading(dbCall.DbInstance.GetDatastore(), constraints)
+		}
+	}
 }
 
 func (detector *CascadeDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
@@ -101,19 +117,33 @@ func (detector *CascadeDetector) OnDelete(app *app.App, dbCall *abstractgraph.Ab
 	// 3. TODO LATER: to be more precise, we can check which object was deleted and if that specific reference to that object was deleted aswell
 
 	deleteOp := newDeleteOperation(dbCall, datastore)
-	detector.addDeleteOperation(deleteOp)
 
 	logger.Logger.Infof("[CASCADE DETECTOR] searching dependencies for datastore (%s)", dbCall.DbInstance.GetDatastore().GetName())
-	// iterate all datastores that have fields referencing the current one
-	for _, dependentDatastore := range app.GetDatabasesReferencingCurrent(deleteOp.datastore) {
-		services := app.GetServicesUsingDatastore(dependentDatastore)
-		deleteDep := newDeleteDependency(dependentDatastore, services)
-		deleteOp.addDependencyIfNotExists(deleteDep)
+	// iterate all datastores (except caches and queues!!) that have fields referencing the current one
+	for _, dependentDatastore := range app.GetDatabasesReferencingCurrent(datastore) {
+		depServices := app.GetServicesUsingDatastore(dependentDatastore)
+		for _, constraint := range dependentDatastore.GetSchema().GetConstraintsForeignKeyToDatastore(datastore) {
+			pendingDel := newPendingDelete(dependentDatastore, constraint, depServices)
+			deleteOp.addPendingDeleteIfNotExists(pendingDel)
+		}
 	}
 
-	detector.searchCascadingDeletes(deleteOp, lastServiceCallNode, dbCall, child_idx)
+	detector.getCurrentRequestInfo().addDeleteOperation(deleteOp)
 }
 
+func (detector *CascadeDetector) markAsCascading(datastore *datastores.Datastore, constraints []*datastores.Constraint) {
+	for _, op := range detector.getCurrentRequestInfo().getDeleteOperations() {
+		for _, pendingDel := range op.getPendingDeletes() {
+			for _, constraint := range constraints {
+				if pendingDel.isOnDatastore(datastore) && pendingDel.isOnConstraint(constraint) {
+					pendingDel.setCascading(true)
+				}
+			}
+		}
+	}
+}
+
+// DEPRECATED
 func (detector *CascadeDetector) searchCascadingDeletes(deleteOp *deleteOperation, lastServiceCallNode *abstractgraph.AbstractServiceCall, deleteCall *abstractgraph.AbstractDatabaseCall, child_idx int) {
 	logger.Logger.Infof("[CASCADE DETECTOR] searching for cascading deletes originating @ (%s, %s): %s", deleteCall.GetCallerStr(), deleteCall.DbInstance.GetDatastore().GetName(), deleteCall.LongString())
 	numServiceCalls := len(lastServiceCallNode.GetChildren())
@@ -142,14 +172,20 @@ func (detector *CascadeDetector) searchCascadingDeletes(deleteOp *deleteOperatio
 func (detector *CascadeDetector) checkInconsistencies() {
 	detector.numDeletes = len(detector.getDeleteOperations())
 
-	for i, op := range detector.getDeleteOperations() {
-		depsWithMissingCascading := op.getDependenciesWithMissingCascade()
-		detector.results += fmt.Sprintf("[%d] delete with %d missing cascades:\n", i+1, len(depsWithMissingCascading))
-		detector.results += fmt.Sprintf("%s: %s\n", op.getCall().GetCallerStr(), op.call.ShortString())
-		for _, dep := range depsWithMissingCascading {
-			if !dep.cascading {
-				detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())
-				detector.numMissingCascadingDeletes++
+	/* for i, op := range detector.getDeleteOperations() { */
+	/* } */
+
+	for detector.requestInfoStack.Len() > 0 {
+		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
+		for i, op := range requestInfo.getDeleteOperations() {
+			depsWithMissingCascading := op.getDependenciesWithMissingCascade()
+			detector.results += fmt.Sprintf("[%d] delete with %d missing cascades:\n", i+1, len(depsWithMissingCascading))
+			detector.results += fmt.Sprintf("%s: %s\n", op.getCall().GetCallerStr(), op.call.ShortString())
+			for _, dep := range depsWithMissingCascading {
+				if !dep.cascading {
+					detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())
+					detector.numMissingCascadingDeletes++
+				}
 			}
 		}
 	}

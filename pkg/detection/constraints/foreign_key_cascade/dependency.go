@@ -8,43 +8,49 @@ import (
 	"analyzer/pkg/service"
 )
 
-type deleteDependency struct {
-	services  []*service.Service
-	datastore *datastores.Datastore
-	cascading bool
+type pendingDelete struct {
+	datastore  *datastores.Datastore
+	constraint *datastores.Constraint
+	services   []*service.Service
+	cascading  bool
 }
 
-func newDeleteDependency(datastore *datastores.Datastore, services []*service.Service) *deleteDependency {
-	return &deleteDependency{
-		datastore: datastore,
-		services:  services,
+func newPendingDelete(datastore *datastores.Datastore, constraint *datastores.Constraint, services []*service.Service) *pendingDelete {
+	return &pendingDelete{
+		datastore:  datastore,
+		constraint: constraint,
+		services:   services,
 	}
 }
 
-func (dep *deleteDependency) setCascading(v bool) {
-	dep.cascading = v
+func (pd *pendingDelete) setCascading(v bool) {
+	pd.cascading = v
 }
 
-func (dep *deleteDependency) hasCascadingAction() bool {
-	return dep.cascading
+func (pd *pendingDelete) hasCascadingAction() bool {
+	return pd.cascading
 }
 
-func (dep *deleteDependency) hasDatastore(datastore *datastores.Datastore) bool {
-	return dep.datastore == datastore
+func (pd *pendingDelete) isOnDatastore(datastore *datastores.Datastore) bool {
+	return pd.datastore == datastore
 }
 
-func (dep *deleteDependency) String() string {
+func (pd *pendingDelete) isOnConstraint(constraint *datastores.Constraint) bool {
+	return pd.constraint == constraint
+}
+
+func (pd *pendingDelete) String() string {
 	var svcs []string
-	for _, service := range dep.services {
+	for _, service := range pd.services {
 		svcs = append(svcs, service.GetName())
 	}
-	return fmt.Sprintf("(%s, %s)", dep.datastore.GetName(), strings.Join(svcs, ", "))
+	return fmt.Sprintf("(%s, %s) on constraint %s", pd.datastore.GetName(), strings.Join(svcs, ", "), pd.constraint.String())
 }
 
-func (dep *deleteDependency) LongString() string {
-	return dep.String()
+func (pd *pendingDelete) LongString() string {
+	return pd.String()
 }
 
-func (dep *deleteDependency) GetDatastoreName() string {
-	return dep.datastore.GetName()
+func (pd *pendingDelete) GetDatastoreName() string {
+	return pd.datastore.GetName()
 }
