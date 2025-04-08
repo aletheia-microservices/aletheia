@@ -67,6 +67,15 @@ OuterLoop:
 	return constraints
 }
 
+func (s *Schema) GetFieldsByNames(fieldNames []string) []*Field {
+	var lst []*Field
+	for _, fieldName := range fieldNames {
+		field := s.GetField(fieldName)
+		lst = append(lst, field)
+	}
+	return lst
+}
+
 // GetConstraintsForeignKeyForFieldNames checks if there is any constraint for the written fields
 func (s *Schema) GetConstraintsForeignKeyForFieldNames(fieldNames []string) map[*Field][]*Constraint {
 	res := make(map[*Field][]*Constraint, 0)

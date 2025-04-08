@@ -10,8 +10,8 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/datastores/constraints"
-	"analyzer/pkg/detection/constraints/cascade"
 	"analyzer/pkg/detection/constraints/foreign_key"
+	"analyzer/pkg/detection/constraints/foreign_key_cascade"
 	"analyzer/pkg/detection/constraints/foreign_key_concurrency"
 	"analyzer/pkg/detection/constraints/numerical"
 	"analyzer/pkg/detection/constraints/specialization"
@@ -38,7 +38,7 @@ type analysisConfig struct {
 	xcyDetection                   bool
 	foreignKeyDetection            bool
 	foreignKeyConcurrencyDetection bool
-	cascadeDetection               bool
+	foreignKeyCascadeDetection     bool
 	unicityDetection               bool
 	numericalDetection             bool
 	specializationDetection        bool
@@ -52,7 +52,7 @@ func main() {
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
 	foreignKeyDetection := flag.Bool("fk", false, "Enable detection of anomalies in foreign key constraints")
 	foreignKeyConcurrencyDetection := flag.Bool("fk_concurrency", false, "Enable detection of concurrency anomalies in foreign key constraints")
-	cascadeDetection := flag.Bool("cascade", false, "Enable detection of the absence of cascading delete logic")
+	foreignKeyCascadeDetection := flag.Bool("fk_cascade", false, "Enable detection of the absence of cascading delete logic")
 	unicityDetection := flag.Bool("unicity", false, "Enable detection of inconsistencies for unicity constraints")
 	numericalDetection := flag.Bool("numerical", false, "Enable detection of inconsistencies for numerical constraints")
 	specializationDetection := flag.Bool("specialization", false, "Enable detection of removals in mandatory specializations")
@@ -66,7 +66,7 @@ func main() {
 		xcyDetection:                   *xcyDetection,
 		foreignKeyDetection:            *foreignKeyDetection,
 		foreignKeyConcurrencyDetection: *foreignKeyConcurrencyDetection,
-		cascadeDetection:               *cascadeDetection,
+		foreignKeyCascadeDetection:     *foreignKeyCascadeDetection,
 		unicityDetection:               *unicityDetection,
 		numericalDetection:             *numericalDetection,
 		specializationDetection:        *specializationDetection,
@@ -174,16 +174,18 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		foreignKeyConcurrencyDetector := foreign_key_concurrency.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyConcurrencyDetector)
 		iterator.Run()
+		foreignKeyConcurrencyDetector.NextIterationPhase()
+		iterator.Run()
 		results += detection.SaveResults(app, foreignKeyConcurrencyDetector)
 		summary += foreignKeyConcurrencyDetector.GetSummary()
 	}
 
-	if analysis.cascadeDetection {
-		cascadeDetector := cascade.NewDetector()
-		iterator := iterator.NewIterator(app, abstractGraph, cascadeDetector)
+	if analysis.foreignKeyCascadeDetection {
+		foreignKeyCascadeDetector := foreign_key_cascade.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyCascadeDetector)
 		iterator.Run()
-		results += detection.SaveResults(app, cascadeDetector)
-		summary += cascadeDetector.GetSummary()
+		results += detection.SaveResults(app, foreignKeyCascadeDetector)
+		summary += foreignKeyCascadeDetector.GetSummary()
 	}
 
 	if analysis.specializationDetection {

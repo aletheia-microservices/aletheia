@@ -3,26 +3,40 @@ package foreign_key_concurrency
 import (
 	"fmt"
 
+	"github.com/golang-collections/collections/stack"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/detection/detection"
-	"analyzer/pkg/logger"
+	"analyzer/pkg/utils"
+)
+
+type IterationPhase int
+
+const (
+	IterationPhaseCheckDeletes IterationPhase = iota
+	IterationPhaseCheckWritesAndUpdates
 )
 
 type ForeignKeyConcurrencyDetector struct {
-	writesWithReference map[*datastores.Datastore][]*writeWithReference
-	deletes             map[*datastores.Datastore][]*delete
+	iter    IterationPhase
+	deletes map[*datastores.Datastore][]*delete
+
+	// to be used later
+	requestInfoStack *stack.Stack
 
 	// results
-	results                          string
-	summary                          string
-	numWritesWithAffectedConstraints int
-	numConstraintsAffected           int
+	results                  string
+	summary                  string
+	numDeletes               int
+	numAffectedWrittenFields int
 }
 
-func (detector *ForeignKeyConcurrencyDetector) addWriteWithReference(ds *datastores.Datastore, w *writeWithReference) {
-	detector.writesWithReference[ds] = append(detector.writesWithReference[ds], w)
+func (detector *ForeignKeyConcurrencyDetector) NextIterationPhase() {
+	if detector.iter == IterationPhaseCheckDeletes {
+		detector.iter = IterationPhaseCheckWritesAndUpdates
+	}
 }
 
 func (detector *ForeignKeyConcurrencyDetector) getFirstDeleteToDatastoreIfExists(ds *datastores.Datastore) *delete {
@@ -49,6 +63,10 @@ func (detector *ForeignKeyConcurrencyDetector) SetSummary(summary string) {
 	detector.summary = summary
 }
 
+func (detector *ForeignKeyConcurrencyDetector) getNewRequestInfoIndex() int {
+	return detector.requestInfoStack.Len()
+}
+
 func NewDetector() *ForeignKeyConcurrencyDetector {
 	fmt.Println()
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
@@ -56,8 +74,8 @@ func NewDetector() *ForeignKeyConcurrencyDetector {
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 	fmt.Println()
 	return &ForeignKeyConcurrencyDetector{
-		deletes: make(map[*datastores.Datastore][]*delete),
-		writesWithReference: make(map[*datastores.Datastore][]*writeWithReference),
+		requestInfoStack: stack.New(),
+		deletes:          make(map[*datastores.Datastore][]*delete),
 	}
 }
 
@@ -66,11 +84,14 @@ func (detector *ForeignKeyConcurrencyDetector) OnNewRun(app *app.App) {
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnEndRun(app *app.App) {
-	//no-op
+	detector.iter++
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
-	//no-op
+	detector.requestInfoStack.Push(&RequestInfo{
+		index: detector.getNewRequestInfoIndex(),
+		entry: entryNode,
+	})
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnEndRequest(app *app.App) {
@@ -98,7 +119,9 @@ func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, dbCall *ab
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	logger.Logger.Debugf("ON DELETE!")
+	if detector.iter != IterationPhaseCheckDeletes {
+		return
+	}
 
 	datastore := dbCall.DbInstance.GetDatastore()
 	detector.addDelete(datastore, &delete{
@@ -109,59 +132,44 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, dbCall *ab
 }
 
 func (detector *ForeignKeyConcurrencyDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
+	if detector.iter != IterationPhaseCheckWritesAndUpdates {
+		return
+	}
+
 	datastore := dbCall.DbInstance.GetDatastore()
 	schema := datastore.GetSchema()
 
 	if schema.HasConstraintsForeignKey() {
 		writtenFieldNames := detection.GetWrittenFieldNamesForOperation(dbCall)
-		foreignKeyConstraints := schema.GetConstraintsForeignKeyForFieldNames(writtenFieldNames)
-
-		var fieldsWithReference []*fieldWithReference
-		for field, constraints := range foreignKeyConstraints {
-			fieldsWithReference = append(fieldsWithReference, &fieldWithReference{
-				field:       field,
-				constraints: constraints,
-			})
-		}
-		write := &writeWithReference{
-			call:      dbCall,
-			datastore: datastore,
-			fields:    fieldsWithReference,
-		}
-
-		detector.addWriteWithReference(datastore, write)
-	}
-}
-
-func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
-	for _, writes := range detector.writesWithReference {
-		for _, w := range writes {
-			var tmpResults string
-			for _, f := range w.fields {
-	
-				datastoresBeingReferenced := make(map[*datastores.Datastore]bool)
-				for _, r := range f.field.GetReferences() {
-					datastoresBeingReferenced[r.GetDatastore()] = true
+		fields := schema.GetFieldsByNames(writtenFieldNames)
+		for _, field := range fields {
+			for _, constraint := range field.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true)}) {
+				refField := constraint.GetReferencedByField()
+				refDatastore := refField.GetDatastore()
+				if del := detector.getFirstDeleteToDatastoreIfExists(refDatastore); del != nil {
+					del.addAffectedWrittenField(dbCall, field, constraint)
 				}
-	
-				for ds := range datastoresBeingReferenced {
-					if delete := detector.getFirstDeleteToDatastoreIfExists(ds); delete != nil {
-						tmpResults += fmt.Sprintf("- %s\n", f.field.GetFullName())
-						tmpResults += fmt.Sprintf("\t- foreign key:\t%s\n", f.field.GetReferenceForDatastore(ds.GetName()).GetFullName())
-						tmpResults += fmt.Sprintf("\t- delete:\t%s\n", delete.call.ShortString())
-						detector.numConstraintsAffected++
-					}
-				}
-			}
-			if tmpResults != "" {
-				detector.numWritesWithAffectedConstraints++
-				detector.results += fmt.Sprintf("[#%d] write with referential constraints affected by deletes\n", detector.numWritesWithAffectedConstraints)
-				detector.results += tmpResults
 			}
 		}
 	}
 }
 
+func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
+	for _, dels := range detector.deletes {
+		for _, del := range dels {
+			if len(del.affectedWrittenFields) > 0 {
+				detector.numDeletes++
+				detector.results += fmt.Sprintf("[%d] %s: %s\n", detector.numDeletes, del.call.GetCallerStr(), del.call.ShortString())
+				detector.results += fmt.Sprintf("\taffecting %d written fields\n", len(del.affectedWrittenFields))
+				for _, writtenField := range del.affectedWrittenFields {
+					detector.results += writtenField.String()
+					detector.numAffectedWrittenFields++
+				}
+				detector.results += "\n"
+			}
+		}
+	}
+}
 
 func (detector *ForeignKeyConcurrencyDetector) ComputeResults() {
 	header := "------------------------------------------------------------\n"
@@ -169,7 +177,7 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults() {
 	header += "------------------------------------------------------------\n"
 
 	detector.checkInconsistencies()
-	header += fmt.Sprintf(">> SUMMARY (# WRITES; # CONSTRAINTS AFFECTED BY DELETES):\n>> (%d;%d)\n", detector.numWritesWithAffectedConstraints, detector.numConstraintsAffected)
+	header += fmt.Sprintf(">> SUMMARY (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numAffectedWrittenFields)
 	detector.results = header + detector.results
 }
 

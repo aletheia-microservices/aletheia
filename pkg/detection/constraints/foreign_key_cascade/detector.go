@@ -1,4 +1,4 @@
-package cascade
+package foreign_key_cascade
 
 import (
 	"fmt"
@@ -11,9 +11,11 @@ import (
 
 type CascadeDetector struct {
 	detection.Detector
-	results          string
-	summary          string
-	deleteOperations []*deleteOperation
+	results                    string
+	summary                    string
+	deleteOperations           []*deleteOperation
+	numDeletes                 int
+	numMissingCascadingDeletes int
 }
 
 func (detector *CascadeDetector) addDeleteOperation(op *deleteOperation) {
@@ -146,34 +148,36 @@ func (detector *CascadeDetector) searchCascadingDeletes(deleteOp *deleteOperatio
 			}
 		}
 	}
-
 }
 
-func (detector *CascadeDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "-------------------- CASCADING ANALYSIS --------------------\n"
-	header += "------------------------------------------------------------\n"
-
-	var numMissingCascadingDeletes int
-	numDeletes := len(detector.getDeleteOperations())
+func (detector *CascadeDetector) checkInconsistencies() {
+	detector.numDeletes = len(detector.getDeleteOperations())
 
 	for i, op := range detector.getDeleteOperations() {
-		detector.results += fmt.Sprintf("(#%0d) %s: %s\n", i, op.getCall().GetCallerStr(), op.call.ShortString())
+		detector.results += fmt.Sprintf("[%d] %s: %s\n", i+1, op.getCall().GetCallerStr(), op.call.ShortString())
 		detector.results += fmt.Sprintf("\tmissing %d cascading deletes\n", len(op.getDependencies()))
 		for _, dep := range op.getDependencies() {
 			if !dep.cascading {
 				detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())
-				numMissingCascadingDeletes++
+				detector.numMissingCascadingDeletes++
 			}
 		}
 	}
+}
 
-	header += fmt.Sprintf(">> SUMMARY (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):\n>> (%d;%d)\n", numDeletes, numMissingCascadingDeletes)
+func (detector *CascadeDetector) ComputeResults() {
+	header := "------------------------------------------------------------\n"
+	header += "--------------- FOREIGN KEY CASCADE ANALYSIS ---------------\n"
+	header += "------------------------------------------------------------\n"
+
+	detector.checkInconsistencies()
+
+	header += fmt.Sprintf(">> SUMMARY (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numMissingCascadingDeletes)
 	detector.results = header + detector.results
 }
 
 func (detector *CascadeDetector) GetAnalysisTypeString() string {
-	return "cascade"
+	return "foreign_key_cascade"
 }
 
 func (detector *CascadeDetector) GetResults() string {

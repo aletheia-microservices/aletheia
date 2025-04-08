@@ -8,25 +8,33 @@ import (
 )
 
 type delete struct {
-	call      *abstractgraph.AbstractDatabaseCall
-	datastore *datastores.Datastore
+	call                  *abstractgraph.AbstractDatabaseCall
+	datastore             *datastores.Datastore
+	affectedWrittenFields []*writtenField
 }
 
-type fieldWithReference struct {
-	field       *datastores.Field
-	constraints []*datastores.Constraint // foreign key constraints only
+type writtenField struct {
+	call       *abstractgraph.AbstractDatabaseCall
+	field      *datastores.Field
+	constraint *datastores.Constraint
 }
 
-type writeWithReference struct {
-	call      *abstractgraph.AbstractDatabaseCall
-	datastore *datastores.Datastore
-	fields    []*fieldWithReference
+// e.g.,
+// - notifications_queue.Push() NOTIFICATIONS_QUEUE.Message.ReqID             --> POSTS_DB.Post.ReqID
+// - notifications_queue.Push() NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE    --> POSTS_DB.Post.PostID
+func (w *writtenField) String() string {
+	return fmt.Sprintf("\t - %s: %s \t %-45s --> %s\n",
+		w.call.GetCallerStr(),
+		w.call.ShortString(),
+		w.field.GetFullName(),
+		w.constraint.GetReferencedByField().GetFullName(),
+	)
 }
 
-func (write *writeWithReference) String() string {
-	var fieldsWithReferenceStr string
-	for _, field := range write.fields {
-		fieldsWithReferenceStr += fmt.Sprintf("- field = %s; constraints = %s\n", field.field.GetName(), field.constraints)
-	}
-	return fmt.Sprintf("write with reference to datastore (%s); fields with reference: \n%v", write.datastore.Name, fieldsWithReferenceStr)
+func (del *delete) addAffectedWrittenField(call *abstractgraph.AbstractDatabaseCall, field *datastores.Field, constraint *datastores.Constraint) {
+	del.affectedWrittenFields = append(del.affectedWrittenFields, &writtenField{
+		call:       call,
+		field:      field,
+		constraint: constraint,
+	})
 }
