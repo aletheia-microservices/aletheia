@@ -1,9 +1,10 @@
-------------------------------------------------------------
---------------- FOREIGN KEY CASCADE ANALYSIS ---------------
-------------------------------------------------------------
->> SUMMARY (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
+---------------------------------------------------------------------
+-------------------- FOREIGN KEY CASCADE ANALYSIS -------------------
+---------------------------------------------------------------------
+>> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
 >> (1;2)
-[1] StorageService: posts_db.DeleteOne()
-	missing 2 cascading deletes
+---------------------------------------------------------------------
+[0m[1] delete with 2 missing cascades:
+StorageService: posts_db.DeleteOne()
 	- (UploadService, notifications_queue)
 	- (NotifyService, notifications_queue)

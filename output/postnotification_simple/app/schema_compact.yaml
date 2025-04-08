@@ -12,10 +12,11 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID_MESSAGE: int64
     - Message.Timestamp: int64
   - constraints:
-    - REFERENCE(Message.PostID_MESSAGE --> Post.PostID) [+]
-    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
-    - REFERENCE(Message --> Post.PostID) [+]
-    - REFERENCE(Message --> Post.ReqID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> POSTS_DB.Post.PostID)
+      [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.ReqID --> POSTS_DB.Post.ReqID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB.Post.PostID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB.Post.ReqID) [+]
 
 POSTS_DB:
 - type: NoSQLDatabase

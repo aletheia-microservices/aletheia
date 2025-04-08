@@ -23,11 +23,11 @@ type writtenField struct {
 // - notifications_queue.Push() NOTIFICATIONS_QUEUE.Message.ReqID             --> POSTS_DB.Post.ReqID
 // - notifications_queue.Push() NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE    --> POSTS_DB.Post.PostID
 func (w *writtenField) String() string {
-	return fmt.Sprintf("\t - %s: %s \t %-45s --> %s\n",
-		w.call.GetCallerStr(),
-		w.call.ShortString(),
+	return fmt.Sprintf("\t- %-45s ----> foreign key %s\n\t  @ %s: %s",
 		w.field.GetFullName(),
 		w.constraint.GetReferencedByField().GetFullName(),
+		w.call.GetCallerStr(),
+		w.call.ShortString(),
 	)
 }
 

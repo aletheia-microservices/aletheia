@@ -110,9 +110,9 @@ func (detector *SpecializationDetector) OnDelete(app *app.App, dbCall *abstractg
 }
 
 func (detector *SpecializationDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "------------------ SPECIALIZATION ANALYSIS -----------------\n"
-	header += "------------------------------------------------------------\n"
+	header := "---------------------------------------------------------------------\n"
+	header += "----------------------- SPECIALIZATION ANALYSIS ---------------------\n"
+	header += "---------------------------------------------------------------------\n"
 	var numRemovedMandatoryFields int
 	if len(detector.rmes) > 0 {
 		detector.results += "removed mandatory entities:\n"
@@ -128,8 +128,8 @@ func (detector *SpecializationDetector) ComputeResults() {
 		}
 	}
 
-	header += fmt.Sprintf(">> SUMMARY (# REMOVED MANDATORY OBJECTS; # REFERENCES OF OBJECTS):\n>> (%d;%d)\n", len(detector.rmes), numRemovedMandatoryFields)
-	detector.results = header + detector.results
+	header += fmt.Sprintf(">> (# REMOVED MANDATORY OBJECTS; # REFERENCES OF OBJECTS):\n>> (%d;%d)\n", len(detector.rmes), numRemovedMandatoryFields)
+	detector.results = header + "---------------------------------------------------------------------\n" + detector.results
 }
 
 func (detector *SpecializationDetector) GetAnalysisTypeString() string {

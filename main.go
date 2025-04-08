@@ -10,9 +10,9 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/datastores/constraints"
-	"analyzer/pkg/detection/constraints/foreign_key"
 	"analyzer/pkg/detection/constraints/foreign_key_cascade"
 	"analyzer/pkg/detection/constraints/foreign_key_concurrency"
+	"analyzer/pkg/detection/constraints/foreign_key_read"
 	"analyzer/pkg/detection/constraints/numerical"
 	"analyzer/pkg/detection/constraints/specialization"
 	"analyzer/pkg/detection/constraints/unicity"
@@ -36,9 +36,10 @@ type analysisConfig struct {
 	autofill                       bool
 	detectOnly                     bool
 	xcyDetection                   bool
-	foreignKeyDetection            bool
+	foreignKeyReadDetection        bool
 	foreignKeyConcurrencyDetection bool
 	foreignKeyCascadeDetection     bool
+	compactSchema                  bool
 	unicityDetection               bool
 	numericalDetection             bool
 	specializationDetection        bool
@@ -50,9 +51,10 @@ func main() {
 	autofill := flag.Bool("auto", false, "Autofills additional user input information")
 	detectOnly := flag.Bool("detect_only", false, "Only perform detection (assume parsing is already done)")
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
-	foreignKeyDetection := flag.Bool("fk", false, "Enable detection of anomalies in foreign key constraints")
+	foreignKeyReadDetection := flag.Bool("fk_read", false, "Enable detection of anomalies for uncoordinated reads in foreign key constraints")
 	foreignKeyConcurrencyDetection := flag.Bool("fk_concurrency", false, "Enable detection of concurrency anomalies in foreign key constraints")
 	foreignKeyCascadeDetection := flag.Bool("fk_cascade", false, "Enable detection of the absence of cascading delete logic")
+	compactSchema := flag.Bool("compact_schema", false, "Enable schema compaction (only available when `fk_read` is also enabled)")
 	unicityDetection := flag.Bool("unicity", false, "Enable detection of inconsistencies for unicity constraints")
 	numericalDetection := flag.Bool("numerical", false, "Enable detection of inconsistencies for numerical constraints")
 	specializationDetection := flag.Bool("specialization", false, "Enable detection of removals in mandatory specializations")
@@ -64,9 +66,10 @@ func main() {
 		autofill:                       *autofill,
 		detectOnly:                     *detectOnly,
 		xcyDetection:                   *xcyDetection,
-		foreignKeyDetection:            *foreignKeyDetection,
+		foreignKeyReadDetection:        *foreignKeyReadDetection,
 		foreignKeyConcurrencyDetection: *foreignKeyConcurrencyDetection,
 		foreignKeyCascadeDetection:     *foreignKeyCascadeDetection,
+		compactSchema:                  *compactSchema,
 		unicityDetection:               *unicityDetection,
 		numericalDetection:             *numericalDetection,
 		specializationDetection:        *specializationDetection,
@@ -159,15 +162,17 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 
 	app.ResetAllDataflows()
 
-	if analysis.foreignKeyDetection {
-		foreignKeyDetector := foreign_key.NewDetector()
-		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyDetector)
+	if analysis.foreignKeyReadDetection {
+		foreignKeyReadDetector := foreign_key_read.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyReadDetector)
 		iterator.Run()
 
-		results += detection.SaveResults(app, foreignKeyDetector)
-		summary += foreignKeyDetector.GetSummary()
+		results += detection.SaveResults(app, foreignKeyReadDetector)
+		summary += foreignKeyReadDetector.GetSummary()
 
-		foreignKeyDetector.CompactSchema(app)
+		if analysis.compactSchema {
+			foreignKeyReadDetector.CompactSchema(app)
+		}
 	}
 
 	if analysis.foreignKeyConcurrencyDetection {
@@ -217,7 +222,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 }
 
 func endAnalysis(analysis analysisConfig, app *app.App) {
-	if analysis.foreignKeyDetection || analysis.specializationDetection {
+	if analysis.foreignKeyReadDetection || analysis.specializationDetection {
 		app.DumpYamlSchema(true)
 	}
 }

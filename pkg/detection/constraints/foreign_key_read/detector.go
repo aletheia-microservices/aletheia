@@ -1,4 +1,4 @@
-package foreign_key
+package foreign_key_read
 
 import (
 	"fmt"
@@ -90,7 +90,7 @@ func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj object
 	for _, dep := range obj.GetNestedDependencies(true) {
 		logger.Logger.Debugf("[FOREIGN KEY] \t dep: %s", dep.String())
 		for _, df := range dep.GetVariableInfo().GetAllReadDataflowsExceptDatastore(dbCall.DbInstance.GetName()) { // except filter is just for sanity check
-			//FIXME: for some reason there are some "loose" fields that
+			// FIXME: for some reason there are some "loose" fields that
 			// are not associated anymore with the (un)folded fields of the datastore schema
 			// and which also unexpectedly do not have any References
 			// so right now we are just getting the full name of the field that we want for the current dataflow
@@ -185,23 +185,23 @@ func (detector *ForeignKeyDetector) OnDelete(app *app.App, dbCall *abstractgraph
 }
 
 func (detector *ForeignKeyDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "------------------- FOREIGN KEY ANALYSIS -------------------\n"
-	header += "------------------------------------------------------------\n"
+	header := "---------------------------------------------------------------------\n"
+	header += "--------------------- FOREIGN KEY READ ANALYSIS ---------------------\n"
+	header += "---------------------------------------------------------------------\n"
 
 	for i, read := range detector.reads {
-		detector.results += fmt.Sprintf("foreign key read #%d:\n%s\n", i, read.String())
+		detector.results += fmt.Sprintf("[%d] foreign key read:\n%s\n", i+1, read.String())
 		if i < len(detector.reads)-1 {
 			detector.results += "\n" // enforce empty line between each foreign key read result
 		}
 	}
 
-	header += fmt.Sprintf(">> SUMMARY (# READS USING FOREIGN REFERENCES):\n>> (%d)\n", len(detector.reads))
-	detector.results = header + detector.results
+	header += fmt.Sprintf(">> (# READS USING FOREIGN REFERENCES):\n>> (%d)\n", len(detector.reads))
+	detector.results = header + "---------------------------------------------------------------------\n" + utils.TEXT_RESET_COLOR + detector.results
 }
 
 func (detector *ForeignKeyDetector) GetAnalysisTypeString() string {
-	return "foreign_key"
+	return "foreign_key_read"
 }
 
 func (detector *ForeignKeyDetector) GetResults() string {

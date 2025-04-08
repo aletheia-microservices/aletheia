@@ -1,0 +1,11 @@
+---------------------------------------------------------------------
+--------------------- FOREIGN KEY READ ANALYSIS ---------------------
+---------------------------------------------------------------------
+>> (# READS USING FOREIGN REFERENCES):
+>> (1)
+---------------------------------------------------------------------
+[0m[1] foreign key read:
+- ref:	NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE
+	@ n.notificationsQueue.Pop(ctx context.Context, workerMessage (*postnotification_simple.Message struct{ReqID int64, PostID_MESSAGE int64, Timestamp int64}))
+- dst:	POSTS_DB.Post.PostID
+	@ collection.FindOne(ctx context.Context, query primitive.D)

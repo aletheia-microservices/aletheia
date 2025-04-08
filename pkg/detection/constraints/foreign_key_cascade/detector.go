@@ -7,6 +7,7 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/logger"
+	"analyzer/pkg/utils"
 )
 
 type CascadeDetector struct {
@@ -154,8 +155,8 @@ func (detector *CascadeDetector) checkInconsistencies() {
 	detector.numDeletes = len(detector.getDeleteOperations())
 
 	for i, op := range detector.getDeleteOperations() {
-		detector.results += fmt.Sprintf("[%d] %s: %s\n", i+1, op.getCall().GetCallerStr(), op.call.ShortString())
-		detector.results += fmt.Sprintf("\tmissing %d cascading deletes\n", len(op.getDependencies()))
+		detector.results += fmt.Sprintf("[%d] delete with %d missing cascades:\n", i+1, len(op.getDependencies()))
+		detector.results += fmt.Sprintf("%s: %s\n", op.getCall().GetCallerStr(), op.call.ShortString())
 		for _, dep := range op.getDependencies() {
 			if !dep.cascading {
 				detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())
@@ -166,14 +167,14 @@ func (detector *CascadeDetector) checkInconsistencies() {
 }
 
 func (detector *CascadeDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "--------------- FOREIGN KEY CASCADE ANALYSIS ---------------\n"
-	header += "------------------------------------------------------------\n"
+	header := "---------------------------------------------------------------------\n"
+	header += "-------------------- FOREIGN KEY CASCADE ANALYSIS -------------------\n"
+	header += "---------------------------------------------------------------------\n"
 
 	detector.checkInconsistencies()
 
-	header += fmt.Sprintf(">> SUMMARY (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numMissingCascadingDeletes)
-	detector.results = header + detector.results
+	header += fmt.Sprintf(">> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numMissingCascadingDeletes)
+	detector.results = header + "---------------------------------------------------------------------\n" + utils.TEXT_RESET_COLOR + detector.results
 }
 
 func (detector *CascadeDetector) GetAnalysisTypeString() string {

@@ -81,9 +81,12 @@ go run main.go --app coupons_app_cache --auto --numerical
 go run main.go -all=true --auto --xcy --fk --cascade
 ```
 
+Run the code analyzer:
 
 ```zsh
+go run main.go --help
 go run main.go --app digota --auto
+go run main.go --app postnotification_simple --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
 ```
 
 Run the graph builder:

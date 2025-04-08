@@ -159,10 +159,10 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 		for _, del := range dels {
 			if len(del.affectedWrittenFields) > 0 {
 				detector.numDeletes++
-				detector.results += fmt.Sprintf("[%d] %s: %s\n", detector.numDeletes, del.call.GetCallerStr(), del.call.ShortString())
-				detector.results += fmt.Sprintf("\taffecting %d written fields\n", len(del.affectedWrittenFields))
+				detector.results += fmt.Sprintf("[%d] delete affecting %d written fields:\n", detector.numDeletes, len(del.affectedWrittenFields))
+				detector.results += fmt.Sprintf("%s: %s\n", del.call.GetCallerStr(), del.call.ShortString())
 				for _, writtenField := range del.affectedWrittenFields {
-					detector.results += writtenField.String()
+					detector.results += writtenField.String() + "\n"
 					detector.numAffectedWrittenFields++
 				}
 				detector.results += "\n"
@@ -172,13 +172,13 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 }
 
 func (detector *ForeignKeyConcurrencyDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "------------ FOREIGN KEY CONCURRENCY ANALYSIS --------------\n"
-	header += "------------------------------------------------------------\n"
+	header := "---------------------------------------------------------------------\n"
+	header += "----------------- FOREIGN KEY CONCURRENCY ANALYSIS ------------------\n"
+	header += "---------------------------------------------------------------------\n"
 
 	detector.checkInconsistencies()
-	header += fmt.Sprintf(">> SUMMARY (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numAffectedWrittenFields)
-	detector.results = header + detector.results
+	header += fmt.Sprintf(">> (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numAffectedWrittenFields)
+	detector.results = header + "---------------------------------------------------------------------\n" + utils.TEXT_RESET_COLOR + detector.results
 }
 
 func (detector *ForeignKeyConcurrencyDetector) GetAnalysisTypeString() string {

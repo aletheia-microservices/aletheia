@@ -3,9 +3,9 @@ package numerical
 import "fmt"
 
 func (detector *NumericalDetector) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "--------------------- NUMERICAL ANALYSIS -------------------\n"
-	header += "------------------------------------------------------------\n"
+	header := "---------------------------------------------------------------------\n"
+	header += "-------------------------- NUMERICAL ANALYSIS -----------------------\n"
+	header += "---------------------------------------------------------------------\n"
 
 	var numRequests, numOps int
 
@@ -37,8 +37,8 @@ func (detector *NumericalDetector) ComputeResults() {
 		}
 	}
 
-	header += fmt.Sprintf(">> SUMMARY (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
-	detector.results = header + detector.results
+	header += fmt.Sprintf(">> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
+	detector.results = header + "---------------------------------------------------------------------\n" + detector.results
 }
 
 func (detector *NumericalDetector) GetResults() string {

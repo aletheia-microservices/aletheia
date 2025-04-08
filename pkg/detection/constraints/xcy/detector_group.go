@@ -60,9 +60,9 @@ func (dg *DetectorGroup) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDa
 }
 
 func (dg *DetectorGroup) ComputeResults() {
-	header := "------------------------------------------------------------\n"
-	header += "----------------------- XCY ANALYSIS -----------------------\n"
-	header += "------------------------------------------------------------\n"
+	header := "---------------------------------------------------------------------\n"
+	header += "---------------------------- XCY ANALYSIS ---------------------------\n"
+	header += "---------------------------------------------------------------------\n"
 
 	var numInconsistencies int
 	for _, detector := range dg.detectors {
@@ -75,8 +75,8 @@ func (dg *DetectorGroup) ComputeResults() {
 			numInconsistencies += detector.inconsistencies
 		}
 	}
-	header += fmt.Sprintf(">> SUMMARY (# CROSS-SERVICE INCONSISTENCIES):\n>> (%d)\n", numInconsistencies)
-	dg.results = header + dg.results
+	header += fmt.Sprintf(">> (# CROSS-SERVICE INCONSISTENCIES):\n>> (%d)\n", numInconsistencies)
+	dg.results = header + "---------------------------------------------------------------------\n" + dg.results
 }
 
 func (dg *DetectorGroup) GetAnalysisTypeString() string {
