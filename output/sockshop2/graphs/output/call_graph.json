@@ -73,6 +73,10 @@
       "type": "client"
     },
     {
+      "id": "Client",
+      "type": "client"
+    },
+    {
       "id": "CartService",
       "type": "service"
     },
@@ -122,6 +126,14 @@
     },
     {
       "id": "CatalogueService",
+      "type": "service"
+    },
+    {
+      "id": "CatalogueService",
+      "type": "service"
+    },
+    {
+      "id": "FrontendService",
       "type": "service"
     },
     {
@@ -305,6 +317,10 @@
       "type": "datastore"
     },
     {
+      "id": "catalogue_db MongoDB",
+      "type": "datastore"
+    },
+    {
       "id": "order_db MongoDB",
       "type": "datastore"
     },
@@ -415,6 +431,12 @@
     {
       "caller": "CatalogueService",
       "callee": "catalogue_db MongoDB",
+      "call": "DeleteOne",
+      "depth": 2
+    },
+    {
+      "caller": "CatalogueService",
+      "callee": "catalogue_db MongoDB",
       "call": "FindMany",
       "depth": 2
     },
@@ -458,6 +480,12 @@
       "caller": "Client",
       "callee": "FrontendService",
       "call": "DeleteCart",
+      "depth": 0
+    },
+    {
+      "caller": "Client",
+      "callee": "FrontendService",
+      "call": "DeleteSock",
       "depth": 0
     },
     {
@@ -596,6 +624,12 @@
       "caller": "FrontendService",
       "callee": "CatalogueService",
       "call": "AddSock",
+      "depth": 1
+    },
+    {
+      "caller": "FrontendService",
+      "callee": "CatalogueService",
+      "call": "DeleteSock",
       "depth": 1
     },
     {

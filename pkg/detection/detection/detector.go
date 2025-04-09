@@ -107,7 +107,7 @@ func GetWrittenFieldNamesForOperation(dbCall *abstractgraph.AbstractDatabaseCall
 		params := dbCall.GetParams()
 
 		switch datastore.Type {
-		case datastores.NoSQL, datastores.Queue:
+		case datastores.NoSQL, datastores.Queue, datastores.Cache:
 			obj := params[1]
 			objType := obj.GetType()
 

@@ -12,7 +12,8 @@
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BasicObject BasicType) sessionID string
-  - '0 depth 0 (BasicObject BasicType) itemID string --> r-tainted 1x: read(catalogue_db.Sock.ID.id)'
+  - '0 depth 0 (BasicObject BasicType) itemID string --> w-tainted 1x: write(cart_db.cart.Items)
+    --> r-tainted 1x: read(catalogue_db.Sock.ID.id)'
   - '0 depth 0 (BasicObject BasicType) sessionID string --> w-tainted 1x: write(cart_db.cart.ID)'
   - 0 depth 0 (StructObject UserType) sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - '_1 depth 1 (Reference UserType) ref <sock catalogue.Sock struct{ID string, Name
@@ -38,10 +39,8 @@
   - '__12 depth 2 (FieldObject FieldType) Tags []string --> r-tainted 1x: read(catalogue_db.Sock.Tags)'
   - '___13 depth 3 (SliceObject SliceType) []string --> r-tainted 1x: read(catalogue_db.Sock.Tags)'
   - '____15 depth 4 (BasicObject BasicType) "," string --> r-tainted 1x: read(catalogue_db.Sock.string)'
-  - _18 depth 1 (FieldObject FieldType) ID string
-  - '__19 depth 2 (BasicObject BasicType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
-  - _20 depth 1 (FieldObject FieldType) Price float32
-  - '__21 depth 2 (BasicObject BasicType) Price float32 --> w-tainted 1x: write(cart_db.cart.Items)'
+  - _18 depth 1 (FieldObject FieldType) Price float32
+  - '__19 depth 2 (BasicObject BasicType) Price float32 --> w-tainted 1x: write(cart_db.cart.Items)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - _1 depth 1 (Reference BasicType) ref <nil> @ CatalogueService
   - '0 depth 0 (StructObject UserType) _ cart.Item struct{ID string, Quantity 1 int,
@@ -51,7 +50,8 @@
   - '__2 depth 2 (Reference UserType) ref <cart.Item struct{ID string, Quantity 1
     int, UnitPrice float32}> @ FrontendService --> w-tainted 1x: write(cart_db.cart.Items)'
   - '___3 depth 3 (FieldObject FieldType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
-  - '____4 depth 4 (BasicObject BasicType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
+  - '____4 depth 4 (BasicObject BasicType) itemID string --> w-tainted 1x: write(cart_db.cart.Items)
+    --> r-tainted 1x: read(catalogue_db.Sock.ID.id)'
   - '___5 depth 3 (FieldObject FieldType) Quantity 1 int --> w-tainted 1x: write(cart_db.cart.Items)'
   - '____6 depth 4 (BasicObject BasicType) 1 int --> w-tainted 1x: write(cart_db.cart.Items)'
   - '___7 depth 3 (FieldObject FieldType) UnitPrice float32 --> w-tainted 1x: write(cart_db.cart.Items)'
@@ -75,6 +75,21 @@
   - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BasicObject BasicType) sessionID string
+
+(*FrontendImpl).DeleteSock(ctx context.Context, id string):
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) f (*frontend.FrontendImpl struct{user user.UserService, catalogue catalogue.CatalogueService, cart cart.CartService, order order.OrderService})
+  - _1 depth 1 (StructObject UserType) frontend.FrontendImpl struct{user user.UserService, catalogue catalogue.CatalogueService, cart cart.CartService, order order.OrderService}
+  - __2 depth 2 (FieldObject FieldType) cart cart.CartService
+  - ___3 depth 3 (ServiceObject ServiceType) cart cart.CartService
+  - __4 depth 2 (FieldObject FieldType) catalogue catalogue.CatalogueService
+  - ___5 depth 3 (ServiceObject ServiceType) catalogue catalogue.CatalogueService
+  - __6 depth 2 (FieldObject FieldType) order order.OrderService
+  - ___7 depth 3 (ServiceObject ServiceType) order order.OrderService
+  - __8 depth 2 (FieldObject FieldType) user user.UserService
+  - ___9 depth 3 (ServiceObject ServiceType) user user.UserService
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BasicObject BasicType) id string
 
 (*FrontendImpl).GetAddress(ctx context.Context, addressID string):
   block 0 (Body):

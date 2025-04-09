@@ -1,0 +1,14 @@
+---------------------------------------------------------------------
+-------------------- FOREIGN KEY CASCADE ANALYSIS -------------------
+---------------------------------------------------------------------
+>> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
+>> (2;4)
+---------------------------------------------------------------------
+[0m[1] delete with 4 missing cascades:
+UserService: users_db.DeleteOne()
+	- (accounts_db, AccountService) on constraint REFERENCE(ACCOUNTS_DB.Account.ReqID --> USERS_DB.User.ReqID) [+]
+	- (accounts_db, AccountService) on constraint REFERENCE(ACCOUNTS_DB.Account.Username --> USERS_DB.User.Username) [+]
+	- (accounts_db, AccountService) on constraint REFERENCE(ACCOUNTS_DB.Account --> USERS_DB.User.ReqID) [+]
+	- (accounts_db, AccountService) on constraint REFERENCE(ACCOUNTS_DB.Account --> USERS_DB.User.Username) [+]
+[1] delete with 0 missing cascades:
+AccountService: accounts_db.DeleteOne()

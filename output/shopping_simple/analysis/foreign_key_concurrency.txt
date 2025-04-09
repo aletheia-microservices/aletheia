@@ -1,0 +1,13 @@
+---------------------------------------------------------------------
+----------------- FOREIGN KEY CONCURRENCY ANALYSIS ------------------
+---------------------------------------------------------------------
+>> (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):
+>> (1;2)
+---------------------------------------------------------------------
+[0m[1] delete affecting 2 written fields:
+ProductService: product_db.DeleteOne()
+	- CART_DB.Cart.Products                         ----> foreign key PRODUCT_DB.Product.ProductID
+	  @ CartService: cart_db.InsertOne()
+	- CART_DB.Cart.Products                         ----> foreign key PRODUCT_DB.Product.ProductID
+	  @ CartService: cart_db.InsertOne()
+

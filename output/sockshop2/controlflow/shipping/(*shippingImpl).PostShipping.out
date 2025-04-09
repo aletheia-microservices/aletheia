@@ -1,0 +1,7 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ExprStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] service (*shipping.shippingImpl struct{q Queue, db NoSQLDatabase}) ---> depends on: {shipping.shippingImpl struct{q Queue, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] shipment shipping.Shipment struct{ID string, Name string, Status string} ---> depends on: {}
+	 [3] collection NoSQLCollection {database = shipping_service, collection = shipments} ---> depends on: {}
+	 [4] _ .error ---> depends on: {}
+

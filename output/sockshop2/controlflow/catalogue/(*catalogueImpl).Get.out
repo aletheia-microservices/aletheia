@@ -1,0 +1,11 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.ValueSpec, *ast.AssignStmt, *ast.ExprStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*catalogue.catalogueImpl struct{catalogue_db NoSQLDatabase}) ---> depends on: {catalogue.catalogueImpl struct{catalogue_db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = catalogue, collection = catalogue} ---> depends on: {}
+	 [4] _ .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{Key "id" string, Key "id" string, Value string, Value string}}
+	 [6] sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string} ---> depends on: {ImageURL []string, ImageURL_1 string, ImageURL_2 string, TagString string, Tags []string}
+	 [7] result NoSQLCursor {database = catalogue, collection = catalogue} ---> depends on: {sock catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}}
+	 [8] _ .error ---> depends on: {}
+

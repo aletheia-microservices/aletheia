@@ -28,8 +28,9 @@ FREELANCERS_DB:
     - Freelancer.Rate: string
     - Freelancer.Terms: string
   - constraints:
-    - REFERENCE(Freelancer.EmployeeID --> Employee.EmployeeID) [+]
-    - REFERENCE(Freelancer --> Employee.EmployeeID) [+]
+    - REFERENCE(FREELANCERS_DB.Freelancer.EmployeeID --> EMPLOYEES_DB.Employee.EmployeeID)
+      [+]
+    - REFERENCE(FREELANCERS_DB.Freelancer --> EMPLOYEES_DB.Employee.EmployeeID) [+]
 
 FULLTIMES_DB:
 - type: NoSQLDatabase
@@ -46,8 +47,9 @@ FULLTIMES_DB:
     - Fulltime.Salary: string
     - Fulltime.Position: string
   - constraints:
-    - REFERENCE(Fulltime.EmployeeID --> Employee.EmployeeID) [+]
-    - REFERENCE(Fulltime --> Employee.EmployeeID) [+]
+    - REFERENCE(FULLTIMES_DB.Fulltime.EmployeeID --> EMPLOYEES_DB.Employee.EmployeeID)
+      [+]
+    - REFERENCE(FULLTIMES_DB.Fulltime --> EMPLOYEES_DB.Employee.EmployeeID) [+]
 
 INTERNS_DB:
 - type: NoSQLDatabase
@@ -65,5 +67,6 @@ INTERNS_DB:
     - Intern.Duration: string
     - Intern.Mentor: string
   - constraints:
-    - REFERENCE(Intern.EmployeeID --> Employee.EmployeeID) [+]
-    - REFERENCE(Intern --> Employee.EmployeeID) [+]
+    - REFERENCE(INTERNS_DB.Intern.EmployeeID --> EMPLOYEES_DB.Employee.EmployeeID)
+      [+]
+    - REFERENCE(INTERNS_DB.Intern --> EMPLOYEES_DB.Employee.EmployeeID) [+]

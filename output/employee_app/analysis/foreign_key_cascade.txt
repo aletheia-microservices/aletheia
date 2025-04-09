@@ -1,0 +1,16 @@
+---------------------------------------------------------------------
+-------------------- FOREIGN KEY CASCADE ANALYSIS -------------------
+---------------------------------------------------------------------
+>> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
+>> (2;6)
+---------------------------------------------------------------------
+[0m[1] delete with 6 missing cascades:
+EmployeeService: employees_db.DeleteOne()
+	- (interns_db, InternService) on constraint REFERENCE(INTERNS_DB.Intern.EmployeeID --> EMPLOYEES_DB.Employee.EmployeeID) [+]
+	- (interns_db, InternService) on constraint REFERENCE(INTERNS_DB.Intern --> EMPLOYEES_DB.Employee.EmployeeID) [+]
+	- (fulltimes_db, FulltimeService) on constraint REFERENCE(FULLTIMES_DB.Fulltime.EmployeeID --> EMPLOYEES_DB.Employee.EmployeeID) [+]
+	- (fulltimes_db, FulltimeService) on constraint REFERENCE(FULLTIMES_DB.Fulltime --> EMPLOYEES_DB.Employee.EmployeeID) [+]
+	- (freelancers_db, FreelancerService) on constraint REFERENCE(FREELANCERS_DB.Freelancer.EmployeeID --> EMPLOYEES_DB.Employee.EmployeeID) [+]
+	- (freelancers_db, FreelancerService) on constraint REFERENCE(FREELANCERS_DB.Freelancer --> EMPLOYEES_DB.Employee.EmployeeID) [+]
+[1] delete with 0 missing cascades:
+FreelancerService: freelancers_db.DeleteOne()

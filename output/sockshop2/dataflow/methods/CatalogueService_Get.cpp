@@ -12,7 +12,7 @@
 [0] (BasicObject BasicType) id string
      --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
-     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+     --> w-tainted: write(cart_db.cart.Items) {1}         --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
      --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
@@ -30,7 +30,7 @@
 [___3] (BasicObject BasicType) id string
         --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService
-        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+        --> w-tainted: write(cart_db.cart.Items) {1}               --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService
         --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService

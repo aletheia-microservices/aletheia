@@ -13,10 +13,10 @@ ACCOUNTS_DB:
     - Account.Username: string
     - Account.Timestamp: int64
   - constraints:
-    - REFERENCE(Account.Username --> User.Username) [+]
-    - REFERENCE(Account.ReqID --> User.ReqID) [+]
-    - REFERENCE(Account --> User.ReqID) [+]
-    - REFERENCE(Account --> User.Username) [+]
+    - REFERENCE(ACCOUNTS_DB.Account.ReqID --> USERS_DB.User.ReqID) [+]
+    - REFERENCE(ACCOUNTS_DB.Account.Username --> USERS_DB.User.Username) [+]
+    - REFERENCE(ACCOUNTS_DB.Account --> USERS_DB.User.ReqID) [+]
+    - REFERENCE(ACCOUNTS_DB.Account --> USERS_DB.User.Username) [+]
 
 USERS_DB:
 - type: NoSQLDatabase

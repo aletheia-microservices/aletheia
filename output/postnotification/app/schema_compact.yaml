@@ -10,10 +10,12 @@ ANALYTICS_DB:
     - Analytics: postnotification.Analytics struct{PostID int64}
     - Analytics.PostID: int64
   - constraints:
-    - REFERENCE(Analytics.PostID --> TriggerAnalyticsMessage.PostID) [+]
-    - REFERENCE(Analytics.PostID --> Post.PostID) [+]
-    - REFERENCE(Analytics --> TriggerAnalyticsMessage.PostID) [+]
-    - REFERENCE(Analytics --> Post.PostID) [+]
+    - REFERENCE(ANALYTICS_DB.Analytics.PostID --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_DB.Analytics.PostID --> POSTS_DB.Post.PostID) [+]
+    - REFERENCE(ANALYTICS_DB.Analytics --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_DB.Analytics --> POSTS_DB.Post.PostID) [+]
 
 ANALYTICS_QUEUE:
 - type: Queue
@@ -27,8 +29,10 @@ ANALYTICS_QUEUE:
     - TriggerAnalyticsMessage: postnotification.TriggerAnalyticsMessage struct{PostID string}
     - TriggerAnalyticsMessage.PostID: string
   - constraints:
-    - REFERENCE(TriggerAnalyticsMessage.PostID --> Post.PostID) [+]
-    - REFERENCE(TriggerAnalyticsMessage --> Post.PostID) [+]
+    - REFERENCE(ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID --> POSTS_DB.Post.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_QUEUE.TriggerAnalyticsMessage --> POSTS_DB.Post.PostID)
+      [+]
 
 MEDIA_DB:
 - type: NoSQLDatabase
@@ -58,8 +62,8 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID: string
     - Message.Timestamp: string
   - constraints:
-    - REFERENCE(Message.ReqID --> Post.ReqID) [+]
-    - REFERENCE(Message --> Post.ReqID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.ReqID --> POSTS_DB.Post.ReqID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB.Post.ReqID) [+]
 
 POSTS_CACHE:
 - type: Cache
@@ -100,10 +104,10 @@ TIMELINE_CACHE:
     - value: Timeline
   - unfolded_fields: []
   - constraints:
-    - REFERENCE(key --> Post.ReqID) [+]
-    - REFERENCE(key --> Message.ReqID) [+]
-    - REFERENCE(value --> Message.PostID) [+]
-    - REFERENCE(value --> Post.PostID) [+]
-    - REFERENCE(value --> Analytics.PostID) [+]
-    - REFERENCE(value --> Post.ReqID) [+]
-    - REFERENCE(value --> Message.ReqID) [+]
+    - REFERENCE(TIMELINE_CACHE.key --> POSTS_DB.Post.ReqID) [+]
+    - REFERENCE(TIMELINE_CACHE.key --> NOTIFICATIONS_QUEUE.Message.ReqID) [+]
+    - REFERENCE(TIMELINE_CACHE.value --> NOTIFICATIONS_QUEUE.Message.PostID) [+]
+    - REFERENCE(TIMELINE_CACHE.value --> POSTS_DB.Post.PostID) [+]
+    - REFERENCE(TIMELINE_CACHE.value --> ANALYTICS_DB.Analytics.PostID) [+]
+    - REFERENCE(TIMELINE_CACHE.value --> POSTS_DB.Post.ReqID) [+]
+    - REFERENCE(TIMELINE_CACHE.value --> NOTIFICATIONS_QUEUE.Message.ReqID) [+]

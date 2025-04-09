@@ -1,0 +1,11 @@
+---------------------------------------------------------------------
+----------------- FOREIGN KEY CONCURRENCY ANALYSIS ------------------
+---------------------------------------------------------------------
+>> (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):
+>> (1;1)
+---------------------------------------------------------------------
+[0m[1] delete affecting 1 written fields:
+UserService: users_db.DeleteOne()
+	- ACCOUNTS_DB.Account.Username                  ----> foreign key USERS_DB.User.Username
+	  @ AccountService: accounts_db.InsertOne()
+

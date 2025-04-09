@@ -16,20 +16,39 @@ func parseNoSQLUpdateOnRemovedFields(blueprintBackendMethod *blueprint.BackendMe
 		updateBsonElements := updateBsonSlice.GetElements()
 		for i, updateBson := range updateBsonElements {
 			updateBsonStruct := updateBson.(*objects.StructObject)
-			bsonKey := updateBsonStruct.GetFieldByKey("Key")
-			if basicWrappedObj, ok := bsonKey.GetWrappedVariable().(*objects.BasicObject); ok {
+			bsonKeyField := updateBsonStruct.GetFieldByKeyIfExists("Key")
+			if bsonKeyField == nil {
+				bsonKeyField = updateBsonStruct.GetFieldAt(0)
+			}
+			bsonKey := bsonKeyField.GetWrappedVariable()
+			if basicWrappedObj, ok := bsonKey.(*objects.BasicObject); ok {
 				op := basicWrappedObj.GetBasicType().GetBasicValue()
 
 				if op == "$pull" {
 					bsonValue := updateBsonStruct.GetFieldByKey("Value")
+					if bsonValue == nil {
+						bsonValue = updateBsonStruct.GetFieldAt(1)
+					}
 					
 					if bsonValueSlice, ok := bsonValue.GetWrappedVariable().(*objects.SliceObject); ok {
 						elemsToUpdate := bsonValueSlice.GetElements()
 						
 						for j, elemToUpdate := range elemsToUpdate {
 							elemToUpdateStruct := elemToUpdate.(*objects.StructObject)
-							elemKey := elemToUpdateStruct.GetFieldByKeyIfExists("Key").GetWrappedVariable().(*objects.BasicObject).GetBasicType().GetBasicValue()
-							elemValue := elemToUpdateStruct.GetFieldByKeyIfExists("Value").GetWrappedVariable().(*objects.BasicObject).GetBasicType().GetBasicValue()
+
+							elemKeyField := elemToUpdateStruct.GetFieldByKeyIfExists("Key")
+							if elemKeyField == nil {
+								elemKeyField = elemToUpdateStruct.GetFieldAt(0)
+							}
+
+							elemValueField := elemToUpdateStruct.GetFieldByKeyIfExists("Value")
+							if elemValueField == nil {
+								elemValueField = elemToUpdateStruct.GetFieldAt(1)
+							}
+
+
+							elemKey := elemKeyField.GetWrappedVariable().(*objects.BasicObject).GetBasicType().GetBasicValue()
+							elemValue := elemValueField.GetWrappedVariable().(*objects.BasicObject).GetBasicType().GetBasicValue()
 							
 							//collection := blueprintBackendMethod.GetCalledBackendType().NoSQLComponent.Collection
 							//fieldName := collection + "." + elemKey

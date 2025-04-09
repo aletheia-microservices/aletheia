@@ -19,21 +19,12 @@ type CascadeDetector struct {
 	requestInfoStack           *stack.Stack
 	results                    string
 	summary                    string
-	deleteOperations           []*deleteOperation
 	numDeletes                 int
 	numMissingCascadingDeletes int
 }
 
-func (detector *CascadeDetector) addDeleteOperation(op *deleteOperation) {
-	detector.deleteOperations = append(detector.deleteOperations, op)
-}
-
 func (detector *CascadeDetector) getCurrentRequestInfo() *RequestInfo {
 	return detector.requestInfoStack.Peek().(*RequestInfo)
-}
-
-func (detector *CascadeDetector) getDeleteOperations() []*deleteOperation {
-	return detector.deleteOperations
 }
 
 func (detector *CascadeDetector) GetSummary() string {
@@ -92,19 +83,20 @@ func (detector *CascadeDetector) OnWrite(app *app.App, dbCall *abstractgraph.Abs
 
 func (detector *CascadeDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	datastore := dbCall.DbInstance.GetDatastore()
-	params := dbCall.GetParams()
-	update := params[2]
-	method := dbCall.ParsedCall.Method.(*blueprint.BackendMethod)
 
 	if dbCall.DbInstance.GetDatastore().IsNoSQLDatabase() {
-		if constraints, _ := parseNoSQLUpdateOnRemovedFields(method, datastore.GetSchema(), update); constraints != nil {
-			detector.markAsCascading(dbCall.DbInstance.GetDatastore(), constraints)
+		update := dbCall.GetParam(2)
+		method := dbCall.ParsedCall.Method.(*blueprint.BackendMethod)
+		constraints, _ := parseNoSQLUpdateOnRemovedFields(method, datastore.GetSchema(), update) 
+		if constraints != nil {
+			detector.markAsCascading(datastore, constraints)
 		}
 	}
 }
 
 func (detector *CascadeDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
 	datastore := dbCall.DbInstance.GetDatastore()
+	foreignKeyConstraints := datastore.GetSchema().GetConstraintsForeignKey()
 
 	// 1. check if other datastores hold a foreign key referencing the deleted object
 	// 2. for each one of these services, check if they were notified about the deletion of the object
@@ -118,7 +110,14 @@ func (detector *CascadeDetector) OnDelete(app *app.App, dbCall *abstractgraph.Ab
 
 	deleteOp := newDeleteOperation(dbCall, datastore)
 
-	logger.Logger.Infof("[CASCADE DETECTOR] searching dependencies for datastore (%s)", dbCall.DbInstance.GetDatastore().GetName())
+	detector.findPendingCascadingDeletes(app, deleteOp, datastore)
+
+	detector.markAsCascading(datastore, foreignKeyConstraints)
+
+	detector.getCurrentRequestInfo().addDeleteOperation(deleteOp)
+}
+
+func (detector *CascadeDetector) findPendingCascadingDeletes(app *app.App, deleteOp *deleteOperation, datastore *datastores.Datastore) {
 	// iterate all datastores (except caches and queues!!) that have fields referencing the current one
 	for _, dependentDatastore := range app.GetDatabasesReferencingCurrent(datastore) {
 		depServices := app.GetServicesUsingDatastore(dependentDatastore)
@@ -127,8 +126,6 @@ func (detector *CascadeDetector) OnDelete(app *app.App, dbCall *abstractgraph.Ab
 			deleteOp.addPendingDeleteIfNotExists(pendingDel)
 		}
 	}
-
-	detector.getCurrentRequestInfo().addDeleteOperation(deleteOp)
 }
 
 func (detector *CascadeDetector) markAsCascading(datastore *datastores.Datastore, constraints []*datastores.Constraint) {
@@ -170,17 +167,13 @@ func (detector *CascadeDetector) searchCascadingDeletes(deleteOp *deleteOperatio
 }
 
 func (detector *CascadeDetector) checkInconsistencies() {
-	detector.numDeletes = len(detector.getDeleteOperations())
-
-	/* for i, op := range detector.getDeleteOperations() { */
-	/* } */
-
 	for detector.requestInfoStack.Len() > 0 {
 		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
 		for i, op := range requestInfo.getDeleteOperations() {
 			depsWithMissingCascading := op.getDependenciesWithMissingCascade()
 			detector.results += fmt.Sprintf("[%d] delete with %d missing cascades:\n", i+1, len(depsWithMissingCascading))
 			detector.results += fmt.Sprintf("%s: %s\n", op.getCall().GetCallerStr(), op.call.ShortString())
+			detector.numDeletes++
 			for _, dep := range depsWithMissingCascading {
 				if !dep.cascading {
 					detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())

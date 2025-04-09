@@ -25,10 +25,12 @@ ANALYTICS_QUEUE:
     - AnalyticsMessage.UserID: string
     - AnalyticsMessage.ProductCategory: string
   - constraints:
-    - REFERENCE(AnalyticsMessage.UserID --> Order.UserID) [+]
-    - REFERENCE(AnalyticsMessage.UserID --> Bill.UserID) [+]
-    - REFERENCE(AnalyticsMessage --> Order.UserID) [+]
-    - REFERENCE(AnalyticsMessage --> Bill.UserID) [+]
+    - REFERENCE(ANALYTICS_QUEUE.AnalyticsMessage.UserID --> ORDER_DB.Order.UserID)
+      [+]
+    - REFERENCE(ANALYTICS_QUEUE.AnalyticsMessage.UserID --> BILLING_DB.Bill.UserID)
+      [+]
+    - REFERENCE(ANALYTICS_QUEUE.AnalyticsMessage --> ORDER_DB.Order.UserID) [+]
+    - REFERENCE(ANALYTICS_QUEUE.AnalyticsMessage --> BILLING_DB.Bill.UserID) [+]
 
 BILLING_DB:
 - type: NoSQLDatabase
@@ -46,18 +48,18 @@ BILLING_DB:
     - Bill.PricePerUnit: int
     - Bill.TotalCost: ""
   - constraints:
-    - REFERENCE(Bill.TotalCost --> Order.Quantity) [+]
-    - REFERENCE(Bill.TotalCost --> Stock.Quantity) [+]
-    - REFERENCE(Bill.Quantity --> Order.Quantity) [+]
-    - REFERENCE(Bill.Quantity --> Stock.Quantity) [+]
-    - REFERENCE(Bill.ProductID --> Order.ProductID) [+]
-    - REFERENCE(Bill.ProductID --> Stock.ProductID) [+]
-    - REFERENCE(Bill.UserID --> Order.UserID) [+]
-    - REFERENCE(Bill --> Order.ProductID) [+]
-    - REFERENCE(Bill --> Stock.ProductID) [+]
-    - REFERENCE(Bill --> Order.Quantity) [+]
-    - REFERENCE(Bill --> Stock.Quantity) [+]
-    - REFERENCE(Bill --> Order.UserID) [+]
+    - REFERENCE(BILLING_DB.Bill.Quantity --> ORDER_DB.Order.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill.Quantity --> STOCK_DB.Stock.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill.ProductID --> ORDER_DB.Order.ProductID) [+]
+    - REFERENCE(BILLING_DB.Bill.ProductID --> STOCK_DB.Stock.ProductID) [+]
+    - REFERENCE(BILLING_DB.Bill.UserID --> ORDER_DB.Order.UserID) [+]
+    - REFERENCE(BILLING_DB.Bill.TotalCost --> ORDER_DB.Order.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill.TotalCost --> STOCK_DB.Stock.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill --> ORDER_DB.Order.ProductID) [+]
+    - REFERENCE(BILLING_DB.Bill --> STOCK_DB.Stock.ProductID) [+]
+    - REFERENCE(BILLING_DB.Bill --> ORDER_DB.Order.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill --> STOCK_DB.Stock.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill --> ORDER_DB.Order.UserID) [+]
 
 CART_DB:
 - type: NoSQLDatabase
@@ -118,8 +120,8 @@ SHIPMENT_DB:
     - Shipment.UserID: string
     - Shipment.Status: '"pending" string'
   - constraints:
-    - REFERENCE(Shipment.OrderID --> _.orderID)
-    - REFERENCE(Shipment --> _.orderID)
+    - REFERENCE(SHIPMENT_DB.Shipment.OrderID --> ORDER_DB._.orderID)
+    - REFERENCE(SHIPMENT_DB.Shipment --> ORDER_DB._.orderID)
 
 SHIPMENT_QUEUE:
 - type: Queue
@@ -134,14 +136,18 @@ SHIPMENT_QUEUE:
     - ShipmentMessage.OrderID: string
     - ShipmentMessage.UserID: string
   - constraints:
-    - REFERENCE(ShipmentMessage.UserID --> Order.UserID) [+]
-    - REFERENCE(ShipmentMessage.UserID --> AnalyticsMessage.UserID) [+]
-    - REFERENCE(ShipmentMessage.UserID --> Bill.UserID) [+]
-    - REFERENCE(ShipmentMessage.OrderID --> Order.OrderID) [+]
-    - REFERENCE(ShipmentMessage --> Order.OrderID) [+]
-    - REFERENCE(ShipmentMessage --> Order.UserID) [+]
-    - REFERENCE(ShipmentMessage --> AnalyticsMessage.UserID) [+]
-    - REFERENCE(ShipmentMessage --> Bill.UserID) [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.OrderID --> ORDER_DB.Order.OrderID)
+      [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.UserID --> ORDER_DB.Order.UserID) [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.UserID --> ANALYTICS_QUEUE.AnalyticsMessage.UserID)
+      [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.UserID --> BILLING_DB.Bill.UserID)
+      [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage --> ORDER_DB.Order.OrderID) [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage --> ORDER_DB.Order.UserID) [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage --> ANALYTICS_QUEUE.AnalyticsMessage.UserID)
+      [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage --> BILLING_DB.Bill.UserID) [+]
 
 STOCK_DB:
 - type: NoSQLDatabase
@@ -156,7 +162,7 @@ STOCK_DB:
     - Stock.ProductID: string
     - Stock.Quantity: int
   - constraints:
-    - REFERENCE(Stock.Quantity --> Order.Quantity) [+]
-    - REFERENCE(Stock.ProductID --> Order.ProductID) [+]
-    - REFERENCE(Stock --> Order.ProductID) [+]
-    - REFERENCE(Stock --> Order.Quantity) [+]
+    - REFERENCE(STOCK_DB.Stock.Quantity --> ORDER_DB.Order.Quantity) [+]
+    - REFERENCE(STOCK_DB.Stock.ProductID --> ORDER_DB.Order.ProductID) [+]
+    - REFERENCE(STOCK_DB.Stock --> ORDER_DB.Order.ProductID) [+]
+    - REFERENCE(STOCK_DB.Stock --> ORDER_DB.Order.Quantity) [+]

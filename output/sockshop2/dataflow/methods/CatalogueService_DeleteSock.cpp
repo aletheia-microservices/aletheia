@@ -4,8 +4,10 @@
 [___3] (BlueprintBackendObject BlueprintBackendType) catalogue_db NoSQLDatabase
 
 [0] (InterfaceObject UserType) ctx context.Context
+[_1] (Reference UserType) ref <ctx context.Context> @ FrontendService
 
 [0] (BasicObject BasicType) id string
+[_1] (Reference BasicType) ref <id string> @ FrontendService
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = catalogue, collection = catalogue}
 
@@ -17,4 +19,5 @@
 [___3] (BasicObject BasicType) "id" string
 [__2] (FieldObject FieldType) Value string
 [___3] (BasicObject BasicType) id string
+[____4] (Reference BasicType) ref <id string> @ FrontendService
 

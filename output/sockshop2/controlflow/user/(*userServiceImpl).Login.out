@@ -1,0 +1,39 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ValueSpec, *ast.AssignStmt, *ast.ExprStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}) ---> depends on: {user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] password string ---> depends on: {}
+	 [4] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "username" string, Key "username" string, Value string, Value string}}
+	 [7] projection primitive.D ---> depends on: {struct{Key "password" string, Key "password" string, Value true bool, Value true bool}}
+	 [8] user user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string} ---> depends on: {}
+	 [9] result NoSQLCursor {database = users, collection = users} ---> depends on: {user user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}}
+	 [10] _ .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}) ---> depends on: {user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] password string ---> depends on: {}
+	 [4] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "username" string, Key "username" string, Value string, Value string}}
+	 [7] projection primitive.D ---> depends on: {struct{Key "password" string, Key "password" string, Value true bool, Value true bool}}
+	 [8] user user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string} ---> depends on: {}
+	 [9] result NoSQLCursor {database = users, collection = users} ---> depends on: {user user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}}
+	 [10] _ .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}) ---> depends on: {user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] password string ---> depends on: {}
+	 [4] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] query primitive.D ---> depends on: {struct{Key "username" string, Key "username" string, Value string, Value string}}
+	 [7] projection primitive.D ---> depends on: {struct{Key "password" string, Key "password" string, Value true bool, Value true bool}}
+	 [8] user user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string} ---> depends on: {}
+	 [9] result NoSQLCursor {database = users, collection = users} ---> depends on: {user user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}}
+	 [10] _ .error ---> depends on: {}
+

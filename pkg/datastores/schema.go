@@ -28,6 +28,10 @@ func (s *Schema) AddField(field *Field) {
 	s.Fields = append(s.Fields, field)
 }
 
+func (s *Schema) GetUnfoldedFields() []*Field {
+	return s.UnfoldedFields
+}
+
 func NewField(name string, t string, id int64, datastore *Datastore) *Field {
 	return &Field{
 		Name:      name,
@@ -611,6 +615,9 @@ func (field *Field) GetDatastore() *Datastore {
 }
 func (field *Field) GetFullName() string {
 	return strings.ToUpper(field.Datastore.GetName()) + "." + field.Name
+}
+func (field *Field) HasFullName(name string) bool {
+	return field.GetFullName() == name
 }
 func (field *Field) GetType() string {
 	return field.Type

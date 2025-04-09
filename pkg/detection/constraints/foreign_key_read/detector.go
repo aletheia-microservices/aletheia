@@ -95,10 +95,8 @@ func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj object
 			// and which also unexpectedly do not have any References
 			// so right now we are just getting the full name of the field that we want for the current dataflow
 			// and then we get the field that is actually attached to the schema to get the correct References
-			refField := df.Field
-			for _, field := range df.Field.GetDatastore().Schema.UnfoldedFields {
-				if field.GetFullName() == refField.GetFullName() {
-					attachedRefField := field
+			for _, attachedRefField := range df.Field.GetDatastore().GetSchema().GetUnfoldedFields() {
+				if attachedRefField.HasFullName(df.Field.GetFullName()) {
 					for _, refTarget := range attachedRefField.GetReferences() {
 						if !slices.Contains(savedOriginFieldName, originField.GetFullName()) && refTarget == originField {
 							read := newForeignKeyRead(attachedRefField, originField, app.GetDataflowForObjectDataflow(df).GetDatabaseCall(), dbCall.ParsedCall)

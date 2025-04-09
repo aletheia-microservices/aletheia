@@ -13,7 +13,7 @@
 
 [0] (BasicObject BasicType) sessionID string
 
-    --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+    --> w-tainted: write(cart_db.cart.Items) {1}       --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [0] (BasicObject BasicType) itemID string
 
     --> w-tainted: write(cart_db.cart.ID) {1}
@@ -54,9 +54,6 @@
 [____4] (BasicObject BasicType) TagString string
         --> r-tainted: read(catalogue_db.Sock.string) {1}
 [____4] (BasicObject BasicType) "," string
-[_1] (FieldObject FieldType) ID string
-      --> w-tainted: write(cart_db.cart.Items) {1}
-[__2] (BasicObject BasicType) ID string
 [_1] (FieldObject FieldType) Price float32
       --> w-tainted: write(cart_db.cart.Items) {1}
 [__2] (BasicObject BasicType) Price float32
@@ -72,8 +69,8 @@
 [__2] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
        --> w-tainted: write(cart_db.cart.Items) {1}
 [___3] (FieldObject FieldType) ID string
-        --> w-tainted: write(cart_db.cart.Items) {1}
-[____4] (BasicObject BasicType) ID string
+        --> w-tainted: write(cart_db.cart.Items) {1}               --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+[____4] (BasicObject BasicType) itemID string
        --> w-tainted: write(cart_db.cart.Items) {1}
 [___3] (FieldObject FieldType) Quantity 1 int
         --> w-tainted: write(cart_db.cart.Items) {1}
@@ -86,8 +83,8 @@
 [_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
       --> w-tainted: write(cart_db.cart.Items) {1}
 [__2] (FieldObject FieldType) ID string
-       --> w-tainted: write(cart_db.cart.Items) {1}
-[___3] (BasicObject BasicType) ID string
+       --> w-tainted: write(cart_db.cart.Items) {1}             --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+[___3] (BasicObject BasicType) itemID string
       --> w-tainted: write(cart_db.cart.Items) {1}
 [__2] (FieldObject FieldType) Quantity 1 int
        --> w-tainted: write(cart_db.cart.Items) {1}

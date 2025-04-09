@@ -40,6 +40,22 @@ func (v *StructObject) String() string {
 	return v.ObjectInfo.String()
 }
 
+func (v *StructObject) GetKeys(fromLst bool) []string {
+	var keys []string
+	for k := range v.fields {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (v *StructObject) GetValues() []Object {
+	var values []Object
+	for _, v := range v.fields {
+		values = append(values, v)
+	}
+	return values
+}
+
 func (v *StructObject) LongString() string {
 	s := v.ObjectInfo.LongString() + " \n\t\t\t\t\t\t = {"
 	i := 0

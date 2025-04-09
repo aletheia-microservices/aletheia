@@ -1,0 +1,10 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ExprStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}) ---> depends on: {user.userServiceImpl struct{UserService user.UserService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] userid string ---> depends on: {}
+	 [3] address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string} ---> depends on: {}
+	 [4] collection NoSQLCollection {database = users, collection = users} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] filter primitive.D ---> depends on: {struct{Key "userid" string, Key "userid" string, Value string, Value string}}
+	 [7] update primitive.D ---> depends on: {struct{Key "address" string, Key "address" string, Value user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Value user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}}}
+

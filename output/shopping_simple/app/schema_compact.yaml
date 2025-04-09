@@ -14,9 +14,9 @@ CART_DB:
     - Cart.Products: '[]string'
     - Cart.Products[*]: string
   - constraints:
-    - REFERENCE(Cart.Products --> Product.ProductID)
-    - REFERENCE(Cart.LastProductID --> Product.ProductID)
-    - REFERENCE(Cart --> Product.ProductID)
+    - REFERENCE(CART_DB.Cart.Products --> PRODUCT_DB.Product.ProductID)
+    - REFERENCE(CART_DB.Cart.LastProductID --> PRODUCT_DB.Product.ProductID)
+    - REFERENCE(CART_DB.Cart --> PRODUCT_DB.Product.ProductID)
 
 PRODUCT_DB:
 - type: NoSQLDatabase
