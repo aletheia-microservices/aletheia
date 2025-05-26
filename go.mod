@@ -72,7 +72,10 @@ require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0
 
 require (
 	github.com/auxten/postgresql-parser v1.0.1
+	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
+	github.com/go-sql-driver/mysql v1.8.1
+	github.com/lib/pq v1.10.9
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -80,6 +83,18 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Rhymond/go-money v1.0.14 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.67 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.30 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.34 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.34 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.12.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.10.15 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.15 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.25.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.30.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.33.19 // indirect
+	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workload v0.0.0-20240619221802-d064c5861c1e // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
@@ -98,7 +113,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -110,7 +124,6 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/onsi/gomega v1.27.10 // indirect
 	github.com/otiai10/copy v1.14.0 // indirect
@@ -145,6 +158,8 @@ require (
 )
 
 require (
+	github.com/aws/aws-sdk-go-v2/config v1.29.14
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.42.4
 	github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/mod v0.23.0 // indirect

@@ -162,7 +162,7 @@ STOCK_DB:
     - Stock.ProductID: string
     - Stock.Quantity: int
   - constraints:
-    - REFERENCE(STOCK_DB.Stock.Quantity --> ORDER_DB.Order.Quantity) [+]
     - REFERENCE(STOCK_DB.Stock.ProductID --> ORDER_DB.Order.ProductID) [+]
+    - REFERENCE(STOCK_DB.Stock.Quantity --> ORDER_DB.Order.Quantity) [+]
     - REFERENCE(STOCK_DB.Stock --> ORDER_DB.Order.ProductID) [+]
     - REFERENCE(STOCK_DB.Stock --> ORDER_DB.Order.Quantity) [+]

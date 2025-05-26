@@ -105,7 +105,6 @@ func initAnalyzer(analysis analysisConfig) {
 	app.BuildServices()
 	app.ParseMethods()
 	app.Dump()
-	//logger.Logger.Fatalf("EXIT!")
 
 	fmt.Println()
 	fmt.Println(" -------------------------------------------------------------------------------------------------------------- ")

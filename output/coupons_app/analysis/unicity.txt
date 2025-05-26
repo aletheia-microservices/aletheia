@@ -1,14 +1,9 @@
-------------------------------------------------------------
----------------------- UNICITY ANALYSIS --------------------
-------------------------------------------------------------
->> SUMMARY (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):
+---------------------------------------------------------------------
+--------------------------- UNICITY ANALYSIS ------------------------
+---------------------------------------------------------------------
+>> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):
 >> (3;5)
-
-[ENTRY] (*FrontendImpl).CreateStudent(ctx context.Context, studentID int, name string)
-	* (StudentService, students_db)
-	 -> collection.InsertOne(ctx context.Context, coupon coupons_app.Student struct{StudentID int, Name string, Balance int, NumClaimedCoupons 0 int})
-		 @ UNIQUE(Student.StudentID)
-
+---------------------------------------------------------------------
 
 [ENTRY] (*FrontendImpl).ClaimCoupon(ctx context.Context, couponID int, category string, studentID int, value int)
 	- (CouponService, coupons_db)
@@ -16,7 +11,7 @@
 
 	* (CouponService, coupons_db)
 	 -> collection.InsertOne(ctx context.Context, claimedCoupon coupons_app.ClaimedCoupon struct{CouponID int, UserID int})
-		 @ UNIQUE(ClaimedCoupon.CouponID, ClaimedCoupon.UserID)
+		 @ UNIQUE(COUPONS_DB.ClaimedCoupon.CouponID, COUPONS_DB.ClaimedCoupon.UserID)
 
 	- (StudentService, students_db)
 	 -> collection.UpdateOne(ctx context.Context, filter primitive.D, update primitive.D)
@@ -25,5 +20,11 @@
 [ENTRY] (*FrontendImpl).CreateCoupon(ctx context.Context, couponID int, category string)
 	* (CouponService, coupons_db)
 	 -> collection.InsertOne(ctx context.Context, coupon coupons_app.Coupon struct{CouponID int, Category string, NumClaims int})
-		 @ UNIQUE(Coupon.CouponID)
+		 @ UNIQUE(COUPONS_DB.Coupon.CouponID)
+
+
+[ENTRY] (*FrontendImpl).CreateStudent(ctx context.Context, studentID int, name string)
+	* (StudentService, students_db)
+	 -> collection.InsertOne(ctx context.Context, coupon coupons_app.Student struct{StudentID int, Name string, Balance int, NumClaimedCoupons 0 int})
+		 @ UNIQUE(STUDENTS_DB.Student.StudentID)
 

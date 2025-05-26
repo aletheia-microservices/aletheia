@@ -1,5 +1,135 @@
 [
   {
+    "method": "(*FrontendImpl).DeleteEmployee(ctx context.Context, employeeID string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*EmployeeServiceImpl).DeleteEmployee(ctx context.Context, employeeID string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
+            "depth": 2,
+            "caller": "EmployeeService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"freelancerID\" string, Key \"freelancerID\" string, Value string, Value string}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"freelancerID\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"freelancerID\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "employeeID",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "employeeID",
+                                "creator": "Frontend"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "employees_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "employeeID",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "EmployeeService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "employeeID",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
     "method": "(*FrontendImpl).CreateEmployeeFreelancer(ctx context.Context, employeeID string, name string, IBAN string, freelancerID string, rate string, terms string)",
     "depth": 0,
     "caller": "Client",
@@ -2017,136 +2147,6 @@
       {
         "basic": {
           "name": "position",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).DeleteEmployee(ctx context.Context, employeeID string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*EmployeeServiceImpl).DeleteEmployee(ctx context.Context, employeeID string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
-            "depth": 2,
-            "caller": "EmployeeService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"freelancerID\" string, Key \"freelancerID\" string, Value string, Value string}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"freelancerID\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"freelancerID\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "employeeID",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "employeeID",
-                                "creator": "Frontend"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "employees_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "employeeID",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "EmployeeService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "employeeID",
           "type": "string"
         }
       }

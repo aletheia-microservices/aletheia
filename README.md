@@ -54,14 +54,15 @@ go run main.go --app postnotification --auto --xcy
 go run main.go --app sockshop2 --auto --xcy
 
 # Referential Integrity Constraint: Invalid Foreign Key
-go run main.go --app postnotification --auto --fk
-go run main.go --app sockshop2 --auto --fk
+go run main.go --app postnotification --auto --fk_read
+go run main.go --app postnotification_simple --auto --fk_read
+go run main.go --app sockshop2 --auto --fk_read
 
 # Referential Integrity Constraint: Absence of Cascading Deletes
-go run main.go --app shopping_simple --auto --cascade
-go run main.go --app sockshop2 --auto --cascade
-go run main.go --app trainticket --auto --cascade
-go run main.go --app employee_app --auto --cascade
+go run main.go --app shopping_simple --auto --fk_cascade
+go run main.go --app sockshop2 --auto --fk_cascade
+go run main.go --app trainticket --auto --fk_cascade
+go run main.go --app employee_app --auto --fk_cascade
 
 # Specialization Constraint: Violation of Mandatory and Disjoint Constraints
 go run main.go --app employee_app --auto --specialization
@@ -78,7 +79,7 @@ go run main.go --app coupons_app_sql --auto --numerical
 go run main.go --app coupons_app_cache --auto --numerical
 
 # all applications and detection patterns
-go run main.go -all=true --auto --xcy --fk --cascade
+go run main.go -all=true --auto --xcy --fk_read --fk_cascade
 ```
 
 Run the code analyzer:
@@ -87,6 +88,8 @@ Run the code analyzer:
 go run main.go --help
 go run main.go --app digota --auto
 go run main.go --app postnotification_simple --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
+go run main.go --app postnotification --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
+go run main.go --app sockshop2 --auto --fk_read
 ```
 
 Run the graph builder:

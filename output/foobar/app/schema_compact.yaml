@@ -12,8 +12,8 @@ BAR_DB:
     - Bar.Text: string
     - Bar.Flag: bool
   - constraints:
-    - REFERENCE(Bar.Text --> Foo.Text) [+]
-    - REFERENCE(Bar --> Foo.Text) [+]
+    - REFERENCE(BAR_DB.Bar.Text --> FOO_DB.Foo.Text) [+]
+    - REFERENCE(BAR_DB.Bar --> FOO_DB.Foo.Text) [+]
 
 FOO_DB:
 - type: NoSQLDatabase

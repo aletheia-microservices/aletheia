@@ -12,8 +12,8 @@ COUPONS_DB:
     - coupons.coupon_id: int
   - unfolded_fields: []
   - constraints:
-    - PRIMARY(coupons.coupon_id)
-    - PRIMARY(claimed_coupons.coupon_id, claimed_coupons.user_id)
+    - PRIMARY(COUPONS_DB.coupons.coupon_id)
+    - PRIMARY(COUPONS_DB.claimed_coupons.coupon_id, COUPONS_DB.claimed_coupons.user_id)
 
 STUDENTS_DB:
 - type: RelationalDB
@@ -28,6 +28,7 @@ STUDENTS_DB:
     - students.claimed_coupons: int
   - unfolded_fields: []
   - constraints:
-    - REFERENCE(students.student_id --> claimed_coupons.user_id) [+]
+    - REFERENCE(STUDENTS_DB.students.student_id --> COUPONS_DB.claimed_coupons.user_id)
+      [+]
     - CHECK(students.balance > 0)
     - CHECK(students.claimed_coupons < 10) 
