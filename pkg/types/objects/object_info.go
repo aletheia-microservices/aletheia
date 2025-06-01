@@ -144,6 +144,21 @@ func (vinfo *ObjectInfo) GetAllReadDataflowsExceptDatastore(datastore string) []
 	return dataflows
 }
 
+func (vinfo *ObjectInfo) GetAllWriteDataflowsExceptDatastore(datastore string) []*ObjectDataflow {
+	var dataflows []*ObjectDataflow
+	for _, df := range vinfo.Dataflows {
+		if !df.IsOpInDatastore(datastore) && df.IsWriteOp() {
+			dataflows = append(dataflows, df)
+		}
+	}
+	for _, df := range vinfo.IndirectDataflows {
+		if !df.IsOpInDatastore(datastore) && df.IsWriteOp() {
+			dataflows = append(dataflows, df)
+		}
+	}
+	return dataflows
+}
+
 func (vinfo *ObjectInfo) GetAllWriteDataflowsForDatastore(datastore string) []*ObjectDataflow {
 	var dataflows []*ObjectDataflow
 	for _, df := range vinfo.Dataflows {

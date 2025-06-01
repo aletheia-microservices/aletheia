@@ -549,6 +549,16 @@ func (field *Field) GetReferenceForDatastore(ds string) *Field {
 	return nil
 }
 
+// also includes PK
+func (field *Field) HasUniqueConstraint() bool {
+	for _, c := range field.constraints {
+		if c.unique || c.primary && len(c.fields) == 1 {
+			return true
+		}
+	}
+	return false
+}
+
 type ConstraintFilter struct {
 	Unique    *bool
 	Primary   *bool

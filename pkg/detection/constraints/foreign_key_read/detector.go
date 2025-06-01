@@ -134,10 +134,10 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 				detector.checkForeignKeyRead(app, qObj.Object, qObj.FieldName, datastore, dbCall)
 			}
 
-			abstractgraph.TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, child_idx)
+			abstractgraph.TaintDataflowReadNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, child_idx)
 			for _, obj := range queryObjs {
 				logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", obj.String())
-				abstractgraph.TaintDataflowNoSQL(app, obj.Object, dbCall, datastore, obj.FieldName, true, false, child_idx)
+				abstractgraph.TaintDataflowReadNoSQL(app, obj.Object, dbCall, datastore, obj.FieldName, true, child_idx)
 			}
 		case datastores.Cache:
 			key, value := params[1], params[2]
@@ -167,7 +167,6 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 			logger.Logger.Fatalf("[FOREIGN KEY] TODO: %s", dbCall.String())
 		}
 	}
-
 }
 
 func (detector *ForeignKeyDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {

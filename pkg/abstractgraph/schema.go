@@ -152,7 +152,7 @@ func TaintDataflowReadQueue(app *app.App, variable objects.Object, call *Abstrac
 }
 
 // aka TaintDataflowReadUnnamed
-func TaintDataflowNoSQL(app *app.App, obj objects.Object, call *AbstractDatabaseCall, datastore *datastores.Datastore, fieldName string, queryField bool, write bool, requestIdx int) {
+func TaintDataflowReadNoSQL(app *app.App, obj objects.Object, call *AbstractDatabaseCall, datastore *datastores.Datastore, fieldName string, queryField bool, requestIdx int) {
 	fmt.Printf("\n------------- TAINT READ (DOC) DATAFLOW FOR CALL %s @ %s -------------\n\n", call.GetMethodStr(), datastore.Name)
 	fmt.Println()
 
@@ -181,14 +181,14 @@ func TaintDataflowNoSQL(app *app.App, obj objects.Object, call *AbstractDatabase
 		if !slices.Contains(taintedVariables, dep) {
 			typeName := prefix + dep.GetType().GetName()
 
-			taintDataflowNoSQLHelper(app, obj, dep, field, call, datastore, typeName, queryField, write, requestIdx)
+			taintDataflowReadNoSQLHelper(app, obj, dep, field, call, datastore, typeName, queryField, requestIdx)
 			taintedVariables = append(taintedVariables, dep)
 
 			if fieldObj, ok := dep.(*objects.FieldObject); ok {
 				// if it is a nested field then it was captured in "deps" and will be visited eventually
 				// otherwise, we want to capture any other types e.g. BasicObjects to ensure the typeName aka fieldName assigned is the same as the upper field
 				if _, underlyingIsNestedField := fieldObj.WrappedVariable.(*objects.FieldObject); !underlyingIsNestedField {
-					taintDataflowNoSQLHelper(app, obj, fieldObj.WrappedVariable, field, call, datastore, typeName, queryField, write, requestIdx)
+					taintDataflowReadNoSQLHelper(app, obj, fieldObj.WrappedVariable, field, call, datastore, typeName, queryField, requestIdx)
 					taintedVariables = append(taintedVariables, fieldObj.WrappedVariable)
 				}
 			}
@@ -208,15 +208,15 @@ func TaintDataflowNoSQL(app *app.App, obj objects.Object, call *AbstractDatabase
 	fmt.Println()
 }
 
-func taintDataflowNoSQLHelper(app *app.App, obj objects.Object, dep objects.Object, field *datastores.Field, call *AbstractDatabaseCall, datastore *datastores.Datastore, typeName string, queryField bool, write bool, requestIdx int) {
+func taintDataflowReadNoSQLHelper(app *app.App, obj objects.Object, dep objects.Object, field *datastores.Field, call *AbstractDatabaseCall, datastore *datastores.Datastore, typeName string, queryField bool, requestIdx int) {
 	if queryField { // query
 		//logger.Logger.Debugf("query field? YES! for typename = %s", typeName)
-		df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, field, write, requestIdx)
+		df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, field, false, requestIdx)
 		app.AddDataflow(df, call.ParsedCall)
 	} else { // cursor
 		//logger.Logger.Debugf("query field? NO! for typename = %s", typeName)
 		entry := datastores.NewField(typeName, typeName, 0, datastore)
-		df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, entry, write, requestIdx)
+		df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, entry, false, requestIdx)
 		app.AddDataflow(df, call.ParsedCall)
 	}
 	app.AddTaintedVariableIfNotExists(dep.GetType().GetName(), dep)
@@ -377,7 +377,7 @@ func GetNoSQLQueryDocument(datastore *datastores.Datastore, variable objects.Obj
 	return nil
 }
 
-func referenceTaintedDataflowForNestedField(writtenVariable objects.Object, datastore *datastores.Datastore, fieldName string, requestIdx int) {
+func ReferenceTaintedDataflowForNestedField(writtenVariable objects.Object, datastore *datastores.Datastore, fieldName string, requestIdx int) {
 	fmt.Printf("\n------------- REFERENCE TAINTED DATAFLOW FOR WRITTEN VARIABLE %s @ %s -------------\n\n", writtenVariable.GetType().GetName(), datastore.Name)
 	fmt.Println()
 	dbField := datastore.Schema.GetField(fieldName)
@@ -408,12 +408,12 @@ func referenceTaintedDataflowForNestedField(writtenVariable objects.Object, data
 	fmt.Println()
 }
 
-func referenceTaintedDataflowForAllNestedFields(writtenVariable objects.Object, datastore *datastores.Datastore, requestIdx int) {
+func ReferenceTaintedDataflowForAllNestedFields(writtenVariable objects.Object, datastore *datastores.Datastore, requestIdx int) {
 	fmt.Printf("\n------------- REFERENCE TAINTED DATAFLOW FOR WRITTEN VARIABLE %s @ %s -------------\n\n", writtenVariable.GetType().GetName(), datastore.Name)
 	fmt.Println()
 	vars, names := objects.GetReversedNestedFieldsAndNames(writtenVariable, "", datastore.IsNoSQLDatabase(), datastore.IsQueue())
 	for i, variable := range vars {
-		referenceTaintedDataflowForNestedField(variable, datastore, names[i], requestIdx)
+		ReferenceTaintedDataflowForNestedField(variable, datastore, names[i], requestIdx)
 	}
 }
 
@@ -477,10 +477,10 @@ func buildSchemaOnRead(app *app.App, dbCall *AbstractDatabaseCall, requestIdx in
 
 		case datastores.NoSQL:
 			cursor, query := returns[0], params[1]
-			TaintDataflowNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, false, requestIdx)
+			TaintDataflowReadNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, requestIdx)
 			queryObjs := GetNoSQLQueryDocument(datastore, query)
 			for _, v := range queryObjs {
-				TaintDataflowNoSQL(app, v.Object, dbCall, datastore, v.FieldName, true, false, requestIdx)
+				TaintDataflowReadNoSQL(app, v.Object, dbCall, datastore, v.FieldName, true, requestIdx)
 			}
 
 		case datastores.Cache:
@@ -516,13 +516,13 @@ func buildSchemaOnWrite(app *app.App, dbCall *AbstractDatabaseCall, requestIdx i
 			msg := params[1]
 			saveUnfoldedFieldsToDatastore(msg, datastores.ROOT_FIELD_NAME_QUEUE, datastore)
 			TaintDataflowWrite(app, msg, dbCall, datastore, "", true, requestIdx)
-			referenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
+			ReferenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
 
 		case datastores.NoSQL:
 			doc := params[1]
 			saveUnfoldedFieldsToDatastore(doc, datastores.ROOT_FIELD_NAME_NOSQL, datastore)
 			TaintDataflowWrite(app, doc, dbCall, datastore, "", true, requestIdx)
-			referenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
+			ReferenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
 
 		case datastores.Cache:
 			key, value := params[1], params[2]
@@ -530,8 +530,8 @@ func buildSchemaOnWrite(app *app.App, dbCall *AbstractDatabaseCall, requestIdx i
 			saveFieldToDatastore(value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, datastore)
 			TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, requestIdx)
 			TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, requestIdx)
-			referenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
-			referenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
+			ReferenceTaintedDataflowForNestedField(key, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, requestIdx)
+			ReferenceTaintedDataflowForNestedField(value, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, requestIdx)
 
 		case datastores.RelationalDB:
 			if blueprintBackendMethod.IsRelationalDBExecCall() {
@@ -540,11 +540,11 @@ func buildSchemaOnWrite(app *app.App, dbCall *AbstractDatabaseCall, requestIdx i
 				for _, field := range writtenFields {
 					saveFieldToDatastore(field.GetObject(), field.GetName(), datastore)
 					TaintDataflowWrite(app, field.GetObject(), dbCall, datastore, field.GetName(), false, requestIdx)
-					referenceTaintedDataflowForNestedField(field.GetObject(), datastore, field.GetName(), requestIdx)
+					ReferenceTaintedDataflowForNestedField(field.GetObject(), datastore, field.GetName(), requestIdx)
 				}
 				for _, field := range filterFields {
 					TaintDataflowReadSQL(app, field.GetObject(), field.GetName(), dbCall, datastore, requestIdx, false)
-					referenceTaintedDataflowForNestedField(field.GetObject(), datastore, field.GetName(), requestIdx)
+					ReferenceTaintedDataflowForNestedField(field.GetObject(), datastore, field.GetName(), requestIdx)
 				}
 			}
 
@@ -656,7 +656,7 @@ func ParseSQLReadSelect(target objects.Object, query objects.Object, args []obje
 		for _, expr := range stmt.SelectExprs {
 			if _, ok := expr.(*sqlparser.StarExpr); ok {
 				readAllFields = true
-				fieldName := tableNameAliasLst[0].name+".*"
+				fieldName := tableNameAliasLst[0].name + ".*"
 				selectedFields = append(selectedFields, SQLFieldObject{fieldName, target})
 				logger.Logger.Tracef("[SCHEMA] found sqlparser.StarExpr (%t)", readAllFields)
 			} else if aliasedExpr, ok := expr.(*sqlparser.AliasedExpr); ok {

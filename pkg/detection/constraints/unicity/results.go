@@ -19,18 +19,29 @@ func (detector *UnicityDetector) ComputeResults() {
 			detector.results += fmt.Sprintf("\n[ENTRY] %s\n", requestInfo.entry.GetMethodStr())
 			numRequests++
 			for _, op := range requestInfo.getOperations() {
-				if op.onUnicityConstraint {
-					detector.results += "\t* "
-				} else {
-					detector.results += "\t- "
-				}
-				detector.results += fmt.Sprintf("(%s, %s)\n", op.call.Service, op.datastore.GetName())
-				detector.results += "\t -> " + op.call.String() + "\n"
-				for _, constraint := range op.constraints {
-					detector.results += "\t\t @ " + constraint.String() + "\n"
+				if op.AffectsOps() {
+					detector.results += fmt.Sprintf("[%d] (%s, %s)\n", op.idx, op.call.Service, op.datastore.GetName())
+					detector.results += "-> " + op.call.String() + "\n"
+
+					detector.results += "\t -------------------- UNICITY CONSTRAINTS --------------------\n"
+					for _, constraint := range op.constraints {
+						detector.results += "\t @ " + constraint.String() + "\n"
+					}
+
+					detector.results += "\t -------------------------------------------------------------\n"
+					detector.results += "\t -------------------- AFFECTED OPERATIONS --------------------\n"
+					for affectedOp, refFields := range op.GetAffectedOps() {
+						detector.results += fmt.Sprintf("\t [%d] (%s, %s)\n", affectedOp.idx, affectedOp.call.Service, affectedOp.datastore.GetName())
+						detector.results += "\t -> " + affectedOp.call.String() + "\n"
+						detector.results += "\t\t referencing fields from prev. operation:\n"
+						for _, field := range refFields {
+							detector.results += "\t\t - " + field.GetFullName() + "\n"
+						}
+						numOps++
+					}
+					detector.results += "\t -------------------------------------------------------------\n"
 				}
 				detector.results += "\n"
-				numOps++
 			}
 		}
 	}
