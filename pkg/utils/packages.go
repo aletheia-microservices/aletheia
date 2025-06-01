@@ -13,5 +13,5 @@ func IsAppPackage(appPath string, packagePath string) bool {
 }
 
 func IsBlueprintBackendPath(path string) bool {
-	return path == PATH_BLUEPRINT_CORE_BACKEND
+	return path == BLUEPRINT_PATH_CORE_BACKEND
 }

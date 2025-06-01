@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "APIService",
+      "type": "service"
+    },
+    {
+      "id": "MovieIdService",
+      "type": "service"
+    },
+    {
+      "id": "movieid_db MongoDB",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "APIService",
+      "callee": "MovieIdService",
+      "call": "RegisterMovieId",
+      "depth": 1
+    },
+    {
+      "caller": "Client",
+      "callee": "APIService",
+      "call": "RegisterMovieId",
+      "depth": 0
+    },
+    {
+      "caller": "MovieIdService",
+      "callee": "movieid_db MongoDB",
+      "call": "InsertOne",
+      "depth": 2
+    }
+  ]
+}

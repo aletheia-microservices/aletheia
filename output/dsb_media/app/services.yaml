@@ -1,0 +1,22 @@
+APIService:
+- fields:
+    movieIdService: MovieIdService
+    movieInfoService: MovieInfoService
+- services:
+    MovieIdService: mediamicroservices.MovieIdService
+    MovieInfoService: mediamicroservices.MovieInfoService
+- datastores: {}
+
+MovieIdService:
+- fields:
+    movieIdDB: NoSQLDatabase
+- services: {}
+- datastores:
+    movieid_db: movieid_db MongoDB (NoSQLDatabase)
+
+MovieInfoService:
+- fields:
+    movieIdDB: NoSQLDatabase
+- services: {}
+- datastores:
+    movieinfo_db: movieinfo_db MongoDB (NoSQLDatabase)

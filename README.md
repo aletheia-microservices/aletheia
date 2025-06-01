@@ -90,6 +90,8 @@ go run main.go --app digota --auto
 go run main.go --app postnotification_simple --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
 go run main.go --app postnotification --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
 go run main.go --app sockshop2 --auto --fk_read
+go run main.go --app dsb_media --auto --unicity
+go run main.go --app dsb_media_sql --auto --unicity
 ```
 
 Run the graph builder:

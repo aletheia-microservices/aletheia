@@ -53,7 +53,8 @@ shopping_simple:
   - shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}, product_queue Queue
     interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})}, num_workers int}
   - shopping_simple.User struct{ID int64, Name string}
-- declared variables: []
+- declared variables:
+  - MyPost shopping_simple.Post struct{User shopping_simple.User struct{ID int64, Name string}, Media shopping_simple.Media struct{Video []byte}, Text string}
 - declared constants:
   - DECLARED_CONSTANT "THIS IS A CONSTANT!" untyped string
 - service types:

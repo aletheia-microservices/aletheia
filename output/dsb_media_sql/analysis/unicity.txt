@@ -1,0 +1,16 @@
+---------------------------------------------------------------------
+--------------------------- UNICITY ANALYSIS ------------------------
+---------------------------------------------------------------------
+>> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):
+>> (1;2)
+---------------------------------------------------------------------
+
+[ENTRY] (*APIServiceImpl).RegisterMovie(ctx context.Context, reqID int64, movieID string, title string, casts string)
+	* (MovieIdService, movieid_db)
+	 -> m.movieIdDB.Exec(ctx context.Context, "INSERT INTO movieid(movieid, title) VALUES (?, ?);" string, movieID string, title string)
+		 @ PRIMARY(MOVIEID_DB.movieid.movieid)
+
+	* (MovieInfoService, movieinfo_db)
+	 -> m.movieIdDB.Exec(ctx context.Context, "INSERT INTO movieinfo(movieid, title, casts) VALUES (?, ?);" string, movieID string, title string, casts string)
+		 @ PRIMARY(MOVIEINFO_DB.movieinfo.movieid)
+

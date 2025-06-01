@@ -1,0 +1,60 @@
+{
+  "nodes": [
+    {
+      "id": "Client",
+      "type": "client"
+    },
+    {
+      "id": "APIService",
+      "type": "service"
+    },
+    {
+      "id": "MovieIdService",
+      "type": "service"
+    },
+    {
+      "id": "MovieInfoService",
+      "type": "service"
+    },
+    {
+      "id": "movieid_db MySQL",
+      "type": "datastore"
+    },
+    {
+      "id": "movieinfo_db MySQL",
+      "type": "datastore"
+    }
+  ],
+  "edges": [
+    {
+      "caller": "APIService",
+      "callee": "MovieIdService",
+      "call": "RegisterMovieId",
+      "depth": 1
+    },
+    {
+      "caller": "APIService",
+      "callee": "MovieInfoService",
+      "call": "WriteMovieInfo",
+      "depth": 1
+    },
+    {
+      "caller": "Client",
+      "callee": "APIService",
+      "call": "RegisterMovie",
+      "depth": 0
+    },
+    {
+      "caller": "MovieIdService",
+      "callee": "movieid_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    },
+    {
+      "caller": "MovieInfoService",
+      "callee": "movieinfo_db MySQL",
+      "call": "Exec",
+      "depth": 2
+    }
+  ]
+}

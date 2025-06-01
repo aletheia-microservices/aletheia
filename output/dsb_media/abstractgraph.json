@@ -1,0 +1,327 @@
+[
+  {
+    "method": "(*APIServiceImpl).RegisterMovie(ctx context.Context, reqID int64, movieID string, title string, casts string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*MovieIdServiceImpl).RegisterMovieId(ctx context.Context, reqID int64, movieID string, title string)",
+        "depth": 1,
+        "caller": "APIService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "MovieIdService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "APIService"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "movieId",
+                  "type": "mediamicroservices.MovieId struct{MovieID string, Title string}"
+                },
+                "struct_fields": {
+                  "MovieID": {
+                    "field": {
+                      "name": "MovieID",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "movieID",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "movieID",
+                            "creator": "APIService"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Title": {
+                    "field": {
+                      "name": "Title",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "title",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "title",
+                            "creator": "APIService"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "movieid_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "reqID",
+              "type": "int64"
+            }
+          },
+          {
+            "basic": {
+              "name": "movieID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "title",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "movieId",
+              "type": "mediamicroservices.MovieId struct{MovieID string, Title string}",
+              "refs": [
+                {
+                  "name": "movieId",
+                  "creator": "MovieIdService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "MovieIdService"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "method": "(*MovieInfoServiceImpl).WriteMovieInfo(ctx context.Context, reqID int64, movieID string, title string, casts string)",
+        "depth": 1,
+        "caller": "APIService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "MovieInfoService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "APIService"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "movieInfo",
+                  "type": "mediamicroservices.MovieInfo struct{MovieID string, Title string, Casts string}"
+                },
+                "struct_fields": {
+                  "Casts": {
+                    "field": {
+                      "name": "Casts",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "casts",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "casts",
+                            "creator": "APIService"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "MovieID": {
+                    "field": {
+                      "name": "MovieID",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "movieID",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "movieID",
+                            "creator": "APIService"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Title": {
+                    "field": {
+                      "name": "Title",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "title",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "title",
+                            "creator": "APIService"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "movieinfo_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "reqID",
+              "type": "int64"
+            }
+          },
+          {
+            "basic": {
+              "name": "movieID",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "title",
+              "type": "string"
+            }
+          },
+          {
+            "basic": {
+              "name": "casts",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "movieInfo",
+              "type": "mediamicroservices.MovieInfo struct{MovieID string, Title string, Casts string}",
+              "refs": [
+                {
+                  "name": "movieInfo",
+                  "creator": "MovieInfoService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "MovieInfoService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "reqID",
+          "type": "int64"
+        }
+      },
+      {
+        "basic": {
+          "name": "movieID",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "title",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "casts",
+          "type": "string"
+        }
+      }
+    ]
+  }
+]

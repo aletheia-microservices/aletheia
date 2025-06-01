@@ -2,6 +2,10 @@ package unicity
 
 import "fmt"
 
+func (detector *UnicityDetector) GetResults() string {
+	return detector.results
+}
+
 func (detector *UnicityDetector) ComputeResults() {
 	header := "---------------------------------------------------------------------\n"
 	header += "--------------------------- UNICITY ANALYSIS ------------------------\n"
@@ -33,8 +37,4 @@ func (detector *UnicityDetector) ComputeResults() {
 
 	header += fmt.Sprintf(">> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
 	detector.results = header + "---------------------------------------------------------------------\n" + detector.results
-}
-
-func (detector *UnicityDetector) GetResults() string {
-	return detector.results
 }

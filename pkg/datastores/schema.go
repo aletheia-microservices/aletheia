@@ -121,9 +121,7 @@ func (s *Schema) GetConstraintsNumericalForFieldName(fieldName string) []*Constr
 func (s *Schema) GetConstraintsUnique() []*Constraint {
 	var constraints []*Constraint
 	for _, c := range s.Constraints {
-		if c.unique {
-			constraints = append(constraints, c)
-		} else if c.primary {
+		if c.unique || c.primary {
 			constraints = append(constraints, c)
 		}
 	}
@@ -163,9 +161,7 @@ func (s *Schema) GetConstraintsNumerical() []*Constraint {
 // includes any PK
 func (s *Schema) HasConstraintsUnique() bool {
 	for _, c := range s.Constraints {
-		if c.unique {
-			return true
-		} else if c.primary {
+		if c.unique || c.primary {
 			return true
 		}
 	}

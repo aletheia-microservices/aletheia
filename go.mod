@@ -73,6 +73,8 @@ require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0
 require (
 	github.com/auxten/postgresql-parser v1.0.1
 	github.com/aws/aws-sdk-go-v2 v1.36.3
+	github.com/blueprint-uservices/blueprint/examples/dsb_media/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/lib/pq v1.10.9
@@ -96,6 +98,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.19 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workload v0.0.0-20240619221802-d064c5861c1e // indirect
+	github.com/blueprint-uservices/blueprint/examples/dsb_media/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow v0.0.0-00010101000000-000000000000 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -255,6 +259,18 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_sn => ./blueprint/
 replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow => ./blueprint/examples/dsb_sn/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring => ./blueprint/examples/dsb_sn/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media => ./blueprint/examples/dsb_media
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media/workflow => ./blueprint/examples/dsb_media/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media/wiring => ./blueprint/examples/dsb_media/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql => ./blueprint/examples/dsb_media_sql
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow => ./blueprint/examples/dsb_media_sql/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring => ./blueprint/examples/dsb_media_sql/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/foobar => ./blueprint/examples/foobar
 

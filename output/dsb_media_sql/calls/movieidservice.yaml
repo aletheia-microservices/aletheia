@@ -1,0 +1,16 @@
+(*MovieIdServiceImpl).RegisterMovieId(ctx context.Context, reqID int64, movieID string, title string):
+- DATASTORE CALL @ movieid_db >> RelationalDB.Exec(ctx context.Context, query string, dst []interface{}) interface{}
+
+(*MovieIdServiceImpl).createTables(ctx context.Context):
+- DATASTORE CALL @ movieid_db >> RelationalDB.Exec(ctx context.Context, query string, dst []interface{}) interface{}
+
+.NewAPIServiceImpl(ctx context.Context, movieIdService mediamicroservices_sql.MovieIdService, movieInfoService mediamicroservices_sql.MovieInfoService)
+:
+ []
+
+.NewMovieIdServiceImpl(ctx context.Context, movieIdDB RelationalDB):
+- INTERNAL CALL >> (*mediamicroservices_sql.MovieIdServiceImpl).createTables(ctx context.Context)
+  error
+
+.NewMovieInfoServiceImpl(ctx context.Context, movieIdDB RelationalDB):
+- INTERNAL CALL >> (*mediamicroservices_sql.MovieInfoServiceImpl).createTables(ctx context.Context) error

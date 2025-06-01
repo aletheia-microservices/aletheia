@@ -1,0 +1,14 @@
+(*APIServiceImpl).RegisterMovie(ctx context.Context, reqID int64, movieID string, title string, casts string):
+- SERVICE CALL @ RegisterMovieId >> (*mediamicroservices_sql.MovieIdServiceImpl).RegisterMovieId(ctx context.Context, reqID int64, movieID string, title string) (mediamicroservices_sql.MovieId struct{MovieID string, Title string}, error)
+- SERVICE CALL @ WriteMovieInfo >> (*mediamicroservices_sql.MovieInfoServiceImpl).WriteMovieInfo(ctx context.Context, reqID int64, movieID string, title string, casts string) (mediamicroservices_sql.MovieInfo struct{MovieID string, Title string, Casts string}, error)
+
+.NewAPIServiceImpl(ctx context.Context, movieIdService mediamicroservices_sql.MovieIdService, movieInfoService mediamicroservices_sql.MovieInfoService)
+:
+ []
+
+.NewMovieIdServiceImpl(ctx context.Context, movieIdDB RelationalDB):
+- INTERNAL CALL >> (*mediamicroservices_sql.MovieIdServiceImpl).createTables(ctx context.Context)
+  error
+
+.NewMovieInfoServiceImpl(ctx context.Context, movieIdDB RelationalDB):
+- INTERNAL CALL >> (*mediamicroservices_sql.MovieInfoServiceImpl).createTables(ctx context.Context) error

@@ -83,7 +83,9 @@ func (detector *UnicityDetector) OnUpdate(app *app.App, dbCall *abstractgraph.Ab
 func (detector *UnicityDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	schema := dbCall.DbInstance.GetDatastore().GetSchema()
 	datastore := dbCall.DbInstance.GetDatastore()
-	
+
+	logger.Logger.Debugf("[UNICITY DETECTOR] onWriteOrUpdate: %s", dbCall.String())
+
 	if schema.HasConstraintsUnique() {
 		writtenFieldNames := detection.GetWrittenFieldNamesForOperation(dbCall)
 		unicityConstraints := schema.GetConstraintsUniqueForFieldNames(writtenFieldNames)

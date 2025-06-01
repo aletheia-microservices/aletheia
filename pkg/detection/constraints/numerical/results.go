@@ -2,6 +2,10 @@ package numerical
 
 import "fmt"
 
+func (detector *NumericalDetector) GetResults() string {
+	return detector.results
+}
+
 func (detector *NumericalDetector) ComputeResults() {
 	header := "---------------------------------------------------------------------\n"
 	header += "-------------------------- NUMERICAL ANALYSIS -----------------------\n"
@@ -39,8 +43,4 @@ func (detector *NumericalDetector) ComputeResults() {
 
 	header += fmt.Sprintf(">> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
 	detector.results = header + "---------------------------------------------------------------------\n" + detector.results
-}
-
-func (detector *NumericalDetector) GetResults() string {
-	return detector.results
 }

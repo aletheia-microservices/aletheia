@@ -47,7 +47,7 @@ func ParseConstraints(app *app.App, autofill bool) {
 		}
 	}
 
-	if ok, input := utils.GetAppDatabaseSQLUserInput(app.Name, autofill); ok {
+	if ok, input := utils.GetAppDatabaseUnicityConstraintFromUserInput(app.Name, autofill); ok {
 		targetFieldsByDatastore := parseAppDatabaseSQLUserInput(input)
 		parseUserUniqueConstraints(app, targetFieldsByDatastore)
 	}

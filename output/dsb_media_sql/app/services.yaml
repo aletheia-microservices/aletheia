@@ -1,0 +1,22 @@
+APIService:
+- fields:
+    movieIdService: MovieIdService
+    movieInfoService: MovieInfoService
+- services:
+    MovieIdService: mediamicroservices_sql.MovieIdService
+    MovieInfoService: mediamicroservices_sql.MovieInfoService
+- datastores: {}
+
+MovieIdService:
+- fields:
+    movieIdDB: RelationalDB
+- services: {}
+- datastores:
+    movieid_db: movieid_db MySQL (RelationalDB)
+
+MovieInfoService:
+- fields:
+    movieIdDB: RelationalDB
+- services: {}
+- datastores:
+    movieinfo_db: movieinfo_db MySQL (RelationalDB)

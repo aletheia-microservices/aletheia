@@ -111,27 +111,6 @@ func (detector *ForeignKeyConcurrencyDetector) OnRead(app *app.App, dbCall *abst
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	detector.onWriteOrUpdate(dbCall)
-}
-
-func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	detector.onWriteOrUpdate(dbCall)
-}
-
-func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	if detector.iter != IterationPhaseCheckDeletes {
-		return
-	}
-
-	datastore := dbCall.DbInstance.GetDatastore()
-	detector.addDelete(datastore, &delete{
-		call:      dbCall,
-		datastore: datastore,
-	})
-
-}
-
-func (detector *ForeignKeyConcurrencyDetector) onWriteOrUpdate(dbCall *abstractgraph.AbstractDatabaseCall) {
 	if detector.iter != IterationPhaseCheckWritesAndUpdates {
 		return
 	}
@@ -154,37 +133,23 @@ func (detector *ForeignKeyConcurrencyDetector) onWriteOrUpdate(dbCall *abstractg
 	}
 }
 
-func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
-	for _, dels := range detector.deletes {
-		for _, del := range dels {
-			if len(del.affectedWrittenFields) > 0 {
-				detector.numDeletes++
-				detector.results += fmt.Sprintf("[%d] delete affecting %d written fields:\n", detector.numDeletes, len(del.affectedWrittenFields))
-				detector.results += fmt.Sprintf("%s: %s\n", del.call.GetCallerStr(), del.call.ShortString())
-				for _, writtenField := range del.affectedWrittenFields {
-					detector.results += writtenField.String() + "\n"
-					detector.numAffectedWrittenFields++
-				}
-				detector.results += "\n"
-			}
-		}
-	}
+func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	//no-op
 }
 
-func (detector *ForeignKeyConcurrencyDetector) ComputeResults() {
-	header := "---------------------------------------------------------------------\n"
-	header += "----------------- FOREIGN KEY CONCURRENCY ANALYSIS ------------------\n"
-	header += "---------------------------------------------------------------------\n"
+func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
+	if detector.iter != IterationPhaseCheckDeletes {
+		return
+	}
 
-	detector.checkInconsistencies()
-	header += fmt.Sprintf(">> (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numAffectedWrittenFields)
-	detector.results = header + "---------------------------------------------------------------------\n" + utils.TEXT_RESET_COLOR + detector.results
+	datastore := dbCall.DbInstance.GetDatastore()
+	detector.addDelete(datastore, &delete{
+		call:      dbCall,
+		datastore: datastore,
+	})
+
 }
 
 func (detector *ForeignKeyConcurrencyDetector) GetAnalysisTypeString() string {
 	return "foreign_key_concurrency"
-}
-
-func (detector *ForeignKeyConcurrencyDetector) GetResults() string {
-	return detector.results
 }

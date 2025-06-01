@@ -10,7 +10,7 @@ import (
 )
 
 func isBlueprintPackagePath(name string) bool {
-	return name == utils.PATH_BLUEPRINT_CORE_BACKEND
+	return name == utils.BLUEPRINT_PATH_CORE_BACKEND
 }
 
 func SaveObjectToPackage(pkg *types.Package, obj golangtypes.Object) gotypes.Type {

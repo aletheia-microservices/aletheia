@@ -10,8 +10,6 @@ import (
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/detection/detection"
 	"analyzer/pkg/frameworks/blueprint"
-	"analyzer/pkg/logger"
-	"analyzer/pkg/utils"
 )
 
 type CascadeDetector struct {
@@ -140,65 +138,6 @@ func (detector *CascadeDetector) markAsCascading(datastore *datastores.Datastore
 	}
 }
 
-// DEPRECATED
-func (detector *CascadeDetector) searchCascadingDeletes(deleteOp *deleteOperation, lastServiceCallNode *abstractgraph.AbstractServiceCall, deleteCall *abstractgraph.AbstractDatabaseCall, child_idx int) {
-	logger.Logger.Infof("[CASCADE DETECTOR] searching for cascading deletes originating @ (%s, %s): %s", deleteCall.GetCallerStr(), deleteCall.DbInstance.GetDatastore().GetName(), deleteCall.LongString())
-	numServiceCalls := len(lastServiceCallNode.GetChildren())
-	for idx := child_idx + 1; idx < numServiceCalls; idx++ {
-		node := lastServiceCallNode.GetChildAt(idx)
-		// found call that pushes notifications
-		if call, ok := node.(*abstractgraph.AbstractDatabaseCall); ok && call.IsPushToQueue() {
-			logger.Logger.Debugf("[CASCADE DETECTOR] found push call @ (%s, %s): %s", call.GetCallerStr(), call.DbInstance.GetDatastore().GetName(), call.String())
-			// check all calls that follow the read of the queue
-			for _, queueReadNode := range call.GetChildren() {
-				// check if after reading the queue, there is a delete operation to the same original database that is being referenced
-				for _, childDbCall := range queueReadNode.GetDatabaseCalls() {
-					if childDbCall.IsUpdateOrDelete() {
-						logger.Logger.Debugf("[CASCADE DETECTOR] found child update/delete call @ (%s, %s): %s", childDbCall.Service, childDbCall.DbInstance, childDbCall.LongString())
-						if deleteDep := deleteOp.getDependency(childDbCall.DbInstance.GetDatastore()); deleteDep != nil {
-							logger.Logger.Debugf("[CASCADE DETECTOR] found cascading action!")
-							deleteDep.setCascading(true)
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func (detector *CascadeDetector) checkInconsistencies() {
-	for detector.requestInfoStack.Len() > 0 {
-		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
-		for i, op := range requestInfo.getDeleteOperations() {
-			depsWithMissingCascading := op.getDependenciesWithMissingCascade()
-			detector.results += fmt.Sprintf("[%d] delete with %d missing cascades:\n", i+1, len(depsWithMissingCascading))
-			detector.results += fmt.Sprintf("%s: %s\n", op.getCall().GetCallerStr(), op.call.ShortString())
-			detector.numDeletes++
-			for _, dep := range depsWithMissingCascading {
-				if !dep.cascading {
-					detector.results += fmt.Sprintf("\t- %s\n", dep.LongString())
-					detector.numMissingCascadingDeletes++
-				}
-			}
-		}
-	}
-}
-
-func (detector *CascadeDetector) ComputeResults() {
-	header := "---------------------------------------------------------------------\n"
-	header += "-------------------- FOREIGN KEY CASCADE ANALYSIS -------------------\n"
-	header += "---------------------------------------------------------------------\n"
-
-	detector.checkInconsistencies()
-
-	header += fmt.Sprintf(">> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numMissingCascadingDeletes)
-	detector.results = header + "---------------------------------------------------------------------\n" + utils.TEXT_RESET_COLOR + detector.results
-}
-
 func (detector *CascadeDetector) GetAnalysisTypeString() string {
 	return "foreign_key_cascade"
-}
-
-func (detector *CascadeDetector) GetResults() string {
-	return detector.results
 }

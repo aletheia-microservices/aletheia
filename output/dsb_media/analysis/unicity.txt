@@ -1,0 +1,17 @@
+---------------------------------------------------------------------
+--------------------------- UNICITY ANALYSIS ------------------------
+---------------------------------------------------------------------
+>> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):
+>> (1;2)
+---------------------------------------------------------------------
+
+[ENTRY] (*APIServiceImpl).RegisterMovie(ctx context.Context, reqID int64, movieID string, title string, casts string)
+	* (MovieIdService, movieid_db)
+	 -> collection.InsertOne(ctx context.Context, movieId mediamicroservices.MovieId struct{MovieID string, Title string})
+		 @ UNIQUE(MOVIEID_DB.MovieId.MovieID)
+		 @ UNIQUE(MOVIEID_DB.MovieId.Title)
+
+	* (MovieInfoService, movieinfo_db)
+	 -> collection.InsertOne(ctx context.Context, movieInfo mediamicroservices.MovieInfo struct{MovieID string, Title string, Casts string})
+		 @ UNIQUE(MOVIEINFO_DB.MovieInfo.MovieID)
+
