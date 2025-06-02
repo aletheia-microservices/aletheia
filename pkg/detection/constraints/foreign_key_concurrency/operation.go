@@ -6,6 +6,7 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/datastores"
+	"analyzer/pkg/logger"
 	"analyzer/pkg/types/objects"
 )
 
@@ -27,7 +28,7 @@ type writtenField struct {
 func (w *writtenField) String() string {
 	return fmt.Sprintf("\t- %-45s ----> foreign key %s\n\t  @ %s: %s",
 		w.field.GetFullName(),
-		w.constraint.GetReferencedByField().GetFullName(),
+		w.constraint.GetReferenceToField().GetFullName(),
 		w.call.GetCallerStr(),
 		w.call.ShortString(),
 	)
@@ -61,8 +62,27 @@ func (w *write) getWrittenFields() []*datastores.Field {
 	return w.writtenFields
 }
 
-func (w *write) writesToField(field *datastores.Field) bool {
-	return slices.Contains(w.writtenFields, field)
+func (w *write) getWrittenObjectAt(idx int) objects.Object {
+	if idx >= len(w.writtenObjs) {
+		// force to only object that exists
+		// FIXME: this could be cleaner
+		if w.datastore.IsNoSQLDatabase() || w.datastore.IsQueue() {
+			return w.writtenObjs[0]
+		}
+		logger.Logger.Fatalf("[FK CONCURRENCY] len (%d) out of bounds for written objects: %v\n // written fields: %v", idx, w.writtenObjs, w.writtenFields)
+	}
+	return w.writtenObjs[idx]
+}
+
+func (w *write) writesToField(field *datastores.Field) (bool, int) {
+	if slices.Contains(w.writtenFields, field) {
+		for idx, f := range w.writtenFields {
+			if f == field {
+				return true, idx
+			}
+		}
+	}
+	return false, -1
 }
 
 func (w *write) getDatastore() *datastores.Datastore {

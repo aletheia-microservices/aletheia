@@ -168,27 +168,42 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, dbCall *abs
 
 func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 	for _, op := range detector.getCurrentRequest().getOperations() {
-		for _, field := range op.getWrittenFields() {
-			for _, constraint := range field.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true)}) {
-				refField := constraint.GetReferencedByField()
+		for idx, currField := range op.getWrittenFields() {
+			for _, constraint := range currField.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true)}) {
+				refField := constraint.GetReferenceToField()
 				refDatastore := refField.GetDatastore()
 				if del := detector.getFirstDeleteToDatastoreIfExists(refDatastore); del != nil {
-					
+
 					// condition for a more fine-grained detection:
 					// in the current request, there can't be a write to the original record that is being referenced
 					// ensuring that we only flag inconsistencies for cases of 1:N associations and not 1:1
 					mayFlag := true
 					for _, otherOp := range detector.getCurrentRequest().getOperations() {
+						// high-level verification
+						// checks based on database fields
 						if otherOp.getDatastore() == del.getDatastore() {
-							if otherOp.writesToField(refField) {
-								mayFlag = false
-								break
+							if ok, _ := otherOp.writesToField(refField); ok {
+
+								// low-level verification
+								// checks based on objects dataflow
+								obj := op.getWrittenObjectAt(idx)
+								for _, dep := range obj.GetNestedDependencies(false) {
+									// find any dependencies of the current object that were also used in the other write
+									for _, df := range dep.GetVariableInfo().GetAllWriteDataflowsForDatastore(otherOp.getDatastore().GetName()) {
+										// found the field of the other operation that the current field is referencing to
+										if df.Field == refField {
+											logger.Logger.Debugf("[FK CONCURRENCY] cannot flag: %s vs. %s", df.Field.String(), refField.String())
+											mayFlag = false
+											break
+										}
+									}
+								}
 							}
 						}
 					}
 
 					if mayFlag {
-						del.flagAffectedWriteOnField(op.getDbCall(), field, constraint)
+						del.flagAffectedWriteOnField(op.getDbCall(), currField, constraint)
 					}
 
 				}

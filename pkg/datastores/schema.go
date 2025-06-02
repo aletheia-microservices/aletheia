@@ -141,7 +141,7 @@ func (s *Schema) GetConstraintsForeignKey() []*Constraint {
 func (s *Schema) GetConstraintsForeignKeyToDatastore(ds *Datastore) []*Constraint {
 	var constraints []*Constraint
 	for _, c := range s.Constraints {
-		if c.reference && c.GetReferencedByField().GetDatastore() == ds {
+		if c.reference && c.GetReferenceToField().GetDatastore() == ds {
 			constraints = append(constraints, c)
 		}
 	}
@@ -482,25 +482,13 @@ func NewConstraintReference(mandatory bool, fields ...*Field) *Constraint {
 		mandatory: mandatory,
 	}
 }
-func (c *Constraint) FieldIsReferencing(field *Field) bool {
-	if len(c.fields) != 2 {
-		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
-	}
-	return c.fields[0] == field
-}
-func (c *Constraint) GetReferencingField() *Field {
-	if len(c.fields) != 2 {
-		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
-	}
-	return c.fields[0]
-}
-func (c *Constraint) FieldIsReferencedBy(field *Field) bool {
+func (c *Constraint) FieldIsReferencingTo(field *Field) bool {
 	if len(c.fields) != 2 {
 		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
 	}
 	return c.fields[1] == field
 }
-func (c *Constraint) GetReferencedByField() *Field {
+func (c *Constraint) GetReferenceToField() *Field {
 	if len(c.fields) != 2 {
 		logger.Logger.Fatalf("[CONSTRAINT] unexpected length (%d) for constraint REFERENCE", len(c.fields))
 	}
@@ -600,7 +588,7 @@ func (field *Field) CompactReferences(refsToKeep []*Field) {
 	var constraintsToKeep []*Constraint
 	for _, ref := range refsToKeep {
 		for _, constraint := range field.GetConstraints(ConstraintFilter{Reference: utils.BoolPtr(true)}) {
-			if constraint.FieldIsReferencedBy(ref) {
+			if constraint.FieldIsReferencingTo(ref) {
 				constraintsToKeep = append(constraintsToKeep, constraint)
 			}
 		}
