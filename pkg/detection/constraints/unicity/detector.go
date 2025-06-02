@@ -96,9 +96,9 @@ func (detector *UnicityDetector) onWriteOrUpdate(app *app.App, dbCall *abstractg
 
 	logger.Logger.Debugf("[UNICITY DETECTOR] onWriteOrUpdate: %s", dbCall.String())
 
-	if !schema.HasConstraintsUnique() {
+	/* if !schema.HasConstraintsUnique() {
 		return
-	}
+	} */
 
 	reqInfo := detector.getCurrentRequestInfo()
 	operationIdx := reqInfo.numOperations()

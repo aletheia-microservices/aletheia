@@ -2,6 +2,7 @@ package foreign_key_concurrency
 
 import (
 	"fmt"
+	"slices"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/datastores"
@@ -40,6 +41,10 @@ func (del *delete) flagAffectedWriteOnField(call *abstractgraph.AbstractDatabase
 	})
 }
 
+func (del *delete) getDatastore() *datastores.Datastore {
+	return del.datastore
+}
+
 type write struct {
 	idx           int
 	call          *abstractgraph.AbstractDatabaseCall
@@ -48,16 +53,24 @@ type write struct {
 	writtenObjs   []objects.Object
 }
 
-func (op *write) addWrittenObjects(obj ...objects.Object) {
-	op.writtenObjs = append(op.writtenObjs, obj...)
+func (w *write) addWrittenObjects(obj ...objects.Object) {
+	w.writtenObjs = append(w.writtenObjs, obj...)
 }
 
-func (op *write) getWrittenFields() []*datastores.Field {
-	return op.writtenFields
+func (w *write) getWrittenFields() []*datastores.Field {
+	return w.writtenFields
 }
 
-func (op *write) getDbCall() *abstractgraph.AbstractDatabaseCall {
-	return op.call
+func (w *write) writesToField(field *datastores.Field) bool {
+	return slices.Contains(w.writtenFields, field)
+}
+
+func (w *write) getDatastore() *datastores.Datastore {
+	return w.datastore
+}
+
+func (w *write) getDbCall() *abstractgraph.AbstractDatabaseCall {
+	return w.call
 }
 
 func NewOperation(idx int, call *abstractgraph.AbstractDatabaseCall, datastore *datastores.Datastore, writtenFields []*datastores.Field) *write {

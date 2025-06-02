@@ -1,5 +1,127 @@
 [
   {
+    "method": "(*FrontendImpl).CreateCart(ctx context.Context, cartID string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*CartServiceImpl).CreateCart(ctx context.Context, cartID string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+            "depth": 2,
+            "caller": "CartService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "struct": {
+                  "name": "cart",
+                  "type": "shopping_simple.Cart struct{CartID string, LastProductID string, TotalQuantity int, Products []string}"
+                },
+                "struct_fields": {
+                  "CartID": {
+                    "field": {
+                      "name": "CartID",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "cartID",
+                        "type": "string",
+                        "refs": [
+                          {
+                            "name": "cartID",
+                            "creator": "Frontend"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "cart_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "cartID",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "",
+              "type": "shopping_simple.Cart struct{CartID string, LastProductID string, TotalQuantity int, Products []string}",
+              "refs": [
+                {
+                  "name": "cart",
+                  "creator": "CartService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "CartService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "cartID",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
     "method": "(*FrontendImpl).GetAllProducts(ctx context.Context)",
     "depth": 0,
     "caller": "Client",
@@ -1430,128 +1552,6 @@
       {
         "basic": {
           "name": "category",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*FrontendImpl).CreateCart(ctx context.Context, cartID string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*CartServiceImpl).CreateCart(ctx context.Context, cartID string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-            "depth": 2,
-            "caller": "CartService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    }
-                  ]
-                }
-              },
-              {
-                "struct": {
-                  "name": "cart",
-                  "type": "shopping_simple.Cart struct{CartID string, LastProductID string, TotalQuantity int, Products []string}"
-                },
-                "struct_fields": {
-                  "CartID": {
-                    "field": {
-                      "name": "CartID",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "cartID",
-                        "type": "string",
-                        "refs": [
-                          {
-                            "name": "cartID",
-                            "creator": "Frontend"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "cart_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "cartID",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "",
-              "type": "shopping_simple.Cart struct{CartID string, LastProductID string, TotalQuantity int, Products []string}",
-              "refs": [
-                {
-                  "name": "cart",
-                  "creator": "CartService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "CartService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "cartID",
           "type": "string"
         }
       }

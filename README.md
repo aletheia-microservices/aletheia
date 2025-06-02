@@ -96,7 +96,7 @@ go run main.go --app postnotification_simple --auto --fk_read   #(1)
 go run main.go --app postnotification --auto --fk_read          #(0)
 
 ## Foreign Key Concurrency
-go run main.go --app postnotification_simple --auto --fk_concurrency    #(1,2) -> EXPECTED (0,0)
+go run main.go --app postnotification_simple --auto --fk_concurrency    #(0,0)
 go run main.go --app postnotification --auto --fk_concurrency           #(0,0)
 go run main.go --app shopping_simple --auto --fk_concurrency            #(1,4)
 

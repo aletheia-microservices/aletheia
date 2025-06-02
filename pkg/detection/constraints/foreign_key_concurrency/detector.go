@@ -116,15 +116,14 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, dbCall *abs
 	if detector.iter != IterationPhaseTwo_CheckWritesAndUpdates {
 		return
 	}
-
-	datastore := dbCall.DbInstance.GetDatastore()
-	schema := datastore.GetSchema()
-
 	logger.Logger.Debugf("[FK CONCURRENCY DETECTOR] onWriteOrUpdate: %s", dbCall.String())
 
-	if !schema.HasConstraintsForeignKey() {
+	datastore := dbCall.DbInstance.GetDatastore()
+	//schema := datastore.GetSchema()
+
+	/* if !schema.HasConstraintsForeignKey() {
 		return
-	}
+	} */
 
 	req := detector.getCurrentRequest()
 	operationIdx := req.numOperations()
@@ -174,7 +173,24 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 				refField := constraint.GetReferencedByField()
 				refDatastore := refField.GetDatastore()
 				if del := detector.getFirstDeleteToDatastoreIfExists(refDatastore); del != nil {
-					del.flagAffectedWriteOnField(op.getDbCall(), field, constraint)
+					
+					// condition for a more fine-grained detection:
+					// in the current request, there can't be a write to the original record that is being referenced
+					// ensuring that we only flag inconsistencies for cases of 1:N associations and not 1:1
+					mayFlag := true
+					for _, otherOp := range detector.getCurrentRequest().getOperations() {
+						if otherOp.getDatastore() == del.getDatastore() {
+							if otherOp.writesToField(refField) {
+								mayFlag = false
+								break
+							}
+						}
+					}
+
+					if mayFlag {
+						del.flagAffectedWriteOnField(op.getDbCall(), field, constraint)
+					}
+
 				}
 			}
 		}
