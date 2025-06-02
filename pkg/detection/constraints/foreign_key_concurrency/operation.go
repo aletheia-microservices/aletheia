@@ -5,6 +5,7 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/datastores"
+	"analyzer/pkg/types/objects"
 )
 
 type delete struct {
@@ -31,10 +32,39 @@ func (w *writtenField) String() string {
 	)
 }
 
-func (del *delete) addAffectedWrittenField(call *abstractgraph.AbstractDatabaseCall, field *datastores.Field, constraint *datastores.Constraint) {
+func (del *delete) flagAffectedWriteOnField(call *abstractgraph.AbstractDatabaseCall, field *datastores.Field, constraint *datastores.Constraint) {
 	del.affectedWrittenFields = append(del.affectedWrittenFields, &writtenField{
 		call:       call,
 		field:      field,
 		constraint: constraint,
 	})
+}
+
+type write struct {
+	idx           int
+	call          *abstractgraph.AbstractDatabaseCall
+	datastore     *datastores.Datastore
+	writtenFields []*datastores.Field
+	writtenObjs   []objects.Object
+}
+
+func (op *write) addWrittenObjects(obj ...objects.Object) {
+	op.writtenObjs = append(op.writtenObjs, obj...)
+}
+
+func (op *write) getWrittenFields() []*datastores.Field {
+	return op.writtenFields
+}
+
+func (op *write) getDbCall() *abstractgraph.AbstractDatabaseCall {
+	return op.call
+}
+
+func NewOperation(idx int, call *abstractgraph.AbstractDatabaseCall, datastore *datastores.Datastore, writtenFields []*datastores.Field) *write {
+	return &write{
+		idx:           idx,
+		call:          call,
+		datastore:     datastore,
+		writtenFields: writtenFields,
+	}
 }

@@ -30,9 +30,13 @@ func NewDetector() *UnicityDetector {
 
 type UnicityDetector struct {
 	detection.Detector
-	results          string
-	summary          string
 	requestInfoStack *stack.Stack
+
+	// results
+	results     string
+	summary     string
+	numRequests int
+	numOps      int
 }
 
 func (detector *UnicityDetector) GetSummary() string {
@@ -133,14 +137,14 @@ func (detector *UnicityDetector) onWriteOrUpdate(app *app.App, dbCall *abstractg
 			}
 
 		default:
-			logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
+			logger.Logger.Fatalf("[UNICITY DETECTOR] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
 		}
 	}
 }
 
 func (detector *UnicityDetector) checkInconsistencies() {
 	reqInfo := detector.getCurrentRequestInfo()
-	for _, op := range detector.getCurrentRequestInfo().getOperations() {
+	for _, op := range reqInfo.getOperations() {
 		for _, obj := range op.getWrittenObjects() {
 			if detector.checkConstrainedOperationsWithWriteOnField(op, obj) {
 				reqInfo.flagInconsistency()

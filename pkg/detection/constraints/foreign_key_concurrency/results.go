@@ -15,12 +15,12 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults() {
 	header += "----------------- FOREIGN KEY CONCURRENCY ANALYSIS ------------------\n"
 	header += "---------------------------------------------------------------------\n"
 
-	detector.checkInconsistencies()
+	detector.loadInconsistencies()
 	header += fmt.Sprintf(">> (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):\n>> (%d;%d)\n", detector.numDeletes, detector.numAffectedWrittenFields)
 	detector.results = header + "---------------------------------------------------------------------\n" + utils.TEXT_RESET_COLOR + detector.results
 }
 
-func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
+func (detector *ForeignKeyConcurrencyDetector) loadInconsistencies() {
 	for _, dels := range detector.deletes {
 		for _, del := range dels {
 			if len(del.affectedWrittenFields) > 0 {

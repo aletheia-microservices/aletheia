@@ -9,14 +9,16 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/detection/detection"
+	"analyzer/pkg/frameworks/blueprint"
+	"analyzer/pkg/logger"
 	"analyzer/pkg/utils"
 )
 
 type IterationPhase int
 
 const (
-	IterationPhaseCheckDeletes IterationPhase = iota
-	IterationPhaseCheckWritesAndUpdates
+	IterationPhaseOne_CheckDeletes IterationPhase = iota
+	IterationPhaseTwo_CheckWritesAndUpdates
 )
 
 type ForeignKeyConcurrencyDetector struct {
@@ -34,8 +36,8 @@ type ForeignKeyConcurrencyDetector struct {
 }
 
 func (detector *ForeignKeyConcurrencyDetector) NextIterationPhase() {
-	if detector.iter == IterationPhaseCheckDeletes {
-		detector.iter = IterationPhaseCheckWritesAndUpdates
+	if detector.iter == IterationPhaseOne_CheckDeletes {
+		detector.iter = IterationPhaseTwo_CheckWritesAndUpdates
 	}
 }
 
@@ -44,11 +46,6 @@ func (detector *ForeignKeyConcurrencyDetector) getFirstDeleteToDatastoreIfExists
 		return dels[0]
 	}
 	return nil
-}
-
-func (detector *ForeignKeyConcurrencyDetector) hasDeletesToDatastore(ds *datastores.Datastore) bool {
-	_, exists := detector.deletes[ds]
-	return exists
 }
 
 func (detector *ForeignKeyConcurrencyDetector) addDelete(ds *datastores.Datastore, d *delete) {
@@ -79,6 +76,10 @@ func NewDetector() *ForeignKeyConcurrencyDetector {
 	}
 }
 
+func (detector *ForeignKeyConcurrencyDetector) getCurrentRequest() *request {
+	return detector.requestInfoStack.Peek().(*request)
+}
+
 func (detector *ForeignKeyConcurrencyDetector) OnNewRun(app *app.App) {
 	app.ResetAllDataflows()
 }
@@ -88,13 +89,14 @@ func (detector *ForeignKeyConcurrencyDetector) OnEndRun(app *app.App) {
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnNewRequest(entryNode *abstractgraph.AbstractServiceCall) {
-	detector.requestInfoStack.Push(&RequestInfo{
+	detector.requestInfoStack.Push(&request{
 		index: detector.getNewRequestInfoIndex(),
 		entry: entryNode,
 	})
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnEndRequest(app *app.App) {
+	detector.checkInconsistencies()
 	app.ResetAllDataflows()
 }
 
@@ -111,22 +113,68 @@ func (detector *ForeignKeyConcurrencyDetector) OnRead(app *app.App, dbCall *abst
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	if detector.iter != IterationPhaseCheckWritesAndUpdates {
+	if detector.iter != IterationPhaseTwo_CheckWritesAndUpdates {
 		return
 	}
 
 	datastore := dbCall.DbInstance.GetDatastore()
 	schema := datastore.GetSchema()
 
-	if schema.HasConstraintsForeignKey() {
-		writtenFieldNames := detection.GetWrittenFieldNamesForOperation(dbCall)
-		fields := schema.GetFieldsByNames(writtenFieldNames)
-		for _, field := range fields {
+	logger.Logger.Debugf("[FK CONCURRENCY DETECTOR] onWriteOrUpdate: %s", dbCall.String())
+
+	if !schema.HasConstraintsForeignKey() {
+		return
+	}
+
+	req := detector.getCurrentRequest()
+	operationIdx := req.numOperations()
+	writtenFieldNames := detection.GetWrittenFieldNamesForOperation(dbCall)
+	writtenFields := dbCall.DbInstance.GetDatastore().GetSchema().GetFieldsByNames(writtenFieldNames)
+
+	operation := NewOperation(operationIdx, dbCall, datastore, writtenFields)
+	req.addOperation(operation)
+
+	params := dbCall.GetParams()
+	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
+		switch datastore.Type {
+		case datastores.Queue, datastores.NoSQL:
+			obj := params[1]
+			operation.addWrittenObjects(obj)
+
+			abstractgraph.TaintDataflowWrite(app, obj, dbCall, datastore, "", true, child_idx)
+
+		case datastores.Cache:
+			key, value := params[1], params[2]
+			operation.addWrittenObjects(key, value)
+
+			abstractgraph.TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, child_idx)
+			abstractgraph.TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, child_idx)
+
+		case datastores.RelationalDB:
+			if blueprintBackendMethod.IsRelationalDBExecCall() {
+				query, args := params[1], params[2:]
+				operation.addWrittenObjects(args...)
+
+				writtenFields, _ := abstractgraph.ParseSQLWrite(query, args)
+				for _, field := range writtenFields {
+					abstractgraph.TaintDataflowWrite(app, field.GetObject(), dbCall, datastore, field.GetName(), false, child_idx)
+				}
+			}
+
+		default:
+			logger.Logger.Fatalf("[FK CONCURRENCY DETECTOR] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
+		}
+	}
+}
+
+func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
+	for _, op := range detector.getCurrentRequest().getOperations() {
+		for _, field := range op.getWrittenFields() {
 			for _, constraint := range field.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true)}) {
 				refField := constraint.GetReferencedByField()
 				refDatastore := refField.GetDatastore()
 				if del := detector.getFirstDeleteToDatastoreIfExists(refDatastore); del != nil {
-					del.addAffectedWrittenField(dbCall, field, constraint)
+					del.flagAffectedWriteOnField(op.getDbCall(), field, constraint)
 				}
 			}
 		}
@@ -138,10 +186,9 @@ func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, dbCall *ab
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	if detector.iter != IterationPhaseCheckDeletes {
+	if detector.iter != IterationPhaseOne_CheckDeletes {
 		return
 	}
-
 	datastore := dbCall.DbInstance.GetDatastore()
 	detector.addDelete(datastore, &delete{
 		call:      dbCall,

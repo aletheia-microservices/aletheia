@@ -11,13 +11,17 @@ func (detector *UnicityDetector) ComputeResults() {
 	header += "--------------------------- UNICITY ANALYSIS ------------------------\n"
 	header += "---------------------------------------------------------------------\n"
 
-	var numRequests, numOps int
+	detector.loadInconsistencies()
+	header += fmt.Sprintf(">> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", detector.numRequests, detector.numOps)
+	detector.results = header + "---------------------------------------------------------------------\n" + detector.results
+}
 
+func (detector *UnicityDetector) loadInconsistencies() {
 	for detector.requestInfoStack.Len() > 0 {
 		requestInfo := detector.requestInfoStack.Pop().(*RequestInfo)
 		if requestInfo.hasPotentialInconsistencies() {
 			detector.results += fmt.Sprintf("\n[ENTRY] %s\n", requestInfo.entry.GetMethodStr())
-			numRequests++
+			detector.numRequests++
 			for _, op := range requestInfo.getOperations() {
 				if op.affectsOperations() {
 					detector.results += fmt.Sprintf("[%d] (%s, %s)\n", op.idx, op.call.Service, op.datastore.GetName())
@@ -37,7 +41,7 @@ func (detector *UnicityDetector) ComputeResults() {
 						for _, field := range refFields {
 							detector.results += "\t\t - " + field.GetFullName() + "\n"
 						}
-						numOps++
+						detector.numOps++
 					}
 					detector.results += "\t -------------------------------------------------------------\n"
 				}
@@ -45,7 +49,4 @@ func (detector *UnicityDetector) ComputeResults() {
 			}
 		}
 	}
-
-	header += fmt.Sprintf(">> (# END-TO-END REQUESTS; # AFFECTED OPERATIONS):\n>> (%d;%d)\n", numRequests, numOps)
-	detector.results = header + "---------------------------------------------------------------------\n" + detector.results
 }

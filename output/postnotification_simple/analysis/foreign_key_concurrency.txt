@@ -2,10 +2,12 @@
 ----------------- FOREIGN KEY CONCURRENCY ANALYSIS ------------------
 ---------------------------------------------------------------------
 >> (# DELETES; # WRITTEN CONSTRAINTS AFFECTED BY DELETES):
->> (1;1)
+>> (1;2)
 ---------------------------------------------------------------------
-[0m[1] delete affecting 1 written fields:
+[0m[1] delete affecting 2 written fields:
 StorageService: posts_db.DeleteOne()
+	- NOTIFICATIONS_QUEUE.Message.ReqID             ----> foreign key POSTS_DB.Post.ReqID
+	  @ UploadService: notifications_queue.Push()
 	- NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE    ----> foreign key POSTS_DB.Post.PostID
 	  @ UploadService: notifications_queue.Push()
 
