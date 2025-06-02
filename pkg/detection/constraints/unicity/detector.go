@@ -62,6 +62,7 @@ func (detector *UnicityDetector) OnNewRequest(entryNode *abstractgraph.AbstractS
 }
 
 func (detector *UnicityDetector) OnEndRequest(app *app.App) {
+	detector.checkInconsistencies()
 	app.ResetAllDataflows()
 }
 
@@ -95,46 +96,39 @@ func (detector *UnicityDetector) onWriteOrUpdate(app *app.App, dbCall *abstractg
 		return
 	}
 
-	writtenFieldNames := detection.GetWrittenFieldNamesForOperation(dbCall)
-	unicityConstraints := schema.GetConstraintsUniqueForFieldNames(writtenFieldNames)
-	writtenFields := dbCall.DbInstance.GetDatastore().GetSchema().GetFieldsByNames(writtenFieldNames)
-
-	/* logger.Logger.Debugf("[UNICITY DETECTOR] written field names:")
-	for _, f := range writtenFields {
-		logger.Logger.Debugf("\t\t\t - %s", f.Name)
-	}
-
-	logger.Logger.Warnf("[UNICITY DETECTOR] WRITE/UPDATE in (%s) against unicity constraints:", dbCall.DbInstance.GetName())
-	for _, uc := range unicityConstraints {
-		logger.Logger.Warnf("\t\t\t - %s", uc.String())
-	} */
-
-	var found int
 	reqInfo := detector.getCurrentRequestInfo()
-	operation := NewOperation(reqInfo.numOperations(), dbCall, datastore, writtenFields, unicityConstraints)
+	operationIdx := reqInfo.numOperations()
+	writtenFieldNames := detection.GetWrittenFieldNamesForOperation(dbCall)
+	writtenFields := dbCall.DbInstance.GetDatastore().GetSchema().GetFieldsByNames(writtenFieldNames)
+	unicityConstraints := schema.GetConstraintsUniqueForFieldNames(writtenFieldNames)
+
+	operation := NewOperation(operationIdx, dbCall, datastore, writtenFields, unicityConstraints)
+	reqInfo.addOperation(operation)
 
 	params := dbCall.GetParams()
 	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
 		switch datastore.Type {
 		case datastores.Queue, datastores.NoSQL:
 			obj := params[1]
+			operation.addWrittenObjects(obj)
+
 			abstractgraph.TaintDataflowWrite(app, obj, dbCall, datastore, "", true, child_idx)
-			found += detector.findConstrainedOperationsWithWriteOnField(operation, datastore, obj)
 
 		case datastores.Cache:
 			key, value := params[1], params[2]
+			operation.addWrittenObjects(key, value)
+
 			abstractgraph.TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, child_idx)
 			abstractgraph.TaintDataflowWrite(app, value, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_VALUE, false, child_idx)
-			found += detector.findConstrainedOperationsWithWriteOnField(operation, datastore, key)
-			found += detector.findConstrainedOperationsWithWriteOnField(operation, datastore, value)
 
 		case datastores.RelationalDB:
 			if blueprintBackendMethod.IsRelationalDBExecCall() {
 				query, args := params[1], params[2:]
+				operation.addWrittenObjects(args...)
+
 				writtenFields, _ := abstractgraph.ParseSQLWrite(query, args)
 				for _, field := range writtenFields {
 					abstractgraph.TaintDataflowWrite(app, field.GetObject(), dbCall, datastore, field.GetName(), false, child_idx)
-					found += detector.findConstrainedOperationsWithWriteOnField(operation, datastore, field.GetObject())
 				}
 			}
 
@@ -142,46 +136,59 @@ func (detector *UnicityDetector) onWriteOrUpdate(app *app.App, dbCall *abstractg
 			logger.Logger.Fatalf("[SCHEMA] unknown type of datastore (%s) to parse call: %s", utils.GetType(datastore), dbCall.String())
 		}
 	}
+}
 
-	reqInfo.addOperation(operation)
-	if found > 0 {
-		reqInfo.affectedOps = true
+func (detector *UnicityDetector) checkInconsistencies() {
+	reqInfo := detector.getCurrentRequestInfo()
+	for _, op := range detector.getCurrentRequestInfo().getOperations() {
+		for _, obj := range op.getWrittenObjects() {
+			if detector.checkConstrainedOperationsWithWriteOnField(op, obj) {
+				reqInfo.flagInconsistency()
+			}
+		}
 	}
 }
 
 // findConstrainedOperationsWithWriteOnField follows the same logic of abstractgraph.ReferenceTaintedDataflowForNestedField() for finding dataflows
-// 1. search for previous writes in the same request that used a given field (whose object is being written now)
+// 1. search for other writes in the same request that used a given field (whose object is being written now)
 // 2. for each found write-dataflow, find the corresponding operation saved in the requestInfo of the detector
 // 3. if the operation was done against a unicity constraint (not necessarily on the current field), then it can affect our current operation, leading to inconsistencies
-func (detector *UnicityDetector) findConstrainedOperationsWithWriteOnField(currOp *Operation, datastore *datastores.Datastore, writtenObj objects.Object) int {
-	var foundOps []*Operation
+func (detector *UnicityDetector) checkConstrainedOperationsWithWriteOnField(currOp *Operation, writtenObj objects.Object) bool {
+	var visited []*Operation
 	objs := []objects.Object{writtenObj}
-	if datastore.IsQueue() || datastore.IsNoSQLDatabase() {
-		objs, _ = objects.GetReversedNestedFieldsAndNames(writtenObj, "", datastore.IsNoSQLDatabase(), datastore.IsQueue())
+
+	currDb := currOp.getDatastore()
+	if currDb.IsQueue() || currDb.IsNoSQLDatabase() {
+		objs, _ = objects.GetReversedNestedFieldsAndNames(writtenObj, "", currDb.IsNoSQLDatabase(), currDb.IsQueue())
 	}
-	
+
 	for _, obj := range objs {
 		deps := obj.GetNestedDependencies(false)
 		for _, dep := range deps {
-			for _, df := range dep.GetVariableInfo().GetAllWriteDataflowsExceptDatastore(datastore.GetName()) {
+			for _, df := range dep.GetVariableInfo().GetAllWriteDataflowsExceptDatastore(currDb.GetName()) {
 				requestInfo := detector.getCurrentRequestInfo()
-	
-				for _, prevOp := range requestInfo.getOperations() {
-					if slices.Contains(foundOps, prevOp) {
+
+				for _, otherOp := range requestInfo.getOperations() {
+					// ignore if the other operation
+					// (1) is the current operation
+					// (2) or was already visited
+					if currOp == otherOp || slices.Contains(visited, otherOp) {
 						continue
 					}
 
-					if prevOp.HasWrittenField(df.Field) && prevOp.onUnicityConstraint {
-						prevOp.AddAffectedOpAndReferencedField(currOp, df.Field)
-						foundOps = append(foundOps, prevOp)
+					// other operation only affects current operation if the former
+					// (1) is a write that uses the current field
+					// (2) is constrained to UNIQUE or PK
+					if otherOp.hasWrittenField(df.Field) && otherOp.isConstrained() {
+						otherOp.addAffectedOpAndReferencedField(currOp, df.Field)
+						visited = append(visited, otherOp)
 					}
 				}
 			}
-	
+
 		}
 	}
-	logger.Logger.Debugf("LEN = %d", len(foundOps))
-	return len(foundOps)
+	return len(visited) > 0
 }
 
 func (detector *UnicityDetector) OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {

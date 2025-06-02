@@ -19,7 +19,7 @@ func (detector *UnicityDetector) ComputeResults() {
 			detector.results += fmt.Sprintf("\n[ENTRY] %s\n", requestInfo.entry.GetMethodStr())
 			numRequests++
 			for _, op := range requestInfo.getOperations() {
-				if op.AffectsOps() {
+				if op.affectsOperations() {
 					detector.results += fmt.Sprintf("[%d] (%s, %s)\n", op.idx, op.call.Service, op.datastore.GetName())
 					detector.results += "-> " + op.call.String() + "\n"
 
@@ -30,7 +30,7 @@ func (detector *UnicityDetector) ComputeResults() {
 
 					detector.results += "\t -------------------------------------------------------------\n"
 					detector.results += "\t -------------------- AFFECTED OPERATIONS --------------------\n"
-					for affectedOp, refFields := range op.GetAffectedOps() {
+					for affectedOp, refFields := range op.getAffectedOperations() {
 						detector.results += fmt.Sprintf("\t [%d] (%s, %s)\n", affectedOp.idx, affectedOp.call.Service, affectedOp.datastore.GetName())
 						detector.results += "\t -> " + affectedOp.call.String() + "\n"
 						detector.results += "\t\t referencing fields from prev. operation:\n"

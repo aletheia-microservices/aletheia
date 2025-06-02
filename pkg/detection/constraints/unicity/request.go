@@ -5,9 +5,9 @@ import (
 )
 
 type RequestInfo struct {
-	entry             *abstractgraph.AbstractServiceCall
-	operations        []*Operation
-	affectedOps bool
+	entry         *abstractgraph.AbstractServiceCall
+	operations    []*Operation
+	inconsistency bool
 }
 
 func (info *RequestInfo) addOperation(operation *Operation) {
@@ -16,7 +16,11 @@ func (info *RequestInfo) addOperation(operation *Operation) {
 
 // flags potential inconsistency if there is a write on a numerical constraint
 func (info *RequestInfo) hasPotentialInconsistencies() bool {
-	return info.affectedOps // && len(info.operations) != 1
+	return info.inconsistency // && len(info.operations) != 1
+}
+
+func (info *RequestInfo) flagInconsistency() {
+	info.inconsistency = true
 }
 
 func (info *RequestInfo) getOperations() []*Operation {

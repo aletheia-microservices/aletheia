@@ -90,8 +90,24 @@ go run main.go --app digota --auto
 go run main.go --app postnotification_simple --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
 go run main.go --app postnotification --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
 go run main.go --app sockshop2 --auto --fk_read
-go run main.go --app dsb_media --auto --unicity
-go run main.go --app dsb_media_sql --auto --unicity
+
+## Foreign Key Read
+go run main.go --app postnotification_simple --auto --fk_read   #(1)
+go run main.go --app postnotification --auto --fk_read          #(0)
+
+## Foreign Key Concurrency
+go run main.go --app postnotification_simple --auto --fk_concurrency    #(1,2) -> EXPECTED (0,0)
+go run main.go --app postnotification --auto --fk_concurrency           #(0,0)
+go run main.go --app shopping_simple --auto --fk_concurrency            #(1,4)
+
+## Foreign Key Cascade
+go run main.go --app postnotification_simple --auto --fk_cascade    #(1,0)
+go run main.go --app shopping_simple --auto --fk_cascade            #(1,3)
+go run main.go --app shopping_app --auto --fk_cascade               #(0,0)
+
+## Unicity Constraints
+go run main.go --app dsb_media --auto --unicity         #(1,2)
+go run main.go --app dsb_media_sql --auto --unicity     #(1,2)
 ```
 
 Run the graph builder:
