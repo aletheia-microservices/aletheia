@@ -341,20 +341,23 @@ func (s *Schema) GetFieldById(id int64) *Field {
 	logger.Logger.Warnf("[FIXME] no field for id %d in datastore schema %v", id, s.String())
 	return nil
 }
-
 type Constraint struct {
 	// default constraint 	-> fields size = 1
 	// composed constraint 	-> fields size > 1
-	fields    []*Field
-	unique    bool
-	primary   bool
-	reference bool
-	mandatory bool
-	numerical *NumericalConstraint
+	fields      []*Field
+	unique      bool
+	primary     bool
+	reference   bool
+	mandatory   bool
+	numerical   *NumericalConstraint
 }
 
 func (c *Constraint) GetNumerical() *NumericalConstraint {
 	return c.numerical
+}
+
+func (c *Constraint) SetMandatory() {
+	c.mandatory = true
 }
 
 type ComparisonOperator int
@@ -477,9 +480,9 @@ func NewConstraintPrimary(fields ...*Field) *Constraint {
 
 func NewConstraintReference(mandatory bool, fields ...*Field) *Constraint {
 	return &Constraint{
-		fields:    fields,
-		reference: true,
-		mandatory: mandatory,
+		fields:      fields,
+		reference:   true,
+		mandatory:   mandatory,
 	}
 }
 func (c *Constraint) FieldIsReferencingTo(field *Field) bool {

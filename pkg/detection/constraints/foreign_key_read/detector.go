@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/golang-collections/collections/stack"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
@@ -16,9 +18,23 @@ import (
 
 type ForeignKeyDetector struct {
 	detection.Detector
+	requestInfoStack *stack.Stack
+
+	// results
 	results string
 	summary string
 	reads   []*ForeignKeyRead
+}
+
+func NewDetector() *ForeignKeyDetector {
+	fmt.Println()
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println(" --------------------------------------- INITIALIZING FOREIGN KEY DETECTOR ---------------------------------------- ")
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println()
+	return &ForeignKeyDetector{
+		requestInfoStack: stack.New(),
+	}
 }
 
 func (detector *ForeignKeyDetector) GetSummary() string {
@@ -41,15 +57,6 @@ func (detector *ForeignKeyDetector) getUsedForeignReferencesForFieldInDatastore(
 		}
 	}
 	return foreignReference
-}
-
-func NewDetector() *ForeignKeyDetector {
-	fmt.Println()
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" --------------------------------------- INITIALIZING FOREIGN KEY DETECTOR ---------------------------------------- ")
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println()
-	return &ForeignKeyDetector{}
 }
 
 func (detector *ForeignKeyDetector) OnNewRun(app *app.App) {
@@ -81,37 +88,52 @@ func (detector *ForeignKeyDetector) OnEndRequest(app *app.App) {
 // for each dependency, it iterates all previous read dataflows
 // if the database field read on a previous (dependent) dataflow matches the current field
 // then we detect a new foreignkey-based read
-func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, obj objects.Object, originFieldName string, datastore *datastores.Datastore, dbCall *abstractgraph.AbstractDatabaseCall) {
-	originField := datastore.Schema.GetField(originFieldName)
-
-	logger.Logger.Infof("[FOREIGN KEY] check foreign key read for origin field (%s) and object: %s", originField.String(), obj.String())
-	var savedOriginFieldName []string
-	//datastore := dbCall.DbInstance.GetDatastore()
-	for _, dep := range obj.GetNestedDependencies(true) {
-		logger.Logger.Debugf("[FOREIGN KEY] \t dep: %s", dep.String())
+func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, currObj objects.Object, originFieldName string, datastore *datastores.Datastore, dbCall *abstractgraph.AbstractDatabaseCall) {
+	currField := datastore.Schema.GetField(originFieldName)
+	logger.Logger.Infof("[FK READ] check foreign key read for origin field (%s) and object: %s", currField.String(), currObj.String())
+	var visited []string
+	for _, dep := range currObj.GetNestedDependencies(true) {
+		logger.Logger.Debugf("[FK READ] \t dep: %s", dep.String())
 		for _, df := range dep.GetVariableInfo().GetAllReadDataflowsExceptDatastore(dbCall.DbInstance.GetName()) { // except filter is just for sanity check
-			// FIXME: for some reason there are some "loose" fields that
-			// are not associated anymore with the (un)folded fields of the datastore schema
-			// and which also unexpectedly do not have any References
-			// so right now we are just getting the full name of the field that we want for the current dataflow
-			// and then we get the field that is actually attached to the schema to get the correct References
-			for _, attachedRefField := range df.Field.GetDatastore().GetSchema().GetUnfoldedFields() {
-				if attachedRefField.HasFullName(df.Field.GetFullName()) {
-					for _, refTarget := range attachedRefField.GetReferences() {
-						if !slices.Contains(savedOriginFieldName, originField.GetFullName()) && refTarget == originField {
-							read := newForeignKeyRead(attachedRefField, originField, app.GetDataflowForObjectDataflow(df).GetDatabaseCall(), dbCall.ParsedCall)
+			otherField := df.Field
+
+			// FIXME: we re-assign "otherField" because, for some reason, the original "otherField" is not
+			// the one we are expecting with the reference, although in the schema there is a reference
+			otherField = otherField.GetDatastore().GetSchema().GetFieldByFullName(otherField.GetFullName())
+
+			var checkInconsistency = func(field1 *datastores.Field, field2 *datastores.Field) {
+				// now that we know that the other field references the current one (e.g., Cart.Products references Product.ProductID)
+				// we want to know if their association is mandatory (false in this app), meaning that they were written in the same request
+				// NOTE: this fine-grained approach should prevent a false positive flag in, for example, 
+				// the shopping_app where products can still be associated afterwards after the cart creation
+				// but still allow a true positive flag in the post notification
+				for _, constraint := range field1.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true), Mandatory: utils.BoolPtr(true)}) {
+					if constraint.FieldIsReferencingTo(field2) {
+						if !slices.Contains(visited, field1.GetFullName()) {
+							read := newForeignKeyRead(field1, field2, app.GetDataflowForObjectDataflow(df).GetDatabaseCall(), dbCall.ParsedCall)
 							detector.addForeignKeyRead(read)
-							savedOriginFieldName = append(savedOriginFieldName, originField.GetFullName())
+
+							logger.Logger.Warnf("[FK READ] found new foreign key read:\n%s", read.String())
+							visited = append(visited, field1.GetFullName())
 						}
 					}
 				}
+			}
+
+			if otherField.HasReference(currField) {
+				// EXAMPLE: read(NOTIFICATION) (w/ other: fk on postid) ... read(POST) (w/ curr: postid)
+				checkInconsistency(otherField, currField)
+			} else if currField.HasReference(otherField) {
+				// EXAMPLE: read(post) (w/ other: postid) ... read(analytics) (w/ curr: fk on postid)
+				// THIS STILL NEEDS TO BE TESTED!!
+				checkInconsistency(currField, otherField)
 			}
 		}
 	}
 }
 
 func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	logger.Logger.Infof("[FOREIGN KEY] analyzing %s @ %s: %s", utils.GetType(dbCall), dbCall.DbInstance.GetName(), dbCall.String())
+	logger.Logger.Infof("[FK READ] analyzing %s @ %s: %s", utils.GetType(dbCall), dbCall.DbInstance.GetName(), dbCall.String())
 	datastore := dbCall.DbInstance.GetDatastore()
 	params := dbCall.GetParams()
 	returns := dbCall.GetReturns()
@@ -164,7 +186,7 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 			}
 
 		default:
-			logger.Logger.Fatalf("[FOREIGN KEY] TODO: %s", dbCall.String())
+			logger.Logger.Fatalf("[FK READ] TODO: %s", dbCall.String())
 		}
 	}
 }

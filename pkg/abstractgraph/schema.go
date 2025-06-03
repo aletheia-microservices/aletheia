@@ -380,27 +380,36 @@ func GetNoSQLQueryDocument(datastore *datastores.Datastore, variable objects.Obj
 func ReferenceTaintedDataflowForNestedField(writtenVariable objects.Object, datastore *datastores.Datastore, fieldName string, requestIdx int) {
 	fmt.Printf("\n------------- REFERENCE TAINTED DATAFLOW FOR WRITTEN VARIABLE %s @ %s -------------\n\n", writtenVariable.GetType().GetName(), datastore.Name)
 	fmt.Println()
-	dbField := datastore.Schema.GetField(fieldName)
+	currField := datastore.Schema.GetField(fieldName)
 	deps := writtenVariable.GetNestedDependencies(false)
 	logger.Logger.Infof("[TENTATIVE REF TAINTED VAR] [%s] (%02d) %s", utils.GetType(writtenVariable), writtenVariable.GetId(), writtenVariable.LongString())
 	for _, dep := range deps {
 		for _, df := range dep.GetVariableInfo().GetAllDataflows() {
 			if df.Datastore != datastore.Name {
-				var mandatoryPrefix string
-				var isMandatory bool
-				if df.InRequestIndex(requestIdx) {
-					mandatoryPrefix = "[+ MANDATORY]"
-					isMandatory = true
+				// mandatory implies that both fields (associated by foreign key)
+				// were written in the same request
+				var mandatory bool
+				if df.IsWriteOp() && df.InRequestIndex(requestIdx) {
+					mandatory = true
 				}
 
-				if !dbField.HasReference(df.Field) {
-					constraint := dbField.CreateAndAddReference(df.Field, isMandatory)
+				otherField := df.Field
+				if !currField.HasReference(otherField) {
+					// add new foreign key if it does not yet exist
+					constraint := currField.CreateAndAddReference(otherField, mandatory)
 					datastore.GetSchema().AddConstraint(constraint)
-
+				} else if mandatory {
+					// if foreign key already exists (i.e., the current field already references the other field)
+					// and it not yet mandatory, then we upgrade it
+					for _, foreignKeyConstraint := range currField.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true), Mandatory: utils.BoolPtr(false)}) {
+						if foreignKeyConstraint.FieldIsReferencingTo(otherField) {
+							foreignKeyConstraint.SetMandatory()
+						}
+					}
 				}
 
-				datastore.AddReferencingDatastoreIfNotExists(df.Field.GetDatastore())
-				logger.Logger.Debugf("[SCHEMA REFERENCE] %s (%s -> %s) from dependency [%s]: %s", mandatoryPrefix, dbField.GetFullName(), df.Field.GetFullName(), utils.GetType(dep), dep.String())
+				datastore.AddReferencingDatastoreIfNotExists(otherField.GetDatastore())
+				logger.Logger.Debugf("[SCHEMA REFERENCE] mandatory?%t (%s -> %s) from dependency [%s]: %s", mandatory, currField.GetFullName(), df.Field.GetFullName(), utils.GetType(dep), dep.String())
 			}
 		}
 

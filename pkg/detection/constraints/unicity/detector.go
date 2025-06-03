@@ -16,18 +16,6 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func NewDetector() *UnicityDetector {
-	fmt.Println()
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" ----------------------------------------- INITIALIZING UNICITY DETECTOR ------------------------------------------ ")
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println()
-
-	return &UnicityDetector{
-		requestInfoStack: stack.New(),
-	}
-}
-
 type UnicityDetector struct {
 	detection.Detector
 	requestInfoStack *stack.Stack
@@ -37,6 +25,17 @@ type UnicityDetector struct {
 	summary     string
 	numRequests int
 	numOps      int
+}
+
+func NewDetector() *UnicityDetector {
+	fmt.Println()
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println(" ----------------------------------------- INITIALIZING UNICITY DETECTOR ------------------------------------------ ")
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println()
+	return &UnicityDetector{
+		requestInfoStack: stack.New(),
+	}
 }
 
 func (detector *UnicityDetector) GetSummary() string {

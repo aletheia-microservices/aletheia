@@ -136,12 +136,12 @@ SHIPMENT_QUEUE:
     - ShipmentMessage.OrderID: string
     - ShipmentMessage.UserID: string
   - constraints:
-    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.OrderID --> ORDER_DB.Order.OrderID)
-      [+]
     - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.UserID --> ORDER_DB.Order.UserID) [+]
     - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.UserID --> ANALYTICS_QUEUE.AnalyticsMessage.UserID)
       [+]
     - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.UserID --> BILLING_DB.Bill.UserID)
+      [+]
+    - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage.OrderID --> ORDER_DB.Order.OrderID)
       [+]
     - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage --> ORDER_DB.Order.OrderID) [+]
     - REFERENCE(SHIPMENT_QUEUE.ShipmentMessage --> ORDER_DB.Order.UserID) [+]
@@ -162,7 +162,7 @@ STOCK_DB:
     - Stock.ProductID: string
     - Stock.Quantity: int
   - constraints:
-    - REFERENCE(STOCK_DB.Stock.ProductID --> ORDER_DB.Order.ProductID) [+]
     - REFERENCE(STOCK_DB.Stock.Quantity --> ORDER_DB.Order.Quantity) [+]
+    - REFERENCE(STOCK_DB.Stock.ProductID --> ORDER_DB.Order.ProductID) [+]
     - REFERENCE(STOCK_DB.Stock --> ORDER_DB.Order.ProductID) [+]
     - REFERENCE(STOCK_DB.Stock --> ORDER_DB.Order.Quantity) [+]
