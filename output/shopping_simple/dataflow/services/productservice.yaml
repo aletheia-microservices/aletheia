@@ -43,8 +43,10 @@
   - ___5 depth 3 (BlueprintBackendObject BlueprintBackendType) product_queue Queue
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
-  - 0 depth 0 (BasicObject BasicType) productID string
-  - _1 depth 1 (Reference BasicType) ref <productID string> @ Frontend
+  - '0 depth 0 (BasicObject BasicType) productID string --> w-tainted 1x: write(product_queue.ProductQueueMessage.ProductID)
+    --> r-tainted 1x: read(product_queue.ProductQueueMessage.ProductID)'
+  - '_1 depth 1 (Reference BasicType) ref <productID string> @ Frontend --> w-tainted
+    1x: write(product_queue.ProductQueueMessage.ProductID) --> r-tainted 1x: read(product_queue.ProductQueueMessage.ProductID)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
     {database = product_database, collection = product_collection}
   - 0 depth 0 (InterfaceObject UserType) _ .error
@@ -55,6 +57,17 @@
   - __4 depth 2 (FieldObject FieldType) Value string
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (BasicObject BasicType) val bool
+  - '0 depth 0 (StructObject UserType) message shopping_simple.ProductQueueMessage
+    struct{ProductID string, Remove true bool} --> w-tainted 1x: write(product_queue.ProductQueueMessage)
+    --> r-tainted 1x: read(product_queue.ProductQueueMessage)'
+  - '_1 depth 1 (FieldObject FieldType) ProductID string --> w-tainted 1x: write(product_queue.ProductQueueMessage.ProductID)
+    --> r-tainted 1x: read(product_queue.ProductQueueMessage.ProductID)'
+  - '_4 depth 1 (FieldObject FieldType) Remove true bool --> w-tainted 1x: write(product_queue.ProductQueueMessage.Remove)
+    --> r-tainted 1x: read(product_queue.ProductQueueMessage.Remove)'
+  - '__5 depth 2 (BasicObject BasicType) true bool --> w-tainted 1x: write(product_queue.ProductQueueMessage.Remove)
+    --> r-tainted 1x: read(product_queue.ProductQueueMessage.Remove)'
+  - 0 depth 0 (BasicObject BasicType) val bool
+  - 0 depth 0 (InterfaceObject UserType) err .error
 
 (*ProductServiceImpl).GetAllProducts(ctx context.Context):
   block 0 (Body):

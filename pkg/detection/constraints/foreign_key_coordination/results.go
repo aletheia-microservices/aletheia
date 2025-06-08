@@ -1,4 +1,4 @@
-package foreign_key_read
+package foreign_key_coordination
 
 import (
 	"fmt"

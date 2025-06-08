@@ -16,7 +16,7 @@
 	 [5] filter primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
 	 [6] err .error ---> depends on: {}
 
-[BLOCK, #2, IfDone] NODES = [*ast.ValueSpec, *ast.ReturnStmt]; SUCCS = []
+[BLOCK, #2, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
 	 [0] s (*shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}) ---> depends on: {shopping_simple.ProductServiceImpl struct{product_db NoSQLDatabase, product_queue Queue, num_workers int}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] productID string ---> depends on: {}
@@ -25,4 +25,7 @@
 	 [5] filter primitive.D ---> depends on: {struct{Key "productid" string, Key "productid" string, Value string, Value string}}
 	 [6] err .error ---> depends on: {}
 	 [7] val bool ---> depends on: {}
+	 [8] message shopping_simple.ProductQueueMessage struct{ProductID string, Remove true bool} ---> depends on: {ProductID string, Remove true bool}
+	 [9] val bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
 

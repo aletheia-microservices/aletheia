@@ -4,6 +4,8 @@
 
 (*ProductServiceImpl).DeleteProduct(ctx context.Context, productID string):
 - DATASTORE CALL @ product_db >> NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D) interface{}
+- DATASTORE CALL @ product_queue >> Queue.Push(ctx context.Context, item interface{})
+  (err, interface{})
 
 (*ProductServiceImpl).GetAllProducts(ctx context.Context):
 - DATASTORE CALL @ product_db >> NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D) (NoSQLCursor, interface{})

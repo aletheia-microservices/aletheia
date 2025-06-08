@@ -1,4 +1,4 @@
-package foreign_key_read
+package foreign_key_coordination
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ type ForeignKeyDetector struct {
 func NewDetector() *ForeignKeyDetector {
 	fmt.Println()
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" --------------------------------------- INITIALIZING FOREIGN KEY DETECTOR ---------------------------------------- ")
+	fmt.Println(" --------------------------------------- INITIALIZING FK UNCOORD DETECTOR ---------------------------------------- ")
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 	fmt.Println()
 	return &ForeignKeyDetector{
@@ -90,10 +90,10 @@ func (detector *ForeignKeyDetector) OnEndRequest(app *app.App) {
 // then we detect a new foreignkey-based read
 func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, currObj objects.Object, originFieldName string, datastore *datastores.Datastore, dbCall *abstractgraph.AbstractDatabaseCall) {
 	currField := datastore.Schema.GetField(originFieldName)
-	logger.Logger.Infof("[FK READ] check foreign key read for origin field (%s) and object: %s", currField.String(), currObj.String())
+	logger.Logger.Infof("[FK UNCOORD] check FK UNCOORD read for origin field (%s) and object: %s", currField.String(), currObj.String())
 	var visited []string
 	for _, dep := range currObj.GetNestedDependencies(true) {
-		logger.Logger.Debugf("[FK READ] \t dep: %s", dep.String())
+		logger.Logger.Debugf("[FK UNCOORD] \t dep: %s", dep.String())
 		for _, df := range dep.GetVariableInfo().GetAllReadDataflowsExceptDatastore(dbCall.DbInstance.GetName()) { // except filter is just for sanity check
 			otherField := df.Field
 
@@ -113,7 +113,7 @@ func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, currObj ob
 							read := newForeignKeyRead(field1, field2, app.GetDataflowForObjectDataflow(df).GetDatabaseCall(), dbCall.ParsedCall)
 							detector.addForeignKeyRead(read)
 
-							logger.Logger.Warnf("[FK READ] found new foreign key read:\n%s", read.String())
+							logger.Logger.Warnf("[FK UNCOORD] found new FK UNCOORD read:\n%s", read.String())
 							visited = append(visited, field1.GetFullName())
 						}
 					}
@@ -133,7 +133,7 @@ func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, currObj ob
 }
 
 func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {
-	logger.Logger.Infof("[FK READ] analyzing %s @ %s: %s", utils.GetType(dbCall), dbCall.DbInstance.GetName(), dbCall.String())
+	logger.Logger.Infof("[FK UNCOORD] analyzing %s @ %s: %s", utils.GetType(dbCall), dbCall.DbInstance.GetName(), dbCall.String())
 	datastore := dbCall.DbInstance.GetDatastore()
 	params := dbCall.GetParams()
 	returns := dbCall.GetReturns()
@@ -142,7 +142,7 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 		switch datastore.Type {
 		case datastores.Queue:
 			msg := params[1]
-			logger.Logger.Infof("[FOREIGN KEY - QUEUE MESSAGE] %s", msg.String())
+			logger.Logger.Infof("[FK UNCOORD - QUEUE MESSAGE] %s", msg.String())
 			for _, df := range msg.GetVariableInfo().GetAllDataflows() {
 				logger.Logger.Infof("[df] %s", df.String())
 			}
@@ -152,13 +152,13 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 
 			queryObjs := abstractgraph.GetNoSQLQueryDocument(datastore, query)
 			for _, qObj := range queryObjs {
-				logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", qObj.String())
+				logger.Logger.Infof("[FK UNCOORD - QUERY OBJ] %s", qObj.String())
 				detector.checkForeignKeyRead(app, qObj.Object, qObj.FieldName, datastore, dbCall)
 			}
 
 			abstractgraph.TaintDataflowReadNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, child_idx)
 			for _, obj := range queryObjs {
-				logger.Logger.Infof("[FOREIGN KEY - QUERY OBJ] %s", obj.String())
+				logger.Logger.Infof("[FK UNCOORD - QUERY OBJ] %s", obj.String())
 				abstractgraph.TaintDataflowReadNoSQL(app, obj.Object, dbCall, datastore, obj.FieldName, true, child_idx)
 			}
 		case datastores.Cache:
@@ -186,7 +186,7 @@ func (detector *ForeignKeyDetector) OnRead(app *app.App, dbCall *abstractgraph.A
 			}
 
 		default:
-			logger.Logger.Fatalf("[FK READ] TODO: %s", dbCall.String())
+			logger.Logger.Fatalf("[FK UNCOORD] TODO: %s", dbCall.String())
 		}
 	}
 }
@@ -204,7 +204,7 @@ func (detector *ForeignKeyDetector) OnDelete(app *app.App, dbCall *abstractgraph
 }
 
 func (detector *ForeignKeyDetector) GetAnalysisTypeString() string {
-	return "foreign_key_read"
+	return "foreign_key_coordination"
 }
 
 func (detector *ForeignKeyDetector) CompactSchema(app *app.App) {

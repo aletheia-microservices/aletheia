@@ -54,9 +54,9 @@ go run main.go --app postnotification --auto --xcy
 go run main.go --app sockshop2 --auto --xcy
 
 # Referential Integrity Constraint: Invalid Foreign Key
-go run main.go --app postnotification --auto --fk_read
-go run main.go --app postnotification_simple --auto --fk_read
-go run main.go --app sockshop2 --auto --fk_read
+go run main.go --app postnotification --auto --fk_coordination
+go run main.go --app postnotification_simple --auto --fk_coordination
+go run main.go --app sockshop2 --auto --fk_coordination
 
 # Referential Integrity Constraint: Absence of Cascading Deletes
 go run main.go --app shopping_simple --auto --fk_cascade
@@ -79,28 +79,28 @@ go run main.go --app coupons_app_sql --auto --numerical
 go run main.go --app coupons_app_cache --auto --numerical
 
 # all applications and detection patterns
-go run main.go -all=true --auto --xcy --fk_read --fk_cascade
+go run main.go -all=true --auto --xcy --fk_coordination --fk_cascade
 
 # others
 go run main.go --app digota --auto
-go run main.go --app postnotification_simple --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
-go run main.go --app postnotification --auto --compact_schema --fk_read --fk_concurrency --fk_cascade
-go run main.go --app sockshop2 --auto --fk_read
+go run main.go --app postnotification_simple --auto --compact_schema --fk_coordination --fk_concurrency --fk_cascade
+go run main.go --app postnotification --auto --compact_schema --fk_coordination --fk_concurrency --fk_cascade
+go run main.go --app sockshop2 --auto --fk_coordination
 ```
 
 Run the code analyzer:
 
 ```zsh
 ## Foreign Key Coordination
-go run main.go --auto --fk_read --app digota
-go run main.go --auto --fk_read --app shopping_simple
-go run main.go --auto --fk_read --app shopping_app
-go run main.go --auto --fk_read --app postnotification_simple
-go run main.go --auto --fk_read --app postnotification
-go run main.go --auto --fk_read --app dsb_media
-go run main.go --auto --fk_read --app dsb_media_sql
-go run main.go --auto --fk_read --app trainticket
-go run main.go --auto --fk_read --app dsb_sn
+go run main.go --auto --fk_coordination --app digota
+go run main.go --auto --fk_coordination --app shopping_simple
+go run main.go --auto --fk_coordination --app shopping_app
+go run main.go --auto --fk_coordination --app postnotification_simple
+go run main.go --auto --fk_coordination --app postnotification
+go run main.go --auto --fk_coordination --app dsb_media
+go run main.go --auto --fk_coordination --app dsb_media_sql
+go run main.go --auto --fk_coordination --app trainticket
+go run main.go --auto --fk_coordination --app dsb_sn
 
 ## Foreign Key Concurrency
 go run main.go --auto --fk_concurrency --app digota

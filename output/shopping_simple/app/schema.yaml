@@ -14,8 +14,8 @@ CART_DB:
     - Cart.Products: '[]string'
     - Cart.Products[*]: string
   - constraints:
-    - REFERENCE(CART_DB.Cart.LastProductID --> PRODUCT_DB.Product.ProductID)
     - REFERENCE(CART_DB.Cart.Products --> PRODUCT_DB.Product.ProductID)
+    - REFERENCE(CART_DB.Cart.LastProductID --> PRODUCT_DB.Product.ProductID)
     - REFERENCE(CART_DB.Cart --> PRODUCT_DB.Product.ProductID)
 
 PRODUCT_DB:
@@ -38,5 +38,10 @@ PRODUCT_QUEUE:
 - kind: RabbitMQ
 - dependencies: []
 - schema:
-  - fields: []
-  - unfolded_fields: []
+  - fields:
+    - _: shopping_simple.ProductQueueMessage struct{ProductID string, Remove true bool}
+    - ProductQueueMessage: shopping_simple.ProductQueueMessage struct{ProductID string, Remove true bool}
+  - unfolded_fields:
+    - ProductQueueMessage: shopping_simple.ProductQueueMessage struct{ProductID string, Remove true bool}
+    - ProductQueueMessage.ProductID: string
+    - ProductQueueMessage.Remove: true bool

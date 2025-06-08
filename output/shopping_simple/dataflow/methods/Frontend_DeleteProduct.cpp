@@ -7,5 +7,6 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 
+    --> w-tainted: write(product_queue.ProductQueueMessage.ProductID) {1}       --> w-tainted: write(product_queue.ProductQueueMessage.ProductID) {1} --> r-tainted: read(product_queue.ProductQueueMessage.ProductID) {1}
 [0] (BasicObject BasicType) productID string
 

@@ -46,7 +46,8 @@
   - __4 depth 2 (FieldObject FieldType) product_service shopping_simple.ProductService
   - ___5 depth 3 (ServiceObject ServiceType) product_service shopping_simple.ProductService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - 0 depth 0 (BasicObject BasicType) productID string
+  - '0 depth 0 (BasicObject BasicType) productID string --> w-tainted 1x: write(product_queue.ProductQueueMessage.ProductID)
+    --> r-tainted 1x: read(product_queue.ProductQueueMessage.ProductID)'
 
 (*FrontendImpl).GetAllProducts(ctx context.Context):
   block 0 (Body):

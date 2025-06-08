@@ -41,6 +41,10 @@
       "type": "service"
     },
     {
+      "id": "CartService",
+      "type": "service"
+    },
+    {
       "id": "Frontend",
       "type": "service"
     },
@@ -105,7 +109,7 @@
       "type": "datastore"
     },
     {
-      "id": "product_db MongoDB",
+      "id": "cart_db MongoDB",
       "type": "datastore"
     },
     {
@@ -126,6 +130,14 @@
     },
     {
       "id": "product_db MongoDB",
+      "type": "datastore"
+    },
+    {
+      "id": "product_db MongoDB",
+      "type": "datastore"
+    },
+    {
+      "id": "product_queue RabbitMQ",
       "type": "datastore"
     }
   ],
@@ -165,6 +177,18 @@
       "callee": "cart_db MongoDB",
       "call": "InsertOne",
       "depth": 2
+    },
+    {
+      "caller": "CartService",
+      "callee": "cart_db MongoDB",
+      "call": "UpdateMany",
+      "depth": 4
+    },
+    {
+      "caller": "CartService",
+      "callee": "product_queue RabbitMQ",
+      "call": "Pop",
+      "depth": 4
     },
     {
       "caller": "Client",
@@ -284,6 +308,18 @@
       "caller": "ProductService",
       "callee": "product_db MongoDB",
       "call": "FindOne",
+      "depth": 3
+    },
+    {
+      "caller": "ProductService",
+      "callee": "product_queue RabbitMQ",
+      "call": "Push",
+      "depth": 2
+    },
+    {
+      "caller": "product_queue RabbitMQ",
+      "callee": "CartService",
+      "call": "workerThread",
       "depth": 3
     }
   ]

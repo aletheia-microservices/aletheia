@@ -10,10 +10,24 @@
 [___3] (ServiceObject ServiceType) product_service shopping_simple.ProductService
 
 [0] (InterfaceObject UserType) ctx context.Context
+[_1] (Reference UserType) ref <ctx context.Context> @ CartService
 
 [0] (StructObject UserType) message shopping_simple.ProductQueueMessage struct{ProductID string, Remove bool}
+[_1] (Reference UserType) ref <workerMessage shopping_simple.ProductQueueMessage struct{ProductID string, Remove bool}> @ CartService
+[__2] (FieldObject FieldType) ProductID string
+[___3] (BasicObject BasicType) * string
+[____4] (InterfaceObject InterfaceType) * interface{}
+[__2] (FieldObject FieldType) Remove bool
+[___3] (BasicObject BasicType) * bool
+[____4] (InterfaceObject InterfaceType) * interface{}
 [_1] (FieldObject FieldType) ProductID string
+[__2] (Reference FieldType) ref <ProductID string> @ CartService
+[___3] (BasicObject BasicType) * string
+[____4] (InterfaceObject InterfaceType) * interface{}
 [__2] (BasicObject BasicType) ProductID string
+[___3] (Reference FieldType) ref <ProductID string> @ CartService
+[____4] (BasicObject BasicType) * string
+[_____5] (InterfaceObject InterfaceType) * interface{}
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = cart_database, collection = cart_database}
 
@@ -42,6 +56,9 @@
 [______6] (BasicObject BasicType) "Products" string
 [_____5] (FieldObject FieldType) Value string
 [______6] (BasicObject BasicType) ProductID string
+[_______7] (Reference FieldType) ref <ProductID string> @ CartService
+[________8] (BasicObject BasicType) * string
+[_________9] (InterfaceObject InterfaceType) * interface{}
 [_1] (StructObject StructType) struct{Key "$pull" string, Key "$pull" string, Value primitive.D, Value primitive.D}
 [__2] (FieldObject FieldType) Key "$pull" string
 [___3] (BasicObject BasicType) "$pull" string
@@ -52,6 +69,9 @@
 [______6] (BasicObject BasicType) "LastProductID" string
 [_____5] (FieldObject FieldType) Value string
 [______6] (BasicObject BasicType) ProductID string
+[_______7] (Reference FieldType) ref <ProductID string> @ CartService
+[________8] (BasicObject BasicType) * string
+[_________9] (InterfaceObject InterfaceType) * interface{}
 
 [0] (BasicObject BasicType) updated int
 
