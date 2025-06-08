@@ -1,0 +1,148 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #6, Block #7]
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #6, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #7, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #9, Block #10]
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] query primitive.D ---> depends on: {struct{ int64,  "postid" string,  int64}}
+	 [10] result NoSQLCursor {database = post, collection = post} ---> depends on: {post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}}
+	 [11] err .error ---> depends on: {}
+
+[BLOCK, #9, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] query primitive.D ---> depends on: {struct{ int64,  "postid" string,  int64}}
+	 [10] result NoSQLCursor {database = post, collection = post} ---> depends on: {post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}}
+	 [11] err .error ---> depends on: {}
+
+[BLOCK, #10, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #12, Block #13]
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] query primitive.D ---> depends on: {struct{ int64,  "postid" string,  int64}}
+	 [10] result NoSQLCursor {database = post, collection = post} ---> depends on: {post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}}
+	 [11] err .error ---> depends on: {}
+	 [12] res bool ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #12, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] query primitive.D ---> depends on: {struct{ int64,  "postid" string,  int64}}
+	 [10] result NoSQLCursor {database = post, collection = post} ---> depends on: {post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}}
+	 [11] err .error ---> depends on: {}
+	 [12] res bool ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #13, IfDone] NODES = []; SUCCS = [Block #5]
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] query primitive.D ---> depends on: {struct{ int64,  "postid" string,  int64}}
+	 [10] result NoSQLCursor {database = post, collection = post} ---> depends on: {post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}}
+	 [11] err .error ---> depends on: {}
+	 [12] res bool ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+	 [8] ctx context.Context ---> depends on: {}
+	 [9] reqID int64 ---> depends on: {}
+	 [10] postID int64 ---> depends on: {}
+	 [11] post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64} ---> depends on: {}
+	 [12] exists bool ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+	 [14] collection NoSQLCollection {database = post, collection = post} ---> depends on: {}
+	 [15] err .error ---> depends on: {}
+	 [16] query primitive.D ---> depends on: {struct{ int64,  "postid" string,  int64}}
+	 [17] result NoSQLCursor {database = post, collection = post} ---> depends on: {post socialnetwork.Post struct{PostID int64, Creator socialnetwork.Creator struct{UserID int64, Username string}, ReqID int64, Text string, UserMentions []socialnetwork.UserMention struct{UserID int64, Username string}, Medias []socialnetwork.Media struct{MediaID int64, MediaType string}, Urls []socialnetwork.URL struct{ShortenedUrl string, ExpandedUrl string}, Timestamp int64, PostType int64}}
+	 [18] err .error ---> depends on: {}
+	 [19] res bool ---> depends on: {}
+	 [20] err .error ---> depends on: {}
+

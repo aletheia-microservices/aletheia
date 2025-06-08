@@ -1,0 +1,232 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #6, Block #7]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #6, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #7, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #9, Block #10]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #9, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #10, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #12, Block #13]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+
+[BLOCK, #12, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+
+[BLOCK, #13, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #15, Block #16]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+
+[BLOCK, #15, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+
+[BLOCK, #16, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #18, Block #19]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+	 [15] user_id int64 ---> depends on: {UserID int64, int64}
+	 [16] err .error ---> depends on: {}
+
+[BLOCK, #18, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+	 [15] user_id int64 ---> depends on: {UserID int64, int64}
+	 [16] err .error ---> depends on: {}
+
+[BLOCK, #19, IfDone] NODES = []; SUCCS = [Block #5]
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [8] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [11] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [12] err .error ---> depends on: {}
+	 [13] result bool ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+	 [15] user_id int64 ---> depends on: {UserID int64, int64}
+	 [16] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] username string ---> depends on: {}
+	 [4] user_id int64 ---> depends on: {int64}
+	 [5] exists bool ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] u (*socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}) ---> depends on: {socialnetwork.UserIDServiceImpl struct{userCache Cache, userDB NoSQLDatabase}}
+	 [8] ctx context.Context ---> depends on: {}
+	 [9] reqID int64 ---> depends on: {}
+	 [10] username string ---> depends on: {}
+	 [11] user_id int64 ---> depends on: {int64}
+	 [12] exists bool ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+	 [14] user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string} ---> depends on: {UserID int64}
+	 [15] collection NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+	 [17] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [18] res NoSQLCursor {database = user, collection = user} ---> depends on: {user socialnetwork.User struct{UserID int64, FirstName string, LastName string, Username string, PwdHashed string, Salt string}}
+	 [19] err .error ---> depends on: {}
+	 [20] result bool ---> depends on: {}
+	 [21] err .error ---> depends on: {}
+	 [22] user_id int64 ---> depends on: {UserID int64, int64}
+	 [23] err .error ---> depends on: {}
+

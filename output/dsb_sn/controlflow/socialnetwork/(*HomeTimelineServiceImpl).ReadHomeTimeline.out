@@ -1,0 +1,52 @@
+[BLOCK, #0, Body] NODES = [*ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] h (*socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}) ---> depends on: {socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] start int64 ---> depends on: {}
+	 [5] stop int64 ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] h (*socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}) ---> depends on: {socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] start int64 ---> depends on: {}
+	 [5] stop int64 ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] h (*socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}) ---> depends on: {socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] start int64 ---> depends on: {}
+	 [5] stop int64 ---> depends on: {}
+	 [6] userIDStr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [7] postIDs []int64 ---> depends on: {}
+	 [8] _ bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] h (*socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}) ---> depends on: {socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] start int64 ---> depends on: {}
+	 [5] stop int64 ---> depends on: {}
+	 [6] userIDStr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [7] postIDs []int64 ---> depends on: {}
+	 [8] _ bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] h (*socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}) ---> depends on: {socialnetwork.HomeTimelineServiceImpl struct{homeTimelineCache Cache, postStorageService socialnetwork.PostStorageService, socialGraphService socialnetwork.SocialGraphService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] start int64 ---> depends on: {}
+	 [5] stop int64 ---> depends on: {}
+	 [6] userIDStr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [7] postIDs []int64 ---> depends on: {}
+	 [8] _ bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+

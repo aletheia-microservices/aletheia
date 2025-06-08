@@ -1,0 +1,6 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] postStorageCache Cache ---> depends on: {}
+	 [2] postStorageDB NoSQLDatabase ---> depends on: {}
+	 [3] p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}) ---> depends on: {socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}}
+

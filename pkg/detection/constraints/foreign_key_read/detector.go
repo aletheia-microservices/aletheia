@@ -104,7 +104,7 @@ func (detector *ForeignKeyDetector) checkForeignKeyRead(app *app.App, currObj ob
 			var checkInconsistency = func(field1 *datastores.Field, field2 *datastores.Field) {
 				// now that we know that the other field references the current one (e.g., Cart.Products references Product.ProductID)
 				// we want to know if their association is mandatory (false in this app), meaning that they were written in the same request
-				// NOTE: this fine-grained approach should prevent a false positive flag in, for example, 
+				// NOTE: this fine-grained approach should prevent a false positive flag in, for example,
 				// the shopping_app where products can still be associated afterwards after the cart creation
 				// but still allow a true positive flag in the post notification
 				for _, constraint := range field1.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true), Mandatory: utils.BoolPtr(true)}) {

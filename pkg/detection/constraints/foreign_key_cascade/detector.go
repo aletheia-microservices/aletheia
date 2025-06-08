@@ -116,7 +116,7 @@ func (detector *CascadeDetector) OnDelete(app *app.App, dbCall *abstractgraph.Ab
 }
 
 func (detector *CascadeDetector) findPendingCascadingDeletes(app *app.App, deleteOp *deleteOperation, datastore *datastores.Datastore) {
-	// iterate all datastores (except caches and queues!!) that have fields referencing the current one
+	// iterate all datastores (except queues!!) that have fields referencing the current one
 	for _, dependentDatastore := range app.GetDatabasesReferencingCurrent(datastore) {
 		depServices := app.GetServicesUsingDatastore(dependentDatastore)
 		for _, constraint := range dependentDatastore.GetSchema().GetConstraintsForeignKeyToDatastore(datastore) {

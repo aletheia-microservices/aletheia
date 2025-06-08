@@ -81,7 +81,7 @@ func (app *App) GetDatabasesReferencingCurrent(curr *datastores.Datastore) []*da
 		ds := dbInstance.GetDatastore()
 
 		// discard any queue or cache
-		if ds.IsCache() || ds.IsQueue() {
+		if ds.IsQueue() {
 			continue
 		}
 		if ds != curr && ds.IsReferencingDatastore(curr) {

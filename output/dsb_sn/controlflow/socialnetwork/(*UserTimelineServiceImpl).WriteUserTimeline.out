@@ -1,0 +1,291 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.ValueSpec, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ExprStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #9]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ExprStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #10, Block #11]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+
+[BLOCK, #10, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+
+[BLOCK, #11, IfDone] NODES = []; SUCCS = [Block #8]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #19, Block #20]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+	 [14] update string ---> depends on: {`{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string, `{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string}
+	 [15] update_d primitive.D ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+	 [17] _ int ---> depends on: {}
+	 [18] err .error ---> depends on: {}
+	 [19] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [20] ctx context.Context ---> depends on: {}
+	 [21] reqID int64 ---> depends on: {}
+	 [22] postID int64 ---> depends on: {}
+	 [23] userID int64 ---> depends on: {}
+	 [24] timestamp int64 ---> depends on: {}
+	 [25] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [26] err .error ---> depends on: {}
+	 [27] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [28] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [29] err .error ---> depends on: {}
+	 [30] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [31] userPosts socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}, UserID int64}
+	 [32] err .error ---> depends on: {}
+	 [33] postInfo []socialnetwork.PostInfo struct{PostID int64, Timestamp int64} ---> depends on: {socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}
+	 [34] userIDStr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [35] _ bool ---> depends on: {}
+	 [36] err .error ---> depends on: {}
+
+[BLOCK, #19, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] userPosts socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}, UserID int64}
+	 [13] err .error ---> depends on: {}
+	 [14] postInfo []socialnetwork.PostInfo struct{PostID int64, Timestamp int64} ---> depends on: {socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}
+	 [15] userIDStr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [16] _ bool ---> depends on: {}
+	 [17] err .error ---> depends on: {}
+
+[BLOCK, #20, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] userPosts socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}, UserID int64}
+	 [13] err .error ---> depends on: {}
+	 [14] postInfo []socialnetwork.PostInfo struct{PostID int64, Timestamp int64} ---> depends on: {socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}
+	 [15] userIDStr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [16] _ bool ---> depends on: {}
+	 [17] err .error ---> depends on: {}
+	 [18] postInfo []socialnetwork.PostInfo struct{PostID int64, Timestamp int64} ---> depends on: {socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}
+
+[BLOCK, #9, IfElse] NODES = [*ast.ExprStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #13, Block #14]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+	 [14] update string ---> depends on: {`{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string, `{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string}
+	 [15] update_d primitive.D ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+
+[BLOCK, #13, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+	 [14] update string ---> depends on: {`{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string, `{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string}
+	 [15] update_d primitive.D ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+
+[BLOCK, #14, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #16, Block #17]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+	 [14] update string ---> depends on: {`{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string, `{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string}
+	 [15] update_d primitive.D ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+	 [17] _ int ---> depends on: {}
+	 [18] err .error ---> depends on: {}
+
+[BLOCK, #16, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+	 [14] update string ---> depends on: {`{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string, `{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string}
+	 [15] update_d primitive.D ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+	 [17] _ int ---> depends on: {}
+	 [18] err .error ---> depends on: {}
+
+[BLOCK, #17, IfDone] NODES = []; SUCCS = [Block #8]
+	 [0] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] postID int64 ---> depends on: {}
+	 [4] userID int64 ---> depends on: {}
+	 [5] timestamp int64 ---> depends on: {}
+	 [6] collection NoSQLCollection {database = usertimeline, collection = usertimeline} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] query primitive.D ---> depends on: {struct{ int64,  "userid" string,  int64}}
+	 [9] results NoSQLCursor {database = usertimeline, collection = usertimeline} ---> depends on: {userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}}}
+	 [10] err .error ---> depends on: {}
+	 [11] userPosts []socialnetwork.UserPosts struct{UserID int64, Posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}} ---> depends on: {}
+	 [12] postIDstr string ---> depends on: {postID int64, 10 int, postID int64, 10 int}
+	 [13] timestampstr string ---> depends on: {timestamp int64, 10 int, timestamp int64, 10 int}
+	 [14] update string ---> depends on: {`{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string, `{"$push": {"Posts": {"$each": [{"PostID": %s, "Timestamp": %s}], "$position": 0}}}` string, postIDstr string, timestampstr string}
+	 [15] update_d primitive.D ---> depends on: {}
+	 [16] err .error ---> depends on: {}
+	 [17] _ int ---> depends on: {}
+	 [18] err .error ---> depends on: {}
+

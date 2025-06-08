@@ -91,24 +91,41 @@ go run main.go --app sockshop2 --auto --fk_read
 Run the code analyzer:
 
 ```zsh
-## Foreign Key Read
-go run main.go --auto --fk_read --app shopping_simple           #(1) --> EXPECTED (0)
-go run main.go --auto --fk_read --app postnotification_simple   #(1)
-go run main.go --auto --fk_read --app postnotification          #NOT WORKING (cannot find unfolded field POSTS_CACHE.PostID for schema needed for "checkForeignKeyRead()" when reassigning "otherField") --> EXPECTED (1)
+## Foreign Key Coordination
+go run main.go --auto --fk_read --app digota
+go run main.go --auto --fk_read --app shopping_simple
+go run main.go --auto --fk_read --app shopping_app
+go run main.go --auto --fk_read --app postnotification_simple
+go run main.go --auto --fk_read --app postnotification
+go run main.go --auto --fk_read --app dsb_media
+go run main.go --auto --fk_read --app dsb_media_sql
+go run main.go --auto --fk_read --app trainticket
+go run main.go --auto --fk_read --app dsb_sn
 
 ## Foreign Key Concurrency
-go run main.go --auto --fk_concurrency --app postnotification_simple    #(0,0)
-go run main.go --auto --fk_concurrency --app postnotification           #(0,0)
-go run main.go --auto --fk_concurrency --app shopping_simple            #(1,4)
+go run main.go --auto --fk_concurrency --app digota
+go run main.go --auto --fk_concurrency --app postnotification_simple
+go run main.go --auto --fk_concurrency --app postnotification
+go run main.go --auto --fk_concurrency --app shopping_simple
+go run main.go --auto --fk_concurrency --app shopping_app
+go run main.go --auto --fk_concurrency --app dsb_media
+go run main.go --auto --fk_concurrency --app dsb_media_sql
 
 ## Foreign Key Cascade
-go run main.go --auto --fk_cascade --app postnotification_simple    #(1,0)
-go run main.go --auto --fk_cascade --app shopping_simple            #(1,3)
-go run main.go --auto --fk_cascade --app shopping_app               #(0,0)
+go run main.go --auto --fk_cascade --app digota
+go run main.go --auto --fk_cascade --app postnotification_simple
+go run main.go --auto --fk_cascade --app postnotification
+go run main.go --auto --fk_cascade --app shopping_simple
+go run main.go --auto --fk_cascade --app shopping_app
+go run main.go --auto --fk_cascade --app dsb_media
+go run main.go --auto --fk_cascade --app dsb_media_sql
 
 ## Unicity Constraints
-go run main.go --auto --unicity --app dsb_media         #(1,2)
-go run main.go --auto --unicity --app dsb_media_sql     #(1,2)
+go run main.go --auto --unicity --app digota
+go run main.go --auto --unicity --app postnotification_simple
+go run main.go --auto --unicity --app postnotification
+go run main.go --auto --unicity --app dsb_media
+go run main.go --auto --unicity --app dsb_media_sql
 ```
 
 Run the graph builder:

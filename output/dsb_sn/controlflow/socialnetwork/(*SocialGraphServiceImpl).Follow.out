@@ -1,0 +1,175 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ValueSpec, *ast.ValueSpec, *ast.ExprStmt, *ast.GoStmt, *ast.GoStmt, *ast.GoStmt, *ast.ExprStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] followeeID int64 ---> depends on: {}
+	 [5] now int64 ---> depends on: {}
+	 [6] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [7] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [8] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [9] err1 error ---> depends on: {}
+	 [10] err2 error ---> depends on: {}
+	 [11] err3 error ---> depends on: {}
+	 [12] wg sync.WaitGroup ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] followeeID int64 ---> depends on: {}
+	 [5] now int64 ---> depends on: {}
+	 [6] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [7] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [8] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [9] err1 error ---> depends on: {}
+	 [10] err2 error ---> depends on: {}
+	 [11] err3 error ---> depends on: {}
+	 [12] wg sync.WaitGroup ---> depends on: {}
+	 [13] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [14] ctx context.Context ---> depends on: {}
+	 [15] reqID int64 ---> depends on: {}
+	 [16] userID int64 ---> depends on: {}
+	 [17] followeeID int64 ---> depends on: {}
+	 [18] now int64 ---> depends on: {}
+	 [19] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [20] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [21] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [22] err1 error ---> depends on: {}
+	 [23] err2 error ---> depends on: {}
+	 [24] err3 error ---> depends on: {}
+	 [25] wg sync.WaitGroup ---> depends on: {}
+	 [26] followees []socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64} ---> depends on: {socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64}}
+	 [27] followers []socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64} ---> depends on: {socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64}}
+	 [28] followees []socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64} ---> depends on: {socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64}}
+	 [29] followers []socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64} ---> depends on: {socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64}}
+	 [30] err3 .error ---> depends on: {}
+	 [31] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [32] ctx context.Context ---> depends on: {}
+	 [33] reqID int64 ---> depends on: {}
+	 [34] userID int64 ---> depends on: {}
+	 [35] followeeID int64 ---> depends on: {}
+	 [36] now int64 ---> depends on: {}
+	 [37] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [38] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [39] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [40] err1 error ---> depends on: {}
+	 [41] err2 error ---> depends on: {}
+	 [42] err3 error ---> depends on: {}
+	 [43] wg sync.WaitGroup ---> depends on: {}
+	 [44] collection NoSQLCollection {database = social-graph, collection = social-graph} ---> depends on: {}
+	 [45] err_internal .error ---> depends on: {}
+	 [46] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [47] ctx context.Context ---> depends on: {}
+	 [48] reqID int64 ---> depends on: {}
+	 [49] userID int64 ---> depends on: {}
+	 [50] followeeID int64 ---> depends on: {}
+	 [51] now int64 ---> depends on: {}
+	 [52] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [53] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [54] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [55] err1 error ---> depends on: {}
+	 [56] err2 error ---> depends on: {}
+	 [57] err3 error ---> depends on: {}
+	 [58] wg sync.WaitGroup ---> depends on: {}
+	 [59] collection NoSQLCollection {database = social-graph, collection = social-graph} ---> depends on: {}
+	 [60] err_internal .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] followeeID int64 ---> depends on: {}
+	 [5] now int64 ---> depends on: {}
+	 [6] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [7] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [8] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [9] err1 error ---> depends on: {}
+	 [10] err2 error ---> depends on: {}
+	 [11] err3 error ---> depends on: {}
+	 [12] wg sync.WaitGroup ---> depends on: {}
+	 [13] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [14] ctx context.Context ---> depends on: {}
+	 [15] reqID int64 ---> depends on: {}
+	 [16] userID int64 ---> depends on: {}
+	 [17] followeeID int64 ---> depends on: {}
+	 [18] now int64 ---> depends on: {}
+	 [19] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [20] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [21] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [22] err1 error ---> depends on: {}
+	 [23] err2 error ---> depends on: {}
+	 [24] err3 error ---> depends on: {}
+	 [25] wg sync.WaitGroup ---> depends on: {}
+	 [26] followees []socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64} ---> depends on: {socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64}}
+	 [27] followers []socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64} ---> depends on: {socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64}}
+	 [28] followees []socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64} ---> depends on: {socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64}}
+	 [29] followers []socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64} ---> depends on: {socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64}}
+	 [30] err3 .error ---> depends on: {}
+	 [31] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [32] ctx context.Context ---> depends on: {}
+	 [33] reqID int64 ---> depends on: {}
+	 [34] userID int64 ---> depends on: {}
+	 [35] followeeID int64 ---> depends on: {}
+	 [36] now int64 ---> depends on: {}
+	 [37] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [38] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [39] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [40] err1 error ---> depends on: {}
+	 [41] err2 error ---> depends on: {}
+	 [42] err3 error ---> depends on: {}
+	 [43] wg sync.WaitGroup ---> depends on: {}
+	 [44] collection NoSQLCollection {database = social-graph, collection = social-graph} ---> depends on: {}
+	 [45] err_internal .error ---> depends on: {}
+	 [46] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [47] ctx context.Context ---> depends on: {}
+	 [48] reqID int64 ---> depends on: {}
+	 [49] userID int64 ---> depends on: {}
+	 [50] followeeID int64 ---> depends on: {}
+	 [51] now int64 ---> depends on: {}
+	 [52] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [53] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [54] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [55] err1 error ---> depends on: {}
+	 [56] err2 error ---> depends on: {}
+	 [57] err3 error ---> depends on: {}
+	 [58] wg sync.WaitGroup ---> depends on: {}
+	 [59] collection NoSQLCollection {database = social-graph, collection = social-graph} ---> depends on: {}
+	 [60] err_internal .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] followeeID int64 ---> depends on: {}
+	 [5] now int64 ---> depends on: {}
+	 [6] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [7] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [8] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [9] err1 error ---> depends on: {}
+	 [10] err2 error ---> depends on: {}
+	 [11] err3 error ---> depends on: {}
+	 [12] wg sync.WaitGroup ---> depends on: {}
+	 [13] followees []socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64} ---> depends on: {socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64}}
+	 [14] followers []socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64} ---> depends on: {socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64}}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}) ---> depends on: {socialnetwork.SocialGraphServiceImpl struct{socialGraphCache Cache, socialGraphDB NoSQLDatabase, userIDService socialnetwork.UserIDService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] userID int64 ---> depends on: {}
+	 [4] followeeID int64 ---> depends on: {}
+	 [5] now int64 ---> depends on: {}
+	 [6] timestamp string ---> depends on: {now int64, 10 int, now int64, 10 int}
+	 [7] userIDstr string ---> depends on: {userID int64, 10 int, userID int64, 10 int}
+	 [8] followeeIDstr string ---> depends on: {followeeID int64, 10 int, followeeID int64, 10 int}
+	 [9] err1 error ---> depends on: {}
+	 [10] err2 error ---> depends on: {}
+	 [11] err3 error ---> depends on: {}
+	 [12] wg sync.WaitGroup ---> depends on: {}
+	 [13] followees []socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64} ---> depends on: {socialnetwork.FolloweeInfo struct{FolloweeID int64, Timestamp int64}}
+	 [14] followers []socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64} ---> depends on: {socialnetwork.FollowerInfo struct{FollowerID int64, Timestamp int64}}
+

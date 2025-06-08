@@ -1,0 +1,78 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] mediaTypes []string ---> depends on: {}
+	 [4] mediaIds []int64 ---> depends on: {}
+	 [5] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] mediaTypes []string ---> depends on: {}
+	 [4] mediaIds []int64 ---> depends on: {}
+	 [5] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+
+[BLOCK, #2, IfDone] NODES = [*ast.Ident, *ast.Ident, *ast.Ident]; SUCCS = [Block #4]
+	 [0] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] mediaTypes []string ---> depends on: {}
+	 [4] mediaIds []int64 ---> depends on: {}
+	 [5] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [6] idx int64 ---> depends on: {mediaIds []int64}
+	 [7] mediaId 0 int ---> depends on: {}
+
+[BLOCK, #4, RangeLoop] NODES = []; SUCCS = [Block #5, Block #6]
+	 [0] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] mediaTypes []string ---> depends on: {}
+	 [4] mediaIds []int64 ---> depends on: {}
+	 [5] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [6] idx int64 ---> depends on: {mediaIds []int64}
+	 [7] mediaId 0 int ---> depends on: {}
+	 [8] media socialnetwork.Media struct{MediaID 0 int, MediaType string} ---> depends on: {MediaID 0 int, MediaType string}
+	 [9] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [10] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [11] ctx context.Context ---> depends on: {}
+	 [12] reqID int64 ---> depends on: {}
+	 [13] mediaTypes []string ---> depends on: {}
+	 [14] mediaIds []int64 ---> depends on: {}
+	 [15] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [16] idx int64 ---> depends on: {mediaIds []int64}
+	 [17] mediaId 0 int ---> depends on: {}
+
+[BLOCK, #5, RangeBody] NODES = [*ast.AssignStmt, *ast.AssignStmt]; SUCCS = [Block #4]
+	 [0] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] mediaTypes []string ---> depends on: {}
+	 [4] mediaIds []int64 ---> depends on: {}
+	 [5] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [6] idx int64 ---> depends on: {mediaIds []int64}
+	 [7] mediaId 0 int ---> depends on: {}
+	 [8] media socialnetwork.Media struct{MediaID 0 int, MediaType string} ---> depends on: {MediaID 0 int, MediaType string}
+	 [9] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+
+[BLOCK, #6, RangeDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] reqID int64 ---> depends on: {}
+	 [3] mediaTypes []string ---> depends on: {}
+	 [4] mediaIds []int64 ---> depends on: {}
+	 [5] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [6] idx int64 ---> depends on: {mediaIds []int64}
+	 [7] mediaId 0 int ---> depends on: {}
+	 [8] media socialnetwork.Media struct{MediaID 0 int, MediaType string} ---> depends on: {MediaID 0 int, MediaType string}
+	 [9] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [10] m (*socialnetwork.MediaServiceImpl struct{}) ---> depends on: {socialnetwork.MediaServiceImpl struct{}}
+	 [11] ctx context.Context ---> depends on: {}
+	 [12] reqID int64 ---> depends on: {}
+	 [13] mediaTypes []string ---> depends on: {}
+	 [14] mediaIds []int64 ---> depends on: {}
+	 [15] medias []socialnetwork.Media struct{MediaID int64, MediaType string} ---> depends on: {media socialnetwork.Media struct{MediaID 0 int, MediaType string}}
+	 [16] idx int64 ---> depends on: {mediaIds []int64}
+	 [17] mediaId 0 int ---> depends on: {}
+
