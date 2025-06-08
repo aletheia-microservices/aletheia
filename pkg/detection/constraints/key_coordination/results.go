@@ -1,4 +1,4 @@
-package foreign_key_coordination
+package key_coordination
 
 import (
 	"fmt"
@@ -6,13 +6,17 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func (detector *ForeignKeyDetector) GetResults() string {
+func (detector *KeyCoordinationDetector) GetResults() string {
 	return detector.results
 }
 
-func (detector *ForeignKeyDetector) ComputeResults() {
+func (detector *KeyCoordinationDetector) ComputeResults() {
 	header := "---------------------------------------------------------------------\n"
-	header += "--------------------- FOREIGN KEY READ ANALYSIS ---------------------\n"
+	if detector.keyTypeIsPrimaryKey() {
+		header += "------------------ PRIMARY KEY COORDINATION ANALYSIS ----------------\n"
+	} else {		
+		header += "------------------ FOREIGN KEY COORDINATION ANALYSIS ----------------\n"
+	}
 	header += "---------------------------------------------------------------------\n"
 
 	for i, read := range detector.reads {

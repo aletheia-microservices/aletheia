@@ -5,7 +5,19 @@
       "type": "client"
     },
     {
+      "id": "Client",
+      "type": "client"
+    },
+    {
       "id": "APIService",
+      "type": "service"
+    },
+    {
+      "id": "APIService",
+      "type": "service"
+    },
+    {
+      "id": "MovieIdService",
       "type": "service"
     },
     {
@@ -17,7 +29,19 @@
       "type": "service"
     },
     {
+      "id": "MovieInfoService",
+      "type": "service"
+    },
+    {
       "id": "movieid_db MySQL",
+      "type": "datastore"
+    },
+    {
+      "id": "movieid_db MySQL",
+      "type": "datastore"
+    },
+    {
+      "id": "movieinfo_db MySQL",
       "type": "datastore"
     },
     {
@@ -29,7 +53,19 @@
     {
       "caller": "APIService",
       "callee": "MovieIdService",
+      "call": "ReadMovieId",
+      "depth": 1
+    },
+    {
+      "caller": "APIService",
+      "callee": "MovieIdService",
       "call": "RegisterMovieId",
+      "depth": 1
+    },
+    {
+      "caller": "APIService",
+      "callee": "MovieInfoService",
+      "call": "ReadMovieInfo",
       "depth": 1
     },
     {
@@ -37,6 +73,12 @@
       "callee": "MovieInfoService",
       "call": "WriteMovieInfo",
       "depth": 1
+    },
+    {
+      "caller": "Client",
+      "callee": "APIService",
+      "call": "ReadMovie",
+      "depth": 0
     },
     {
       "caller": "Client",
@@ -51,9 +93,21 @@
       "depth": 2
     },
     {
+      "caller": "MovieIdService",
+      "callee": "movieid_db MySQL",
+      "call": "Select",
+      "depth": 2
+    },
+    {
       "caller": "MovieInfoService",
       "callee": "movieinfo_db MySQL",
       "call": "Exec",
+      "depth": 2
+    },
+    {
+      "caller": "MovieInfoService",
+      "callee": "movieinfo_db MySQL",
+      "call": "Select",
       "depth": 2
     }
   ]

@@ -236,6 +236,7 @@ func TaintDataflowReadSQL(app *app.App, obj objects.Object, fieldName string, ca
 		fieldType = "SQL Table"
 	}
 	field := datastore.Schema.GetOrCreateField(fieldName, fieldType, -1, datastore)
+	logger.Logger.Warnf("HERE! GOT FIELD %s", field.GetFullName())
 	taintDataflowReadCacheSQLHelper(app, obj, call, datastore, field, requestIdx)
 }
 
@@ -255,10 +256,10 @@ func taintDataflowReadCacheSQLHelper(app *app.App, obj objects.Object, call *Abs
 	logger.Logger.Infof("[%s - TENTATIVE TAINT READ VAR] [%s] NUM DEPS = %d @ %s", datastore.GetTypeString(), utils.GetType(obj), len(deps), obj.LongString())
 	for _, dep := range deps {
 		if !slices.Contains(taintedVariables, dep) {
-			typeName := dep.GetType().GetName()
+			// typeName := dep.GetType().GetName()
+			// entry := datastores.NewField(typeName, typeName, 0, datastore)
 
-			entry := datastores.NewField(typeName, typeName, 0, datastore)
-			df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, entry, false, requestIdx)
+			df := obj.GetVariableInfo().SetIndirectDataflow(datastore.Name, call.Service, dep, obj, field, false, requestIdx)
 			app.AddDataflow(df, call.ParsedCall)
 
 			logger.Logger.Debugf("\t\t[%s - TAINT READ INDIRECT] <unnamed> ---> (%02d) %s [%s]", datastore.GetTypeString(), dep.GetId(), dep.String(), utils.GetType(dep))

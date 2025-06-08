@@ -12,8 +12,8 @@ CART_DB:
     - cart.Items: '[]cart.Item struct{ID string, Quantity int, UnitPrice float32}'
     - cart.Items[*]: cart.Item struct{ID string, Quantity int, UnitPrice float32}
   - constraints:
-    - REFERENCE(CART_DB.cart.Items --> CATALOGUE_DB.Sock.ID.id) [+]
-    - REFERENCE(CART_DB.cart --> CATALOGUE_DB.Sock.ID.id) [+]
+    - REFERENCE(CART_DB.cart.Items --> CATALOGUE_DB.Sock.ID.id)
+    - REFERENCE(CART_DB.cart --> CATALOGUE_DB.Sock.ID.id)
 
 CATALOGUE_DB:
 - type: NoSQLDatabase
@@ -139,10 +139,10 @@ SHIPDB:
     - Shipment.Name: string
     - Shipment.Status: string
   - constraints:
-    - REFERENCE(SHIPDB.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(SHIPDB.Shipment.Status --> SHIPQUEUE.Shipment.Status) [+]
     - REFERENCE(SHIPDB.Shipment.Name --> SHIPQUEUE.Shipment.Name) [+]
     - REFERENCE(SHIPDB.Shipment.Name --> USER_DB._.userid)
+    - REFERENCE(SHIPDB.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment) [+]
     - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.Name) [+]

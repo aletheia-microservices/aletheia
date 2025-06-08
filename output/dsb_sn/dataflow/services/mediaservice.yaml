@@ -16,15 +16,7 @@
   - 0 depth 0 (ArrayObject ArrayType) medias []socialnetwork.Media struct{MediaID int64, MediaType string}
 
 .GetMachineID():
-  block 16 (IfDone):
-  - 0 depth 0 (SliceObject SliceType) interfaces []net.Interface struct{Index int, MTU int, Name string, HardwareAddr net.HardwareAddr []byte, Flags net.Flags uint}
-  - 0 depth 0 (InterfaceObject UserType) err .error
-  - 0 depth 0 (StructObject UserType) i net.Interface struct{Index int, MTU int, Name string, HardwareAddr net.HardwareAddr []byte, Flags net.Flags uint}
-  - _2 depth 1 (FieldObject FieldType) HardwareAddr net.HardwareAddr []byte
-  - __3 depth 2 (SliceObject UserType) HardwareAddr net.HardwareAddr []byte
-  - 0 depth 0 (BasicObject BasicType) mac 0 uint64
-  - 0 depth 0 (BasicObject BasicType) j byte
-  - 0 depth 0 (BasicObject BasicType) b 0 int
+  block 0 (Body): []
 
 .NewComposePostServiceImpl(ctx context.Context, postStorageService socialnetwork.PostStorageService, userTimelineService socialnetwork.UserTimelineService, userService socialnetwork.UserService, uniqueIDService socialnetwork.UniqueIdService, mediaService socialnetwork.MediaService, textService socialnetwork.TextService, homeTimelineService socialnetwork.HomeTimelineService)
 :
@@ -139,19 +131,10 @@
   - 0 depth 0 (ServiceObject ServiceType) socialGraphService socialnetwork.SocialGraphService
 
 .handleFormats(jsonQuery string):
-  block 8 (IfDone):
+  block 0 (Body):
   - 0 depth 0 (BasicObject BasicType) jsonQuery string
   - 0 depth 0 (SliceObject UserType) bdoc primitive.D
   - 0 depth 0 (BasicObject BasicType) err error
-  - 0 depth 0 (InterfaceObject InterfaceType) f interface{}
-  - 0 depth 0 (InterfaceObject UserType) err .error
-  - _1 depth 1 (BasicObject BasicType) byte
-  - _3 depth 1 (PointerObject PointerType) f (*interface{})
-  - 0 depth 0 (SliceObject SliceType) lowerQuery []byte
-  - 0 depth 0 (InterfaceObject UserType) err .error
-  - 0 depth 0 (InterfaceObject UserType) err .error
-  - _4 depth 1 (BasicObject BasicType) true bool
-  - _5 depth 1 (PointerObject PointerType) bdoc (*primitive.D)
 
 .parseNoSQLDBQuery(query string):
   block 0 (Body):

@@ -13,9 +13,9 @@
 [0] (BasicObject BasicType) reqID int64
 [_1] (Reference BasicType) ref <reqID int64> @ Wrk2APIService
 
-    --> r-tainted: read(hometimeline_cache.int64) {1}
+    --> r-tainted: read(hometimeline_cache.key) {1}
 [0] (BasicObject BasicType) userID int64
-     --> r-tainted: read(hometimeline_cache.int64) {1}
+     --> r-tainted: read(hometimeline_cache.key) {1}
 [_1] (Reference BasicType) ref <userId int64> @ Wrk2APIService
 
 [0] (BasicObject BasicType) start int64
@@ -24,22 +24,22 @@
 [0] (BasicObject BasicType) stop int64
 [_1] (Reference BasicType) ref <stop int64> @ Wrk2APIService
 
-    --> r-tainted: read(hometimeline_cache.key, hometimeline_cache.string, hometimeline_cache.int64, hometimeline_cache.int) {4}
+    --> r-tainted: read(hometimeline_cache.key) {1}
 [0] (BasicObject BasicType) userIDStr string
-     --> r-tainted: read(hometimeline_cache.int64) {1}
+     --> r-tainted: read(hometimeline_cache.key) {1}
 [_1] (BasicObject BasicType) userID int64
-      --> r-tainted: read(hometimeline_cache.int64) {1}
+      --> r-tainted: read(hometimeline_cache.key) {1}
 [__2] (Reference BasicType) ref <userId int64> @ Wrk2APIService
-     --> r-tainted: read(hometimeline_cache.int) {1}
+     --> r-tainted: read(hometimeline_cache.key) {1}
 [_1] (BasicObject BasicType) 10 int
-     --> r-tainted: read(hometimeline_cache.int64) {1}
+     --> r-tainted: read(hometimeline_cache.key) {1}
 [_1] (BasicObject BasicType) userID int64
-      --> r-tainted: read(hometimeline_cache.int64) {1}
+      --> r-tainted: read(hometimeline_cache.key) {1}
 [__2] (Reference BasicType) ref <userId int64> @ Wrk2APIService
-     --> r-tainted: read(hometimeline_cache.int) {1}
+     --> r-tainted: read(hometimeline_cache.key) {1}
 [_1] (BasicObject BasicType) 10 int
 
-    --> r-tainted: read(hometimeline_cache.[]int64) {1}
+    --> r-tainted: read(hometimeline_cache.value) {1}
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (BasicObject BasicType) _ bool

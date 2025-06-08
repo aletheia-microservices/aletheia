@@ -1,3 +1,6 @@
+(*MovieInfoServiceImpl).ReadMovieInfo(ctx context.Context, reqID int64, movieID string):
+- DATASTORE CALL @ movieinfo_db >> RelationalDB.Select(ctx context.Context, dst interface{}, query string, dst []interface{}) interface{}
+
 (*MovieInfoServiceImpl).WriteMovieInfo(ctx context.Context, reqID int64, movieID string, title string, casts string):
 - DATASTORE CALL @ movieinfo_db >> RelationalDB.Exec(ctx context.Context, query string, dst []interface{}) interface{}
 

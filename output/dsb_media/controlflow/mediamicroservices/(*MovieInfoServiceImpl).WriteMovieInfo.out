@@ -1,5 +1,5 @@
 [BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
-	 [0] m (*mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}) ---> depends on: {mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}}
+	 [0] m (*mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}) ---> depends on: {mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] movieID string ---> depends on: {}
@@ -9,7 +9,7 @@
 	 [7] err .error ---> depends on: {}
 
 [BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
-	 [0] m (*mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}) ---> depends on: {mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}}
+	 [0] m (*mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}) ---> depends on: {mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] movieID string ---> depends on: {}
@@ -19,7 +19,7 @@
 	 [7] err .error ---> depends on: {}
 
 [BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
-	 [0] m (*mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}) ---> depends on: {mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}}
+	 [0] m (*mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}) ---> depends on: {mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] movieID string ---> depends on: {}

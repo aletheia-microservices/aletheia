@@ -12,7 +12,7 @@ import (
 	"analyzer/pkg/datastores/constraints"
 	"analyzer/pkg/detection/constraints/foreign_key_cascade"
 	"analyzer/pkg/detection/constraints/foreign_key_concurrency"
-	"analyzer/pkg/detection/constraints/foreign_key_coordination"
+	"analyzer/pkg/detection/constraints/key_coordination"
 	"analyzer/pkg/detection/constraints/numerical"
 	"analyzer/pkg/detection/constraints/specialization"
 	"analyzer/pkg/detection/constraints/unicity"
@@ -31,18 +31,19 @@ const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;75m"
 const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 
 type analysisConfig struct {
-	allFlag                        string
-	appName                        string
-	autofill                       bool
-	detectOnly                     bool
-	xcyDetection                   bool
-	foreignKeyReadDetection        bool
-	foreignKeyConcurrencyDetection bool
-	foreignKeyCascadeDetection     bool
-	compactSchema                  bool
-	unicityDetection               bool
-	numericalDetection             bool
-	specializationDetection        bool
+	allFlag                         string
+	appName                         string
+	autofill                        bool
+	detectOnly                      bool
+	xcyDetection                    bool
+	primaryKeyCoordinationDetection  bool
+	foreignKeyCoordinationDetection bool
+	foreignKeyConcurrencyDetection  bool
+	foreignKeyCascadeDetection      bool
+	compactSchema                   bool
+	unicityDetection                bool
+	numericalDetection              bool
+	specializationDetection         bool
 }
 
 func main() {
@@ -51,7 +52,8 @@ func main() {
 	autofill := flag.Bool("auto", false, "Autofills additional user input information")
 	detectOnly := flag.Bool("detect_only", false, "Only perform detection (assume parsing is already done)")
 	xcyDetection := flag.Bool("xcy", false, "Enable detection of xcy dependencies and inconsistencies")
-	foreignKeyReadDetection := flag.Bool("fk_coordination", false, "Enable detection of anomalies for uncoordinated reads in foreign key constraints")
+	primaryKeyCoordinationDetection := flag.Bool("pk_coordination", false, "Enable detection of anomalies for uncoordinated reads in primary key constraints")
+	foreignKeyCoordinationDetection := flag.Bool("fk_coordination", false, "Enable detection of anomalies for uncoordinated reads in foreign key constraints")
 	foreignKeyConcurrencyDetection := flag.Bool("fk_concurrency", false, "Enable detection of concurrency anomalies in foreign key constraints")
 	foreignKeyCascadeDetection := flag.Bool("fk_cascade", false, "Enable detection of the absence of cascading delete logic")
 	compactSchema := flag.Bool("compact_schema", false, "Enable schema compaction (only available when `fk_coordination` is also enabled)")
@@ -61,18 +63,19 @@ func main() {
 
 	flag.Parse()
 	analysis := analysisConfig{
-		allFlag:                        *allFlag,
-		appName:                        *appName,
-		autofill:                       *autofill,
-		detectOnly:                     *detectOnly,
-		xcyDetection:                   *xcyDetection,
-		foreignKeyReadDetection:        *foreignKeyReadDetection,
-		foreignKeyConcurrencyDetection: *foreignKeyConcurrencyDetection,
-		foreignKeyCascadeDetection:     *foreignKeyCascadeDetection,
-		compactSchema:                  *compactSchema,
-		unicityDetection:               *unicityDetection,
-		numericalDetection:             *numericalDetection,
-		specializationDetection:        *specializationDetection,
+		allFlag:                         *allFlag,
+		appName:                         *appName,
+		autofill:                        *autofill,
+		detectOnly:                      *detectOnly,
+		xcyDetection:                    *xcyDetection,
+		primaryKeyCoordinationDetection: *primaryKeyCoordinationDetection,
+		foreignKeyCoordinationDetection: *foreignKeyCoordinationDetection,
+		foreignKeyConcurrencyDetection:  *foreignKeyConcurrencyDetection,
+		foreignKeyCascadeDetection:      *foreignKeyCascadeDetection,
+		compactSchema:                   *compactSchema,
+		unicityDetection:                *unicityDetection,
+		numericalDetection:              *numericalDetection,
+		specializationDetection:         *specializationDetection,
 	}
 
 	if analysis.allFlag == "true" || analysis.allFlag == "True" || analysis.allFlag == "1" {
@@ -161,16 +164,25 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 
 	app.ResetAllDataflows()
 
-	if analysis.foreignKeyReadDetection {
-		foreignKeyReadDetector := foreign_key_coordination.NewDetector()
-		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyReadDetector)
+	if analysis.primaryKeyCoordinationDetection {
+		keyCoordinationDetector := key_coordination.NewDetector("primary_key")
+		iterator := iterator.NewIterator(app, abstractGraph, keyCoordinationDetector)
 		iterator.Run()
 
-		results += detection.SaveResults(app, foreignKeyReadDetector)
-		summary += foreignKeyReadDetector.GetSummary()
+		results += detection.SaveResults(app, keyCoordinationDetector)
+		summary += keyCoordinationDetector.GetSummary()
+	}
+
+	if analysis.foreignKeyCoordinationDetection {
+		keyCoordinationDetector := key_coordination.NewDetector("foreign_key")
+		iterator := iterator.NewIterator(app, abstractGraph, keyCoordinationDetector)
+		iterator.Run()
+
+		results += detection.SaveResults(app, keyCoordinationDetector)
+		summary += keyCoordinationDetector.GetSummary()
 
 		if analysis.compactSchema {
-			foreignKeyReadDetector.CompactSchema(app)
+			keyCoordinationDetector.CompactSchema(app)
 		}
 	}
 
@@ -221,7 +233,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 }
 
 func endAnalysis(analysis analysisConfig, app *app.App) {
-	if analysis.foreignKeyReadDetection || analysis.specializationDetection {
+	if analysis.foreignKeyCoordinationDetection || analysis.specializationDetection {
 		app.DumpYamlSchema(true)
 	}
 }

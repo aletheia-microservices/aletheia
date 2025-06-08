@@ -91,6 +91,13 @@ go run main.go --app sockshop2 --auto --fk_coordination
 Run the code analyzer:
 
 ```zsh
+## Primary Key Coordination
+go run main.go --auto --pk_coordination --app postnotification_simple
+go run main.go --auto --pk_coordination --app postnotification
+go run main.go --auto --pk_coordination --app dsb_media
+go run main.go --auto --pk_coordination --app dsb_media_sql
+go run main.go --auto --pk_coordination --app digota
+
 ## Foreign Key Coordination
 go run main.go --auto --fk_coordination --app digota
 go run main.go --auto --fk_coordination --app shopping_simple

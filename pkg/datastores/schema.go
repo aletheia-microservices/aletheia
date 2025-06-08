@@ -296,6 +296,11 @@ func (s *Schema) GetRootUnfoldedField() *Field {
 }
 
 func (s *Schema) GetFieldByFullName(str string) *Field {
+	for _, field := range s.Fields {
+		if field.GetFullName() == str {
+			return field
+		}
+	}
 	for _, unfoldedField := range s.UnfoldedFields {
 		if unfoldedField.GetFullName() == str {
 			return unfoldedField

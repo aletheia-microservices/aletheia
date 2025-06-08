@@ -13,7 +13,7 @@
 
 [0] (BasicObject BasicType) reqID int64
 
-    --> r-tainted: read(posts_cache.int64) {1}
+    --> r-tainted: read(posts_cache.key) {1}
 [0] (BasicObject BasicType) postID int64
 
 [0] (StructObject UserType) media postnotification.Media struct{MediaID int64, Content string}

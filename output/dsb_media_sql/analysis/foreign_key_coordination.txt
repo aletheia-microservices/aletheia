@@ -1,7 +1,11 @@
 ---------------------------------------------------------------------
---------------------- FOREIGN KEY READ ANALYSIS ---------------------
+------------------ FOREIGN KEY COORDINATION ANALYSIS ----------------
 ---------------------------------------------------------------------
 >> (# READS USING FOREIGN REFERENCES):
->> (0)
+>> (1)
 ---------------------------------------------------------------------
-[0m
+[0m[1] foreign key read:
+- ref:	MOVIEINFO_DB.movieinfo.movieid
+	@ m.movieIdDB.Select(ctx context.Context, movieId (*mediamicroservices_sql.MovieId struct{MovieID string, Title string}), "SELECT * FROM movieid WHERE movieid = ?" string, movieID string)
+- dst:	MOVIEID_DB.movieid.movieid
+	@ m.movieInfoDB.Select(ctx context.Context, movieInfo (*mediamicroservices_sql.MovieInfo struct{MovieID string, Title string, Casts string}), "SELECT * FROM movieinfo WHERE movieid = ?" string, movieID string)

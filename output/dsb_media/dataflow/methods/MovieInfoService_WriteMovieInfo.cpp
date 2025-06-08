@@ -1,6 +1,6 @@
-[0] (PointerObject PointerType) m (*mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase})
-[_1] (StructObject UserType) mediamicroservices.MovieInfoServiceImpl struct{movieIdDB NoSQLDatabase}
-[__2] (FieldObject FieldType) movieIdDB NoSQLDatabase
+[0] (PointerObject PointerType) m (*mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase})
+[_1] (StructObject UserType) mediamicroservices.MovieInfoServiceImpl struct{movieInfoDB NoSQLDatabase}
+[__2] (FieldObject FieldType) movieInfoDB NoSQLDatabase
 [___3] (BlueprintBackendObject BlueprintBackendType) movieIdDB NoSQLDatabase
 
 [0] (InterfaceObject UserType) ctx context.Context

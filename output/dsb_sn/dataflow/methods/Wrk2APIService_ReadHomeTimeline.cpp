@@ -13,7 +13,7 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 
-    --> r-tainted: read(hometimeline_cache.int64) {1}
+    --> r-tainted: read(hometimeline_cache.key) {1}
 [0] (BasicObject BasicType) userId int64
 
 [0] (BasicObject BasicType) start int64

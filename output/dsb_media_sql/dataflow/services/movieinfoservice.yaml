@@ -1,9 +1,27 @@
+(*MovieInfoServiceImpl).ReadMovieInfo(ctx context.Context, reqID int64, movieID string):
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieInfoDB RelationalDB})
+  - _1 depth 1 (StructObject UserType) mediamicroservices_sql.MovieInfoServiceImpl
+    struct{movieInfoDB RelationalDB}
+  - __2 depth 2 (FieldObject FieldType) movieInfoDB RelationalDB
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) movieIdDB RelationalDB
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ APIService
+  - 0 depth 0 (BasicObject BasicType) reqID int64
+  - _1 depth 1 (Reference BasicType) ref <reqID int64> @ APIService
+  - '0 depth 0 (BasicObject BasicType) movieID string --> r-tainted 1x: read(movieinfo_db.movieinfo.movieid)'
+  - '_1 depth 1 (Reference BasicType) ref <movieId string> @ APIService --> r-tainted
+    2x: read(movieid_db.movieid.movieid, movieinfo_db.movieinfo.movieid)'
+  - '0 depth 0 (StructObject UserType) movieInfo mediamicroservices_sql.MovieInfo
+    struct{MovieID string, Title string, Casts string} --> r-tainted 1x: read(movieinfo_db.movieinfo.*)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
 (*MovieInfoServiceImpl).WriteMovieInfo(ctx context.Context, reqID int64, movieID string, title string, casts string):
   block 0 (Body):
-  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieIdDB RelationalDB})
+  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieInfoDB RelationalDB})
   - _1 depth 1 (StructObject UserType) mediamicroservices_sql.MovieInfoServiceImpl
-    struct{movieIdDB RelationalDB}
-  - __2 depth 2 (FieldObject FieldType) movieIdDB RelationalDB
+    struct{movieInfoDB RelationalDB}
+  - __2 depth 2 (FieldObject FieldType) movieInfoDB RelationalDB
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) movieIdDB RelationalDB
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ APIService
@@ -26,10 +44,10 @@
 
 (*MovieInfoServiceImpl).createTables(ctx context.Context):
   block 8 (IfDone):
-  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieIdDB RelationalDB})
+  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieInfoDB RelationalDB})
   - _1 depth 1 (StructObject UserType) mediamicroservices_sql.MovieInfoServiceImpl
-    struct{movieIdDB RelationalDB}
-  - __2 depth 2 (FieldObject FieldType) movieIdDB RelationalDB
+    struct{movieInfoDB RelationalDB}
+  - __2 depth 2 (FieldObject FieldType) movieInfoDB RelationalDB
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) movieIdDB RelationalDB
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (SliceObject SliceType) sqlBytes []byte
@@ -61,7 +79,7 @@
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) movieIdDB RelationalDB
-  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieIdDB RelationalDB})
+  - 0 depth 0 (PointerObject PointerType) m (*mediamicroservices_sql.MovieInfoServiceImpl struct{movieInfoDB RelationalDB})
   - _1 depth 1 (StructObject UserType) mediamicroservices_sql.MovieInfoServiceImpl
-    struct{movieIdDB RelationalDB}
-  - __2 depth 2 (FieldObject FieldType) movieIdDB RelationalDB
+    struct{movieInfoDB RelationalDB}
+  - __2 depth 2 (FieldObject FieldType) movieInfoDB RelationalDB

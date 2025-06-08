@@ -16,19 +16,18 @@
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ UploadService
   - 0 depth 0 (BasicObject BasicType) reqID int64
   - _1 depth 1 (Reference BasicType) ref <reqID int64> @ UploadService
-  - '0 depth 0 (BasicObject BasicType) postID int64 --> r-tainted 1x: read(posts_cache.int64)'
+  - '0 depth 0 (BasicObject BasicType) postID int64 --> r-tainted 1x: read(posts_cache.key)'
   - '_1 depth 1 (Reference BasicType) ref <postID int64> @ UploadService --> r-tainted
-    1x: read(posts_cache.int64)'
+    1x: read(posts_cache.key)'
   - '0 depth 0 (StructObject UserType) post postnotification.Post struct{ReqID int64,
     PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64,
-    Creator postnotification.Creator struct{Username string}} --> r-tainted 1x: read(posts_cache.Post)'
-  - '_1 depth 1 (FieldObject FieldType) PostID int64 --> r-tainted 2x: read(posts_cache.PostID,
+    Creator postnotification.Creator struct{Username string}} --> r-tainted 1x: read(posts_cache.value)'
+  - '_1 depth 1 (FieldObject FieldType) PostID int64 --> r-tainted 2x: read(posts_cache.value,
     media_db._.mediaid)'
-  - '__2 depth 2 (BasicObject BasicType) PostID int64 --> r-tainted 2x: read(posts_cache.int64,
+  - '__2 depth 2 (BasicObject BasicType) PostID int64 --> r-tainted 2x: read(posts_cache.value,
     media_db._.mediaid)'
-  - '0 depth 0 (BasicObject BasicType) postIDStr string --> r-tainted 4x: read(posts_cache.key,
-    posts_cache.string, posts_cache.int64, posts_cache.int)'
-  - '_3 depth 1 (BasicObject BasicType) 10 int --> r-tainted 1x: read(posts_cache.int)'
+  - '0 depth 0 (BasicObject BasicType) postIDStr string --> r-tainted 1x: read(posts_cache.key)'
+  - '_3 depth 1 (BasicObject BasicType) 10 int --> r-tainted 1x: read(posts_cache.key)'
   - 0 depth 0 (StructObject UserType) media postnotification.Media struct{MediaID int64, Content string}
   - '0 depth 0 (FieldObject FieldType) mediaID int64 --> r-tainted 1x: read(media_db._.mediaid)'
   - '_3 depth 1 (BasicObject BasicType) int64 --> r-tainted 1x: read(media_db._.mediaid)'
