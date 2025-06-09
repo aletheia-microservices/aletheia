@@ -1,0 +1,60 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] configs []config.Config struct{Name string, Value string, Description string} ---> depends on: {}
+	 [5] res NoSQLCursor {database = config, collection = config} ---> depends on: {configs []config.Config struct{Name string, Value string, Description string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] configs []config.Config struct{Name string, Value string, Description string} ---> depends on: {}
+	 [5] res NoSQLCursor {database = config, collection = config} ---> depends on: {configs []config.Config struct{Name string, Value string, Description string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] configs []config.Config struct{Name string, Value string, Description string} ---> depends on: {}
+	 [5] res NoSQLCursor {database = config, collection = config} ---> depends on: {configs []config.Config struct{Name string, Value string, Description string}}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] configs []config.Config struct{Name string, Value string, Description string} ---> depends on: {}
+	 [5] res NoSQLCursor {database = config, collection = config} ---> depends on: {configs []config.Config struct{Name string, Value string, Description string}}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*config.ConfigServiceImpl struct{db NoSQLDatabase}) ---> depends on: {config.ConfigServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = config, collection = config} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] configs []config.Config struct{Name string, Value string, Description string} ---> depends on: {}
+	 [5] res NoSQLCursor {database = config, collection = config} ---> depends on: {configs []config.Config struct{Name string, Value string, Description string}}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+

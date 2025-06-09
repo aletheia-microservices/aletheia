@@ -1,0 +1,9 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*station.StationServiceImpl struct{stationDB NoSQLDatabase}) ---> depends on: {station.StationServiceImpl struct{stationDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] ids []string ---> depends on: {}
+	 [3] stations []station.Station struct{ID string, Name string, StayTime int64} ---> depends on: {st station.Station struct{ID string, Name string, StayTime int64}}
+	 [4] st station.Station struct{ID string, Name string, StayTime int64} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] stations []station.Station struct{ID string, Name string, StayTime int64} ---> depends on: {st station.Station struct{ID string, Name string, StayTime int64}}
+

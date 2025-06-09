@@ -104,12 +104,21 @@
 [___3] (BasicObject BasicType) 1 int
 
 [0] (PointerObject PointerType) skuItem (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[_1] (PointerObject PointerType) * (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[__2] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+[___3] (FieldObject FieldType) Quantity int64
+[____4] (BasicObject BasicType) Quantity int64
 [_1] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
 [__2] (FieldObject FieldType) Quantity int64
 [___3] (BasicObject BasicType) Quantity int64
 
 [0] (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+     --> w-tainted: write(orders_db.Order.Items) {1}
 [_1] (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+      --> w-tainted: write(orders_db.Order.Items) {1}
+[__2] (ArrayObject ArrayType) items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+       --> w-tainted: write(orders_db.Order.Items) {1}
+[___3] (Reference ArrayType) ref <items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})> @ OrderService
       --> w-tainted: write(orders_db.Order.Items) {1}
 [__2] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
        --> w-tainted: write(orders_db.Order.Items) {1}
@@ -227,6 +236,10 @@
 [___3] (BasicObject BasicType) 1 int
 
 [0] (PointerObject PointerType) skuItem (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[_1] (PointerObject PointerType) * (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[__2] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+[___3] (FieldObject FieldType) Quantity int64
+[____4] (BasicObject BasicType) Quantity int64
 [_1] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
 [__2] (FieldObject FieldType) Quantity int64
 [___3] (BasicObject BasicType) Quantity int64
@@ -535,12 +548,21 @@
 [___3] (BasicObject BasicType) 1 int
 
 [0] (PointerObject PointerType) skuItem (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[_1] (PointerObject PointerType) * (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[__2] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+[___3] (FieldObject FieldType) Quantity int64
+[____4] (BasicObject BasicType) Quantity int64
 [_1] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
 [__2] (FieldObject FieldType) Quantity int64
 [___3] (BasicObject BasicType) Quantity int64
 
 [0] (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+     --> w-tainted: write(orders_db.Order.Items) {1}
 [_1] (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+      --> w-tainted: write(orders_db.Order.Items) {1}
+[__2] (ArrayObject ArrayType) items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+       --> w-tainted: write(orders_db.Order.Items) {1}
+[___3] (Reference ArrayType) ref <items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})> @ OrderService
       --> w-tainted: write(orders_db.Order.Items) {1}
 [__2] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
        --> w-tainted: write(orders_db.Order.Items) {1}
@@ -658,6 +680,10 @@
 [___3] (BasicObject BasicType) 1 int
 
 [0] (PointerObject PointerType) skuItem (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[_1] (PointerObject PointerType) * (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+[__2] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+[___3] (FieldObject FieldType) Quantity int64
+[____4] (BasicObject BasicType) Quantity int64
 [_1] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
 [__2] (FieldObject FieldType) Quantity int64
 [___3] (BasicObject BasicType) Quantity int64

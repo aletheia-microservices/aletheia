@@ -104,8 +104,9 @@
     TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate
     float64}> @ FindByRouteIDAndTrainType --> r-tainted 1x: read(price_db.PriceConfig)'
   - 0 depth 0 (BasicObject BasicType) rt string
+  - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (SliceObject SliceType) pieces []string
-  - _2 depth 1 (BasicObject BasicType) ":" string
+  - _3 depth 1 (BasicObject BasicType) ":" string
   - '0 depth 0 (SliceObject SliceType) routeid []string --> r-tainted 1x: read(price_db.PriceConfig.RouteID)'
   - '0 depth 0 (SliceObject SliceType) trainType []string --> r-tainted 1x: read(price_db.PriceConfig.TrainType)'
   - 0 depth 0 (InterfaceObject UserType) _ .error

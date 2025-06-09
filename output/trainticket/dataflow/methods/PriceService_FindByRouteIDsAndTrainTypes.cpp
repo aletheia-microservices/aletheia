@@ -13,11 +13,14 @@
 [__2] (Reference UserType) ref <pc price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}> @ FindByRouteIDAndTrainType
 
 [0] (BasicObject BasicType) rt string
+[_1] (BasicObject BasicType) * string
 
 [0] (SliceObject SliceType) pieces []string
 [_1] (BasicObject BasicType) rt string
+[__2] (BasicObject BasicType) * string
 [_1] (BasicObject BasicType) ":" string
 [_1] (BasicObject BasicType) rt string
+[__2] (BasicObject BasicType) * string
 [_1] (BasicObject BasicType) ":" string
 
     --> r-tainted: read(price_db.PriceConfig.RouteID) {1}

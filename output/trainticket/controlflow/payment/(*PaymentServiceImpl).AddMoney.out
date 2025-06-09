@@ -1,0 +1,24 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] p (*payment.PaymentServiceImpl struct{paymentDB NoSQLDatabase, moneyDB NoSQLDatabase}) ---> depends on: {payment.PaymentServiceImpl struct{paymentDB NoSQLDatabase, moneyDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] payment payment.Payment struct{ID string, OrderID string, UserID string, Price string} ---> depends on: {Price string, UserID string}
+	 [3] m payment.Money struct{ID string, UserID string, Price string} ---> depends on: {ID string, Price string, UserID string}
+	 [4] coll NoSQLCollection {database = payment, collection = money} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*payment.PaymentServiceImpl struct{paymentDB NoSQLDatabase, moneyDB NoSQLDatabase}) ---> depends on: {payment.PaymentServiceImpl struct{paymentDB NoSQLDatabase, moneyDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] payment payment.Payment struct{ID string, OrderID string, UserID string, Price string} ---> depends on: {Price string, UserID string}
+	 [3] m payment.Money struct{ID string, UserID string, Price string} ---> depends on: {ID string, Price string, UserID string}
+	 [4] coll NoSQLCollection {database = payment, collection = money} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*payment.PaymentServiceImpl struct{paymentDB NoSQLDatabase, moneyDB NoSQLDatabase}) ---> depends on: {payment.PaymentServiceImpl struct{paymentDB NoSQLDatabase, moneyDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] payment payment.Payment struct{ID string, OrderID string, UserID string, Price string} ---> depends on: {Price string, UserID string}
+	 [3] m payment.Money struct{ID string, UserID string, Price string} ---> depends on: {ID string, Price string, UserID string}
+	 [4] coll NoSQLCollection {database = payment, collection = money} ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+

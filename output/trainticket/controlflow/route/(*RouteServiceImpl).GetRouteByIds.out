@@ -1,0 +1,9 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] ids []string ---> depends on: {}
+	 [3] routes []route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [4] route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {}
+	 [5] _ .error ---> depends on: {}
+	 [6] routes []route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+

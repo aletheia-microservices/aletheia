@@ -1,0 +1,58 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [5] err .error ---> depends on: {}
+	 [6] all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [5] err .error ---> depends on: {}
+	 [6] all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [5] err .error ---> depends on: {}
+	 [6] all_foods []trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+

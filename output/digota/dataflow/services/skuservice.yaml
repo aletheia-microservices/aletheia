@@ -74,33 +74,64 @@
   - __2 depth 2 (FieldObject FieldType) db NoSQLDatabase
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) db NoSQLDatabase
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - 0 depth 0 (BasicObject BasicType) name string
-  - 0 depth 0 (BasicObject BasicType) currency int32
-  - 0 depth 0 (BasicObject BasicType) active bool
-  - 0 depth 0 (BasicObject BasicType) price uint64
-  - 0 depth 0 (BasicObject BasicType) parent string
-  - 0 depth 0 (MapObject MapType) metadata map[string]string
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ ProductService
+  - '0 depth 0 (BasicObject BasicType) name string --> w-tainted 2x: write(skus_db.Sku.Name,
+    products_db.Product.Name)'
+  - '_1 depth 1 (Reference BasicType) ref <name string> @ ProductService --> w-tainted
+    2x: write(products_db.Product.Name, skus_db.Sku.Name)'
+  - '0 depth 0 (BasicObject BasicType) currency int32 --> w-tainted 1x: write(skus_db.Sku.Currency)'
+  - '_1 depth 1 (Reference BasicType) ref <0 int> @ ProductService --> w-tainted 1x:
+    write(skus_db.Sku.Currency)'
+  - '0 depth 0 (BasicObject BasicType) active bool --> w-tainted 1x: write(skus_db.Sku.Active)'
+  - '_1 depth 1 (Reference BasicType) ref <true bool> @ ProductService --> w-tainted
+    1x: write(skus_db.Sku.Active)'
+  - '0 depth 0 (BasicObject BasicType) price uint64 --> w-tainted 1x: write(skus_db.Sku.Price)'
+  - '_1 depth 1 (Reference BasicType) ref <0 int> @ ProductService --> w-tainted 1x:
+    write(skus_db.Sku.Price)'
+  - '0 depth 0 (BasicObject BasicType) parent string --> w-tainted 1x: write(skus_db.Sku.Parent)'
+  - '_1 depth 1 (Reference BasicType) ref <"parent" string> @ ProductService --> w-tainted
+    1x: write(skus_db.Sku.Parent)'
+  - '0 depth 0 (MapObject MapType) metadata map[string]string --> w-tainted 1x: write(skus_db.Sku.Metadata)'
+  - '_1 depth 1 (Reference BasicType) ref <nil> @ ProductService --> w-tainted 1x:
+    write(skus_db.Sku.Metadata)'
   - 0 depth 0 (BasicObject BasicType) image string
-  - 0 depth 0 (PointerObject PointerType) packageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64})
-  - _1 depth 1 (StructObject UserType) digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}
-  - 0 depth 0 (PointerObject PointerType) inventory (*digota.Inventory struct{Quantity int64, Type int32})
-  - _1 depth 1 (StructObject UserType) digota.Inventory struct{Quantity int64, Type int32}
-  - 0 depth 0 (MapObject MapType) attributes map[string]string
+  - _1 depth 1 (Reference BasicType) ref <"image" string> @ ProductService
+  - '0 depth 0 (PointerObject PointerType) packageDimensions (*digota.PackageDimensions
+    struct{Height float64, Length float64, Weight float64, Width float64}) --> w-tainted
+    1x: write(skus_db.Sku.PackageDimensions)'
+  - '_1 depth 1 (StructObject UserType) digota.PackageDimensions struct{Height float64,
+    Length float64, Weight float64, Width float64} --> w-tainted 1x: write(skus_db.Sku.PackageDimensions)'
+  - '0 depth 0 (PointerObject PointerType) inventory (*digota.Inventory struct{Quantity
+    int64, Type int32}) --> w-tainted 1x: write(skus_db.Sku.Inventory)'
+  - '_1 depth 1 (StructObject UserType) digota.Inventory struct{Quantity int64, Type
+    int32} --> w-tainted 1x: write(skus_db.Sku.Inventory)'
+  - '0 depth 0 (MapObject MapType) attributes map[string]string --> w-tainted 1x:
+    write(skus_db.Sku.Attributes)'
+  - '_1 depth 1 (Reference BasicType) ref <nil> @ ProductService --> w-tainted 1x:
+    write(skus_db.Sku.Attributes)'
   - 0 depth 0 (PointerObject PointerType) sku (*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
     (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated
     int64})
-  - _1 depth 1 (StructObject UserType) digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
+  - '_1 depth 1 (StructObject UserType) digota.Sku struct{Id string, Name string,
+    Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string,
+    Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions
+    struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
     (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated
-    int64}
-  - __2 depth 2 (FieldObject FieldType) Active bool
-  - __4 depth 2 (FieldObject FieldType) Attributes map[string]string
-  - __6 depth 2 (FieldObject FieldType) Currency int32
-  - __8 depth 2 (FieldObject FieldType) Inventory (*digota.Inventory struct{Quantity int64, Type int32})
-  - __11 depth 2 (FieldObject FieldType) Metadata map[string]string
-  - __13 depth 2 (FieldObject FieldType) Name string
-  - __15 depth 2 (FieldObject FieldType) PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64})
-  - __18 depth 2 (FieldObject FieldType) Parent string
-  - __20 depth 2 (FieldObject FieldType) Price uint64
+    int64} --> w-tainted 1x: write(skus_db.Sku)'
+  - '__2 depth 2 (FieldObject FieldType) Active bool --> w-tainted 1x: write(skus_db.Sku.Active)'
+  - '__5 depth 2 (FieldObject FieldType) Attributes map[string]string --> w-tainted
+    1x: write(skus_db.Sku.Attributes)'
+  - '__8 depth 2 (FieldObject FieldType) Currency int32 --> w-tainted 1x: write(skus_db.Sku.Currency)'
+  - '__11 depth 2 (FieldObject FieldType) Inventory (*digota.Inventory struct{Quantity
+    int64, Type int32}) --> w-tainted 1x: write(skus_db.Sku.Inventory)'
+  - '__14 depth 2 (FieldObject FieldType) Metadata map[string]string --> w-tainted
+    1x: write(skus_db.Sku.Metadata)'
+  - '__17 depth 2 (FieldObject FieldType) Name string --> w-tainted 1x: write(skus_db.Sku.Name)'
+  - '__20 depth 2 (FieldObject FieldType) PackageDimensions (*digota.PackageDimensions
+    struct{Height float64, Length float64, Weight float64, Width float64}) --> w-tainted
+    1x: write(skus_db.Sku.PackageDimensions)'
+  - '__23 depth 2 (FieldObject FieldType) Parent string --> w-tainted 1x: write(skus_db.Sku.Parent)'
+  - '__26 depth 2 (FieldObject FieldType) Price uint64 --> w-tainted 1x: write(skus_db.Sku.Price)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
     {database = skus, collection = skus}
@@ -129,13 +160,15 @@
   - _1 depth 1 (StructObject UserType) digota.PaymentServiceImpl struct{db NoSQLDatabase}
   - __2 depth 2 (FieldObject FieldType) db NoSQLDatabase
 
-.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase):
+.NewProductServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase):
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) skuService digota.SkuService
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) db NoSQLDatabase
-  - 0 depth 0 (PointerObject PointerType) s (*digota.ProductServiceImpl struct{db NoSQLDatabase})
-  - _1 depth 1 (StructObject UserType) digota.ProductServiceImpl struct{db NoSQLDatabase}
+  - 0 depth 0 (PointerObject PointerType) s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}
   - __2 depth 2 (FieldObject FieldType) db NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) skuService digota.SkuService
 
 .NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase):
   block 0 (Body):
@@ -178,9 +211,10 @@
   - '______10 depth 6 (BasicObject BasicType) 1 int --> w-tainted 1x: write(orders_db.Order.Items)'
   - 0 depth 0 (BasicObject BasicType) err error
   - 0 depth 0 (BasicObject BasicType) currencyString string
+  - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
   - _1 depth 1 (BasicObject BasicType) 0 int
-  - _5 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - _7 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
   - 0 depth 0 (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
   - _36 depth 1 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
   - __37 depth 2 (FieldObject FieldType) Currency int32
@@ -188,9 +222,10 @@
   - __39 depth 2 (FieldObject FieldType) Quantity int64
   - ___40 depth 3 (BasicObject BasicType) 1 int
   - 0 depth 0 (BasicObject BasicType) vCurrencyString string
+  - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
   - _1 depth 1 (PointerObject PointerType) (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
   - __2 depth 2 (BasicObject BasicType) int64
-  - __6 depth 2 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
-  - _13 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - __8 depth 2 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - _17 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
   - 0 depth 0 (InterfaceObject UserType) err .error

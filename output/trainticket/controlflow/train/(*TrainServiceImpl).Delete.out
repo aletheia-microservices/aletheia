@@ -1,0 +1,38 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] ts (*train.TrainServiceImpl struct{db NoSQLDatabase}) ---> depends on: {train.TrainServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = train, collection = train} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] ts (*train.TrainServiceImpl struct{db NoSQLDatabase}) ---> depends on: {train.TrainServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = train, collection = train} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] ts (*train.TrainServiceImpl struct{db NoSQLDatabase}) ---> depends on: {train.TrainServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = train, collection = train} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] ts (*train.TrainServiceImpl struct{db NoSQLDatabase}) ---> depends on: {train.TrainServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = train, collection = train} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] ts (*train.TrainServiceImpl struct{db NoSQLDatabase}) ---> depends on: {train.TrainServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = train, collection = train} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] err .error ---> depends on: {}
+

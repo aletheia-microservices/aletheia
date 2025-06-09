@@ -236,3 +236,8 @@ func (v *SliceObject) GetUnassaignedVariables() []Object {
 	}
 	return variables
 }
+
+func (v *SliceObject) UpgradeFromPreviousInterface(interfaceVariable *InterfaceObject) {
+	v.ObjectInfo.Dependencies = append(v.ObjectInfo.Dependencies, interfaceVariable)
+	interfaceVariable.GetVariableInfo().AddParent(interfaceVariable, v)
+}

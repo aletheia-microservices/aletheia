@@ -1,0 +1,161 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #10, Block #11]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #10, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #11, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #13, Block #14]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] ok bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #13, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] ok bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #14, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #16, Block #17]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] ok bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #16, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] ok bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #17, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {TripID string}
+	 [3] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "tripid" string,  string}}
+	 [6] res NoSQLCursor {database = trainfood, collection = trainfood} ---> depends on: {stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stored_tf trainfood.TrainFood struct{ID string, TripID string, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] ok bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+

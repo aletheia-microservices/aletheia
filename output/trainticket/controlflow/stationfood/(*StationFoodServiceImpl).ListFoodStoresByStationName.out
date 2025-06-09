@@ -1,0 +1,70 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "stationname" string,  string}}
+	 [6] res NoSQLCursor {database = stationfood, collection = stationfood} ---> depends on: {stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "stationname" string,  string}}
+	 [6] res NoSQLCursor {database = stationfood, collection = stationfood} ---> depends on: {stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "stationname" string,  string}}
+	 [6] res NoSQLCursor {database = stationfood, collection = stationfood} ---> depends on: {stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "stationname" string,  string}}
+	 [6] res NoSQLCursor {database = stationfood, collection = stationfood} ---> depends on: {stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {stationfood.StationFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] station string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = stationfood, collection = stationfood} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "stationname" string,  string}}
+	 [6] res NoSQLCursor {database = stationfood, collection = stationfood} ---> depends on: {stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}}}
+	 [7] err .error ---> depends on: {}
+	 [8] stores []stationfood.StationFoodStore struct{ID string, StationName string, StoreName string, Telephone string, BusinessTime string, DeliveryFee float64, Foods []food.Food struct{Name string, Price float64}} ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+

@@ -1,0 +1,18 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] t (*trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}) ---> depends on: {trainfood.TrainFoodServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = trainfood, collection = trainfood} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+

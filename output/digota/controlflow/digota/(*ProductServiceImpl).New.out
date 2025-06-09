@@ -1,0 +1,77 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] name string ---> depends on: {}
+	 [3] active bool ---> depends on: {}
+	 [4] attributes []string ---> depends on: {}
+	 [5] description string ---> depends on: {}
+	 [6] images []string ---> depends on: {}
+	 [7] metadata map[string]string ---> depends on: {}
+	 [8] shippable bool ---> depends on: {}
+	 [9] url string ---> depends on: {}
+	 [10] product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}) ---> depends on: {digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}}
+	 [11] err .error ---> depends on: {product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] name string ---> depends on: {}
+	 [3] active bool ---> depends on: {}
+	 [4] attributes []string ---> depends on: {}
+	 [5] description string ---> depends on: {}
+	 [6] images []string ---> depends on: {}
+	 [7] metadata map[string]string ---> depends on: {}
+	 [8] shippable bool ---> depends on: {}
+	 [9] url string ---> depends on: {}
+	 [10] product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}) ---> depends on: {digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}}
+	 [11] err .error ---> depends on: {product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] name string ---> depends on: {}
+	 [3] active bool ---> depends on: {}
+	 [4] attributes []string ---> depends on: {}
+	 [5] description string ---> depends on: {}
+	 [6] images []string ---> depends on: {}
+	 [7] metadata map[string]string ---> depends on: {}
+	 [8] shippable bool ---> depends on: {}
+	 [9] url string ---> depends on: {}
+	 [10] product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}) ---> depends on: {digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}}
+	 [11] err .error ---> depends on: {product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})}
+	 [12] collection NoSQLCollection {database = products, collection = products} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] name string ---> depends on: {}
+	 [3] active bool ---> depends on: {}
+	 [4] attributes []string ---> depends on: {}
+	 [5] description string ---> depends on: {}
+	 [6] images []string ---> depends on: {}
+	 [7] metadata map[string]string ---> depends on: {}
+	 [8] shippable bool ---> depends on: {}
+	 [9] url string ---> depends on: {}
+	 [10] product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}) ---> depends on: {digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}}
+	 [11] err .error ---> depends on: {product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})}
+	 [12] collection NoSQLCollection {database = products, collection = products} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.ExprStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] name string ---> depends on: {}
+	 [3] active bool ---> depends on: {}
+	 [4] attributes []string ---> depends on: {}
+	 [5] description string ---> depends on: {}
+	 [6] images []string ---> depends on: {}
+	 [7] metadata map[string]string ---> depends on: {}
+	 [8] shippable bool ---> depends on: {}
+	 [9] url string ---> depends on: {}
+	 [10] product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}) ---> depends on: {digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}}
+	 [11] err .error ---> depends on: {product (*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})}
+	 [12] collection NoSQLCollection {database = products, collection = products} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+

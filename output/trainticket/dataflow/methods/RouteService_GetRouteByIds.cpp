@@ -21,4 +21,6 @@
 
 [0] (ArrayObject ArrayType) routes []route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}
 [_1] (StructObject UserType) route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}
+      --> r-tainted: read(route_db.Route) {1}
+[__2] (Reference UserType) ref <route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}> @ GetRouteById
 

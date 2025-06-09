@@ -1,0 +1,92 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+	 [7] route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {}
+	 [8] exists bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+	 [7] route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {}
+	 [8] exists bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #10, Block #11]
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+	 [7] route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {}
+	 [8] exists bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #10, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+	 [7] route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {}
+	 [8] exists bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #11, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] r (*route.RouteServiceImpl struct{db NoSQLDatabase}) ---> depends on: {route.RouteServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = route, collection = route} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = route, collection = route} ---> depends on: {route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string}}
+	 [6] err .error ---> depends on: {}
+	 [7] route route.Route struct{ID string, Stations []string, Distances []int64, StartStation string, EndStation string} ---> depends on: {}
+	 [8] exists bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+

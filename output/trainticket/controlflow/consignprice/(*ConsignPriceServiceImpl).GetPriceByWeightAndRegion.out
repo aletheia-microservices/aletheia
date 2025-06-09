@@ -1,0 +1,75 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.Ident]; SUCCS = [Block #7, Block #9]
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+	 [6] price float64 ---> depends on: {InitialPrice float64, float64}
+
+[BLOCK, #7, IfThen] NODES = [*ast.AssignStmt]; SUCCS = [Block #8]
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+	 [6] price float64 ---> depends on: {InitialPrice float64, float64}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+	 [6] price float64 ---> depends on: {InitialPrice float64, float64}
+	 [7] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [8] ctx context.Context ---> depends on: {}
+	 [9] weight float64 ---> depends on: {}
+	 [10] isWithinRegion bool ---> depends on: {}
+	 [11] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [12] err .error ---> depends on: {}
+	 [13] price float64 ---> depends on: {InitialPrice float64, float64}
+
+[BLOCK, #9, IfElse] NODES = [*ast.AssignStmt]; SUCCS = [Block #8]
+	 [0] c (*consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {consignprice.ConsignPriceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] weight float64 ---> depends on: {}
+	 [3] isWithinRegion bool ---> depends on: {}
+	 [4] cp consignprice.ConsignPrice struct{ID string, Index int64, InitialWeight float64, InitialPrice float64, WithinPrice float64, BeyondPrice float64} ---> depends on: {InitialPrice float64}
+	 [5] err .error ---> depends on: {}
+	 [6] price float64 ---> depends on: {InitialPrice float64, float64}
+

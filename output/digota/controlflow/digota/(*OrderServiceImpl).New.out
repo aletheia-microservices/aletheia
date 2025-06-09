@@ -1,0 +1,101 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] amount int64 ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] amount int64 ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] amount int64 ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] collection NoSQLCollection {database = orders, collection = orders} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] amount int64 ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] collection NoSQLCollection {database = orders, collection = orders} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] currency int32 ---> depends on: {}
+	 [3] items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [4] metadata map[string]string ---> depends on: {}
+	 [5] email string ---> depends on: {}
+	 [6] shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}) ---> depends on: {digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}}
+	 [7] order (*digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}) ---> depends on: {digota.Order struct{Id string, Amount int64, Currency int32, Items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}), Metadata map[string]string, Email string, ChargeId string, Status int32, Shipping (*digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}), Created int64, Updated int64}}
+	 [8] orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}) ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] amount int64 ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] collection NoSQLCollection {database = orders, collection = orders} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+

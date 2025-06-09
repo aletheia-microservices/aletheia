@@ -147,6 +147,18 @@ func lookupImportedPackageFromIdent(service *service.Service, ident *ast.Ident) 
 	return nil
 }
 
+func lookupImportedPackageFromIdent2(pkg *types.Package, ident *ast.Ident) *gotypes.PackageType {
+	if impt := pkg.GetImportedPackageByAliasIfExists(ident.Name); impt != nil {
+		t := &gotypes.PackageType{
+			Alias: ident.Name,
+			Name:  impt.Name,
+			Path:  impt.PackagePath,
+		}
+		return t
+	}
+	return nil
+}
+
 func objOnExpr(expr ast.Expr, block *types.Block) bool {
 	switch e := expr.(type) {
 	case *ast.UnaryExpr:
@@ -209,7 +221,13 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 			return variable, nil
 		}
 
-		packageType = lookupImportedPackageFromIdent(ctx.GetService(), e)
+		//FIXME: this could be improved!
+		if ctx.GetService() != nil {
+			packageType = lookupImportedPackageFromIdent(ctx.GetService(), e)
+		} else {
+			packageType = lookupImportedPackageFromIdent2(ctx.GetPackage(), e)
+		}
+
 		if packageType != nil {
 			return nil, packageType
 		}
@@ -305,7 +323,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 		}
 
 		logger.Logger.Debugf("[COMPOSITE LIT] e.Type (%v), and e.Elts (%v)", e.Type, e.Elts)
-		eType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Type)
+		eType := lookup.ComputeTypeForAstExpr(ctx.GetFile(), ctx.GetPackage(), e.Type)
 		logger.Logger.Debugf("BEFORE eType = %s", eType.String())
 		eType, eTypeOrUserType := gotypes.UnwrapUserType(eType)
 		logger.Logger.Debugf("AFTER eType = %s", eType.String())
@@ -382,7 +400,8 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 		if e.Type == nil {
 			logger.Logger.Debugf("[CFG - LOOKUP VAR] found nil type in TypeAssertExpr: %v", e)
 		} else {
-			assertedType = lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Type)
+			// NOTE: ctx.GetFile() may return nil
+			assertedType = lookup.ComputeTypeForAstExpr(ctx.GetFile(), ctx.GetPackage(), e.Type)
 		}
 		if interfaceVariable, ok := variable.(*objects.InterfaceObject); ok {
 			// FIXME: it is creating two duplicates:
@@ -392,6 +411,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 
 			var newVariable objects.Object
 			if assertedType != nil {
+				logger.Logger.Debugf("asserting to type %s", assertedType.String())
 				newVariable = lookup.CreateObjectFromType(variable.GetVariableInfo().GetName(), assertedType)
 				newVariable.UpgradeFromPreviousInterface(interfaceVariable) //idk why this is here
 			} else {
@@ -589,7 +609,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 		return variable, nil
 
 	case *ast.ArrayType: //e.g. []rune
-		elemtsType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Elt)
+		elemtsType := lookup.ComputeTypeForAstExpr(ctx.GetFile(), ctx.GetPackage(), e.Elt)
 
 		// when length is not specified then e.len is nil
 		var numElemsInt int
@@ -597,7 +617,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 			logger.Logger.Warnf("e.LEN IS NIL!")
 			numElemsInt = -1
 		} else {
-			numElemsType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Len)
+			numElemsType := lookup.ComputeTypeForAstExpr(ctx.GetFile(), ctx.GetPackage(), e.Len)
 			numElemsInt, _ = strconv.Atoi(numElemsType.GetBasicValue())
 		}
 
@@ -611,8 +631,8 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 			},
 		}
 	case *ast.MapType: //e.g. make(map[string]PriceConfig)
-		keyType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Key)
-		valueType := lookup.ComputeTypeForAstExpr(ctx.GetService().GetFile(), e.Value)
+		keyType := lookup.ComputeTypeForAstExpr(ctx.GetFile(), ctx.GetPackage(), e.Key)
+		valueType := lookup.ComputeTypeForAstExpr(ctx.GetFile(), ctx.GetPackage(), e.Value)
 		variable = &objects.MapObject{
 			KeyValues: make(map[objects.Object]objects.Object, 0),
 			ObjectInfo: &objects.ObjectInfo{

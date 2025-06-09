@@ -1,0 +1,12 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] rtsAndTypes []string ---> depends on: {}
+	 [3] res map[string]price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64} ---> depends on: {pc price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}}
+	 [4] rt string ---> depends on: {* string}
+	 [5] pieces []string ---> depends on: {rt string, ":" string, rt string, ":" string}
+	 [6] routeid []string ---> depends on: {}
+	 [7] trainType []string ---> depends on: {}
+	 [8] pc price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64} ---> depends on: {}
+	 [9] _ .error ---> depends on: {}
+

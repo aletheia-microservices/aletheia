@@ -48,11 +48,18 @@ func (ctx *ControlflowContext) GetPackage() *types.Package {
 	if ctx.pkg != nil {
 		return ctx.pkg
 	}
-	return ctx.pkg
+	return ctx.service.GetPackage()
 }
 
 func (ctx *ControlflowContext) GetService() *service.Service {
 	return ctx.service
+}
+
+func (ctx *ControlflowContext) GetFile() *types.File {
+	if ctx.service != nil {
+		return ctx.service.GetFile()
+	}
+	return nil
 }
 
 func (ctx *ControlflowContext) CurrentCFG() *types.CFG {

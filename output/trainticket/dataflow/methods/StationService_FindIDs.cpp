@@ -21,4 +21,6 @@
 
 [0] (ArrayObject ArrayType) ids []string
 [_1] (BasicObject BasicType) id string
+      --> r-tainted: read(station_db.Station.ID) {1}
+[__2] (Reference BasicType) ref <ID string> @ FindID
 

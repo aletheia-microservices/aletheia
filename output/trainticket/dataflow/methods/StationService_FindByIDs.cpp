@@ -21,4 +21,6 @@
 
 [0] (ArrayObject ArrayType) stations []station.Station struct{ID string, Name string, StayTime int64}
 [_1] (StructObject UserType) st station.Station struct{ID string, Name string, StayTime int64}
+      --> r-tainted: read(station_db.Station) {1}
+[__2] (Reference UserType) ref <st station.Station struct{ID string, Name string, StayTime int64}> @ FindByID
 

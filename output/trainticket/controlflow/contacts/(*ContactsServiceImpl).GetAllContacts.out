@@ -1,0 +1,62 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = contacts, collection = contacts} ---> depends on: {all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = contacts, collection = contacts} ---> depends on: {all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = contacts, collection = contacts} ---> depends on: {all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = contacts, collection = contacts} ---> depends on: {all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] c (*contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}) ---> depends on: {contacts.ContactsServiceImpl struct{contactsDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string} ---> depends on: {}
+	 [3] coll NoSQLCollection {database = contacts, collection = contacts} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] res NoSQLCursor {database = contacts, collection = contacts} ---> depends on: {all_contacts []contacts.Contact struct{ID string, AccountID string, Name string, DocumentType int, DocumentNumber string, PhoneNumber string}}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+

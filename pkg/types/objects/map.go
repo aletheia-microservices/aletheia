@@ -235,6 +235,12 @@ func (v *MapObject) AddReferenceWithID(target Object, creator string) {
 			}
 		}
 	}
+	// target can be nil which is a basic object
+	if targetBasic, ok := target.(*BasicObject); ok && targetBasic.GetBasicType().GetName() == "nil" {
+		logger.Logger.Warnf("[VARS MAP - REF] attempted to reference variables with different types (%s vs %s) (%s vs %s)", v.String(), target.String(), utils.GetType(v), utils.GetType(target))
+		return
+	}
+
 	logger.Logger.Fatalf("[VARS MAP - REF] attempted to reference variables with different types (%s vs %s) (%s vs %s)", v.String(), target.String(), utils.GetType(v), utils.GetType(target))
 }
 

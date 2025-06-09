@@ -19,5 +19,8 @@
 [_1] (Reference BasicType) ref <nil> @ GetPriceConfig
 
 [0] (FieldObject FieldType) price float64
-[_1] (BasicObject BasicType) InitialPrice float64
+[_1] (FieldObject FieldType) InitialPrice float64
+[__2] (BasicObject BasicType) InitialPrice float64
+[_1] (BasicObject BasicType) float64
+[__2] (BasicObject BasicType) InitialPrice float64
 

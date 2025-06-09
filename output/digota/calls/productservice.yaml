@@ -22,6 +22,7 @@
 (*ProductServiceImpl).New(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)
 :
 	- DATASTORE CALL @ products_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+  - SERVICE CALL @ New >> (*digota.SkuServiceImpl).New(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), inventory (*digota.Inventory struct{Quantity int64, Type int32}), attributes map[string]string) ((*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), error)
 
 (*ProductServiceImpl).Update(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)
 :
@@ -34,7 +35,7 @@
 
 .NewPaymentServiceImpl(ctx context.Context, db NoSQLDatabase): []
 
-.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase): []
+.NewProductServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase): []
 
 .NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase): []
 

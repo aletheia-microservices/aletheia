@@ -194,9 +194,9 @@ func getAssignmentRightObjects(ctx *ControlflowContext, method *types.ParsedMeth
 	return robjs
 }
 
-func declareLeftIdents(service *service.Service, block *types.Block, leftIdents []*ast.Ident, t ast.Expr) {
+func declareLeftIdents(file *types.File, pkg *types.Package, block *types.Block, leftIdents []*ast.Ident, t ast.Expr) {
 	for _, ident := range leftIdents {
-		t := lookup.ComputeTypeForAstExpr(service.File, t)
+		t := lookup.ComputeTypeForAstExpr(file, pkg, t)
 		declaredObject := lookup.CreateObjectFromType(ident.Name, t)
 		logger.Logger.Warnf("[CFG - PARSE EXPR] VARIABLE IS DECLARED: %s", declaredObject.String())
 		block.AddObject(declaredObject)
@@ -364,7 +364,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	case *ast.ValueSpec: // e.g. var foobar OR var foobar = "foobar"
 		logger.Logger.Warnf("[CFG - PARSE EXPR] parsing value spec with names = (%v) and values = (%v)", e.Names, e.Values)
 		if len(e.Values) == 0 { // variables are being declared with types e.g., `var foobar string`
-			declareLeftIdents(ctx.GetService(), block, e.Names, e.Type)
+			declareLeftIdents(ctx.GetFile(), ctx.GetPackage(), block, e.Names, e.Type)
 		} else { // variables are being declared and assigned e.g., `var foobar := "foobar"`
 			assignLeftIdents(ctx, method, block, e.Names, e.Values)
 		}
@@ -993,6 +993,16 @@ func parseAndSaveCall(ctx *ControlflowContext, method *types.ParsedMethod, block
 	}
 
 	logger.Logger.Infof("[CFG CALLS] [%s] found arguments for call with idents (%s):\n%s", ctx.String(), identsStr, varsStr)
+	
+	// call to variable or constant in package
+	if ctx.GetPackage() != nil {
+		if variable := ctx.GetPackage().GetDeclaredVariableOrConstIfExists(leftIdent.Name); variable != nil {
+			tupleVar := parseCallToVariableInBlock(ctx, method, block, callExpr, variable, idents, identsStr)
+			if tupleVar != nil {
+				return tupleVar
+			}
+		}
+	}
 
 	// call to variable (including receiver) in block
 	if variable := block.GetLastestVariableIfExists(leftIdent.Name); variable != nil {
@@ -1012,32 +1022,39 @@ func parseAndSaveCall(ctx *ControlflowContext, method *types.ParsedMethod, block
 	var tupleVar *objects.TupleObject
 
 	// call to method in imported package of file
-	logger.Logger.Debugf("[CFG CALLS] check if call is to imported package (%s) for package import map:\n%v", leftIdent.Name, ctx.GetPackage().ImportsByAliasMapStr())
-	if imptPkg := ctx.GetPackage().GetImportedPackageByAliasIfExists(leftIdent.Name); imptPkg != nil {
-		var isBlueprintCall bool
-		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
-		logger.Logger.Warnf("!!!!!!!!!!!!!!! FOUND CALL TO METHOD IN IMPORTED PACKAGE: %v // %v // %v", tupleVar, callPkg, isBlueprintCall)
-		if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
-			return nil
+	if ctx.GetPackage() != nil {
+		logger.Logger.Debugf("[CFG CALLS @ PACKAGE = %s] check if call is to imported package (%s) for package import map:\n%v", ctx.GetPackage().GetName(), leftIdent.Name, ctx.GetPackage().ImportsByAliasMapStr())
+		if imptPkg := ctx.GetPackage().GetImportedPackageByAliasIfExists(leftIdent.Name); imptPkg != nil {
+			var isBlueprintCall bool
+			tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
+			logger.Logger.Warnf("!!!!!!!!!!!!!!! FOUND CALL TO METHOD IN IMPORTED PACKAGE: %v // %v // %v", tupleVar, callPkg, isBlueprintCall)
+			if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
+				return nil
+			}
+			if tupleVar != nil {
+				return tupleVar
+			}
+			if callPkg != nil {
+				callInPackage = true
+			}
 		}
-		if tupleVar != nil {
-			return tupleVar
+	} else if ctx.GetService() != nil {
+		logger.Logger.Debugf("[CFG CALLS @ SERVICE %s] check if call is to imported package (%s) for package import map:\n%v", ctx.GetService().GetName(), leftIdent.Name, ctx.GetPackage().ImportsByAliasMapStr())
+		if impt := ctx.GetService().GetFile().GetImportIfExists(leftIdent.Name); impt != nil {
+			var isBlueprintCall bool
+			tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImport(ctx, method, block, callExpr, impt, idents, identsStr)
+			if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
+				return nil
+			}
+			if tupleVar != nil {
+				return tupleVar
+			}
+			if callPkg != nil {
+				callInPackage = true
+			}
 		}
-		if callPkg != nil {
-			callInPackage = true
-		}
-	} else if impt := ctx.GetService().GetFile().GetImportIfExists(leftIdent.Name); impt != nil {
-		var isBlueprintCall bool
-		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImport(ctx, method, block, callExpr, impt, idents, identsStr)
-		if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
-			return nil
-		}
-		if tupleVar != nil {
-			return tupleVar
-		}
-		if callPkg != nil {
-			callInPackage = true
-		}
+	} else {
+		logger.Logger.Fatal("[CFG CALLS] could not get package nor service")
 	}
 
 	// call to method in current package

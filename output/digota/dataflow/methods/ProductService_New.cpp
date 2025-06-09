@@ -1,11 +1,13 @@
-[0] (PointerObject PointerType) s (*digota.ProductServiceImpl struct{db NoSQLDatabase})
-[_1] (StructObject UserType) digota.ProductServiceImpl struct{db NoSQLDatabase}
+[0] (PointerObject PointerType) s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase})
+[_1] (StructObject UserType) digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}
 [__2] (FieldObject FieldType) db NoSQLDatabase
 [___3] (BlueprintBackendObject BlueprintBackendType) db NoSQLDatabase
+[__2] (FieldObject FieldType) skuService digota.SkuService
+[___3] (ServiceObject ServiceType) skuService digota.SkuService
 
 [0] (InterfaceObject UserType) ctx context.Context
 
-    --> w-tainted: write(products_db.Product.Name) {1}
+    --> w-tainted: write(products_db.Product.Name, skus_db.Sku.Name) {2}
 [0] (BasicObject BasicType) name string
 
     --> w-tainted: write(products_db.Product.Active) {1}
@@ -54,7 +56,7 @@
 [___3] (MapObject MapType) metadata map[string]string
       --> w-tainted: write(products_db.Product.Name) {1}
 [__2] (FieldObject FieldType) Name string
-       --> w-tainted: write(products_db.Product.Name) {1}
+       --> w-tainted: write(products_db.Product.Name, skus_db.Sku.Name) {2}
 [___3] (BasicObject BasicType) name string
       --> w-tainted: write(products_db.Product.Shippable) {1}
 [__2] (FieldObject FieldType) Shippable bool
@@ -91,7 +93,7 @@
 [____4] (MapObject MapType) metadata map[string]string
        --> w-tainted: write(products_db.Product.Name) {1}
 [___3] (FieldObject FieldType) Name string
-        --> w-tainted: write(products_db.Product.Name) {1}
+        --> w-tainted: write(products_db.Product.Name, skus_db.Sku.Name) {2}
 [____4] (BasicObject BasicType) name string
        --> w-tainted: write(products_db.Product.Shippable) {1}
 [___3] (FieldObject FieldType) Shippable bool

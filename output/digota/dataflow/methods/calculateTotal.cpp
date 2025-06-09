@@ -77,12 +77,15 @@
 [0] (BasicObject BasicType) err error
 
 [0] (BasicObject BasicType) currencyString string
+[_1] (BasicObject BasicType) * string
 
 [0] (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
 [_1] (BasicObject BasicType) 0 int
 [_1] (BasicObject BasicType) currencyString string
+[__2] (BasicObject BasicType) * string
 [_1] (BasicObject BasicType) 0 int
 [_1] (BasicObject BasicType) currencyString string
+[__2] (BasicObject BasicType) * string
 [_1] (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
 
 [0] (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
@@ -163,19 +166,24 @@
 [___3] (BasicObject BasicType) 1 int
 
 [0] (BasicObject BasicType) vCurrencyString string
+[_1] (BasicObject BasicType) * string
 
 [0] (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
 [_1] (PointerObject PointerType) (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
 [__2] (BasicObject BasicType) int64
 [__2] (BasicObject BasicType) vCurrencyString string
+[___3] (BasicObject BasicType) * string
 [__2] (BasicObject BasicType) int64
 [__2] (BasicObject BasicType) vCurrencyString string
+[___3] (BasicObject BasicType) * string
 [__2] (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
 [_1] (PointerObject PointerType) (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
 [__2] (BasicObject BasicType) int64
 [__2] (BasicObject BasicType) vCurrencyString string
+[___3] (BasicObject BasicType) * string
 [__2] (BasicObject BasicType) int64
 [__2] (BasicObject BasicType) vCurrencyString string
+[___3] (BasicObject BasicType) * string
 [__2] (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
 [_1] (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
 
@@ -183,7 +191,9 @@
 [_1] (PointerObject PointerType) (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
 [__2] (BasicObject BasicType) int64
 [__2] (BasicObject BasicType) vCurrencyString string
+[___3] (BasicObject BasicType) * string
 [__2] (BasicObject BasicType) int64
 [__2] (BasicObject BasicType) vCurrencyString string
+[___3] (BasicObject BasicType) * string
 [__2] (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
 

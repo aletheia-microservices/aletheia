@@ -147,11 +147,11 @@
   - 0 depth 0 (ArrayObject ArrayType) errs []error
   - 0 depth 0 (StructObject UserType) wg sync.WaitGroup
   - 0 depth 0 (PointerObject PointerType) skuItem (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-  - _1 depth 1 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
-  - __2 depth 2 (FieldObject FieldType) Quantity int64
-  - ___3 depth 3 (BasicObject BasicType) Quantity int64
+  - _1 depth 1 (PointerObject PointerType) * (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+  - __2 depth 2 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+  - ___3 depth 3 (FieldObject FieldType) Quantity int64
+  - ____4 depth 4 (BasicObject BasicType) Quantity int64
   - 0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-  - _1 depth 1 (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
   - 0 depth 0 (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
   - _34 depth 1 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
   - __35 depth 2 (FieldObject FieldType) Amount int64
@@ -207,13 +207,15 @@
   - _1 depth 1 (StructObject UserType) digota.PaymentServiceImpl struct{db NoSQLDatabase}
   - __2 depth 2 (FieldObject FieldType) db NoSQLDatabase
 
-.NewProductServiceImpl(ctx context.Context, db NoSQLDatabase):
+.NewProductServiceImpl(ctx context.Context, skuService digota.SkuService, db NoSQLDatabase):
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) skuService digota.SkuService
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) db NoSQLDatabase
-  - 0 depth 0 (PointerObject PointerType) s (*digota.ProductServiceImpl struct{db NoSQLDatabase})
-  - _1 depth 1 (StructObject UserType) digota.ProductServiceImpl struct{db NoSQLDatabase}
+  - 0 depth 0 (PointerObject PointerType) s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}
   - __2 depth 2 (FieldObject FieldType) db NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) skuService digota.SkuService
 
 .NewSkuServiceImpl(ctx context.Context, db NoSQLDatabase):
   block 0 (Body):
@@ -256,9 +258,10 @@
   - '______10 depth 6 (BasicObject BasicType) 1 int --> w-tainted 1x: write(orders_db.Order.Items)'
   - 0 depth 0 (BasicObject BasicType) err error
   - 0 depth 0 (BasicObject BasicType) currencyString string
+  - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
   - _1 depth 1 (BasicObject BasicType) 0 int
-  - _5 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - _7 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
   - 0 depth 0 (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
   - _36 depth 1 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
   - __37 depth 2 (FieldObject FieldType) Currency int32
@@ -266,9 +269,10 @@
   - __39 depth 2 (FieldObject FieldType) Quantity int64
   - ___40 depth 3 (BasicObject BasicType) 1 int
   - 0 depth 0 (BasicObject BasicType) vCurrencyString string
+  - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
   - _1 depth 1 (PointerObject PointerType) (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})
   - __2 depth 2 (BasicObject BasicType) int64
-  - __6 depth 2 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
-  - _13 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - __8 depth 2 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
+  - _17 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
   - 0 depth 0 (InterfaceObject UserType) err .error

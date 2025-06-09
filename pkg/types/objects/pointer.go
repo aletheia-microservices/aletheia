@@ -13,6 +13,10 @@ type PointerObject struct {
 	PointerTo  Object
 }
 
+func NewPointerObject(info *ObjectInfo, ptrTo Object) *PointerObject {
+	return &PointerObject{ObjectInfo: info, PointerTo: ptrTo}
+}
+
 func (v *PointerObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ObjectInfo *ObjectInfo `json:"pointer"`
@@ -53,6 +57,13 @@ func (v *PointerObject) GetVariableInfo() *ObjectInfo {
 	return v.ObjectInfo
 }
 
+func (v *PointerObject) NewObject() Object {
+	newObject := NewPointerObject(NewObjectInfo(v.GetType()), v.PointerTo)
+	// we attach the dependency because we created a fully new object
+	newObject.GetVariableInfo().AddDependency(v)
+	return newObject
+}
+
 func (v *PointerObject) GetDependencies() []Object {
 	return append(v.GetVariableInfo().GetDependencies(), v.PointerTo)
 }
@@ -83,6 +94,9 @@ func (v *PointerObject) GetPointerTo() Object {
 func (v *PointerObject) AddReferenceWithID(target Object, creator string) {
 	if targetPointerTo, ok := target.(*PointerObject); ok {
 		v.PointerTo.AddReferenceWithID(targetPointerTo.PointerTo, creator)
+	} else if targetBasic, ok := target.(*BasicObject); ok && targetBasic.GetBasicType().GetName() == "nil" {
+		logger.Logger.Warnf("ignoring referencing of variables with different types (%s vs %s) (%s vs %s)", v.String(), target.String(), VariableTypeName(v), VariableTypeName(target))
+		return
 	} else {
 		logger.Logger.Fatalf("ignoring referencing of variables with different types (%s vs %s) (%s vs %s)", v.String(), target.String(), VariableTypeName(v), VariableTypeName(target))
 	}

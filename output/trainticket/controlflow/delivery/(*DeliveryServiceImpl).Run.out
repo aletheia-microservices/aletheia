@@ -1,0 +1,134 @@
+[BLOCK, #0, Body] NODES = []; SUCCS = [Block #1]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+
+[BLOCK, #1, ForBody] NODES = [*ast.ExprStmt]; SUCCS = [Block #4, Block #5]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [9] ctx context.Context ---> depends on: {}
+
+[BLOCK, #4, SelectCaseBody] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+
+[BLOCK, #5, SelectAfterCase] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ExprStmt]; SUCCS = [Block #8]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.Ident]; SUCCS = [Block #9, Block #10]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [6] ctx context.Context ---> depends on: {}
+	 [7] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [8] didpop bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+
+[BLOCK, #9, IfThen] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #11, Block #12]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #11, IfThen] NODES = [*ast.ExprStmt]; SUCCS = [Block #12]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+
+[BLOCK, #12, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #13, Block #14]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [8] ctx context.Context ---> depends on: {}
+	 [9] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [10] didpop bool ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [13] err .error ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+
+[BLOCK, #13, IfThen] NODES = [*ast.ExprStmt]; SUCCS = [Block #14]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #14, IfDone] NODES = []; SUCCS = [Block #10]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [9] ctx context.Context ---> depends on: {}
+	 [10] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [11] didpop bool ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+	 [13] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+	 [15] err .error ---> depends on: {}
+
+[BLOCK, #10, IfDone] NODES = []; SUCCS = [Block #3]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [6] ctx context.Context ---> depends on: {}
+	 [7] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [8] didpop bool ---> depends on: {}
+	 [9] err .error ---> depends on: {}
+	 [10] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [11] err .error ---> depends on: {}
+	 [12] err .error ---> depends on: {}
+
+[BLOCK, #3, SelectDone] NODES = []; SUCCS = [Block #1]
+	 [0] d (*delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}) ---> depends on: {delivery.DeliveryServiceImpl struct{db NoSQLDatabase, delQ Queue}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] delivery delivery.Delivery struct{ID string, OrderID string, FoodName string, StoreName string, StationName string} ---> depends on: {}
+	 [3] didpop bool ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] coll NoSQLCollection {database = delivery, collection = delivery} ---> depends on: {}
+	 [6] err .error ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+

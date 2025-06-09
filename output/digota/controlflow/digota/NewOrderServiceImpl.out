@@ -1,0 +1,6 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] skuService digota.SkuService ---> depends on: {}
+	 [2] db NoSQLDatabase ---> depends on: {}
+	 [3] s (*digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.OrderServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+

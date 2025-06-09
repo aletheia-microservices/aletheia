@@ -1,0 +1,22 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] a (*assurance.AssuranceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {assurance.AssuranceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = assurance, collection = assurance} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] a (*assurance.AssuranceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {assurance.AssuranceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = assurance, collection = assurance} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] a (*assurance.AssuranceServiceImpl struct{db NoSQLDatabase}) ---> depends on: {assurance.AssuranceServiceImpl struct{db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = assurance, collection = assurance} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+

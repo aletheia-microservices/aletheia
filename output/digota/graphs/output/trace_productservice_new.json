@@ -9,7 +9,15 @@
       "type": "service"
     },
     {
+      "id": "SkuService",
+      "type": "service"
+    },
+    {
       "id": "products_db MongoDB",
+      "type": "datastore"
+    },
+    {
+      "id": "skus_db MongoDB",
       "type": "datastore"
     }
   ],
@@ -22,9 +30,21 @@
     },
     {
       "caller": "ProductService",
+      "callee": "SkuService",
+      "call": "New",
+      "depth": 1
+    },
+    {
+      "caller": "ProductService",
       "callee": "products_db MongoDB",
       "call": "InsertOne",
       "depth": 1
+    },
+    {
+      "caller": "SkuService",
+      "callee": "skus_db MongoDB",
+      "call": "InsertOne",
+      "depth": 2
     }
   ]
 }

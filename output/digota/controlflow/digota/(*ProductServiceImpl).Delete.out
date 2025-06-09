@@ -1,0 +1,23 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = products, collection = products} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = products, collection = products} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] s (*digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}) ---> depends on: {digota.ProductServiceImpl struct{skuService digota.SkuService, db NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] id string ---> depends on: {}
+	 [3] collection NoSQLCollection {database = products, collection = products} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {struct{Key "id" string, Key "id" string, Value string, Value string}}
+	 [6] err .error ---> depends on: {}
+

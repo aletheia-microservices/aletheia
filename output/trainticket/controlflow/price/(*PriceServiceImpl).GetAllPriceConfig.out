@@ -1,0 +1,58 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = priceConfig, collection = priceConfig} ---> depends on: {pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = priceConfig, collection = priceConfig} ---> depends on: {pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}}
+	 [5] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = priceConfig, collection = priceConfig} ---> depends on: {pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}}
+	 [5] err .error ---> depends on: {}
+	 [6] pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = priceConfig, collection = priceConfig} ---> depends on: {pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}}
+	 [5] err .error ---> depends on: {}
+	 [6] pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*price.PriceServiceImpl struct{priceDB NoSQLDatabase}) ---> depends on: {price.PriceServiceImpl struct{priceDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] coll NoSQLCollection {database = priceConfig, collection = priceConfig} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] res NoSQLCursor {database = priceConfig, collection = priceConfig} ---> depends on: {pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}}
+	 [5] err .error ---> depends on: {}
+	 [6] pcs []price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64} ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+

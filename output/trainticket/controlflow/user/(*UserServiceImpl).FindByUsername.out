@@ -1,0 +1,99 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+	 [8] user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+	 [8] user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #10, Block #11]
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+	 [8] user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #10, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+	 [8] user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #11, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*user.UserServiceImpl struct{userDB NoSQLDatabase}) ---> depends on: {user.UserServiceImpl struct{userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] username string ---> depends on: {}
+	 [3] coll NoSQLCollection {database = user, collection = user} ---> depends on: {}
+	 [4] err .error ---> depends on: {}
+	 [5] query primitive.D ---> depends on: {struct{ string,  "username" string,  string}}
+	 [6] res NoSQLCursor {database = user, collection = user} ---> depends on: {user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string}}
+	 [7] err .error ---> depends on: {}
+	 [8] user user.User struct{UserID string, Username string, Password string, Gender int64, DocumentType int64, DocumentNum string, Email string} ---> depends on: {}
+	 [9] exists bool ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
