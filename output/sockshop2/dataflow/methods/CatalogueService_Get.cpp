@@ -10,11 +10,11 @@
 
     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [0] (BasicObject BasicType) id string
+     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+[_1] (Reference BasicType) ref <itemID string> @ FrontendService
+     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+[_1] (Reference BasicType) ref <itemID string> @ FrontendService
      --> w-tainted: write(cart_db.cart.Items) {1}         --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
-[_1] (Reference BasicType) ref <itemID string> @ FrontendService
-     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
-[_1] (Reference BasicType) ref <itemID string> @ FrontendService
-     --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [_1] (Reference BasicType) ref <itemID string> @ FrontendService
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = catalogue, collection = catalogue}
@@ -28,11 +28,11 @@
 [__2] (FieldObject FieldType) Value string
        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [___3] (BasicObject BasicType) id string
+        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+[____4] (Reference BasicType) ref <itemID string> @ FrontendService
+        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
+[____4] (Reference BasicType) ref <itemID string> @ FrontendService
         --> w-tainted: write(cart_db.cart.Items) {1}               --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
-[____4] (Reference BasicType) ref <itemID string> @ FrontendService
-        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
-[____4] (Reference BasicType) ref <itemID string> @ FrontendService
-        --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
 [____4] (Reference BasicType) ref <itemID string> @ FrontendService
 
     --> r-tainted: read(catalogue_db.Sock, catalogue_db.Sock.ImageURL, catalogue_db.Sock.string, catalogue_db.Sock.ImageURL_1, catalogue_db.Sock.ImageURL_2, catalogue_db.Sock.TagString, catalogue_db.Sock.Tags) {7}

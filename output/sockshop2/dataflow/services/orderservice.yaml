@@ -33,8 +33,7 @@
     Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum
     string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string,
     Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string,
-    Name string, Status "awaiting shipment" string}, Date string, Total float32} -->
-    r-tainted 1x: read(order_db.Order)'
+    Name string, Status string}, Date string, Total float32} --> r-tainted 1x: read(order_db.Order)'
   - 0 depth 0 (InterfaceObject UserType) err .error
 
 (*orderImpl).GetOrders(ctx context.Context, customerID string):
@@ -72,17 +71,16 @@
     Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum
     string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string,
     Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string,
-    Name string, Status "awaiting shipment" string}, Date string, Total float32} -->
-    r-tainted 1x: read(order_db.[]order.Order struct{ID string, CustomerID string,
-    Customer user.User struct{FirstName string, LastName string, Email string, Username
-    string, Password string, Addresses user.Address struct{Street string, Number string,
-    Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum
-    string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address
-    user.Address struct{Street string, Number string, Country string, City string,
-    PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string,
-    CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice
-    float32}, Shipment shipping.Shipment struct{ID string, Name string, Status "awaiting
-    shipment" string}, Date string, Total float32})'
+    Name string, Status string}, Date string, Total float32} --> r-tainted 1x: read(order_db.[]order.Order
+    struct{ID string, CustomerID string, Customer user.User struct{FirstName string,
+    LastName string, Email string, Username string, Password string, Addresses user.Address
+    struct{Street string, Number string, Country string, City string, PostCode string,
+    ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string,
+    ID string}, UserID string, Salt string}, Address user.Address struct{Street string,
+    Number string, Country string, City string, PostCode string, ID string}, Card
+    user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items
+    []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment
+    struct{ID string, Name string, Status string}, Date string, Total float32})'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (InterfaceObject UserType) err .error
 

@@ -100,6 +100,7 @@ func SaveResults(app *app.App, detector Detector) string {
 }
 
 func GetWrittenFieldNamesForOperation(dbCall *abstractgraph.AbstractDatabaseCall) []string {
+	logger.Logger.Debugf("getting written fieldnames for db call %s", dbCall.String())
 	var writtenFieldNames []string
 	datastore := dbCall.DbInstance.GetDatastore()
 
@@ -107,12 +108,16 @@ func GetWrittenFieldNamesForOperation(dbCall *abstractgraph.AbstractDatabaseCall
 		params := dbCall.GetParams()
 
 		switch datastore.Type {
-		case datastores.NoSQL, datastores.Queue, datastores.Cache:
-			obj := params[1]
-			objType := obj.GetType()
-
+		case datastores.Queue, datastores.NoSQL:
+			widx := blueprintBackendMethod.GetWrittenObjectIndex()
+			wobj := dbCall.GetParam(widx)
+			wtype := wobj.GetType()
+			
 			// FIXME: this is getting all fields for the structure and not actually the ones that are written
-			_, writtenFieldNames = objType.GetNestedFieldTypes(objType.GetName(), datastore.IsNoSQLDatabase())
+			_, writtenFieldNames = wtype.GetNestedFieldTypes(wtype.GetName(), datastore.IsNoSQLDatabase())
+
+		case datastores.Cache: //FIXME:
+			writtenFieldNames = []string{datastores.ROOT_FIELD_NAME_CACHE_VALUE}
 
 		case datastores.RelationalDB:
 			if blueprintBackendMethod.IsRelationalDBExecCall() {

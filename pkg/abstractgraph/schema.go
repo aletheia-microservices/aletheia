@@ -69,6 +69,8 @@ func TaintDataflowWrite(app *app.App, variable objects.Object, call *AbstractDat
 	// taint direct dataflow
 	fieldName = computeSchemaFieldName(variable, fieldName)
 
+	logger.Logger.Debugf("GOT FIELD NAME = %s", fieldName)
+
 	rootField := datastore.Schema.GetField(fieldName)
 	logger.Logger.Infof("[TAINT WRITE] got root field for name (%s): %s", fieldName, rootField.String())
 	df := variable.GetVariableInfo().SetDirectDataflow(datastore.Name, call.Service, variable, rootField, true, requestIdx)
@@ -450,11 +452,14 @@ func buildSchemaOnRead(app *app.App, dbCall *AbstractDatabaseCall, requestIdx in
 	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
 		switch datastore.Type {
 		case datastores.Queue:
-			msg := params[1]
+			msg := dbCall.GetParam(blueprintBackendMethod.GetReadObjectIndex())
+
 			TaintDataflowReadQueue(app, msg, dbCall, datastore, datastores.ROOT_FIELD_NAME_QUEUE, requestIdx)
 
 		case datastores.NoSQL:
-			cursor, query := returns[0], params[1]
+			cursor := returns[0]
+			query := dbCall.GetParam(blueprintBackendMethod.GetReadKeyIndex())
+
 			TaintDataflowReadNoSQL(app, cursor, dbCall, datastore, datastores.ROOT_FIELD_NAME_NOSQL, false, requestIdx)
 			queryObjs := GetNoSQLQueryDocument(datastore, query)
 			for _, v := range queryObjs {
@@ -462,7 +467,9 @@ func buildSchemaOnRead(app *app.App, dbCall *AbstractDatabaseCall, requestIdx in
 			}
 
 		case datastores.Cache:
-			key, value := params[1], params[2]
+			key := dbCall.GetParam(blueprintBackendMethod.GetReadKeyIndex())
+			value := dbCall.GetParam(blueprintBackendMethod.GetReadObjectIndex())
+
 			TaintDataflowReadCache(app, key, datastores.ROOT_FIELD_NAME_CACHE_KEY, dbCall, datastore, requestIdx)
 			TaintDataflowReadCache(app, value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, dbCall, datastore, requestIdx)
 
@@ -491,19 +498,20 @@ func buildSchemaOnWrite(app *app.App, dbCall *AbstractDatabaseCall, requestIdx i
 
 		switch datastore.Type {
 		case datastores.Queue:
-			msg := params[1]
+			msg := dbCall.GetParam(blueprintBackendMethod.GetWrittenObjectIndex())
 			saveUnfoldedFieldsToDatastore(msg, datastores.ROOT_FIELD_NAME_QUEUE, datastore)
 			TaintDataflowWrite(app, msg, dbCall, datastore, "", true, requestIdx)
 			ReferenceTaintedDataflowForAllNestedFields(msg, datastore, requestIdx)
 
 		case datastores.NoSQL:
-			doc := params[1]
+			doc := dbCall.GetParam(blueprintBackendMethod.GetWrittenObjectIndex())
 			saveUnfoldedFieldsToDatastore(doc, datastores.ROOT_FIELD_NAME_NOSQL, datastore)
 			TaintDataflowWrite(app, doc, dbCall, datastore, "", true, requestIdx)
 			ReferenceTaintedDataflowForAllNestedFields(doc, datastore, requestIdx)
 
 		case datastores.Cache:
-			key, value := params[1], params[2]
+			key := dbCall.GetParam(blueprintBackendMethod.GetWrittenKeyIndex())
+			value := dbCall.GetParam(blueprintBackendMethod.GetWrittenObjectIndex())
 			saveFieldToDatastore(key, datastores.ROOT_FIELD_NAME_CACHE_KEY, datastore)
 			saveFieldToDatastore(value, datastores.ROOT_FIELD_NAME_CACHE_VALUE, datastore)
 			TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, requestIdx)

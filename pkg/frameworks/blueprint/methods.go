@@ -245,9 +245,6 @@ func (b *BackendMethod) GetWrittenKeyIndex() int {
 	switch b.FullName() {
 	case "Cache.Put":
 		return 1
-	case "NoSQLDatabase.NoSQLCollection.InsertOne", "NoSQLDatabase.NoSQLCollection.InsertMany", "NoSQLDatabase.NoSQLCollection.UpdateOne", "NoSQLDatabase.NoSQLCollection.UpdateMany",
-		"NoSQLDatabase.NoSQLCollection.Upsert", "NoSQLDatabase.NoSQLCollection.ReplaceOne":
-		return 1
 	case "Queue.Push":
 		return 1
 	default:

@@ -137,13 +137,14 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, dbCall *abs
 	if blueprintBackendMethod := dbCall.GetParsedCall().GetMethod().(*blueprint.BackendMethod); blueprintBackendMethod != nil {
 		switch datastore.Type {
 		case datastores.Queue, datastores.NoSQL:
-			obj := params[1]
+			obj := dbCall.GetParam(blueprintBackendMethod.GetWrittenObjectIndex())
 			operation.addWrittenObjects(obj)
 
 			abstractgraph.TaintDataflowWrite(app, obj, dbCall, datastore, "", true, child_idx)
 
 		case datastores.Cache:
-			key, value := params[1], params[2]
+			key := dbCall.GetParam(blueprintBackendMethod.GetWrittenKeyIndex())
+			value := dbCall.GetParam(blueprintBackendMethod.GetWrittenObjectIndex())
 			operation.addWrittenObjects(key, value)
 
 			abstractgraph.TaintDataflowWrite(app, key, dbCall, datastore, datastores.ROOT_FIELD_NAME_CACHE_KEY, false, child_idx)
