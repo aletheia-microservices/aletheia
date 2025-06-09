@@ -202,13 +202,21 @@ func (s *Schema) GetAllFields() []*Field {
 }
 
 func (s *Schema) GetRootFieldName() string {
+	//FIXME:
+	for _, f := range s.Fields {
+		if f.GetName() != "_" {
+			return f.GetName()
+		}
+	}
+
+	/* 
 	//logger.Logger.Infof("SCHEMA: %v", s.Fields)
 	// FIXME: better to have an additional bool for the fields that state if they are root or no, but for now we have:
 	// index 0 is for "_" root field (that can be created in reads if no fields exists) and index 1 is when there was a previous write
 	if len(s.Fields) >= 2 {
 		logger.Logger.Debugf("[SCHEMA] getting root field (%s) at index 1 for fields list: %v", s.Fields[1].GetName(), s.Fields)
 		return s.Fields[1].GetName()
-	}
+	} */
 	if len(s.Fields) == 1 {
 		logger.Logger.Debugf("[SCHEMA] getting root field (%s) at index 0 for fields list: %v", s.Fields[0].GetName(), s.Fields)
 		return s.Fields[0].GetName()

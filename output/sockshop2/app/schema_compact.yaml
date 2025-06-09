@@ -10,7 +10,10 @@ CART_DB:
     - cart: cart.cart struct{ID string, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}}
     - cart.ID: string
     - cart.Items: '[]cart.Item struct{ID string, Quantity int, UnitPrice float32}'
-    - cart.Items.*: cart.Item struct{ID string, Quantity int, UnitPrice float32}
+    - cart.Items[*]: cart.Item struct{ID string, Quantity int, UnitPrice float32}
+  - constraints:
+    - REFERENCE(CART_DB.cart.Items --> CATALOGUE_DB.Sock.ID.id)
+    - REFERENCE(CART_DB.cart --> CATALOGUE_DB.Sock.ID.id)
 
 CATALOGUE_DB:
 - type: NoSQLDatabase
@@ -18,10 +21,11 @@ CATALOGUE_DB:
 - dependencies: []
 - schema:
   - fields:
+    - Sock.ID: <unknown type>
     - _: catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
     - Sock: catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - unfolded_fields:
-    - _.id: string
+    - Sock.ID.id: string
     - Sock: catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
     - Sock.ID: string
     - Sock.Name: string
@@ -86,7 +90,7 @@ ORDER_DB:
     - Order.Card.CCV: string
     - Order.Card.ID: string
     - Order.Items: '[]cart.Item struct{ID string, Quantity int, UnitPrice float32}'
-    - Order.Items.*: cart.Item struct{ID string, Quantity int, UnitPrice float32}
+    - Order.Items[*]: cart.Item struct{ID string, Quantity int, UnitPrice float32}
     - Order.Shipment: shipping.Shipment struct{ID string, Name string, Status "awaiting
         shipment" string}
     - Order.Shipment.ID: string
@@ -95,31 +99,31 @@ ORDER_DB:
     - Order.Date: string
     - Order.Total: 10 float32
   - constraints:
-    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
-    - REFERENCE(Order.CustomerID --> Shipment.Name) [+]
-    - REFERENCE(Order.CustomerID --> _.userid)
-    - REFERENCE(Order.ID --> Shipment.ID) [+]
-    - REFERENCE(Order.ID --> Shipment.ID) [+]
-    - REFERENCE(Order.Shipment.ID --> Shipment.ID) [+]
-    - REFERENCE(Order.Shipment.ID --> Shipment.ID) [+]
-    - REFERENCE(Order.Shipment --> Shipment) [+]
-    - REFERENCE(Order.Shipment --> Shipment) [+]
-    - REFERENCE(Order.Shipment --> Shipment.ID) [+]
-    - REFERENCE(Order.Shipment --> Shipment.ID) [+]
-    - REFERENCE(Order.Shipment --> Shipment.Name) [+]
-    - REFERENCE(Order.Shipment --> Shipment.Name) [+]
-    - REFERENCE(Order.Shipment --> _.userid)
-    - REFERENCE(Order.Shipment --> Shipment.Status) [+]
-    - REFERENCE(Order.Shipment --> Shipment.Status) [+]
-    - REFERENCE(Order --> Shipment.Name) [+]
-    - REFERENCE(Order --> Shipment.Name) [+]
-    - REFERENCE(Order --> _.userid)
-    - REFERENCE(Order --> Shipment.ID) [+]
-    - REFERENCE(Order --> Shipment.ID) [+]
-    - REFERENCE(Order --> Shipment) [+]
-    - REFERENCE(Order --> Shipment) [+]
-    - REFERENCE(Order --> Shipment.Status) [+]
-    - REFERENCE(Order --> Shipment.Status) [+]
+    - REFERENCE(ORDER_DB.Order.CustomerID --> SHIPQUEUE.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order.CustomerID --> SHIPDB.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order.CustomerID --> USER_DB._.userid)
+    - REFERENCE(ORDER_DB.Order.ID --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.ID --> SHIPDB.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment.ID --> SHIPDB.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPQUEUE.Shipment) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPDB.Shipment) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPDB.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPQUEUE.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPDB.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> USER_DB._.userid)
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPQUEUE.Shipment.Status) [+]
+    - REFERENCE(ORDER_DB.Order.Shipment --> SHIPDB.Shipment.Status) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPQUEUE.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPDB.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order --> USER_DB._.userid)
+    - REFERENCE(ORDER_DB.Order --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPDB.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPQUEUE.Shipment) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPDB.Shipment) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPQUEUE.Shipment.Status) [+]
+    - REFERENCE(ORDER_DB.Order --> SHIPDB.Shipment.Status) [+]
 
 SHIPDB:
 - type: NoSQLDatabase
@@ -135,15 +139,15 @@ SHIPDB:
     - Shipment.Name: string
     - Shipment.Status: string
   - constraints:
-    - REFERENCE(Shipment.Status --> Shipment.Status) [+]
-    - REFERENCE(Shipment.Name --> Shipment.Name) [+]
-    - REFERENCE(Shipment.Name --> _.userid)
-    - REFERENCE(Shipment.ID --> Shipment.ID) [+]
-    - REFERENCE(Shipment --> Shipment) [+]
-    - REFERENCE(Shipment --> Shipment.ID) [+]
-    - REFERENCE(Shipment --> Shipment.Name) [+]
-    - REFERENCE(Shipment --> _.userid)
-    - REFERENCE(Shipment --> Shipment.Status) [+]
+    - REFERENCE(SHIPDB.Shipment.Status --> SHIPQUEUE.Shipment.Status) [+]
+    - REFERENCE(SHIPDB.Shipment.Name --> SHIPQUEUE.Shipment.Name) [+]
+    - REFERENCE(SHIPDB.Shipment.Name --> USER_DB._.userid)
+    - REFERENCE(SHIPDB.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment) [+]
+    - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.Name) [+]
+    - REFERENCE(SHIPDB.Shipment --> USER_DB._.userid)
+    - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.Status) [+]
 
 SHIPQUEUE:
 - type: Queue
@@ -159,8 +163,8 @@ SHIPQUEUE:
     - Shipment.Name: string
     - Shipment.Status: string
   - constraints:
-    - REFERENCE(Shipment.Name --> _.userid)
-    - REFERENCE(Shipment --> _.userid)
+    - REFERENCE(SHIPQUEUE.Shipment.Name --> USER_DB._.userid)
+    - REFERENCE(SHIPQUEUE.Shipment --> USER_DB._.userid)
 
 USER_DB:
 - type: NoSQLDatabase

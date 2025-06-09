@@ -99,11 +99,6 @@ ORDER_DB:
     - Order.Date: string
     - Order.Total: 10 float32
   - constraints:
-    - REFERENCE(ORDER_DB.Order.CustomerID --> SHIPQUEUE.Shipment.Name) [+]
-    - REFERENCE(ORDER_DB.Order.CustomerID --> SHIPDB.Shipment.Name) [+]
-    - REFERENCE(ORDER_DB.Order.CustomerID --> USER_DB._.userid)
-    - REFERENCE(ORDER_DB.Order.ID --> SHIPQUEUE.Shipment.ID) [+]
-    - REFERENCE(ORDER_DB.Order.ID --> SHIPDB.Shipment.ID) [+]
     - REFERENCE(ORDER_DB.Order.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(ORDER_DB.Order.Shipment.ID --> SHIPDB.Shipment.ID) [+]
     - REFERENCE(ORDER_DB.Order.Shipment --> SHIPQUEUE.Shipment) [+]
@@ -115,6 +110,11 @@ ORDER_DB:
     - REFERENCE(ORDER_DB.Order.Shipment --> USER_DB._.userid)
     - REFERENCE(ORDER_DB.Order.Shipment --> SHIPQUEUE.Shipment.Status) [+]
     - REFERENCE(ORDER_DB.Order.Shipment --> SHIPDB.Shipment.Status) [+]
+    - REFERENCE(ORDER_DB.Order.CustomerID --> SHIPQUEUE.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order.CustomerID --> SHIPDB.Shipment.Name) [+]
+    - REFERENCE(ORDER_DB.Order.CustomerID --> USER_DB._.userid)
+    - REFERENCE(ORDER_DB.Order.ID --> SHIPQUEUE.Shipment.ID) [+]
+    - REFERENCE(ORDER_DB.Order.ID --> SHIPDB.Shipment.ID) [+]
     - REFERENCE(ORDER_DB.Order --> SHIPQUEUE.Shipment.Name) [+]
     - REFERENCE(ORDER_DB.Order --> SHIPDB.Shipment.Name) [+]
     - REFERENCE(ORDER_DB.Order --> USER_DB._.userid)
@@ -139,10 +139,10 @@ SHIPDB:
     - Shipment.Name: string
     - Shipment.Status: string
   - constraints:
+    - REFERENCE(SHIPDB.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(SHIPDB.Shipment.Status --> SHIPQUEUE.Shipment.Status) [+]
     - REFERENCE(SHIPDB.Shipment.Name --> SHIPQUEUE.Shipment.Name) [+]
     - REFERENCE(SHIPDB.Shipment.Name --> USER_DB._.userid)
-    - REFERENCE(SHIPDB.Shipment.ID --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment) [+]
     - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.ID) [+]
     - REFERENCE(SHIPDB.Shipment --> SHIPQUEUE.Shipment.Name) [+]

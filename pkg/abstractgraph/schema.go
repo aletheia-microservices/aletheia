@@ -298,38 +298,6 @@ func (obj *NoSQLQueryDocument) String() string {
 	return fmt.Sprintf("%s: %s", obj.FieldName, obj.Object.String())
 }
 
-func GetNoSQLQueryDocument_DEPRECATED(datastore *datastores.Datastore, variable objects.Object) []NoSQLQueryDocument {
-	// should be a bson.D which is a slice with many (inline) structures
-	// e.g. query := bson.D{{Key: "productid", Value: productID}}
-	if sliceVariable, ok := variable.(*objects.SliceObject); ok {
-		var queryObjects []NoSQLQueryDocument
-		for i, elem := range sliceVariable.GetElements() {
-			if structVariable, ok := elem.(*objects.StructObject); ok {
-				logger.Logger.Warnf("MAP: %v", structVariable.GetFieldsMap())
-				logger.Logger.Warnf("LIST: %v", structVariable.GetFieldsList())
-				logger.Logger.Warnf("STRUCT: %v", structVariable.LongString())
-				var key, val objects.Object
-				if structVariable.NumFieldsList() != 0 {
-					key = structVariable.GetFieldAt(0).GetWrappedVariable()
-					val = structVariable.GetFieldAt(1).GetWrappedVariable()
-				} else {
-					key = structVariable.GetFieldByKey("Key").GetWrappedVariable()
-					val = structVariable.GetFieldByKey("Value").GetWrappedVariable()
-				}
-				queryObj := NoSQLQueryDocument{
-					FieldName: datastore.Schema.GetRootFieldName() + "." + key.GetType().GetBasicValue(),
-					Object:    val,
-				}
-				queryObjects = append(queryObjects, queryObj)
-				logger.Logger.Infof("[QUERY OBJ #%d] %s", i, queryObj.String())
-				return queryObjects
-			}
-		}
-		return nil
-	}
-	return nil
-}
-
 func GetNoSQLQueryDocument(datastore *datastores.Datastore, variable objects.Object) []NoSQLQueryDocument {
 	// should be a bson.D which is a slice with many (inline) structures
 	// e.g. query := bson.D{{Key: "productid", Value: productID}}
