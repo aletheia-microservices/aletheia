@@ -112,9 +112,11 @@ func (app *App) loadFields(servicesInfo []*frameworks.ServiceInfo) {
 			}
 		}
 
+		existBlock := service.GetConstructor().GetParsedCfg().GetLastLiveBlock()
+
 		controlflow.ParseMethodCFG(service.GetPackage(), service, service.GetConstructor())
-		logger.Logger.Infof("[APP] loading fields for entry block: %s", entryBlock.String())
-		serviceImplVar := entryBlock.GetFirstResult()
+		logger.Logger.Infof("[APP] loading fields for entry block: %s", existBlock.String())
+		serviceImplVar := existBlock.GetFirstResult()
 		service.SetImplVariableWithType(serviceImplVar)
 		service.RegisterFields()
 

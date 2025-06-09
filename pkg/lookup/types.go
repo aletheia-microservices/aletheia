@@ -125,5 +125,8 @@ func ParseFileImports(file *types.File) {
 			PackageName: pkgName,
 		}
 		file.Imports[alias] = impt
+		/* if alias == "go-geoindex" {
+			logger.Logger.Fatalf("IMPORT (ALIAS = %v): %v", imp.Name, impt.String())
+		} */
 	}
 }

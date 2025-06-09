@@ -19,6 +19,8 @@ import (
 )
 
 func ParseMethodCFG(pkg *types.Package, service *service.Service, method *types.ParsedMethod) {
+	logger.Logger.Debugf("[PARSE METHOD CFG] parsing method %s for package %v and service %v", method.GetName(), pkg, service)
+
 	if method.IsParsed() { // sanity check
 		logger.Logger.Warnf("[CFG] [%s] method ignoring parsed method: %s", pkg.String(), method.String())
 		return
@@ -64,21 +66,7 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	var rangeValueType gotypes.Type
 	var rangeObj objects.Object
 
-	/* fmt.Println(utils.TEXT_BOLD_LIGHT_BLUE + "[BEFORE] ---------------------\n" +
-	ctx.String() + method.GetName() + "()\n" + block.ListObjectsString() +
-		"\n------------------------------" + utils.TEXT_RESET_COLOR) */
-
-	for i, node := range block.GetNodes() { //FIXME????
-		/* if block.Block.Kind == cfg.KindBody && i == len(block.GetNodes())-1 {
-			for _, succ := range block.GetSuccs() {
-				// skip last node if we have successors for (i) if branches
-				// in these cases, the last node usually corresponds to the conditional expression
-				// do not skip for forloops since this is the only way to capture the initial declaration (e.g. for i := 0)
-				if succ.Kind == cfg.KindIfThen {
-					break
-				}
-			}
-		} */
+	for i, node := range block.GetNodes() {
 
 		initialObjsStr := ""
 		for i, obj := range block.Objs {
@@ -88,8 +76,6 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 			}
 		}
 
-		//logger.Logger.Warnf("\n----------------------------------------------\nPARSING BLOCK [%d] W/ KIND = %s; NODE [%d]: %v \n\t@ METHOD: %s.%s\n%s\n----------------------------------------------", block.Block.Index, block.Block.Kind.String(), i, node, service.Name, method.Name, initialObjsStr)
-
 		var parsingLoop bool
 		parsingLoop, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType = visitBasicBlockRangeHelper(ctx, method, block, node, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType)
 
@@ -98,11 +84,11 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 			deferStmts = append(deferStmts, stmts...)
 		}
 
-		fmt.Println(utils.TEXT_BOLD_LIGHT_GREEN + "------------------------------\n" +
+		fmt.Println(utils.TEXT_BOLD_LIGHT_GREEN + "[CFG VISIT BBL] ------------------------\n" +
 			ctx.String() + "." + method.GetName() + "()\n" +
 			fmt.Sprintf("[#%d, %T] NODE:\n", i, node) +
 			block.LongStringWithObjects() +
-			"\n------------------------------" + utils.TEXT_RESET_COLOR)
+			"\n----------------------------------------" + utils.TEXT_RESET_COLOR)
 	}
 
 	for _, deferStmt := range deferStmts {
@@ -130,7 +116,7 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 
 	var parsingLoop bool
 	if succ != nil && succ.Block.Kind == cfg.KindRangeLoop { // as soon as we see an ident then we are "preparing" for the succeeding range loop
-		logger.Logger.Warnf("RANGE AHEAD (%t, %t)! %v; ELEMS TYPE = %v", visitedRangeType, visitedRangeElem, succ.Block.Succs, rangeValueType)
+		logger.Logger.Warnf("RANGE AHEAD (%t, %t)! %v; KEY TYPE = %v // VAL TYPE = %v", visitedRangeType, visitedRangeElem, succ.Block.Succs, rangeKeyType, rangeValueType)
 
 		if !visitedRangeType { // range object
 			if expr, ok := node.(ast.Expr); ok {
@@ -158,22 +144,29 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 			}
 
 		} else {
+			logger.Logger.Debugf("parsing range key")
 			ident, ok := node.(*ast.Ident)
 			if !ok {
 				logger.Logger.Fatalf("[CFG - VISIT BASIC BLOCK] unexpected type (%s) for node: %v", utils.GetType(node), node)
 			}
-			if visitedRangeType && !visitedRangeElem && ident.Name != "_" { // element ident
+			if visitedRangeType && !visitedRangeElem && ident.Name != "_" { // VALUE ???
+				logger.Logger.Debugf("RANGE VALUE?")
 				visitedRangeElem = true
 				obj := lookup.CreateObjectFromType(ident.Name, rangeValueType)
 				logger.Logger.Debugf("[CFG - VISIT BASIC BLOCK] adding range obj (%s) to dependencies of range elem: %s", rangeObj.String(), obj.String())
 				obj.GetVariableInfo().AddDependency(rangeObj)
 				block.AddObject(obj)
 				parsingLoop = true
-			} else if ident.Name != "_" { // index ident
-				if rangeKeyType == nil {
+			} else if ident.Name != "_" { // KEY ???
+					logger.Logger.Debugf("RANGE KEY?")
+				if rangeKeyType == nil { // when its just ranging lists so key is the index of each element
 					obj := wrapValueInBasicVariable("0", "int", ident.Name)
 					block.AddObject(obj)
+				} else {
+					obj := lookup.CreateObjectFromType(ident.Name, rangeKeyType)
+					block.AddObject(obj)
 				}
+				logger.Logger.Debugf("???? %s // %v", ident.Name, rangeKeyType)
 				parsingLoop = true
 			}
 		}
@@ -280,6 +273,8 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				} else {
 					ee.AddDynamicKeyValue(keyVariable, rObj)
 				}
+			case *objects.FieldObject:
+				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lvariable.String())
 			case *objects.ArrayObject:
 				idxVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
 				idx, ok := computeArrayIndexFromObject(idxVariable)
@@ -702,6 +697,7 @@ func parseCallToVariableInBlock(ctx *ControlflowContext, method *types.ParsedMet
 		blueprintBackendType := blueprintBackendVar.GetBlueprintBackendType()
 		blueprintMethod := blueprintBackendType.GetMethod(funcIdent.Name)
 		blueprintMethod.SetCalledBackendType(blueprintBackendType)
+		logger.Logger.Debugf("IN CONTEXT: %s", ctx.String())
 		parsedCall := &types.ParsedDatabaseCall{
 			ParsedCall: types.ParsedCall{
 				Ast:     callExpr,

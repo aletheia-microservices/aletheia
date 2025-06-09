@@ -255,6 +255,10 @@ func ComputeTypesForGoTypes(p *types.Package, goType golangtypes.Type, computeIf
 		sliceType := &gotypes.SliceType{}
 		sliceType.UnderlyingType = ComputeTypesForGoTypes(p, e.Elem(), computeIfNotFound, visitedNamedTypes, typeNameToFuncs, serviceTypes)
 		return sliceType
+	case *golangtypes.Array:
+		arrayType := &gotypes.ArrayType{}
+		arrayType.ElementsType = ComputeTypesForGoTypes(p, e.Elem(), computeIfNotFound, visitedNamedTypes, typeNameToFuncs, serviceTypes)
+		return arrayType
 	case *golangtypes.Pointer:
 		pointerType := &gotypes.PointerType{}
 		pointerType.PointerTo = ComputeTypesForGoTypes(p, e.Elem(), computeIfNotFound, visitedNamedTypes, typeNameToFuncs, serviceTypes)
