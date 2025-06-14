@@ -60,24 +60,15 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	var deferStmts []*ast.DeferStmt
 	block.Visited = true
 
-	var visitedRangeType bool
-	var visitedRangeElem bool
+	var visitedRangeObj bool
+	var visitedRangeKey bool
 	var rangeKeyType gotypes.Type
-	var rangeValueType gotypes.Type
+	var rangeElemType gotypes.Type
 	var rangeObj objects.Object
 
 	for i, node := range block.GetNodes() {
-
-		initialObjsStr := ""
-		for i, obj := range block.Objs {
-			initialObjsStr += fmt.Sprintf("\t (#%d) %s", i, obj.String())
-			if i < len(block.Objs)-1 {
-				initialObjsStr += "\n"
-			}
-		}
-
 		var parsingLoop bool
-		parsingLoop, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType = visitBasicBlockRangeHelper(ctx, method, block, node, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType)
+		parsingLoop, visitedRangeObj, visitedRangeKey, rangeObj, rangeKeyType, rangeElemType = visitBasicBlockRangeHelper(ctx, method, block, node, visitedRangeObj, visitedRangeKey, rangeObj, rangeKeyType, rangeElemType)
 
 		if !parsingLoop {
 			stmts := parseNodeBody(ctx, method, block, node)
@@ -109,69 +100,76 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	}
 }
 
-func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, node ast.Node, visitedRangeType bool, visitedRangeElem bool, rangeObj objects.Object, rangeKeyType gotypes.Type, rangeValueType gotypes.Type) (bool, bool, bool, objects.Object, gotypes.Type, gotypes.Type) {
+func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, node ast.Node, visitedRangeObj bool, visitedRangeKey bool, rangeObj objects.Object, rangeKeyType gotypes.Type, rangeElemType gotypes.Type) (bool, bool, bool, objects.Object, gotypes.Type, gotypes.Type) {
 	logger.Logger.Debugf("[CFG - VISIT BASIC BLOCK] [%s.%s] visiting block [%T]: %v", ctx.String(), method.GetName(), block, block)
 
 	succ := block.GetNextSuccessorIfExists()
 
 	var parsingLoop bool
 	if succ != nil && succ.Block.Kind == cfg.KindRangeLoop { // as soon as we see an ident then we are "preparing" for the succeeding range loop
-		logger.Logger.Warnf("RANGE AHEAD (%t, %t)! %v; KEY TYPE = %v // VAL TYPE = %v", visitedRangeType, visitedRangeElem, succ.Block.Succs, rangeKeyType, rangeValueType)
+		logger.Logger.Debugf("RANGE AHEAD \n\t\t\t- (visited range obj ? %t, visited type ? %t) \n\t\t\t- %v \n\t\t\t- KEY TYPE = %v // VAL TYPE = %v", 
+			visitedRangeObj, visitedRangeKey, succ.Block.Succs, rangeKeyType, rangeElemType)
 
-		if !visitedRangeType { // range object
-			if expr, ok := node.(ast.Expr); ok {
-				rangeObj, _ = lookupObjectFromAstExpression(ctx, method, block, expr, nil, false)
+		if !visitedRangeObj { 
+			// get type of object that is being iterated
+			logger.Logger.Debugf("parsing range obj")
 
-				visitedRangeType = true
-				if rangeObjSlice, ok := rangeObj.(*objects.SliceObject); ok {
-					rangeValueType = rangeObjSlice.GetSliceType().UnderlyingType
-				} else if rangeObjArray, ok := rangeObj.(*objects.ArrayObject); ok {
-					rangeValueType = rangeObjArray.GetElementsType() //FIXME: for some reason the type is SliceType and not ArrayType
-				} else if mapObjArray, ok := rangeObj.(*objects.MapObject); ok {
-					rangeValueType = mapObjArray.GetMapType().ValueType
-					rangeKeyType = mapObjArray.GetMapType().KeyType
-				} else if ifaceObjArray, ok := rangeObj.(*objects.InterfaceObject); ok {
-					rangeValueType = ifaceObjArray.GetType()
-				} else {
-					logger.Logger.Fatalf("[VISITOR BLOCK] unexpected type [%s] for range ident object: %v", utils.GetType(rangeObj), rangeObj)
-				}
-				parsingLoop = true
-				logger.Logger.Debugf("saved type (%s) for range ahead: %s", utils.GetType(rangeValueType), rangeValueType.String())
-
-			} else {
+			expr, ok := node.(ast.Expr)
+			if !ok {
 				// we are still in the expr for the previous block and not on the expr for the range object
 				logger.Logger.Debugf("[VISITOR BLOCK] skipping ast type (%s) for node: %v", utils.GetType(node), node)
+				return parsingLoop, visitedRangeObj, visitedRangeKey, rangeObj, rangeElemType, rangeElemType
 			}
 
+			visitedRangeObj = true
+			parsingLoop = true
+			rangeObj, _ = lookupObjectFromAstExpression(ctx, method, block, expr, nil, false)
+			switch e := rangeObj.(type) {
+			case *objects.SliceObject:
+				rangeElemType = e.GetSliceType().UnderlyingType
+			case *objects.ArrayObject:
+				rangeElemType = e.GetElementsType()
+			case *objects.MapObject: 
+				rangeKeyType = e.GetMapType().KeyType
+				rangeElemType = e.GetMapType().ValueType
+			case *objects.InterfaceObject: 
+				rangeElemType = e.GetType()
+			default:
+				logger.Logger.Fatalf("[VISITOR BLOCK] unexpected type [%s] for range ident object: %v", utils.GetType(rangeObj), rangeObj)
+			}
+			logger.Logger.Debugf("saved type (%s) for range ahead: %s", utils.GetType(rangeElemType), rangeElemType.String())
 		} else {
+			parsingLoop = true
 			logger.Logger.Debugf("parsing range key")
 			ident, ok := node.(*ast.Ident)
 			if !ok {
 				logger.Logger.Fatalf("[CFG - VISIT BASIC BLOCK] unexpected type (%s) for node: %v", utils.GetType(node), node)
 			}
-			if visitedRangeType && !visitedRangeElem && ident.Name != "_" { // VALUE ???
-				logger.Logger.Debugf("RANGE VALUE?")
-				visitedRangeElem = true
-				obj := lookup.CreateObjectFromType(ident.Name, rangeValueType)
-				logger.Logger.Debugf("[CFG - VISIT BASIC BLOCK] adding range obj (%s) to dependencies of range elem: %s", rangeObj.String(), obj.String())
-				obj.GetVariableInfo().AddDependency(rangeObj)
-				block.AddObject(obj)
-				parsingLoop = true
-			} else if ident.Name != "_" { // KEY ???
-					logger.Logger.Debugf("RANGE KEY?")
-				if rangeKeyType == nil { // when its just ranging lists so key is the index of each element
-					obj := wrapValueInBasicVariable("0", "int", ident.Name)
-					block.AddObject(obj)
+			if ident.Name != "_" {
+				if !visitedRangeKey {
+					visitedRangeKey = true
+					// range key
+					if rangeKeyType != nil {
+						// range value if there is more than 1 elem
+						obj := lookup.CreateObjectFromType(ident.Name, rangeKeyType)
+						obj.GetVariableInfo().AddDependency(rangeObj)
+						block.AddObject(obj)
+						logger.Logger.Fatalf("parsed range value")
+					} else {
+						// if there is no range key type, then range key is just an iterator index
+						obj := wrapValueInBasicVariable("0", "int", ident.Name)
+						block.AddObject(obj)
+					}
 				} else {
-					obj := lookup.CreateObjectFromType(ident.Name, rangeKeyType)
+					// range value if there is more than 1 elem
+					obj := lookup.CreateObjectFromType(ident.Name, rangeElemType)
+					obj.GetVariableInfo().AddDependency(rangeObj)
 					block.AddObject(obj)
 				}
-				logger.Logger.Debugf("???? %s // %v", ident.Name, rangeKeyType)
-				parsingLoop = true
 			}
 		}
 	}
-	return parsingLoop, visitedRangeType, visitedRangeElem, rangeObj, rangeKeyType, rangeValueType
+	return parsingLoop, visitedRangeObj, visitedRangeKey, rangeObj, rangeKeyType, rangeElemType
 }
 
 func getAssignmentRightObjects(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, rightExprs []ast.Expr) []objects.Object {
@@ -434,9 +432,6 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 }
 
 func saveParsedFuncCallParams(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, parsedCall types.Call, args []ast.Expr) {
-	if parsedCall.GetName() == "StorePost" {
-		logger.Logger.Tracef("(1) FOUND CALL TO SERVICE VAR %s", parsedCall.GetName())
-	}
 	for i, arg := range args {
 		logger.Logger.Tracef("[CFG] inside save func call params")
 		param, _ := lookupObjectFromAstExpression(ctx, method, block, arg, nil, false)
@@ -448,9 +443,6 @@ func saveParsedFuncCallParams(ctx *ControlflowContext, method *types.ParsedMetho
 		}
 		parsedCall.AddParam(param)
 		logger.Logger.Tracef("ADDED PARAM: %s", param.LongString())
-	}
-	if parsedCall.GetName() == "StorePost" {
-		logger.Logger.Tracef("(1) FOUND CALL TO SERVICE VAR %s", parsedCall.GetName())
 	}
 }
 

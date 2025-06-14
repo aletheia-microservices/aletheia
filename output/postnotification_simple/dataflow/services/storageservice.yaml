@@ -69,7 +69,7 @@
   - 0 depth 0 (InterfaceObject UserType) err .error
 
 (*StorageServiceImpl).StorePost(ctx context.Context, reqID int64, text string):
-  block 2 (IfDone):
+  block 5 (IfDone):
   - 0 depth 0 (PointerObject PointerType) s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase})
   - _1 depth 1 (StructObject UserType) postnotification_simple.StorageServiceImpl
     struct{postsDb NoSQLDatabase}
@@ -109,6 +109,11 @@
   - '_11 depth 1 (FieldObject FieldType) ReqID int64 --> w-tainted 1x: write(posts_db.Post.ReqID)'
   - '_14 depth 1 (FieldObject FieldType) Text string --> w-tainted 1x: write(posts_db.Post.Text)'
   - '_17 depth 1 (FieldObject FieldType) Timestamp int64 --> w-tainted 1x: write(posts_db.Post.Timestamp)'
+  - 0 depth 0 (BasicObject BasicType) myval 0 int
+  - 0 depth 0 (ArrayObject ArrayType) mymentions []string
+  - _1 depth 1 (BasicObject BasicType) mention string
+  - 0 depth 0 (BasicObject BasicType) idx 0 int
+  - 0 depth 0 (ArrayObject ArrayType) mymentions []string
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
     {database = post, collection = post}
   - 0 depth 0 (InterfaceObject UserType) err .error
