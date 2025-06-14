@@ -99,16 +99,16 @@
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (ArrayObject ArrayType) rtsAndTypes []string
   - 0 depth 0 (MapObject MapType) res map[string]price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}
-  - _1 depth 1 (StructObject UserType) pc price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}
-  - '__2 depth 2 (Reference UserType) ref <pc price.PriceConfig struct{ID string,
-    TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate
-    float64}> @ FindByRouteIDAndTrainType --> r-tainted 1x: read(price_db.PriceConfig)'
   - 0 depth 0 (BasicObject BasicType) rt string
   - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (SliceObject SliceType) pieces []string
   - _3 depth 1 (BasicObject BasicType) ":" string
   - '0 depth 0 (SliceObject SliceType) routeid []string --> r-tainted 1x: read(price_db.PriceConfig.RouteID)'
   - '0 depth 0 (SliceObject SliceType) trainType []string --> r-tainted 1x: read(price_db.PriceConfig.TrainType)'
+  - 0 depth 0 (StructObject UserType) pc price.PriceConfig struct{ID string, TrainType string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}
+  - '_1 depth 1 (Reference UserType) ref <pc price.PriceConfig struct{ID string, TrainType
+    string, RouteID string, BasicPriceRate float64, FirstClassPriceRate float64}>
+    @ FindByRouteIDAndTrainType --> r-tainted 1x: read(price_db.PriceConfig)'
   - 0 depth 0 (InterfaceObject UserType) _ .error
   - _1 depth 1 (Reference BasicType) ref <nil> @ FindByRouteIDAndTrainType
 

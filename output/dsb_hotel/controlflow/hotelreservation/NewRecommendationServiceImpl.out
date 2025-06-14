@@ -1,0 +1,18 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] recommendDB NoSQLDatabase ---> depends on: {}
+	 [2] service (*hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}) ---> depends on: {hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] recommendDB NoSQLDatabase ---> depends on: {}
+	 [2] service (*hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}) ---> depends on: {hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] ctx context.Context ---> depends on: {}
+	 [1] recommendDB NoSQLDatabase ---> depends on: {}
+	 [2] service (*hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}) ---> depends on: {hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}}
+	 [3] err .error ---> depends on: {}
+

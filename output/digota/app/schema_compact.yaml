@@ -92,6 +92,32 @@ SKUS_DB:
 - dependencies: []
 - schema:
   - fields:
-    - _: <unknown type>
+    - _: digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
+    - Sku: digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
   - unfolded_fields:
     - _.id: string
+    - Sku: digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
+    - Sku.Id: string
+    - Sku.Name: string
+    - Sku.Price: uint64
+    - Sku.Currency: int32
+    - Sku.Active: bool
+    - Sku.Parent: string
+    - Sku.Metadata: map[string]string
+    - Sku.Metadata[*]: string
+    - Sku.Attributes: map[string]string
+    - Sku.Attributes[*]: string
+    - Sku.Image: string
+    - Sku.PackageDimensions: (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64})
+    - Sku.PackageDimensions.Height: float64
+    - Sku.PackageDimensions.Length: float64
+    - Sku.PackageDimensions.Weight: float64
+    - Sku.PackageDimensions.Width: float64
+    - Sku.Inventory: (*digota.Inventory struct{Quantity int64, Type int32})
+    - Sku.Inventory.Quantity: int64
+    - Sku.Inventory.Type: int32
+    - Sku.Created: int64
+    - Sku.Updated: int64
+  - constraints:
+    - REFERENCE(SKUS_DB.Sku.Name --> PRODUCTS_DB.Product.Name) [+]
+    - REFERENCE(SKUS_DB.Sku --> PRODUCTS_DB.Product.Name) [+]

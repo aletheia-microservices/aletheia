@@ -263,21 +263,30 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lObj.String())
 			}
 		case *ast.IndexExpr: // e.g. res[rt] = pc
-			lvariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, true)
+			leftObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, true)
+			indexObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
 			//newLeftVariable := lvariable.NewVersion()
-			switch ee := lvariable.(type) {
+			switch ee := leftObj.(type) {
 			case *objects.MapObject:
-				keyVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
-				if basicObj, ok := getUnderlyingBasicObjectIfExists(keyVariable); ok {
+				if basicObj, ok := getUnderlyingBasicObjectIfExists(indexObj); ok && basicObj.GetBasicType().GetBasicValue() != "" {
 					ee.AddKeyValue(basicObj, rObj)
 				} else {
-					ee.AddDynamicKeyValue(keyVariable, rObj)
+					ee.AddDynamicKeyValue(indexObj, rObj)
 				}
-			case *objects.FieldObject:
-				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lvariable.String())
+			case *objects.FieldObject: 
+				// e.g. DSB_HotelReservation -> RecommendationService.go -> LoadRecommendations()
+				// r.hotels[hotel.HId] = hotel
+				//   ^^^^^^
+				if basicObj, ok := getUnderlyingBasicObjectIfExists(indexObj); ok && basicObj.GetBasicType().GetBasicValue() != "" {
+					logger.Logger.Debugf("basic value: %s", basicObj.GetBasicType().GetBasicValue())
+				}
+				logger.Logger.Warnf("left object is [%s] %v", utils.GetType(ee.GetWrappedVariable()), ee.GetWrappedVariable())
+				logger.Logger.Warnf("index object is [%s] %v", utils.GetType(indexObj), indexObj)
+				logger.Logger.Warnf("right object is [%s] %v", utils.GetType(rObj), rObj)
+				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), leftObj.String())
+				
 			case *objects.ArrayObject:
-				idxVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
-				idx, ok := computeArrayIndexFromObject(idxVariable)
+				idx, ok := computeArrayIndexFromObject(indexObj)
 				if ok {
 					ee.SetElementAt(idx, rObj)
 				} else {
@@ -285,8 +294,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 					rObj.GetVariableInfo().SetDynamic()
 				}
 			case *objects.SliceObject:
-				idxVariable, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
-				idx, ok := computeArrayIndexFromObject(idxVariable)
+				idx, ok := computeArrayIndexFromObject(indexObj)
 				if ok {
 					ee.SetElementAt(idx, rObj)
 				} else {
@@ -294,7 +302,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 					rObj.GetVariableInfo().SetDynamic()
 				}
 			default:
-				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lvariable.String())
+				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), leftObj.String())
 			}
 		default:
 			logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected type (%s) for left value (%v) in assignment with token (%v): %v", method.Name, utils.GetType(lvalue), lvalue, assignStmt.Tok, assignStmt)

@@ -29,15 +29,15 @@
   - '0 depth 0 (BasicObject BasicType) quantity int --> w-tainted 4x: write(billing_db.Bill.Quantity,
     order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost)'
   - '_1 depth 1 (Reference BasicType) ref <quantity int> @ OrderService --> w-tainted
-    3x: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost)'
+    3x: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity)'
   - '__2 depth 2 (Reference BasicType) ref <quantity int> @ Frontend --> w-tainted
-    3x: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.TotalCost)'
+    3x: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity)'
   - '0 depth 0 (BasicObject BasicType) pricePerUnit int --> w-tainted 2x: write(billing_db.Bill.PricePerUnit,
     billing_db.Bill.TotalCost)'
   - '_1 depth 1 (Reference BasicType) ref <price int> @ OrderService --> w-tainted
-    1x: write(billing_db.Bill.TotalCost)'
+    1x: write(billing_db.Bill.PricePerUnit)'
   - '__2 depth 2 (Reference BasicType) ref <price int> @ Frontend --> w-tainted 1x:
-    write(billing_db.Bill.TotalCost)'
+    write(billing_db.Bill.PricePerUnit)'
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
     {database = bill_database, collection = bill_collection}
   - 0 depth 0 (InterfaceObject UserType) _ .error

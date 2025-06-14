@@ -276,10 +276,6 @@ func (app *App) ParseAppPackage(parsedPackage *types.Package, goPackage *package
 			// and that's why this 'else if' condition needs to be after the previous
 			lookup.SaveObjectToPackage(parsedPackage, obj)
 		}
-
-		if obj.Id() == "ALL_ASSURANCES" {
-			logger.Logger.Tracef("OBJ: %s", obj.String())
-		}
 	}
 
 	for i, fileAst := range goPackage.Syntax {

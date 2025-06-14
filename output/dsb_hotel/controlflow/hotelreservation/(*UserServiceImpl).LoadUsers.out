@@ -1,0 +1,42 @@
+[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] u (*hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}) ---> depends on: {hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] collection NoSQLCollection {database = user-db, collection = user} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}) ---> depends on: {hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] collection NoSQLCollection {database = user-db, collection = user} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] u (*hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}) ---> depends on: {hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] collection NoSQLCollection {database = user-db, collection = user} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] users []hotelreservation.User struct{Username string, Password string} ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {}
+	 [6] result NoSQLCursor {database = user-db, collection = user} ---> depends on: {users []hotelreservation.User struct{Username string, Password string}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] u (*hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}) ---> depends on: {hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] collection NoSQLCollection {database = user-db, collection = user} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] users []hotelreservation.User struct{Username string, Password string} ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {}
+	 [6] result NoSQLCursor {database = user-db, collection = user} ---> depends on: {users []hotelreservation.User struct{Username string, Password string}}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.ExprStmt, *ast.ReturnStmt]; SUCCS = []
+	 [0] u (*hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}) ---> depends on: {hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] collection NoSQLCollection {database = user-db, collection = user} ---> depends on: {}
+	 [3] err .error ---> depends on: {}
+	 [4] users []hotelreservation.User struct{Username string, Password string} ---> depends on: {}
+	 [5] filter primitive.D ---> depends on: {}
+	 [6] result NoSQLCursor {database = user-db, collection = user} ---> depends on: {users []hotelreservation.User struct{Username string, Password string}}
+	 [7] err .error ---> depends on: {}
+

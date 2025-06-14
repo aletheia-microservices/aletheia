@@ -1,0 +1,73 @@
+FrontEndService:
+- fields:
+    profileService: ProfileService
+    recommendationService: RecommendationService
+    reservationService: ReservationService
+    searchService: SearchService
+    userService: UserService
+- services:
+    ProfileService: hotelreservation.ProfileService
+    RecommendationService: hotelreservation.RecommendationService
+    ReservationService: hotelreservation.ReservationService
+    SearchService: hotelreservation.SearchService
+    UserService: hotelreservation.UserService
+- datastores: {}
+
+GeoService:
+- fields:
+    geoDB: NoSQLDatabase
+- services: {}
+- datastores:
+    geo_db: geo_db MongoDB (NoSQLDatabase)
+
+ProfileService:
+- fields:
+    profileCache: Cache
+    profileDB: NoSQLDatabase
+- services: {}
+- datastores:
+    profile_cache: profile_cache  (Cache)
+    profile_db: profile_db MongoDB (NoSQLDatabase)
+
+RateService:
+- fields:
+    rateCache: Cache
+    rateDB: NoSQLDatabase
+- services: {}
+- datastores:
+    rate_cache: rate_cache  (Cache)
+    rate_db: rate_db MongoDB (NoSQLDatabase)
+
+RecommendationService:
+- fields:
+    hotels: map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}
+    recommendDB: NoSQLDatabase
+- services: {}
+- datastores:
+    recomd_db: recomd_db MongoDB (NoSQLDatabase)
+
+ReservationService:
+- fields:
+    reserveCache: Cache
+    reserveDB: NoSQLDatabase
+- services: {}
+- datastores:
+    reserv_cache: reserv_cache  (Cache)
+    reserv_db: reserv_db MongoDB (NoSQLDatabase)
+
+SearchService:
+- fields:
+    geoService: GeoService
+    rateService: RateService
+- services:
+    GeoService: hotelreservation.GeoService
+    RateService: hotelreservation.RateService
+- datastores: {}
+
+UserService:
+- fields:
+    userDB: NoSQLDatabase
+    users: map[string]string
+- services: {}
+- datastores:
+    user_db: user_db MongoDB (NoSQLDatabase)

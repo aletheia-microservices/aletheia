@@ -1,0 +1,104 @@
+[BLOCK, #0, Body] NODES = [*ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+
+[BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+
+[BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.AssignStmt]; SUCCS = [Block #8]
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] locale "en" string ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #9, Block #10]
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [9] ctx context.Context ---> depends on: {}
+	 [10] lat float64 ---> depends on: {}
+	 [11] lon float64 ---> depends on: {}
+	 [12] require string ---> depends on: {}
+	 [13] locale string ---> depends on: {}
+	 [14] recommended_hotels []string ---> depends on: {}
+	 [15] err .error ---> depends on: {}
+	 [16] locale "en" string ---> depends on: {}
+	 [17] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [18] err .error ---> depends on: {}
+
+[BLOCK, #9, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] locale "en" string ---> depends on: {}
+	 [9] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #10, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] f (*hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}) ---> depends on: {hotelreservation.FrontEndServiceImpl struct{searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] lat float64 ---> depends on: {}
+	 [3] lon float64 ---> depends on: {}
+	 [4] require string ---> depends on: {}
+	 [5] locale string ---> depends on: {}
+	 [6] recommended_hotels []string ---> depends on: {}
+	 [7] err .error ---> depends on: {}
+	 [8] locale "en" string ---> depends on: {}
+	 [9] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+

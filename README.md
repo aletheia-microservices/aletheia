@@ -106,17 +106,21 @@ go run main.go --auto --fk_coordination --app postnotification_simple
 go run main.go --auto --fk_coordination --app postnotification
 go run main.go --auto --fk_coordination --app dsb_media
 go run main.go --auto --fk_coordination --app dsb_media_sql
-go run main.go --auto --fk_coordination --app trainticket
 go run main.go --auto --fk_coordination --app dsb_sn
+go run main.go --auto --fk_coordination --app dsb_hotel
+go run main.go --auto --fk_coordination --app trainticket
 
 ## Foreign Key Concurrency
 go run main.go --auto --fk_concurrency --app digota
-go run main.go --auto --fk_concurrency --app postnotification_simple
-go run main.go --auto --fk_concurrency --app postnotification
 go run main.go --auto --fk_concurrency --app shopping_simple
 go run main.go --auto --fk_concurrency --app shopping_app
+go run main.go --auto --fk_concurrency --app postnotification_simple
+go run main.go --auto --fk_concurrency --app postnotification
 go run main.go --auto --fk_concurrency --app dsb_media
 go run main.go --auto --fk_concurrency --app dsb_media_sql
+go run main.go --auto --fk_concurrency --app dsb_sn
+go run main.go --auto --fk_concurrency --app dsb_hotel
+go run main.go --auto --fk_concurrency --app trainticket
 
 ## Foreign Key Cascade
 go run main.go --auto --fk_cascade --app digota
@@ -126,6 +130,9 @@ go run main.go --auto --fk_cascade --app shopping_simple
 go run main.go --auto --fk_cascade --app shopping_app
 go run main.go --auto --fk_cascade --app dsb_media
 go run main.go --auto --fk_cascade --app dsb_media_sql
+go run main.go --auto --fk_cascade --app dsb_sn
+go run main.go --auto --fk_cascade --app dsb_hotel
+go run main.go --auto --fk_cascade --app trainticket
 
 ## Unicity Constraints
 go run main.go --auto --unicity --app digota
@@ -133,6 +140,9 @@ go run main.go --auto --unicity --app postnotification_simple
 go run main.go --auto --unicity --app postnotification
 go run main.go --auto --unicity --app dsb_media
 go run main.go --auto --unicity --app dsb_media_sql
+go run main.go --auto --unicity --app dsb_sn
+go run main.go --auto --unicity --app dsb_hotel
+go run main.go --auto --unicity --app trainticket
 ```
 
 Run the graph builder:

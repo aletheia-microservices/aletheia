@@ -1,0 +1,36 @@
+(*SearchServiceImpl).Nearby(ctx context.Context, lat float64, lon float64, inDate string, outDate string):
+- SERVICE CALL @ Nearby >> (*hotelreservation.GeoServiceImpl).Nearby(ctx context.Context, lat float64, lon float64) ([]string, error)
+- SERVICE CALL @ GetRates >> (*hotelreservation.RateServiceImpl).GetRates(ctx context.Context, hotelIDs []string, inDate string, outDate string) ([]hotelreservation.RatePlan struct{HotelID string, Code string, InDate string, OutDate string, RType hotelreservation.RoomType struct{BookableRate float64, Code string, RoomDescription string, TotalRate float64, TotalRateInclusive float64}}, error)
+
+.NewFrontEndServiceImpl(ctx context.Context, searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService)
+:
+ []
+
+.NewGeoServiceImpl(ctx context.Context, geoDB NoSQLDatabase):
+- INTERNAL CALL >> (*hotelreservation.GeoServiceImpl).newGeoIndex(ctx context.Context)
+  error
+
+.NewProfileServiceImpl(ctx context.Context, profileCache Cache, profileDB NoSQLDatabase): []
+
+.NewRateServiceImpl(ctx context.Context, rateCache Cache, rateDB NoSQLDatabase): []
+
+.NewRecommendationServiceImpl(ctx context.Context, recommendDB NoSQLDatabase):
+- INTERNAL CALL >> (*hotelreservation.RecommendationServiceImpl).LoadRecommendations(ctx context.Context) error
+
+.NewReservationServiceImpl(ctx context.Context, reserveCache Cache, reserveDB NoSQLDatabase): []
+
+.NewSearchServiceImpl(ctx context.Context, geoService hotelreservation.GeoService, rateService hotelreservation.RateService): []
+
+.NewUserServiceImpl(ctx context.Context, userDB NoSQLDatabase):
+- INTERNAL CALL >> (*hotelreservation.UserServiceImpl).LoadUsers(ctx context.Context)
+  error
+
+.checkDataFormat(date string): []
+
+HotelProfile.remote(): []
+
+Point.Id(): []
+
+Point.Lat(): []
+
+Point.Lon(): []

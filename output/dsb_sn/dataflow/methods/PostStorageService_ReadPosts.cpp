@@ -16,7 +16,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -39,7 +38,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -83,7 +81,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -106,7 +103,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -154,7 +150,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -177,7 +172,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -221,7 +215,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -244,7 +237,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -305,7 +297,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -328,7 +319,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -372,7 +362,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -395,7 +384,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -443,7 +431,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -466,7 +453,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -510,7 +496,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -533,7 +518,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -575,16 +559,13 @@
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
 [__2] (MapObject MapType) unique_post_ids map[int64]bool
-[___3] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) k bool
 [_1] (MapObject MapType) unique_post_ids map[int64]bool
-[__2] (BasicObject BasicType) true bool
 
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
 [__2] (MapObject MapType) unique_post_ids map[int64]bool
-[___3] (BasicObject BasicType) true bool
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -604,7 +585,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -627,19 +607,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
-
-[0] (BasicObject BasicType) pid int64
-[_1] (ArrayObject ArrayType) postIDs []int64
-
-[0] (ArrayObject ArrayType) keys []string
-[_1] (BasicObject BasicType) string
-[__2] (BasicObject BasicType) pid int64
-[___3] (ArrayObject ArrayType) postIDs []int64
-[__2] (BasicObject BasicType) 10 int
-[__2] (BasicObject BasicType) pid int64
-[___3] (ArrayObject ArrayType) postIDs []int64
-[__2] (BasicObject BasicType) 10 int
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -653,6 +620,18 @@
 [___3] (ArrayObject ArrayType) postIDs []int64
 [__2] (BasicObject BasicType) 10 int
 
+[0] (BasicObject BasicType) pid int64
+[_1] (ArrayObject ArrayType) postIDs []int64
+
+[0] (ArrayObject ArrayType) keys []string
+[_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
 [__2] (FieldObject FieldType) CacheMiss int64
@@ -671,7 +650,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -694,7 +672,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -742,7 +719,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -765,7 +741,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -809,7 +784,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -832,7 +806,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -893,7 +866,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -916,7 +888,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -960,7 +931,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -983,7 +953,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1031,7 +1000,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1054,7 +1022,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1098,7 +1065,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1121,7 +1087,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1163,11 +1128,9 @@
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
 [__2] (MapObject MapType) unique_post_ids map[int64]bool
-[___3] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) k bool
 [_1] (MapObject MapType) unique_post_ids map[int64]bool
-[__2] (BasicObject BasicType) true bool
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = post, collection = post}
 
@@ -1179,40 +1142,32 @@
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [__2] (BasicObject BasicType) string
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [_1] (BasicObject BasicType) "," string
 [_1] (SliceObject SliceType) []string
 [__2] (BasicObject BasicType) string
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [__2] (BasicObject BasicType) string
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [_1] (BasicObject BasicType) "," string
 
 [0] (BasicObject BasicType) query string
@@ -1257,7 +1212,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1280,7 +1234,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1324,7 +1277,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1347,7 +1299,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1395,7 +1346,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1418,7 +1368,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1462,7 +1411,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1485,7 +1433,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1546,7 +1493,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1569,7 +1515,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1613,7 +1558,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1636,7 +1580,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1684,7 +1627,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1707,7 +1649,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1751,7 +1692,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1774,7 +1714,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1816,16 +1755,13 @@
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
 [__2] (MapObject MapType) unique_post_ids map[int64]bool
-[___3] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) k bool
 [_1] (MapObject MapType) unique_post_ids map[int64]bool
-[__2] (BasicObject BasicType) true bool
 
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
 [__2] (MapObject MapType) unique_post_ids map[int64]bool
-[___3] (BasicObject BasicType) true bool
 
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
@@ -1845,7 +1781,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1868,19 +1803,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
-
-[0] (BasicObject BasicType) pid int64
-[_1] (ArrayObject ArrayType) postIDs []int64
-
-[0] (ArrayObject ArrayType) keys []string
-[_1] (BasicObject BasicType) string
-[__2] (BasicObject BasicType) pid int64
-[___3] (ArrayObject ArrayType) postIDs []int64
-[__2] (BasicObject BasicType) 10 int
-[__2] (BasicObject BasicType) pid int64
-[___3] (ArrayObject ArrayType) postIDs []int64
-[__2] (BasicObject BasicType) 10 int
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1894,6 +1816,18 @@
 [___3] (ArrayObject ArrayType) postIDs []int64
 [__2] (BasicObject BasicType) 10 int
 
+[0] (BasicObject BasicType) pid int64
+[_1] (ArrayObject ArrayType) postIDs []int64
+
+[0] (ArrayObject ArrayType) keys []string
+[_1] (BasicObject BasicType) string
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+[__2] (BasicObject BasicType) pid int64
+[___3] (ArrayObject ArrayType) postIDs []int64
+[__2] (BasicObject BasicType) 10 int
+
 [0] (PointerObject PointerType) p (*socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64})
 [_1] (StructObject UserType) socialnetwork.PostStorageServiceImpl struct{postStorageCache Cache, postStorageDB NoSQLDatabase, CacheHits int64, NumReqs int64, CacheMiss int64}
 [__2] (FieldObject FieldType) CacheMiss int64
@@ -1912,7 +1846,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1935,7 +1868,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -1983,7 +1915,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2006,7 +1937,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2050,7 +1980,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2073,7 +2002,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2134,7 +2062,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2157,7 +2084,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2201,7 +2127,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2224,7 +2149,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2272,7 +2196,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2295,7 +2218,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2339,7 +2261,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2362,7 +2283,6 @@
 [0] (ArrayObject ArrayType) postIDs []int64
 
 [0] (MapObject MapType) unique_post_ids map[int64]bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) pid int64
 [_1] (ArrayObject ArrayType) postIDs []int64
@@ -2404,11 +2324,9 @@
 [0] (ArrayObject ArrayType) unique_pids []int64
 [_1] (BasicObject BasicType) k bool
 [__2] (MapObject MapType) unique_post_ids map[int64]bool
-[___3] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) k bool
 [_1] (MapObject MapType) unique_post_ids map[int64]bool
-[__2] (BasicObject BasicType) true bool
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = post, collection = post}
 
@@ -2420,40 +2338,32 @@
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [__2] (BasicObject BasicType) string
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [_1] (BasicObject BasicType) "," string
 [_1] (SliceObject SliceType) []string
 [__2] (BasicObject BasicType) string
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [__2] (BasicObject BasicType) string
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [___3] (ArrayObject ArrayType) unique_pids []int64
 [____4] (BasicObject BasicType) k bool
 [_____5] (MapObject MapType) unique_post_ids map[int64]bool
-[______6] (BasicObject BasicType) true bool
 [_1] (BasicObject BasicType) "," string
 
 [0] (BasicObject BasicType) query string

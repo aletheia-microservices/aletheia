@@ -24,8 +24,6 @@
 [0] (InterfaceObject UserType) err .error
 
 [0] (MapObject MapType) followers_set map[int64]bool
-[_1] (BasicObject BasicType) true bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) follower int64
 [_1] (SliceObject SliceType) followers []int64
@@ -56,8 +54,6 @@
 [0] (InterfaceObject UserType) err .error
 
 [0] (MapObject MapType) followers_set map[int64]bool
-[_1] (BasicObject BasicType) true bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) follower int64
 [_1] (SliceObject SliceType) followers []int64
@@ -91,8 +87,6 @@
 [0] (InterfaceObject UserType) err .error
 
 [0] (MapObject MapType) followers_set map[int64]bool
-[_1] (BasicObject BasicType) true bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) follower int64
 [_1] (SliceObject SliceType) followers []int64
@@ -123,8 +117,6 @@
 [0] (InterfaceObject UserType) err .error
 
 [0] (MapObject MapType) followers_set map[int64]bool
-[_1] (BasicObject BasicType) true bool
-[_1] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) follower int64
 [_1] (SliceObject SliceType) followers []int64
@@ -134,19 +126,13 @@
 
 [0] (BasicObject BasicType) id bool
 [_1] (MapObject MapType) followers_set map[int64]bool
-[__2] (BasicObject BasicType) true bool
-[__2] (BasicObject BasicType) true bool
 
 [0] (BasicObject BasicType) id_str string
 [_1] (BasicObject BasicType) id bool
 [__2] (MapObject MapType) followers_set map[int64]bool
-[___3] (BasicObject BasicType) true bool
-[___3] (BasicObject BasicType) true bool
 [_1] (BasicObject BasicType) 10 int
 [_1] (BasicObject BasicType) id bool
 [__2] (MapObject MapType) followers_set map[int64]bool
-[___3] (BasicObject BasicType) true bool
-[___3] (BasicObject BasicType) true bool
 [_1] (BasicObject BasicType) 10 int
 
 [0] (ArrayObject ArrayType) posts []socialnetwork.PostInfo struct{PostID int64, Timestamp int64}

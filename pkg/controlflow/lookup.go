@@ -54,6 +54,8 @@ func getUnderlyingBasicObjectIfExists(obj objects.Object) (*objects.BasicObject,
 		return getUnderlyingBasicObjectIfExists(addressObj.AddressOf)
 	} else if pointerObj, ok := obj.(*objects.PointerObject); ok {
 		return getUnderlyingBasicObjectIfExists(pointerObj.PointerTo)
+	} else if fieldObj, ok := obj.(*objects.FieldObject); ok {
+		return getUnderlyingBasicObjectIfExists(fieldObj.GetWrappedVariable())
 	} else if basicObj, ok := obj.(*objects.BasicObject); ok {
 		return basicObj, true
 	}
@@ -76,7 +78,7 @@ func lookupVariableFromIdentIfExists(ctx *ControlflowContext, block *types.Block
 				Id:   objects.VARIABLE_INLINE_ID,
 			},
 		}
-		logger.Logger.Debugf("variable is builtin go value type: %s", variable.String())
+		logger.Logger.Debugf("[CFG - LOOKUP IDENT] variable is builtin go value type: %s", variable.String())
 		return variable
 	}
 
@@ -95,7 +97,7 @@ func lookupVariableFromIdentIfExists(ctx *ControlflowContext, block *types.Block
 
 	variable := block.GetLastestVariableIfExists(ident.Name)
 	if variable != nil {
-		logger.Logger.Debugf("variable found in block declarations: %s", variable.String())
+		logger.Logger.Debugf("[CFG - LOOKUP IDENT] variable found in block declarations: %s", variable.String())
 		return variable
 	}
 	// if its not a variable in the block then it can be either

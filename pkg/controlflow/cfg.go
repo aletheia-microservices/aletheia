@@ -48,7 +48,9 @@ func (ctx *ControlflowContext) GetPackage() *types.Package {
 	if ctx.pkg != nil {
 		return ctx.pkg
 	}
-	return ctx.service.GetPackage()
+	logger.Logger.Fatalf("[CONTROLFLOW CONTEXT] package not found for controlflow context: %s", ctx.String())
+	//return ctx.service.GetPackage()
+	return nil
 }
 
 func (ctx *ControlflowContext) GetService() *service.Service {

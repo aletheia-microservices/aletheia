@@ -1,0 +1,122 @@
+(*SearchServiceImpl).Nearby(ctx context.Context, lat float64, lon float64, inDate string, outDate string):
+  block 9 (RangeDone):
+  - 0 depth 0 (PointerObject PointerType) s (*hotelreservation.SearchServiceImpl struct{geoService hotelreservation.GeoService, rateService hotelreservation.RateService})
+  - _1 depth 1 (StructObject UserType) hotelreservation.SearchServiceImpl struct{geoService hotelreservation.GeoService, rateService hotelreservation.RateService}
+  - __2 depth 2 (FieldObject FieldType) geoService hotelreservation.GeoService
+  - ___3 depth 3 (ServiceObject ServiceType) geoService hotelreservation.GeoService
+  - __4 depth 2 (FieldObject FieldType) rateService hotelreservation.RateService
+  - ___5 depth 3 (ServiceObject ServiceType) rateService hotelreservation.RateService
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BasicObject BasicType) lat float64
+  - 0 depth 0 (BasicObject BasicType) lon float64
+  - 0 depth 0 (BasicObject BasicType) inDate string
+  - 0 depth 0 (BasicObject BasicType) outDate string
+  - 0 depth 0 (ArrayObject ArrayType) nearby_hotels []string
+  - _1 depth 1 (BasicObject BasicType) HotelID string
+  - 0 depth 0 (SliceObject SliceType) nearby_hotel_ids []string
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (SliceObject SliceType) rates []hotelreservation.RatePlan struct{HotelID string, Code string, InDate string, OutDate string, RType hotelreservation.RoomType struct{BookableRate float64, Code string, RoomDescription string, TotalRate float64, TotalRateInclusive float64}}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (StructObject UserType) rate hotelreservation.RatePlan struct{HotelID string, Code string, InDate string, OutDate string, RType hotelreservation.RoomType struct{BookableRate float64, Code string, RoomDescription string, TotalRate float64, TotalRateInclusive float64}}
+  - _2 depth 1 (FieldObject FieldType) HotelID string
+  - 0 depth 0 (ArrayObject ArrayType) nearby_hotels []string
+
+.NewFrontEndServiceImpl(ctx context.Context, searchService hotelreservation.SearchService, profileService hotelreservation.ProfileService, recommendationService hotelreservation.RecommendationService, userService hotelreservation.UserService, reservationService hotelreservation.ReservationService)
+:
+ block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) searchService hotelreservation.SearchService
+  - 0 depth 0 (ServiceObject ServiceType) profileService hotelreservation.ProfileService
+  - 0 depth 0 (ServiceObject ServiceType) recommendationService hotelreservation.RecommendationService
+  - 0 depth 0 (ServiceObject ServiceType) userService hotelreservation.UserService
+  - 0 depth 0 (ServiceObject ServiceType) reservationService hotelreservation.ReservationService
+
+.NewGeoServiceImpl(ctx context.Context, geoDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) geoDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) service (*hotelreservation.GeoServiceImpl struct{geoDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) hotelreservation.GeoServiceImpl struct{geoDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) geoDB NoSQLDatabase
+
+.NewProfileServiceImpl(ctx context.Context, profileCache Cache, profileDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) profileCache Cache
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) profileDB NoSQLDatabase
+
+.NewRateServiceImpl(ctx context.Context, rateCache Cache, rateDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) rateCache Cache
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) rateDB NoSQLDatabase
+
+.NewRecommendationServiceImpl(ctx context.Context, recommendDB NoSQLDatabase):
+  block 2 (IfDone):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) recommendDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) service (*hotelreservation.RecommendationServiceImpl struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}})
+  - _1 depth 1 (StructObject UserType) hotelreservation.RecommendationServiceImpl
+    struct{recommendDB NoSQLDatabase, hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}}
+  - __2 depth 2 (FieldObject FieldType) hotels map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}
+  - ___3 depth 3 (MapObject MapType) map[string]hotelreservation.Hotel struct{HId string, HLat float64, HLon float64, HRate float64, HPrice float64}
+  - __4 depth 2 (FieldObject FieldType) recommendDB NoSQLDatabase
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+.NewReservationServiceImpl(ctx context.Context, reserveCache Cache, reserveDB NoSQLDatabase):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) reserveCache Cache
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) reserveDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) r (*hotelreservation.ReservationServiceImpl struct{reserveCache Cache, reserveDB NoSQLDatabase, CacheHits int64, NumRequests int64})
+  - _1 depth 1 (StructObject UserType) hotelreservation.ReservationServiceImpl struct{reserveCache Cache, reserveDB NoSQLDatabase, CacheHits int64, NumRequests int64}
+  - __2 depth 2 (FieldObject FieldType) CacheHits int64
+  - ___3 depth 3 (BasicObject BasicType) 1 int
+  - __4 depth 2 (FieldObject FieldType) NumRequests int64
+  - ___5 depth 3 (BasicObject BasicType) 1 int
+  - __6 depth 2 (FieldObject FieldType) reserveCache Cache
+  - __8 depth 2 (FieldObject FieldType) reserveDB NoSQLDatabase
+
+.NewSearchServiceImpl(ctx context.Context, geoService hotelreservation.GeoService, rateService hotelreservation.RateService):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) geoService hotelreservation.GeoService
+  - 0 depth 0 (ServiceObject ServiceType) rateService hotelreservation.RateService
+
+.NewUserServiceImpl(ctx context.Context, userDB NoSQLDatabase):
+  block 2 (IfDone):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) userDB NoSQLDatabase
+  - 0 depth 0 (PointerObject PointerType) u (*hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase})
+  - _1 depth 1 (StructObject UserType) hotelreservation.UserServiceImpl struct{users map[string]string, userDB NoSQLDatabase}
+  - __2 depth 2 (FieldObject FieldType) userDB NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) users map[string]string
+  - ___5 depth 3 (MapObject MapType) map[string]string
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+.checkDataFormat(date string):
+  block 15 (IfDone):
+  - 0 depth 0 (BasicObject BasicType) date string
+  - 0 depth 0 (BasicObject BasicType) i 2 int
+
+HotelProfile.remote():
+  block 0 (Body):
+  - 0 depth 0 (StructObject UserType) hp hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}
+
+Point.Id():
+  block 0 (Body):
+  - 0 depth 0 (StructObject UserType) p hotelreservation.Point struct{Pid string, Plat float64, Plon float64}
+  - _1 depth 1 (FieldObject FieldType) Pid string
+  - __2 depth 2 (BasicObject BasicType) Pid string
+
+Point.Lat():
+  block 0 (Body):
+  - 0 depth 0 (StructObject UserType) p hotelreservation.Point struct{Pid string, Plat float64, Plon float64}
+  - _1 depth 1 (FieldObject FieldType) Plat float64
+  - __2 depth 2 (BasicObject BasicType) Plat float64
+
+Point.Lon():
+  block 0 (Body):
+  - 0 depth 0 (StructObject UserType) p hotelreservation.Point struct{Pid string, Plat float64, Plon float64}
+  - _1 depth 1 (FieldObject FieldType) Plon float64
+  - __2 depth 2 (BasicObject BasicType) Plon float64

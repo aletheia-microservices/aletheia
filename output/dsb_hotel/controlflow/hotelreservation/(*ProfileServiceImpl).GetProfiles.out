@@ -1,0 +1,191 @@
+[BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.Ident, *ast.Ident, *ast.Ident]; SUCCS = [Block #1]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+
+[BLOCK, #1, RangeLoop] NODES = []; SUCCS = [Block #2, Block #3]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+	 [12] res NoSQLCursor {database = profile-db, collection = hotels} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [13] err .error ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+	 [15] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [16] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [17] ctx context.Context ---> depends on: {}
+	 [18] hotelIds []string ---> depends on: {}
+	 [19] locale string ---> depends on: {}
+	 [20] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [21] hid string ---> depends on: {hotelIds []string}
+
+[BLOCK, #2, RangeBody] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #5, IfDone] NODES = [*ast.UnaryExpr]; SUCCS = [Block #7, Block #8]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+
+[BLOCK, #7, IfThen] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #9, Block #10]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #9, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+
+[BLOCK, #10, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #12, Block #13]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+	 [12] res NoSQLCursor {database = profile-db, collection = hotels} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #12, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+	 [12] res NoSQLCursor {database = profile-db, collection = hotels} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [13] err .error ---> depends on: {}
+
+[BLOCK, #13, IfDone] NODES = [*ast.ExprStmt, *ast.AssignStmt]; SUCCS = [Block #8]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+	 [12] res NoSQLCursor {database = profile-db, collection = hotels} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [13] err .error ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+
+[BLOCK, #8, IfDone] NODES = [*ast.AssignStmt]; SUCCS = [Block #1]
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [10] ctx context.Context ---> depends on: {}
+	 [11] hotelIds []string ---> depends on: {}
+	 [12] locale string ---> depends on: {}
+	 [13] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [14] hid string ---> depends on: {hotelIds []string}
+	 [15] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [16] exists bool ---> depends on: {}
+	 [17] err .error ---> depends on: {}
+	 [18] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [19] err .error ---> depends on: {}
+	 [20] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+	 [21] res NoSQLCursor {database = profile-db, collection = hotels} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [22] err .error ---> depends on: {}
+	 [23] err .error ---> depends on: {}
+	 [24] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+
+[BLOCK, #3, RangeDone] NODES = [*ast.ReturnStmt]; SUCCS = []
+	 [0] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [1] ctx context.Context ---> depends on: {}
+	 [2] hotelIds []string ---> depends on: {}
+	 [3] locale string ---> depends on: {}
+	 [4] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [5] hid string ---> depends on: {hotelIds []string}
+	 [6] profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {}
+	 [7] exists bool ---> depends on: {}
+	 [8] err .error ---> depends on: {}
+	 [9] collection NoSQLCollection {database = profile-db, collection = hotels} ---> depends on: {}
+	 [10] err .error ---> depends on: {}
+	 [11] query primitive.D ---> depends on: {struct{ string,  "id" string,  string}}
+	 [12] res NoSQLCursor {database = profile-db, collection = hotels} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [13] err .error ---> depends on: {}
+	 [14] err .error ---> depends on: {}
+	 [15] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [16] p (*hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}) ---> depends on: {hotelreservation.ProfileServiceImpl struct{profileCache Cache, profileDB NoSQLDatabase}}
+	 [17] ctx context.Context ---> depends on: {}
+	 [18] hotelIds []string ---> depends on: {}
+	 [19] locale string ---> depends on: {}
+	 [20] profiles []hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}} ---> depends on: {profile hotelreservation.HotelProfile struct{ID string, Name string, PhoneNumber string, Description string, Address hotelreservation.Address struct{StreetNumber string, StreetName string, City string, State string, Country string, PostalCode string, Lat float64, Lon float64}}}
+	 [21] hid string ---> depends on: {hotelIds []string}
+
