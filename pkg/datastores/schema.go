@@ -365,6 +365,10 @@ type Constraint struct {
 	numerical   *NumericalConstraint
 }
 
+func (c *Constraint) IsForeignKey() bool {
+	return c.reference
+}
+
 func (c *Constraint) GetNumerical() *NumericalConstraint {
 	return c.numerical
 }

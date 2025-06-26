@@ -74,13 +74,13 @@ func (app *App) GetDbInstances() map[string]datastores.DatabaseInstance {
 	return app.Databases
 }
 
-// GetDatabasesReferencingCurrent discards any queue or cache
-func (app *App) GetDatabasesReferencingCurrent(curr *datastores.Datastore) []*datastores.Datastore {
+// GetDatabasesReferencingCurrentExceptQueues discards any queue or cache
+func (app *App) GetDatabasesReferencingCurrentExceptQueues(curr *datastores.Datastore) []*datastores.Datastore {
 	var refs []*datastores.Datastore
 	for _, dbInstance := range app.GetDbInstances() {
 		ds := dbInstance.GetDatastore()
 
-		// discard any queue or cache
+		// discard any
 		if ds.IsQueue() {
 			continue
 		}

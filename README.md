@@ -124,10 +124,11 @@ go run main.go --auto --fk_concurrency --app trainticket
 
 ## Foreign Key Cascade
 go run main.go --auto --fk_cascade --app digota
-go run main.go --auto --fk_cascade --app postnotification_simple
-go run main.go --auto --fk_cascade --app postnotification
+go run main.go --auto --fk_cascade --app sockshop2
 go run main.go --auto --fk_cascade --app shopping_simple
 go run main.go --auto --fk_cascade --app shopping_app
+go run main.go --auto --fk_cascade --app postnotification_simple
+go run main.go --auto --fk_cascade --app postnotification
 go run main.go --auto --fk_cascade --app dsb_media
 go run main.go --auto --fk_cascade --app dsb_media_sql
 go run main.go --auto --fk_cascade --app dsb_sn

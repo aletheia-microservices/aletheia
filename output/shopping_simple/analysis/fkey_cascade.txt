@@ -1,0 +1,9 @@
+---------------------------------------------------------------------
+-------------------- FOREIGN KEY CASCADE ANALYSIS -------------------
+---------------------------------------------------------------------
+>> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
+>> (1;1)
+---------------------------------------------------------------------
+[0m[1] delete with 1 missing cascades:
+ProductService: product_db.DeleteOne()
+	- (cart_db, CartService) on constraint REFERENCE(CART_DB.Cart --> PRODUCT_DB.Product.ProductID)

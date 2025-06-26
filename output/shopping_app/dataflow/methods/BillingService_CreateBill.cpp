@@ -30,9 +30,9 @@
 
     --> w-tainted: write(billing_db.Bill.PricePerUnit, billing_db.Bill.TotalCost) {2}
 [0] (BasicObject BasicType) pricePerUnit int
-     --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+     --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [_1] (Reference BasicType) ref <price int> @ OrderService
-      --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+      --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [__2] (Reference BasicType) ref <price int> @ Frontend
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = bill_database, collection = bill_collection}
@@ -45,9 +45,9 @@
 [_1] (FieldObject FieldType) PricePerUnit int
       --> w-tainted: write(billing_db.Bill.PricePerUnit, billing_db.Bill.TotalCost) {2}
 [__2] (BasicObject BasicType) pricePerUnit int
-       --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+       --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [___3] (Reference BasicType) ref <price int> @ OrderService
-        --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+        --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [____4] (Reference BasicType) ref <price int> @ Frontend
      --> w-tainted: write(billing_db.Bill.ProductID) {1}
 [_1] (FieldObject FieldType) ProductID string
@@ -77,9 +77,9 @@
 [_____5] (Reference BasicType) ref <quantity int> @ Frontend
        --> w-tainted: write(billing_db.Bill.PricePerUnit, billing_db.Bill.TotalCost) {2}
 [___3] (BasicObject BasicType) pricePerUnit int
-        --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+        --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [____4] (Reference BasicType) ref <price int> @ OrderService
-         --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+         --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [_____5] (Reference BasicType) ref <price int> @ Frontend
      --> w-tainted: write(billing_db.Bill.UserID) {1}
 [_1] (FieldObject FieldType) UserID string

@@ -36,9 +36,9 @@
      --> w-tainted: write(order_db.Order.Quantity, stock_db.Stock.Quantity, billing_db.Bill.Quantity) {3}
 [_1] (Reference BasicType) ref <quantity int> @ Frontend
 
-    --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+    --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [0] (BasicObject BasicType) price int
-     --> w-tainted: write(billing_db.Bill.PricePerUnit) {1}
+     --> w-tainted: write(billing_db.Bill.TotalCost) {1}
 [_1] (Reference BasicType) ref <price int> @ Frontend
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = order_database, collection = order_collection}
