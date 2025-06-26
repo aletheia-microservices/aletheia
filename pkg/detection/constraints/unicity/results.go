@@ -1,6 +1,10 @@
 package unicity
 
-import "fmt"
+import (
+	"fmt"
+
+	"analyzer/pkg/logger"
+)
 
 func (detector *UnicityDetector) GetResults() string {
 	return detector.results
@@ -35,7 +39,15 @@ func (detector *UnicityDetector) loadInconsistencies() {
 					detector.results += "\t -------------------------------------------------------------\n"
 					detector.results += "\t -------------------- AFFECTED OPERATIONS --------------------\n"
 					for affectedOp, refFields := range op.getAffectedOperations() {
-						detector.results += fmt.Sprintf("\t [%d] (%s, %s)\n", affectedOp.idx, affectedOp.call.Service, affectedOp.datastore.GetName())
+						detector.results += fmt.Sprintf("\t [%d] (%s, %s)", affectedOp.idx, affectedOp.call.Service, affectedOp.datastore.GetName())
+
+						if op.isConstrained() && affectedOp.isConstrained() {
+							logger.Logger.Debugf("constraints: %v: ", affectedOp.constraints)
+							detector.results += " // NOTE: detected heterogeneous conflict resolution across datastores\n"
+						} else {
+							detector.results += " // NOTE: detected conflict resolution in single datastore\n"
+						}
+
 						detector.results += "\t -> " + affectedOp.call.String() + "\n"
 						detector.results += "\t\t referencing fields from prev. operation:\n"
 						for _, field := range refFields {

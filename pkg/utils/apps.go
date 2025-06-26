@@ -145,9 +145,9 @@ var APPS_CONSTRAINTS_UNICITY = map[string][]string{
 		"(COUPONS_DB.ClaimedCoupon.CouponID,COUPONS_DB.ClaimedCoupon.UserID)",
 	},
 	"dsb_media": {
-		"(MOVIEID_DB.MovieId.MovieID)",
+		//"(MOVIEID_DB.MovieId.MovieID)",
 		"(MOVIEID_DB.MovieId.Title)",
-		"(MOVIEINFO_DB.MovieInfo.MovieID)",
+		//"(MOVIEINFO_DB.MovieInfo.MovieID)",
 	},
 }
 

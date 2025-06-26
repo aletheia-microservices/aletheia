@@ -12,7 +12,7 @@
 	 @ PRIMARY(MOVIEID_DB.movieid.movieid)
 	 -------------------------------------------------------------
 	 -------------------- AFFECTED OPERATIONS --------------------
-	 [1] (MovieInfoService, movieinfo_db)
+	 [1] (MovieInfoService, movieinfo_db) // NOTE: detected heterogeneous conflict resolution across datastores
 	 -> m.movieInfoDB.Exec(ctx context.Context, "INSERT INTO movieinfo(movieid, title, casts) VALUES (?, ?);" string, movieID string, title string, casts string)
 		 referencing fields from prev. operation:
 		 - MOVIEID_DB.movieid.movieid
@@ -25,7 +25,7 @@
 	 @ PRIMARY(MOVIEINFO_DB.movieinfo.movieid)
 	 -------------------------------------------------------------
 	 -------------------- AFFECTED OPERATIONS --------------------
-	 [0] (MovieIdService, movieid_db)
+	 [0] (MovieIdService, movieid_db) // NOTE: detected heterogeneous conflict resolution across datastores
 	 -> m.movieIdDB.Exec(ctx context.Context, "INSERT INTO movieid(movieid, title) VALUES (?, ?);" string, movieID string, title string)
 		 referencing fields from prev. operation:
 		 - MOVIEINFO_DB.movieinfo.movieid
