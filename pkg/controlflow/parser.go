@@ -145,27 +145,30 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 			if !ok {
 				logger.Logger.Fatalf("[CFG - VISIT BASIC BLOCK] unexpected type (%s) for node: %v", utils.GetType(node), node)
 			}
-			if ident.Name != "_" {
-				if !visitedRangeKey {
-					visitedRangeKey = true
-					// range key
-					if rangeKeyType != nil {
-						// range value if there is more than 1 elem
-						obj := lookup.CreateObjectFromType(ident.Name, rangeKeyType)
-						obj.GetVariableInfo().AddDependency(rangeObj)
-						block.AddObject(obj)
-						logger.Logger.Fatalf("parsed range value")
-					} else {
-						// if there is no range key type, then range key is just an iterator index
-						obj := wrapValueInBasicVariable("0", "int", ident.Name)
-						block.AddObject(obj)
-					}
-				} else {
+
+			if !visitedRangeKey {
+				visitedRangeKey = true
+
+				if ident.Name == "_" {
+					return parsingLoop, visitedRangeObj, visitedRangeKey, rangeObj, rangeKeyType, rangeElemType
+				}
+
+				// range key
+				if rangeKeyType != nil {
 					// range value if there is more than 1 elem
-					obj := lookup.CreateObjectFromType(ident.Name, rangeElemType)
+					obj := lookup.CreateObjectFromType(ident.Name, rangeKeyType)
 					obj.GetVariableInfo().AddDependency(rangeObj)
 					block.AddObject(obj)
+				} else {
+					// if there is no range key type, then range key is just an iterator index
+					obj := wrapValueInBasicVariable("0", "int", ident.Name)
+					block.AddObject(obj)
 				}
+			} else {
+				// range value if there is more than 1 elem
+				obj := lookup.CreateObjectFromType(ident.Name, rangeElemType)
+				obj.GetVariableInfo().AddDependency(rangeObj)
+				block.AddObject(obj)
 			}
 		}
 	}
