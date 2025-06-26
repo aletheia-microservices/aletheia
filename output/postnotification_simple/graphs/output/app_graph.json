@@ -1,6 +1,10 @@
 {
   "nodes": [
     {
+      "id": "AnalyticsService",
+      "type": "service"
+    },
+    {
       "id": "NotifyService",
       "type": "service"
     },
@@ -13,6 +17,14 @@
       "type": "service"
     },
     {
+      "id": "analytics_db MongoDB",
+      "type": "datastore"
+    },
+    {
+      "id": "analytics_queue RabbitMQ",
+      "type": "datastore"
+    },
+    {
       "id": "notifications_queue RabbitMQ",
       "type": "datastore"
     },
@@ -23,6 +35,14 @@
   ],
   "edges": [
     {
+      "caller": "AnalyticsService",
+      "callee": "analytics_db MongoDB"
+    },
+    {
+      "caller": "AnalyticsService",
+      "callee": "analytics_queue RabbitMQ"
+    },
+    {
       "caller": "NotifyService",
       "callee": "StorageService"
     },
@@ -32,7 +52,15 @@
     },
     {
       "caller": "StorageService",
+      "callee": "analytics_queue RabbitMQ"
+    },
+    {
+      "caller": "StorageService",
       "callee": "posts_db MongoDB"
+    },
+    {
+      "caller": "UploadService",
+      "callee": "AnalyticsService"
     },
     {
       "caller": "UploadService",

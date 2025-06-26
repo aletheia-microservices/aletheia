@@ -29,6 +29,7 @@ postnotification_simple:
 - package path: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple
 - module: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow
 - files:
+  - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/postnotification_simple/workflow/postnotification_simple/AnalyticsService.go
   - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/postnotification_simple/workflow/postnotification_simple/NotifyService.go
   - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/postnotification_simple/workflow/postnotification_simple/StorageService.go
   - /Users/mafaldacf/workspace/ms-consistency-analyzer/blueprint/examples/postnotification_simple/workflow/postnotification_simple/UploadService.go
@@ -65,6 +66,10 @@ postnotification_simple:
 - imported constants: []
 - imported variables: []
 - declared types:
+  - postnotification_simple.Analytics struct{PostID int64}
+  - postnotification_simple.AnalyticsService
+  - postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})},
+    analyticsDb NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}, numWorkers int}
   - postnotification_simple.Creator struct{Username string}
   - postnotification_simple.Message struct{ReqID int64, PostID_MESSAGE int64, Timestamp int64}
   - postnotification_simple.NotifyService
@@ -72,13 +77,15 @@ postnotification_simple:
     Queue.Pop(ctx context.Context, item interface{})}, num_workers int}
   - postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}
   - postnotification_simple.StorageService
-  - postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
+  - postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}, analyticsQueue Queue
+    interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})}}
+  - postnotification_simple.TriggerAnalyticsMessage struct{PostID string}
   - postnotification_simple.UploadService
-  - postnotification_simple.UploadServiceImpl struct{storageService postnotification_simple.StorageService, notificationsQueue Queue interface{Queue.Push(ctx context.Context, item interface{}),
-    Queue.Pop(ctx context.Context, item interface{})}}
+  - postnotification_simple.UploadServiceImpl struct{storageService postnotification_simple.StorageService, analyticsService postnotification_simple.AnalyticsService, notificationsQueue Queue interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})}}
 - declared variables: []
 - declared constants: []
 - service types:
+  - postnotification_simple.AnalyticsService
   - postnotification_simple.NotifyService
   - postnotification_simple.StorageService
   - postnotification_simple.UploadService
@@ -89,6 +96,12 @@ postnotification_simple:
   - NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}
   - Queue interface{Queue.Push(ctx context.Context, item interface{}), Queue.Pop(ctx context.Context, item interface{})}
 - parsed methods:
+  - (*postnotification_simple.AnalyticsServiceImpl).ReadAnalytics(ctx context.Context, postID int64) (postnotification_simple.Analytics struct{PostID int64}, error)
+  - (*postnotification_simple.AnalyticsServiceImpl).Run(ctx context.Context) error
+  - (*postnotification_simple.AnalyticsServiceImpl).handleMessage(ctx context.Context, message postnotification_simple.TriggerAnalyticsMessage struct{PostID string})
+    error
+  - (*postnotification_simple.AnalyticsServiceImpl).workerThread(ctx context.Context)
+    error
   - (*postnotification_simple.NotifyServiceImpl).Run(ctx context.Context) error
   - (*postnotification_simple.NotifyServiceImpl).workerThread(ctx context.Context)
     error
@@ -96,8 +109,9 @@ postnotification_simple:
   - (*postnotification_simple.StorageServiceImpl).ReadPost(ctx context.Context, reqID int64, postID int64) (postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}, error)
   - (*postnotification_simple.StorageServiceImpl).StorePost(ctx context.Context, reqID int64, text string) (int64, error)
   - (*postnotification_simple.UploadServiceImpl).DeletePost(ctx context.Context, postID int64) error
+  - (*postnotification_simple.UploadServiceImpl).ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64) (postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}, postnotification_simple.Analytics struct{PostID int64}, error)
   - (*postnotification_simple.UploadServiceImpl).UploadPost(ctx context.Context, username string, text string) (int64, error)
+  - postnotification_simple.NewAnalyticsServiceImpl(ctx context.Context, analyticsDb NoSQLDatabase, analyticsQueue Queue) (postnotification_simple.AnalyticsService, error)
   - postnotification_simple.NewNotifyServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue) (postnotification_simple.NotifyService, error)
-  - postnotification_simple.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase)
-    (postnotification_simple.StorageService, error)
-  - postnotification_simple.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue) (postnotification_simple.UploadService, error)
+  - postnotification_simple.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase, analyticsQueue Queue) (postnotification_simple.StorageService, error)
+  - postnotification_simple.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, analyticsService postnotification_simple.AnalyticsService, notificationsQueue Queue) (postnotification_simple.UploadService, error)

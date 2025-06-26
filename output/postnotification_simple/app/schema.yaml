@@ -1,3 +1,44 @@
+ANALYTICS_DB:
+- type: NoSQLDatabase
+- kind: MongoDB
+- dependencies: []
+- schema:
+  - fields:
+    - _: postnotification_simple.Analytics struct{PostID int64}
+    - Analytics: postnotification_simple.Analytics struct{PostID int64}
+  - unfolded_fields:
+    - _.postid: int64
+    - Analytics: postnotification_simple.Analytics struct{PostID int64}
+    - Analytics.PostID: int64
+  - constraints:
+    - REFERENCE(ANALYTICS_DB.Analytics.PostID --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_DB.Analytics.PostID --> POSTS_DB.Post.PostID) [+]
+    - REFERENCE(ANALYTICS_DB.Analytics.PostID --> POSTS_DB._.postid)
+    - REFERENCE(ANALYTICS_DB.Analytics --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_DB.Analytics --> POSTS_DB.Post.PostID) [+]
+    - REFERENCE(ANALYTICS_DB.Analytics --> POSTS_DB._.postid)
+
+ANALYTICS_QUEUE:
+- type: Queue
+- kind: RabbitMQ
+- dependencies: []
+- schema:
+  - fields:
+    - _: postnotification_simple.TriggerAnalyticsMessage struct{PostID string}
+    - TriggerAnalyticsMessage: postnotification_simple.TriggerAnalyticsMessage struct{PostID string}
+  - unfolded_fields:
+    - TriggerAnalyticsMessage: postnotification_simple.TriggerAnalyticsMessage struct{PostID string}
+    - TriggerAnalyticsMessage.PostID: string
+  - constraints:
+    - REFERENCE(ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID --> POSTS_DB.Post.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID --> POSTS_DB._.postid)
+    - REFERENCE(ANALYTICS_QUEUE.TriggerAnalyticsMessage --> POSTS_DB.Post.PostID)
+      [+]
+    - REFERENCE(ANALYTICS_QUEUE.TriggerAnalyticsMessage --> POSTS_DB._.postid)
+
 NOTIFICATIONS_QUEUE:
 - type: Queue
 - kind: RabbitMQ
@@ -12,10 +53,19 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID_MESSAGE: int64
     - Message.Timestamp: int64
   - constraints:
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> POSTS_DB._.postid)
     - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> POSTS_DB.Post.PostID)
       [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)
+      [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> ANALYTICS_DB.Analytics.PostID)
+      [+]
     - REFERENCE(NOTIFICATIONS_QUEUE.Message.ReqID --> POSTS_DB.Post.ReqID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB._.postid)
     - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB.Post.PostID) [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)
+      [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message --> ANALYTICS_DB.Analytics.PostID) [+]
     - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB.Post.ReqID) [+]
 
 POSTS_DB:
@@ -27,6 +77,7 @@ POSTS_DB:
     - _: postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username "some username" string}}
     - Post: postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username "some username" string}}
   - unfolded_fields:
+    - _.postid: int64
     - Post: postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username "some username" string}}
     - Post.ReqID: int64
     - Post.PostID: int64

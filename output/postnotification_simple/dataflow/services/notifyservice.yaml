@@ -30,6 +30,19 @@
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (ChanObject ChanType) forever chan struct{}
 
+.NewAnalyticsServiceImpl(ctx context.Context, analyticsDb NoSQLDatabase, analyticsQueue Queue):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) analyticsDb NoSQLDatabase
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - 0 depth 0 (PointerObject PointerType) n (*postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.AnalyticsServiceImpl
+    struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int}
+  - __2 depth 2 (FieldObject FieldType) analyticsDb NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - __6 depth 2 (FieldObject FieldType) numWorkers 4 int
+  - ___7 depth 3 (BasicObject BasicType) 4 int
+
 .NewNotifyServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue):
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
@@ -42,17 +55,21 @@
   - ___5 depth 3 (BasicObject BasicType) 4 int
   - __6 depth 2 (FieldObject FieldType) storageService postnotification_simple.StorageService
 
-.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase):
+.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase, analyticsQueue Queue):
   block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) postsDb NoSQLDatabase
-  - 0 depth 0 (PointerObject PointerType) s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase})
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - 0 depth 0 (PointerObject PointerType) s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue})
   - _1 depth 1 (StructObject UserType) postnotification_simple.StorageServiceImpl
-    struct{postsDb NoSQLDatabase}
-  - __2 depth 2 (FieldObject FieldType) postsDb NoSQLDatabase
+    struct{postsDb NoSQLDatabase, analyticsQueue Queue}
+  - __2 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - __4 depth 2 (FieldObject FieldType) postsDb NoSQLDatabase
 
-.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue):
-  block 0 (Body):
+.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, analyticsService postnotification_simple.AnalyticsService, notificationsQueue Queue)
+:
+ block 0 (Body):
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
   - 0 depth 0 (ServiceObject ServiceType) storageService postnotification_simple.StorageService
+  - 0 depth 0 (ServiceObject ServiceType) analyticsService postnotification_simple.AnalyticsService
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) notificationsQueue Queue

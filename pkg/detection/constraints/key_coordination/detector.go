@@ -31,7 +31,7 @@ type KeyCoordinationDetector struct {
 func NewDetector(keyType string) *KeyCoordinationDetector {
 	fmt.Println()
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" --------------------------------------- INITIALIZING KEY COORDINATION DETECTOR ---------------------------------------- ")
+	fmt.Println(" --------------------------------------- INITIALIZING KEY_COORD DETECTOR ---------------------------------------- ")
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 	fmt.Println()
 	return &KeyCoordinationDetector{
@@ -101,51 +101,58 @@ func (detector *KeyCoordinationDetector) OnEndRequest(app *app.App) {
 // then we detect a new foreignkey-based read
 func (detector *KeyCoordinationDetector) checkKeyRead(app *app.App, currObj objects.Object, originFieldName string, datastore *datastores.Datastore, dbCall *abstractgraph.AbstractDatabaseCall) {
 	currField := datastore.Schema.GetField(originFieldName)
-	logger.Logger.Infof("[KEY COORD 1] check KEY COORD read for origin field (%s) and object: %s", currField.String(), currObj.String())
+	logger.Logger.Infof("[KEY_COORD 1] check KEY COORD read for origin field (%s) and object: %s", currField.String(), currObj.String())
 	var visited []string
 	deps := currObj.GetNestedDependencies(true)
-	logger.Logger.Debugf("[KEY COORD 2] \t deps: %v", deps)
+	logger.Logger.Debugf("[KEY_COORD 2] \t deps: %v", deps)
 	for _, dep := range deps {
 		for _, df := range dep.GetVariableInfo().GetAllReadDataflowsExceptDatastore(dbCall.DbInstance.GetName()) { // except filter is just for sanity check
-			logger.Logger.Debugf("[KEY COORD 3.0] \t\t dep: %s", dep.String())
-			logger.Logger.Debugf("[KEY COORD 3.1] \t\t dataflow: %s", df.String())
+			logger.Logger.Debugf("[KEY_COORD 3.0] \t\t dep: %s", dep.String())
+			logger.Logger.Debugf("[KEY_COORD 3.1] \t\t dataflow: %s", df.String())
 
 			otherField := df.Field
 
-			logger.Logger.Debugf("[KEY COORD 3.2] \t\t other field: %s", otherField.GetFullName())
+			logger.Logger.Debugf("[KEY_COORD 3.2] \t\t other field: %s", otherField.GetFullName())
 
 			// FIXME: we re-assign "otherField" because, for some reason, the original "otherField" is not
 			// the one we are expecting with the reference, although in the schema there is a reference
 			otherField = otherField.GetDatastore().GetSchema().GetFieldByFullName(otherField.GetFullName())
 
-			logger.Logger.Debugf("[KEY COORD 3.3] \t\t going to check inconsistencies...")
+			logger.Logger.Debugf("[KEY_COORD 3.3] \t\t going to check inconsistencies...")
 
 			var checkInconsistency = func(field1 *datastores.Field, field2 *datastores.Field) {
 				// now that we know that the other field references the current one (e.g., Cart.Products references Product.ProductID)
-				// we want to know if their association is mandatory (false in this app), meaning that they were written in the same request
-				// NOTE: this fine-grained approach should prevent a false positive flag in, for example,
+				// we want to know if their association is mandatory (e.g., false for shoppingApp), meaning that they were written in the same request
+				
+				// this fine-grained approach should prevent a false positive flag in, for example,
 				// the shopping_app where products can still be associated afterwards after the cart creation
 				// but still allow a true positive flag in the post notification
 
-				pkeyConstrains := field1.GetConstraints(datastores.ConstraintFilter{Primary: utils.BoolPtr(true)})
-				if detector.keyTypeIsPrimaryKey() && pkeyConstrains == nil {
-					return 
-				}/*  else if detector.keyTypeIsForeignKey() && pkeyConstrains != nil {
-					return
-				} */
+				// check if there are any primary key constraints for field1
+				// if not, then it's useless to search for inconsistencies involving field1
+				if detector.keyTypeIsPrimaryKey() {
+					if pkeyConstrains := field1.GetConstraints(datastores.ConstraintFilter{Primary: utils.BoolPtr(true)}); pkeyConstrains == nil {
+						return
+					}
+				}
 				
 				filter := datastores.ConstraintFilter{
-					Reference: utils.BoolPtr(true), 
-					Mandatory: utils.BoolPtr(true), 
 					Primary: utils.BoolPtr(false),
+					Reference: utils.BoolPtr(true),
+					// must be a mandatory reference, meaning that both fields (and corresponding objects) 
+					// were presviously written in the same request 
+					Mandatory: utils.BoolPtr(true),
 				}
-				for _, constraint := range field1.GetConstraints(filter) {
-					if constraint.FieldIsReferencingTo(field2) {
+
+				for _, constraintField1 := range field1.GetConstraints(filter) {
+					if constraintField1.FieldIsReferencingTo(field2) {
+
+						// just to avoid duplicates
 						if !slices.Contains(visited, field1.GetFullName()) {
 							read := newForeignKeyRead(field1, field2, app.GetDataflowForObjectDataflow(df).GetDatabaseCall(), dbCall.ParsedCall)
 							detector.addForeignKeyRead(read)
 
-							logger.Logger.Warnf("[KEY COORD] found new KEY COORD read:\n%s", read.String())
+							logger.Logger.Debugf("[KEY_COORD] found new KEY COORD read:\n%s", read.String())
 							visited = append(visited, field1.GetFullName())
 						}
 					}
@@ -153,11 +160,13 @@ func (detector *KeyCoordinationDetector) checkKeyRead(app *app.App, currObj obje
 			}
 
 			if otherField.HasReference(currField) {
-				// EXAMPLE: read(NOTIFICATION) (w/ other: fk on postid) ... read(POST) (w/ curr: postid)
+				// example: postnotification w/ services NotifyService and StorageService
+				// workflow: post_id = NotifyService.fetch_notification(notif) --> StorageService.read_post(post_id)
 				checkInconsistency(otherField, currField)
 			} else if currField.HasReference(otherField) {
-				// EXAMPLE: read(post) (w/ other: postid) ... read(analytics) (w/ curr: fk on postid)
-				// THIS STILL NEEDS TO BE TESTED!!
+				// example: postnotification w/ services StorageService and AnalyticsService
+				// workflow: StorageService.read_post(post_id) --> AnalyticsService.read_analytics(post_id)
+				// workflow: AnalyticsService.read_analytics(post_id) --> StorageService.read_post(post_id)
 				checkInconsistency(currField, otherField)
 			}
 		}

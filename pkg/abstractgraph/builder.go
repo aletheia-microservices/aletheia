@@ -236,6 +236,7 @@ func (graph *AbstractGraph) appendAbstractEdges(parent AbstractNode, targetMetho
 				DbInstance: parsedCall.DbInstance,
 				Subscriber: rootIsQueueHandler,
 				Depth:      parent.GetNextDepth(),
+				Caller:     parent.GetMethodStr(),
 			}
 			parent.AddChild(child)
 			logger.Logger.Infof("[GRAPH] addding node for abstract database call with parent (%s): %s", child.GetCallerStr(), child.String())

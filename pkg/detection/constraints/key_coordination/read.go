@@ -24,7 +24,7 @@ func newForeignKeyRead(refField *datastores.Field, originField *datastores.Field
 }
 
 func (read *ForeignKeyRead) String() string {
-	ref := fmt.Sprintf("- ref:\t%s\n\t@ %s", read.refField.GetFullName(), read.refDbCall.String())
-	dst := fmt.Sprintf("- dst:\t%s\n\t@ %s", read.originField.GetFullName(), read.originDbCall.String())
+	ref := fmt.Sprintf("- ref:\t%s\n\t@ %s > %s", read.refField.GetFullName(), read.refDbCall.CallerTypeName, read.refDbCall.String())
+	dst := fmt.Sprintf("- dst:\t%s\n\t@ %s > %s", read.originField.GetFullName(), read.originDbCall.CallerTypeName, read.originDbCall.String())
 	return ref + "\n" + dst
 }

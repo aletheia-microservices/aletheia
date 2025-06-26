@@ -5,6 +5,10 @@
       "type": "client"
     },
     {
+      "id": "AnalyticsService",
+      "type": "service"
+    },
+    {
       "id": "NotifyService",
       "type": "service"
     },
@@ -17,6 +21,14 @@
       "type": "service"
     },
     {
+      "id": "analytics_db MongoDB",
+      "type": "datastore"
+    },
+    {
+      "id": "analytics_queue RabbitMQ",
+      "type": "datastore"
+    },
+    {
       "id": "notifications_queue RabbitMQ",
       "type": "datastore"
     },
@@ -26,6 +38,18 @@
     }
   ],
   "edges": [
+    {
+      "caller": "AnalyticsService",
+      "callee": "analytics_db MongoDB",
+      "call": "InsertOne",
+      "depth": 4
+    },
+    {
+      "caller": "AnalyticsService",
+      "callee": "analytics_queue RabbitMQ",
+      "call": "Pop",
+      "depth": 4
+    },
     {
       "caller": "Client",
       "callee": "UploadService",
@@ -43,6 +67,12 @@
       "callee": "notifications_queue RabbitMQ",
       "call": "Pop",
       "depth": 3
+    },
+    {
+      "caller": "StorageService",
+      "callee": "analytics_queue RabbitMQ",
+      "call": "Push",
+      "depth": 2
     },
     {
       "caller": "StorageService",
@@ -67,6 +97,12 @@
       "callee": "notifications_queue RabbitMQ",
       "call": "Push",
       "depth": 1
+    },
+    {
+      "caller": "analytics_queue RabbitMQ",
+      "callee": "AnalyticsService",
+      "call": "workerThread",
+      "depth": 3
     },
     {
       "caller": "notifications_queue RabbitMQ",

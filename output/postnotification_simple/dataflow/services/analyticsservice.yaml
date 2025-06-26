@@ -1,0 +1,159 @@
+(*AnalyticsServiceImpl).ReadAnalytics(ctx context.Context, postID int64):
+  block 8 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) a (*postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.AnalyticsServiceImpl
+    struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int}
+  - __2 depth 2 (FieldObject FieldType) analyticsDb NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsDb NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - ___5 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - __6 depth 2 (FieldObject FieldType) numWorkers 4 int
+  - ___7 depth 3 (BasicObject BasicType) 4 int
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ UploadService
+  - '0 depth 0 (BasicObject BasicType) postID int64 --> r-tainted 1x: read(analytics_db._.postid)'
+  - '_1 depth 1 (Reference BasicType) ref <postID int64> @ UploadService --> r-tainted
+    3x: read(posts_db._.postid, analytics_db._.postid, posts_db.Post.PostID)'
+  - '0 depth 0 (StructObject UserType) analytics postnotification_simple.Analytics
+    struct{PostID int64} --> r-tainted 1x: read(analytics_db.Analytics)'
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = analyticsDb, collection = analytics_collection}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (SliceObject UserType) analyticsQuery primitive.D
+  - _1 depth 1 (StructObject StructType) struct{Key "postid" string, Key "postid" string, Value int64, Value int64}
+  - __2 depth 2 (FieldObject FieldType) Key "postid" string
+  - ___3 depth 3 (BasicObject BasicType) "postid" string
+  - __4 depth 2 (FieldObject FieldType) Value int64
+  - '0 depth 0 (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database
+    = analyticsDb, collection = analytics_collection} --> r-tainted 1x: read(analytics_db._)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (BasicObject BasicType) res bool
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+(*AnalyticsServiceImpl).Run(ctx context.Context):
+  block 4 (ForPost):
+  - 0 depth 0 (PointerObject PointerType) n (*postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.AnalyticsServiceImpl
+    struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int}
+  - __2 depth 2 (FieldObject FieldType) analyticsDb NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsDb NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - ___5 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - __6 depth 2 (FieldObject FieldType) numWorkers 4 int
+  - ___7 depth 3 (BasicObject BasicType) 4 int
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (StructObject UserType) wg sync.WaitGroup
+  - 0 depth 0 (BasicObject BasicType) i 3 int
+  - 0 depth 0 (BasicObject BasicType) i 3 int
+  - 0 depth 0 (InterfaceObject UserType) err .error
+
+(*AnalyticsServiceImpl).handleMessage(ctx context.Context, message postnotification_simple.TriggerAnalyticsMessage struct{PostID string})
+:
+ block 5 (IfDone):
+  - 0 depth 0 (PointerObject PointerType) a (*postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.AnalyticsServiceImpl
+    struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int}
+  - __2 depth 2 (FieldObject FieldType) analyticsDb NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsDb NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - ___5 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - __6 depth 2 (FieldObject FieldType) numWorkers 4 int
+  - ___7 depth 3 (BasicObject BasicType) 4 int
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ AnalyticsService
+  - '0 depth 0 (StructObject UserType) message postnotification_simple.TriggerAnalyticsMessage
+    struct{PostID string} --> w-tainted 1x: write(analytics_queue.TriggerAnalyticsMessage)
+    --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage)'
+  - '_1 depth 1 (Reference UserType) ref <analyticsEvent postnotification_simple.TriggerAnalyticsMessage
+    struct{PostID string}> @ AnalyticsService --> w-tainted 1x: write(analytics_queue.TriggerAnalyticsMessage)
+    --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage)'
+  - '__2 depth 2 (Reference UserType) ref <message postnotification_simple.TriggerAnalyticsMessage
+    struct{PostID string}> @ AnalyticsService --> w-tainted 1x: write(analytics_queue.TriggerAnalyticsMessage)
+    --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage)'
+  - '___3 depth 3 (FieldObject FieldType) PostID string --> w-tainted 2x: write(analytics_queue.TriggerAnalyticsMessage.PostID,
+    analytics_db.Analytics.PostID) --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage.PostID)'
+  - '____4 depth 4 (BasicObject BasicType) string --> w-tainted 2x: write(analytics_queue.TriggerAnalyticsMessage.PostID,
+    analytics_db.Analytics.PostID) --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage.PostID)'
+  - '_____5 depth 5 (BasicObject BasicType) postID_STORAGE_SVC int64 --> w-tainted
+    4x: write(posts_db.Post.PostID, analytics_queue.TriggerAnalyticsMessage.PostID,
+    analytics_db.Analytics.PostID, notifications_queue.Message.PostID_MESSAGE) -->
+    r-tainted 4x: read(posts_db._.postid, analytics_queue.TriggerAnalyticsMessage.PostID,
+    notifications_queue.Message.PostID_MESSAGE, posts_db.Post.PostID)'
+  - '_7 depth 1 (Reference UserType) ref <message postnotification_simple.TriggerAnalyticsMessage
+    struct{PostID string}> @ AnalyticsService --> w-tainted 1x: write(analytics_queue.TriggerAnalyticsMessage)
+    --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage)'
+  - '_12 depth 1 (FieldObject FieldType) PostID string --> w-tainted 1x: write(analytics_queue.TriggerAnalyticsMessage.PostID)'
+  - '__13 depth 2 (Reference FieldType) ref <PostID string> @ AnalyticsService -->
+    w-tainted 2x: write(analytics_queue.TriggerAnalyticsMessage.PostID, analytics_db.Analytics.PostID)
+    --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage.PostID)'
+  - '__17 depth 2 (BasicObject BasicType) PostID string --> w-tainted 2x: write(analytics_queue.TriggerAnalyticsMessage.PostID,
+    analytics_db.Analytics.PostID)'
+  - '___18 depth 3 (Reference FieldType) ref <PostID string> @ AnalyticsService -->
+    w-tainted 2x: write(analytics_queue.TriggerAnalyticsMessage.PostID, analytics_db.Analytics.PostID)
+    --> r-tainted 1x: read(analytics_queue.TriggerAnalyticsMessage.PostID)'
+  - '0 depth 0 (BasicObject BasicType) postID int64 --> w-tainted 1x: write(analytics_db.Analytics.PostID)'
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection
+    {database = analyticsDb, collection = analytics_collection}
+  - 0 depth 0 (InterfaceObject UserType) err .error
+  - '0 depth 0 (StructObject UserType) analytics postnotification_simple.Analytics
+    struct{PostID int64} --> w-tainted 1x: write(analytics_db.Analytics)'
+  - '_1 depth 1 (FieldObject FieldType) PostID int64 --> w-tainted 1x: write(analytics_db.Analytics.PostID)'
+
+(*AnalyticsServiceImpl).workerThread(ctx context.Context):
+  block 0 (Body):
+  - 0 depth 0 (PointerObject PointerType) n (*postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.AnalyticsServiceImpl
+    struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int}
+  - __2 depth 2 (FieldObject FieldType) analyticsDb NoSQLDatabase
+  - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsDb NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - ___5 depth 3 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - __6 depth 2 (FieldObject FieldType) numWorkers 4 int
+  - ___7 depth 3 (BasicObject BasicType) 4 int
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ChanObject ChanType) forever chan struct{}
+
+.NewAnalyticsServiceImpl(ctx context.Context, analyticsDb NoSQLDatabase, analyticsQueue Queue):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) analyticsDb NoSQLDatabase
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - 0 depth 0 (PointerObject PointerType) n (*postnotification_simple.AnalyticsServiceImpl struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.AnalyticsServiceImpl
+    struct{analyticsQueue Queue, analyticsDb NoSQLDatabase, numWorkers 4 int}
+  - __2 depth 2 (FieldObject FieldType) analyticsDb NoSQLDatabase
+  - __4 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - __6 depth 2 (FieldObject FieldType) numWorkers 4 int
+  - ___7 depth 3 (BasicObject BasicType) 4 int
+
+.NewNotifyServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) storageService postnotification_simple.StorageService
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) notificationsQueue Queue
+  - 0 depth 0 (PointerObject PointerType) n (*postnotification_simple.NotifyServiceImpl struct{storageService postnotification_simple.StorageService, notificationsQueue Queue, num_workers 4 int})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.NotifyServiceImpl struct{storageService postnotification_simple.StorageService, notificationsQueue Queue, num_workers 4 int}
+  - __2 depth 2 (FieldObject FieldType) notificationsQueue Queue
+  - __4 depth 2 (FieldObject FieldType) num_workers 4 int
+  - ___5 depth 3 (BasicObject BasicType) 4 int
+  - __6 depth 2 (FieldObject FieldType) storageService postnotification_simple.StorageService
+
+.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase, analyticsQueue Queue):
+  block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) postsDb NoSQLDatabase
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) analyticsQueue Queue
+  - 0 depth 0 (PointerObject PointerType) s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue})
+  - _1 depth 1 (StructObject UserType) postnotification_simple.StorageServiceImpl
+    struct{postsDb NoSQLDatabase, analyticsQueue Queue}
+  - __2 depth 2 (FieldObject FieldType) analyticsQueue Queue
+  - __4 depth 2 (FieldObject FieldType) postsDb NoSQLDatabase
+
+.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, analyticsService postnotification_simple.AnalyticsService, notificationsQueue Queue)
+:
+ block 0 (Body):
+  - 0 depth 0 (InterfaceObject UserType) ctx context.Context
+  - 0 depth 0 (ServiceObject ServiceType) storageService postnotification_simple.StorageService
+  - 0 depth 0 (ServiceObject ServiceType) analyticsService postnotification_simple.AnalyticsService
+  - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) notificationsQueue Queue

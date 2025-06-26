@@ -6,9 +6,15 @@
 
 (*StorageServiceImpl).StorePost(ctx context.Context, reqID int64, text string):
 - DATASTORE CALL @ posts_db >> NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{}) interface{}
+- DATASTORE CALL @ analytics_queue >> Queue.Push(ctx context.Context, item interface{})
+  (err, interface{})
+
+.NewAnalyticsServiceImpl(ctx context.Context, analyticsDb NoSQLDatabase, analyticsQueue Queue): []
 
 .NewNotifyServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue): []
 
-.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase): []
+.NewStorageServiceImpl(ctx context.Context, postsDb NoSQLDatabase, analyticsQueue Queue): []
 
-.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, notificationsQueue Queue): []
+.NewUploadServiceImpl(ctx context.Context, storageService postnotification_simple.StorageService, analyticsService postnotification_simple.AnalyticsService, notificationsQueue Queue)
+:
+ []

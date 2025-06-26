@@ -1,5 +1,5 @@
 [BLOCK, #0, Body] NODES = [*ast.ValueSpec, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #1, Block #2]
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
@@ -8,7 +8,7 @@
 	 [6] err .error ---> depends on: {}
 
 [BLOCK, #1, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
@@ -17,7 +17,7 @@
 	 [6] err .error ---> depends on: {}
 
 [BLOCK, #2, IfDone] NODES = [*ast.AssignStmt, *ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #4, Block #5]
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
@@ -29,7 +29,7 @@
 	 [9] err .error ---> depends on: {}
 
 [BLOCK, #4, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
@@ -41,7 +41,7 @@
 	 [9] err .error ---> depends on: {}
 
 [BLOCK, #5, IfDone] NODES = [*ast.AssignStmt, *ast.BinaryExpr]; SUCCS = [Block #7, Block #8]
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
@@ -55,7 +55,7 @@
 	 [11] err .error ---> depends on: {}
 
 [BLOCK, #7, IfThen] NODES = [*ast.ReturnStmt]; SUCCS = []
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
@@ -69,7 +69,7 @@
 	 [11] err .error ---> depends on: {}
 
 [BLOCK, #8, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
-	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase}}
+	 [0] s (*postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}) ---> depends on: {postnotification_simple.StorageServiceImpl struct{postsDb NoSQLDatabase, analyticsQueue Queue}}
 	 [1] ctx context.Context ---> depends on: {}
 	 [2] reqID int64 ---> depends on: {}
 	 [3] postID int64 ---> depends on: {}
