@@ -1,4 +1,4 @@
-package foreign_key_concurrency
+package fkey_concurrency
 
 import (
 	"fmt"
@@ -230,5 +230,5 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, dbCall *ab
 }
 
 func (detector *ForeignKeyConcurrencyDetector) GetAnalysisTypeString() string {
-	return "foreign_key_concurrency"
+	return "fkey_concurrency"
 }

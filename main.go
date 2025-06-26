@@ -10,8 +10,8 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/datastores"
 	"analyzer/pkg/datastores/constraints"
-	"analyzer/pkg/detection/constraints/foreign_key_cascade"
-	"analyzer/pkg/detection/constraints/foreign_key_concurrency"
+	"analyzer/pkg/detection/constraints/fkey_cascade"
+	"analyzer/pkg/detection/constraints/fkey_concurrency"
 	"analyzer/pkg/detection/constraints/key_coordination"
 	"analyzer/pkg/detection/constraints/numerical"
 	"analyzer/pkg/detection/constraints/specialization"
@@ -36,7 +36,7 @@ type analysisConfig struct {
 	autofill                        bool
 	detectOnly                      bool
 	xcyDetection                    bool
-	primaryKeyCoordinationDetection  bool
+	primaryKeyCoordinationDetection bool
 	foreignKeyCoordinationDetection bool
 	foreignKeyConcurrencyDetection  bool
 	foreignKeyCascadeDetection      bool
@@ -187,21 +187,21 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 	}
 
 	if analysis.foreignKeyConcurrencyDetection {
-		foreignKeyConcurrencyDetector := foreign_key_concurrency.NewDetector()
-		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyConcurrencyDetector)
+		fkeyConcurrencyDetector := fkey_concurrency.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, fkeyConcurrencyDetector)
 		iterator.Run()
-		foreignKeyConcurrencyDetector.NextIterationPhase()
+		fkeyConcurrencyDetector.NextIterationPhase()
 		iterator.Run()
-		results += detection.SaveResults(app, foreignKeyConcurrencyDetector)
-		summary += foreignKeyConcurrencyDetector.GetSummary()
+		results += detection.SaveResults(app, fkeyConcurrencyDetector)
+		summary += fkeyConcurrencyDetector.GetSummary()
 	}
 
 	if analysis.foreignKeyCascadeDetection {
-		foreignKeyCascadeDetector := foreign_key_cascade.NewDetector()
-		iterator := iterator.NewIterator(app, abstractGraph, foreignKeyCascadeDetector)
+		fkeyCascadeDetector := fkey_cascade.NewDetector()
+		iterator := iterator.NewIterator(app, abstractGraph, fkeyCascadeDetector)
 		iterator.Run()
-		results += detection.SaveResults(app, foreignKeyCascadeDetector)
-		summary += foreignKeyCascadeDetector.GetSummary()
+		results += detection.SaveResults(app, fkeyCascadeDetector)
+		summary += fkeyCascadeDetector.GetSummary()
 	}
 
 	if analysis.specializationDetection {

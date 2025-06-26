@@ -1,4 +1,4 @@
-package foreign_key_cascade
+package fkey_cascade
 
 import (
 	"fmt"

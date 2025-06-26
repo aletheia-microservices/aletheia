@@ -1,4 +1,4 @@
-package foreign_key_cascade
+package fkey_cascade
 
 import (
 	"fmt"
@@ -29,10 +29,10 @@ func parseNoSQLUpdateOnRemovedFields(blueprintBackendMethod *blueprint.BackendMe
 					if bsonValue == nil {
 						bsonValue = updateBsonStruct.GetFieldAt(1)
 					}
-					
+
 					if bsonValueSlice, ok := bsonValue.GetWrappedVariable().(*objects.SliceObject); ok {
 						elemsToUpdate := bsonValueSlice.GetElements()
-						
+
 						for j, elemToUpdate := range elemsToUpdate {
 							elemToUpdateStruct := elemToUpdate.(*objects.StructObject)
 
@@ -46,10 +46,9 @@ func parseNoSQLUpdateOnRemovedFields(blueprintBackendMethod *blueprint.BackendMe
 								elemValueField = elemToUpdateStruct.GetFieldAt(1)
 							}
 
-
 							elemKey := elemKeyField.GetWrappedVariable().(*objects.BasicObject).GetBasicType().GetBasicValue()
 							elemValue := elemValueField.GetWrappedVariable().(*objects.BasicObject).GetBasicType().GetBasicValue()
-							
+
 							//collection := blueprintBackendMethod.GetCalledBackendType().NoSQLComponent.Collection
 							//fieldName := collection + "." + elemKey
 

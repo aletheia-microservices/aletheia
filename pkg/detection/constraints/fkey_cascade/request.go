@@ -1,4 +1,4 @@
-package foreign_key_cascade
+package fkey_cascade
 
 import (
 	"analyzer/pkg/abstractgraph"
@@ -14,6 +14,6 @@ func (info *RequestInfo) addDeleteOperation(op *deleteOperation) {
 	info.deleteOperations = append(info.deleteOperations, op)
 }
 
-func (info *RequestInfo) getDeleteOperations() []*deleteOperation{
+func (info *RequestInfo) getDeleteOperations() []*deleteOperation {
 	return info.deleteOperations
 }

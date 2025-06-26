@@ -1,4 +1,4 @@
-package foreign_key_concurrency
+package fkey_concurrency
 
 import (
 	"analyzer/pkg/abstractgraph"

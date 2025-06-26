@@ -1,4 +1,4 @@
-package foreign_key_cascade
+package fkey_cascade
 
 import (
 	"fmt"
@@ -85,7 +85,7 @@ func (detector *CascadeDetector) OnUpdate(app *app.App, dbCall *abstractgraph.Ab
 	if dbCall.DbInstance.GetDatastore().IsNoSQLDatabase() {
 		update := dbCall.GetParam(2)
 		method := dbCall.ParsedCall.Method.(*blueprint.BackendMethod)
-		constraints, _ := parseNoSQLUpdateOnRemovedFields(method, datastore.GetSchema(), update) 
+		constraints, _ := parseNoSQLUpdateOnRemovedFields(method, datastore.GetSchema(), update)
 		if constraints != nil {
 			detector.markAsCascading(datastore, constraints)
 		}
@@ -139,5 +139,5 @@ func (detector *CascadeDetector) markAsCascading(datastore *datastores.Datastore
 }
 
 func (detector *CascadeDetector) GetAnalysisTypeString() string {
-	return "foreign_key_cascade"
+	return "fkey_cascade"
 }

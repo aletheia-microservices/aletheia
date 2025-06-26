@@ -44,10 +44,6 @@ func (detector *KeyCoordinationDetector) keyTypeIsPrimaryKey() bool {
 	return detector.keyType == "primary_key"
 }
 
-func (detector *KeyCoordinationDetector) keyTypeIsForeignKey() bool {
-	return detector.keyType == "foreign_key"
-}
-
 func (detector *KeyCoordinationDetector) GetSummary() string {
 	return detector.summary
 }
