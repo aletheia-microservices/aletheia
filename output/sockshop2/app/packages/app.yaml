@@ -125,7 +125,7 @@ frontend:
 - imported types:
   - .error
   - cart.CartService
-  - cart.Item struct{ID string, Quantity int, UnitPrice float32}
+  - cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}
   - catalogue.CatalogueService
   - catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}
   - context.Context
@@ -160,7 +160,7 @@ frontend:
   - (*frontend.FrontendImpl).DeleteSock(ctx context.Context, id string) error
   - (*frontend.FrontendImpl).GetAddress(ctx context.Context, addressID string) (user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, error)
   - (*frontend.FrontendImpl).GetCard(ctx context.Context, cardID string) (user.Card struct{LongNum string, Expires string, CCV string, ID string}, error)
-  - (*frontend.FrontendImpl).GetCart(ctx context.Context, sessionID string) ([]cart.Item struct{ID string, Quantity int, UnitPrice float32}, error)
+  - (*frontend.FrontendImpl).GetCart(ctx context.Context, sessionID string) ([]cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}, error)
   - (*frontend.FrontendImpl).GetOrder(ctx context.Context, orderID string) (order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}, error)
   - (*frontend.FrontendImpl).GetOrders(ctx context.Context, userID string) ([]order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Card user.Card struct{LongNum string, Expires string, CCV string, ID string}, Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment shipping.Shipment struct{ID string, Name string, Status string}, Date string, Total float32}, error)
   - (*frontend.FrontendImpl).GetSock(ctx context.Context, itemID string) (catalogue.Sock struct{ID string, Name string, Description string, ImageURL []string, ImageURL_1 string, ImageURL_2 string, Price float32, Quantity int, Tags []string, TagString string}, error)
@@ -236,8 +236,8 @@ order:
   - order.Order struct{ID string, CustomerID string, Customer user.User struct{FirstName string, LastName string, Email string, Username string, Password string, Addresses user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string}, Cards user.Card struct{LongNum string, Expires string, CCV string, ID string}, UserID string, Salt string}, Address user.Address struct{Street string, Number string, Country string, City string, PostCode string, ID string},
     Card user.Card struct{LongNum string, Expires string, CCV string, ID string},
     Items []cart.Item struct{ID string, Quantity int, UnitPrice float32}, Shipment
-    shipping.Shipment struct{ID string, Name string, Status "awaiting shipment" string},
-    Date string, Total float32}
+    shipping.Shipment struct{ID string, Name string, Status string}, Date string,
+    Total float32}
   - order.OrderService
   - order.orderImpl struct{users user.UserService, carts cart.CartService, payments payment.PaymentService, shipping shipping.ShippingService, db NoSQLDatabase interface{NoSQLDatabase.GetCollection(ctx context.Context, db_name string, collection_name string)}}
 - declared variables: []

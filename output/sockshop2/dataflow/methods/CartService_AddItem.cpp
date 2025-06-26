@@ -14,7 +14,7 @@
     --> w-tainted: write(cart_db.cart.Items) {1}
 [0] (StructObject UserType) item cart.Item struct{ID string, Quantity int, UnitPrice float32}
      --> w-tainted: write(cart_db.cart.Items) {1}
-[_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
+[_1] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
       --> w-tainted: write(cart_db.cart.Items) {1}
 [__2] (FieldObject FieldType) ID string
        --> w-tainted: write(cart_db.cart.Items) {1}             --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}
@@ -47,7 +47,7 @@
        --> w-tainted: write(cart_db.cart.Items) {1}
 [___3] (StructObject UserType) item cart.Item struct{ID string, Quantity int, UnitPrice float32}
         --> w-tainted: write(cart_db.cart.Items) {1}
-[____4] (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
+[____4] (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
          --> w-tainted: write(cart_db.cart.Items) {1}
 [_____5] (FieldObject FieldType) ID string
           --> w-tainted: write(cart_db.cart.Items) {1}                   --> w-tainted: write(cart_db.cart.Items) {1} --> r-tainted: read(catalogue_db.Sock.ID.id) {1}

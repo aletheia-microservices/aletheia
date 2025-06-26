@@ -95,24 +95,24 @@
   - __12 depth 2 (FieldObject FieldType) stock_service shopping_app.StockService
   - ___13 depth 3 (ServiceObject ServiceType) stock_service shopping_app.StockService
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ ShipmentService
-  - __2 depth 2 (Reference UserType) ref <ctx context.Context> @ ShipmentService
-  - _3 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ Frontend
+  - _2 depth 1 (Reference UserType) ref <ctx context.Context> @ ShipmentService
+  - __3 depth 2 (Reference UserType) ref <ctx context.Context> @ ShipmentService
   - '0 depth 0 (BasicObject BasicType) orderID string --> w-tainted 1x: write(shipment_db.Shipment.OrderID)
     --> r-tainted 2x: read(order_db._.orderID, order_db.Order.OrderID)'
-  - '_1 depth 1 (Reference BasicType) ref <OrderID string> @ ShipmentService --> w-tainted
+  - '_1 depth 1 (Reference BasicType) ref <orderID string> @ Frontend --> r-tainted
+    2x: read(order_db._.orderID, order_db.Order.OrderID)'
+  - '_2 depth 1 (Reference BasicType) ref <OrderID string> @ ShipmentService --> w-tainted
     1x: write(shipment_db.Shipment.OrderID) --> r-tainted 2x: read(order_db._.orderID,
     order_db.Order.OrderID)'
-  - '__2 depth 2 (Reference FieldType) ref <OrderID string> @ ShipmentService -->
+  - '__3 depth 2 (Reference FieldType) ref <OrderID string> @ ShipmentService -->
     w-tainted 1x: write(shipment_db.Shipment.OrderID) --> r-tainted 2x: read(order_db._.orderID,
     order_db.Order.OrderID)'
-  - '___3 depth 3 (BasicObject BasicType) * string --> w-tainted 1x: write(shipment_db.Shipment.OrderID)
+  - '___4 depth 3 (BasicObject BasicType) * string --> w-tainted 1x: write(shipment_db.Shipment.OrderID)
     --> r-tainted 2x: read(order_db._.orderID, order_db.Order.OrderID)'
-  - '____4 depth 4 (InterfaceObject InterfaceType) * interface{} --> w-tainted 1x:
+  - '____5 depth 4 (InterfaceObject InterfaceType) * interface{} --> w-tainted 1x:
     write(shipment_db.Shipment.OrderID) --> r-tainted 2x: read(order_db._.orderID,
     order_db.Order.OrderID)'
-  - '_5 depth 1 (Reference BasicType) ref <orderID string> @ Frontend --> r-tainted
-    2x: read(order_db._.orderID, order_db.Order.OrderID)'
   - '0 depth 0 (StructObject UserType) order shopping_app.Order struct{OrderID string,
     UserID string, ProductID string, Quantity int, Timestamp int64} --> r-tainted
     1x: read(order_db.Order)'

@@ -169,48 +169,72 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, dbCall *abs
 
 func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 	for _, op := range detector.getCurrentRequest().getOperations() {
-		for idx, currField := range op.getWrittenFields() {
-			for _, constraint := range currField.GetConstraints(datastores.ConstraintFilter{Reference: utils.BoolPtr(true)}) {
+		for _, currField := range op.getWrittenFields() {
+			filter1 := datastores.ConstraintFilter{
+				Reference: utils.BoolPtr(true),
+				Mandatory: utils.BoolPtr(true),
+			}
+			
+			// cannot be a mandatory reference, meaning that both fields (and corresponding objects)
+			// were not previously written in **some** (not all) request
+			mandatoryForeignKeyConstraints := currField.GetConstraints(filter1)
+			if len(mandatoryForeignKeyConstraints) > 0 {
+				continue
+			}
+
+			filter2 := datastores.ConstraintFilter{
+				Reference: utils.BoolPtr(true),
+				// now we get all non-mandatory references
+				// so we can add a flag concerning that field
+				Mandatory: utils.BoolPtr(false),
+			}
+
+			for _, constraint := range currField.GetConstraints(filter2) {
 				refField := constraint.GetReferenceToField()
 				refDatastore := refField.GetDatastore()
 				if del := detector.getFirstDeleteToDatastoreIfExists(refDatastore); del != nil {
-
-					// condition for a more fine-grained detection:
-					// in the current request, there can't be a write to the original record that is being referenced
-					// ensuring that we only flag inconsistencies for cases of 1:N associations and not 1:1
-					mayFlag := true
-					for _, otherOp := range detector.getCurrentRequest().getOperations() {
-						// high-level verification
-						// checks based on database fields
-						if otherOp.getDatastore() == del.getDatastore() {
-							if ok, _ := otherOp.writesToField(refField); ok {
-
-								// low-level verification
-								// checks based on objects dataflow
-								obj := op.getWrittenObjectAt(idx)
-								for _, dep := range obj.GetNestedDependencies(false) {
-									// find any dependencies of the current object that were also used in the other write
-									for _, df := range dep.GetVariableInfo().GetAllWriteDataflowsForDatastore(otherOp.getDatastore().GetName()) {
-										// found the field of the other operation that the current field is referencing to
-										if df.Field == refField {
-											logger.Logger.Debugf("[FK CONCURRENCY] cannot flag: %s vs. %s", df.Field.String(), refField.String())
-											mayFlag = false
-											break
-										}
-									}
-								}
-							}
-						}
-					}
-
-					if mayFlag {
+					/* if !detector.isMandatoryAssociation(op, del, refField, currFieldIdx) {
 						del.flagAffectedWriteOnField(op.getDbCall(), currField, constraint)
-					}
-
+					} */
+					del.flagAffectedWriteOnField(op.getDbCall(), currField, constraint)
 				}
 			}
 		}
 	}
+}
+
+// DEPRECATED: canFlagInconsistency checks if foreign key association is not mandatory
+func (detector *ForeignKeyConcurrencyDetector) isMandatoryAssociation(op *write, del *delete, refField *datastores.Field, idx int) bool {
+	// condition for a more fine-grained detection:
+	// in the current request, there can't be a write to the original record that is being referenced
+	// ensuring that we only flag inconsistencies for cases of 1:N associations and not 1:1
+	for _, otherOp := range detector.getCurrentRequest().getOperations() {
+		if otherOp == op {
+			continue
+		}
+
+		// high-level verification
+		// checks based on database fields
+		if otherOp.getDatastore() == del.getDatastore() {
+			if ok, _ := otherOp.writesToField(refField); ok {
+
+				// low-level verification
+				// checks based on objects dataflow
+				obj := op.getWrittenObjectAt(idx)
+				for _, dep := range obj.GetNestedDependencies(false) {
+					// find any dependencies of the current object that were also used in the other write
+					for _, df := range dep.GetVariableInfo().GetAllWriteDataflowsForDatastore(otherOp.getDatastore().GetName()) {
+						// found the field of the other operation that the current field is referencing to
+						if df.Field == refField {
+							logger.Logger.Debugf("[FK CONCURRENCY] cannot flag: %s vs. %s", df.Field.String(), refField.String())
+							return true
+						}
+					}
+				}
+			}
+		}
+	}
+	return false
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int) {

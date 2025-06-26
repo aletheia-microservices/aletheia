@@ -14,12 +14,14 @@
 [___3] (ServiceObject ServiceType) stock_service shopping_app.StockService
 
 [0] (InterfaceObject UserType) ctx context.Context
+[_1] (Reference UserType) ref <ctx context.Context> @ Frontend
 [_1] (Reference UserType) ref <ctx context.Context> @ ShipmentService
 [__2] (Reference UserType) ref <ctx context.Context> @ ShipmentService
-[_1] (Reference UserType) ref <ctx context.Context> @ Frontend
 
     --> w-tainted: write(shipment_db.Shipment.OrderID) {1}       --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
 [0] (BasicObject BasicType) orderID string
+     --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
+[_1] (Reference BasicType) ref <orderID string> @ Frontend
      --> w-tainted: write(shipment_db.Shipment.OrderID) {1}         --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
 [_1] (Reference BasicType) ref <OrderID string> @ ShipmentService
       --> w-tainted: write(shipment_db.Shipment.OrderID) {1}           --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
@@ -28,8 +30,6 @@
 [___3] (BasicObject BasicType) * string
         --> w-tainted: write(shipment_db.Shipment.OrderID) {1}               --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
 [____4] (InterfaceObject InterfaceType) * interface{}
-     --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
-[_1] (Reference BasicType) ref <orderID string> @ Frontend
 
     --> r-tainted: read(order_db.Order) {1}
 [0] (StructObject UserType) order shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64}
@@ -45,6 +45,8 @@
 [__2] (FieldObject FieldType) Value string
        --> w-tainted: write(shipment_db.Shipment.OrderID) {1}             --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
 [___3] (BasicObject BasicType) orderID string
+        --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
+[____4] (Reference BasicType) ref <orderID string> @ Frontend
         --> w-tainted: write(shipment_db.Shipment.OrderID) {1}               --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
 [____4] (Reference BasicType) ref <OrderID string> @ ShipmentService
          --> w-tainted: write(shipment_db.Shipment.OrderID) {1}                 --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
@@ -53,8 +55,6 @@
 [______6] (BasicObject BasicType) * string
            --> w-tainted: write(shipment_db.Shipment.OrderID) {1}                     --> w-tainted: write(shipment_db.Shipment.OrderID) {1} --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
 [_______7] (InterfaceObject InterfaceType) * interface{}
-        --> r-tainted: read(order_db._.orderID, order_db.Order.OrderID) {2}
-[____4] (Reference BasicType) ref <orderID string> @ Frontend
 
     --> r-tainted: read(order_db._, order_db.Order) {2}
 [0] (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database = order_database, collection = order_collection}

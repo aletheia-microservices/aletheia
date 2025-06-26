@@ -369,6 +369,10 @@ func (c *Constraint) IsForeignKey() bool {
 	return c.reference
 }
 
+func (c *Constraint) IsMandatory() bool {
+	return c.mandatory
+}
+
 func (c *Constraint) GetNumerical() *NumericalConstraint {
 	return c.numerical
 }

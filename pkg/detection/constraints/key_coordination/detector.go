@@ -136,7 +136,7 @@ func (detector *KeyCoordinationDetector) checkKeyRead(app *app.App, currObj obje
 					Primary: utils.BoolPtr(false),
 					Reference: utils.BoolPtr(true),
 					// must be a mandatory reference, meaning that both fields (and corresponding objects) 
-					// were presviously written in the same request 
+					// were presviously written in **some** (not all) request 
 					Mandatory: utils.BoolPtr(true),
 				}
 
