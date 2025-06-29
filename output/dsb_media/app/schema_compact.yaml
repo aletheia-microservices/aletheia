@@ -11,7 +11,6 @@ MOVIEID_DB:
     - MovieId.MovieID: string
     - MovieId.Title: string
   - constraints:
-    - UNIQUE(MOVIEID_DB.MovieId.MovieID)
     - UNIQUE(MOVIEID_DB.MovieId.Title)
 
 MOVIEINFO_DB:
@@ -32,4 +31,3 @@ MOVIEINFO_DB:
     - REFERENCE(MOVIEINFO_DB.MovieInfo.MovieID --> MOVIEID_DB.MovieId.MovieID) [+]
     - REFERENCE(MOVIEINFO_DB.MovieInfo --> MOVIEID_DB.MovieId.MovieID) [+]
     - REFERENCE(MOVIEINFO_DB.MovieInfo --> MOVIEID_DB.MovieId.Title) [+]
-    - UNIQUE(MOVIEINFO_DB.MovieInfo.MovieID)

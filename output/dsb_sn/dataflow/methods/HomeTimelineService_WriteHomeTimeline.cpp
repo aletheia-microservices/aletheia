@@ -124,14 +124,17 @@
 [0] (BasicObject BasicType) um int64
 [_1] (ArrayObject ArrayType) userMentionIDs []int64
 
-[0] (BasicObject BasicType) id bool
+[0] (BasicObject BasicType) id int64
+[_1] (MapObject MapType) followers_set map[int64]bool
+
+[0] (BasicObject BasicType) _ bool
 [_1] (MapObject MapType) followers_set map[int64]bool
 
 [0] (BasicObject BasicType) id_str string
-[_1] (BasicObject BasicType) id bool
+[_1] (BasicObject BasicType) id int64
 [__2] (MapObject MapType) followers_set map[int64]bool
 [_1] (BasicObject BasicType) 10 int
-[_1] (BasicObject BasicType) id bool
+[_1] (BasicObject BasicType) id int64
 [__2] (MapObject MapType) followers_set map[int64]bool
 [_1] (BasicObject BasicType) 10 int
 

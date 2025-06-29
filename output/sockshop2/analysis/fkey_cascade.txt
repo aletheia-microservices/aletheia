@@ -4,15 +4,15 @@
 >> (# DELETES ON REFERENCED OBJECT; # ABSENCE OF CASCADING DELETES):
 >> (5;2)
 ---------------------------------------------------------------------
-[0m[1] delete with 0 missing cascades:
-CartService: cart_db.DeleteOne()
-[1] delete with 0 missing cascades:
-CartService: cart_db.DeleteMany()
-[1] delete with 0 missing cascades:
-CartService: cart_db.DeleteMany()
-[1] delete with 0 missing cascades:
-CartService: cart_db.DeleteOne()
-[1] delete with 2 missing cascades:
+[0m[1] delete with 2 missing cascades:
 CatalogueService: catalogue_db.DeleteOne()
 	- (cart_db, CartService) on constraint REFERENCE(CART_DB.cart.Items --> CATALOGUE_DB.Sock.ID.id)
 	- (cart_db, CartService) on constraint REFERENCE(CART_DB.cart --> CATALOGUE_DB.Sock.ID.id)
+[1] delete with 0 missing cascades:
+CartService: cart_db.DeleteOne()
+[1] delete with 0 missing cascades:
+CartService: cart_db.DeleteMany()
+[1] delete with 0 missing cascades:
+CartService: cart_db.DeleteMany()
+[1] delete with 0 missing cascades:
+CartService: cart_db.DeleteOne()

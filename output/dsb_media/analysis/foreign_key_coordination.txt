@@ -2,6 +2,10 @@
 ------------------ FOREIGN KEY COORDINATION ANALYSIS ----------------
 ---------------------------------------------------------------------
 >> (# READS USING FOREIGN REFERENCES):
->> (0)
+>> (1)
 ---------------------------------------------------------------------
-[0m
+[0m[1] foreign key read:
+- ref:	MOVIEINFO_DB.MovieInfo.MovieID
+	@ mediamicroservices.MovieIdService > collection.FindOne(ctx context.Context, query primitive.D)
+- dst:	MOVIEID_DB.MovieId.MovieID
+	@ mediamicroservices.MovieInfoService > collection.FindOne(ctx context.Context, query primitive.D)

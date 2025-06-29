@@ -66,7 +66,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) retvals []interface{}
@@ -141,7 +143,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) user_mentions []socialnetwork.UserMention struct{UserID int64, Username string}
@@ -151,14 +155,14 @@
 [__2] (FieldObject FieldType) Username string
 [___3] (BasicObject BasicType) * string
 
-[0] (BasicObject BasicType) idx string
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) key string
 [_1] (ArrayObject ArrayType) keys []string
 [__2] (BasicObject BasicType) :UserID 
 [___3] (BasicObject BasicType) name string
 [____4] (ArrayObject ArrayType) usernames []string
 [___3] (BasicObject BasicType) ":UserID" string
-
-[0] (BasicObject BasicType) key 0 int
 
 [0] (StructObject UserType) user_mention socialnetwork.UserMention struct{UserID int64, Username string}
 [_1] (FieldObject FieldType) UserID int64
@@ -241,7 +245,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) retvals []interface{}
@@ -316,7 +322,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) user_mentions []socialnetwork.UserMention struct{UserID int64, Username string}
@@ -326,19 +334,19 @@
 [__2] (FieldObject FieldType) Username string
 [___3] (BasicObject BasicType) * string
 
-[0] (BasicObject BasicType) idx string
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) key string
 [_1] (ArrayObject ArrayType) keys []string
 [__2] (BasicObject BasicType) :UserID 
 [___3] (BasicObject BasicType) name string
 [____4] (ArrayObject ArrayType) usernames []string
 [___3] (BasicObject BasicType) ":UserID" string
 
-[0] (BasicObject BasicType) key 0 int
-
 [0] (ArrayObject ArrayType) names []string
 [_1] (BasicObject BasicType) string
 
-[0] (BasicObject BasicType) name bool
+[0] (BasicObject BasicType) name string
 [_1] (MapObject MapType) usernames_not_cached map[string]bool
 
 [0] (ArrayObject ArrayType) names []string
@@ -412,7 +420,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) retvals []interface{}
@@ -487,7 +497,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) user_mentions []socialnetwork.UserMention struct{UserID int64, Username string}
@@ -497,14 +509,14 @@
 [__2] (FieldObject FieldType) Username string
 [___3] (BasicObject BasicType) * string
 
-[0] (BasicObject BasicType) idx string
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) key string
 [_1] (ArrayObject ArrayType) keys []string
 [__2] (BasicObject BasicType) :UserID 
 [___3] (BasicObject BasicType) name string
 [____4] (ArrayObject ArrayType) usernames []string
 [___3] (BasicObject BasicType) ":UserID" string
-
-[0] (BasicObject BasicType) key 0 int
 
 [0] (StructObject UserType) user_mention socialnetwork.UserMention struct{UserID int64, Username string}
 [_1] (FieldObject FieldType) UserID int64
@@ -587,7 +599,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) retvals []interface{}
@@ -662,7 +676,9 @@
 [_1] (PointerObject PointerType) * (*int64)
 [__2] (BasicObject BasicType) * int64
 
-[0] (BasicObject BasicType) idx int64
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) _ int64
 [_1] (ArrayObject ArrayType) values []int64
 
 [0] (ArrayObject ArrayType) user_mentions []socialnetwork.UserMention struct{UserID int64, Username string}
@@ -672,19 +688,19 @@
 [__2] (FieldObject FieldType) Username string
 [___3] (BasicObject BasicType) * string
 
-[0] (BasicObject BasicType) idx string
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) key string
 [_1] (ArrayObject ArrayType) keys []string
 [__2] (BasicObject BasicType) :UserID 
 [___3] (BasicObject BasicType) name string
 [____4] (ArrayObject ArrayType) usernames []string
 [___3] (BasicObject BasicType) ":UserID" string
 
-[0] (BasicObject BasicType) key 0 int
-
 [0] (ArrayObject ArrayType) names []string
 [_1] (BasicObject BasicType) string
 
-[0] (BasicObject BasicType) name bool
+[0] (BasicObject BasicType) name string
 [_1] (MapObject MapType) usernames_not_cached map[string]bool
 
 [0] (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection {database = user, collection = user}

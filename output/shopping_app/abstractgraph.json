@@ -1,173 +1,5 @@
 [
   {
-    "method": "(*FrontendImpl).ReadOrder(ctx context.Context, orderID string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*OrderServiceImpl).ReadOrder(ctx context.Context, orderID string)",
-        "depth": 1,
-        "caller": "Frontend",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
-            "depth": 2,
-            "caller": "OrderService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "Frontend"
-                    },
-                    {
-                      "name": "ctx",
-                      "creator": "ShipmentService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "query",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"orderID\" string, Key \"orderID\" string, Value string, Value string}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"orderID\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"orderID\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "orderID",
-                            "type": "string",
-                            "refs": [
-                              {
-                                "name": "orderID",
-                                "creator": "Frontend"
-                              },
-                              {
-                                "name": "OrderID",
-                                "creator": "ShipmentService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = order_database, collection = order_collection}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "order",
-                    "type": "(*shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64})"
-                  },
-                  "ptr_to": {
-                    "struct": {
-                      "name": "order",
-                      "type": "shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64}"
-                    }
-                  }
-                }
-              },
-              {
-                "interface": {
-                  "name": "_",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "order_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "orderID",
-              "type": "string"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "",
-              "type": "shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64}",
-              "refs": [
-                {
-                  "name": "order",
-                  "creator": "OrderService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "OrderService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "orderID",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
     "method": "(*FrontendImpl).AddProductToCart(ctx context.Context, cartID string, productID string)",
     "depth": 0,
     "caller": "Client",
@@ -1830,11 +1662,11 @@
                               "refs": [
                                 {
                                   "name": "ctx",
-                                  "creator": "Frontend"
+                                  "creator": "ShipmentService"
                                 },
                                 {
                                   "name": "ctx",
-                                  "creator": "ShipmentService"
+                                  "creator": "Frontend"
                                 }
                               ]
                             }
@@ -1874,12 +1706,12 @@
                                         "type": "string",
                                         "refs": [
                                           {
-                                            "name": "orderID",
-                                            "creator": "Frontend"
-                                          },
-                                          {
                                             "name": "OrderID",
                                             "creator": "ShipmentService"
+                                          },
+                                          {
+                                            "name": "orderID",
+                                            "creator": "Frontend"
                                           }
                                         ]
                                       }
@@ -2063,6 +1895,174 @@
         "basic": {
           "name": "price",
           "type": "int"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*FrontendImpl).ReadOrder(ctx context.Context, orderID string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*OrderServiceImpl).ReadOrder(ctx context.Context, orderID string)",
+        "depth": 1,
+        "caller": "Frontend",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+            "depth": 2,
+            "caller": "OrderService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "ShipmentService"
+                    },
+                    {
+                      "name": "ctx",
+                      "creator": "Frontend"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "query",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"orderID\" string, Key \"orderID\" string, Value string, Value string}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"orderID\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"orderID\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "orderID",
+                            "type": "string",
+                            "refs": [
+                              {
+                                "name": "OrderID",
+                                "creator": "ShipmentService"
+                              },
+                              {
+                                "name": "orderID",
+                                "creator": "Frontend"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = order_database, collection = order_collection}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "order",
+                    "type": "(*shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64})"
+                  },
+                  "ptr_to": {
+                    "struct": {
+                      "name": "order",
+                      "type": "shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64}"
+                    }
+                  }
+                }
+              },
+              {
+                "interface": {
+                  "name": "_",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "order_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "orderID",
+              "type": "string"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "",
+              "type": "shopping_app.Order struct{OrderID string, UserID string, ProductID string, Quantity int, Timestamp int64}",
+              "refs": [
+                {
+                  "name": "order",
+                  "creator": "OrderService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "OrderService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "orderID",
+          "type": "string"
         }
       }
     ]

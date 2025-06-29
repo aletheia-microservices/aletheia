@@ -20,9 +20,7 @@
 [0] (ArrayObject ArrayType) b []rune
 [_1] (SliceObject SliceType) github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.letterRunes []rune
 
-[0] (BasicObject BasicType) i rune
-[_1] (ArrayObject ArrayType) b []rune
-[__2] (SliceObject SliceType) github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.letterRunes []rune
+[0] (BasicObject BasicType) i 0 int
 
 [0] (PointerObject PointerType) u (*socialnetwork.UserServiceImpl struct{machine_id string, counter int64, current_timestamp int64, secret string, userCache Cache, userDB NoSQLDatabase, socialGraphService socialnetwork.SocialGraphService})
 [_1] (StructObject UserType) socialnetwork.UserServiceImpl struct{machine_id string, counter 0 int, current_timestamp int64, secret string, userCache Cache, userDB NoSQLDatabase, socialGraphService socialnetwork.SocialGraphService}
@@ -46,7 +44,5 @@
 [0] (ArrayObject ArrayType) b []rune
 [_1] (SliceObject SliceType) github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.letterRunes []rune
 
-[0] (BasicObject BasicType) i rune
-[_1] (ArrayObject ArrayType) b []rune
-[__2] (SliceObject SliceType) github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.letterRunes []rune
+[0] (BasicObject BasicType) i 0 int
 

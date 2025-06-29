@@ -108,23 +108,33 @@
 [0] (BasicObject BasicType) updated_text string
 [_1] (BasicObject BasicType) text string
 
-[0] (BasicObject BasicType) idx string
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) url_string string
 [_1] (SliceObject SliceType) url_strings []string
 [__2] (BasicObject BasicType) text string
 [__2] (BasicObject BasicType) int
 [__2] (BasicObject BasicType) text string
 [__2] (BasicObject BasicType) int
 
-[0] (BasicObject BasicType) url_string 0 int
-
 [0] (BasicObject BasicType) updated_text string
 [_1] (BasicObject BasicType) updated_text string
 [__2] (BasicObject BasicType) text string
-[_1] (BasicObject BasicType) url_string 0 int
+[_1] (BasicObject BasicType) url_string string
+[__2] (SliceObject SliceType) url_strings []string
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
 [_1] (BasicObject BasicType) ShortenedUrl string
 [_1] (BasicObject BasicType) updated_text string
 [__2] (BasicObject BasicType) text string
-[_1] (BasicObject BasicType) url_string 0 int
+[_1] (BasicObject BasicType) url_string string
+[__2] (SliceObject SliceType) url_strings []string
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
+[___3] (BasicObject BasicType) text string
+[___3] (BasicObject BasicType) int
 [_1] (BasicObject BasicType) ShortenedUrl string
 
 [0] (PointerObject PointerType) t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService})
@@ -237,12 +247,12 @@
 [0] (BasicObject BasicType) updated_text string
 [_1] (BasicObject BasicType) text string
 
-[0] (BasicObject BasicType) idx string
+[0] (BasicObject BasicType) idx 0 int
+
+[0] (BasicObject BasicType) url_string string
 [_1] (SliceObject SliceType) url_strings []string
 [__2] (BasicObject BasicType) text string
 [__2] (BasicObject BasicType) int
 [__2] (BasicObject BasicType) text string
 [__2] (BasicObject BasicType) int
-
-[0] (BasicObject BasicType) url_string 0 int
 

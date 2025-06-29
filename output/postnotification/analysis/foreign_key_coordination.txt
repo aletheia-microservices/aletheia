@@ -6,6 +6,6 @@
 ---------------------------------------------------------------------
 [0m[1] foreign key read:
 - ref:	ANALYTICS_DB.Analytics.PostID
-	@ collection.FindOne(ctx context.Context, postsQuery primitive.D)
+	@ postnotification.StorageService > collection.FindOne(ctx context.Context, postsQuery primitive.D)
 - dst:	POSTS_DB.Post.PostID
-	@ collection.FindOne(ctx context.Context, analyticsQuery primitive.D)
+	@ postnotification.AnalyticsService > collection.FindOne(ctx context.Context, analyticsQuery primitive.D)

@@ -195,8 +195,8 @@
 	 [22] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [23] wg sync.WaitGroup ---> depends on: {}
 	 [24] updated_text string ---> depends on: {text string}
-	 [25] idx string ---> depends on: {url_strings []string}
-	 [26] url_string 0 int ---> depends on: {}
+	 [25] idx 0 int ---> depends on: {}
+	 [26] url_string string ---> depends on: {url_strings []string}
 
 [BLOCK, #12, RangeLoop] NODES = []; SUCCS = [Block #13, Block #14]
 	 [0] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
@@ -224,9 +224,9 @@
 	 [22] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [23] wg sync.WaitGroup ---> depends on: {}
 	 [24] updated_text string ---> depends on: {text string}
-	 [25] idx string ---> depends on: {url_strings []string}
-	 [26] url_string 0 int ---> depends on: {}
-	 [27] updated_text string ---> depends on: {updated_text string, url_string 0 int, ShortenedUrl string, updated_text string, url_string 0 int, ShortenedUrl string}
+	 [25] idx 0 int ---> depends on: {}
+	 [26] url_string string ---> depends on: {url_strings []string}
+	 [27] updated_text string ---> depends on: {updated_text string, url_string string, ShortenedUrl string, updated_text string, url_string string, ShortenedUrl string}
 	 [28] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
 	 [29] ctx context.Context ---> depends on: {}
 	 [30] reqID int64 ---> depends on: {}
@@ -252,8 +252,8 @@
 	 [50] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [51] wg sync.WaitGroup ---> depends on: {}
 	 [52] updated_text string ---> depends on: {text string}
-	 [53] idx string ---> depends on: {url_strings []string}
-	 [54] url_string 0 int ---> depends on: {}
+	 [53] idx 0 int ---> depends on: {}
+	 [54] url_string string ---> depends on: {url_strings []string}
 
 [BLOCK, #13, RangeBody] NODES = [*ast.AssignStmt]; SUCCS = [Block #12]
 	 [0] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
@@ -281,9 +281,9 @@
 	 [22] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [23] wg sync.WaitGroup ---> depends on: {}
 	 [24] updated_text string ---> depends on: {text string}
-	 [25] idx string ---> depends on: {url_strings []string}
-	 [26] url_string 0 int ---> depends on: {}
-	 [27] updated_text string ---> depends on: {updated_text string, url_string 0 int, ShortenedUrl string, updated_text string, url_string 0 int, ShortenedUrl string}
+	 [25] idx 0 int ---> depends on: {}
+	 [26] url_string string ---> depends on: {url_strings []string}
+	 [27] updated_text string ---> depends on: {updated_text string, url_string string, ShortenedUrl string, updated_text string, url_string string, ShortenedUrl string}
 
 [BLOCK, #14, RangeDone] NODES = []; SUCCS = [Block #11]
 	 [0] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
@@ -311,9 +311,9 @@
 	 [22] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [23] wg sync.WaitGroup ---> depends on: {}
 	 [24] updated_text string ---> depends on: {text string}
-	 [25] idx string ---> depends on: {url_strings []string}
-	 [26] url_string 0 int ---> depends on: {}
-	 [27] updated_text string ---> depends on: {updated_text string, url_string 0 int, ShortenedUrl string, updated_text string, url_string 0 int, ShortenedUrl string}
+	 [25] idx 0 int ---> depends on: {}
+	 [26] url_string string ---> depends on: {url_strings []string}
+	 [27] updated_text string ---> depends on: {updated_text string, url_string string, ShortenedUrl string, updated_text string, url_string string, ShortenedUrl string}
 	 [28] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
 	 [29] ctx context.Context ---> depends on: {}
 	 [30] reqID int64 ---> depends on: {}
@@ -339,8 +339,8 @@
 	 [50] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [51] wg sync.WaitGroup ---> depends on: {}
 	 [52] updated_text string ---> depends on: {text string}
-	 [53] idx string ---> depends on: {url_strings []string}
-	 [54] url_string 0 int ---> depends on: {}
+	 [53] idx 0 int ---> depends on: {}
+	 [54] url_string string ---> depends on: {url_strings []string}
 
 [BLOCK, #11, IfDone] NODES = [*ast.ReturnStmt]; SUCCS = []
 	 [0] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
@@ -393,9 +393,9 @@
 	 [47] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [48] wg sync.WaitGroup ---> depends on: {}
 	 [49] updated_text string ---> depends on: {text string}
-	 [50] idx string ---> depends on: {url_strings []string}
-	 [51] url_string 0 int ---> depends on: {}
-	 [52] updated_text string ---> depends on: {updated_text string, url_string 0 int, ShortenedUrl string, updated_text string, url_string 0 int, ShortenedUrl string}
+	 [50] idx 0 int ---> depends on: {}
+	 [51] url_string string ---> depends on: {url_strings []string}
+	 [52] updated_text string ---> depends on: {updated_text string, url_string string, ShortenedUrl string, updated_text string, url_string string, ShortenedUrl string}
 	 [53] t (*socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}) ---> depends on: {socialnetwork.TextServiceImpl struct{urlShortenService socialnetwork.UrlShortenService, userMentionService socialnetwork.UserMentionService}}
 	 [54] ctx context.Context ---> depends on: {}
 	 [55] reqID int64 ---> depends on: {}
@@ -421,6 +421,6 @@
 	 [75] user_mentions []socialnetwork.UserMention struct{UserID int64, Username string} ---> depends on: {}
 	 [76] wg sync.WaitGroup ---> depends on: {}
 	 [77] updated_text string ---> depends on: {text string}
-	 [78] idx string ---> depends on: {url_strings []string}
-	 [79] url_string 0 int ---> depends on: {}
+	 [78] idx 0 int ---> depends on: {}
+	 [79] url_string string ---> depends on: {url_strings []string}
 

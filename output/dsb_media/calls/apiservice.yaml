@@ -1,3 +1,7 @@
+(*APIServiceImpl).ReadMovie(ctx context.Context, reqID int64, movieId string):
+- SERVICE CALL @ ReadMovieId >> (*mediamicroservices.MovieIdServiceImpl).ReadMovieId(ctx context.Context, reqID int64, movieID string) (mediamicroservices.MovieId struct{MovieID string, Title string}, error)
+- SERVICE CALL @ ReadMovieInfo >> (*mediamicroservices.MovieInfoServiceImpl).ReadMovieInfo(ctx context.Context, reqID int64, movieID string) (mediamicroservices.MovieInfo struct{MovieID string, Title string, Casts string}, error)
+
 (*APIServiceImpl).RegisterMovie(ctx context.Context, reqID int64, movieID string, title string, casts string):
 - SERVICE CALL @ RegisterMovieId >> (*mediamicroservices.MovieIdServiceImpl).RegisterMovieId(ctx context.Context, reqID int64, movieID string, title string) (mediamicroservices.MovieId struct{MovieID string, Title string}, error)
 - SERVICE CALL @ WriteMovieInfo >> (*mediamicroservices.MovieInfoServiceImpl).WriteMovieInfo(ctx context.Context, reqID int64, movieID string, title string, casts string) (mediamicroservices.MovieInfo struct{MovieID string, Title string, Casts string}, error)

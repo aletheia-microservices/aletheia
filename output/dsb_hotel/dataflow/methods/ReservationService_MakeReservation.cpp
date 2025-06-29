@@ -691,10 +691,11 @@
 
 [0] (BasicObject BasicType) indate string
 
-[0] (BasicObject BasicType) key int64
+[0] (BasicObject BasicType) key string
 [_1] (MapObject MapType) reservation_update_map map[string]int64
 
-[0] (BasicObject BasicType) val string
+[0] (BasicObject BasicType) val int64
+[_1] (MapObject MapType) reservation_update_map map[string]int64
 
 [0] (InterfaceObject UserType) err .error
 

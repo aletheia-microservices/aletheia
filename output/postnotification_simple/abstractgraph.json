@@ -1,5 +1,135 @@
 [
   {
+    "method": "(*UploadServiceImpl).DeletePost(ctx context.Context, postID int64)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*StorageServiceImpl).DeletePost(ctx context.Context, postID int64)",
+        "depth": 1,
+        "caller": "UploadService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
+            "depth": 2,
+            "caller": "StorageService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "UploadService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"postid\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"postid\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "int64"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "postID",
+                            "type": "int64",
+                            "refs": [
+                              {
+                                "name": "postID",
+                                "creator": "UploadService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "posts_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "postID",
+              "type": "int64"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "StorageService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "postID",
+          "type": "int64"
+        }
+      }
+    ]
+  },
+  {
     "method": "(*UploadServiceImpl).ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64)",
     "depth": 0,
     "caller": "Client",
@@ -1054,136 +1184,6 @@
         "basic": {
           "name": "text",
           "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*UploadServiceImpl).DeletePost(ctx context.Context, postID int64)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*StorageServiceImpl).DeletePost(ctx context.Context, postID int64)",
-        "depth": 1,
-        "caller": "UploadService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
-            "depth": 2,
-            "caller": "StorageService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "UploadService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"postid\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"postid\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "int64"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "postID",
-                            "type": "int64",
-                            "refs": [
-                              {
-                                "name": "postID",
-                                "creator": "UploadService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "posts_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "postID",
-              "type": "int64"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "StorageService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "postID",
-          "type": "int64"
         }
       }
     ]
