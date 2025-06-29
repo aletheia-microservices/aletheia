@@ -28,34 +28,25 @@ func GetAllSelectorIdents(expr ast.Expr) ([]*ast.Ident, string) {
 	return nil, ""
 }
 
-// FIXME: THIS IS DUPLICATED
-func findTypeFromSelectedImportedPackage(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
+func LookupTypeFromImports(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 	goType := pkg.GetTypeInfo(typeExpr)
-	logger.Logger.Infof("GO GOTYPE [%s]: %s", utils.GetType(goType), goType.String())
 
-	var findForNamedType = func(goNamedType *golangtypes.Named) gotypes.Type {
-		t := pkg.GetImportedTypeIfExists(goNamedType.String())
-		if t != nil {
-			logger.Logger.Debugf("GOT TYPE [%s]: %s", utils.GetType(t), t.String())
-			return t
-		}
-		return nil
+	if goAliasType, ok := goType.(*golangtypes.Alias); ok {
+		// e.g. "bson.D" (alias) is actually "primitive.D" (named)
+		// due to declaration in package "go.mongodb.org/mongo-driver/bson" :
+		// - type D = primitive.D
+		goType = goAliasType.Rhs()
 	}
-
 	if goNamedType, ok := goType.(*golangtypes.Named); ok {
-		return findForNamedType(goNamedType)
-	} else if goAliasType, ok := goType.(*golangtypes.Alias); ok {
-		logger.Logger.Warnf("[APP GOTYPES] recursing alias for [%T] (%s); RHS = [%T] %s", goAliasType, goAliasType.String(), goAliasType.Rhs(), goAliasType.Rhs())
-		if goNamedType, ok := goAliasType.Rhs().(*golangtypes.Named); ok {
-			return findForNamedType(goNamedType)
-		}
-		
+		return pkg.GetImportedTypeIfExists(goNamedType.String())
 	}
 
+	// this is ok because we will later add it to the imported packages
+	logger.Logger.Warnf("[LOOKUP] unable to find type from selected imported package (%s) in typeExpr: %v", pkg.String(), typeExpr)
 	return nil
 }
 
-func ComputeTypeForAstExpr(file *types.File, pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
+func ComputeTypeForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 	logger.Logger.Debugf("[LOOKUP - COMPUTE TYPE AST] (%s) visiting type expr (%v)", utils.GetType(typeExpr), typeExpr)
 	switch e := typeExpr.(type) {
 	case *ast.Ident:
@@ -71,53 +62,32 @@ func ComputeTypeForAstExpr(file *types.File, pkg *types.Package, typeExpr ast.Ex
 
 		logger.Logger.Fatalf("[LOOKUP AST IDENT] cannot compute type for ident (%s)", e)
 	case *ast.SelectorExpr:
-		if ident, ok := e.X.(*ast.Ident); ok {
-			t := findTypeFromSelectedImportedPackage(pkg, typeExpr)
+		if _, ok := e.X.(*ast.Ident); ok {
+			t := LookupTypeFromImports(pkg, typeExpr)
 			if t != nil {
 				return t
 			}
 
-			// left ident is the package alias
-			impt := file.GetImport(ident.Name)
-			imptPath := impt.GetPackagePath() + "." + e.Sel.Name
-			// import path does not always match the object impt path
-			// e.g. in "bson.D", the bson code actually defines "D" as "type D = primitive.D"
-			// so instead of the original imported path go.mongodb.org/mongo-driver/bson.D
-			// we have go.mongodb.org/mongo-driver/bson/primitive.D
-			// can be either e.Sel or just e
 			goType := pkg.GetTypeInfo(e.Sel)
-			if goType.String() != imptPath {
-				logger.Logger.Warnf("[LOOKUP AST SELECTOR] replacing imported package path (%s) with go type path (%s)", imptPath, goType.String())
-				imptPath = goType.String()
-			}
-
-			importedType := pkg.GetImportedTypeIfExists(imptPath)
-			if importedType != nil {
-				return importedType
-			}
-
-			logger.Logger.Warnf("------------ !!! DID NOT FIND IMPORTED TYPE NAMED (%s) FROM PACKAGE (%s)", e.Sel.Name, impt.Alias)
-			t = FindDefTypesAndAddToPackage(pkg, nil, goType, nil, nil, nil)
-			logger.Logger.Warnf("------------  !!! FOUND AND ADDED NEW TYPE (%s) TO IMPORTS OF PACKAGE (%s)", t.String(), pkg.Name)
-			return t
+			return ResolveTypeAndAddToPackage(pkg, nil, goType, nil, nil, nil)
 		}
 
 		logger.Logger.Fatalf("[LOOKUP AST SELECTOR] cannot parse selector expr (%v)", e)
 		return nil
 	case *ast.ChanType:
 		return &gotypes.ChanType{
-			ChanType: ComputeTypeForAstExpr(file, pkg, e.Value),
+			ChanType: ComputeTypeForAstExpr(pkg, e.Value),
 		}
 	case *ast.MapType:
 		return &gotypes.MapType{
-			KeyType:   ComputeTypeForAstExpr(file, pkg, e.Key),
-			ValueType: ComputeTypeForAstExpr(file, pkg, e.Value),
+			KeyType:   ComputeTypeForAstExpr(pkg, e.Key),
+			ValueType: ComputeTypeForAstExpr(pkg, e.Value),
 		}
 	case *ast.InterfaceType:
 		return &gotypes.InterfaceType{Methods: make(map[string]string)}
 	case *ast.ArrayType:
 		return &gotypes.ArrayType{
-			ElementsType: ComputeTypeForAstExpr(file, pkg, e.Elt),
+			ElementsType: ComputeTypeForAstExpr(pkg, e.Elt),
 		}
 	case *ast.StructType:
 		structType := &gotypes.StructType{Methods: make(map[string]string)}
@@ -128,7 +98,7 @@ func ComputeTypeForAstExpr(file *types.File, pkg *types.Package, typeExpr ast.Ex
 			name := f.Names[0].Name
 			fieldType := &gotypes.FieldType{
 				Origin:      structType,
-				WrappedType: ComputeTypeForAstExpr(file, pkg, f.Type),
+				WrappedType: ComputeTypeForAstExpr(pkg, f.Type),
 				StructField: true,
 				FieldName:   name,
 				FieldTag:    f.Tag.Value,
@@ -142,20 +112,20 @@ func ComputeTypeForAstExpr(file *types.File, pkg *types.Package, typeExpr ast.Ex
 		return structType
 	case *ast.StarExpr:
 		return &gotypes.PointerType{
-			PointerTo: ComputeTypeForAstExpr(file, pkg, e.X),
+			PointerTo: ComputeTypeForAstExpr(pkg, e.X),
 		}
 	case *ast.Ellipsis:
-		logger.Logger.Fatalf("[LOOKUP AST] could not compute type for expr %v (type = %s) \n\npkg: %s \n\nimportMap: %v", typeExpr, utils.GetType(e.Elt), pkg.Name, file.Imports)
+		logger.Logger.Fatalf("[LOOKUP AST] could not compute type for expr %v (type = %s) \n\npkg: %s", typeExpr, utils.GetType(e.Elt), pkg.Name)
 	}
-	logger.Logger.Fatalf("[LOOKUP AST] could not compute type for expr %v (type = %s) \n\npkg: %s \n\nimportMap: %v", typeExpr, utils.GetType(typeExpr), pkg.Name, file.Imports)
+	logger.Logger.Fatalf("[LOOKUP AST] could not compute type for expr %v (type = %s) \n\npkg: %s", typeExpr, utils.GetType(typeExpr), pkg.Name)
 	return nil
 }
 
-func ComputeFuncDeclFields(file *types.File, pkg *types.Package, funcDecl *ast.FuncDecl) ([]*types.MethodField, []*types.MethodField, *types.MethodField) {
+func ComputeFuncDeclFields(pkg *types.Package, funcDecl *ast.FuncDecl) ([]*types.MethodField, []*types.MethodField, *types.MethodField) {
 	parser := func(fieldsList []*ast.Field) []*types.MethodField {
 		var params []*types.MethodField
 		for _, field := range fieldsList {
-			paramType := ComputeTypeForAstExpr(file, pkg, field.Type)
+			paramType := ComputeTypeForAstExpr(pkg, field.Type)
 			// returns with types only, which is usually the most frequent scenario
 			if len(field.Names) == 0 {
 				param := &types.MethodField{

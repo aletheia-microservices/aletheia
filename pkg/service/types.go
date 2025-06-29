@@ -222,9 +222,6 @@ func (node *Service) GetSpacedName() string {
 func (node *Service) GetPackage() *types.Package {
 	return node.File.Package
 }
-func (node *Service) GetFile() *types.File {
-	return node.File
-}
 
 func (node *Service) GetPackageName() string {
 	return node.File.Package.Name

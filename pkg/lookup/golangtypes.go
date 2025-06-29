@@ -37,14 +37,7 @@ func SaveObjectToPackage(pkg *types.Package, obj golangtypes.Object) gotypes.Typ
 	return nil
 }
 
-func FindDefTypesAndAddToPackage(pkg *types.Package, object golangtypes.Object, goType golangtypes.Type, visitedNamedTypes map[*golangtypes.Named]bool, typeNameToFuncs map[string][]*golangtypes.Func, serviceTypes map[string]*gotypes.ServiceType) gotypes.Type {
-	/* if object != nil {
-		t := SaveObjectToPackage(pkg, object)
-		if t != nil {
-			return t
-		}
-	} */
-
+func ResolveTypeAndAddToPackage(pkg *types.Package, object golangtypes.Object, goType golangtypes.Type, visitedNamedTypes map[*golangtypes.Named]bool, typeNameToFuncs map[string][]*golangtypes.Func, serviceTypes map[string]*gotypes.ServiceType) gotypes.Type {
 	var typeName string
 	var objectPackage *golangtypes.Package
 	var objectPackagePath string
@@ -66,7 +59,7 @@ func FindDefTypesAndAddToPackage(pkg *types.Package, object golangtypes.Object, 
 		logger.Logger.Tracef("[APP NAMED GOTYPE] [%s] %s", utils.GetType(namedGoType), namedGoType)
 	} else if aliasGoType, ok := goType.(*golangtypes.Alias); ok {
 		logger.Logger.Warnf("[APP GOTYPES] recursing alias for [%T] (%s); RHS = [%T] %s", aliasGoType, aliasGoType.String(), aliasGoType.Rhs(), aliasGoType.Rhs())
-		return FindDefTypesAndAddToPackage(pkg, object, aliasGoType.Rhs(), visitedNamedTypes, typeNameToFuncs, serviceTypes)
+		return ResolveTypeAndAddToPackage(pkg, object, aliasGoType.Rhs(), visitedNamedTypes, typeNameToFuncs, serviceTypes)
 	}
 
 	if namedGoType == nil {
@@ -210,7 +203,7 @@ func ComputeTypesForGoTypes(p *types.Package, goType golangtypes.Type, computeIf
 		}
 
 		if true {
-			return FindDefTypesAndAddToPackage(p, e.Obj(), e, visitedNamedTypes, typeNameToFuncs, serviceTypes)
+			return ResolveTypeAndAddToPackage(p, e.Obj(), e, visitedNamedTypes, typeNameToFuncs, serviceTypes)
 		}
 	case *golangtypes.Struct:
 		structType := &gotypes.StructType{Methods: make(map[string]string)}

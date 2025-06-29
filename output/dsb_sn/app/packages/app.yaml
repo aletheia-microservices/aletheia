@@ -63,9 +63,9 @@ socialnetwork:
   - atomic.noCopy
   - context.Context
   - crypto.Hash uint
-  - hash.Hash interface{Size, Sum, Write, BlockSize, Reset, }
+  - hash.Hash interface{Write, BlockSize, Reset, Size, Sum, }
   - jwt-go.Claims interface{Valid, }
-  - jwt-go.SigningMethod interface{Verify, Alg, Sign, }
+  - jwt-go.SigningMethod interface{Alg, Sign, Verify, }
   - jwt-go.SigningMethodHMAC struct{Name string, Hash crypto.Hash uint}
   - jwt-go.StandardClaims struct{Audience string, ExpiresAt int64, Id string, IssuedAt int64, Issuer string, NotBefore int64, Subject string}
   - jwt-go.Token struct{Raw string, Method jwt-go.SigningMethod interface{Alg, Sign, Verify, }, Header map[string]interface{}, Claims jwt-go.Claims interface{Valid, }, Signature string, Valid bool}

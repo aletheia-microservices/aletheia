@@ -10,6 +10,6 @@
     --> w-tainted: write(cart_db.Cart.CartID) {1}       --> w-tainted: write(cart_db.Cart.CartID) {1} --> r-tainted: read(cart_db.Cart.CartID) {1}
 [0] (BasicObject BasicType) cartID string
 
-    --> w-tainted: write(cart_db.Cart.Products) {1}       --> w-tainted: write(cart_db.Cart.Products) {1} --> r-tainted: read(product_db.Product.ProductID) {1}
+    --> w-tainted: write(cart_db.Cart.LastProductID) {1}       --> w-tainted: write(cart_db.Cart.LastProductID) {1} --> r-tainted: read(product_db.Product.ProductID) {1}
 [0] (BasicObject BasicType) productID string
 

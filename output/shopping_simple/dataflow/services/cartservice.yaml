@@ -19,7 +19,7 @@
   - '0 depth 0 (BasicObject BasicType) productID string --> w-tainted 2x: write(cart_db.Cart.LastProductID,
     cart_db.Cart.Products) --> r-tainted 1x: read(product_db.Product.ProductID)'
   - '_1 depth 1 (Reference BasicType) ref <productID string> @ Frontend --> w-tainted
-    1x: write(cart_db.Cart.Products) --> r-tainted 1x: read(product_db.Product.ProductID)'
+    1x: write(cart_db.Cart.LastProductID) --> r-tainted 1x: read(product_db.Product.ProductID)'
   - 0 depth 0 (StructObject UserType) product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}
   - 0 depth 0 (StructObject UserType) product shopping_simple.Product struct{ProductID string, Description string, PricePerUnit int, Category string}
   - '_1 depth 1 (Reference UserType) ref <product shopping_simple.Product struct{ProductID

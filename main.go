@@ -230,6 +230,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 
 	fmt.Println("\n--------- RESULTS ---------\n" + results)
 	fmt.Println("\n--------- SUMMARY ---------\n" + summary)
+	fmt.Println("\nanalysis done for app " + app.Name)
 }
 
 func endAnalysis(analysis analysisConfig, app *app.App) {

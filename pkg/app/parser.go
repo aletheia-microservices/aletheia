@@ -184,8 +184,7 @@ func (app *App) RegisterPackages() {
 	app.dumpYamlPackages()
 }
 
-
-//FIXME: we should actually be careful with methods that call other methods
+// FIXME: we should actually be careful with methods that call other methods
 func (app *App) ParseMethods() {
 	for _, pkg := range app.GetAppPackages() {
 		// (1) parse top-level methods
@@ -263,7 +262,7 @@ func (app *App) ParseAppPackage(parsedPackage *types.Package, goPackage *package
 			continue
 		} else if namedType, ok := obj.Type().(*golangtypes.Named); ok {
 			// built-in (e.g. error, make, println) golang types have no package
-			t := lookup.FindDefTypesAndAddToPackage(parsedPackage, obj, namedType, visitedNamedTypes, typeNameToFuncs, app.ServiceTypes)
+			t := lookup.ResolveTypeAndAddToPackage(parsedPackage, obj, namedType, visitedNamedTypes, typeNameToFuncs, app.ServiceTypes)
 			if t != nil {
 				continue
 			}
@@ -291,7 +290,7 @@ func (app *App) ParseAppPackage(parsedPackage *types.Package, goPackage *package
 
 		ast.Inspect(fileAst, func(n ast.Node) bool {
 			if funcDecl, ok := n.(*ast.FuncDecl); ok {
-				parseFuncDecl(funcDecl, typeNameToFuncs, parsedPackage, file, funcs)
+				parseFuncDecl(funcDecl, typeNameToFuncs, parsedPackage, funcs)
 			}
 			return true
 		})
@@ -299,7 +298,7 @@ func (app *App) ParseAppPackage(parsedPackage *types.Package, goPackage *package
 	logger.Logger.Tracef("[APP PACKAGE PARSER] parsed named types app package %s", parsedPackage.Name)
 }
 
-func parseFuncDecl(funcDecl *ast.FuncDecl, typeNameToFuncs map[string][]*golangtypes.Func, parsedPackage *types.Package, file *types.File, funcs []*golangtypes.Func) {
+func parseFuncDecl(funcDecl *ast.FuncDecl, typeNameToFuncs map[string][]*golangtypes.Func, parsedPackage *types.Package, funcs []*golangtypes.Func) {
 	var recvTypeIdent *ast.Ident
 	if funcDecl.Recv != nil && len(funcDecl.Recv.List) > 0 {
 		recvField := funcDecl.Recv.List[0]
@@ -314,19 +313,19 @@ func parseFuncDecl(funcDecl *ast.FuncDecl, typeNameToFuncs map[string][]*golangt
 
 	if recvTypeIdent != nil {
 		if structTypeFuncs, ok := typeNameToFuncs[recvTypeIdent.Name]; ok {
-			createAndSaveMethodForFuncDecl(parsedPackage, file, funcDecl, structTypeFuncs)
+			createAndSaveMethodForFuncDecl(parsedPackage, funcDecl, structTypeFuncs)
 		} else {
 			logger.Logger.Fatalf("[APP PACKAGE PARSER] cannot find func for type name (%s)", recvTypeIdent.Name)
 		}
 	} else {
-		createAndSaveMethodForFuncDecl(parsedPackage, file, funcDecl, funcs)
+		createAndSaveMethodForFuncDecl(parsedPackage, funcDecl, funcs)
 	}
 }
 
-func createAndSaveMethodForFuncDecl(pkg *types.Package, file *types.File, funcDecl *ast.FuncDecl, funcGoTypes []*golangtypes.Func) {
+func createAndSaveMethodForFuncDecl(pkg *types.Package, funcDecl *ast.FuncDecl, funcGoTypes []*golangtypes.Func) {
 	for _, f := range funcGoTypes {
 		if f.Name() == funcDecl.Name.Name {
-			params, returns, receiver := lookup.ComputeFuncDeclFields(file, pkg, funcDecl)
+			params, returns, receiver := lookup.ComputeFuncDeclFields(pkg, funcDecl)
 			if receiver != nil {
 				logger.Logger.Warnf("COMPUTED RECEIVER (%s)", receiver.GetName())
 			}

@@ -55,23 +55,17 @@ var APPS_MONGODB_SCHEMAS = map[string][]string{
 }
 
 var Apps = []string{
-	"foobar",
+	"digota",
+	"sockshop2",
 	"shopping_simple",
 	"shopping_app",
 	"postnotification_simple",
 	"postnotification",
-	"sockshop2",
-	"trainticket",
-	"app_constraints_referential_integrity",
-	"employee_app",
-	"dsb_sn",
-	"dsb_hotel",
 	"dsb_media",
 	"dsb_media_sql",
-	"coupons_app",
-	"coupons_app_sql",
-	"coupons_app_cache",
-	"digota",
+	"dsb_sn",
+	"dsb_hotel",
+	"trainticket",
 }
 
 type AppInfo struct {

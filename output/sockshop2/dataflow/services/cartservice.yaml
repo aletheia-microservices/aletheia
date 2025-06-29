@@ -42,13 +42,13 @@
   - __2 depth 2 (Reference UserType) ref <ctx context.Context> @ FrontendService
   - _3 depth 1 (Reference UserType) ref <ctx context.Context> @ FrontendService
   - '0 depth 0 (BasicObject BasicType) customerID string --> w-tainted 3x: write(shipqueue.Shipment.Name,
-    shipdb.Shipment.Name, order_db.Order.CustomerID) --> r-tainted 2x: read(user_db._.userid,
+    shipdb.Shipment.Name, order_db.Order.Shipment) --> r-tainted 2x: read(user_db._.userid,
     shipqueue.Shipment.Name)'
   - '_1 depth 1 (Reference BasicType) ref <customerID string> @ OrderService --> w-tainted
     4x: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.CustomerID,
     order_db.Order.Shipment) --> r-tainted 2x: read(shipqueue.Shipment.Name, user_db._.userid)'
   - '__2 depth 2 (Reference BasicType) ref <userID string> @ FrontendService --> w-tainted
-    3x: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.CustomerID)
+    3x: write(shipqueue.Shipment.Name, shipdb.Shipment.Name, order_db.Order.Shipment)
     --> r-tainted 2x: read(user_db._.userid, shipqueue.Shipment.Name)'
   - _3 depth 1 (Reference BasicType) ref <sessionID string> @ FrontendService
   - 0 depth 0 (BlueprintBackendObject BlueprintBackendType) collection NoSQLCollection

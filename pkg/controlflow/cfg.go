@@ -31,37 +31,30 @@ func NewControlflowContext(pkg *types.Package, service *service.Service, initial
 }
 
 func (ctx *ControlflowContext) String() string {
-	out := ""
+	out := "{pkg: "
 	if ctx.pkg != nil {
 		out += ctx.pkg.GetName()
 	}
-	if ctx.pkg != nil && ctx.service != nil {
-		out += "."
-	}
+	out += ", svc: "
 	if ctx.service != nil {
 		out += ctx.service.GetName()
 	}
+	out += "}"
 	return out
 }
 
 func (ctx *ControlflowContext) GetPackage() *types.Package {
-	if ctx.pkg != nil {
-		return ctx.pkg
+	if ctx.pkg == nil {
+		logger.Logger.Fatalf("[CONTROLFLOW CONTEXT] package not found for controlflow context: %s", ctx.String())
 	}
-	logger.Logger.Fatalf("[CONTROLFLOW CONTEXT] package not found for controlflow context: %s", ctx.String())
-	//return ctx.service.GetPackage()
-	return nil
+	return ctx.pkg
 }
 
 func (ctx *ControlflowContext) GetService() *service.Service {
-	return ctx.service
-}
-
-func (ctx *ControlflowContext) GetFile() *types.File {
-	if ctx.service != nil {
-		return ctx.service.GetFile()
+	if ctx.service == nil {
+		logger.Logger.Fatalf("[CONTROLFLOW CONTEXT] service not found for controlflow context: %s", ctx.String())
 	}
-	return nil
+	return ctx.service
 }
 
 func (ctx *ControlflowContext) CurrentCFG() *types.CFG {
