@@ -27,7 +27,7 @@ MOVIEINFO_DB:
     - MovieInfo.Title: string
     - MovieInfo.Casts: string
   - constraints:
-    - REFERENCE(MOVIEINFO_DB.MovieInfo.Title --> MOVIEID_DB.MovieId.Title) [+]
     - REFERENCE(MOVIEINFO_DB.MovieInfo.MovieID --> MOVIEID_DB.MovieId.MovieID) [+]
+    - REFERENCE(MOVIEINFO_DB.MovieInfo.Title --> MOVIEID_DB.MovieId.Title) [+]
     - REFERENCE(MOVIEINFO_DB.MovieInfo --> MOVIEID_DB.MovieId.MovieID) [+]
     - REFERENCE(MOVIEINFO_DB.MovieInfo --> MOVIEID_DB.MovieId.Title) [+]

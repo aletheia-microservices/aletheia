@@ -69,7 +69,7 @@ func (ctx *ControlflowContext) PopCFG() *types.CFG {
 	return ctx.cfg.Pop().(*types.CFG)
 }
 
-// if func is anonymous than name is empty
+// if func is anonymous then name is empty
 func GenerateInlineFuncCFG(inlineBlock *ast.BlockStmt, name string) *types.CFG {
 	cfg := cfg.New(inlineBlock, mayReturn)
 	parsedCfg := types.InitParsedCFG(cfg, name)

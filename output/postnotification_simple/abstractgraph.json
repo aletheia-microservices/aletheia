@@ -1,454 +1,5 @@
 [
   {
-    "method": "(*UploadServiceImpl).DeletePost(ctx context.Context, postID int64)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*StorageServiceImpl).DeletePost(ctx context.Context, postID int64)",
-        "depth": 1,
-        "caller": "UploadService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
-            "depth": 2,
-            "caller": "StorageService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "UploadService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "filter",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"postid\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"postid\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "int64"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "postID",
-                            "type": "int64",
-                            "refs": [
-                              {
-                                "name": "postID",
-                                "creator": "UploadService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "posts_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "postID",
-              "type": "int64"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "StorageService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "postID",
-          "type": "int64"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*UploadServiceImpl).ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "(*StorageServiceImpl).ReadPost(ctx context.Context, reqID int64, postID int64)",
-        "depth": 1,
-        "caller": "UploadService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
-            "depth": 2,
-            "caller": "StorageService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "UploadService"
-                    },
-                    {
-                      "name": "ctx",
-                      "creator": "NotifyService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "query",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"postid\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"postid\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "int64"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "postID",
-                            "type": "int64",
-                            "refs": [
-                              {
-                                "name": "postID",
-                                "creator": "UploadService"
-                              },
-                              {
-                                "name": "PostID_MESSAGE",
-                                "creator": "NotifyService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = post, collection = post}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "post",
-                    "type": "(*postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}})"
-                  },
-                  "ptr_to": {
-                    "struct": {
-                      "name": "post",
-                      "type": "postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}"
-                    }
-                  }
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "posts_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "reqID",
-              "type": "int64"
-            }
-          },
-          {
-            "basic": {
-              "name": "postID",
-              "type": "int64"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "post",
-              "type": "postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}",
-              "refs": [
-                {
-                  "name": "post",
-                  "creator": "StorageService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "err",
-                  "creator": "StorageService"
-                }
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "method": "(*AnalyticsServiceImpl).ReadAnalytics(ctx context.Context, postID int64)",
-        "depth": 1,
-        "caller": "UploadService",
-        "edges": [
-          {
-            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
-            "depth": 2,
-            "caller": "AnalyticsService",
-            "params": [
-              {
-                "interface": {
-                  "name": "ctx",
-                  "type": "context.Context",
-                  "refs": [
-                    {
-                      "name": "ctx",
-                      "creator": "UploadService"
-                    }
-                  ]
-                }
-              },
-              {
-                "slice": {
-                  "name": "analyticsQuery",
-                  "type": "primitive.D"
-                },
-                "slice_variables": [
-                  {
-                    "struct": {
-                      "name": "",
-                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
-                    },
-                    "struct_fields": {
-                      "Key": {
-                        "field": {
-                          "name": "Key",
-                          "type": "\"postid\" string"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "",
-                            "type": "\"postid\" string"
-                          }
-                        }
-                      },
-                      "Value": {
-                        "field": {
-                          "name": "Value",
-                          "type": "int64"
-                        },
-                        "wrapped_variable": {
-                          "basic": {
-                            "name": "postID",
-                            "type": "int64",
-                            "refs": [
-                              {
-                                "name": "postID",
-                                "creator": "UploadService"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "returns": [
-              {
-                "blueprint_backend": {
-                  "name": "result",
-                  "type": "NoSQLCursor {database = analyticsDb, collection = analytics_collection}"
-                },
-                "target_variable": {
-                  "pointer": {
-                    "name": "analytics",
-                    "type": "(*postnotification_simple.Analytics struct{PostID int64})"
-                  },
-                  "ptr_to": {
-                    "struct": {
-                      "name": "analytics",
-                      "type": "postnotification_simple.Analytics struct{PostID int64}"
-                    }
-                  }
-                }
-              },
-              {
-                "interface": {
-                  "name": "err",
-                  "type": ".error"
-                }
-              }
-            ],
-            "datastore": "analytics_db"
-          }
-        ],
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "postID",
-              "type": "int64"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "struct": {
-              "name": "analytics",
-              "type": "postnotification_simple.Analytics struct{PostID int64}",
-              "refs": [
-                {
-                  "name": "analytics",
-                  "creator": "AnalyticsService"
-                }
-              ]
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error",
-              "refs": [
-                {
-                  "name": "",
-                  "creator": "AnalyticsService"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "reqID",
-          "type": "int64"
-        }
-      },
-      {
-        "basic": {
-          "name": "postID",
-          "type": "int64"
-        }
-      }
-    ]
-  },
-  {
     "method": "(*UploadServiceImpl).UploadPost(ctx context.Context, username string, text string)",
     "depth": 0,
     "caller": "Client",
@@ -1005,11 +556,11 @@
                           "refs": [
                             {
                               "name": "ctx",
-                              "creator": "UploadService"
+                              "creator": "NotifyService"
                             },
                             {
                               "name": "ctx",
-                              "creator": "NotifyService"
+                              "creator": "UploadService"
                             }
                           ]
                         }
@@ -1049,12 +600,12 @@
                                     "type": "int64",
                                     "refs": [
                                       {
-                                        "name": "postID",
-                                        "creator": "UploadService"
-                                      },
-                                      {
                                         "name": "PostID_MESSAGE",
                                         "creator": "NotifyService"
+                                      },
+                                      {
+                                        "name": "postID",
+                                        "creator": "UploadService"
                                       }
                                     ]
                                   }
@@ -1184,6 +735,455 @@
         "basic": {
           "name": "text",
           "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*UploadServiceImpl).DeletePost(ctx context.Context, postID int64)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*StorageServiceImpl).DeletePost(ctx context.Context, postID int64)",
+        "depth": 1,
+        "caller": "UploadService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
+            "depth": 2,
+            "caller": "StorageService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "UploadService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "filter",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"postid\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"postid\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "int64"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "postID",
+                            "type": "int64",
+                            "refs": [
+                              {
+                                "name": "postID",
+                                "creator": "UploadService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "posts_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "postID",
+              "type": "int64"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "StorageService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "postID",
+          "type": "int64"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*UploadServiceImpl).ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "(*StorageServiceImpl).ReadPost(ctx context.Context, reqID int64, postID int64)",
+        "depth": 1,
+        "caller": "UploadService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+            "depth": 2,
+            "caller": "StorageService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "NotifyService"
+                    },
+                    {
+                      "name": "ctx",
+                      "creator": "UploadService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "query",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"postid\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"postid\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "int64"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "postID",
+                            "type": "int64",
+                            "refs": [
+                              {
+                                "name": "PostID_MESSAGE",
+                                "creator": "NotifyService"
+                              },
+                              {
+                                "name": "postID",
+                                "creator": "UploadService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = post, collection = post}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "post",
+                    "type": "(*postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}})"
+                  },
+                  "ptr_to": {
+                    "struct": {
+                      "name": "post",
+                      "type": "postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}"
+                    }
+                  }
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "posts_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "reqID",
+              "type": "int64"
+            }
+          },
+          {
+            "basic": {
+              "name": "postID",
+              "type": "int64"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "post",
+              "type": "postnotification_simple.Post struct{ReqID int64, PostID int64, MediaID int64, Text string, Mentions []string, Timestamp int64, Creator postnotification_simple.Creator struct{Username string}}",
+              "refs": [
+                {
+                  "name": "post",
+                  "creator": "StorageService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "err",
+                  "creator": "StorageService"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "method": "(*AnalyticsServiceImpl).ReadAnalytics(ctx context.Context, postID int64)",
+        "depth": 1,
+        "caller": "UploadService",
+        "edges": [
+          {
+            "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+            "depth": 2,
+            "caller": "AnalyticsService",
+            "params": [
+              {
+                "interface": {
+                  "name": "ctx",
+                  "type": "context.Context",
+                  "refs": [
+                    {
+                      "name": "ctx",
+                      "creator": "UploadService"
+                    }
+                  ]
+                }
+              },
+              {
+                "slice": {
+                  "name": "analyticsQuery",
+                  "type": "primitive.D"
+                },
+                "slice_variables": [
+                  {
+                    "struct": {
+                      "name": "",
+                      "type": "struct{Key \"postid\" string, Key \"postid\" string, Value int64, Value int64}"
+                    },
+                    "struct_fields": {
+                      "Key": {
+                        "field": {
+                          "name": "Key",
+                          "type": "\"postid\" string"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "",
+                            "type": "\"postid\" string"
+                          }
+                        }
+                      },
+                      "Value": {
+                        "field": {
+                          "name": "Value",
+                          "type": "int64"
+                        },
+                        "wrapped_variable": {
+                          "basic": {
+                            "name": "postID",
+                            "type": "int64",
+                            "refs": [
+                              {
+                                "name": "postID",
+                                "creator": "UploadService"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "returns": [
+              {
+                "blueprint_backend": {
+                  "name": "result",
+                  "type": "NoSQLCursor {database = analyticsDb, collection = analytics_collection}"
+                },
+                "target_variable": {
+                  "pointer": {
+                    "name": "analytics",
+                    "type": "(*postnotification_simple.Analytics struct{PostID int64})"
+                  },
+                  "ptr_to": {
+                    "struct": {
+                      "name": "analytics",
+                      "type": "postnotification_simple.Analytics struct{PostID int64}"
+                    }
+                  }
+                }
+              },
+              {
+                "interface": {
+                  "name": "err",
+                  "type": ".error"
+                }
+              }
+            ],
+            "datastore": "analytics_db"
+          }
+        ],
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "postID",
+              "type": "int64"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "struct": {
+              "name": "analytics",
+              "type": "postnotification_simple.Analytics struct{PostID int64}",
+              "refs": [
+                {
+                  "name": "analytics",
+                  "creator": "AnalyticsService"
+                }
+              ]
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error",
+              "refs": [
+                {
+                  "name": "",
+                  "creator": "AnalyticsService"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "reqID",
+          "type": "int64"
+        }
+      },
+      {
+        "basic": {
+          "name": "postID",
+          "type": "int64"
         }
       }
     ]

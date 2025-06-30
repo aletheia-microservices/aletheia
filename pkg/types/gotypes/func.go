@@ -20,10 +20,18 @@ type FuncTypeType struct {
 
 func (t *FuncTypeType) DeepCopy() Type {
 	return &FuncTypeType{
-		Body: t.Body,
-		Name: t.Name,
+		Body:   t.Body,
+		Name:   t.Name,
 		Params: t.Params,
 	}
+}
+
+func (t *FuncTypeType) GetBody() *ast.BlockStmt {
+	return t.Body
+}
+
+func (t *FuncTypeType) GetParams() *ast.FieldList {
+	return t.Params
 }
 
 func (t *FuncTypeType) IsSameType(other Type) bool {
@@ -47,6 +55,9 @@ func (t *FuncTypeType) LongString() string {
 }
 func (t *FuncTypeType) GetName() string {
 	return t.String()
+}
+func (t *FuncTypeType) SetName(name string) {
+	t.Name = name
 }
 func (t *FuncTypeType) GetLongName() string {
 	return t.String()

@@ -342,7 +342,7 @@ func parseFuncDecl(funcDecl *ast.FuncDecl, typeNameToFuncs map[string][]*golangt
 func createAndSaveMethodForFuncDecl(pkg *types.Package, funcDecl *ast.FuncDecl, funcGoTypes []*golangtypes.Func) {
 	for _, f := range funcGoTypes {
 		if f.Name() == funcDecl.Name.Name {
-			params, returns, receiver := lookup.ComputeFuncDeclFields(pkg, funcDecl)
+			params, returns, receiver := lookup.ComputeFieldsForAstFuncDecl(pkg, funcDecl)
 			if receiver != nil {
 				logger.Logger.Warnf("COMPUTED RECEIVER (%s)", receiver.GetName())
 			}

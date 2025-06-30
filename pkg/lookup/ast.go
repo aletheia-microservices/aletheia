@@ -10,12 +10,12 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func GetAllSelectorIdents(expr ast.Expr) ([]*ast.Ident, string) {
+func GetAllSelectorIdentsForAstExpr(expr ast.Expr) ([]*ast.Ident, string) {
 	if callExpr, ok := expr.(*ast.CallExpr); ok {
-		return GetAllSelectorIdents(callExpr.Fun)
+		return GetAllSelectorIdentsForAstExpr(callExpr.Fun)
 	}
 	if selectorExpr, ok := expr.(*ast.SelectorExpr); ok {
-		r1, r2 := GetAllSelectorIdents(selectorExpr.X)
+		r1, r2 := GetAllSelectorIdentsForAstExpr(selectorExpr.X)
 		return append(r1, selectorExpr.Sel), r2 + "." + selectorExpr.Sel.Name
 	}
 	if arrayType, ok := expr.(*ast.ArrayType); ok {
@@ -121,7 +121,7 @@ func ComputeTypeForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 	return nil
 }
 
-func ComputeFuncDeclFields(pkg *types.Package, funcDecl *ast.FuncDecl) ([]*types.MethodField, []*types.MethodField, *types.MethodField) {
+func ComputeFieldsForAstFuncDecl(pkg *types.Package, funcDecl *ast.FuncDecl) ([]*types.MethodField, []*types.MethodField, *types.MethodField) {
 	parser := func(fieldsList []*ast.Field) []*types.MethodField {
 		var params []*types.MethodField
 		for _, field := range fieldsList {

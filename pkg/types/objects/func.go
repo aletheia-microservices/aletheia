@@ -34,6 +34,10 @@ func (v *FuncObject) String() string {
 	return v.ObjectInfo.String()
 }
 
+func (v *FuncObject) Get() string {
+	return v.ObjectInfo.String()
+}
+
 func (v *FuncObject) LongString() string {
 	return v.ObjectInfo.LongString()
 }
@@ -51,6 +55,18 @@ func (v *FuncObject) GetType() gotypes.Type {
 
 func (v *FuncObject) GetFuncType() *gotypes.FuncTypeType {
 	return v.ObjectInfo.GetType().(*gotypes.FuncTypeType)
+}
+
+func (v *FuncObject) GetFuncTypeName() string {
+	return v.GetFuncType().GetName()
+}
+
+func (v *FuncObject) HasFuncTypeName() bool {
+	return v.GetFuncType().GetName() != ""
+}
+
+func (v *FuncObject) SetFuncTypeName(name string) {
+	v.GetFuncType().SetName(name)
 }
 
 func (v *FuncObject) GetVariableInfo() *ObjectInfo {

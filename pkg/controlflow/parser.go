@@ -83,7 +83,7 @@ func visitBasicBlock(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	}
 
 	for _, deferStmt := range deferStmts {
-		parseAndSaveCall(ctx, method, block, deferStmt.Call)
+		parseFuncCall(ctx, method, block, deferStmt.Call)
 	}
 
 	if block.Block.Kind == cfg.KindForPost { // FIXME: skip going again for loop
@@ -123,7 +123,7 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 
 			visitedRangeObj = true
 			parsingLoop = true
-			rangeObj, _ = lookupObjectFromAstExpression(ctx, method, block, expr, nil, false)
+			rangeObj, _ = lookupObjectFromAstExpression(ctx, method, block, expr, false)
 			switch e := rangeObj.(type) {
 			case *objects.SliceObject:
 				rangeElemType = e.GetSliceType().UnderlyingType
@@ -178,7 +178,7 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 func getAssignmentRightObjects(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, rightExprs []ast.Expr) []objects.Object {
 	var robjs []objects.Object
 	for _, rvalue := range rightExprs {
-		obj, _ := lookupObjectFromAstExpression(ctx, method, block, rvalue, nil, true)
+		obj, _ := lookupObjectFromAstExpression(ctx, method, block, rvalue, true)
 		if tupleVariable, ok := obj.(*objects.TupleObject); ok {
 			robjs = append(robjs, tupleVariable.Objects...)
 		} else {
@@ -208,7 +208,7 @@ func assignLeftIdents(ctx *ControlflowContext, method *types.ParsedMethod, block
 }
 
 func incDecLeftValues(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, leftExpr ast.Expr, tok token.Token) {
-	lvariable, _ := lookupObjectFromAstExpression(ctx, method, block, leftExpr, nil, true)
+	lvariable, _ := lookupObjectFromAstExpression(ctx, method, block, leftExpr, true)
 	switch tok {
 	case token.INC:
 		lvariable.GetType().AddValue("1")
@@ -240,9 +240,8 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				newObj.GetVariableInfo().SetName(e.Name)
 				block.AddObject(newObj)
 
-				if funcVar, ok := rObj.(*objects.FuncObject); ok {
-					funcVar.GetFuncType().Name = e.Name
-					parseInlineFuncDeclaration(block, funcVar.GetFuncType().Body, e.Name)
+				if funcObj, ok := rObj.(*objects.FuncObject); ok {
+					parseInlineFuncDeclaration(block, funcObj, e.Name)
 				}
 			} else if assignStmt.Tok == token.ADD_ASSIGN { // +=
 				lObj := block.GetLatestObjectByName(e.Name)
@@ -254,7 +253,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected token (%v) for assignment: %v", ctx.String(), assignStmt.Tok, assignStmt)
 			}
 		case *ast.SelectorExpr:
-			lObj, _ := lookupObjectFromAstExpression(ctx, method, block, e, nil, true)
+			lObj, _ := lookupObjectFromAstExpression(ctx, method, block, e, true)
 			switch ee := lObj.(type) {
 			case *objects.FieldObject:
 				logger.Logger.Debugf("[CFG - ASSIGN LEFT] got lvariable (%s) in assignStmt: %v", lObj.String(), assignStmt)
@@ -264,8 +263,8 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lObj.String())
 			}
 		case *ast.IndexExpr: // e.g. res[rt] = pc
-			leftObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, nil, true)
-			indexObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, nil, true)
+			leftObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, true)
+			indexObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, true)
 			//newLeftVariable := lvariable.NewVersion()
 			switch ee := leftObj.(type) {
 			case *objects.MapObject:
@@ -311,37 +310,13 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 	}
 }
 
-func parseInlineFuncDeclaration(block *types.Block, body *ast.BlockStmt, name string) *types.CFG {
-	inlineCFG := GenerateInlineFuncCFG(body, name)
+func parseInlineFuncDeclaration(block *types.Block, funcObj *objects.FuncObject, name string) *types.CFG {
+	inlineCFG := GenerateInlineFuncCFG(funcObj.GetFuncType().GetBody(), name)
 	if name != "" { // if empty then it is an anonymous function
+		funcObj.SetFuncTypeName(name)
 		block.AddInlineFunc(name, inlineCFG)
 	}
 	return inlineCFG
-}
-
-func parseInlineFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, inlineCFG *types.CFG, params *ast.FieldList, args []ast.Expr) []objects.Object {
-	entryBlock := inlineCFG.GetEntryParsedBlock()
-	entryBlock.AppendVarsFromPredecessor(block)
-	entryBlock.AppendInlineFuncsFromPredecessor(block)
-
-	var variables []objects.Object
-	for i, arg := range args {
-		v, _ := lookupObjectFromAstExpression(ctx, method, block, arg, nil, true)
-		v = v.DeepCopy()
-		v.GetVariableInfo().SetName(params.List[i].Names[0].Name)
-		variables = append(variables, v)
-	}
-	entryBlock.AddVariables(variables)
-
-	var blocksStr string
-	for _, block := range inlineCFG.GetParsedBlocks() {
-		blocksStr += "\t\t\t\t\t - " + block.AstInfoString() + "\n"
-	}
-
-	visitBasicBlock(ctx, method, entryBlock)
-	return entryBlock.Results
-
-	//logger.Logger.Fatalf("[CFG] [%s] parsing service method cfg for (%s):\n%s", ctx.String(), method.String(), blocksStr)
 }
 
 func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, node ast.Node) []*ast.DeferStmt {
@@ -352,11 +327,16 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	// Go Routines
 	// ------------
 	case *ast.GoStmt:
-		if funcLit, ok := e.Call.Fun.(*ast.FuncLit); ok {
-			cfg := parseInlineFuncDeclaration(block, funcLit.Body, "")
-			parseInlineFuncCall(ctx, method, block, cfg, funcLit.Type.Params, e.Call.Args)
-		} else { // e.g. we can have a previous assignment to a variable function and then call it here
-			parseAndSaveCall(ctx, method, block, e.Call)
+		obj, _ := lookupObjectFromAstExpression(ctx, method, block, e.Call.Fun, false)
+		if funcObj, ok := obj.(*objects.FuncObject); ok {
+			if funcObj.HasFuncTypeName() {
+				parseFuncCall(ctx, method, block, e.Call)
+			} else {
+				cfg := parseInlineFuncDeclaration(block, funcObj, "")
+				parseInlineFuncCall(ctx, method, block, cfg, funcObj.GetFuncType().GetParams(), e.Call.Args)
+			}
+		} else {
+			logger.Logger.Fatalf("[CFG - PARSE EXPR] unexpected fun for go routine call: %v", e.Call.Fun)
 		}
 	// ----------------------------
 	// Declarations and Assignments
@@ -380,7 +360,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	case *ast.CallExpr:
 		// a call expr can also happen upon a structure assignment
 		// e.g. post := Post { ... }
-		parseAndSaveCall(ctx, method, block, e)
+		parseFuncCall(ctx, method, block, e)
 	case *ast.ParenExpr:
 		// e.g. when used as a bool value in an if statement (assumes it is inside a parentheses)
 		// in this case, the unfolded service from ParenExpr is a CallExpr
@@ -397,7 +377,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	// -------
 	case *ast.ReturnStmt:
 		for _, resultExpr := range e.Results {
-			v, _ := lookupObjectFromAstExpression(ctx, method, block, resultExpr, nil, false)
+			v, _ := lookupObjectFromAstExpression(ctx, method, block, resultExpr, false)
 			logger.Logger.Infof("ADDED RESULT: %s", v.String())
 			block.AddResult(v)
 		}
@@ -437,7 +417,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 func saveParsedFuncCallParams(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, parsedCall types.Call, args []ast.Expr) {
 	for i, arg := range args {
 		logger.Logger.Tracef("[CFG] inside save func call params")
-		param, _ := lookupObjectFromAstExpression(ctx, method, block, arg, nil, false)
+		param, _ := lookupObjectFromAstExpression(ctx, method, block, arg, false)
 
 		// upgrade variable with known type from function method
 		if _, ok := param.GetType().(*gotypes.GenericType); ok {
@@ -453,7 +433,7 @@ func getFuncCallDeps(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	var deps []objects.Object
 	for _, expr := range callExpr.Args {
 		logger.Logger.Warnf("[CFG] [%s] searching for function call deps in expression %v", ctx.String(), expr)
-		if v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, nil, false); v != nil {
+		if v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, false); v != nil {
 			deps = append(deps, v)
 		}
 	}
@@ -806,16 +786,6 @@ func searchCallToMethodInImportedPackage(ctx *ControlflowContext, method *types.
 	return nil, nil, false
 }
 
-func searchCallToMethodInImport(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, impt *types.Import, idents []*ast.Ident, identsStr string) (*objects.TupleObject, *types.Package, bool) {
-	funcIdent := idents[len(idents)-1]
-	logger.Logger.Infof("[CFG CALLS] [%s.%s] searching call to method (%s) in imported package (%s)", ctx.String(), method.Name, funcIdent, impt.Alias)
-
-	if imptPkg := ctx.GetPackage().GetImportedPackage(impt.PackagePath); imptPkg != nil {
-		return searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
-	}
-	return nil, nil, false
-}
-
 func parseCallToMethodInImportedOrCurrentPackage(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr, callPkg *types.Package, idents []*ast.Ident, identsStr string) *objects.TupleObject {
 	funcIdent := idents[len(idents)-1]
 	logger.Logger.Infof("[CFG CALLS] [%s.%s] parsing call to method (%s) in imported or current package (%s): %v", ctx.String(), method.Name, funcIdent, callPkg.Name, callExpr)
@@ -978,28 +948,51 @@ func parseBuiltInGoTypeCall(ctx *ControlflowContext, method *types.ParsedMethod,
 	return nil
 }
 
+func parseInlineFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, inlineCFG *types.CFG, params *ast.FieldList, args []ast.Expr) []objects.Object {
+	entryBlock := inlineCFG.GetEntryParsedBlock()
+	entryBlock.AppendVarsFromPredecessor(block)
+	entryBlock.AppendInlineFuncsFromPredecessor(block)
+
+	var variables []objects.Object
+	for i, arg := range args {
+		v, _ := lookupObjectFromAstExpression(ctx, method, block, arg, true)
+		v = v.DeepCopy()
+		v.GetVariableInfo().SetName(params.List[i].Names[0].Name)
+		variables = append(variables, v)
+	}
+	entryBlock.AddVariables(variables)
+
+	var blocksStr string
+	for _, block := range inlineCFG.GetParsedBlocks() {
+		blocksStr += "\t\t\t\t\t - " + block.AstInfoString() + "\n"
+	}
+
+	visitBasicBlock(ctx, method, entryBlock)
+	return entryBlock.Results
+
+	//logger.Logger.Fatalf("[CFG] [%s] parsing service method cfg for (%s):\n%s", ctx.String(), method.String(), blocksStr)
+}
+
 // FIXME: this does not support nested calls!!!!
-func parseAndSaveCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr) objects.Object {
+func parseFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, callExpr *ast.CallExpr) objects.Object {
 	logger.Logger.Infof("[CFG CALLS] [%s] parsing call (%s) for args (%v)", ctx.String(), callExpr.Fun, callExpr.Args)
-	idents, identsStr := lookup.GetAllSelectorIdents(callExpr.Fun)
+	idents, identsStr := lookup.GetAllSelectorIdentsForAstExpr(callExpr.Fun)
 	leftIdent := idents[0]
 	funcIdent := idents[len(idents)-1]
 
 	var varsStr = ""
 	for i, expr := range callExpr.Args {
-		v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, nil, false)
+		v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, false)
 		varsStr += fmt.Sprintf("\t\t\t\t\t\t\t - argument %d: (%s)\n", i, v.String())
 	}
 
 	logger.Logger.Infof("[CFG CALLS] [%s] found arguments for call with idents (%s):\n%s", ctx.String(), identsStr, varsStr)
 
 	// call to variable or constant in package
-	if ctx.GetPackage() != nil {
-		if variable := ctx.GetPackage().GetDeclaredVariableOrConstIfExists(leftIdent.Name); variable != nil {
-			tupleVar := parseCallToVariableInBlock(ctx, method, block, callExpr, variable, idents, identsStr)
-			if tupleVar != nil {
-				return tupleVar
-			}
+	if variable := ctx.GetPackage().GetDeclaredVariableOrConstIfExists(leftIdent.Name); variable != nil {
+		tupleVar := parseCallToVariableInBlock(ctx, method, block, callExpr, variable, idents, identsStr)
+		if tupleVar != nil {
+			return tupleVar
 		}
 	}
 
@@ -1021,24 +1014,20 @@ func parseAndSaveCall(ctx *ControlflowContext, method *types.ParsedMethod, block
 	var tupleVar *objects.TupleObject
 
 	// call to method in imported package of file
-	if ctx.GetPackage() != nil {
-		logger.Logger.Debugf("[CFG CALLS @ PACKAGE = %s] check if call is to imported package (%s) for package import map:\n%v", ctx.GetPackage().GetName(), leftIdent.Name, ctx.GetPackage().ImportsByAliasMapStr())
-		if imptPkg := ctx.GetPackage().GetImportedPackageByAliasIfExists(leftIdent.Name); imptPkg != nil {
-			var isBlueprintCall bool
-			tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
-			logger.Logger.Warnf("!!!!!!!!!!!!!!! FOUND CALL TO METHOD IN IMPORTED PACKAGE: %v // %v // %v", tupleVar, callPkg, isBlueprintCall)
-			if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
-				return nil
-			}
-			if tupleVar != nil {
-				return tupleVar
-			}
-			if callPkg != nil {
-				callInPackage = true
-			}
+	logger.Logger.Debugf("[CFG CALLS @ PACKAGE = %s] check if call is to imported package (%s) for package import map:\n%v", ctx.GetPackage().GetName(), leftIdent.Name, ctx.GetPackage().ImportsByAliasMapStr())
+	if imptPkg := ctx.GetPackage().GetImportedPackageByAliasIfExists(leftIdent.Name); imptPkg != nil {
+		var isBlueprintCall bool
+		tupleVar, callPkg, isBlueprintCall = searchCallToMethodInImportedPackage(ctx, method, block, callExpr, imptPkg, idents, identsStr)
+		logger.Logger.Warnf("!!!!!!!!!!!!!!! FOUND CALL TO METHOD IN IMPORTED PACKAGE: %v // %v // %v", tupleVar, callPkg, isBlueprintCall)
+		if isBlueprintCall { // skip all blueprint calls that are not on backend components - e.g. backend.GetLogger().Info(...)
+			return nil
 		}
-	} else {
-		logger.Logger.Fatal("[CFG CALLS] could not get package nor service")
+		if tupleVar != nil {
+			return tupleVar
+		}
+		if callPkg != nil {
+			callInPackage = true
+		}
 	}
 
 	// call to method in current package
