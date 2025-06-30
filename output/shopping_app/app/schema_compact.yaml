@@ -48,13 +48,13 @@ BILLING_DB:
     - Bill.PricePerUnit: int
     - Bill.TotalCost: ""
   - constraints:
-    - REFERENCE(BILLING_DB.Bill.Quantity --> ORDER_DB.Order.Quantity) [+]
-    - REFERENCE(BILLING_DB.Bill.Quantity --> STOCK_DB.Stock.Quantity) [+]
     - REFERENCE(BILLING_DB.Bill.ProductID --> ORDER_DB.Order.ProductID) [+]
     - REFERENCE(BILLING_DB.Bill.ProductID --> STOCK_DB.Stock.ProductID) [+]
     - REFERENCE(BILLING_DB.Bill.UserID --> ORDER_DB.Order.UserID) [+]
     - REFERENCE(BILLING_DB.Bill.TotalCost --> ORDER_DB.Order.Quantity) [+]
     - REFERENCE(BILLING_DB.Bill.TotalCost --> STOCK_DB.Stock.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill.Quantity --> ORDER_DB.Order.Quantity) [+]
+    - REFERENCE(BILLING_DB.Bill.Quantity --> STOCK_DB.Stock.Quantity) [+]
     - REFERENCE(BILLING_DB.Bill --> ORDER_DB.Order.ProductID) [+]
     - REFERENCE(BILLING_DB.Bill --> STOCK_DB.Stock.ProductID) [+]
     - REFERENCE(BILLING_DB.Bill --> ORDER_DB.Order.Quantity) [+]

@@ -9,8 +9,8 @@ import (
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types"
 	"analyzer/pkg/types/gotypes"
-	"analyzer/pkg/utils"
 	"analyzer/pkg/types/objects"
+	"analyzer/pkg/utils"
 )
 
 func (service *Service) isMethodExposedByService(methodName string) bool {
@@ -98,12 +98,12 @@ func (service *Service) RegisterFields() {
 
 func (service *Service) computeServiceFieldFromVariable(fieldVariable *objects.FieldObject, paramName string, idx int) types.Field {
 	wrappedType := fieldVariable.GetFieldType().GetWrappedType()
-	wrappedVariable := fieldVariable.GetWrappedVariable()
+	wrappedObject := fieldVariable.GetWrappedVariable()
 	fieldInfo := types.FieldInfo{
-		Name:     paramName,
-		Idx:      idx,
-		Variable: wrappedVariable,
-		Type:     wrappedType,
+		Name:   paramName,
+		Idx:    idx,
+		Object: wrappedObject,
+		Type:   wrappedType,
 	}
 	switch t := wrappedType.(type) {
 	case *blueprint.BlueprintBackendType:
@@ -139,16 +139,16 @@ func (service *Service) RegisterImplName() {
 		exportedMethods = append(exportedMethods, name)
 	}
 	// get impl name
-	ast.Inspect(service.File.Ast, func(n ast.Node) bool {
-		if service.ImplName != "" {
+	ast.Inspect(service.GetFile().GetAst(), func(n ast.Node) bool {
+		if service.HasImplName() {
 			return false
 		}
 		if funcDecl, ok := n.(*ast.FuncDecl); ok && slices.Contains(exportedMethods, funcDecl.Name.Name) {
 			if funcDecl.Recv != nil && len(funcDecl.Recv.List) > 0 {
 				if recv, ok := funcDecl.Recv.List[0].Type.(*ast.StarExpr); ok {
 					if ident, ok := recv.X.(*ast.Ident); ok {
-						service.ImplName = ident.Name
-						service.ImplType.ImplName = ident.Name
+						service.SetImplName(ident.Name)
+						service.SetImplTypeName(ident.Name)
 						return false
 					}
 				}

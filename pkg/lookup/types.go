@@ -1,11 +1,8 @@
 package lookup
 
 import (
-	"strings"
-
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
-	"analyzer/pkg/types"
 	"analyzer/pkg/types/gotypes"
 	"analyzer/pkg/types/objects"
 	"analyzer/pkg/utils"
@@ -97,36 +94,4 @@ func CreateObjectFromType(name string, t gotypes.Type) objects.Object {
 	}
 	logger.Logger.Fatalf("[LOOKUP] could not create variable with name (%s) for type (%v) (type = %s)", name, t, utils.GetType(t))
 	return nil
-}
-
-func ParseFileImports(file *types.File) {
-	for _, imp := range file.Ast.Imports {
-		path := imp.Path.Value
-		// remove quotes
-		path = path[1 : len(path)-1]
-		items := strings.Split(path, "/")
-		pkgName := items[len(items)-1]
-
-		// get alias
-		// e.g. blueprintbackend in "github.com/blueprint-uservices/blueprint/runtime/core/backend"
-		var alias string
-		if imp.Name != nil {
-			alias = imp.Name.Name
-		} else {
-			// if alias is not defined then we extract it as the last "member"
-			alias = items[len(items)-1]
-		}
-
-		impt := &types.Import{
-			Alias:      alias,
-			ImportPath: path,
-			//FIXME: dev can use a dummy path and replace with the original in the go.mod file
-			PackagePath: path,
-			PackageName: pkgName,
-		}
-		file.Imports[alias] = impt
-		/* if alias == "go-geoindex" {
-			logger.Logger.Fatalf("IMPORT (ALIAS = %v): %v", imp.Name, impt.String())
-		} */
-	}
 }

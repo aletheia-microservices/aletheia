@@ -60,6 +60,22 @@ type Service struct {
 	ExposedMethodsLst []*types.ParsedMethod
 }
 
+func (node *Service) GetFile() *types.File {
+	return node.File
+}
+
+func (node *Service) HasImplName() bool {
+	return node.ImplName != ""
+}
+
+func (node *Service) SetImplName(name string) {
+	node.ImplName = name
+}
+
+func (node *Service) SetImplTypeName(name string) {
+	node.ImplType.ImplName = name
+}
+
 func (node *Service) GetMethods() map[string]*types.ParsedMethod {
 	methods := make(map[string]*types.ParsedMethod, 0)
 	maps.Copy(methods, node.ExposedMethods)
@@ -220,11 +236,11 @@ func (node *Service) GetSpacedName() string {
 }
 
 func (node *Service) GetPackage() *types.Package {
-	return node.File.Package
+	return node.GetFile().GetPackage()
 }
 
 func (node *Service) GetPackageName() string {
-	return node.File.Package.Name
+	return node.GetFile().GetPackage().GetName()
 }
 
 func (node *Service) GetQueueHandlersForDatabaseInstance(database datastores.DatabaseInstance) []*types.ParsedMethod {
@@ -315,9 +331,9 @@ func (node *Service) String() string {
 }
 
 func (node *Service) ServicePath() string {
-	return node.File.Package.PackagePath + "." + node.Name
+	return node.GetFile().GetPackage().GetPackagePath() + "." + node.GetName()
 }
 
 func (node *Service) ServiceShortPath() string {
-	return node.File.Package.Name + "." + node.Name
+	return node.GetFile().GetPackage().GetName() + "." + node.GetName()
 }

@@ -63,12 +63,12 @@ socialnetwork:
   - atomic.noCopy
   - context.Context
   - crypto.Hash uint
-  - hash.Hash interface{Write, BlockSize, Reset, Size, Sum, }
+  - hash.Hash interface{Size, Sum, Write, BlockSize, Reset, }
   - jwt-go.Claims interface{Valid, }
   - jwt-go.SigningMethod interface{Alg, Sign, Verify, }
   - jwt-go.SigningMethodHMAC struct{Name string, Hash crypto.Hash uint}
   - jwt-go.StandardClaims struct{Audience string, ExpiresAt int64, Id string, IssuedAt int64, Issuer string, NotBefore int64, Subject string}
-  - jwt-go.Token struct{Raw string, Method jwt-go.SigningMethod interface{Alg, Sign, Verify, }, Header map[string]interface{}, Claims jwt-go.Claims interface{Valid, }, Signature string, Valid bool}
+  - jwt-go.Token struct{Raw string, Method jwt-go.SigningMethod interface{Verify, Alg, Sign, }, Header map[string]interface{}, Claims jwt-go.Claims interface{Valid, }, Signature string, Valid bool}
   - primitive.D
   - primitive.E
   - regexp.Regexp struct{expr string, prog (*syntax.Prog struct{Inst []syntax.Inst struct{Op syntax.InstOp uint8, Out uint32, Arg uint32, Rune []rune}, Start int, NumCap int}), onepass (*regexp.onePassProg struct{Inst []regexp.onePassInst struct{Inst syntax.Inst struct{Op syntax.InstOp uint8, Out uint32, Arg uint32, Rune []rune}, Next []uint32}, Start int, NumCap int}), numSubexp int, maxBitStateLen int, subexpNames

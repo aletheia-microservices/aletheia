@@ -158,6 +158,34 @@ go run main.go --auto --unicity --app dsb_hotel &&
 go run main.go --auto --unicity --app trainticket
 ```
 
+Run code analyzer for main results:
+```zsh
+## Primary Key Coordination
+go run main.go --auto --pk_coordination --app dsb_media_sql &&
+go run main.go --auto --pk_coordination --app dsb_sn &&
+go run main.go --auto --pk_coordination --app dsb_hotel &&
+go run main.go --auto --pk_coordination --app trainticket
+## Foreign Key Coordination
+go run main.go --auto --fk_coordination --app digota &&
+go run main.go --auto --fk_coordination --app sockshop2 &&
+go run main.go --auto --fk_coordination --app shopping_simple &&
+go run main.go --auto --fk_coordination --app shopping_app &&
+go run main.go --auto --fk_coordination --app postnotification_simple &&
+go run main.go --auto --fk_coordination --app postnotification &&
+go run main.go --auto --fk_coordination --app dsb_sn
+## Foreign Key Concurrency
+go run main.go --auto --fk_concurrency --app digota &&
+go run main.go --auto --fk_concurrency --app sockshop2 &&
+go run main.go --auto --fk_concurrency --app shopping_simple &&
+go run main.go --auto --fk_concurrency --app shopping_app &&
+go run main.go --auto --fk_concurrency --app postnotification_simple &&
+go run main.go --auto --fk_concurrency --app postnotification
+## Unicity Constraints
+go run main.go --auto --unicity --app dsb_media &&
+go run main.go --auto --unicity --app dsb_media_sql
+
+```
+
 Run the graph builder:
 
 ```zsh

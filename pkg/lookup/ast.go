@@ -28,7 +28,7 @@ func GetAllSelectorIdents(expr ast.Expr) ([]*ast.Ident, string) {
 	return nil, ""
 }
 
-func LookupTypeFromImports(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
+func LookupTypeFromImportsForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 	goType := pkg.GetTypeInfo(typeExpr)
 
 	if goAliasType, ok := goType.(*golangtypes.Alias); ok {
@@ -63,7 +63,7 @@ func ComputeTypeForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 		logger.Logger.Fatalf("[LOOKUP AST IDENT] cannot compute type for ident (%s)", e)
 	case *ast.SelectorExpr:
 		if _, ok := e.X.(*ast.Ident); ok {
-			t := LookupTypeFromImports(pkg, typeExpr)
+			t := LookupTypeFromImportsForAstExpr(pkg, typeExpr)
 			if t != nil {
 				return t
 			}

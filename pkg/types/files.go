@@ -1,47 +1,45 @@
 package types
 
 import (
-	"fmt"
 	"go/ast"
-
-	"analyzer/pkg/logger"
 )
 
 type File struct {
-	Ast     *ast.File
-	Package *Package
-	Name    string
-	AbsPath string
-	Imports map[string]*Import // key is the alias of the import
+	ast     *ast.File
+	pkg     *Package
+	name    string
+	absPath string
 }
 
-func (f *File) ImportsListStr() string {
-	str := ""
-	for _, impt := range f.Imports {
-		str += "\t\t\t\t\t - " + impt.Alias + ": " + impt.PackagePath + "\n"
+func NewFile(ast *ast.File, pkg *Package, name string, absPath string) *File {
+	return &File{
+		ast:     ast,
+		pkg:     pkg,
+		name:    name,
+		absPath: absPath,
 	}
-	return str
 }
 
-func (f *File) GetImport(alias string) *Import {
-	if impt, ok := f.Imports[alias]; ok {
-		return impt
-	}
-	lst := ""
-	for k, impt := range f.Imports {
-		lst += fmt.Sprintf("\t\t\t\t - %s: %s\n", k, impt.ImportPath)
-	}
-	logger.Logger.Fatalf("[FILES] unknown import alias (%s) in file (%s) with import list:\n%s", alias, f.String(), lst)
-	return nil
-}
-
-func (f *File) GetImportIfExists(alias string) *Import {
-	if impt, ok := f.Imports[alias]; ok {
-		return impt
-	}
-	return nil
+func (f *File) GetAst() *ast.File {
+	return f.ast
 }
 
 func (f *File) String() string {
-	return f.AbsPath
+	return f.absPath
+}
+
+func (f *File) GetPackage() *Package {
+	return f.pkg
+}
+
+func (f *File) GetName() string {
+	return f.name
+}
+
+func (f *File) SetPackage(newPkg *Package) {
+	f.pkg = newPkg
+}
+
+func (f *File) HasAbsolutePath(other string) bool {
+	return f.absPath == other
 }

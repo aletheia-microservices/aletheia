@@ -350,89 +350,6 @@
     ]
   },
   {
-    "method": "(*ProductServiceImpl).Delete(ctx context.Context, id string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
-        "depth": 1,
-        "caller": "ProductService",
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "slice": {
-              "name": "filter",
-              "type": "primitive.D"
-            },
-            "slice_variables": [
-              {
-                "struct": {
-                  "name": "",
-                  "type": "struct{Key \"id\" string, Key \"id\" string, Value string, Value string}"
-                },
-                "struct_fields": {
-                  "Key": {
-                    "field": {
-                      "name": "Key",
-                      "type": "\"id\" string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "",
-                        "type": "\"id\" string"
-                      }
-                    }
-                  },
-                  "Value": {
-                    "field": {
-                      "name": "Value",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "id",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error"
-            }
-          }
-        ],
-        "datastore": "products_db"
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "id",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
     "method": "(*ProductServiceImpl).New(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)",
     "depth": 0,
     "caller": "Client",
@@ -1475,6 +1392,89 @@
       {
         "basic": {
           "name": "url",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*ProductServiceImpl).Delete(ctx context.Context, id string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
+        "depth": 1,
+        "caller": "ProductService",
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "slice": {
+              "name": "filter",
+              "type": "primitive.D"
+            },
+            "slice_variables": [
+              {
+                "struct": {
+                  "name": "",
+                  "type": "struct{Key \"id\" string, Key \"id\" string, Value string, Value string}"
+                },
+                "struct_fields": {
+                  "Key": {
+                    "field": {
+                      "name": "Key",
+                      "type": "\"id\" string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "",
+                        "type": "\"id\" string"
+                      }
+                    }
+                  },
+                  "Value": {
+                    "field": {
+                      "name": "Value",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "id",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error"
+            }
+          }
+        ],
+        "datastore": "products_db"
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "id",
           "type": "string"
         }
       }

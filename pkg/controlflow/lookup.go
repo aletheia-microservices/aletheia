@@ -202,7 +202,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 	case *ast.SelectorExpr:
 		variable, packageType = lookupObjectFromAstExpression(ctx, method, block, e.X, nil, inAssignment)
 		if packageType != nil {
-			t := lookup.LookupTypeFromImports(ctx.GetPackage(), expr)
+			t := lookup.LookupTypeFromImportsForAstExpr(ctx.GetPackage(), expr)
 			if t != nil {
 				variable = lookup.CreateObjectFromType("", t)
 				return variable, nil
@@ -213,7 +213,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 				// note that variable can be either inline and thus we need to compute if type not found
 				// in case of declarations with assignments, we don't reach this function
 				// e.g. inline "bson.D{{"id", payment.ID}}" in coll.FindOne(ctx, bson.D{{"id", payment.ID}})
-				t := lookup.LookupAndComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e.Sel))
+				t := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e.Sel), true, nil, nil, nil)
 				variable = lookup.CreateObjectFromType("", t)
 				return variable, nil
 			}
@@ -419,7 +419,7 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 
 	case *ast.StarExpr: // e.g. *post
 		if !objOnExpr(e, block) {
-			t := lookup.LookupTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().TypesInfo.Types[e].Type)
+			t := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e), false, nil, nil, nil)
 			return lookup.CreateObjectFromType("", t), nil
 		}
 
@@ -428,10 +428,10 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 			return ptrVariable.PointerTo, packageType
 		}
 
-		logger.Logger.Fatalf("unknown token (%v) for star expr %v: [%s] %v", e.Star, e, utils.GetType(ctx.GetPackage().TypesInfo.Types[e].Type), ctx.GetPackage().TypesInfo.Types[e])
+		logger.Logger.Fatalf("unknown token (%v) for star expr %v: [%s] %v", e.Star, e, utils.GetType(ctx.GetPackage().GetTypeInfo(e)), ctx.GetPackage().TypesInfo.Types[e])
 
 	case *ast.UnaryExpr:
-		logger.Logger.Debugf("[CFG - LOOKUP VAR] UNARY EXPR for [%s]: %v", utils.GetType(ctx.GetPackage().TypesInfo.Types[e].Type), ctx.GetPackage().TypesInfo.Types[e])
+		logger.Logger.Debugf("[CFG - LOOKUP VAR] UNARY EXPR for [%s]: %v", utils.GetType(ctx.GetPackage().GetTypeInfo(e)), ctx.GetPackage().TypesInfo.Types[e])
 
 		if e.Op == token.AND { // e.g. &post
 			// creates a pointer to the variable
@@ -484,15 +484,15 @@ func lookupObjectFromAstExpression(ctx *ControlflowContext, method *types.Parsed
 		}
 
 		if !objOnExpr(e, block) {
-			t := lookup.LookupTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().TypesInfo.Types[e].Type)
+			t := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e), false, nil, nil, nil)
 			return lookup.CreateObjectFromType("", t), nil
 		}
 
-		logger.Logger.Fatalf("unknown token (%v) for unary expr %v: [%s] %v", e.Op, e, utils.GetType(ctx.GetPackage().TypesInfo.Types[e].Type), ctx.GetPackage().TypesInfo.Types[e])
+		logger.Logger.Fatalf("unknown token (%v) for unary expr %v: [%s] %v", e.Op, e, utils.GetType(ctx.GetPackage().GetTypeInfo(e)), ctx.GetPackage().TypesInfo.Types[e])
 
 	case *ast.BinaryExpr:
 		if !objOnExpr(e, block) {
-			t := lookup.LookupTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().TypesInfo.Types[e].Type)
+			t := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e), false, nil, nil, nil)
 			return lookup.CreateObjectFromType("", t), nil
 		}
 

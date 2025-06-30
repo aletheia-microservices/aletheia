@@ -13,30 +13,6 @@ func isBlueprintPackagePath(name string) bool {
 	return name == utils.BLUEPRINT_PATH_CORE_BACKEND
 }
 
-func SaveObjectToPackage(pkg *types.Package, obj golangtypes.Object) gotypes.Type {
-	if constObj, ok := obj.(*golangtypes.Const); ok {
-		t := LookupAndComputeTypesForGoTypes(pkg, obj.Type())
-		t.(*gotypes.BasicType).Value = constObj.Val().String()
-		v := CreateObjectFromType(obj.Id(), t)
-		if pkg.HasPath(obj.Pkg().Path()) {
-			pkg.AddConstant(v)
-		} else {
-			pkg.AddImportedConstant(v, obj.Pkg().Path())
-		}
-		return t
-	} else if _, ok := obj.(*golangtypes.Var); ok {
-		t := LookupAndComputeTypesForGoTypes(pkg, obj.Type())
-		v := CreateObjectFromType(obj.Id(), t)
-		if pkg.HasPath(obj.Pkg().Path()) {
-			pkg.AddVariable(v)
-		} else {
-			pkg.AddImportedConstant(v, obj.Pkg().Path())
-		}
-		return t
-	}
-	return nil
-}
-
 func ResolveTypeAndAddToPackage(pkg *types.Package, object golangtypes.Object, goType golangtypes.Type, visitedNamedTypes map[*golangtypes.Named]bool, typeNameToFuncs map[string][]*golangtypes.Func, serviceTypes map[string]*gotypes.ServiceType) gotypes.Type {
 	var typeName string
 	var objectPackage *golangtypes.Package
@@ -168,18 +144,13 @@ func addMethodsIfStructOrInterface(userType *gotypes.UserType, namedGoType *gola
 	}
 }
 
-func LookupTypesForGoTypes(p *types.Package, goType golangtypes.Type) gotypes.Type {
-	return ComputeTypesForGoTypes(p, goType, false, nil, nil, nil)
-}
-
-func LookupAndComputeTypesForGoTypes(p *types.Package, goType golangtypes.Type) gotypes.Type {
-	// note that variable can be either inline and thus we need to compute if type not found
-	// in case of declarations with assignments, we don't reach this function
-	// e.g. inline "bson.D{{"id", payment.ID}}" in coll.FindOne(ctx, bson.D{{"id", payment.ID}})
-	return ComputeTypesForGoTypes(p, goType, true, nil, nil, nil)
-}
-
-// + Compute
+// ComputeTypesForGoTypes...
+// computeIfNotFound should be set to true if:
+// (a) ...
+// 
+// (b) variable can be either inline and thus we need to compute if type not found
+// in case of declarations with assignments, we don't reach this function
+// e.g. inline "bson.D{{"id", payment.ID}}" in coll.FindOne(ctx, bson.D{{"id", payment.ID}})
 func ComputeTypesForGoTypes(p *types.Package, goType golangtypes.Type, computeIfNotFound bool, visitedNamedTypes map[*golangtypes.Named]bool, typeNameToFuncs map[string][]*golangtypes.Func, serviceTypes map[string]*gotypes.ServiceType) gotypes.Type {
 	logger.Logger.Debugf("[LOOKUP GOTYPES] [%s] %v", utils.GetType(goType), goType)
 	switch e := goType.(type) {

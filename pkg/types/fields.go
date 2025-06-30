@@ -8,6 +8,18 @@ import (
 	"analyzer/pkg/types/objects"
 )
 
+// Field represents all the fields of a ServiceImpl (Blueprint) or a Method (parsed from a FuncDecl)
+// Fields can be (1) MethodField, (2) GenericField, (3) ServiceField, or (4) DatabaseField
+//
+// e.g.
+//
+//	type StorageServiceImpl struct {
+//		analyticsService AnalyticsService
+//		mediaService     MediaService
+//		posts_cache      backend.Cache
+//		postsDb          backend.NoSQLDatabase
+//		analyticsQueue   backend.Queue
+//	}
 type Field interface {
 	String() string
 	LongString() string
@@ -21,10 +33,10 @@ type Field interface {
 }
 
 type FieldInfo struct {
-	Name     string
-	Type     gotypes.Type
-	Variable objects.Object
-	Idx      int
+	Name   string
+	Type   gotypes.Type
+	Object objects.Object
+	Idx    int
 }
 
 type MethodField struct {

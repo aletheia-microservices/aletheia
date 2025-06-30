@@ -262,7 +262,7 @@ func (p *Package) HasPath(path string) bool {
 
 func (p *Package) GetFile(filepath string) *File {
 	for _, f := range p.Files {
-		if f.AbsPath == filepath {
+		if f.HasAbsolutePath(filepath) {
 			return f
 		}
 	}
@@ -336,10 +336,10 @@ func (p *Package) AddDatastoreType(e gotypes.Type) {
 
 func (p *Package) LinkFile(file *File) {
 	if slices.Contains(p.Files, file) {
-		logger.Logger.Fatalf("package (%s) already constains file (%s)", p.Name, file.Name)
+		logger.Logger.Fatalf("package (%s) already constains file (%s)", p.Name, file.GetName())
 	}
 	p.Files = append(p.Files, file)
-	file.Package = p
+	file.SetPackage(p)
 }
 
 func (p *Package) getImportedTypesLstStr() string {

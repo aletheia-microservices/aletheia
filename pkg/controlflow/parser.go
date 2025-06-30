@@ -474,7 +474,7 @@ func computeInternalFuncCallReturns(ctx *ControlflowContext, callExpr *ast.CallE
 
 	if signatureGoType, ok := ctx.GetPackage().GetTypeInfo(callExpr.Fun).(*golangtypes.Signature); ok {
 		if signatureGoType.Results() != nil {
-			signatureResults := lookup.LookupTypesForGoTypes(ctx.GetPackage(), signatureGoType.Results())
+			signatureResults := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), signatureGoType.Results(), false, nil, nil, nil)
 			for _, t := range signatureResults.(*gotypes.TupleType).Types {
 				newVar := lookup.CreateObjectFromType("", t)
 				tupleVar.AddObjectAndType(newVar)
@@ -502,7 +502,7 @@ func computeExternalFuncCallReturns(ctx *ControlflowContext, callExpr *ast.CallE
 
 	if signatureGoType, ok := ctx.GetPackage().GetTypeInfo(callExpr.Fun).(*golangtypes.Signature); ok {
 		if signatureGoType.Results() != nil {
-			signatureResults := lookup.LookupTypesForGoTypes(ctx.GetPackage(), signatureGoType.Results())
+			signatureResults := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), signatureGoType.Results(), false, nil, nil, nil)
 
 			if len(signatureResults.(*gotypes.TupleType).Types) == 1 && len(deps) == 0 {
 				newVar := lookup.CreateObjectFromType("", signatureResults.(*gotypes.TupleType).Types[0])

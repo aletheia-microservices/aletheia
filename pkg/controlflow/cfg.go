@@ -52,7 +52,7 @@ func (ctx *ControlflowContext) GetPackage() *types.Package {
 
 func (ctx *ControlflowContext) GetService() *service.Service {
 	if ctx.service == nil {
-		logger.Logger.Fatalf("[CONTROLFLOW CONTEXT] service not found for controlflow context: %s", ctx.String())
+ 		logger.Logger.Fatalf("[CONTROLFLOW CONTEXT] service not found for controlflow context: %s", ctx.String())
 	}
 	return ctx.service
 }

@@ -12,9 +12,9 @@
 [0] (BasicObject BasicType) id string
      --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID) {2}         --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID) {2} --> r-tainted: read(shipqueue.Shipment.ID) {1}
 [_1] (Reference BasicType) ref <ID string> @ QueueMaster
-      --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3}           --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3} --> r-tainted: read(shipqueue.Shipment.ID) {1}
+      --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) {4}           --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID, order_db.Order.Shipment.ID) {4} --> r-tainted: read(shipqueue.Shipment.ID) {1}
 [__2] (Reference FieldType) ref <ID string> @ OrderService
-       --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3}             --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.Shipment.ID) {3} --> r-tainted: read(shipqueue.Shipment.ID) {1}
+       --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID) {3}             --> w-tainted: write(shipqueue.Shipment.ID, shipdb.Shipment.ID, order_db.Order.ID) {3} --> r-tainted: read(shipqueue.Shipment.ID) {1}
 [___3] (BasicObject BasicType) string
 
 [0] (BasicObject BasicType) status string

@@ -244,6 +244,30 @@ func parseGolangFuncTypes(pkg *types.Package, def golangtypes.Object, typeNameTo
 	return funcs
 }
 
+func savePackageObject(pkg *types.Package, obj golangtypes.Object) gotypes.Type {
+	if constObj, ok := obj.(*golangtypes.Const); ok {
+		t := lookup.ComputeTypesForGoTypes(pkg, obj.Type(), true, nil, nil, nil)
+		t.(*gotypes.BasicType).Value = constObj.Val().String()
+		v := lookup.CreateObjectFromType(obj.Id(), t)
+		if pkg.HasPath(obj.Pkg().Path()) {
+			pkg.AddConstant(v)
+		} else {
+			pkg.AddImportedConstant(v, obj.Pkg().Path())
+		}
+		return t
+	} else if _, ok := obj.(*golangtypes.Var); ok {
+		t := lookup.ComputeTypesForGoTypes(pkg, obj.Type(), true, nil, nil, nil)
+		v := lookup.CreateObjectFromType(obj.Id(), t)
+		if pkg.HasPath(obj.Pkg().Path()) {
+			pkg.AddVariable(v)
+		} else {
+			pkg.AddImportedConstant(v, obj.Pkg().Path())
+		}
+		return t
+	}
+	return nil
+}
+
 func (app *App) ParseAppPackage(parsedPackage *types.Package, goPackage *packages.Package) {
 	logger.Logger.Infof("[APP PACKAGE PARSER] parsing named types for app go package (%s)", goPackage)
 
@@ -273,19 +297,12 @@ func (app *App) ParseAppPackage(parsedPackage *types.Package, goPackage *package
 			// whose object type is either a CONST or VAR
 			// note that objects whose object.Type() is Named are also VARs
 			// and that's why this 'else if' condition needs to be after the previous
-			lookup.SaveObjectToPackage(parsedPackage, obj)
+			savePackageObject(parsedPackage, obj)
 		}
 	}
 
 	for i, fileAst := range goPackage.Syntax {
-		file := &types.File{
-			Ast:     fileAst,
-			Name:    filepath.Base(goPackage.GoFiles[i]),
-			AbsPath: goPackage.GoFiles[i],
-			Package: parsedPackage,
-			Imports: make(map[string]*types.Import),
-		}
-		lookup.ParseFileImports(file)
+		file := types.NewFile(fileAst, parsedPackage, filepath.Base(goPackage.GoFiles[i]), goPackage.GoFiles[i])
 		parsedPackage.LinkFile(file)
 
 		ast.Inspect(fileAst, func(n ast.Node) bool {

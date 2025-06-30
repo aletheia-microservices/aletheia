@@ -8,7 +8,6 @@ import (
 	"analyzer/pkg/frameworks"
 	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/logger"
-	"analyzer/pkg/lookup"
 	"analyzer/pkg/service"
 	"analyzer/pkg/types"
 	"analyzer/pkg/types/gotypes"
@@ -76,7 +75,6 @@ func (app *App) matchServiceEdges() {
 
 func (app *App) buildServiceInfo() {
 	for _, node := range app.Services {
-		lookup.ParseFileImports(node.File)
 		node.RegisterImplName()
 		node.RegisterConstructor()
 	}
