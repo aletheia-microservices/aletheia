@@ -53,7 +53,6 @@ NOTIFICATIONS_QUEUE:
     - Message.PostID_MESSAGE: int64
     - Message.Timestamp: int64
   - constraints:
-    - REFERENCE(NOTIFICATIONS_QUEUE.Message.ReqID --> POSTS_DB.Post.ReqID) [+]
     - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> POSTS_DB._.postid)
     - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> POSTS_DB.Post.PostID)
       [+]
@@ -61,6 +60,7 @@ NOTIFICATIONS_QUEUE:
       [+]
     - REFERENCE(NOTIFICATIONS_QUEUE.Message.PostID_MESSAGE --> ANALYTICS_DB.Analytics.PostID)
       [+]
+    - REFERENCE(NOTIFICATIONS_QUEUE.Message.ReqID --> POSTS_DB.Post.ReqID) [+]
     - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB._.postid)
     - REFERENCE(NOTIFICATIONS_QUEUE.Message --> POSTS_DB.Post.PostID) [+]
     - REFERENCE(NOTIFICATIONS_QUEUE.Message --> ANALYTICS_QUEUE.TriggerAnalyticsMessage.PostID)

@@ -2,7 +2,6 @@ package lookup
 
 import (
 	"go/ast"
-	golangtypes "go/types"
 
 	"analyzer/pkg/logger"
 	"analyzer/pkg/types"
@@ -28,24 +27,6 @@ func GetAllSelectorIdentsForAstExpr(expr ast.Expr) ([]*ast.Ident, string) {
 	return nil, ""
 }
 
-func LookupTypeFromImportsForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
-	goType := pkg.GetTypeInfo(typeExpr)
-
-	if goAliasType, ok := goType.(*golangtypes.Alias); ok {
-		// e.g. "bson.D" (alias) is actually "primitive.D" (named)
-		// due to declaration in package "go.mongodb.org/mongo-driver/bson" :
-		// - type D = primitive.D
-		goType = goAliasType.Rhs()
-	}
-	if goNamedType, ok := goType.(*golangtypes.Named); ok {
-		return pkg.GetImportedTypeIfExists(goNamedType.String())
-	}
-
-	// this is ok because we will later add it to the imported packages
-	logger.Logger.Warnf("[LOOKUP] unable to find type from selected imported package (%s) in typeExpr: %v", pkg.String(), typeExpr)
-	return nil
-}
-
 func ComputeTypeForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 	logger.Logger.Debugf("[LOOKUP - COMPUTE TYPE AST] (%s) visiting type expr (%v)", utils.GetType(typeExpr), typeExpr)
 	switch e := typeExpr.(type) {
@@ -63,7 +44,7 @@ func ComputeTypeForAstExpr(pkg *types.Package, typeExpr ast.Expr) gotypes.Type {
 		logger.Logger.Fatalf("[LOOKUP AST IDENT] cannot compute type for ident (%s)", e)
 	case *ast.SelectorExpr:
 		if _, ok := e.X.(*ast.Ident); ok {
-			t := LookupTypeFromImportsForAstExpr(pkg, typeExpr)
+			t := LookupTypeFromImportsForGoTypes(pkg, pkg.GetTypeInfo(typeExpr))
 			if t != nil {
 				return t
 			}

@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/token"
 	golangtypes "go/types"
+	"strconv"
 
 	"golang.org/x/tools/go/cfg"
 
@@ -123,7 +124,7 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 
 			visitedRangeObj = true
 			parsingLoop = true
-			rangeObj, _ = lookupObjectFromAstExpression(ctx, method, block, expr, false)
+			rangeObj, _ = lookupObjectFromAstExpr(ctx, method, block, expr, false)
 			switch e := rangeObj.(type) {
 			case *objects.SliceObject:
 				rangeElemType = e.GetSliceType().UnderlyingType
@@ -178,7 +179,7 @@ func visitBasicBlockRangeHelper(ctx *ControlflowContext, method *types.ParsedMet
 func getAssignmentRightObjects(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, rightExprs []ast.Expr) []objects.Object {
 	var robjs []objects.Object
 	for _, rvalue := range rightExprs {
-		obj, _ := lookupObjectFromAstExpression(ctx, method, block, rvalue, true)
+		obj, _ := lookupObjectFromAstExpr(ctx, method, block, rvalue, true)
 		if tupleVariable, ok := obj.(*objects.TupleObject); ok {
 			robjs = append(robjs, tupleVariable.Objects...)
 		} else {
@@ -188,19 +189,24 @@ func getAssignmentRightObjects(ctx *ControlflowContext, method *types.ParsedMeth
 	return robjs
 }
 
-func declareLeftIdents(pkg *types.Package, block *types.Block, leftIdents []*ast.Ident, t ast.Expr) {
+func parseValueSpecDeclaration(pkg *types.Package, block *types.Block, leftIdents []*ast.Ident, t ast.Expr) {
 	for _, ident := range leftIdents {
 		t := lookup.ComputeTypeForAstExpr(pkg, t)
 		declaredObject := lookup.CreateObjectFromType(ident.Name, t)
-		logger.Logger.Warnf("[CFG - PARSE EXPR] VARIABLE IS DECLARED: %s", declaredObject.String())
 		block.AddObject(declaredObject)
 	}
 }
 
-func assignLeftIdents(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, leftIdents []*ast.Ident, rightExprs []ast.Expr) {
+
+func parseValueSpecAssignment(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, leftIdents []*ast.Ident, rightExprs []ast.Expr) {
 	rightObjects := getAssignmentRightObjects(ctx, method, block, rightExprs)
+
 	for i, rObj := range rightObjects {
 		leftIdent := leftIdents[i]
+		// FIXME: what if this an assignment from a new object to an object that already exists?
+		/* if rObj.GetVariableInfo().GetName() == "" {
+			logger.Logger.Fatalf("HERE!")
+		} */
 		rObj.GetVariableInfo().SetUnassigned()
 		rObj.GetVariableInfo().SetName(leftIdent.Name)
 		block.AddObject(rObj)
@@ -208,7 +214,7 @@ func assignLeftIdents(ctx *ControlflowContext, method *types.ParsedMethod, block
 }
 
 func incDecLeftValues(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, leftExpr ast.Expr, tok token.Token) {
-	lvariable, _ := lookupObjectFromAstExpression(ctx, method, block, leftExpr, true)
+	lvariable, _ := lookupObjectFromAstExpr(ctx, method, block, leftExpr, true)
 	switch tok {
 	case token.INC:
 		lvariable.GetType().AddValue("1")
@@ -220,11 +226,11 @@ func incDecLeftValues(ctx *ControlflowContext, method *types.ParsedMethod, block
 }
 
 func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, assignStmt *ast.AssignStmt) {
-	logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] visiting stmt (%s): %v", ctx.String(), utils.GetType(assignStmt), assignStmt)
-	rvariables := getAssignmentRightObjects(ctx, method, block, assignStmt.Rhs)
-	for i, rObj := range rvariables {
+	rightExprs := assignStmt.Rhs
+	rightObjects := getAssignmentRightObjects(ctx, method, block, rightExprs)
+
+	for i, rObj := range rightObjects {
 		lvalue := assignStmt.Lhs[i]
-		logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] assigning left value: \n\t\t\t\t\t\t - (lvalue) [%T] %v \n\t\t\t\t\t\t - (rvalue) [%T] %s", ctx.String(), lvalue, lvalue, rObj, rObj.LongString())
 		switch e := lvalue.(type) {
 		case *ast.Ident:
 			if assignStmt.Tok == token.DEFINE || assignStmt.Tok == token.ASSIGN { // := OR =
@@ -240,10 +246,13 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				newObj.GetVariableInfo().SetName(e.Name)
 				block.AddObject(newObj)
 
+				// just an edge case
 				if funcObj, ok := rObj.(*objects.FuncObject); ok {
 					parseInlineFuncDeclaration(block, funcObj, e.Name)
 				}
 			} else if assignStmt.Tok == token.ADD_ASSIGN { // +=
+				// other cases
+				// FIXME: should we even consider this?
 				lObj := block.GetLatestObjectByName(e.Name)
 				lObj.GetType().AddValue(rObj.GetType().GetBasicValue())
 			} else if assignStmt.Tok == token.SHL_ASSIGN { // <<=
@@ -253,7 +262,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected token (%v) for assignment: %v", ctx.String(), assignStmt.Tok, assignStmt)
 			}
 		case *ast.SelectorExpr:
-			lObj, _ := lookupObjectFromAstExpression(ctx, method, block, e, true)
+			lObj, _ := lookupObjectFromAstExpr(ctx, method, block, e, true)
 			switch ee := lObj.(type) {
 			case *objects.FieldObject:
 				logger.Logger.Debugf("[CFG - ASSIGN LEFT] got lvariable (%s) in assignStmt: %v", lObj.String(), assignStmt)
@@ -263,12 +272,12 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), lObj.String())
 			}
 		case *ast.IndexExpr: // e.g. res[rt] = pc
-			leftObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.X, true)
-			indexObj, _ := lookupObjectFromAstExpression(ctx, method, block, e.Index, true)
+			leftObj, _ := lookupObjectFromAstExpr(ctx, method, block, e.X, true)
+			indexObj, _ := lookupObjectFromAstExpr(ctx, method, block, e.Index, true)
 			//newLeftVariable := lvariable.NewVersion()
 			switch ee := leftObj.(type) {
 			case *objects.MapObject:
-				if basicObj, ok := getUnderlyingBasicObjectIfExists(indexObj); ok && basicObj.GetBasicType().GetBasicValue() != "" {
+				if basicObj, ok := objects.UnwrapUntilBasicObjectIfExists(indexObj); ok && basicObj.GetBasicType().GetBasicValue() != "" {
 					ee.AddKeyValue(basicObj, rObj)
 				} else {
 					ee.AddDynamicKeyValue(indexObj, rObj)
@@ -277,7 +286,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				// e.g. DSB_HotelReservation -> RecommendationService.go -> LoadRecommendations()
 				// r.hotels[hotel.HId] = hotel
 				//   ^^^^^^
-				if basicObj, ok := getUnderlyingBasicObjectIfExists(indexObj); ok && basicObj.GetBasicType().GetBasicValue() != "" {
+				if basicObj, ok := objects.UnwrapUntilBasicObjectIfExists(indexObj); ok && basicObj.GetBasicType().GetBasicValue() != "" {
 					logger.Logger.Debugf("basic value: %s", basicObj.GetBasicType().GetBasicValue())
 				}
 				logger.Logger.Warnf("left object is [%s] %v", utils.GetType(ee.GetWrappedVariable()), ee.GetWrappedVariable())
@@ -286,7 +295,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 				logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unsupported left variable type (%s): %v", ctx.String(), utils.GetType(ee), leftObj.String())
 
 			case *objects.ArrayObject:
-				idx, ok := computeArrayIndexFromObject(indexObj)
+				idx, ok := parseArrayIndexFromObjectBasicValue(indexObj)
 				if ok {
 					ee.SetElementAt(idx, rObj)
 				} else {
@@ -294,7 +303,7 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 					rObj.GetVariableInfo().SetDynamic()
 				}
 			case *objects.SliceObject:
-				idx, ok := computeArrayIndexFromObject(indexObj)
+				idx, ok := parseArrayIndexFromObjectBasicValue(indexObj)
 				if ok {
 					ee.SetElementAt(idx, rObj)
 				} else {
@@ -308,6 +317,16 @@ func parseAssignmentStatement(ctx *ControlflowContext, method *types.ParsedMetho
 			logger.Logger.Fatalf("[CFG - ASSIGN LEFT] [%s] unexpected type (%s) for left value (%v) in assignment with token (%v): %v", method.Name, utils.GetType(lvalue), lvalue, assignStmt.Tok, assignStmt)
 		}
 	}
+}
+
+func parseArrayIndexFromObjectBasicValue(obj objects.Object) (int, bool) {
+	valStr := obj.GetType().GetBasicValue()
+	index, err := strconv.Atoi(valStr)
+	if err != nil {
+		logger.Logger.Warnf("error converting index (%s) from object (%s): %s", valStr, obj.String(), err.Error())
+		return -1, false
+	}
+	return index, true
 }
 
 func parseInlineFuncDeclaration(block *types.Block, funcObj *objects.FuncObject, name string) *types.CFG {
@@ -327,7 +346,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	// Go Routines
 	// ------------
 	case *ast.GoStmt:
-		obj, _ := lookupObjectFromAstExpression(ctx, method, block, e.Call.Fun, false)
+		obj, _ := lookupObjectFromAstExpr(ctx, method, block, e.Call.Fun, false)
 		if funcObj, ok := obj.(*objects.FuncObject); ok {
 			if funcObj.HasFuncTypeName() {
 				parseFuncCall(ctx, method, block, e.Call)
@@ -348,11 +367,12 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	case *ast.ValueSpec: // e.g. var foobar OR var foobar = "foobar"
 		logger.Logger.Warnf("[CFG - PARSE EXPR] parsing value spec with names = (%v) and values = (%v)", e.Names, e.Values)
 		if len(e.Values) == 0 { // variables are being declared with types e.g., `var foobar string`
-			declareLeftIdents(ctx.GetPackage(), block, e.Names, e.Type)
-		} else { // variables are being declared and assigned e.g., `var foobar := "foobar"`
-			assignLeftIdents(ctx, method, block, e.Names, e.Values)
+			parseValueSpecDeclaration(ctx.GetPackage(), block, e.Names, e.Type)
+		} else { // variables are being declared and assigned e.g., `var foobar = "foobar"`
+			parseValueSpecAssignment(ctx, method, block, e.Names, e.Values)
 		}
 	case *ast.AssignStmt: // e.g. `for i := 0`
+		logger.Logger.Debugf("[CFG - ASSIGN LEFT] [%s] visiting stmt (%s): %v", ctx.String(), utils.GetType(e), e)
 		parseAssignmentStatement(ctx, method, block, e)
 	// -----------------------------------
 	// Calls and Parenthesized Expressions
@@ -377,7 +397,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 	// -------
 	case *ast.ReturnStmt:
 		for _, resultExpr := range e.Results {
-			v, _ := lookupObjectFromAstExpression(ctx, method, block, resultExpr, false)
+			v, _ := lookupObjectFromAstExpr(ctx, method, block, resultExpr, false)
 			logger.Logger.Infof("ADDED RESULT: %s", v.String())
 			block.AddResult(v)
 		}
@@ -417,7 +437,7 @@ func parseNodeBody(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 func saveParsedFuncCallParams(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, parsedCall types.Call, args []ast.Expr) {
 	for i, arg := range args {
 		logger.Logger.Tracef("[CFG] inside save func call params")
-		param, _ := lookupObjectFromAstExpression(ctx, method, block, arg, false)
+		param, _ := lookupObjectFromAstExpr(ctx, method, block, arg, false)
 
 		// upgrade variable with known type from function method
 		if _, ok := param.GetType().(*gotypes.GenericType); ok {
@@ -433,7 +453,7 @@ func getFuncCallDeps(ctx *ControlflowContext, method *types.ParsedMethod, block 
 	var deps []objects.Object
 	for _, expr := range callExpr.Args {
 		logger.Logger.Warnf("[CFG] [%s] searching for function call deps in expression %v", ctx.String(), expr)
-		if v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, false); v != nil {
+		if v, _ := lookupObjectFromAstExpr(ctx, method, block, expr, false); v != nil {
 			deps = append(deps, v)
 		}
 	}
@@ -846,7 +866,7 @@ func wrapInTupleVariable(varsToWrap ...objects.Object) *objects.TupleObject {
 func wrapInBasicVariable(variable objects.Object, typeName string) *objects.BasicObject {
 	var underlyingObjects []objects.Object
 	var basicValue string
-	if basicObj, ok := getUnderlyingBasicObjectIfExists(variable); ok {
+	if basicObj, ok := objects.UnwrapUntilBasicObjectIfExists(variable); ok {
 		basicValue = basicObj.GetBasicType().GetBasicValue()
 		if basicValue == "" {
 			underlyingObjects = append(underlyingObjects, basicObj)
@@ -955,7 +975,7 @@ func parseInlineFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, bl
 
 	var variables []objects.Object
 	for i, arg := range args {
-		v, _ := lookupObjectFromAstExpression(ctx, method, block, arg, true)
+		v, _ := lookupObjectFromAstExpr(ctx, method, block, arg, true)
 		v = v.DeepCopy()
 		v.GetVariableInfo().SetName(params.List[i].Names[0].Name)
 		variables = append(variables, v)
@@ -982,7 +1002,7 @@ func parseFuncCall(ctx *ControlflowContext, method *types.ParsedMethod, block *t
 
 	var varsStr = ""
 	for i, expr := range callExpr.Args {
-		v, _ := lookupObjectFromAstExpression(ctx, method, block, expr, false)
+		v, _ := lookupObjectFromAstExpr(ctx, method, block, expr, false)
 		varsStr += fmt.Sprintf("\t\t\t\t\t\t\t - argument %d: (%s)\n", i, v.String())
 	}
 

@@ -144,10 +144,26 @@ func addMethodsIfStructOrInterface(userType *gotypes.UserType, namedGoType *gola
 	}
 }
 
+func LookupTypeFromImportsForGoTypes(pkg *types.Package, goType golangtypes.Type) gotypes.Type {
+	if goAliasType, ok := goType.(*golangtypes.Alias); ok {
+		// e.g. "bson.D" (alias) is actually "primitive.D" (named)
+		// due to declaration in package "go.mongodb.org/mongo-driver/bson" :
+		// - type D = primitive.D
+		goType = goAliasType.Rhs()
+	}
+	if goNamedType, ok := goType.(*golangtypes.Named); ok {
+		return pkg.GetImportedTypeIfExists(goNamedType.String())
+	}
+
+	// this is ok because we will later add it to the imported packages
+	logger.Logger.Warnf("[LOOKUP] unable to find type from selected imported package (%s) in gotype: %v", pkg.String(), goType)
+	return nil
+}
+
 // ComputeTypesForGoTypes...
 // computeIfNotFound should be set to true if:
 // (a) ...
-// 
+//
 // (b) variable can be either inline and thus we need to compute if type not found
 // in case of declarations with assignments, we don't reach this function
 // e.g. inline "bson.D{{"id", payment.ID}}" in coll.FindOne(ctx, bson.D{{"id", payment.ID}})

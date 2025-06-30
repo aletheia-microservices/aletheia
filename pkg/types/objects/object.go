@@ -50,6 +50,19 @@ func UnwrapTupleIfSingleElement(variable Object) Object {
 	return variable
 }
 
+func UnwrapUntilBasicObjectIfExists(obj Object) (*BasicObject, bool) {
+	if addressObj, ok := obj.(*AddressObject); ok {
+		return UnwrapUntilBasicObjectIfExists(addressObj.AddressOf)
+	} else if pointerObj, ok := obj.(*PointerObject); ok {
+		return UnwrapUntilBasicObjectIfExists(pointerObj.PointerTo)
+	} else if fieldObj, ok := obj.(*FieldObject); ok {
+		return UnwrapUntilBasicObjectIfExists(fieldObj.GetWrappedVariable())
+	} else if basicObj, ok := obj.(*BasicObject); ok {
+		return basicObj, true
+	}
+	return nil, false
+}
+
 func WrapObjectToField(obj Object, structObj *StructObject, addTypeToStruct bool) {
 	fieldObj, ok := obj.(*FieldObject)
 	if !ok {
