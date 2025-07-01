@@ -14,7 +14,18 @@ type PointerObject struct {
 }
 
 func NewPointerObject(info *ObjectInfo, ptrTo Object) *PointerObject {
-	return &PointerObject{ObjectInfo: info, PointerTo: ptrTo}
+	newPtrObj := &PointerObject{ObjectInfo: info, PointerTo: ptrTo}
+
+	if info.GetName() == "itemFromSku" {
+		logger.Logger.Fatalf("HERE")
+	}
+
+	// this will allow us to do bottom-up tainting
+	// e.g., a StructObject is write/read tainted and then we want to taint any pointer to it 
+	// later, if the pointer changes its value (aka, the object it is pointing to), then
+	// we create a new version of the pointer
+	ptrTo.GetVariableInfo().AddParent(ptrTo, newPtrObj)
+	return newPtrObj
 }
 
 func (v *PointerObject) MarshalJSON() ([]byte, error) {
@@ -58,6 +69,9 @@ func (v *PointerObject) GetVariableInfo() *ObjectInfo {
 }
 
 func (v *PointerObject) NewObject() Object {
+	if v.ObjectInfo.GetParents() != nil {
+		logger.Logger.Fatalf("HERE")
+	}
 	newObject := NewPointerObject(NewObjectInfo(v.GetType()), v.PointerTo)
 	// we attach the dependency because we created a fully new object
 	newObject.GetVariableInfo().AddDependency(v)
@@ -107,6 +121,7 @@ func (v *PointerObject) Copy(force bool) Object {
 		ObjectInfo: v.ObjectInfo.Copy(force),
 		PointerTo:  v.PointerTo, // underlying values of pointers are never deep copied
 	}
+	//FIXME: I think they should be linked through "dependencies" and not "parent"
 	copy.PointerTo.GetVariableInfo().AddParent(copy.PointerTo, copy)
 	return copy
 }

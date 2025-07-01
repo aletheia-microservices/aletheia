@@ -142,28 +142,28 @@ func objectInExpression(expr ast.Expr, block *types.Block) bool {
 	return false
 }
 
-func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, expr ast.Expr, inAssignment bool) (variable objects.Object, packageType *gotypes.PackageType) {
+func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod, block *types.Block, expr ast.Expr, inAssignment bool) (obj objects.Object, packageType *gotypes.PackageType) {
 	logger.Logger.Infof("[CFG - LOOKUP OBJ] (%T) visiting expression (%v)", expr, expr)
 
 	switch e := expr.(type) {
 	case *ast.CallExpr:
-		variable = parseFuncCall(ctx, method, block, e)
-		variable = objects.UnwrapTupleIfSingleElement(variable)
+		obj = parseFuncCall(ctx, method, block, e)
+		obj = objects.UnwrapTupleIfSingleElement(obj)
 	case *ast.BasicLit:
 		basicType := &gotypes.BasicType{
 			Name:  strings.ToLower(e.Kind.String()),
 			Value: e.Value,
 		}
-		variable = &objects.BasicObject{
+		obj = &objects.BasicObject{
 			ObjectInfo: &objects.ObjectInfo{
 				Type: basicType,
 				Id:   objects.VARIABLE_INLINE_ID,
 			},
 		}
 	case *ast.Ident:
-		variable = lookupIdentForObject(ctx, block, e)
-		if variable != nil {
-			return variable, nil
+		obj = lookupIdentForObject(ctx, block, e)
+		if obj != nil {
+			return obj, nil
 		}
 
 		packageType = lookupIdentForImportedPackage(ctx.GetPackage(), e)
@@ -178,20 +178,20 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 		// e.g.,
 		// 1. <local_object>.<field>, <local_object>.<func>
 		// 2. <some_package>.<constant>, <some_package>.<object>, <some_package>.<func>
-		variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+		obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
 
 		// 1. selecting something from object in local package
-		if variable != nil && packageType == nil {
+		if obj != nil && packageType == nil {
 			// in case we have a tuple
 			// FIXME: is this from a returned func value?
-			if tupleVariable, ok := variable.(*objects.TupleObject); ok {
+			if tupleVariable, ok := obj.(*objects.TupleObject); ok {
 				if tupleVariable.NumVariables() == 1 {
-					variable = tupleVariable.GetVariableAt(0)
+					obj = tupleVariable.GetVariableAt(0)
 				} else {
 					logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected number (%d) of variables in tuple: %s", tupleVariable.NumVariables(), tupleVariable.String())
 				}
 			}
-			return lookupSelectorForField(variable, e.Sel.Name, inAssignment), nil
+			return lookupSelectorForField(obj, e.Sel.Name, inAssignment), nil
 		}
 
 		// 2. selecting something from package
@@ -203,8 +203,8 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 			// in case of declarations with assignments, we don't reach this function
 			// e.g. inline "bson.D{{"id", payment.ID}}" in coll.FindOne(ctx, bson.D{{"id", payment.ID}})
 			t := lookup.ComputeTypesForGoTypes(ctx.GetPackage(), ctx.GetPackage().GetTypeInfo(e.Sel), true, nil, nil, nil)
-			variable = lookup.CreateObjectFromType("", t)
-			return variable, nil
+			obj = lookup.CreateObjectFromType("", t)
+			return obj, nil
 		}
 
 		// 2.2. from internal package
@@ -212,30 +212,30 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 		declaredType := importedPkg.GetDeclaredTypeIfExists(e.Sel)
 		if declaredType != nil {
 			newDeclaredType := declaredType.DeepCopy()
-			variable = lookup.CreateObjectFromType("", newDeclaredType)
-			return variable, nil
+			obj = lookup.CreateObjectFromType("", newDeclaredType)
+			return obj, nil
 		}
 
 		// b) declared object (e.g. variable or const)
-		variable = importedPkg.GetDeclaredVariableOrConst(e.Sel)
-		return variable, nil
+		obj = importedPkg.GetDeclaredVariableOrConst(e.Sel)
+		return obj, nil
 
 	case *ast.KeyValueExpr:
 		if key, ok := e.Key.(*ast.Ident); ok {
-			variable, _ = lookupObjectFromAstExpr(ctx, method, block, e.Value, false)
+			obj, _ = lookupObjectFromAstExpr(ctx, method, block, e.Value, false)
 			fieldVariable := &objects.FieldObject{
 				ObjectInfo: &objects.ObjectInfo{
 					Name: key.Name,
 					Type: &gotypes.FieldType{
-						WrappedType: variable.GetType(),
+						WrappedType: obj.GetType(),
 						FieldName:   key.Name,
 					},
 					Id: objects.VARIABLE_INLINE_ID,
 				},
-				WrappedVariable: variable,
+				WrappedVariable: obj,
 			}
-			variable.GetVariableInfo().AddParent(variable, fieldVariable)
-			logger.Logger.Debugf("KEY VALUE EXPR - RETURNING VARIABLE WITH TYPE (%s): %s", utils.GetType(variable), variable.String())
+			obj.GetVariableInfo().AddParent(obj, fieldVariable)
+			logger.Logger.Debugf("KEY VALUE EXPR - RETURNING VARIABLE WITH TYPE (%s): %s", utils.GetType(obj), obj.String())
 			return fieldVariable, nil
 		}
 		logger.Logger.Fatalf("[CFG - LOOKUP VAR] unsupported key type (%s) for expr: %v", utils.GetType(e.Key), e.Key)
@@ -317,26 +317,26 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 		if selectorExpr, ok := e.Type.(*ast.SelectorExpr); ok {
 			logger.Logger.Debugf("[CFG - LOOKUP VAR] [%s.%s] lookup up selector (%v.%v)", ctx.String(), method.GetName(), selectorExpr.X, selectorExpr.Sel)
 			logger.Logger.Fatalf("[CFG - LOOKUP VAR] [%s.%s] lookup up selector (%v.%v)", ctx.String(), method.GetName(), selectorExpr.X, selectorExpr.Sel)
-			variable, packageType = lookupObjectFromAstExpr(ctx, method, block, selectorExpr, inAssignment)
-			if variable == nil {
+			obj, packageType = lookupObjectFromAstExpr(ctx, method, block, selectorExpr, inAssignment)
+			if obj == nil {
 				logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected nil variable for expr (%s): %v", utils.GetType(e.Type), e.Type)
 			}
 			for _, elt := range e.Elts {
 				eltVar, _ := lookupObjectFromAstExpr(ctx, method, block, elt, false)
-				if sliceVariable, ok := variable.(*objects.SliceObject); ok {
+				if sliceVariable, ok := obj.(*objects.SliceObject); ok {
 					sliceVariable.AddElement(eltVar)
-				} else if arrayVariable, ok := variable.(*objects.ArrayObject); ok {
+				} else if arrayVariable, ok := obj.(*objects.ArrayObject); ok {
 					arrayVariable.AddElement(eltVar)
 				} else {
-					logger.Logger.Fatalf("[CFG - LOOKUP VAR] unknown type for composite lit (%s)", utils.GetType(variable))
+					logger.Logger.Fatalf("[CFG - LOOKUP VAR] unknown type for composite lit (%s)", utils.GetType(obj))
 				}
 			}
-			logger.Logger.Debugf("[CFG - LOOKUP VAR] LOOKUP HERE!!! got selector (%s): %s", utils.GetType(variable), variable.String())
+			logger.Logger.Debugf("[CFG - LOOKUP VAR] LOOKUP HERE!!! got selector (%s): %s", utils.GetType(obj), obj.String())
 		} else {
 			logger.Logger.Fatalf("[CFG - LOOKUP VAR] nil variable for composite lit (e.Type = %s): %v", utils.GetType(e.Type), e)
 		}
 	case *ast.TypeAssertExpr:
-		variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+		obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
 
 		// in a switch case we have nil types for e.g. f.(type)
 		var assertedType gotypes.Type
@@ -345,7 +345,7 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 		} else {
 			assertedType = lookup.ComputeTypeForAstExpr(ctx.GetPackage(), e.Type)
 		}
-		if interfaceVariable, ok := variable.(*objects.InterfaceObject); ok {
+		if interfaceVariable, ok := obj.(*objects.InterfaceObject); ok {
 			// FIXME: it is creating two duplicates:
 			// (i) InterfaceVariable during lookup with e.g. BasicType after UpgradeToAssertedType
 			// (ii) The e.g. BasicVariable after UpgradeFromPreviousInterface with e.g. the BasicType
@@ -354,48 +354,48 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 			var newVariable objects.Object
 			if assertedType != nil {
 				logger.Logger.Debugf("asserting to type %s", assertedType.String())
-				newVariable = lookup.CreateObjectFromType(variable.GetVariableInfo().GetName(), assertedType)
+				newVariable = lookup.CreateObjectFromType(obj.GetVariableInfo().GetName(), assertedType)
 				newVariable.UpgradeFromPreviousInterface(interfaceVariable) //idk why this is here
 			} else {
 				newType := interfaceVariable.GetInterfaceType() //FIXME: should we actually get the user type?
-				newVariable = lookup.CreateObjectFromType(variable.GetVariableInfo().GetName(), newType)
+				newVariable = lookup.CreateObjectFromType(obj.GetVariableInfo().GetName(), newType)
 			}
 			block.AddObject(newVariable)
 			logger.Logger.Warnf("[FIXME - ASSERT!!!!] CREATED NEW VARIABLE (%s): %s", objects.VariableTypeName(newVariable), newVariable.String())
 			return newVariable, nil
 		} else {
-			logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected type (%s) for variable (%s)", utils.GetType(variable), variable.String())
+			logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected type (%s) for variable (%s)", utils.GetType(obj), obj.String())
 		}
 	case *ast.IndexExpr:
-		variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
-		if variable == nil {
+		obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+		if obj == nil {
 			logger.Logger.Fatalf("[CFG - LOOKUP VAR] nil variable for index expr: %v (e.X type = %s)", e, utils.GetType(e.X))
 		}
-		if arrayVar, ok := variable.(*objects.ArrayObject); ok {
+		if arrayVar, ok := obj.(*objects.ArrayObject); ok {
 			arrayIndex, ok := lookupIndex(e.Index, block)
 			if ok {
-				variable = arrayVar.GetElementAtIfExists(arrayIndex)
-				if variable == nil {
+				obj = arrayVar.GetElementAtIfExists(arrayIndex)
+				if obj == nil {
 					ok = false
 				}
 			}
 
 			if !ok {
 				elemsType := arrayVar.GetElementsType()
-				variable = lookup.CreateDynamicObjectFromType(elemsType)
-				arrayVar.AddDynamicElement(variable)
-				logger.Logger.Warnf("CREATED VARIABLE FROM NIL ARRAY ELEMENT %s | %s", variable.String(), arrayVar.String())
+				obj = lookup.CreateDynamicObjectFromType(elemsType)
+				arrayVar.AddDynamicElement(obj)
+				logger.Logger.Warnf("CREATED VARIABLE FROM NIL ARRAY ELEMENT %s | %s", obj.String(), arrayVar.String())
 			}
 		}
-		if mapVar, ok := variable.(*objects.MapObject); ok {
+		if mapVar, ok := obj.(*objects.MapObject); ok {
 			key, _ := lookupObjectFromAstExpr(ctx, method, block, e.Index, false)
-			variable, ok = mapVar.KeyValues[key]
+			obj, ok = mapVar.KeyValues[key]
 
 			if !ok {
 				valueType := mapVar.GetMapType().GetValueType()
-				variable = lookup.CreateDynamicObjectFromType(valueType)
-				mapVar.AddDynamicKeyValue(key, variable)
-				logger.Logger.Warnf("[CFG - LOOKUP VAR] got map %v with unassigned value for key %s \n\t\t\t\t\t\t\t => created new variable for key named (%s): %s", mapVar.String(), key.String(), key.GetType().GetBasicValue(), variable.String())
+				obj = lookup.CreateDynamicObjectFromType(valueType)
+				mapVar.AddDynamicKeyValue(key, obj)
+				logger.Logger.Warnf("[CFG - LOOKUP VAR] got map %v with unassigned value for key %s \n\t\t\t\t\t\t\t => created new variable for key named (%s): %s", mapVar.String(), key.String(), key.GetType().GetBasicValue(), obj.String())
 			}
 		}
 
@@ -405,8 +405,8 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 			return lookup.CreateObjectFromType("", t), nil
 		}
 
-		variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
-		if ptrVariable, ok := variable.(*objects.PointerObject); ok {
+		obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+		if ptrVariable, ok := obj.(*objects.PointerObject); ok {
 			return ptrVariable.PointerTo, packageType
 		}
 
@@ -417,27 +417,25 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 
 		if e.Op == token.AND { // e.g. &post
 			// creates a pointer to the variable
-			variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+			obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
 			ptrType := &gotypes.PointerType{
-				PointerTo: variable.GetType(),
+				PointerTo: obj.GetType(),
 			}
-			ptrVariable := &objects.PointerObject{
-				PointerTo: variable,
-				ObjectInfo: &objects.ObjectInfo{
-					Type: ptrType,
-					Id:   objects.VARIABLE_INLINE_ID,
-					Name: variable.GetVariableInfo().Name,
-				},
-			}
-			variable.GetVariableInfo().AddParent(variable, ptrVariable)
-			return ptrVariable, packageType
+			ptrObj := objects.NewPointerObject(
+				objects.NewObjectInfoInlineWithName(
+					ptrType, 
+					obj.GetVariableInfo().Name, // just use the name of the underlying object
+				),
+				obj,
+			)
+			return ptrObj, packageType
 		} else if e.Op == token.MUL { // e.g. *post
 			// dereferences the pointer and gets the value of the variable
-			variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
-			if ptrVariable, ok := variable.(*objects.PointerObject); ok {
+			obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+			if ptrVariable, ok := obj.(*objects.PointerObject); ok {
 				return ptrVariable.PointerTo, packageType
 			}
-			logger.Logger.Fatalf("[LOOKUP] [%s] unexpected variable (%s) for unary token '*': %s", ctx.String(), utils.GetType(variable), variable.LongString())
+			logger.Logger.Fatalf("[LOOKUP] [%s] unexpected variable (%s) for unary token '*': %s", ctx.String(), utils.GetType(obj), obj.LongString())
 			/* addrType := &gotypes.AddressType{
 				AddressOf: variable.GetType(),
 			}
@@ -452,17 +450,17 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 			variable.GetVariableInfo().AddParent(variable, pointerVariable)
 			return pointerVariable, packageType */
 		} else if e.Op == token.NOT { // e.g. !exists
-			variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
-			if basicVariable, ok := variable.(*objects.BasicObject); ok {
+			obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+			if basicVariable, ok := obj.(*objects.BasicObject); ok {
 				basicVariable.GetBasicType().InvertBool()
 			} else {
-				logger.Logger.Fatalf("[LOOKUP] unexpected type (%s) for object: %v", utils.GetType(variable), variable.String())
+				logger.Logger.Fatalf("[LOOKUP] unexpected type (%s) for object: %v", utils.GetType(obj), obj.String())
 			}
-			return variable, packageType
+			return obj, packageType
 		} else if e.Op == token.ARROW { // e.g. err_post_channel <- err
-			variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+			obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
 			logger.Logger.Warnf("[LOOKUP] ignoring unary expr with token (%v): %v", e.Op, e)
-			return variable, packageType
+			return obj, packageType
 		}
 
 		if !objectInExpression(e, block) {
@@ -487,7 +485,7 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 				basicTypeX, ok1 := objX.GetType().(*gotypes.BasicType)
 				basicTypeY, ok2 := objY.GetType().(*gotypes.BasicType)
 				if ok1 && ok2 {
-					variable = &objects.BasicObject{
+					obj = &objects.BasicObject{
 						//FIXME: this operations should differ for the types of x and y (e.g. integers, strings, etc)
 						ObjectInfo:        objects.NewObjectInfoInline(gotypes.NewBasicType("", basicTypeX.GetBasicValue()+basicTypeY.GetBasicValue())),
 						UnderlyingObjects: []objects.Object{objX, objY},
@@ -532,12 +530,12 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 			}
 
 			packageType = t_x
-			variable = address_variable_x
+			obj = address_variable_x
 
 			logger.Logger.Warnf("FIXMEEEEEEE!!!!!!!!")
 		} else {
 			logger.Logger.Fatalf("unknown token %v for binary expr %v", e.Op, e)
-			variable, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
+			obj, packageType = lookupObjectFromAstExpr(ctx, method, block, e.X, inAssignment)
 		}
 	case *ast.SliceExpr: //e.g. timestamp_hex[:10]
 		//TODO
@@ -563,7 +561,7 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 			numElemsInt, _ = strconv.Atoi(numElemsType.GetBasicValue())
 		}
 
-		variable = &objects.ArrayObject{
+		obj = &objects.ArrayObject{
 			ObjectInfo: &objects.ObjectInfo{
 				Type: &gotypes.ArrayType{
 					ElementsType: elemtsType,
@@ -575,7 +573,7 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 	case *ast.MapType: //e.g. make(map[string]PriceConfig)
 		keyType := lookup.ComputeTypeForAstExpr(ctx.GetPackage(), e.Key)
 		valueType := lookup.ComputeTypeForAstExpr(ctx.GetPackage(), e.Value)
-		variable = &objects.MapObject{
+		obj = &objects.MapObject{
 			KeyValues: make(map[objects.Object]objects.Object, 0),
 			ObjectInfo: &objects.ObjectInfo{
 				Type: &gotypes.MapType{
@@ -604,8 +602,8 @@ func lookupObjectFromAstExpr(ctx *ControlflowContext, method *types.ParsedMethod
 	default:
 		logger.Logger.Fatalf("[CFG - LOOKUP VAR] cannot lookup unknown type (%s) for variable (%v)", utils.GetType(e), e)
 	}
-	if variable == nil && packageType == nil {
+	if obj == nil && packageType == nil {
 		logger.Logger.Fatalf("[CFG - LOOKUP VAR] unexpected nil variable (or package) with type (%s) for expr (%v)", utils.GetType(expr), expr)
 	}
-	return variable, nil
+	return obj, nil
 }

@@ -5,7 +5,6 @@
 
 [0] (InterfaceObject UserType) ctx context.Context
 [_1] (Reference UserType) ref <ctx context.Context> @ OrderService
-[__2] (Reference UserType) ref <ctx context.Context> @ OrderService
 
     --> r-tainted: read(skus_db._.id) {1}
 [0] (BasicObject BasicType) id string

@@ -204,31 +204,8 @@
   - '0 depth 0 (BasicObject BasicType) currency int32 --> w-tainted 1x: write(orders_db.Order.Currency)'
   - '_1 depth 1 (Reference BasicType) ref <currency int32> @ OrderService --> w-tainted
     1x: write(orders_db.Order.Currency)'
-  - '0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type
-    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
-    string}) --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '_1 depth 1 (Reference SliceType) ref <orderItems [](*digota.OrderItem struct{Type
-    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
-    string})> @ OrderService --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '__2 depth 2 (Reference ArrayType) ref <orderItems [](*digota.OrderItem struct{Type
-    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
-    string})> @ getUpdatedOrderItems --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '___3 depth 3 (PointerObject PointerType) v (*digota.OrderItem struct{Type int32,
-    Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-    --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '____4 depth 4 (ArrayObject ArrayType) items [](*digota.OrderItem struct{Type
-    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
-    string}) --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '_____5 depth 5 (Reference ArrayType) ref <items [](*digota.OrderItem struct{Type
-    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
-    string})> @ OrderService --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '____6 depth 4 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity
-    int64, Amount int64, Currency int32, Parent string, Description string} --> w-tainted
-    1x: write(orders_db.Order.Items)'
-  - '_____7 depth 5 (FieldObject FieldType) Parent string --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '______8 depth 6 (BasicObject BasicType) Parent string --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '_____9 depth 5 (FieldObject FieldType) Quantity int64 --> w-tainted 1x: write(orders_db.Order.Items)'
-  - '______10 depth 6 (BasicObject BasicType) 1 int --> w-tainted 1x: write(orders_db.Order.Items)'
+  - 0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
+  - _1 depth 1 (Reference ArrayType) ref <orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})> @ OrderService
   - 0 depth 0 (BasicObject BasicType) err error
   - 0 depth 0 (BasicObject BasicType) currencyString string
   - _1 depth 1 (BasicObject BasicType) * string
@@ -236,11 +213,11 @@
   - _1 depth 1 (BasicObject BasicType) 0 int
   - _7 depth 1 (StructObject UserType) go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})}
   - 0 depth 0 (PointerObject PointerType) v (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-  - _36 depth 1 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
-  - __37 depth 2 (FieldObject FieldType) Currency int32
-  - ___38 depth 3 (BasicObject BasicType) Currency int32
-  - __39 depth 2 (FieldObject FieldType) Quantity int64
-  - ___40 depth 3 (BasicObject BasicType) 1 int
+  - _3 depth 1 (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
+  - __4 depth 2 (FieldObject FieldType) Currency int32
+  - ___5 depth 3 (BasicObject BasicType) Currency int32
+  - __6 depth 2 (FieldObject FieldType) Quantity int64
+  - ___7 depth 3 (BasicObject BasicType) 1 int
   - 0 depth 0 (BasicObject BasicType) vCurrencyString string
   - _1 depth 1 (BasicObject BasicType) * string
   - 0 depth 0 (PointerObject PointerType) m (*go-money.Money struct{amount int64, currency (*go-money.Currency struct{Code string, NumericCode string, Fraction int, Grapheme string, Template string, Decimal string, Thousand string})})

@@ -204,9 +204,6 @@ func parseValueSpecAssignment(ctx *ControlflowContext, method *types.ParsedMetho
 	for i, rObj := range rightObjects {
 		leftIdent := leftIdents[i]
 		// FIXME: what if this an assignment from a new object to an object that already exists?
-		/* if rObj.GetVariableInfo().GetName() == "" {
-			logger.Logger.Fatalf("HERE!")
-		} */
 		rObj.GetVariableInfo().SetUnassigned()
 		rObj.GetVariableInfo().SetName(leftIdent.Name)
 		block.AddObject(rObj)

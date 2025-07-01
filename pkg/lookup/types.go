@@ -57,10 +57,8 @@ func CreateObjectFromType(name string, t gotypes.Type) objects.Object {
 		addressOfVariable.GetVariableInfo().AddParent(addressOfVariable, addressVariable)
 		return addressVariable
 	case *gotypes.PointerType:
-		v := &objects.PointerObject{
-			ObjectInfo: info, PointerTo: CreateObjectFromType("", e.PointerTo),
-		}
-		return v
+		ptrObj := objects.NewPointerObject(info, CreateObjectFromType("", e.PointerTo))
+		return ptrObj
 	case *gotypes.StructType:
 		obj := objects.NewStructObject(info)
 		logger.Logger.Debugf("[LOOKUP - %s] created struct object: %s", utils.GetType(obj), obj.String())

@@ -31,6 +31,20 @@ type Object interface {
 	GetElementAt(index int) Object
 }
 
+func GetAllParents(obj Object) []Object {
+	var res []Object
+	for _, parent := range obj.GetVariableInfo().GetParents() {
+		// sanity check
+		if obj == parent || obj.GetVariableInfo() == parent.GetVariableInfo() {
+			logger.Logger.Fatalf("CYCLIC DEPENDENCY!! ABORTING!!\n\n PARENT TYPE = %s\n\n PARENT OBJ = %s\n\n CURRENT TYPE = %s\n\n CURRENT OBJ = %s", VariableTypeName(parent), parent.String(), VariableTypeName(obj), obj.String())
+		}
+
+		res = append(res, parent)
+		res = append(res, GetAllParents(parent)...)
+	}
+	return res
+}
+
 func VariableTypeName(v Object) string {
 	return utils.GetType(v) + " " + utils.GetType(v.GetType())
 }

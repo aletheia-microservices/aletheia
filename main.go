@@ -44,6 +44,7 @@ type analysisConfig struct {
 	unicityDetection                bool
 	numericalDetection              bool
 	specializationDetection         bool
+	abortIfChanged                  bool
 }
 
 func main() {
@@ -60,6 +61,7 @@ func main() {
 	unicityDetection := flag.Bool("unicity", false, "Enable detection of inconsistencies for unicity constraints")
 	numericalDetection := flag.Bool("numerical", false, "Enable detection of inconsistencies for numerical constraints")
 	specializationDetection := flag.Bool("specialization", false, "Enable detection of removals in mandatory specializations")
+	abortIfChanged := flag.Bool("abort_if_changed", true, "Abort and print results if analysis changes from previous run")
 
 	flag.Parse()
 	analysis := analysisConfig{
@@ -76,12 +78,14 @@ func main() {
 		unicityDetection:                *unicityDetection,
 		numericalDetection:              *numericalDetection,
 		specializationDetection:         *specializationDetection,
+		abortIfChanged:                  *abortIfChanged,
 	}
 
 	if analysis.allFlag == "true" || analysis.allFlag == "True" || analysis.allFlag == "1" {
 		for _, app := range utils.Apps {
 			logger.Logger.Infof(fmt.Sprintf("running analyzer for '%s'...", app))
 			time.Sleep(1500 * time.Millisecond)
+			analysis.appName = app
 			initAnalyzer(analysis)
 			fmt.Println()
 			fmt.Println()
@@ -158,7 +162,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 			cumulativeDatastoreOps = xcyDetector.GetDatastoreOps()
 		}
 
-		results += detection.SaveResults(app, xcyDetectorGroup)
+		results += detection.SaveResults(app, xcyDetectorGroup, analysis.abortIfChanged)
 		summary += xcyDetectorGroup.GetSummary()
 	}
 
@@ -169,7 +173,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		iterator := iterator.NewIterator(app, abstractGraph, keyCoordinationDetector)
 		iterator.Run()
 
-		results += detection.SaveResults(app, keyCoordinationDetector)
+		results += detection.SaveResults(app, keyCoordinationDetector, analysis.abortIfChanged)
 		summary += keyCoordinationDetector.GetSummary()
 	}
 
@@ -178,7 +182,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		iterator := iterator.NewIterator(app, abstractGraph, keyCoordinationDetector)
 		iterator.Run()
 
-		results += detection.SaveResults(app, keyCoordinationDetector)
+		results += detection.SaveResults(app, keyCoordinationDetector, analysis.abortIfChanged)
 		summary += keyCoordinationDetector.GetSummary()
 
 		if analysis.compactSchema {
@@ -192,7 +196,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		iterator.Run()
 		fkeyConcurrencyDetector.NextIterationPhase()
 		iterator.Run()
-		results += detection.SaveResults(app, fkeyConcurrencyDetector)
+		results += detection.SaveResults(app, fkeyConcurrencyDetector, analysis.abortIfChanged)
 		summary += fkeyConcurrencyDetector.GetSummary()
 	}
 
@@ -200,7 +204,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		fkeyCascadeDetector := fkey_cascade.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, fkeyCascadeDetector)
 		iterator.Run()
-		results += detection.SaveResults(app, fkeyCascadeDetector)
+		results += detection.SaveResults(app, fkeyCascadeDetector, analysis.abortIfChanged)
 		summary += fkeyCascadeDetector.GetSummary()
 	}
 
@@ -208,7 +212,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		specializationDetector := specialization.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, specializationDetector)
 		iterator.Run()
-		results += detection.SaveResults(app, specializationDetector)
+		results += detection.SaveResults(app, specializationDetector, analysis.abortIfChanged)
 		summary += specializationDetector.GetSummary()
 	}
 
@@ -216,7 +220,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		unicityDetector := unicity.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, unicityDetector)
 		iterator.Run()
-		results += detection.SaveResults(app, unicityDetector)
+		results += detection.SaveResults(app, unicityDetector, analysis.abortIfChanged)
 		summary += unicityDetector.GetSummary()
 	}
 
@@ -224,7 +228,7 @@ func runAnalysis(analysis analysisConfig, app *app.App, abstractGraph *abstractg
 		numericalDetector := numerical.NewDetector()
 		iterator := iterator.NewIterator(app, abstractGraph, numericalDetector)
 		iterator.Run()
-		results += detection.SaveResults(app, numericalDetector)
+		results += detection.SaveResults(app, numericalDetector, analysis.abortIfChanged)
 		summary += numericalDetector.GetSummary()
 	}
 

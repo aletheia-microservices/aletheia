@@ -22,7 +22,7 @@ type ObjectInfo struct {
 
 	ReferencedBy []Object
 	References   []*Reference
-	Parents      []Object
+	Parents      []Object // multiple just in case
 
 	IsBlockParam  bool
 	BlockParamIdx int
@@ -40,10 +40,22 @@ func NewObjectInfoInline(t gotypes.Type) *ObjectInfo {
 	}
 }
 
+func NewObjectInfoInlineWithName(t gotypes.Type, name string) *ObjectInfo {
+	return &ObjectInfo{
+		Type: t,
+		Id:   VARIABLE_INLINE_ID,
+		Name: name,
+	}
+}
+
 func NewObjectInfo(t gotypes.Type) *ObjectInfo {
 	return &ObjectInfo{
 		Type: t,
 	}
+}
+
+func (vinfo *ObjectInfo) GetParents() []Object {
+	return vinfo.Parents
 }
 
 func (vinfo *ObjectInfo) SetDynamic() {
@@ -81,14 +93,6 @@ func (vinfo *ObjectInfo) SetType(t gotypes.Type) {
 
 func (vinfo *ObjectInfo) GetDataflows() []*ObjectDataflow {
 	return vinfo.Dataflows
-}
-
-func (vinfo *ObjectInfo) AddDependency(dep Object) {
-	vinfo.Dependencies = append(vinfo.Dependencies, dep)
-}
-
-func (vinfo *ObjectInfo) AddDependencies(deps []Object) {
-	vinfo.Dependencies = append(vinfo.Dependencies, deps...)
 }
 
 func (vinfo *ObjectInfo) GetIndirectDataflows() []*ObjectDataflow {
@@ -370,14 +374,33 @@ func (vinfo *ObjectInfo) GetReferences() []*Reference {
 	return vinfo.References
 }
 
-func (vinfo *ObjectInfo) AddParent(current Object, parent Object) {
-	if current == parent || vinfo == parent.GetVariableInfo() {
+func (vinfo *ObjectInfo) AddDependency(dep Object) {
+	vinfo.Dependencies = append(vinfo.Dependencies, dep)
+}
+
+func (vinfo *ObjectInfo) AddDependencies(deps []Object) {
+	vinfo.Dependencies = append(vinfo.Dependencies, deps...)
+}
+
+func (vinfo *ObjectInfo) AddParent(child Object, parent Object) {
+	// sanity check 1 - prevent cyclic parent-child association
+	if child == parent || vinfo == parent.GetVariableInfo() {
 		pc, file, line, ok := runtime.Caller(1)
 		if !ok {
-			logger.Logger.Fatalf("RECURSION!! (%s) %s", VariableTypeName(parent), parent.String())
+			logger.Logger.Fatalf("CYCLIC DEPENDENCY!! ABORTING!!\n\n PARENT TYPE = %s\n\n PARENT OBJ = %s\n\n CURRENT TYPE = %s\n\n CURRENT OBJ = %s", VariableTypeName(parent), parent.String(), VariableTypeName(child), child.String())
 		}
 		callerFunc := runtime.FuncForPC(pc).Name()
-		logger.Logger.Fatalf("RECURSION!! (%s) %s \n\t\t\t\t\t(caller: %s) \n\t\t\t\t\t %s:%d", VariableTypeName(parent), parent.String(), callerFunc, file, line)
+		logger.Logger.Fatalf("CYCLIC DEPENDENCY!! ABORTING!! \n\t\t\t\t\t(caller: %s) \n\t\t\t\t\t %s:%d\n\n PARENT TYPE = %s\n\n PARENT OBJ = %s\n\n CURRENT TYPE = %s\n\n CURRENT OBJ = %s", callerFunc, file, line, VariableTypeName(parent), parent.String(), VariableTypeName(child), child.String())
+	}
+	// sanity check 2 - prevent duplicate parent
+	for _, p := range child.GetVariableInfo().GetParents() {
+		if p == parent {
+			// FIXME: idk why this is happening but it's something related to 
+			// - fieldobjects having many structobjects in AddOrGetFieldVariable()
+			// -structobjects having many pointerobjects
+			logger.Logger.Warnf("parent already added!\n PARENT TYPE = %s\n\n PARENT OBJ = %s\n\n CURRENT TYPE = %s\n\n CURRENT OBJ = %s", VariableTypeName(parent), parent.String(), VariableTypeName(child), child.String())
+			return
+		}
 	}
 	vinfo.Parents = append(vinfo.Parents, parent)
 }

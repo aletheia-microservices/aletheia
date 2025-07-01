@@ -11,7 +11,7 @@
     w-tainted 1x: write(cart_db.cart.ID)'
   - '0 depth 0 (StructObject UserType) item cart.Item struct{ID string, Quantity int,
     UnitPrice float32} --> w-tainted 1x: write(cart_db.cart.Items)'
-  - '_1 depth 1 (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int,
+  - '_1 depth 1 (Reference UserType) ref <cart.Item struct{ID string, Quantity int,
     UnitPrice float32}> @ FrontendService --> w-tainted 1x: write(cart_db.cart.Items)'
   - '__2 depth 2 (FieldObject FieldType) ID string --> w-tainted 1x: write(cart_db.cart.Items)'
   - '___3 depth 3 (BasicObject BasicType) itemID string --> w-tainted 1x: write(cart_db.cart.Items)
@@ -93,9 +93,9 @@
   - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ FrontendService
   - _2 depth 1 (Reference UserType) ref <ctx context.Context> @ FrontendService
   - 0 depth 0 (BasicObject BasicType) customerID string
-  - _1 depth 1 (Reference BasicType) ref <UserID string> @ FrontendService
-  - _2 depth 1 (Reference BasicType) ref <userID string> @ FrontendService
-  - __3 depth 2 (Reference BasicType) ref <UserID string> @ UserService
+  - _1 depth 1 (Reference BasicType) ref <userID string> @ FrontendService
+  - __2 depth 2 (Reference BasicType) ref <UserID string> @ UserService
+  - _3 depth 1 (Reference BasicType) ref <UserID string> @ FrontendService
   - 0 depth 0 (BasicObject BasicType) sessionID string
   - _1 depth 1 (Reference BasicType) ref <sessionID string> @ FrontendService
   - _2 depth 1 (Reference BasicType) ref <sessionID string> @ FrontendService
@@ -137,7 +137,7 @@
   - 0 depth 0 (BasicObject BasicType) customerID string
   - _1 depth 1 (Reference BasicType) ref <sessionID string> @ FrontendService
   - 0 depth 0 (StructObject UserType) item cart.Item struct{ID string, Quantity int, UnitPrice float32}
-  - _1 depth 1 (Reference UserType) ref <cart.Item struct{ID string, Quantity 1 int, UnitPrice float32}> @ FrontendService
+  - _1 depth 1 (Reference UserType) ref <cart.Item struct{ID string, Quantity int, UnitPrice float32}> @ FrontendService
   - __2 depth 2 (FieldObject FieldType) ID string
   - ___3 depth 3 (BasicObject BasicType) ID string
   - __4 depth 2 (FieldObject FieldType) Quantity int

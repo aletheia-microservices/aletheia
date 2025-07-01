@@ -27,22 +27,22 @@
   - __2 depth 2 (FieldObject FieldType) product_db NoSQLDatabase
   - ___3 depth 3 (BlueprintBackendObject BlueprintBackendType) product_db NoSQLDatabase
   - 0 depth 0 (InterfaceObject UserType) ctx context.Context
-  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ CartService
+  - _1 depth 1 (Reference UserType) ref <ctx context.Context> @ OrderService
   - __2 depth 2 (Reference UserType) ref <ctx context.Context> @ Frontend
-  - _3 depth 1 (Reference UserType) ref <ctx context.Context> @ OrderService
+  - _3 depth 1 (Reference UserType) ref <ctx context.Context> @ CartService
   - __4 depth 2 (Reference UserType) ref <ctx context.Context> @ Frontend
   - '0 depth 0 (BasicObject BasicType) productID string --> w-tainted 3x: write(order_db.Order.ProductID,
     stock_db.Stock.ProductID, billing_db.Bill.ProductID) --> r-tainted 1x: read(product_db._.productID)'
-  - '_1 depth 1 (Reference BasicType) ref <productID string> @ CartService --> r-tainted
-    1x: read(product_db._.productID)'
-  - '__2 depth 2 (Reference BasicType) ref <productID string> @ Frontend --> r-tainted
-    1x: read(product_db._.productID)'
-  - '_3 depth 1 (Reference BasicType) ref <productID string> @ OrderService --> w-tainted
+  - '_1 depth 1 (Reference BasicType) ref <productID string> @ OrderService --> w-tainted
     3x: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID)
     --> r-tainted 1x: read(product_db._.productID)'
-  - '__4 depth 2 (Reference BasicType) ref <productID string> @ Frontend --> w-tainted
+  - '__2 depth 2 (Reference BasicType) ref <productID string> @ Frontend --> w-tainted
     3x: write(order_db.Order.ProductID, stock_db.Stock.ProductID, billing_db.Bill.ProductID)
     --> r-tainted 1x: read(product_db._.productID)'
+  - '_3 depth 1 (Reference BasicType) ref <productID string> @ CartService --> r-tainted
+    1x: read(product_db._.productID)'
+  - '__4 depth 2 (Reference BasicType) ref <productID string> @ Frontend --> r-tainted
+    1x: read(product_db._.productID)'
   - '0 depth 0 (StructObject UserType) product shopping_app.Product struct{ProductID
     string, Description string, PricePerUnit int, Category string} --> r-tainted 1x:
     read(product_db.Product)'

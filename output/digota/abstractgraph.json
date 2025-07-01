@@ -119,7 +119,7 @@
         "returns": [
           {
             "pointer": {
-              "name": "item",
+              "name": "itemFromSku",
               "type": "(*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64})"
             },
             "ptr_to": {
@@ -246,15 +246,9 @@
                   "type": "[](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})"
                 },
                 "wrapped_variable": {
-                  "slice": {
-                    "name": "orderItems",
-                    "type": "[](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})",
-                    "refs": [
-                      {
-                        "name": "orderItems",
-                        "creator": "getUpdatedOrderItems"
-                      }
-                    ]
+                  "array": {
+                    "name": "items",
+                    "type": "[](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})"
                   }
                 }
               },
@@ -345,538 +339,6 @@
             "name": "",
             "type": "digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}"
           }
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*ProductServiceImpl).List(ctx context.Context, page int64, limit int64, sort int32)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
-        "depth": 1,
-        "caller": "ProductService",
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "basic": {
-              "name": "",
-              "type": "nil"
-            }
-          }
-        ],
-        "returns": [
-          {
-            "blueprint_backend": {
-              "name": "result",
-              "type": "NoSQLCursor {database = products, collection = products}"
-            },
-            "target_variable": {
-              "array": {
-                "name": "products",
-                "type": "[](*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})"
-              }
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error"
-            }
-          }
-        ],
-        "datastore": "products_db"
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "page",
-          "type": "int64"
-        }
-      },
-      {
-        "basic": {
-          "name": "limit",
-          "type": "int64"
-        }
-      },
-      {
-        "basic": {
-          "name": "sort",
-          "type": "int32"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*ProductServiceImpl).Update(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
-        "depth": 1,
-        "caller": "ProductService",
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "slice": {
-              "name": "query",
-              "type": "primitive.D"
-            },
-            "slice_variables": [
-              {
-                "struct": {
-                  "name": "",
-                  "type": "struct{Key \"id\" string, Key \"id\" string, Value string, Value string}"
-                },
-                "struct_fields": {
-                  "Key": {
-                    "field": {
-                      "name": "Key",
-                      "type": "\"id\" string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "",
-                        "type": "\"id\" string"
-                      }
-                    }
-                  },
-                  "Value": {
-                    "field": {
-                      "name": "Value",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "id",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "returns": [
-          {
-            "blueprint_backend": {
-              "name": "result",
-              "type": "NoSQLCursor {database = products, collection = products}"
-            },
-            "target_variable": {
-              "pointer": {
-                "name": "product",
-                "type": "(*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})"
-              },
-              "ptr_to": {
-                "struct": {
-                  "name": "",
-                  "type": "digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}"
-                },
-                "struct_fields": {
-                  "Active": {
-                    "field": {
-                      "name": "Active",
-                      "type": "bool"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "active",
-                        "type": "bool"
-                      }
-                    }
-                  },
-                  "Attributes": {
-                    "field": {
-                      "name": "Attributes",
-                      "type": "[]string"
-                    },
-                    "wrapped_variable": {
-                      "array": {
-                        "name": "attributes",
-                        "type": "[]string"
-                      }
-                    }
-                  },
-                  "Description": {
-                    "field": {
-                      "name": "Description",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "description",
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "Images": {
-                    "field": {
-                      "name": "Images",
-                      "type": "[]string"
-                    },
-                    "wrapped_variable": {
-                      "array": {
-                        "name": "images",
-                        "type": "[]string"
-                      }
-                    }
-                  },
-                  "Metadata": {
-                    "field": {
-                      "name": "Metadata",
-                      "type": "map[string]string"
-                    },
-                    "wrapped_variable": {
-                      "map": {
-                        "name": "metadata",
-                        "type": "map[string]string"
-                      },
-                      "key_values": null
-                    }
-                  },
-                  "Name": {
-                    "field": {
-                      "name": "Name",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "name",
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "Shippable": {
-                    "field": {
-                      "name": "Shippable",
-                      "type": "bool"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "shippable",
-                        "type": "bool"
-                      }
-                    }
-                  },
-                  "Url": {
-                    "field": {
-                      "name": "Url",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "url",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error"
-            }
-          }
-        ],
-        "datastore": "products_db"
-      },
-      {
-        "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
-        "depth": 1,
-        "caller": "ProductService",
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "struct": {
-              "name": "",
-              "type": "digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}"
-            },
-            "struct_fields": {
-              "Active": {
-                "field": {
-                  "name": "Active",
-                  "type": "bool"
-                },
-                "wrapped_variable": {
-                  "basic": {
-                    "name": "active",
-                    "type": "bool"
-                  }
-                }
-              },
-              "Attributes": {
-                "field": {
-                  "name": "Attributes",
-                  "type": "[]string"
-                },
-                "wrapped_variable": {
-                  "array": {
-                    "name": "attributes",
-                    "type": "[]string"
-                  }
-                }
-              },
-              "Description": {
-                "field": {
-                  "name": "Description",
-                  "type": "string"
-                },
-                "wrapped_variable": {
-                  "basic": {
-                    "name": "description",
-                    "type": "string"
-                  }
-                }
-              },
-              "Images": {
-                "field": {
-                  "name": "Images",
-                  "type": "[]string"
-                },
-                "wrapped_variable": {
-                  "array": {
-                    "name": "images",
-                    "type": "[]string"
-                  }
-                }
-              },
-              "Metadata": {
-                "field": {
-                  "name": "Metadata",
-                  "type": "map[string]string"
-                },
-                "wrapped_variable": {
-                  "map": {
-                    "name": "metadata",
-                    "type": "map[string]string"
-                  },
-                  "key_values": null
-                }
-              },
-              "Name": {
-                "field": {
-                  "name": "Name",
-                  "type": "string"
-                },
-                "wrapped_variable": {
-                  "basic": {
-                    "name": "name",
-                    "type": "string"
-                  }
-                }
-              },
-              "Shippable": {
-                "field": {
-                  "name": "Shippable",
-                  "type": "bool"
-                },
-                "wrapped_variable": {
-                  "basic": {
-                    "name": "shippable",
-                    "type": "bool"
-                  }
-                }
-              },
-              "Url": {
-                "field": {
-                  "name": "Url",
-                  "type": "string"
-                },
-                "wrapped_variable": {
-                  "basic": {
-                    "name": "url",
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error"
-            }
-          }
-        ],
-        "datastore": "products_db"
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "id",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "name",
-          "type": "string"
-        }
-      },
-      {
-        "basic": {
-          "name": "active",
-          "type": "bool"
-        }
-      },
-      {
-        "array": {
-          "name": "attributes",
-          "type": "[]string"
-        }
-      },
-      {
-        "basic": {
-          "name": "description",
-          "type": "string"
-        }
-      },
-      {
-        "array": {
-          "name": "images",
-          "type": "[]string"
-        }
-      },
-      {
-        "map": {
-          "name": "metadata",
-          "type": "map[string]string"
-        },
-        "key_values": null
-      },
-      {
-        "basic": {
-          "name": "shippable",
-          "type": "bool"
-        }
-      },
-      {
-        "basic": {
-          "name": "url",
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "method": "(*ProductServiceImpl).Delete(ctx context.Context, id string)",
-    "depth": 0,
-    "caller": "Client",
-    "edges": [
-      {
-        "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
-        "depth": 1,
-        "caller": "ProductService",
-        "params": [
-          {
-            "interface": {
-              "name": "ctx",
-              "type": "context.Context"
-            }
-          },
-          {
-            "slice": {
-              "name": "filter",
-              "type": "primitive.D"
-            },
-            "slice_variables": [
-              {
-                "struct": {
-                  "name": "",
-                  "type": "struct{Key \"id\" string, Key \"id\" string, Value string, Value string}"
-                },
-                "struct_fields": {
-                  "Key": {
-                    "field": {
-                      "name": "Key",
-                      "type": "\"id\" string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "",
-                        "type": "\"id\" string"
-                      }
-                    }
-                  },
-                  "Value": {
-                    "field": {
-                      "name": "Value",
-                      "type": "string"
-                    },
-                    "wrapped_variable": {
-                      "basic": {
-                        "name": "id",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "returns": [
-          {
-            "interface": {
-              "name": "err",
-              "type": ".error"
-            }
-          }
-        ],
-        "datastore": "products_db"
-      }
-    ],
-    "params": [
-      {
-        "interface": {
-          "name": "ctx",
-          "type": "context.Context"
-        }
-      },
-      {
-        "basic": {
-          "name": "id",
-          "type": "string"
         }
       }
     ]
@@ -1455,6 +917,538 @@
               }
             }
           },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error"
+            }
+          }
+        ],
+        "datastore": "products_db"
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "id",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*ProductServiceImpl).List(ctx context.Context, page int64, limit int64, sort int32)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "NoSQLDatabase.NoSQLCollection.FindMany(ctx context.Context, filter bson.D, projection bson.D)",
+        "depth": 1,
+        "caller": "ProductService",
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "basic": {
+              "name": "",
+              "type": "nil"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "blueprint_backend": {
+              "name": "result",
+              "type": "NoSQLCursor {database = products, collection = products}"
+            },
+            "target_variable": {
+              "array": {
+                "name": "products",
+                "type": "[](*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})"
+              }
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error"
+            }
+          }
+        ],
+        "datastore": "products_db"
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "page",
+          "type": "int64"
+        }
+      },
+      {
+        "basic": {
+          "name": "limit",
+          "type": "int64"
+        }
+      },
+      {
+        "basic": {
+          "name": "sort",
+          "type": "int32"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*ProductServiceImpl).Update(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "NoSQLDatabase.NoSQLCollection.FindOne(ctx context.Context, filter bson.D, projection bson.D)",
+        "depth": 1,
+        "caller": "ProductService",
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "slice": {
+              "name": "query",
+              "type": "primitive.D"
+            },
+            "slice_variables": [
+              {
+                "struct": {
+                  "name": "",
+                  "type": "struct{Key \"id\" string, Key \"id\" string, Value string, Value string}"
+                },
+                "struct_fields": {
+                  "Key": {
+                    "field": {
+                      "name": "Key",
+                      "type": "\"id\" string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "",
+                        "type": "\"id\" string"
+                      }
+                    }
+                  },
+                  "Value": {
+                    "field": {
+                      "name": "Value",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "id",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "returns": [
+          {
+            "blueprint_backend": {
+              "name": "result",
+              "type": "NoSQLCursor {database = products, collection = products}"
+            },
+            "target_variable": {
+              "pointer": {
+                "name": "product",
+                "type": "(*digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64})"
+              },
+              "ptr_to": {
+                "struct": {
+                  "name": "",
+                  "type": "digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}"
+                },
+                "struct_fields": {
+                  "Active": {
+                    "field": {
+                      "name": "Active",
+                      "type": "bool"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "active",
+                        "type": "bool"
+                      }
+                    }
+                  },
+                  "Attributes": {
+                    "field": {
+                      "name": "Attributes",
+                      "type": "[]string"
+                    },
+                    "wrapped_variable": {
+                      "array": {
+                        "name": "attributes",
+                        "type": "[]string"
+                      }
+                    }
+                  },
+                  "Description": {
+                    "field": {
+                      "name": "Description",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "description",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "Images": {
+                    "field": {
+                      "name": "Images",
+                      "type": "[]string"
+                    },
+                    "wrapped_variable": {
+                      "array": {
+                        "name": "images",
+                        "type": "[]string"
+                      }
+                    }
+                  },
+                  "Metadata": {
+                    "field": {
+                      "name": "Metadata",
+                      "type": "map[string]string"
+                    },
+                    "wrapped_variable": {
+                      "map": {
+                        "name": "metadata",
+                        "type": "map[string]string"
+                      },
+                      "key_values": null
+                    }
+                  },
+                  "Name": {
+                    "field": {
+                      "name": "Name",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "name",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "Shippable": {
+                    "field": {
+                      "name": "Shippable",
+                      "type": "bool"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "shippable",
+                        "type": "bool"
+                      }
+                    }
+                  },
+                  "Url": {
+                    "field": {
+                      "name": "Url",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "url",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error"
+            }
+          }
+        ],
+        "datastore": "products_db"
+      },
+      {
+        "method": "NoSQLDatabase.NoSQLCollection.InsertOne(ctx context.Context, document interface{})",
+        "depth": 1,
+        "caller": "ProductService",
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "struct": {
+              "name": "",
+              "type": "digota.Product struct{Id string, Name string, Active bool, Attributes []string, Description string, Images []string, Metadata map[string]string, Shippable bool, Url string, Skus [](*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}), Created int64, Updated int64}"
+            },
+            "struct_fields": {
+              "Active": {
+                "field": {
+                  "name": "Active",
+                  "type": "bool"
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "active",
+                    "type": "bool"
+                  }
+                }
+              },
+              "Attributes": {
+                "field": {
+                  "name": "Attributes",
+                  "type": "[]string"
+                },
+                "wrapped_variable": {
+                  "array": {
+                    "name": "attributes",
+                    "type": "[]string"
+                  }
+                }
+              },
+              "Description": {
+                "field": {
+                  "name": "Description",
+                  "type": "string"
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "description",
+                    "type": "string"
+                  }
+                }
+              },
+              "Images": {
+                "field": {
+                  "name": "Images",
+                  "type": "[]string"
+                },
+                "wrapped_variable": {
+                  "array": {
+                    "name": "images",
+                    "type": "[]string"
+                  }
+                }
+              },
+              "Metadata": {
+                "field": {
+                  "name": "Metadata",
+                  "type": "map[string]string"
+                },
+                "wrapped_variable": {
+                  "map": {
+                    "name": "metadata",
+                    "type": "map[string]string"
+                  },
+                  "key_values": null
+                }
+              },
+              "Name": {
+                "field": {
+                  "name": "Name",
+                  "type": "string"
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "name",
+                    "type": "string"
+                  }
+                }
+              },
+              "Shippable": {
+                "field": {
+                  "name": "Shippable",
+                  "type": "bool"
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "shippable",
+                    "type": "bool"
+                  }
+                }
+              },
+              "Url": {
+                "field": {
+                  "name": "Url",
+                  "type": "string"
+                },
+                "wrapped_variable": {
+                  "basic": {
+                    "name": "url",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "returns": [
+          {
+            "interface": {
+              "name": "err",
+              "type": ".error"
+            }
+          }
+        ],
+        "datastore": "products_db"
+      }
+    ],
+    "params": [
+      {
+        "interface": {
+          "name": "ctx",
+          "type": "context.Context"
+        }
+      },
+      {
+        "basic": {
+          "name": "id",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "name",
+          "type": "string"
+        }
+      },
+      {
+        "basic": {
+          "name": "active",
+          "type": "bool"
+        }
+      },
+      {
+        "array": {
+          "name": "attributes",
+          "type": "[]string"
+        }
+      },
+      {
+        "basic": {
+          "name": "description",
+          "type": "string"
+        }
+      },
+      {
+        "array": {
+          "name": "images",
+          "type": "[]string"
+        }
+      },
+      {
+        "map": {
+          "name": "metadata",
+          "type": "map[string]string"
+        },
+        "key_values": null
+      },
+      {
+        "basic": {
+          "name": "shippable",
+          "type": "bool"
+        }
+      },
+      {
+        "basic": {
+          "name": "url",
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "method": "(*ProductServiceImpl).Delete(ctx context.Context, id string)",
+    "depth": 0,
+    "caller": "Client",
+    "edges": [
+      {
+        "method": "NoSQLDatabase.NoSQLCollection.DeleteOne(ctx context.Context, filter bson.D)",
+        "depth": 1,
+        "caller": "ProductService",
+        "params": [
+          {
+            "interface": {
+              "name": "ctx",
+              "type": "context.Context"
+            }
+          },
+          {
+            "slice": {
+              "name": "filter",
+              "type": "primitive.D"
+            },
+            "slice_variables": [
+              {
+                "struct": {
+                  "name": "",
+                  "type": "struct{Key \"id\" string, Key \"id\" string, Value string, Value string}"
+                },
+                "struct_fields": {
+                  "Key": {
+                    "field": {
+                      "name": "Key",
+                      "type": "\"id\" string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "",
+                        "type": "\"id\" string"
+                      }
+                    }
+                  },
+                  "Value": {
+                    "field": {
+                      "name": "Value",
+                      "type": "string"
+                    },
+                    "wrapped_variable": {
+                      "basic": {
+                        "name": "id",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "returns": [
           {
             "interface": {
               "name": "err",

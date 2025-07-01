@@ -38,7 +38,8 @@ type Detector interface {
 	OnDelete(app *app.App, dbCall *abstractgraph.AbstractDatabaseCall, lastServiceCallNode *abstractgraph.AbstractServiceCall, child_idx int)
 }
 
-func SaveResults(app *app.App, detector Detector) string {
+func SaveResults(app *app.App, detector Detector, abortIfChanged bool) string {
+	var detectedChanges bool
 	detector.ComputeResults()
 	results := detector.GetResults()
 	analysisTypeString := detector.GetAnalysisTypeString()
@@ -84,6 +85,8 @@ func SaveResults(app *app.App, detector Detector) string {
 
 		if previousHeader == newHeader {
 			color = TEXT_BOLD_LIGHT_YELLOW // Apply yellow only if summaries are identical
+		} else if abortIfChanged {
+			detectedChanges = true
 		}
 	}
 
@@ -96,7 +99,13 @@ func SaveResults(app *app.App, detector Detector) string {
 	logger.Logger.Tracef("[%s] saved cascading detection results to %s", analysisPrefix, path)
 
 	detector.SetSummary(color + strings.ToUpper(detector.GetAnalysisTypeString()) + ": " + summary + TEXT_RESET_COLOR + "\n")
-	return fmt.Sprintf("%s\t\t\t\t\t\t\t   (modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
+	str := fmt.Sprintf("%s\t\t\t\t\t\t\t   (modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
+
+	if abortIfChanged && detectedChanges {
+		logger.Logger.Fatalf("CHANGES DETECTED >>>\n %s", str)
+	}
+
+	return str
 }
 
 func GetWrittenFieldNamesForOperation(dbCall *abstractgraph.AbstractDatabaseCall) []string {
@@ -112,7 +121,7 @@ func GetWrittenFieldNamesForOperation(dbCall *abstractgraph.AbstractDatabaseCall
 			widx := blueprintBackendMethod.GetWrittenObjectIndex()
 			wobj := dbCall.GetParam(widx)
 			wtype := wobj.GetType()
-			
+
 			// FIXME: this is getting all fields for the structure and not actually the ones that are written
 			_, writtenFieldNames = wtype.GetNestedFieldTypes(wtype.GetName(), datastore.IsNoSQLDatabase())
 

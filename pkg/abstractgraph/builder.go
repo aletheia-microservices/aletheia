@@ -191,10 +191,6 @@ func (graph *AbstractGraph) referenceCallObjects(parsedCall types.Call, child Ab
 			logger.Logger.Infof("\t\t[REF CALL OBJS - RESULTS] added reference (%d) to child %s: (%s) -> (%s)", parentObj.GetId(), child.GetCallee(), parentObj.GetVariableInfo().String(), childObj.GetVariableInfo().String())
 		}
 	}
-
-	/* if parsedCall.GetName() == "StorePostNoSQL" {
-		logger.Logger.Fatalf("HERE!")
-	} */
 }
 
 func (graph *AbstractGraph) referenceQueuePopObjects(queueHandler *AbstractQueueHandler, queuePopCall *AbstractDatabaseCall) {
@@ -259,10 +255,6 @@ func (graph *AbstractGraph) appendAbstractEdges(parent AbstractNode, targetMetho
 			logger.Logger.Infof("[GRAPH] adding node for abstract service call: %s", child.String())
 			graph.referenceCallObjects(parsedCall, child)
 			logger.Logger.Infof("[GRAPH] added node for abstract service call: %s", child.String())
-
-			/* if parsedCall.GetName() == "StorePostNoSQL" {
-				logger.Logger.Fatalf("HERE!")
-			} */
 
 		case *types.ParsedInternalCall:
 			tempChild := &AbstractTempInternalCall{

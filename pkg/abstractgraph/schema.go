@@ -178,6 +178,8 @@ func TaintDataflowReadNoSQL(app *app.App, obj objects.Object, call *AbstractData
 	obj = getTargetVariableIfNoSQLCursorRead(datastore, obj)
 	deps := obj.GetNestedDependencies(false)
 	logger.Logger.Infof("[TENTATIVE TAINT READ (DOC) VAR] [%s] NUM DEPS = %d @ %s", utils.GetType(obj), len(deps), obj.LongString())
+	
+
 	var prefix string
 	for _, dep := range deps {
 		if !slices.Contains(taintedVariables, dep) {
