@@ -1,0 +1,208 @@
+*t0 (t0): new Order (complit)
+	|--field(2)--> t1 (t1,t28): &t0.Currency [#2]
+	|--field(3)--> t2 (t2,t27,t30): &t0.Items [#3]
+	|--field(4)--> t3 (t3): &t0.Metadata [#4]
+	|--field(1)--> t54 (t54): &t0.Amount [#1]
+
+*items (items): parameter items : []*OrderItem
+	|--index(t6 + 1:int)--> t9 (t9): &items[t7]
+
+*metadata (metadata): parameter metadata : map[string]string
+
+*ctx (ctx): parameter ctx : context.Context
+
+*currency (currency): parameter currency : int32
+
+*t1 (t1,t28): &t0.Currency [#2]
+	|--value--> currency (currency): parameter currency : int32
+
+*t2 (t2,t27,t30): &t0.Items [#3]
+	|--value--> items (items): parameter items : []*OrderItem
+	|--version--> t27 (t27): &t0.Items [#3]
+
+*t3 (t3): &t0.Metadata [#4]
+	|--value--> metadata (metadata): parameter metadata : map[string]string
+
+t4 (t4): len(items)
+	|--parameter(0)--> items (items): parameter items : []*OrderItem
+
+*t5 (t5): phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems
+	|----> nil:[]*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem (nil:[]*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem): nil:[]*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem
+	|----> t5 (t5): phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems
+	|----> t20 (t20): append(t5, t19...)
+	|--index(t21 + 1:int)--> t24 (t24): &t5[t22]
+
+t6 (t6): phi [0: -1:int, 2: t7, 6: t7] #rangeindex
+	|----> -1:int (-1:int): -1:int
+	|----> t7 (t7): t6 + 1:int
+	|----> t7 (t7): t6 + 1:int
+
+t7 (t7): t6 + 1:int
+
+t8 (t8): t7 < t4
+
+*t9 (t9): &items[t7]
+	|--value--> t10 (t10): *t9
+
+*t10 (t10): *t9
+	|--field(1)--> t13 (t13,t16): &t10.Quantity [#1]
+
+t11 (t11): (*OrderItem).IsTypeTax(t10)
+	|--parameter(0)--> t10 (t10): *t9
+
+t12 (t12): len(t5)
+	|--parameter(0)--> t5 (t5): phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems
+
+*t13 (t13,t16): &t10.Quantity [#1]
+	|--value--> t14 (t14): *t13
+	|--version--> t16 (t16): &t10.Quantity [#1]
+
+*t14 (t14): *t13
+
+t15 (t15): t14 <= 0:int64
+
+*t16 (t16): &t10.Quantity [#1]
+	|--value--> 1:int64 (1:int64): 1:int64
+
+*t17 (t17,slice t17[:],slice t17[:]): new [1]*OrderItem (varargs)
+	|--index(0:int)--> t18 (t18): &t17[0:int]
+
+*t18 (t18): &t17[0:int]
+	|--value--> t10 (t10): *t9
+
+*t20 (t20): append(t5, t19...)
+	|--parameter(0)--> t5 (t5): phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems
+	|--parameter(1)--> t17 (t17,slice t17[:],slice t17[:]): new [1]*OrderItem (varargs)
+
+t21 (t21): phi [3: -1:int, 8: t22, 12: t22] #rangeindex
+	|----> -1:int (-1:int): -1:int
+	|----> t22 (t22): t21 + 1:int
+	|----> t22 (t22): t21 + 1:int
+
+t22 (t22): t21 + 1:int
+
+t23 (t23): t22 < t12
+
+*t24 (t24): &t5[t22]
+	|--value--> t25 (t25): *t24
+
+*t25 (t25): *t24
+	|--field(4)--> t38 (t38): &t25.Parent [#4]
+	|--field(2)--> t47 (t47): &t25.Amount [#2]
+	|--field(3)--> t50 (t50): &t25.Currency [#3]
+	|--field(5)--> t53 (t53): &t25.Description [#5]
+
+t26 (t26): (*OrderItem).IsTypeSku(t25)
+	|--parameter(0)--> t25 (t25): *t24
+
+*t27 (t27): &t0.Items [#3]
+	|--value--> t5 (t5): phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems
+
+*t1 (t1,t28): &t0.Currency [#2]
+	|--value--> currency (currency): parameter currency : int32
+
+t29 (t29): *t28
+	|--value--> currency (currency): parameter currency : int32
+
+*t2 (t2,t27,t30): &t0.Items [#3]
+	|--value--> items (items): parameter items : []*OrderItem
+	|--version--> t27 (t27): &t0.Items [#3]
+
+t31 (t31): *t30
+	|--value--> items (items): parameter items : []*OrderItem
+
+t32 (t32): calculateTotal(t29, t31)
+	|--parameter(0)--> t29 (t29): *t28
+	|--parameter(1)--> t31 (t31): *t30
+	|--returns(0)--> t33 (t33): extract t32 #0
+	|--returns(1)--> t34 (t34): extract t32 #1
+
+*t33 (t33): extract t32 #0
+
+t34 (t34): extract t32 #1
+
+t35 (t35): t34 != nil:error
+
+t36 (t36): &s.skuService [#0]
+	|--value--> t37 (t37): *t36
+
+t37 (t37): *t36
+
+*t38 (t38): &t25.Parent [#4]
+	|--value--> t39 (t39): *t38
+
+*t39 (t39): *t38
+
+t40 (t40): invoke t37.Get(ctx, t39)
+	|--parameter(0)--> ctx (ctx): parameter ctx : context.Context
+	|--parameter(1)--> t39 (t39): *t38
+	|--returns(0)--> t41 (t41): extract t40 #0
+	|--returns(1)--> t42 (t42): extract t40 #1
+
+t41 (t41): extract t40 #0
+	|--field(2)--> t44 (t44): &t41.Price [#2]
+	|--field(3)--> t48 (t48): &t41.Currency [#3]
+	|--field(1)--> t51 (t51): &t41.Name [#1]
+
+t42 (t42): extract t40 #1
+
+t43 (t43): t42 != nil:error
+
+t44 (t44): &t41.Price [#2]
+	|--value--> t45 (t45): *t44
+
+*t45 (t45): *t44
+
+*t46 (t46): convert int64 <- uint64 (t45)
+	|----> t45 (t45): *t44
+
+*t47 (t47): &t25.Amount [#2]
+	|--value--> t46 (t46): convert int64 <- uint64 (t45)
+
+t48 (t48): &t41.Currency [#3]
+	|--value--> t49 (t49): *t48
+
+*t49 (t49): *t48
+
+*t50 (t50): &t25.Currency [#3]
+	|--value--> t49 (t49): *t48
+
+t51 (t51): &t41.Name [#1]
+	|--value--> t52 (t52): *t51
+
+*t52 (t52): *t51
+
+*t53 (t53): &t25.Description [#5]
+	|--value--> t52 (t52): *t51
+
+*t54 (t54): &t0.Amount [#1]
+	|--value--> t33 (t33): extract t32 #0
+
+t55 (t55): &s.db [#1]
+	|--value--> t56 (t56): *t55
+
+t56 (t56): *t55
+
+t57 (t57): invoke t56.GetCollection(ctx, "orders":string, "orders":string)
+	|--parameter(0)--> ctx (ctx): parameter ctx : context.Context
+	|--parameter(1)--> "orders":string ("orders":string): "orders":string
+	|--parameter(2)--> "orders":string ("orders":string): "orders":string
+	|--returns(0)--> t58 (t58): extract t57 #0
+	|--returns(1)--> t59 (t59): extract t57 #1
+
+t58 (t58): extract t57 #0
+
+t59 (t59): extract t57 #1
+
+t60 (t60): t59 != nil:error
+
+*t61 (t61): *t0
+	|--value--> t0 (t0): new Order (complit)
+
+*t62 (t62): make interface{} <- Order (t61)
+	|--interface of--> t61 (t61): *t0
+
+t63 (t63): invoke t58.InsertOne(ctx, t62)
+	|--parameter(0)--> ctx (ctx): parameter ctx : context.Context
+	|--parameter(1)--> t62 (t62): make interface{} <- Order (t61)
+

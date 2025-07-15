@@ -1,0 +1,61 @@
+t0: new Product (complit)
+	|--field(1)--> t1: &t0.Name [#1]
+	|--field(2)--> t2: &t0.Active [#2]
+	|--field(3)--> t3: &t0.Attributes [#3]
+	|--field(4)--> t4: &t0.Description [#4]
+	|--field(5)--> t5: &t0.Images [#5]
+	|--field(6)--> t6: &t0.Metadata [#6]
+	|--field(7)--> t7: &t0.Shippable [#7]
+	|--field(8)--> t8: &t0.Url [#8]
+	|--value--> t18: *t0
+
+t1: &t0.Name [#1]
+	|--value--> name: parameter name : string
+
+t2: &t0.Active [#2]
+	|--value--> active: parameter active : bool
+
+t3: &t0.Attributes [#3]
+	|--value--> attributes: parameter attributes : []string
+
+t4: &t0.Description [#4]
+	|--value--> description: parameter description : string
+
+t5: &t0.Images [#5]
+	|--value--> images: parameter images : []string
+
+t6: &t0.Metadata [#6]
+	|--value--> metadata: parameter metadata : map[string]string
+
+t7: &t0.Shippable [#7]
+	|--value--> shippable: parameter shippable : bool
+
+t8: &t0.Url [#8]
+	|--value--> url: parameter url : string
+
+t9: make interface{} <- *Product (t0)
+	|----> t0: new Product (complit)
+
+t11: t10 != nil:error
+
+t12: &s.db [#1]
+	|--value--> t13: *t12
+
+t13: *t12
+
+t15: extract t14 #0
+
+t16: extract t14 #1
+
+t17: t16 != nil:error
+
+t18: *t0
+
+t19: make interface{} <- Product (t18)
+	|----> t18: *t0
+
+t21: &s.skuService [#0]
+	|--value--> t22: *t21
+
+t22: *t21
+

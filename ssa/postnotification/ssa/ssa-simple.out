@@ -1,0 +1,620 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.StorageService
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post, github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics, error)
+	Method: func(ctx context.Context, reqID int64, post github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post) (int64, error)
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post, github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics, error)
+	Method: func(ctx context.Context, reqID int64, post github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post) (int64, error)
+	Function: NewStorageServiceImpl
+		Block #0: NewStorageServiceImpl.entry
+			00: t0 = new StorageServiceImpl (complit)
+			01: t1 = &t0.analyticsService [#0]
+			02: t2 = &t0.mediaService [#1]
+			03: t3 = &t0.posts_cache [#2]
+			04: t4 = &t0.postsDb [#3]
+			05: t5 = &t0.analyticsQueue [#4]
+			06: *t1 = analyticsService
+			07: *t2 = mediaService
+			08: *t3 = posts_cache
+			09: *t4 = postsDb
+			10: *t5 = analyticsQueue
+			11: t6 = make StorageService <- *StorageServiceImpl (t0)
+			12: return t6, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Message
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.UploadService
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Method: func(ctx context.Context, username string, text string) (int64, error)
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Method: func(ctx context.Context, username string, text string) (int64, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.AnalyticsServiceImpl
+	Method: func(ctx context.Context, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics, error)
+	Function: ReadAnalytics
+		Block #0: ReadAnalytics.entry
+			00: t0 = new Analytics (analytics)
+			01: t1 = &a.analyticsDb [#1]
+			02: t2 = *t1
+			03: t3 = invoke t2.GetCollection(ctx, "analyticsDb":string, "analytics_collection":string)
+			04: t4 = extract t3 #0
+			05: t5 = extract t3 #1
+			06: t6 = t5 != nil:error
+			07: if t6 goto 1 else 2
+		Block #1: ReadAnalytics.if.then
+			00: t7 = *t0
+			01: return t7, t5
+		Block #2: ReadAnalytics.if.done
+			00: t8 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t9 = &t8[0:int]
+			02: t10 = &t9.Key [#0]
+			03: t11 = &t9.Value [#1]
+			04: *t10 = "postid":string
+			05: t12 = make interface{} <- int64 (postID)
+			06: *t11 = t12
+			07: t13 = slice t8[:]
+			08: t14 = invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t15 = extract t14 #0
+			10: t16 = extract t14 #1
+			11: t17 = t16 != nil:error
+			12: if t17 goto 3 else 4
+		Block #3: ReadAnalytics.if.then
+			00: t18 = *t0
+			01: return t18, t16
+		Block #4: ReadAnalytics.if.done
+			00: t19 = make interface{} <- *Analytics (t0)
+			01: t20 = invoke t15.One(ctx, t19)
+			02: t21 = extract t20 #0
+			03: t22 = extract t20 #1
+			04: if t21 goto 7 else 5
+		Block #5: ReadAnalytics.if.then
+			00: t23 = *t0
+			01: return t23, t22
+		Block #6: ReadAnalytics.if.done
+			00: t24 = *t0
+			01: return t24, nil:error
+		Block #7: ReadAnalytics.cond.false
+			00: t25 = t22 != nil:error
+			01: if t25 goto 5 else 6
+	Method: func(ctx context.Context) error
+	Function: Run
+		Block #0: Run.entry
+			00: t0 = new *AnalyticsServiceImpl (n)
+			01: *t0 = n
+			02: t1 = new context.Context (ctx)
+			03: *t1 = ctx
+			04: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()
+			05: t3 = *t1
+			06: t4 = *t0
+			07: t5 = &t4.numWorkers [#2]
+			08: t6 = *t5
+			09: t7 = new [1]any (varargs)
+			10: t8 = &t7[0:int]
+			11: t9 = make any <- int (t6)
+			12: *t8 = t9
+			13: t10 = slice t7[:]
+			14: t11 = invoke t2.Info(t3, "initializing %d w...":string, t10...)
+			15: t12 = new sync.WaitGroup (wg)
+			16: t13 = *t0
+			17: t14 = &t13.numWorkers [#2]
+			18: t15 = *t14
+			19: t16 = (*sync.WaitGroup).Add(t12, t15)
+			20: jump 3
+		Block #1: Run.for.body
+			00: t17 = make closure (*AnalyticsServiceImpl).Run$1 [t12, t0, t1]
+			01: go t17(t30)
+			02: t18 = t30 + 1:int
+			03: jump 3
+		Block #2: Run.for.done
+			00: t19 = (*sync.WaitGroup).Wait(t12)
+			01: t20 = github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()
+			02: t21 = *t1
+			03: t22 = *t0
+			04: t23 = &t22.numWorkers [#2]
+			05: t24 = *t23
+			06: t25 = new [1]any (varargs)
+			07: t26 = &t25[0:int]
+			08: t27 = make any <- int (t24)
+			09: *t26 = t27
+			10: t28 = slice t25[:]
+			11: t29 = invoke t20.Info(t21, "joining %d workers":string, t28...)
+			12: return nil:error
+		Block #3: Run.for.loop
+			00: t30 = phi [0: 1:int, 1: t18] #i
+			01: t31 = *t0
+			02: t32 = &t31.numWorkers [#2]
+			03: t33 = *t32
+			04: t34 = t30 <= t33
+			05: if t34 goto 1 else 2
+	Method: func(ctx context.Context, message github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.TriggerAnalyticsMessage) error
+	Function: handleMessage
+		Block #0: handleMessage.entry
+			00: t0 = local TriggerAnalyticsMessage (message)
+			01: *t0 = message
+			02: t1 = &t0.PostID [#0]
+			03: t2 = *t1
+			04: t3 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.StringToInt64(t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+		Block #1: handleMessage.if.then
+			00: return t5
+		Block #2: handleMessage.if.done
+			00: t7 = &a.analyticsDb [#1]
+			01: t8 = *t7
+			02: t9 = invoke t8.GetCollection(ctx, "analyticsDb":string, "analytics_collection":string)
+			03: t10 = extract t9 #0
+			04: t11 = extract t9 #1
+			05: t12 = t11 != nil:error
+			06: if t12 goto 3 else 4
+		Block #3: handleMessage.if.then
+			00: return t11
+		Block #4: handleMessage.if.done
+			00: t13 = local Analytics (analytics)
+			01: t14 = &t13.PostID [#0]
+			02: *t14 = t4
+			03: t15 = *t13
+			04: t16 = make interface{} <- Analytics (t15)
+			05: t17 = invoke t10.InsertOne(ctx, t16)
+			06: return t17
+	Method: func(ctx context.Context) error
+	Function: workerThread
+		Block #0: workerThread.entry
+			00: t0 = new *AnalyticsServiceImpl (n)
+			01: *t0 = n
+			02: t1 = new context.Context (ctx)
+			03: *t1 = ctx
+			04: t2 = make closure (*AnalyticsServiceImpl).workerThread$1 [t0, t1]
+			05: go t2()
+			06: t3 = <-nil:chan struct{}
+			07: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.MediaService
+	Method: func(ctx context.Context, mediaID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Method: func(ctx context.Context, media github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media) (int64, error)
+	Method: func(ctx context.Context, mediaID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Method: func(ctx context.Context, media github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media) (int64, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.MediaServiceImpl
+	Method: func(ctx context.Context, mediaID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Function: ReadMedia
+		Block #0: ReadMedia.entry
+			00: t0 = new Media (media)
+			01: t1 = &s.mediaDb [#0]
+			02: t2 = *t1
+			03: t3 = invoke t2.GetCollection(ctx, "media":string, "media":string)
+			04: t4 = extract t3 #0
+			05: t5 = extract t3 #1
+			06: t6 = t5 != nil:error
+			07: if t6 goto 1 else 2
+		Block #1: ReadMedia.if.then
+			00: t7 = *t0
+			01: return t7, t5
+		Block #2: ReadMedia.if.done
+			00: t8 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t9 = &t8[0:int]
+			02: t10 = &t9.Key [#0]
+			03: t11 = &t9.Value [#1]
+			04: *t10 = "mediaid":string
+			05: t12 = make interface{} <- int64 (mediaID)
+			06: *t11 = t12
+			07: t13 = slice t8[:]
+			08: t14 = invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t15 = extract t14 #0
+			10: t16 = extract t14 #1
+			11: t17 = t16 != nil:error
+			12: if t17 goto 3 else 4
+		Block #3: ReadMedia.if.then
+			00: t18 = *t0
+			01: return t18, t16
+		Block #4: ReadMedia.if.done
+			00: t19 = make interface{} <- *Media (t0)
+			01: t20 = invoke t15.One(ctx, t19)
+			02: t21 = extract t20 #0
+			03: t22 = extract t20 #1
+			04: t23 = *t0
+			05: return t23, t22
+	Method: func(ctx context.Context, media github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media) (int64, error)
+	Function: StoreMedia
+		Block #0: StoreMedia.entry
+			00: t0 = local Media (media)
+			01: *t0 = media
+			02: t1 = math/rand.Int63()
+			03: t2 = &t0.MediaID [#0]
+			04: *t2 = t1
+			05: t3 = &s.mediaDb [#0]
+			06: t4 = *t3
+			07: t5 = invoke t4.GetCollection(ctx, "media":string, "media":string)
+			08: t6 = extract t5 #0
+			09: t7 = extract t5 #1
+			10: t8 = t7 != nil:error
+			11: if t8 goto 1 else 2
+		Block #1: StoreMedia.if.then
+			00: return t1, t7
+		Block #2: StoreMedia.if.done
+			00: t9 = *t0
+			01: t10 = make interface{} <- Media (t9)
+			02: t11 = invoke t6.InsertOne(ctx, t10)
+			03: return t1, t11
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.UploadServiceImpl
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Function: ReadMedia
+		Block #0: ReadMedia.entry
+			00: t0 = &u.storageService [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.ReadPostMedia(ctx, reqID, postID)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: return t3, nil:error
+	Method: func(ctx context.Context, username string, text string) (int64, error)
+	Function: UploadPost
+		Block #0: UploadPost.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = local Media (media)
+			02: t2 = &t1.Content [#1]
+			03: *t2 = "HELLO WORLD!":string
+			04: t3 = &u.mediaService [#1]
+			05: t4 = *t3
+			06: t5 = *t1
+			07: t6 = invoke t4.StoreMedia(ctx, t5)
+			08: t7 = math/rand.Int63()
+			09: t8 = new [2]string (slicelit)
+			10: t9 = &t8[0:int]
+			11: *t9 = "alice":string
+			12: t10 = &t8[1:int]
+			13: *t10 = "bob":string
+			14: t11 = slice t8[:]
+			15: t12 = new Post (complit)
+			16: t13 = &t12.ReqID [#0]
+			17: t14 = &t12.Text [#3]
+			18: t15 = &t12.Mentions [#4]
+			19: t16 = &t12.Timestamp [#5]
+			20: t17 = &t12.Creator [#6]
+			21: t18 = &t17.Username [#0]
+			22: *t13 = t0
+			23: *t14 = text
+			24: *t15 = t11
+			25: *t16 = t7
+			26: *t18 = "some username":string
+			27: t19 = &u.storageService [#0]
+			28: t20 = *t19
+			29: t21 = &t12.ReqID [#0]
+			30: t22 = *t21
+			31: t23 = *t12
+			32: t24 = invoke t20.StorePostNoSQL(ctx, t22, t23)
+			33: t25 = extract t24 #0
+			34: t26 = extract t24 #1
+			35: t27 = &t12.PostID [#1]
+			36: *t27 = t25
+			37: t28 = local Message (message)
+			38: t29 = &t28.ReqID [#0]
+			39: t30 = &t12.ReqID [#0]
+			40: t31 = *t30
+			41: t32 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.Int64ToString(t31)
+			42: t33 = &t28.PostID [#1]
+			43: t34 = &t12.PostID [#1]
+			44: t35 = *t34
+			45: t36 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.Int64ToString(t35)
+			46: *t29 = t32
+			47: *t33 = t36
+			48: t37 = &u.notificationsQueue [#2]
+			49: t38 = *t37
+			50: t39 = *t28
+			51: t40 = make interface{} <- Message (t39)
+			52: t41 = invoke t38.Push(ctx, t40)
+			53: t42 = extract t41 #0
+			54: t43 = extract t41 #1
+			55: t44 = t43 != nil:error
+			56: if t44 goto 1 else 2
+		Block #1: UploadPost.if.then
+			00: return 0:int64, t43
+		Block #2: UploadPost.if.done
+			00: t45 = strconv.FormatInt(t0, 10:int)
+			01: t46 = local Timeline (timeline)
+			02: t47 = &t46.ReqID [#0]
+			03: t48 = &t46.PostID [#1]
+			04: t49 = &t12.PostID [#1]
+			05: t50 = *t49
+			06: *t47 = t0
+			07: *t48 = t50
+			08: t51 = &u.timelineCache [#3]
+			09: t52 = *t51
+			10: t53 = *t46
+			11: t54 = make interface{} <- Timeline (t53)
+			12: t55 = invoke t52.Put(ctx, t45, t54)
+			13: return t25, t55
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Creator
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Timeline
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.NotifyServiceImpl
+	Method: func(ctx context.Context) error
+	Function: Run
+		Block #0: Run.entry
+			00: t0 = new *NotifyServiceImpl (n)
+			01: *t0 = n
+			02: t1 = new context.Context (ctx)
+			03: *t1 = ctx
+			04: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()
+			05: t3 = *t1
+			06: t4 = *t0
+			07: t5 = &t4.num_workers [#2]
+			08: t6 = *t5
+			09: t7 = new [1]any (varargs)
+			10: t8 = &t7[0:int]
+			11: t9 = make any <- int (t6)
+			12: *t8 = t9
+			13: t10 = slice t7[:]
+			14: t11 = invoke t2.Info(t3, "initializing %d w...":string, t10...)
+			15: t12 = new sync.WaitGroup (wg)
+			16: t13 = *t0
+			17: t14 = &t13.num_workers [#2]
+			18: t15 = *t14
+			19: t16 = (*sync.WaitGroup).Add(t12, t15)
+			20: jump 3
+		Block #1: Run.for.body
+			00: t17 = make closure (*NotifyServiceImpl).Run$1 [t12, t0, t1]
+			01: go t17(t30)
+			02: t18 = t30 + 1:int
+			03: jump 3
+		Block #2: Run.for.done
+			00: t19 = (*sync.WaitGroup).Wait(t12)
+			01: t20 = github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()
+			02: t21 = *t1
+			03: t22 = *t0
+			04: t23 = &t22.num_workers [#2]
+			05: t24 = *t23
+			06: t25 = new [1]any (varargs)
+			07: t26 = &t25[0:int]
+			08: t27 = make any <- int (t24)
+			09: *t26 = t27
+			10: t28 = slice t25[:]
+			11: t29 = invoke t20.Info(t21, "joining %d workers":string, t28...)
+			12: return nil:error
+		Block #3: Run.for.loop
+			00: t30 = phi [0: 1:int, 1: t18] #i
+			01: t31 = *t0
+			02: t32 = &t31.num_workers [#2]
+			03: t33 = *t32
+			04: t34 = t30 <= t33
+			05: if t34 goto 1 else 2
+	Method: func(ctx context.Context, message github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Message) error
+	Function: handleMessage
+		Block #0: handleMessage.entry
+			00: t0 = local Message (message)
+			01: *t0 = message
+			02: t1 = &t0.ReqID [#0]
+			03: t2 = *t1
+			04: t3 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.StringToInt64(t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+		Block #1: handleMessage.if.then
+			00: return t5
+		Block #2: handleMessage.if.done
+			00: t7 = &t0.PostID [#1]
+			01: t8 = *t7
+			02: t9 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.StringToInt64(t8)
+			03: t10 = extract t9 #0
+			04: t11 = extract t9 #1
+			05: t12 = t11 != nil:error
+			06: if t12 goto 3 else 4
+		Block #3: handleMessage.if.then
+			00: return t11
+		Block #4: handleMessage.if.done
+			00: t13 = &n.storageService [#0]
+			01: t14 = *t13
+			02: t15 = invoke t14.ReadPostNoSQL(ctx, t4, t10)
+			03: t16 = extract t15 #0
+			04: t17 = extract t15 #1
+			05: t18 = extract t15 #2
+			06: t19 = t18 != nil:error
+			07: if t19 goto 5 else 6
+		Block #5: handleMessage.if.then
+			00: return t18
+		Block #6: handleMessage.if.done
+			00: return nil:error
+	Method: func(ctx context.Context) error
+	Function: workerThread
+		Block #0: workerThread.entry
+			00: t0 = new *NotifyServiceImpl (n)
+			01: *t0 = n
+			02: t1 = new context.Context (ctx)
+			03: *t1 = ctx
+			04: t2 = make closure (*NotifyServiceImpl).workerThread$1 [t0, t1]
+			05: go t2()
+			06: t3 = <-nil:chan struct{}
+			07: return nil:error
+	Function: NewUploadServiceImpl
+		Block #0: NewUploadServiceImpl.entry
+			00: t0 = new UploadServiceImpl (complit)
+			01: t1 = &t0.storageService [#0]
+			02: t2 = &t0.mediaService [#1]
+			03: t3 = &t0.notificationsQueue [#2]
+			04: t4 = &t0.timelineCache [#3]
+			05: *t1 = storageService
+			06: *t2 = mediaService
+			07: *t3 = notificationsQueue
+			08: *t4 = timelineCache
+			09: t5 = make UploadService <- *UploadServiceImpl (t0)
+			10: return t5, nil:error
+	Function: init
+		Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+		Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = sync.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = go.mongodb.org/mongo-driver/bson.init()
+			05: t5 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.init()
+			06: t6 = math/rand.init()
+			07: t7 = strconv.init()
+			08: jump 2
+		Block #2: init.init.done
+			00: return
+	Function: NewAnalyticsServiceImpl
+		Block #0: NewAnalyticsServiceImpl.entry
+			00: t0 = new AnalyticsServiceImpl (complit)
+			01: t1 = &t0.analyticsDb [#1]
+			02: t2 = &t0.analyticsQueue [#0]
+			03: t3 = &t0.numWorkers [#2]
+			04: *t1 = analyticsDb
+			05: *t2 = analyticsQueue
+			06: *t3 = 4:int
+			07: t4 = make AnalyticsService <- *AnalyticsServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.NotifyService
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context) error
+	Function: NewNotifyServiceImpl
+		Block #0: NewNotifyServiceImpl.entry
+			00: t0 = new NotifyServiceImpl (complit)
+			01: t1 = &t0.storageService [#0]
+			02: t2 = &t0.notificationsQueue [#1]
+			03: t3 = &t0.num_workers [#2]
+			04: *t1 = storageService
+			05: *t2 = notificationsQueue
+			06: *t3 = 4:int
+			07: t4 = make NotifyService <- *NotifyServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.StorageServiceImpl
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Media, error)
+	Function: ReadPostMedia
+		Block #0: ReadPostMedia.entry
+			00: t0 = new Post (post)
+			01: t1 = strconv.FormatInt(postID, 10:int)
+			02: t2 = &s.posts_cache [#2]
+			03: t3 = *t2
+			04: t4 = make interface{} <- *Post (t0)
+			05: t5 = invoke t3.Get(ctx, t1, t4)
+			06: t6 = &t0.PostID [#1]
+			07: t7 = *t6
+			08: t8 = &s.mediaService [#1]
+			09: t9 = *t8
+			10: t10 = invoke t9.ReadMedia(ctx, t7)
+			11: t11 = extract t10 #0
+			12: t12 = extract t10 #1
+			13: return t11, nil:error
+	Method: func(ctx context.Context, reqID int64, postID_STORAGE_SVC_READ int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post, github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics, error)
+	Function: ReadPostNoSQL
+		Block #0: ReadPostNoSQL.entry
+			00: t0 = new Post (post)
+			01: t1 = &s.postsDb [#3]
+			02: t2 = *t1
+			03: t3 = invoke t2.GetCollection(ctx, "post":string, "post":string)
+			04: t4 = extract t3 #0
+			05: t5 = extract t3 #1
+			06: t6 = t5 != nil:error
+			07: if t6 goto 1 else 2
+		Block #1: ReadPostNoSQL.if.then
+			00: t7 = *t0
+			01: return t7, Analytics{}:Analytics, t5
+		Block #2: ReadPostNoSQL.if.done
+			00: t8 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t9 = &t8[0:int]
+			02: t10 = &t9.Key [#0]
+			03: t11 = &t9.Value [#1]
+			04: *t10 = "postid":string
+			05: t12 = make interface{} <- int64 (postID_STORAGE_SVC_READ)
+			06: *t11 = t12
+			07: t13 = slice t8[:]
+			08: t14 = invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t15 = extract t14 #0
+			10: t16 = extract t14 #1
+			11: t17 = t16 != nil:error
+			12: if t17 goto 3 else 4
+		Block #3: ReadPostNoSQL.if.then
+			00: t18 = *t0
+			01: return t18, Analytics{}:Analytics, t16
+		Block #4: ReadPostNoSQL.if.done
+			00: t19 = make interface{} <- *Post (t0)
+			01: t20 = invoke t15.One(ctx, t19)
+			02: t21 = extract t20 #0
+			03: t22 = extract t20 #1
+			04: if t21 goto 7 else 5
+		Block #5: ReadPostNoSQL.if.then
+			00: t23 = *t0
+			01: return t23, Analytics{}:Analytics, t22
+		Block #6: ReadPostNoSQL.if.done
+			00: t24 = &s.analyticsService [#0]
+			01: t25 = *t24
+			02: t26 = invoke t25.ReadAnalytics(ctx, postID_STORAGE_SVC_READ)
+			03: t27 = extract t26 #0
+			04: t28 = extract t26 #1
+			05: t29 = *t0
+			06: return t29, t27, t28
+		Block #7: ReadPostNoSQL.cond.false
+			00: t30 = t22 != nil:error
+			01: if t30 goto 5 else 6
+	Method: func(ctx context.Context, reqID int64, post github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post) (int64, error)
+	Function: StorePostNoSQL
+		Block #0: StorePostNoSQL.entry
+			00: t0 = local Post (post)
+			01: *t0 = post
+			02: t1 = math/rand.Int63()
+			03: t2 = &t0.PostID [#1]
+			04: *t2 = t1
+			05: t3 = reqID == 0:int64
+			06: if t3 goto 1 else 3
+		Block #1: StorePostNoSQL.if.then
+			00: t4 = &t0.PostID [#1]
+			01: *t4 = 1:int64
+			02: jump 2
+		Block #2: StorePostNoSQL.if.done
+			00: t5 = &t0.PostID [#1]
+			01: t6 = *t5
+			02: t7 = t6 + 1:int64
+			03: t8 = &t0.PostID [#1]
+			04: *t8 = t7
+			05: t9 = &t0.PostID [#1]
+			06: *t9 = 5:int64
+			07: t10 = &s.postsDb [#3]
+			08: t11 = *t10
+			09: t12 = invoke t11.GetCollection(ctx, "post":string, "post":string)
+			10: t13 = extract t12 #0
+			11: t14 = extract t12 #1
+			12: t15 = t14 != nil:error
+			13: if t15 goto 4 else 5
+		Block #3: StorePostNoSQL.if.else
+			00: t16 = &t0.PostID [#1]
+			01: *t16 = 2:int64
+			02: jump 2
+		Block #4: StorePostNoSQL.if.then
+			00: return t1, t14
+		Block #5: StorePostNoSQL.if.done
+			00: t17 = *t0
+			01: t18 = make interface{} <- Post (t17)
+			02: t19 = invoke t13.InsertOne(ctx, t18)
+			03: t20 = t19 != nil:error
+			04: if t20 goto 6 else 7
+		Block #6: StorePostNoSQL.if.then
+			00: return t1, t19
+		Block #7: StorePostNoSQL.if.done
+			00: t21 = local TriggerAnalyticsMessage (message)
+			01: t22 = &t21.PostID [#0]
+			02: t23 = &t0.PostID [#1]
+			03: t24 = *t23
+			04: t25 = github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification/common.Int64ToString(t24)
+			05: *t22 = t25
+			06: t26 = &s.analyticsQueue [#4]
+			07: t27 = *t26
+			08: t28 = *t21
+			09: t29 = make interface{} <- TriggerAnalyticsMessage (t28)
+			10: t30 = invoke t27.Push(ctx, t29)
+			11: t31 = extract t30 #0
+			12: t32 = extract t30 #1
+			13: return t1, t32
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Post
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.TriggerAnalyticsMessage
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.AnalyticsService
+	Method: func(ctx context.Context, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics, error)
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification.Analytics, error)
+	Method: func(ctx context.Context) error
+	Function: NewMediaServiceImpl
+		Block #0: NewMediaServiceImpl.entry
+			00: t0 = new MediaServiceImpl (complit)
+			01: t1 = &t0.mediaDb [#0]
+			02: *t1 = mediaDb
+			03: t2 = make MediaService <- *MediaServiceImpl (t0)
+			04: return t2, nil:error

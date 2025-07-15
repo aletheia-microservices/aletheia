@@ -1,0 +1,50 @@
+package github.com/blueprint-uservices/blueprint/examples/postnotification/workflow/postnotification:
+  type  Analytics               struct{PostID int64}
+  type  AnalyticsService        interface{ReadAnalytics(ctx context.Context, postID int64) (Analytics, error); Run(ctx context.Context) error}
+    method (AnalyticsService) ReadAnalytics(ctx context.Context, postID int64) (Analytics, error)
+    method (AnalyticsService) Run(ctx context.Context) error
+  type  AnalyticsServiceImpl    struct{analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue; analyticsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase; numWorkers int}
+    method (*AnalyticsServiceImpl) ReadAnalytics(ctx context.Context, postID int64) (Analytics, error)
+    method (*AnalyticsServiceImpl) Run(ctx context.Context) error
+    method (*AnalyticsServiceImpl) handleMessage(ctx context.Context, message TriggerAnalyticsMessage) error
+    method (*AnalyticsServiceImpl) workerThread(ctx context.Context) error
+  type  Creator                 struct{Username string}
+  type  Media                   struct{MediaID int64; Content string}
+  type  MediaService            interface{ReadMedia(ctx context.Context, mediaID int64) (Media, error); StoreMedia(ctx context.Context, media Media) (int64, error)}
+    method (MediaService) ReadMedia(ctx context.Context, mediaID int64) (Media, error)
+    method (MediaService) StoreMedia(ctx context.Context, media Media) (int64, error)
+  type  MediaServiceImpl        struct{mediaDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase}
+    method (*MediaServiceImpl) ReadMedia(ctx context.Context, mediaID int64) (Media, error)
+    method (*MediaServiceImpl) StoreMedia(ctx context.Context, media Media) (int64, error)
+  type  Message                 struct{ReqID string; PostID string; Timestamp string}
+  func  NewAnalyticsServiceImpl func(ctx context.Context, analyticsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (AnalyticsService, error)
+  func  NewMediaServiceImpl     func(ctx context.Context, mediaDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase) (MediaService, error)
+  func  NewNotifyServiceImpl    func(ctx context.Context, storageService StorageService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (NotifyService, error)
+  func  NewStorageServiceImpl   func(ctx context.Context, analyticsService AnalyticsService, mediaService MediaService, posts_cache github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache, postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (StorageService, error)
+  func  NewUploadServiceImpl    func(ctx context.Context, storageService StorageService, mediaService MediaService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue, timelineCache github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache) (UploadService, error)
+  type  NotifyService           interface{Run(ctx context.Context) error}
+    method (NotifyService) Run(ctx context.Context) error
+  type  NotifyServiceImpl       struct{storageService StorageService; notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue; num_workers int}
+    method (*NotifyServiceImpl) Run(ctx context.Context) error
+    method (*NotifyServiceImpl) handleMessage(ctx context.Context, message Message) error
+    method (*NotifyServiceImpl) workerThread(ctx context.Context) error
+  type  Post                    struct{ReqID int64; PostID int64; MediaID int64; Text string; Mentions []string; Timestamp int64; Creator Creator}
+  type  StorageService          interface{ReadPostMedia(ctx context.Context, reqID int64, postID int64) (Media, error); ReadPostNoSQL(ctx context.Context, reqID int64, postID int64) (Post, Analytics, error); StorePostNoSQL(ctx context.Context, reqID int64, post Post) (int64, error)}
+    method (StorageService) ReadPostMedia(ctx context.Context, reqID int64, postID int64) (Media, error)
+    method (StorageService) ReadPostNoSQL(ctx context.Context, reqID int64, postID int64) (Post, Analytics, error)
+    method (StorageService) StorePostNoSQL(ctx context.Context, reqID int64, post Post) (int64, error)
+  type  StorageServiceImpl      struct{analyticsService AnalyticsService; mediaService MediaService; posts_cache github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache; postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase; analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue}
+    method (*StorageServiceImpl) ReadPostMedia(ctx context.Context, reqID int64, postID int64) (Media, error)
+    method (*StorageServiceImpl) ReadPostNoSQL(ctx context.Context, reqID int64, postID_STORAGE_SVC_READ int64) (Post, Analytics, error)
+    method (*StorageServiceImpl) StorePostNoSQL(ctx context.Context, reqID int64, post Post) (int64, error)
+  type  Timeline                struct{ReqID int64; PostID int64}
+  type  TriggerAnalyticsMessage struct{PostID string}
+  type  UploadService           interface{ReadMedia(ctx context.Context, reqID int64, postID int64) (Media, error); UploadPost(ctx context.Context, username string, text string) (int64, error)}
+    method (UploadService) ReadMedia(ctx context.Context, reqID int64, postID int64) (Media, error)
+    method (UploadService) UploadPost(ctx context.Context, username string, text string) (int64, error)
+  type  UploadServiceImpl       struct{storageService StorageService; mediaService MediaService; notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue; timelineCache github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache}
+    method (*UploadServiceImpl) ReadMedia(ctx context.Context, reqID int64, postID int64) (Media, error)
+    method (*UploadServiceImpl) UploadPost(ctx context.Context, username string, text string) (int64, error)
+  func  init                    func()
+  var   init$guard              bool
+

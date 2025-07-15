@@ -1,0 +1,746 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem
+	Method: func() int32
+	Method: func() bool
+	Method: func() bool
+	Method: func() bool
+	Method: func() bool
+	Method: func() bool
+Function: CurrencyIsReserved
+Block #0: CurrencyIsReserved.entry
+			00: t0 = currency == 0:int32
+			01: return t0
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product
+	Unknown member type: *ssa.NamedConst
+Function: NewProductServiceImpl
+Block #0: NewProductServiceImpl.entry
+			00: t0 = new ProductServiceImpl (complit)
+			01: t1 = &t0.skuService [#0]
+			02: t2 = &t0.db [#1]
+			03: *t1 = skuService
+			04: *t2 = db
+			05: t3 = make ProductService <- *ProductServiceImpl (t0)
+			06: return t3, nil:error
+	Global: OrderItem_Type_name, Type: *map[int32]string
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderList
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductList
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuList
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentServiceImpl
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuServiceImpl
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+Function: Get
+Block #0: Get.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "skus":string, "skus":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: Get.if.then
+			00: return nil:*Sku, t4
+Block #2: Get.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: Get.if.then
+			00: return nil:*Sku, t14
+Block #4: Get.if.done
+			00: t16 = make interface{} <- *Sku (nil:*Sku)
+			01: t17 = invoke t13.One(ctx, t16)
+			02: t18 = extract t17 #0
+			03: t19 = extract t17 #1
+			04: t20 = t19 != nil:error
+			05: if t20 goto 5 else 6
+Block #5: Get.if.then
+			00: return nil:*Sku, t19
+Block #6: Get.if.done
+			00: if t18 goto 8 else 7
+Block #7: Get.if.then
+			00: t21 = new [1]any (varargs)
+			01: t22 = &t21[0:int]
+			02: t23 = make any <- string (id)
+			03: *t22 = t23
+			04: t24 = slice t21[:]
+			05: t25 = fmt.Errorf("sku not found for...":string, t24...)
+			06: return nil:*Sku, t25
+Block #8: Get.if.done
+			00: return nil:*Sku, nil:error
+	Method: func(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions, inventory *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory, attributes map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+Function: New
+Block #0: New.entry
+			00: t0 = new Sku (complit)
+			01: t1 = &t0.Name [#1]
+			02: t2 = &t0.Currency [#3]
+			03: t3 = &t0.Active [#4]
+			04: t4 = &t0.Price [#2]
+			05: t5 = &t0.Parent [#5]
+			06: t6 = &t0.Metadata [#6]
+			07: t7 = &t0.PackageDimensions [#9]
+			08: t8 = &t0.Inventory [#10]
+			09: t9 = &t0.Attributes [#7]
+			10: *t1 = name
+			11: *t2 = currency
+			12: *t3 = active
+			13: *t4 = price
+			14: *t5 = parent
+			15: *t6 = metadata
+			16: *t7 = packageDimensions
+			17: *t8 = inventory
+			18: *t9 = attributes
+			19: t10 = make interface{} <- *Sku (t0)
+			20: t11 = github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota/validation.Validate(t10)
+			21: t12 = t11 != nil:error
+			22: if t12 goto 1 else 2
+Block #1: New.if.then
+			00: return nil:*Sku, t11
+Block #2: New.if.done
+			00: t13 = &s.db [#0]
+			01: t14 = *t13
+			02: t15 = invoke t14.GetCollection(ctx, "skus":string, "skus":string)
+			03: t16 = extract t15 #0
+			04: t17 = extract t15 #1
+			05: t18 = t17 != nil:error
+			06: if t18 goto 3 else 4
+Block #3: New.if.then
+			00: return nil:*Sku, t17
+Block #4: New.if.done
+			00: t19 = *t0
+			01: t20 = make interface{} <- Sku (t19)
+			02: t21 = invoke t16.InsertOne(ctx, t20)
+			03: return t0, t21
+Function: NewSkuServiceImpl
+Block #0: NewSkuServiceImpl.entry
+			00: t0 = new SkuServiceImpl (complit)
+			01: t1 = &t0.db [#0]
+			02: *t1 = db
+			03: t2 = make SkuService <- *SkuServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping_Address
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge
+	Global: Currency_name, Type: *map[int32]string
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList
+	Unknown member type: *ssa.NamedConst
+Function: NewOrderServiceImpl
+Block #0: NewOrderServiceImpl.entry
+			00: t0 = new OrderServiceImpl (complit)
+			01: t1 = &t0.skuService [#0]
+			02: t2 = &t0.db [#1]
+			03: *t1 = skuService
+			04: *t2 = db
+			05: t3 = make OrderService <- *OrderServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Refund
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderServiceImpl
+	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
+Function: New
+Block #0: New.entry
+			00: t0 = new Order (complit)
+			01: t1 = &t0.Currency [#2]
+			02: t2 = &t0.Items [#3]
+			03: t3 = &t0.Metadata [#4]
+			04: *t1 = currency
+			05: *t2 = items
+			06: *t3 = metadata
+			07: t4 = len(items)
+			08: jump 1
+Block #1: New.rangeindex.loop
+			00: t5 = phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems
+			01: t6 = phi [0: -1:int, 2: t7, 6: t7] #rangeindex
+			02: t7 = t6 + 1:int
+			03: t8 = t7 < t4
+			04: if t8 goto 2 else 3
+Block #2: New.rangeindex.body
+			00: t9 = &items[t7]
+			01: t10 = *t9
+			02: t11 = (*OrderItem).IsTypeTax(t10)
+			03: if t11 goto 4 else 1
+Block #3: New.rangeindex.done
+			00: t12 = len(t5)
+			01: jump 7
+Block #4: New.if.then
+			00: t13 = &t10.Quantity [#1]
+			01: t14 = *t13
+			02: t15 = t14 <= 0:int64
+			03: if t15 goto 5 else 6
+Block #5: New.if.then
+			00: t16 = &t10.Quantity [#1]
+			01: *t16 = 1:int64
+			02: jump 6
+Block #6: New.if.done
+			00: t17 = new [1]*OrderItem (varargs)
+			01: t18 = &t17[0:int]
+			02: *t18 = t10
+			03: t19 = slice t17[:]
+			04: t20 = append(t5, t19...)
+			05: jump 1
+Block #7: New.rangeindex.loop
+			00: t21 = phi [3: -1:int, 8: t22, 12: t22] #rangeindex
+			01: t22 = t21 + 1:int
+			02: t23 = t22 < t12
+			03: if t23 goto 8 else 9
+Block #8: New.rangeindex.body
+			00: t24 = &t5[t22]
+			01: t25 = *t24
+			02: t26 = (*OrderItem).IsTypeSku(t25)
+			03: if t26 goto 10 else 7
+Block #9: New.rangeindex.done
+			00: t27 = &t0.Items [#3]
+			01: *t27 = t5
+			02: t28 = &t0.Currency [#2]
+			03: t29 = *t28
+			04: t30 = &t0.Items [#3]
+			05: t31 = *t30
+			06: t32 = calculateTotal(t29, t31)
+			07: t33 = extract t32 #0
+			08: t34 = extract t32 #1
+			09: t35 = t34 != nil:error
+			10: if t35 goto 13 else 14
+Block #10: New.if.then
+			00: t36 = &s.skuService [#0]
+			01: t37 = *t36
+			02: t38 = &t25.Parent [#4]
+			03: t39 = *t38
+			04: t40 = invoke t37.Get(ctx, t39)
+			05: t41 = extract t40 #0
+			06: t42 = extract t40 #1
+			07: t43 = t42 != nil:error
+			08: if t43 goto 11 else 12
+Block #11: New.if.then
+			00: return nil:*Order, t42
+Block #12: New.if.else
+			00: t44 = &t41.Price [#2]
+			01: t45 = *t44
+			02: t46 = convert int64 <- uint64 (t45)
+			03: t47 = &t25.Amount [#2]
+			04: *t47 = t46
+			05: t48 = &t41.Currency [#3]
+			06: t49 = *t48
+			07: t50 = &t25.Currency [#3]
+			08: *t50 = t49
+			09: t51 = &t41.Name [#1]
+			10: t52 = *t51
+			11: t53 = &t25.Description [#5]
+			12: *t53 = t52
+			13: jump 7
+Block #13: New.if.then
+			00: return nil:*Order, t34
+Block #14: New.if.done
+			00: t54 = &t0.Amount [#1]
+			01: *t54 = t33
+			02: t55 = &s.db [#1]
+			03: t56 = *t55
+			04: t57 = invoke t56.GetCollection(ctx, "orders":string, "orders":string)
+			05: t58 = extract t57 #0
+			06: t59 = extract t57 #1
+			07: t60 = t59 != nil:error
+			08: if t60 goto 15 else 16
+Block #15: New.if.then
+			00: return nil:*Order, t59
+Block #16: New.if.done
+			00: t61 = *t0
+			01: t62 = make interface{} <- Order (t61)
+			02: t63 = invoke t58.InsertOne(ctx, t62)
+			03: return t0, t63
+	Method: func(ctx context.Context, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem) ([]*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, error)
+Function: getUpdatedOrderItems
+Block #0: getUpdatedOrderItems.entry
+			00: t0 = new sync.WaitGroup (wg)
+			01: t1 = len(items)
+			02: jump 1
+Block #1: getUpdatedOrderItems.rangeindex.loop
+			00: t2 = phi [0: nil:[]*OrderItem, 2: t2, 6: t17] #orderItems
+			01: t3 = phi [0: -1:int, 2: t4, 6: t4] #rangeindex
+			02: t4 = t3 + 1:int
+			03: t5 = t4 < t1
+			04: if t5 goto 2 else 3
+Block #2: getUpdatedOrderItems.rangeindex.body
+			00: t6 = &items[t4]
+			01: t7 = *t6
+			02: t8 = (*OrderItem).IsTypeTax(t7)
+			03: if t8 goto 4 else 1
+Block #3: getUpdatedOrderItems.rangeindex.done
+			00: t9 = len(t2)
+			01: jump 7
+Block #4: getUpdatedOrderItems.if.then
+			00: t10 = &t7.Quantity [#1]
+			01: t11 = *t10
+			02: t12 = t11 <= 0:int64
+			03: if t12 goto 5 else 6
+Block #5: getUpdatedOrderItems.if.then
+			00: t13 = &t7.Quantity [#1]
+			01: *t13 = 1:int64
+			02: jump 6
+Block #6: getUpdatedOrderItems.if.done
+			00: t14 = new [1]*OrderItem (varargs)
+			01: t15 = &t14[0:int]
+			02: *t15 = t7
+			03: t16 = slice t14[:]
+			04: t17 = append(t2, t16...)
+			05: jump 1
+Block #7: getUpdatedOrderItems.rangeindex.loop
+			00: t18 = phi [3: -1:int, 8: t19, 12: t19] #rangeindex
+			01: t19 = t18 + 1:int
+			02: t20 = t19 < t9
+			03: if t20 goto 8 else 9
+Block #8: getUpdatedOrderItems.rangeindex.body
+			00: t21 = &t2[t19]
+			01: t22 = *t21
+			02: t23 = (*OrderItem).IsTypeSku(t22)
+			03: if t23 goto 10 else 7
+Block #9: getUpdatedOrderItems.rangeindex.done
+			00: t24 = (*sync.WaitGroup).Wait(t0)
+			01: t25 = nil:[]error != nil:[]error
+			02: if t25 goto 13 else 14
+Block #10: getUpdatedOrderItems.if.then
+			00: t26 = &s.skuService [#0]
+			01: t27 = *t26
+			02: t28 = &t22.Parent [#4]
+			03: t29 = *t28
+			04: t30 = invoke t27.Get(ctx, t29)
+			05: t31 = extract t30 #0
+			06: t32 = extract t30 #1
+			07: t33 = t32 != nil:error
+			08: if t33 goto 11 else 12
+Block #11: getUpdatedOrderItems.if.then
+			00: return nil:[]*OrderItem, t32
+Block #12: getUpdatedOrderItems.if.else
+			00: t34 = &t31.Price [#2]
+			01: t35 = *t34
+			02: t36 = convert int64 <- uint64 (t35)
+			03: t37 = &t22.Amount [#2]
+			04: *t37 = t36
+			05: t38 = &t31.Currency [#3]
+			06: t39 = *t38
+			07: t40 = &t22.Currency [#3]
+			08: *t40 = t39
+			09: t41 = &t31.Name [#1]
+			10: t42 = *t41
+			11: t43 = &t22.Description [#5]
+			12: *t43 = t42
+			13: jump 7
+Block #13: getUpdatedOrderItems.if.then
+			00: t44 = &nil:[]error[0:int]
+			01: t45 = *t44
+			02: return nil:[]*OrderItem, t45
+Block #14: getUpdatedOrderItems.if.done
+			00: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductServiceImpl
+	Method: func(ctx context.Context, id string) error
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductList, error)
+	Method: func(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuService
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+	Method: func(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions, inventory *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory, attributes map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+	Method: func(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions, inventory *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory, attributes map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = sync.init()
+			04: t4 = time.init()
+			05: t5 = github.com/Rhymond/go-money.init()
+			06: t6 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			07: t7 = go.mongodb.org/mongo-driver/bson.init()
+			08: t8 = github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota/validation.init()
+			09: t9 = make map[int32]string 5:int
+			10: t9[0:int32] = "reserved":string
+			11: t9[1:int32] = "sku":string
+			12: t9[2:int32] = "discount":string
+			13: t9[3:int32] = "tax":string
+			14: t9[4:int32] = "shipping":string
+			15: *OrderItem_Type_name = t9
+			16: t10 = make map[string]int32 5:int
+			17: t10["reserved":string] = 0:int32
+			18: t10["sku":string] = 1:int32
+			19: t10["discount":string] = 2:int32
+			20: t10["tax":string] = 3:int32
+			21: t10["shipping":string] = 4:int32
+			22: *OrderItem_Type_value = t10
+			23: t11 = make map[int32]string 129:int
+			24: t11[0:int32] = "CUR_RESERVED":string
+			25: t11[1:int32] = "AFN":string
+			26: t11[2:int32] = "ALL":string
+			27: t11[3:int32] = "AMD":string
+			28: t11[4:int32] = "ANG":string
+			29: t11[5:int32] = "ARS":string
+			30: t11[6:int32] = "AUD":string
+			31: t11[7:int32] = "AWG":string
+			32: t11[8:int32] = "AZN":string
+			33: t11[9:int32] = "BAM":string
+			34: t11[10:int32] = "BBD":string
+			35: t11[11:int32] = "BGN":string
+			36: t11[12:int32] = "BHD":string
+			37: t11[13:int32] = "BMD":string
+			38: t11[14:int32] = "BND":string
+			39: t11[15:int32] = "BOB":string
+			40: t11[16:int32] = "BRL":string
+			41: t11[17:int32] = "BSD":string
+			42: t11[18:int32] = "BWP":string
+			43: t11[19:int32] = "BYN":string
+			44: t11[20:int32] = "BYR":string
+			45: t11[21:int32] = "BZD":string
+			46: t11[22:int32] = "CAD":string
+			47: t11[23:int32] = "CLP":string
+			48: t11[24:int32] = "CNY":string
+			49: t11[25:int32] = "COP":string
+			50: t11[26:int32] = "CRC":string
+			51: t11[27:int32] = "CUP":string
+			52: t11[28:int32] = "CZK":string
+			53: t11[29:int32] = "DKK":string
+			54: t11[30:int32] = "DOP":string
+			55: t11[31:int32] = "DZD":string
+			56: t11[32:int32] = "EEK":string
+			57: t11[33:int32] = "EGP":string
+			58: t11[34:int32] = "EUR":string
+			59: t11[35:int32] = "FJD":string
+			60: t11[36:int32] = "FKP":string
+			61: t11[37:int32] = "GBP":string
+			62: t11[38:int32] = "GGP":string
+			63: t11[39:int32] = "GHC":string
+			64: t11[40:int32] = "GIP":string
+			65: t11[41:int32] = "GTQ":string
+			66: t11[42:int32] = "GYD":string
+			67: t11[43:int32] = "HKD":string
+			68: t11[44:int32] = "HNL":string
+			69: t11[45:int32] = "HRK":string
+			70: t11[46:int32] = "HUF":string
+			71: t11[47:int32] = "IDR":string
+			72: t11[48:int32] = "ILS":string
+			73: t11[49:int32] = "IMP":string
+			74: t11[50:int32] = "INR":string
+			75: t11[51:int32] = "IQD":string
+			76: t11[52:int32] = "IRR":string
+			77: t11[53:int32] = "ISK":string
+			78: t11[54:int32] = "JEP":string
+			79: t11[55:int32] = "JMD":string
+			80: t11[56:int32] = "JOD":string
+			81: t11[57:int32] = "JPY":string
+			82: t11[58:int32] = "KES":string
+			83: t11[59:int32] = "KGS":string
+			84: t11[60:int32] = "KHR":string
+			85: t11[61:int32] = "KPW":string
+			86: t11[62:int32] = "KRW":string
+			87: t11[63:int32] = "KWD":string
+			88: t11[64:int32] = "KYD":string
+			89: t11[65:int32] = "KZT":string
+			90: t11[66:int32] = "LAK":string
+			91: t11[67:int32] = "LBP":string
+			92: t11[68:int32] = "LKR":string
+			93: t11[69:int32] = "LRD":string
+			94: t11[70:int32] = "LTL":string
+			95: t11[71:int32] = "LVL":string
+			96: t11[72:int32] = "LYD":string
+			97: t11[73:int32] = "MAD":string
+			98: t11[74:int32] = "MKD":string
+			99: t11[75:int32] = "MNT":string
+			100: t11[76:int32] = "MUR":string
+			101: t11[77:int32] = "MXN":string
+			102: t11[78:int32] = "MWK":string
+			103: t11[79:int32] = "MYR":string
+			104: t11[80:int32] = "MZN":string
+			105: t11[81:int32] = "NAD":string
+			106: t11[82:int32] = "NGN":string
+			107: t11[83:int32] = "NIO":string
+			108: t11[84:int32] = "NOK":string
+			109: t11[85:int32] = "NPR":string
+			110: t11[86:int32] = "NZD":string
+			111: t11[87:int32] = "OMR":string
+			112: t11[88:int32] = "PAB":string
+			113: t11[89:int32] = "PEN":string
+			114: t11[90:int32] = "PHP":string
+			115: t11[91:int32] = "PKR":string
+			116: t11[92:int32] = "PLN":string
+			117: t11[93:int32] = "PYG":string
+			118: t11[94:int32] = "QAR":string
+			119: t11[95:int32] = "RON":string
+			120: t11[96:int32] = "RSD":string
+			121: t11[97:int32] = "RUB":string
+			122: t11[98:int32] = "RUR":string
+			123: t11[99:int32] = "SAR":string
+			124: t11[100:int32] = "SBD":string
+			125: t11[101:int32] = "SCR":string
+			126: t11[102:int32] = "SEK":string
+			127: t11[103:int32] = "SGD":string
+			128: t11[104:int32] = "SHP":string
+			129: t11[105:int32] = "SOS":string
+			130: t11[106:int32] = "SRD":string
+			131: t11[107:int32] = "SVC":string
+			132: t11[108:int32] = "SYP":string
+			133: t11[109:int32] = "THB":string
+			134: t11[110:int32] = "TND":string
+			135: t11[111:int32] = "TRL":string
+			136: t11[112:int32] = "TRY":string
+			137: t11[113:int32] = "TTD":string
+			138: t11[114:int32] = "TWD":string
+			139: t11[115:int32] = "TZS":string
+			140: t11[116:int32] = "UAH":string
+			141: t11[117:int32] = "UGX":string
+			142: t11[118:int32] = "AED":string
+			143: t11[119:int32] = "UYU":string
+			144: t11[120:int32] = "UZS":string
+			145: t11[121:int32] = "VEF":string
+			146: t11[122:int32] = "VND":string
+			147: t11[123:int32] = "XCD":string
+			148: t11[124:int32] = "YER":string
+			149: t11[125:int32] = "ZAR":string
+			150: t11[126:int32] = "ZMW":string
+			151: t11[127:int32] = "ZWD":string
+			152: t11[128:int32] = "USD":string
+			153: *Currency_name = t11
+			154: t12 = make map[string]int32 129:int
+			155: t12["CUR_RESERVED":string] = 0:int32
+			156: t12["AFN":string] = 1:int32
+			157: t12["ALL":string] = 2:int32
+			158: t12["AMD":string] = 3:int32
+			159: t12["ANG":string] = 4:int32
+			160: t12["ARS":string] = 5:int32
+			161: t12["AUD":string] = 6:int32
+			162: t12["AWG":string] = 7:int32
+			163: t12["AZN":string] = 8:int32
+			164: t12["BAM":string] = 9:int32
+			165: t12["BBD":string] = 10:int32
+			166: t12["BGN":string] = 11:int32
+			167: t12["BHD":string] = 12:int32
+			168: t12["BMD":string] = 13:int32
+			169: t12["BND":string] = 14:int32
+			170: t12["BOB":string] = 15:int32
+			171: t12["BRL":string] = 16:int32
+			172: t12["BSD":string] = 17:int32
+			173: t12["BWP":string] = 18:int32
+			174: t12["BYN":string] = 19:int32
+			175: t12["BYR":string] = 20:int32
+			176: t12["BZD":string] = 21:int32
+			177: t12["CAD":string] = 22:int32
+			178: t12["CLP":string] = 23:int32
+			179: t12["CNY":string] = 24:int32
+			180: t12["COP":string] = 25:int32
+			181: t12["CRC":string] = 26:int32
+			182: t12["CUP":string] = 27:int32
+			183: t12["CZK":string] = 28:int32
+			184: t12["DKK":string] = 29:int32
+			185: t12["DOP":string] = 30:int32
+			186: t12["DZD":string] = 31:int32
+			187: t12["EEK":string] = 32:int32
+			188: t12["EGP":string] = 33:int32
+			189: t12["EUR":string] = 34:int32
+			190: t12["FJD":string] = 35:int32
+			191: t12["FKP":string] = 36:int32
+			192: t12["GBP":string] = 37:int32
+			193: t12["GGP":string] = 38:int32
+			194: t12["GHC":string] = 39:int32
+			195: t12["GIP":string] = 40:int32
+			196: t12["GTQ":string] = 41:int32
+			197: t12["GYD":string] = 42:int32
+			198: t12["HKD":string] = 43:int32
+			199: t12["HNL":string] = 44:int32
+			200: t12["HRK":string] = 45:int32
+			201: t12["HUF":string] = 46:int32
+			202: t12["IDR":string] = 47:int32
+			203: t12["ILS":string] = 48:int32
+			204: t12["IMP":string] = 49:int32
+			205: t12["INR":string] = 50:int32
+			206: t12["IQD":string] = 51:int32
+			207: t12["IRR":string] = 52:int32
+			208: t12["ISK":string] = 53:int32
+			209: t12["JEP":string] = 54:int32
+			210: t12["JMD":string] = 55:int32
+			211: t12["JOD":string] = 56:int32
+			212: t12["JPY":string] = 57:int32
+			213: t12["KES":string] = 58:int32
+			214: t12["KGS":string] = 59:int32
+			215: t12["KHR":string] = 60:int32
+			216: t12["KPW":string] = 61:int32
+			217: t12["KRW":string] = 62:int32
+			218: t12["KWD":string] = 63:int32
+			219: t12["KYD":string] = 64:int32
+			220: t12["KZT":string] = 65:int32
+			221: t12["LAK":string] = 66:int32
+			222: t12["LBP":string] = 67:int32
+			223: t12["LKR":string] = 68:int32
+			224: t12["LRD":string] = 69:int32
+			225: t12["LTL":string] = 70:int32
+			226: t12["LVL":string] = 71:int32
+			227: t12["LYD":string] = 72:int32
+			228: t12["MAD":string] = 73:int32
+			229: t12["MKD":string] = 74:int32
+			230: t12["MNT":string] = 75:int32
+			231: t12["MUR":string] = 76:int32
+			232: t12["MXN":string] = 77:int32
+			233: t12["MWK":string] = 78:int32
+			234: t12["MYR":string] = 79:int32
+			235: t12["MZN":string] = 80:int32
+			236: t12["NAD":string] = 81:int32
+			237: t12["NGN":string] = 82:int32
+			238: t12["NIO":string] = 83:int32
+			239: t12["NOK":string] = 84:int32
+			240: t12["NPR":string] = 85:int32
+			241: t12["NZD":string] = 86:int32
+			242: t12["OMR":string] = 87:int32
+			243: t12["PAB":string] = 88:int32
+			244: t12["PEN":string] = 89:int32
+			245: t12["PHP":string] = 90:int32
+			246: t12["PKR":string] = 91:int32
+			247: t12["PLN":string] = 92:int32
+			248: t12["PYG":string] = 93:int32
+			249: t12["QAR":string] = 94:int32
+			250: t12["RON":string] = 95:int32
+			251: t12["RSD":string] = 96:int32
+			252: t12["RUB":string] = 97:int32
+			253: t12["RUR":string] = 98:int32
+			254: t12["SAR":string] = 99:int32
+			255: t12["SBD":string] = 100:int32
+			256: t12["SCR":string] = 101:int32
+			257: t12["SEK":string] = 102:int32
+			258: t12["SGD":string] = 103:int32
+			259: t12["SHP":string] = 104:int32
+			260: t12["SOS":string] = 105:int32
+			261: t12["SRD":string] = 106:int32
+			262: t12["SVC":string] = 107:int32
+			263: t12["SYP":string] = 108:int32
+			264: t12["THB":string] = 109:int32
+			265: t12["TND":string] = 110:int32
+			266: t12["TRL":string] = 111:int32
+			267: t12["TRY":string] = 112:int32
+			268: t12["TTD":string] = 113:int32
+			269: t12["TWD":string] = 114:int32
+			270: t12["TZS":string] = 115:int32
+			271: t12["UAH":string] = 116:int32
+			272: t12["UGX":string] = 117:int32
+			273: t12["AED":string] = 118:int32
+			274: t12["UYU":string] = 119:int32
+			275: t12["UZS":string] = 120:int32
+			276: t12["VEF":string] = 121:int32
+			277: t12["VND":string] = 122:int32
+			278: t12["XCD":string] = 123:int32
+			279: t12["YER":string] = 124:int32
+			280: t12["ZAR":string] = 125:int32
+			281: t12["ZMW":string] = 126:int32
+			282: t12["ZWD":string] = 127:int32
+			283: t12["USD":string] = 128:int32
+			284: *Currency_value = t12
+			285: t13 = make map[int32]string 2:int
+			286: t13[0:int32] = "Infinite":string
+			287: t13[1:int32] = "Finite":string
+			288: *Inventory_Type_name = t13
+			289: t14 = make map[string]int32 2:int
+			290: t14["Infinite":string] = 0:int32
+			291: t14["Finite":string] = 1:int32
+			292: *Inventory_Type_value = t14
+			293: jump 2
+Block #2: init.init.done
+			00: return
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order
+	Global: OrderItem_Type_value, Type: *map[string]int32
+	Global: Currency_value, Type: *map[string]int32
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card
+	Global: init$guard, Type: *bool
+Function: calculateTotal
+Block #0: calculateTotal.entry
+			00: t0 = *Currency_name
+			01: t1 = t0[currency]
+			02: t2 = github.com/Rhymond/go-money.New(0:int64, t1)
+			03: t3 = len(orderItems)
+			04: jump 1
+Block #1: calculateTotal.rangeindex.loop
+			00: t4 = phi [0: t2, 5: t29] #m
+			01: t5 = phi [0: -1:int, 5: t6] #rangeindex
+			02: t6 = t5 + 1:int
+			03: t7 = t6 < t3
+			04: if t7 goto 2 else 3
+Block #2: calculateTotal.rangeindex.body
+			00: t8 = &orderItems[t6]
+			01: t9 = *t8
+			02: t10 = &t9.Quantity [#1]
+			03: t11 = *t10
+			04: t12 = t11 <= 0:int64
+			05: if t12 goto 4 else 5
+Block #3: calculateTotal.rangeindex.done
+			00: t13 = (*github.com/Rhymond/go-money.Money).Amount(t4)
+			01: return t13, nil:error
+Block #4: calculateTotal.if.then
+			00: t14 = &t9.Quantity [#1]
+			01: *t14 = 1:int64
+			02: jump 5
+Block #5: calculateTotal.if.done
+			00: t15 = *Currency_name
+			01: t16 = &t9.Currency [#3]
+			02: t17 = *t16
+			03: t18 = t15[t17]
+			04: t19 = &t9.Quantity [#1]
+			05: t20 = *t19
+			06: t21 = &t9.Amount [#2]
+			07: t22 = *t21
+			08: t23 = t20 * t22
+			09: t24 = github.com/Rhymond/go-money.New(t23, t18)
+			10: t25 = new [1]*github.com/Rhymond/go-money.Money (varargs)
+			11: t26 = &t25[0:int]
+			12: *t26 = t24
+			13: t27 = slice t25[:]
+			14: t28 = (*github.com/Rhymond/go-money.Money).Add(t4, t27...)
+			15: t29 = extract t28 #0
+			16: t30 = extract t28 #1
+			17: t31 = t30 != nil:error
+			18: if t31 goto 6 else 1
+Block #6: calculateTotal.if.then
+			00: return 0:int64, t30
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentService
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductService
+	Method: func(ctx context.Context, id string) error
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductList, error)
+	Method: func(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, id string) error
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductList, error)
+	Method: func(ctx context.Context, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Method: func(ctx context.Context, id string, name string, active bool, attributes []string, description string, images []string, metadata map[string]string, shippable bool, url string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ListRequest
+	Global: Inventory_Type_name, Type: *map[int32]string
+	Global: Inventory_Type_value, Type: *map[string]int32
+Function: NewPaymentServiceImpl
+Block #0: NewPaymentServiceImpl.entry
+			00: t0 = new PaymentServiceImpl (complit)
+			01: t1 = &t0.db [#0]
+			02: *t1 = db
+			03: t2 = make PaymentService <- *PaymentServiceImpl (t0)
+			04: return t2, nil:error
+	Unknown member type: *ssa.NamedConst
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderService
+	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
+	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
