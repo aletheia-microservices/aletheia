@@ -16,9 +16,9 @@ import (
 // ------------- CONSTANTS -------------
 // -------------------------------------
 const (
-	inputpackagepath = "./pointer-to-analysis/examples-go-simple/"
+	inputpackagepath = "./examples/storepost3"
 	//inputpackagepath = "../blueprint/examples/postnotification_simple/workflow/postnotification_simple/"
-	outfilename = "./ssa-simple.out"
+	outfilename = "./output/main.ssa"
 )
 
 // -------------------------------------
@@ -116,7 +116,7 @@ func ssaAnalysis(prog *ssa.Program, pkgs []*ssa.Package) {
 	defer outFile.Close()
 
 	for _, ssaPkg := range pkgs {
-		outfile, err := os.Create(fmt.Sprintf("%s.ssa", ssaPkg.Pkg.Name()))
+		outfile, err := os.Create(fmt.Sprintf("./output/%s.out", ssaPkg.Pkg.Name()))
 		if err != nil {
 			log.Fatalf("failed to create output file: %v", err)
 		}

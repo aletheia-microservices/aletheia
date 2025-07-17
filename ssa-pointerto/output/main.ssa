@@ -1,3 +1,9 @@
+Function: calculateTotal
+Block #0: calculateTotal.entry
+			00: return 0:int, nil:error
+Function: getUserWebsite
+Block #0: getUserWebsite.entry
+			00: return "mywebsite":string
 	Global: init$guard, Type: *bool
 Function: init
 Block #0: init.entry
@@ -11,78 +17,11 @@ Block #1: init.init.start
 			04: jump 2
 Block #2: init.init.done
 			00: return
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Sku
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Order
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Profile
-Function: StorePost
-Block #0: StorePost.entry
-			00: t0 = math/rand.Int63()
-			01: t1 = math/rand.Int63()
-			02: t2 = getUserInput()
-			03: t3 = sanitize(t2)
-			04: t4 = new Creator (complit)
-			05: t5 = &t4.Username [#0]
-			06: t6 = &t4.Profile [#1]
-			07: t7 = new Profile (complit)
-			08: t8 = &t7.Bio [#0]
-			09: t9 = &t7.Website [#1]
-			10: t10 = getUserWebsite()
-			11: *t8 = "researcher":string
-			12: *t9 = t10
-			13: *t5 = t3
-			14: *t6 = t7
-			15: t11 = local Post (post)
-			16: t12 = &t11.reqID [#0]
-			17: t13 = &t11.postID [#1]
-			18: t14 = &t11.text [#2]
-			19: t15 = &t11.mentions [#3]
-			20: t16 = &t11.timestamp [#4]
-			21: t17 = &t11.creator [#5]
-			22: *t12 = reqID
-			23: *t13 = t0
-			24: *t14 = text
-			25: *t15 = mentions
-			26: *t16 = t1
-			27: *t17 = t4
-			28: t18 = new MongoDB (complit)
-			29: t19 = *t11
-			30: t20 = make interface{} <- Post (t19)
-			31: t21 = (*MongoDB).Insert(t18, ctx, t20)
-			32: t22 = local Notification (notification)
-			33: t23 = &t22.reqID [#0]
-			34: t24 = &t22.postID [#1]
-			35: t25 = &t22.user [#2]
-			36: t26 = &t4.Username [#0]
-			37: t27 = *t26
-			38: *t23 = reqID
-			39: *t24 = t0
-			40: *t25 = t27
-			41: t28 = new RabbitMQ (complit)
-			42: t29 = *t22
-			43: t30 = make interface{} <- Notification (t29)
-			44: t31 = (*RabbitMQ).Push(t28, ctx, t30)
-			45: t32 = processCreator(ctx, t4)
-			46: return t0, nil:error
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.RabbitMQPusher
+	Type: analyzer/ssa-pointerto/examples/storepost3.MongoInserter
 	Method: func(ctx context.Context, document interface{}) error
 	Method: func(ctx context.Context, document interface{}) error
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.RabbitMQ
-	Method: func(ctx context.Context, message interface{}) error
-Function: Push
-Block #0: Push.entry
-			00: t0 = new [1]any (varargs)
-			01: t1 = &t0[0:int]
-			02: *t1 = message
-			03: t2 = slice t0[:]
-			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
-			05: return nil:error
-Function: Get
-Block #0: Get.entry
-			00: t0 = new Sku (complit)
-			01: return t0, nil:error
-Function: calculateTotal
-Block #0: calculateTotal.entry
-			00: return 0:int, nil:error
+	Type: analyzer/ssa-pointerto/examples/storepost3.Sku
+	Type: analyzer/ssa-pointerto/examples/storepost3.OrderItems
 Function: New
 Block #0: New.entry
 			00: t0 = new Order (complit)
@@ -187,63 +126,18 @@ Block #10: New.if.then
 			16: t67 = &t26.Description [#5]
 			17: *t67 = t66
 			18: jump 7
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Creator
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Post
-Function: getUserInput
-Block #0: getUserInput.entry
-			00: return "myuser":string
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.MongoInserter
-	Method: func(ctx context.Context, document interface{}) error
-	Method: func(ctx context.Context, document interface{}) error
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.MongoDB
-	Method: func(ctx context.Context, document interface{}) error
-Function: Insert
-Block #0: Insert.entry
+	Type: analyzer/ssa-pointerto/examples/storepost3.Notification
+	Type: analyzer/ssa-pointerto/examples/storepost3.Inventory
+	Type: analyzer/ssa-pointerto/examples/storepost3.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+Function: Push
+Block #0: Push.entry
 			00: t0 = new [1]any (varargs)
 			01: t1 = &t0[0:int]
-			02: *t1 = document
+			02: *t1 = message
 			03: t2 = slice t0[:]
-			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
 			05: return nil:error
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.OrderItem
-	Method: func() bool
-Function: IsTypeSku
-Block #0: IsTypeSku.entry
-			00: return true:bool
-	Method: func() bool
-Function: IsTypeTax
-Block #0: IsTypeTax.entry
-			00: return true:bool
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Notification
-Function: getUserWebsite
-Block #0: getUserWebsite.entry
-			00: return "mywebsite":string
-Function: sanitize
-Block #0: sanitize.entry
-			00: return username
-Function: processCreator
-Block #0: processCreator.entry
-			00: t0 = &creator.Profile [#1]
-			01: t1 = *t0
-			02: t2 = &t1.Age [#2]
-			03: *t2 = -1:int
-			04: t3 = new MongoDB (complit)
-			05: t4 = make interface{} <- *Creator (creator)
-			06: t5 = (*MongoDB).Insert(t3, ctx, t4)
-			07: return
-Function: main
-Block #0: main.entry
-			00: t0 = context.Background()
-			01: t1 = new [2]string (slicelit)
-			02: t2 = &t1[0:int]
-			03: *t2 = "mention1":string
-			04: t3 = &t1[1:int]
-			05: *t3 = "mention2":string
-			06: t4 = slice t1[:]
-			07: t5 = StorePost(t0, 0:int64, "mytext":string, t4)
-			08: return
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Inventory
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Product
 Function: Test
 Block #0: Test.entry
 			00: t0 = new Product (complit)
@@ -286,6 +180,112 @@ Block #3: Test.if.else
 			00: t22 = &t2.ID [#0]
 			01: *t22 = 100:int
 			02: jump 2
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Address
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Shipping
-	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.OrderItems
+	Type: analyzer/ssa-pointerto/examples/storepost3.OrderItem
+	Method: func() bool
+Function: IsTypeSku
+Block #0: IsTypeSku.entry
+			00: return true:bool
+	Method: func() bool
+Function: IsTypeTax
+Block #0: IsTypeTax.entry
+			00: return true:bool
+	Type: analyzer/ssa-pointerto/examples/storepost3.Order
+	Type: analyzer/ssa-pointerto/examples/storepost3.Creator
+	Type: analyzer/ssa-pointerto/examples/storepost3.Post
+Function: getUserInput
+Block #0: getUserInput.entry
+			00: return "myuser":string
+	Type: analyzer/ssa-pointerto/examples/storepost3.Product
+	Type: analyzer/ssa-pointerto/examples/storepost3.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/storepost3.Shipping
+	Type: analyzer/ssa-pointerto/examples/storepost3.Profile
+Function: sanitize
+Block #0: sanitize.entry
+			00: return username
+Function: processCreator
+Block #0: processCreator.entry
+			00: t0 = &creator.Profile [#1]
+			01: t1 = *t0
+			02: t2 = &t1.Age [#2]
+			03: *t2 = -1:int
+			04: t3 = new MongoDB (complit)
+			05: t4 = make interface{} <- *Creator (creator)
+			06: t5 = (*MongoDB).Insert(t3, ctx, t4)
+			07: return
+Function: StorePost
+Block #0: StorePost.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = math/rand.Int63()
+			02: t2 = getUserInput()
+			03: t3 = sanitize(t2)
+			04: t4 = new Creator (complit)
+			05: t5 = &t4.Username [#0]
+			06: t6 = &t4.Profile [#1]
+			07: t7 = new Profile (complit)
+			08: t8 = &t7.Bio [#0]
+			09: t9 = &t7.Website [#1]
+			10: t10 = getUserWebsite()
+			11: *t8 = "researcher":string
+			12: *t9 = t10
+			13: *t5 = t3
+			14: *t6 = t7
+			15: t11 = local Post (post)
+			16: t12 = &t11.reqID [#0]
+			17: t13 = &t11.postID [#1]
+			18: t14 = &t11.text [#2]
+			19: t15 = &t11.mentions [#3]
+			20: t16 = &t11.timestamp [#4]
+			21: t17 = &t11.creator [#5]
+			22: *t12 = reqID
+			23: *t13 = t0
+			24: *t14 = text
+			25: *t15 = mentions
+			26: *t16 = t1
+			27: *t17 = t4
+			28: t18 = new MongoDB (complit)
+			29: t19 = *t11
+			30: t20 = make interface{} <- Post (t19)
+			31: t21 = (*MongoDB).Insert(t18, ctx, t20)
+			32: t22 = local Notification (notification)
+			33: t23 = &t22.reqID [#0]
+			34: t24 = &t22.postID [#1]
+			35: t25 = &t22.user [#2]
+			36: t26 = &t4.Username [#0]
+			37: t27 = *t26
+			38: *t23 = reqID
+			39: *t24 = t0
+			40: *t25 = t27
+			41: t28 = new RabbitMQ (complit)
+			42: t29 = *t22
+			43: t30 = make interface{} <- Notification (t29)
+			44: t31 = (*RabbitMQ).Push(t28, ctx, t30)
+			45: t32 = processCreator(ctx, t4)
+			46: return t0, nil:error
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = new [2]string (slicelit)
+			02: t2 = &t1[0:int]
+			03: *t2 = "mention1":string
+			04: t3 = &t1[1:int]
+			05: *t3 = "mention2":string
+			06: t4 = slice t1[:]
+			07: t5 = StorePost(t0, 0:int64, "mytext":string, t4)
+			08: return
+	Type: analyzer/ssa-pointerto/examples/storepost3.MongoDB
+	Method: func(ctx context.Context, document interface{}) error
+Function: Insert
+Block #0: Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/storepost3.Address
+Function: Get
+Block #0: Get.entry
+			00: t0 = new Sku (complit)
+			01: return t0, nil:error
