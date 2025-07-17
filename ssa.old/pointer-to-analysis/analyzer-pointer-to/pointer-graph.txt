@@ -1,0 +1,127 @@
+### Function: main.New ###
+-: t39 (*ssa.Extract) (extract t38 #0) [*ssa.Extract]
+	 → ../examples-go-simple/main.go:94:19: t0 (*ssa.Alloc) (new OrderItem (complit)) [string]
+
+-: t19 (*ssa.Slice) (slice t17[:]) [*ssa.Slice]
+	 → ../examples-go-simple/main.go:114:43: t17 (*ssa.Alloc) (new [1]*OrderItem (varargs)) [string]
+
+-: t34 (*ssa.Extract) (extract t32 #1) [*ssa.Extract]
+
+-: t18 (*ssa.IndexAddr) (&t17[0:int]) [*ssa.IndexAddr]
+	 → ../examples-go-simple/main.go:114:43: t17 (*ssa.Alloc) (new [1]*OrderItem (varargs)) [string]
+
+-: t25 (*ssa.UnOp) (*t24) [*ssa.UnOp]
+
+-: t40 (*ssa.Extract) (extract t38 #1) [*ssa.Extract]
+
+-: t10 (*ssa.UnOp) (*t9) [*ssa.UnOp]
+
+-: t54 (*ssa.MakeInterface) (make interface{} <- *Order (t0)) [*ssa.MakeInterface]
+	 → -: t54 (*ssa.MakeInterface) (make interface{} <- *Order (t0)) [string]
+
+../examples-go-simple/main.go:101:10: ctx (*ssa.Parameter) (parameter ctx : context.Context) [*ssa.Parameter]
+	 → -: t0 (*ssa.MakeInterface) (make Context <- backgroundCtx (struct{emptyCtx}{}:backgroundCtx)) [string]
+
+../examples-go-simple/main.go:101:47: items (*ssa.Parameter) (parameter items : []*OrderItem) [*ssa.Parameter]
+	 → ../examples-go-simple/main.go:150:23: t2 (*ssa.Alloc) (new [0]*OrderItem (slicelit)) [string]
+
+../examples-go-simple/main.go:101:67: metadata (*ssa.Parameter) (parameter metadata : map[string]string) [*ssa.Parameter]
+	 → ../examples-go-simple/main.go:151:18: t4 (*ssa.MakeMap) (make map[string]string 0:int) [string]
+
+../examples-go-simple/main.go:101:109: shipping (*ssa.Parameter) (parameter shipping : *Shipping) [*ssa.Parameter]
+	 → ../examples-go-simple/main.go:153:23: t5 (*ssa.Alloc) (new Shipping (complit)) [string]
+
+../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [*ssa.Alloc]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:103:11: t1 (*ssa.FieldAddr) (&t0.Currency [#0]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:104:8: t2 (*ssa.FieldAddr) (&t0.Items [#1]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:105:11: t3 (*ssa.FieldAddr) (&t0.Metadata [#2]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:108:6: t5 (*ssa.Phi) (phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems) [*ssa.Phi]
+	 → ../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [string]
+
+../examples-go-simple/main.go:109:26: t9 (*ssa.IndexAddr) (&items[t7]) [*ssa.IndexAddr]
+	 → ../examples-go-simple/main.go:150:23: t2 (*ssa.Alloc) (new [0]*OrderItem (slicelit)) [string]
+
+../examples-go-simple/main.go:111:15: t13 (*ssa.FieldAddr) (&t10.Quantity [#0]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:112:13: t16 (*ssa.FieldAddr) (&t10.Quantity [#0]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [*ssa.Call]
+	 → ../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [string]
+
+../examples-go-simple/main.go:114:43: t17 (*ssa.Alloc) (new [1]*OrderItem (varargs)) [*ssa.Alloc]
+	 → ../examples-go-simple/main.go:114:43: t17 (*ssa.Alloc) (new [1]*OrderItem (varargs)) [string]
+
+../examples-go-simple/main.go:117:26: t24 (*ssa.IndexAddr) (&t5[t22]) [*ssa.IndexAddr]
+	 → ../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [string]
+
+../examples-go-simple/main.go:119:34: t36 (*ssa.FieldAddr) (&t25.Parent [#1]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:123:13: t45 (*ssa.FieldAddr) (&t25.Amount [#2]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:123:33: t42 (*ssa.FieldAddr) (&t39.Price [#5]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:94:19: t0 (*ssa.Alloc) (new OrderItem (complit)) [string]
+
+../examples-go-simple/main.go:124:13: t48 (*ssa.FieldAddr) (&t25.Currency [#3]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:124:29: t46 (*ssa.FieldAddr) (&t39.Currency [#3]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:94:19: t0 (*ssa.Alloc) (new OrderItem (complit)) [string]
+
+../examples-go-simple/main.go:125:13: t51 (*ssa.FieldAddr) (&t25.Description [#4]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:125:32: t49 (*ssa.FieldAddr) (&t39.Name [#6]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:94:19: t0 (*ssa.Alloc) (new OrderItem (complit)) [string]
+
+../examples-go-simple/main.go:129:8: t27 (*ssa.FieldAddr) (&t0.Items [#1]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:132:38: t28 (*ssa.FieldAddr) (&t0.Currency [#0]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:132:54: t30 (*ssa.FieldAddr) (&t0.Items [#1]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:132:54: t31 (*ssa.UnOp) (*t30) [*ssa.UnOp]
+	 → ../examples-go-simple/main.go:150:23: t2 (*ssa.Alloc) (new [0]*OrderItem (slicelit)) [string]
+	 → ../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [string]
+
+../examples-go-simple/main.go:136:8: t52 (*ssa.FieldAddr) (&t0.Amount [#5]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:138:16: t53 (*ssa.Alloc) (new MongoDB (complit)) [*ssa.Alloc]
+	 → ../examples-go-simple/main.go:138:16: t53 (*ssa.Alloc) (new MongoDB (complit)) [string]
+
+../examples-go-simple/main.go:139:11: t55 (*ssa.Call) ((*MongoDB).Insert(t53, ctx, t54)) [*ssa.Call]
+
+../examples-go-simple/main.go:141:8: t56 (*ssa.FieldAddr) (&t0.Items [#1]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:141:8: t57 (*ssa.UnOp) (*t56) [*ssa.UnOp]
+	 → ../examples-go-simple/main.go:150:23: t2 (*ssa.Alloc) (new [0]*OrderItem (slicelit)) [string]
+	 → ../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [string]
+
+../examples-go-simple/main.go:141:13: t59 (*ssa.UnOp) (*t58) [*ssa.UnOp]
+
+../examples-go-simple/main.go:141:13: t58 (*ssa.IndexAddr) (&t57[0:int]) [*ssa.IndexAddr]
+	 → ../examples-go-simple/main.go:150:23: t2 (*ssa.Alloc) (new [0]*OrderItem (slicelit)) [string]
+	 → ../examples-go-simple/main.go:114:23: t20 (*ssa.Call) (append(t5, t19...)) [string]
+
+../examples-go-simple/main.go:141:17: t60 (*ssa.FieldAddr) (&t59.Amount [#2]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:142:8: t61 (*ssa.FieldAddr) (&t0.Shipping [#4]) [*ssa.FieldAddr]
+	 → ../examples-go-simple/main.go:102:17: t0 (*ssa.Alloc) (new Order (complit)) [string]
+
+../examples-go-simple/main.go:142:8: t62 (*ssa.UnOp) (*t61) [*ssa.UnOp]
+
+../examples-go-simple/main.go:142:17: t64 (*ssa.UnOp) (*t63) [*ssa.UnOp]
+
+../examples-go-simple/main.go:142:17: t63 (*ssa.FieldAddr) (&t62.Address [#0]) [*ssa.FieldAddr]
+
+../examples-go-simple/main.go:142:25: t65 (*ssa.FieldAddr) (&t64.City [#0]) [*ssa.FieldAddr]

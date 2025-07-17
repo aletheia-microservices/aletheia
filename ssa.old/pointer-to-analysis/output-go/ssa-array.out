@@ -1,0 +1,54 @@
+	Type: analyzer/pointer-to-analysis/driver.MongoInserter
+		Method: &{{%!t(*types.Scope=<nil>) %!t(token.Pos=4346717) %!t(*types.Package=&{analyzer/pointer-to-analysis/driver main 0x140080e6120 [0x14002d05080 0x14007b47680] true false false go1.23.0}) %!t(string=Insert) %!t(*types.Signature=&{<nil> <nil> 0x140080e66c0 0x140080e6840 0x1400802b230 0x1400802b248 false}) %!t(uint32=0) %!t(types.color=1) %!t(token.Pos=0)} false %!t(*types.Func=<nil>)} // func(ctx context.Context, document interface{}) error
+	Type: analyzer/pointer-to-analysis/driver.MongoDB
+	Function: StoreCart
+		Block #0: entry
+			00: t0 = local Product (prod1)
+			01: t1 = &t0.ID [#0]
+			02: *t1 = 1:int64
+			03: t2 = local Product (prod2)
+			04: t3 = &t2.ID [#0]
+			05: *t3 = 2:int64
+			06: t4 = new [2]Product (makeslice)
+			07: t5 = slice t4[:2:int]
+			08: t6 = *t0
+			09: t7 = &t5[0:int]
+			10: *t7 = t6
+			11: t8 = *t2
+			12: t9 = &t5[1:int]
+			13: *t9 = t8
+			14: t10 = &t0.ID [#0]
+			15: *t10 = 99:int64
+			16: t11 = i < 10:int
+			17: if t11 goto 1 else 2
+		Block #1: if.then
+			00: t12 = local Product (prod)
+			01: t13 = &t12.ID [#0]
+			02: *t13 = 5:int64
+			03: t14 = *t12
+			04: t15 = &t5[0:int]
+			05: *t15 = t14
+			06: jump 2
+		Block #2: if.done
+			00: t16 = new MongoDB (complit)
+			01: t17 = make interface{} <- []Product (t5)
+			02: t18 = (*MongoDB).Insert(t16, ctx, t17)
+			03: return
+	Function: main
+		Block #0: entry
+			00: t0 = context.Background()
+			01: t1 = StoreCart(t0, 1:int)
+			02: return
+	Global: init$guard, Type: *bool
+	Function: init
+		Block #0: entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+		Block #1: init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+		Block #2: init.done
+			00: return
+	Type: analyzer/pointer-to-analysis/driver.Product

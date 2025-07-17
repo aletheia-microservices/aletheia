@@ -1,0 +1,153 @@
+### Function: main.StorePost ###
+ctx: (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0: (*ssa.MakeInterface)
+		X (interface of) → struct{context.emptyCtx}{}:context.backgroundCtx: (*ssa.Const)
+
+mentions: (*ssa.Parameter) (parameter mentions : []string)
+	 → t1: (*ssa.Alloc)
+
+t0: (*ssa.Call) (math/rand.Int63())
+
+t1: (*ssa.Call) (math/rand.Int63())
+
+t2: (*ssa.Call) (getUserInput())
+
+t3: (*ssa.Call) (sanitize(t2))
+
+t4: (*ssa.Alloc) (new Creator (complit))
+	 → t4: (*ssa.Alloc)
+
+t5: (*ssa.FieldAddr) (&t4.Username [#0])
+	 → t4: (*ssa.Alloc)
+
+t6: (*ssa.FieldAddr) (&t4.Profile [#1])
+	 → t4: (*ssa.Alloc)
+
+t7: (*ssa.Alloc) (new Profile (complit))
+	 → t7: (*ssa.Alloc)
+
+t8: (*ssa.FieldAddr) (&t7.Bio [#0])
+	 → t7: (*ssa.Alloc)
+
+t9: (*ssa.FieldAddr) (&t7.Website [#1])
+	 → t7: (*ssa.Alloc)
+
+t10: (*ssa.Call) (getUserWebsite())
+
+t11: (*ssa.Alloc) (local Post (post))
+	 → t11: (*ssa.Alloc)
+
+t12: (*ssa.FieldAddr) (&t11.reqID [#0])
+	 → t11: (*ssa.Alloc)
+
+t13: (*ssa.FieldAddr) (&t11.postID [#1])
+	 → t11: (*ssa.Alloc)
+
+t14: (*ssa.FieldAddr) (&t11.text [#2])
+	 → t11: (*ssa.Alloc)
+
+t15: (*ssa.FieldAddr) (&t11.mentions [#3])
+	 → t11: (*ssa.Alloc)
+
+t16: (*ssa.FieldAddr) (&t11.timestamp [#4])
+	 → t11: (*ssa.Alloc)
+
+t17: (*ssa.FieldAddr) (&t11.creator [#5])
+	 → t11: (*ssa.Alloc)
+
+t18: (*ssa.Alloc) (new MongoDB (complit))
+	 → t18: (*ssa.Alloc)
+
+t19: (*ssa.UnOp) (*t11)
+
+t20: (*ssa.MakeInterface) (make interface{} <- Post (t19))
+	 → t20: (*ssa.MakeInterface)
+		X (interface of) → t19: (*ssa.UnOp)
+
+t21: (*ssa.Call) ((*MongoDB).Insert(t18, ctx, t20))
+		arg #0 → t18: (*ssa.Alloc)
+		arg #1 → ctx: (*ssa.Parameter)
+		arg #2 → t20: (*ssa.MakeInterface)
+
+t22: (*ssa.Alloc) (local Notification (notification))
+	 → t22: (*ssa.Alloc)
+
+t23: (*ssa.FieldAddr) (&t22.reqID [#0])
+	 → t22: (*ssa.Alloc)
+
+t24: (*ssa.FieldAddr) (&t22.postID [#1])
+	 → t22: (*ssa.Alloc)
+
+t25: (*ssa.FieldAddr) (&t22.user [#2])
+	 → t22: (*ssa.Alloc)
+
+t26: (*ssa.FieldAddr) (&t4.Username [#0])
+	 → t4: (*ssa.Alloc)
+
+t27: (*ssa.UnOp) (*t26)
+
+t28: (*ssa.Alloc) (new RabbitMQ (complit))
+	 → t28: (*ssa.Alloc)
+
+t29: (*ssa.UnOp) (*t22)
+
+t30: (*ssa.MakeInterface) (make interface{} <- Notification (t29))
+	 → t30: (*ssa.MakeInterface)
+		X (interface of) → t29: (*ssa.UnOp)
+
+t31: (*ssa.Call) ((*RabbitMQ).Push(t28, ctx, t30))
+		arg #0 → t28: (*ssa.Alloc)
+		arg #1 → ctx: (*ssa.Parameter)
+		arg #2 → t30: (*ssa.MakeInterface)
+
+t32: (*ssa.Call) (processCreator(ctx, t4))
+
+
+### Function: main.main ###
+t0: (*ssa.Call) (context.Background())
+	 → t0: (*ssa.MakeInterface)
+		X (interface of) → struct{context.emptyCtx}{}:context.backgroundCtx: (*ssa.Const)
+
+t1: (*ssa.Alloc) (new [2]string (slicelit))
+	 → t1: (*ssa.Alloc)
+
+t2: (*ssa.IndexAddr) (&t1[0:int])
+	 → t1: (*ssa.Alloc)
+
+t3: (*ssa.IndexAddr) (&t1[1:int])
+	 → t1: (*ssa.Alloc)
+
+t4: (*ssa.Slice) (slice t1[:])
+	 → t1: (*ssa.Alloc)
+
+t5: (*ssa.Call) (StorePost(t0, 0:int64, "mytext":string, t4))
+
+
+### Function: main.processCreator ###
+ctx: (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0: (*ssa.MakeInterface)
+		X (interface of) → struct{context.emptyCtx}{}:context.backgroundCtx: (*ssa.Const)
+
+creator: (*ssa.Parameter) (parameter creator : *Creator)
+	 → t4: (*ssa.Alloc)
+
+t0: (*ssa.FieldAddr) (&creator.Profile [#1])
+	 → t4: (*ssa.Alloc)
+
+t1: (*ssa.UnOp) (*t0)
+	 → t7: (*ssa.Alloc)
+
+t2: (*ssa.FieldAddr) (&t1.Age [#2])
+	 → t7: (*ssa.Alloc)
+
+t3: (*ssa.Alloc) (new MongoDB (complit))
+	 → t3: (*ssa.Alloc)
+
+t4: (*ssa.MakeInterface) (make interface{} <- *Creator (creator))
+	 → t4: (*ssa.MakeInterface)
+		X (interface of) → creator: (*ssa.Parameter)
+
+t5: (*ssa.Call) ((*MongoDB).Insert(t3, ctx, t4))
+		arg #0 → t3: (*ssa.Alloc)
+		arg #1 → ctx: (*ssa.Parameter)
+		arg #2 → t4: (*ssa.MakeInterface)

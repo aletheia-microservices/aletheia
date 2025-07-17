@@ -1,0 +1,65 @@
+	Function: init
+		Block #0: entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+		Block #1: init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+		Block #2: init.done
+			00: return
+	Type: analyzer/pointer-to-analysis/driver.Product
+	Type: analyzer/pointer-to-analysis/driver.MongoInserter
+		Method: &{{%!t(*types.Scope=<nil>) %!t(token.Pos=4346717) %!t(*types.Package=&{analyzer/pointer-to-analysis/driver main 0x14004fd5680 [0x14006ecb680 0x140040fa000] true false false go1.23.0}) %!t(string=Insert) %!t(*types.Signature=&{<nil> <nil> 0x14004fd5c80 0x14004fd5e00 0x14004fa35f0 0x14004fa3608 false}) %!t(uint32=0) %!t(types.color=1) %!t(token.Pos=0)} false %!t(*types.Func=<nil>)} // func(ctx context.Context, document interface{}) error
+	Type: analyzer/pointer-to-analysis/driver.MongoDB
+	Function: StoreCart
+		Block #0: entry
+			00: t0 = new Product (complit)
+			01: t1 = &t0.ID [#0]
+			02: *t1 = 1:int64
+			03: t2 = new Product (complit)
+			04: t3 = &t2.ID [#0]
+			05: *t3 = 2:int64
+			06: t4 = new [2]*Product (slicelit)
+			07: t5 = &t4[0:int]
+			08: *t5 = t0
+			09: t6 = &t4[1:int]
+			10: *t6 = t2
+			11: t7 = slice t4[:]
+			12: t8 = &t0.ID [#0]
+			13: *t8 = 99:int64
+			14: t9 = i < 10:int
+			15: if t9 goto 1 else 2
+		Block #1: if.then
+			00: t10 = new Product (complit)
+			01: t11 = &t10.ID [#0]
+			02: *t11 = 5:int64
+			03: t12 = &t7[0:int]
+			04: *t12 = t10
+			05: jump 2
+		Block #2: if.done
+			00: t13 = len(t7)
+			01: jump 3
+		Block #3: rangeindex.loop
+			00: t14 = phi [2: -1:int, 4: t15] #rangeindex
+			01: t15 = t14 + 1:int
+			02: t16 = t15 < t13
+			03: if t16 goto 4 else 5
+		Block #4: rangeindex.body
+			00: t17 = &t7[t15]
+			01: t18 = *t17
+			02: t19 = &t18.ID [#0]
+			03: *t19 = 100:int64
+			04: jump 3
+		Block #5: rangeindex.done
+			00: t20 = new MongoDB (complit)
+			01: t21 = make interface{} <- []*Product (t7)
+			02: t22 = (*MongoDB).Insert(t20, ctx, t21)
+			03: return
+	Function: main
+		Block #0: entry
+			00: t0 = context.Background()
+			01: t1 = StoreCart(t0, 1:int)
+			02: return
+	Global: init$guard, Type: *bool

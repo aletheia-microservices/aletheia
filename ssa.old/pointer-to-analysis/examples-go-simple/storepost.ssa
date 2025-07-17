@@ -1,0 +1,254 @@
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Inventory
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Product
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.MongoDB
+	Method: func(ctx context.Context, document interface{}) error
+Function: Insert
+Block #0: Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+Function: Push
+Block #0: Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.OrderItem
+	Method: func() bool
+Function: IsTypeSku
+Block #0: IsTypeSku.entry
+			00: return true:bool
+	Method: func() bool
+Function: IsTypeTax
+Block #0: IsTypeTax.entry
+			00: return true:bool
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Order
+Function: calculateTotal
+Block #0: calculateTotal.entry
+			00: return 0:int, nil:error
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Creator
+Function: Test
+Block #0: Test.entry
+			00: t0 = new Product (complit)
+			01: t1 = &t0.ID [#0]
+			02: *t1 = 1:int
+			03: t2 = new Product (complit)
+			04: t3 = &t2.ID [#0]
+			05: *t3 = 2:int
+			06: t4 = new [2]*Product (slicelit)
+			07: t5 = &t4[0:int]
+			08: *t5 = t0
+			09: t6 = &t4[1:int]
+			10: *t6 = t2
+			11: t7 = slice t4[:]
+			12: t8 = new MongoDB (complit)
+			13: t9 = make interface{} <- []*Product (t7)
+			14: t10 = (*MongoDB).Insert(t8, ctx, t9)
+			15: t11 = i < 10:int
+			16: if t11 goto 1 else 3
+Block #1: Test.if.then
+			00: t12 = &t0.ID [#0]
+			01: *t12 = 50:int
+			02: jump 2
+Block #2: Test.if.done
+			00: t13 = new Inventory (complit)
+			01: t14 = &t13.amount [#0]
+			02: *t14 = 10:int
+			03: t15 = &t2.InventoryPtr [#2]
+			04: *t15 = t13
+			05: t16 = local Inventory (complit)
+			06: t17 = &t16.amount [#0]
+			07: *t17 = 20:int
+			08: t18 = *t16
+			09: t19 = &t2.InventoryVal [#3]
+			10: *t19 = t18
+			11: t20 = make interface{} <- *Product (t2)
+			12: t21 = (*MongoDB).Insert(t8, ctx, t20)
+			13: return
+Block #3: Test.if.else
+			00: t22 = &t2.ID [#0]
+			01: *t22 = 100:int
+			02: jump 2
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Shipping
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Post
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Notification
+Function: StorePost
+Block #0: StorePost.entry
+			00: t0 = math/rand.Int63() 						//t0: notification.postID, //t0: post.postID
+			01: t1 = math/rand.Int63() 						//t1: post.timestamp
+			02: t2 = local Post (post) 						//t2: post
+			03: t3 = &t2.reqID [#0] 						//t3: post.reqID
+			04: t4 = &t2.postID [#1] 						//t4: post.postID
+			05: t5 = &t2.text [#2] 							//t5: post.text
+			06: t6 = &t2.mentions [#3] 						//t6: post.mentions
+			07: t7 = &t2.timestamp [#4] 					//t7: post.timestamp
+			08: t8 = &t2.creator [#5] 						//t8: post.creator
+			09: t9 = &t8.Username [#0] 						//t9: post.creator.Username
+			10: *t3 = reqID 								//reqID: notification.reqID, reqID: post.reqID
+			11: *t4 = t0 									//t0: post.postID
+			12: *t5 = text 									//text: post.text
+			13: *t6 = mentions 								//mentions: post.mentions
+			14: *t7 = t1 									//t1: post.timestamp
+			15: *t9 = "some username":string
+			16: t10 = new MongoDB (complit)
+			17: t11 = *t2 									//t11: post
+			18: t12 = make interface{} <- Post (t11) 		//t12: post
+			19: t13 = (*MongoDB).Insert(t10, ctx, t12)
+			20: t14 = local Notification (notification) 	//t14: notification
+			21: t15 = &t14.reqID [#0] 						//t15: notification.reqID
+			22: t16 = &t14.postID [#1] 						//t16: notification.postID
+			23: *t15 = reqID 								//reqID: notification.reqID
+			24: *t16 = t0 									//t0: notification.postID
+			25: t17 = new RabbitMQ (complit)
+			26: t18 = *t14
+			27: t19 = make interface{} <- Notification (t18)
+			28: t20 = (*RabbitMQ).Push(t17, ctx, t19)
+			29: return t0, nil:error
+	Global: init$guard, Type: *bool
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = math/rand.init()
+			04: jump 2
+Block #2: init.init.done
+			00: return
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+Function: Get
+Block #0: Get.entry
+			00: t0 = new Sku (complit)
+			01: return t0, nil:error
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = new [2]string (slicelit)
+			02: t2 = &t1[0:int]
+			03: *t2 = "mention1":string
+			04: t3 = &t1[1:int]
+			05: *t3 = "mention2":string
+			06: t4 = slice t1[:]
+			07: t5 = StorePost(t0, 0:int64, "mytext":string, t4)
+			08: return
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.MongoInserter
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Address
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.Sku
+	Type: analyzer/ssa.old/pointer-to-analysis/examples-go-simple.OrderItems
+Function: New
+Block #0: New.entry
+			00: t0 = new Order (complit)
+			01: t1 = &t0.Currency [#0]
+			02: t2 = &t0.Items [#1]
+			03: t3 = &t0.Metadata [#2]
+			04: t4 = &t0.Shipping [#4]
+			05: *t1 = currency
+			06: *t2 = items
+			07: *t3 = metadata
+			08: *t4 = shipping
+			09: t5 = len(items)
+			10: jump 1
+Block #1: New.rangeindex.loop
+			00: t6 = phi [0: nil:[]*OrderItem, 2: t6, 6: t21] #orderItems
+			01: t7 = phi [0: -1:int, 2: t8, 6: t8] #rangeindex
+			02: t8 = t7 + 1:int
+			03: t9 = t8 < t5
+			04: if t9 goto 2 else 3
+Block #2: New.rangeindex.body
+			00: t10 = &items[t8]
+			01: t11 = *t10
+			02: t12 = (*OrderItem).IsTypeTax(t11)
+			03: if t12 goto 4 else 1
+Block #3: New.rangeindex.done
+			00: t13 = len(t6)
+			01: jump 7
+Block #4: New.if.then
+			00: t14 = &t11.Quantity [#1]
+			01: t15 = *t14
+			02: t16 = t15 <= 0:int64
+			03: if t16 goto 5 else 6
+Block #5: New.if.then
+			00: t17 = &t11.Quantity [#1]
+			01: *t17 = 1:int64
+			02: jump 6
+Block #6: New.if.done
+			00: t18 = new [1]*OrderItem (varargs)
+			01: t19 = &t18[0:int]
+			02: *t19 = t11
+			03: t20 = slice t18[:]
+			04: t21 = append(t6, t20...)
+			05: jump 1
+Block #7: New.rangeindex.loop
+			00: t22 = phi [3: -1:int, 8: t23, 10: t23] #rangeindex
+			01: t23 = t22 + 1:int
+			02: t24 = t23 < t13
+			03: if t24 goto 8 else 9
+Block #8: New.rangeindex.body
+			00: t25 = &t6[t23]
+			01: t26 = *t25
+			02: t27 = (*OrderItem).IsTypeSku(t26)
+			03: if t27 goto 10 else 7
+Block #9: New.rangeindex.done
+			00: t28 = new Shipping (complit)
+			01: t29 = &t0.Shipping [#4]
+			02: *t29 = t28
+			03: t30 = &t0.Shipping [#4]
+			04: t31 = *t30
+			05: t32 = new Address (complit)
+			06: t33 = &t31.Address [#0]
+			07: *t33 = t32
+			08: t34 = &t0.Currency [#0]
+			09: *t34 = 50:int32
+			10: t35 = &t0.Items [#1]
+			11: *t35 = t6
+			12: t36 = new MongoDB (complit)
+			13: t37 = &t0.Shipping [#4]
+			14: t38 = *t37
+			15: t39 = make interface{} <- *Shipping (t38)
+			16: t40 = (*MongoDB).Insert(t36, ctx, t39)
+			17: t41 = &t0.Items [#1]
+			18: t42 = *t41
+			19: t43 = make interface{} <- []*OrderItem (t42)
+			20: t44 = (*MongoDB).Insert(t36, ctx, t43)
+			21: t45 = &t0.Currency [#0]
+			22: t46 = *t45
+			23: t47 = make interface{} <- int32 (t46)
+			24: t48 = (*MongoDB).Insert(t36, ctx, t47)
+			25: t49 = &t0.Currency [#0]
+			26: t50 = *t49
+			27: t51 = make interface{} <- int32 (t50)
+			28: t52 = (*MongoDB).Insert(t36, ctx, t51)
+			29: return t0, nil:error
+Block #10: New.if.then
+			00: t53 = &t26.Parent [#4]
+			01: t54 = *t53
+			02: t55 = Get(ctx, t54)
+			03: t56 = extract t55 #0
+			04: t57 = extract t55 #1
+			05: t58 = &t56.Price [#1]
+			06: t59 = *t58
+			07: t60 = convert int64 <- uint64 (t59)
+			08: t61 = &t26.Amount [#2]
+			09: *t61 = t60
+			10: t62 = &t56.Currency [#2]
+			11: t63 = *t62
+			12: t64 = &t26.Currency [#3]
+			13: *t64 = t63
+			14: t65 = &t56.Name [#0]
+			15: t66 = *t65
+			16: t67 = &t26.Description [#5]
+			17: *t67 = t66
+			18: jump 7

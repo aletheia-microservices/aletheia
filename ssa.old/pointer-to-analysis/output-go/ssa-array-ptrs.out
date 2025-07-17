@@ -1,0 +1,51 @@
+	Type: analyzer/pointer-to-analysis/driver.MongoDB
+	Function: StoreCart
+		Block #0: entry
+			00: t0 = new Product (complit)
+			01: t1 = &t0.ID [#0]
+			02: *t1 = 1:int64
+			03: t2 = new Product (complit)
+			04: t3 = &t2.ID [#0]
+			05: *t3 = 2:int64
+			06: t4 = new [2]*Product (makeslice)
+			07: t5 = slice t4[:2:int]
+			08: t6 = &t5[0:int]
+			09: *t6 = t0
+			10: t7 = &t5[1:int]
+			11: *t7 = t2
+			12: t8 = &t0.ID [#0]
+			13: *t8 = 99:int64
+			14: t9 = i < 10:int
+			15: if t9 goto 1 else 2
+		Block #1: if.then
+			00: t10 = new Product (complit)
+			01: t11 = &t10.ID [#0]
+			02: *t11 = 5:int64
+			03: t12 = &t5[0:int]
+			04: *t12 = t10
+			05: jump 2
+		Block #2: if.done
+			00: t13 = new MongoDB (complit)
+			01: t14 = make interface{} <- []*Product (t5)
+			02: t15 = (*MongoDB).Insert(t13, ctx, t14)
+			03: return
+	Function: main
+		Block #0: entry
+			00: t0 = context.Background()
+			01: t1 = StoreCart(t0, 1:int)
+			02: return
+	Global: init$guard, Type: *bool
+	Function: init
+		Block #0: entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+		Block #1: init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+		Block #2: init.done
+			00: return
+	Type: analyzer/pointer-to-analysis/driver.Product
+	Type: analyzer/pointer-to-analysis/driver.MongoInserter
+		Method: &{{%!t(*types.Scope=<nil>) %!t(token.Pos=4346717) %!t(*types.Package=&{analyzer/pointer-to-analysis/driver main 0x14007741da0 [0x140043309c0 0x14007199740] true false false go1.23.0}) %!t(string=Insert) %!t(*types.Signature=&{<nil> <nil> 0x1400777e3c0 0x1400777e540 0x1400770e990 0x1400770e9a8 false}) %!t(uint32=0) %!t(types.color=1) %!t(token.Pos=0)} false %!t(*types.Func=<nil>)} // func(ctx context.Context, document interface{}) error

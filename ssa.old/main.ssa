@@ -1,0 +1,36 @@
+package analyzer/ssa.old/pointer-to-analysis/examples-go-simple:
+  type  Address        struct{City string}
+  type  Creator        struct{Username string; Profile *Profile}
+  func  Get            func(ctx context.Context, id string) (*Sku, error)
+  type  Inventory      struct{amount int}
+  type  MongoDB        struct{}
+    method (*MongoDB) Insert(ctx context.Context, document interface{}) error
+  type  MongoInserter  interface{Insert(ctx context.Context, document interface{}) error}
+    method (MongoInserter) Insert(ctx context.Context, document interface{}) error
+  func  New            func(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error)
+  type  Notification   struct{reqID int64; postID int64; user string}
+  type  Order          struct{Currency int32; Items []*OrderItem; Metadata map[string]string; Email string; Shipping *Shipping; Amount int}
+  type  OrderItem      struct{Type int32; Quantity int64; Amount int64; Currency int32; Parent string; Description string}
+    method (*OrderItem) IsTypeSku() bool
+    method (*OrderItem) IsTypeTax() bool
+  type  OrderItems     struct{Items []*OrderItem}
+  type  Post           struct{reqID int64; postID int64; text string; mentions []string; timestamp int64; creator *Creator}
+  type  Product        struct{ID int; Name string; InventoryPtr *Inventory; InventoryVal Inventory}
+  type  Profile        struct{Bio string; Website string; Age int}
+  type  RabbitMQ       struct{}
+    method (*RabbitMQ) Push(ctx context.Context, message interface{}) error
+  type  RabbitMQPusher interface{Push(ctx context.Context, document interface{}) error}
+    method (RabbitMQPusher) Push(ctx context.Context, document interface{}) error
+  type  Shipping       struct{Address *Address}
+  type  Sku            struct{Name string; Price uint64; Currency int32}
+  func  StorePost      func(ctx context.Context, reqID int64, text string, mentions []string) (int64, error)
+  func  Test           func(ctx context.Context, i int)
+  func  calculateTotal func(currency int32, items []*OrderItem) (int, error)
+  func  getUserInput   func() string
+  func  getUserWebsite func() string
+  func  init           func()
+  var   init$guard     bool
+  func  main           func()
+  func  processCreator func(ctx context.Context, creator *Creator)
+  func  sanitize       func(username string) string
+
