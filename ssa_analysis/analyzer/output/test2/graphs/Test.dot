@@ -1,0 +1,394 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1052 [label="metadata[\"alice\":string] = \"bob\":string", style=bold, shape=ellipse, color="black"];
+	N_instr__1446 [label="t41[\"alice2\":string] = \"bob2\":string", style=bold, shape=ellipse, color="black"];
+	N_instr_store_1009 [label="*t11 = t1", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1031 [label="*t12 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1088 [label="*t3 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1098 [label="*t16 = 10:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1116 [label="*t17 = 20:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1148 [label="*t20 = 30:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1180 [label="*t22 = 40:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1350 [label="*t34 = t35", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1372 [label="*t36 = \"MyName\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1495 [label="*t43 = 1:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1527 [label="*t45 = 2:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1561 [label="*t47 = 3:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1587 [label="*t49 = t48", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1631 [label="*t52 = 4:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1672 [label="*t54 = 11:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1705 [label="*t56 = 22:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1740 [label="*t58 = 33:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1767 [label="*t59 = t53", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1819 [label="*t62 = 44:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_815 [label="*t2 = 50:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_853 [label="*t4 = postid", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_929 [label="*t8 = 1:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_950 [label="*t9 = \"prod1\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_979 [label="*t10 = metadata", style=bold, shape=ellipse, color="blue"];
+	N_val_"MyName":string [label="\"MyName\":string: \"MyName\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_"db1":string [label="\"db1\":string: \"db1\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"db2":string [label="\"db2\":string: \"db2\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"db3":string [label="\"db3\":string: \"db3\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"ids":string [label="\"ids\":string: \"ids\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"inventory":string [label="\"inventory\":string: \"inventory\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"prod1":string [label="\"prod1\":string: \"prod1\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_"product":string [label="\"product\":string: \"product\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_10:int [label="10:int: 10:int", style=bold, shape=ellipse, color="blue"];
+	N_val_11:int [label="11:int: 11:int", style=bold, shape=ellipse, color="blue"];
+	N_val_1:int [label="1:int: 1:int", style=bold, shape=ellipse, color="blue"];
+	N_val_20:int [label="20:int: 20:int", style=bold, shape=ellipse, color="blue"];
+	N_val_22:int [label="22:int: 22:int", style=bold, shape=ellipse, color="blue"];
+	N_val_2:int [label="2:int: 2:int", style=bold, shape=ellipse, color="blue"];
+	N_val_30:int [label="30:int: 30:int", style=bold, shape=ellipse, color="blue"];
+	N_val_33:int [label="33:int: 33:int", style=bold, shape=ellipse, color="blue"];
+	N_val_3:int [label="3:int: 3:int", style=bold, shape=ellipse, color="blue"];
+	N_val_40:int [label="40:int: 40:int", style=bold, shape=ellipse, color="blue"];
+	N_val_44:int [label="44:int: 44:int", style=bold, shape=ellipse, color="blue"];
+	N_val_4:int [label="4:int: 4:int", style=bold, shape=ellipse, color="blue"];
+	N_val_50:int [label="50:int: 50:int", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_1350 [label="t34: local Product (prod2)
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_1469 [label="t42: local Nested1 (nested1)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_1664 [label="t53: new Nested1 (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_782 [label="t0: new MongoDB (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_805 [label="t1: new Inventory (complit)
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_826 [label="t3: local Inventory (inv2)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_907 [label="t7: local Product (prod1)
+
+==== tainted ====
+
+_obj.InventoryPtr
+@ db2.inventory
+
+_obj
+@ db3.product
+
+_obj.InventoryVal
+@ db2.inventory
+", style=bold, shape=box, color="orange"];
+	N_val_alloct14 [label="t14: local Inventory ()", style=bold, shape=ellipse, color="blue"];
+	N_val_call_1203 [label="t26: (*MongoDB).Insert(t0, ctx, \"db2\":string, \"inventory\":string, t25)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1259 [label="t30: (*MongoDB).Insert(t0, ctx, \"db2\":string, \"inventory\":string, t29)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1315 [label="t33: (*MongoDB).Insert(t0, ctx, \"db3\":string, \"product\":string, t32)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1398 [label="t39: (*MongoDB).Insert(t0, ctx, \"db3\":string, \"product\":string, t38)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1840 [label="t65: (*MongoDB).Insert(t0, ctx, \"db3\":string, \"product\":string, t64)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_877 [label="t6: (*MongoDB).Insert(t0, ctx, \"db1\":string, \"ids\":string, t5)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_1009 [label="t11: &t7.InventoryPtr [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1031 [label="t12: &t7.InventoryVal [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1098 [label="t16: &t1.Amount [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1116 [label="t17: &t3.Amount [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1135 [label="t18: &t7.InventoryPtr [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1148 [label="t20: &t19.Amount [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1167 [label="t21: &t7.InventoryVal [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1180 [label="t22: &t21.Amount [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1235 [label="t23: &t7.InventoryPtr [#2]
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="green"];
+	N_val_field_1291 [label="t27: &t7.InventoryVal [#3]
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="green"];
+	N_val_field_1372 [label="t36: &t34.Name [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1438 [label="t40: &t7.Metadata [#6]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1495 [label="t43: &t42.Val1 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1509 [label="t44: &t42.Nested2 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1527 [label="t45: &t44.Val2 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1542 [label="t46: &t44.Nested3 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1561 [label="t47: &t46.Val3 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1587 [label="t49: &t7.Nested1 [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1615 [label="t50: &t42.Nested2 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1623 [label="t51: &t50.Nested3 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1631 [label="t52: &t51.Val3 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1672 [label="t54: &t53.Val1 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1687 [label="t55: &t53.Nested2 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1705 [label="t56: &t55.Val2 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1721 [label="t57: &t55.Nested3 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1740 [label="t58: &t57.Val3 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1767 [label="t59: &t7.Nested1Ptr [#5]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1803 [label="t60: &t53.Nested2 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1811 [label="t61: &t60.Nested3 [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1819 [label="t62: &t61.Val3 [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_815 [label="t2: &t1.Amount [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_853 [label="t4: &t3.Amount [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_929 [label="t8: &t7.ID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_950 [label="t9: &t7.Name [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_979 [label="t10: &t7.Metadata [#6]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet25 [label="t25: make interface{} <- *Inventory (t24)
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="yellow"];
+	N_val_ifacet29 [label="t29: make interface{} <- Inventory (t28)
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="yellow"];
+	N_val_ifacet32 [label="t32: make interface{} <- Product (t31)
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="yellow"];
+	N_val_ifacet38 [label="t38: make interface{} <- Product (t37)
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="yellow"];
+	N_val_ifacet5 [label="t5: make interface{} <- int (postid)
+
+==== tainted ====
+
+_obj
+@ db1.ids
+", style=bold, shape=box, color="yellow"];
+	N_val_ifacet64 [label="t64: make interface{} <- Product (t63)
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="yellow"];
+	N_val_param_704 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_725 [label="postid: parameter postid : int
+
+==== tainted ====
+
+_obj
+@ db1.ids
+", style=bold, shape=box, color="black"];
+	N_val_param_737 [label="metadata: parameter metadata : map[string]string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_1033 [label="t13: *t3", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1135 [label="t19: *t18", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1235 [label="t24: *t23
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="red"];
+	N_val_unary_1291 [label="t28: *t27
+
+==== tainted ====
+
+_obj
+@ db2.inventory
+", style=bold, shape=box, color="red"];
+	N_val_unary_1339 [label="t31: *t7
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="red"];
+	N_val_unary_1359 [label="t35: *t7", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1422 [label="t37: *t34
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="red"];
+	N_val_unary_1438 [label="t41: *t40", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1597 [label="t48: *t42", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1864 [label="t63: *t7
+
+==== tainted ====
+
+_obj
+@ db3.product
+", style=bold, shape=box, color="red"];
+	N_val_unaryt15 [label="t15: *t14", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_805 -> N_val_field_815;
+	N_val_field_815 -> N_instr_store_815;
+	N_val_50:int -> N_instr_store_815;
+	N_val_alloc_826 -> N_val_field_853;
+	N_val_field_853 -> N_instr_store_853;
+	N_val_param_725 -> N_instr_store_853;
+	N_val_alloc_782 -> N_val_call_877;
+	N_val_param_704 -> N_val_call_877;
+	N_val_"db1":string -> N_val_call_877;
+	N_val_"ids":string -> N_val_call_877;
+	N_val_param_725 -> N_val_ifacet5;
+	N_val_ifacet5 -> N_val_call_877;
+	N_val_alloc_907 -> N_val_field_929;
+	N_val_alloc_907 -> N_val_field_950;
+	N_val_alloc_907 -> N_val_field_979;
+	N_val_alloc_907 -> N_val_field_1009;
+	N_val_alloc_907 -> N_val_field_1031;
+	N_val_alloc_826 -> N_val_unary_1033;
+	N_val_field_929 -> N_instr_store_929;
+	N_val_1:int -> N_instr_store_929;
+	N_val_field_950 -> N_instr_store_950;
+	N_val_"prod1":string -> N_instr_store_950;
+	N_val_field_979 -> N_instr_store_979;
+	N_val_param_737 -> N_instr_store_979;
+	N_val_field_1009 -> N_instr_store_1009;
+	N_val_alloc_805 -> N_instr_store_1009;
+	N_val_field_1031 -> N_instr_store_1031;
+	N_val_unary_1033 -> N_instr_store_1031;
+	N_val_alloct14 -> N_val_unaryt15;
+	N_val_alloc_826 -> N_instr_store_1088;
+	N_val_unaryt15 -> N_instr_store_1088;
+	N_val_alloc_805 -> N_val_field_1098;
+	N_val_field_1098 -> N_instr_store_1098;
+	N_val_10:int -> N_instr_store_1098;
+	N_val_alloc_826 -> N_val_field_1116;
+	N_val_field_1116 -> N_instr_store_1116;
+	N_val_20:int -> N_instr_store_1116;
+	N_val_alloc_907 -> N_val_field_1135;
+	N_val_field_1135 -> N_val_unary_1135;
+	N_val_unary_1135 -> N_val_field_1148;
+	N_val_field_1148 -> N_instr_store_1148;
+	N_val_30:int -> N_instr_store_1148;
+	N_val_alloc_907 -> N_val_field_1167;
+	N_val_field_1167 -> N_val_field_1180;
+	N_val_field_1180 -> N_instr_store_1180;
+	N_val_40:int -> N_instr_store_1180;
+	N_val_alloc_907 -> N_val_field_1235;
+	N_val_field_1235 -> N_val_unary_1235;
+	N_val_alloc_782 -> N_val_call_1203;
+	N_val_param_704 -> N_val_call_1203;
+	N_val_"db2":string -> N_val_call_1203;
+	N_val_"inventory":string -> N_val_call_1203;
+	N_val_unary_1235 -> N_val_ifacet25;
+	N_val_ifacet25 -> N_val_call_1203;
+	N_val_alloc_907 -> N_val_field_1291;
+	N_val_field_1291 -> N_val_unary_1291;
+	N_val_alloc_782 -> N_val_call_1259;
+	N_val_param_704 -> N_val_call_1259;
+	N_val_"db2":string -> N_val_call_1259;
+	N_val_"inventory":string -> N_val_call_1259;
+	N_val_unary_1291 -> N_val_ifacet29;
+	N_val_ifacet29 -> N_val_call_1259;
+	N_val_alloc_907 -> N_val_unary_1339;
+	N_val_alloc_782 -> N_val_call_1315;
+	N_val_param_704 -> N_val_call_1315;
+	N_val_"db3":string -> N_val_call_1315;
+	N_val_"product":string -> N_val_call_1315;
+	N_val_unary_1339 -> N_val_ifacet32;
+	N_val_ifacet32 -> N_val_call_1315;
+	N_val_alloc_907 -> N_val_unary_1359;
+	N_val_alloc_1350 -> N_instr_store_1350;
+	N_val_unary_1359 -> N_instr_store_1350;
+	N_val_alloc_1350 -> N_val_field_1372;
+	N_val_field_1372 -> N_instr_store_1372;
+	N_val_"MyName":string -> N_instr_store_1372;
+	N_val_alloc_1350 -> N_val_unary_1422;
+	N_val_alloc_782 -> N_val_call_1398;
+	N_val_param_704 -> N_val_call_1398;
+	N_val_"db3":string -> N_val_call_1398;
+	N_val_"product":string -> N_val_call_1398;
+	N_val_unary_1422 -> N_val_ifacet38;
+	N_val_ifacet38 -> N_val_call_1398;
+	N_val_alloc_907 -> N_val_field_1438;
+	N_val_field_1438 -> N_val_unary_1438;
+	N_val_alloc_1469 -> N_val_field_1495;
+	N_val_alloc_1469 -> N_val_field_1509;
+	N_val_field_1509 -> N_val_field_1527;
+	N_val_field_1509 -> N_val_field_1542;
+	N_val_field_1542 -> N_val_field_1561;
+	N_val_field_1495 -> N_instr_store_1495;
+	N_val_1:int -> N_instr_store_1495;
+	N_val_field_1527 -> N_instr_store_1527;
+	N_val_2:int -> N_instr_store_1527;
+	N_val_field_1561 -> N_instr_store_1561;
+	N_val_3:int -> N_instr_store_1561;
+	N_val_alloc_1469 -> N_val_unary_1597;
+	N_val_alloc_907 -> N_val_field_1587;
+	N_val_field_1587 -> N_instr_store_1587;
+	N_val_unary_1597 -> N_instr_store_1587;
+	N_val_alloc_1469 -> N_val_field_1615;
+	N_val_field_1615 -> N_val_field_1623;
+	N_val_field_1623 -> N_val_field_1631;
+	N_val_field_1631 -> N_instr_store_1631;
+	N_val_4:int -> N_instr_store_1631;
+	N_val_alloc_1664 -> N_val_field_1672;
+	N_val_alloc_1664 -> N_val_field_1687;
+	N_val_field_1687 -> N_val_field_1705;
+	N_val_field_1687 -> N_val_field_1721;
+	N_val_field_1721 -> N_val_field_1740;
+	N_val_field_1672 -> N_instr_store_1672;
+	N_val_11:int -> N_instr_store_1672;
+	N_val_field_1705 -> N_instr_store_1705;
+	N_val_22:int -> N_instr_store_1705;
+	N_val_field_1740 -> N_instr_store_1740;
+	N_val_33:int -> N_instr_store_1740;
+	N_val_alloc_907 -> N_val_field_1767;
+	N_val_field_1767 -> N_instr_store_1767;
+	N_val_alloc_1664 -> N_instr_store_1767;
+	N_val_alloc_1664 -> N_val_field_1803;
+	N_val_field_1803 -> N_val_field_1811;
+	N_val_field_1811 -> N_val_field_1819;
+	N_val_field_1819 -> N_instr_store_1819;
+	N_val_44:int -> N_instr_store_1819;
+	N_val_alloc_907 -> N_val_unary_1864;
+	N_val_alloc_782 -> N_val_call_1840;
+	N_val_param_704 -> N_val_call_1840;
+	N_val_"db3":string -> N_val_call_1840;
+	N_val_"product":string -> N_val_call_1840;
+	N_val_unary_1864 -> N_val_ifacet64;
+	N_val_ifacet64 -> N_val_call_1840;
+	N_val_unary_1235 -> N_val_alloc_805 [label="", style=dashed, color=blue];
+	N_val_field_1495 -> N_val_alloc_1469 [label=".Val1", style=dashed, color=blue];
+	N_val_field_815 -> N_val_alloc_805 [label=".Amount", style=dashed, color=blue];
+	N_val_field_1587 -> N_val_alloc_907 [label=".Nested1", style=dashed, color=blue];
+	N_val_field_1705 -> N_val_alloc_1664 [label=".Nested2.Val2", style=dashed, color=blue];
+	N_val_field_929 -> N_val_alloc_907 [label=".ID", style=dashed, color=blue];
+	N_val_field_1167 -> N_val_alloc_907 [label=".InventoryVal", style=dashed, color=blue];
+	N_val_field_1623 -> N_val_alloc_1469 [label=".Nested2.Nested3", style=dashed, color=blue];
+	N_val_field_1631 -> N_val_alloc_1469 [label=".Nested2.Nested3.Val3", style=dashed, color=blue];
+	N_val_field_1561 -> N_val_alloc_1469 [label=".Nested2.Nested3.Val3", style=dashed, color=blue];
+	N_val_field_853 -> N_val_alloc_826 [label=".Amount", style=dashed, color=blue];
+	N_val_field_1291 -> N_val_alloc_907 [label=".InventoryVal", style=dashed, color=blue];
+	N_val_field_1372 -> N_val_alloc_1350 [label=".Name", style=dashed, color=blue];
+	N_val_field_1615 -> N_val_alloc_1469 [label=".Nested2", style=dashed, color=blue];
+	N_val_field_1767 -> N_val_alloc_907 [label=".Nested1Ptr", style=dashed, color=blue];
+	N_val_field_1031 -> N_val_alloc_907 [label=".InventoryVal", style=dashed, color=blue];
+	N_val_field_1116 -> N_val_alloc_826 [label=".Amount", style=dashed, color=blue];
+	N_val_unary_1135 -> N_val_alloc_805 [label="", style=dashed, color=blue];
+	N_val_field_1687 -> N_val_alloc_1664 [label=".Nested2", style=dashed, color=blue];
+	N_val_field_1527 -> N_val_alloc_1469 [label=".Nested2.Val2", style=dashed, color=blue];
+	N_val_field_1803 -> N_val_alloc_1664 [label=".Nested2", style=dashed, color=blue];
+	N_val_field_1438 -> N_val_alloc_907 [label=".Metadata", style=dashed, color=blue];
+	N_val_field_1672 -> N_val_alloc_1664 [label=".Val1", style=dashed, color=blue];
+	N_val_field_1721 -> N_val_alloc_1664 [label=".Nested2.Nested3", style=dashed, color=blue];
+	N_val_field_1148 -> N_val_alloc_805 [label=".Amount", style=dashed, color=blue];
+	N_val_field_1180 -> N_val_alloc_907 [label=".InventoryVal.Amount", style=dashed, color=blue];
+	N_val_field_1509 -> N_val_alloc_1469 [label=".Nested2", style=dashed, color=blue];
+	N_val_field_1009 -> N_val_alloc_907 [label=".InventoryPtr", style=dashed, color=blue];
+	N_val_field_1740 -> N_val_alloc_1664 [label=".Nested2.Nested3.Val3", style=dashed, color=blue];
+	N_val_field_1819 -> N_val_alloc_1664 [label=".Nested2.Nested3.Val3", style=dashed, color=blue];
+	N_val_field_950 -> N_val_alloc_907 [label=".Name", style=dashed, color=blue];
+	N_val_field_1542 -> N_val_alloc_1469 [label=".Nested2.Nested3", style=dashed, color=blue];
+	N_val_field_1811 -> N_val_alloc_1664 [label=".Nested2.Nested3", style=dashed, color=blue];
+	N_val_field_979 -> N_val_alloc_907 [label=".Metadata", style=dashed, color=blue];
+	N_val_field_1098 -> N_val_alloc_805 [label=".Amount", style=dashed, color=blue];
+	N_val_field_1135 -> N_val_alloc_907 [label=".InventoryPtr", style=dashed, color=blue];
+	N_val_field_1235 -> N_val_alloc_907 [label=".InventoryPtr", style=dashed, color=blue];
+}

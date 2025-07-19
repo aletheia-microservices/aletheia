@@ -17,18 +17,18 @@ type Product struct {
 }
 
 type MongoInserter interface {
-	Insert(ctx context.Context, db string, document interface{}) error
-	Find(ctx context.Context, db string, id string) error
+	Insert(ctx context.Context, database string, collection string, document interface{}) error
+	Find(ctx context.Context, database string, collection string, id string) error
 }
 
 type MongoDB struct{}
 
-func (m *MongoDB) Insert(ctx context.Context, db string,  document interface{}) error {
+func (m *MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error {
 	fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 
-func (m *MongoDB) Find(ctx context.Context, db string, id string) Sku {
+func (m *MongoDB) Find(ctx context.Context, database string, collection string, id string) Sku {
 	fmt.Printf("[INFO] found document for id: %v\n", id)
 	return Sku{}
 }
@@ -113,7 +113,7 @@ func New(ctx context.Context, currency int32, items []*OrderItem, metadata map[s
 		if myitem2.IsTypeSku() {
 			// logic of sku.Get
 			skuDB := &MongoDB{}
-			sku := skuDB.Find(ctx, "sku", myitem2.Parent)
+			sku := skuDB.Find(ctx, "sku_db", "sku", myitem2.Parent)
 			myitem2.Amount = int64(sku.Price)
 			myitem2.Currency = sku.Currency
 			myitem2.Description = sku.Name
@@ -124,7 +124,7 @@ func New(ctx context.Context, currency int32, items []*OrderItem, metadata map[s
 	order.Amount = 100
 
 	orderDB := &MongoDB{}
-	orderDB.Insert(ctx, "order", order)
+	orderDB.Insert(ctx, "order_db", "order", order)
 
 	return order, nil
 }

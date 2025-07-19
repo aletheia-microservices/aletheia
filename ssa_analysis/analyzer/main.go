@@ -5,7 +5,9 @@ import (
 	"go/token"
 	"go/types"
 	"log"
+	"math/rand"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -21,7 +23,7 @@ import (
 // ------------- CONSTANTS -------------
 // -------------------------------------
 
-var appname = "test2"
+var appname = "new3"
 
 // -------------------------------------
 
@@ -33,6 +35,26 @@ type Graph struct {
 
 func (graph *Graph) addEdge(edge *Edge) {
 	graph.edges = append(graph.edges, edge)
+}
+
+func (graph *Graph) getEdgesFromNode(node *Node) []*Edge {
+	var edges []*Edge
+	for _, edge := range graph.edges {
+		if edge.from == node {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
+}
+
+func (graph *Graph) getEdgesToNode(node *Node) []*Edge {
+	var edges []*Edge
+	for _, edge := range graph.edges {
+		if edge.to == node {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
 }
 
 func (graph *Graph) sortNodes() {
@@ -47,8 +69,16 @@ func (graph *Graph) sortNodes() {
 	})
 }
 
+func (graph *Graph) getNodeByName(name string) *Node {
+	if node, exists := graph.defs[name]; exists {
+		return node
+	}
+	log.Fatalf("node with name (%s) not found in graph defs: %v\n", name, graph.defs)
+	return nil
+}
+
 type Node struct {
-	id    int
+	id    string
 	name  string
 	val   ssa.Value
 	instr ssa.Instruction
@@ -65,15 +95,24 @@ func (node *Node) isTainted() bool {
 	return len(node.taints) > 0
 }
 
+func (node *Node) addTaintIfNotExists(taintInfo TaintInfo) {
+	// note that objfields/dbfields already have "." before them
+	objField := taintInfo.objPrefix + taintInfo.objField
+	dbField := taintInfo.dbfieldPrefix + taintInfo.dbField
+	if !slices.Contains(node.taints[objField], dbField) {
+		node.taints[objField] = append(node.taints[objField], dbField)
+	}
+}
+
 func (node *Node) taintString() string {
 	if len(node.taints) == 0 {
 		return ""
 	}
 	var taintStr string
 	for obj, dbfields := range node.taints {
-		taintStr += fmt.Sprintf("%s: ", obj)
+		taintStr += fmt.Sprintf("\n%s\n", obj)
 		for _, dbfield := range dbfields {
-			taintStr += fmt.Sprintf("\t|--> %s\n", dbfield)
+			taintStr += fmt.Sprintf("@ %s\n", dbfield)
 		}
 	}
 	return taintStr
@@ -104,7 +143,7 @@ func (node *Node) colorForSSA() string {
 	return "black"
 }
 
-func RegisterNewNodeValue(graph *Graph, instr ssa.Instruction, val ssa.Value, id int) *Node {
+func RegisterNewNodeValue(graph *Graph, instr ssa.Instruction, val ssa.Value, id string) *Node {
 	node := &Node{
 		name:   val.Name(),
 		val:    val,
@@ -118,10 +157,11 @@ func RegisterNewNodeValue(graph *Graph, instr ssa.Instruction, val ssa.Value, id
 	return node
 }
 
-func RegisterNewNode(graph *Graph, instr ssa.Instruction, id int) *Node {
+func RegisterNewNode(graph *Graph, instr ssa.Instruction, id string) *Node {
 	node := &Node{
-		id:    id,
-		instr: instr,
+		id:     id,
+		instr:  instr,
+		taints: make(map[string][]string),
 	}
 	graph.nodes = append(graph.nodes, node)
 	return node
@@ -137,13 +177,6 @@ const (
 	EDGE_INDEX
 	EDGE_PARAMETER
 	EDGE_POINTS_TO
-	/* EDGE_VALUE
-	EDGE_VERSION
-	EDGE_INTERFACE
-	EDGE_CONVERTED
-	EDGE_PHI
-	EDGE_RETURN
-	EDGE_COPY */
 )
 
 type Edge struct {
@@ -157,17 +190,33 @@ type Edge struct {
 	path string //pointer only
 }
 
-func newEdge(from *Node, to *Node, edgeType EdgeType, index int, param string) *Edge {
-	return &Edge{
+func (graph *Graph) createAndAddNewEdge(from *Node, to *Node, edgeType EdgeType, index int, param string) (*Edge, bool) {
+	// 1st is for sanity check; 2nd is for nodes obtained from *ssa.Const
+	if from == nil || to == nil {
+		return nil, false
+	}
+	for _, edge := range graph.getEdgesFromNode(from) {
+		if edge.to == to {
+			return edge, false
+		}
+	}
+	for _, edge := range graph.getEdgesToNode(to) {
+		if edge.from == from {
+			return edge, false
+		}
+	}
+	edge := &Edge{
 		from:     from,
 		to:       to,
 		edgeType: edgeType,
 		index:    index,
 		param:    param,
 	}
+	graph.addEdge(edge)
+	return edge, true
 }
 
-func (edge *Edge) typeString() string {
+/* func (edge *Edge) typeString() string {
 	switch edge.edgeType {
 	case EDGE_USAGE:
 		return "usage"
@@ -183,17 +232,17 @@ func (edge *Edge) typeString() string {
 		return fmt.Sprintf("param(%d)", edge.index)
 	}
 	return ""
-}
+} */
 
 func (edge *Edge) HasFromNode(node *Node) bool {
 	return edge.from == node
 }
 
-func isMongoDBInsert(instr ssa.Instruction) (*ssa.Call, *ssa.Function, bool) {
+func isMongoDBCall(instr ssa.Instruction) (*ssa.Call, *ssa.Function, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
 		if fn, ok := call.Call.Value.(*ssa.Function); ok && len(fn.Params) > 0 {
 			maybeRcv := fn.Params[0]
-			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" {
+			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" || fn.Name() == "Find" {
 				return call, fn, true
 			}
 		}
@@ -201,35 +250,95 @@ func isMongoDBInsert(instr ssa.Instruction) (*ssa.Call, *ssa.Function, bool) {
 	return nil, nil, false
 }
 
-func doTaintNode(graph *Graph, val ssa.Value, dbField string) {
-	node := graph.defs[val.Name()]
-	node.taints["."] = append(node.taints["."], dbField)
+func doTaintNode(graph *Graph, val ssa.Value, taintInfo TaintInfo) {
+	node := graph.getNodeByName(val.Name())
+	node.addTaintIfNotExists(taintInfo)
+}
+
+func doTaintPointerToSets(graph *Graph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool) {
+	node := graph.getNodeByName(val.Name())
+	for _, edge := range graph.getEdgesFromNode(node) {
+		if edge.edgeType == EDGE_POINTS_TO {
+			if edge.path != "" {
+				// add before
+				// note that both edge.path and objfields/dbfields already have "." before them
+				taintInfo.objField = edge.path + taintInfo.objField
+			}
+			edge.to.addTaintIfNotExists(taintInfo)
+
+			doTaintBackwards(graph, edge.to.val, taintInfo, visited)
+		}
+	}
 }
 
 func fieldIndexToName(t *ssa.FieldAddr) string {
 	return t.X.Type().Underlying().(*types.Pointer).Elem().(*types.Named).Underlying().(*types.Struct).Field(t.Field).Name()
 }
 
-func doTaintBackwards(graph *Graph, val ssa.Value, dbField string) {
+type TaintInfo struct {
+	val           ssa.Value
+	objField      string
+	dbField       string
+	objPrefix     string
+	dbfieldPrefix string
+}
+
+func doTaintBackwards(graph *Graph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool) {
+	fmt.Printf("visiting value %s: %s // TAINT INFO = %v\n", val.Name(), val.String(), taintInfo)
+	taintInfo.val = val
+	if visited[taintInfo] {
+		fmt.Printf("\tskipping value %s: %s\n", val.Name(), val.String())
+		return
+	}
+	visited[taintInfo] = true
+
+	node := graph.getNodeByName(val.Name())
+	node.addTaintIfNotExists(taintInfo)
+
 	switch t := val.(type) {
 	case *ssa.MakeInterface:
-		doTaintBackwards(graph, t.X, dbField)
+		doTaintBackwards(graph, t.X, taintInfo, visited)
 	case *ssa.UnOp:
-		doTaintBackwards(graph, t.X, dbField)
+		doTaintBackwards(graph, t.X, taintInfo, visited)
+	case *ssa.Phi:
+		// includes values in t.Edges + other nodes pointing to
+		for _, edge := range graph.getEdgesFromNode(graph.getNodeByName(t.Name())) {
+			// in case it points to an instruction like store we need to fetch the value
+			// (in this case, this corresponds to the variable where something is being stored, and NOT the value being stored)
+			if edge.to.instr != nil && edge.to.val == nil {
+				edge.to.addTaintIfNotExists(taintInfo)
+				for _, edge2 := range graph.getEdgesToNode(edge.to) {
+					doTaintBackwards(graph, edge2.from.val, taintInfo, visited)
+				}
+			} /* else { // FIXME infinite loops
+				doTaintBackwards(graph, edge.to.val, taintInfo, visited)
+			} */
+		}
 	case *ssa.FieldAddr:
 		fieldName := fieldIndexToName(t)
-		dbField += "." + fieldName
-		doTaintBackwards(graph, t.X, dbField)
+		// add after
+		taintInfoTmp := taintInfo
+		taintInfoTmp.objField = "." + fieldName + taintInfoTmp.objField
+		doTaintBackwards(graph, t.X, taintInfoTmp, visited)
+	case *ssa.IndexAddr:
+		// add after
+		taintInfoTmp := taintInfo
+		taintInfoTmp.objField = "[*]" + taintInfoTmp.objField
+		doTaintBackwards(graph, t.X, taintInfoTmp, visited)
 	case *ssa.Parameter, *ssa.Alloc:
-		doTaintNode(graph, val, dbField)
+		doTaintNode(graph, val, taintInfo)
 	default:
 		fmt.Printf("[INFO] ignoring value: [%T] %v\n", val, val)
 	}
+
+	// if its fieldaddr then we use the objfield and dbfield
+	// from the parameters and not the updated ones
+	doTaintPointerToSets(graph, val, taintInfo, visited)
 }
 
 func doTaint(graph *Graph) {
 	for _, node := range graph.nodes {
-		call, _, ok := isMongoDBInsert(node.instr)
+		call, _, ok := isMongoDBCall(node.instr)
 		if ok {
 			var database, collection string
 
@@ -245,100 +354,178 @@ func doTaint(graph *Graph) {
 
 			valDocument := call.Call.Args[4]
 
-			field := database + "." + collection
-			doTaintBackwards(graph, valDocument, field)
+			visited := make(map[TaintInfo]bool)
+			taintInfo := TaintInfo{
+				objField:      "",
+				dbField:       "",
+				objPrefix:     "_obj",
+				dbfieldPrefix: database + "." + collection,
+			}
+			doTaintBackwards(graph, valDocument, taintInfo, visited)
 		}
 	}
 }
 
-func parseInstr(graph *Graph, instr ssa.Instruction, id int) {
-	fmt.Printf("[A] %02d [%T] %v\n", id, instr, instr.String())
+func getInstructionID(instr ssa.Instruction) string {
+	if !instr.Pos().IsValid() { // meaning there is no position
+		return ""
+	}
+	return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", instr.Pos())
+}
+
+func instrString(instr ssa.Instruction) string {
+	switch instr.(type) {
+	case *ssa.Store:
+		return "store"
+	case *ssa.Return:
+		return "ret"
+	}
+	return ""
+}
+
+func getValueID(val ssa.Value) string {
+	if !val.Pos().IsValid() { // meaning there is no position
+		if c, ok := val.(*ssa.Const); ok {
+			if c.IsNil() {
+				return fmt.Sprintf("nil_%d", rand.Int())
+			}
+		}
+		return "val_" + valString(val) + val.Name()
+	}
+	return "val_" + valString(val) + "_" + fmt.Sprintf("%d", val.Pos())
+}
+
+func valString(val ssa.Value) string {
+	switch val.(type) {
+	case *ssa.Call:
+		return "call"
+	case *ssa.Alloc:
+		return "alloc"
+	case *ssa.Slice:
+		return "slice"
+	case *ssa.FieldAddr:
+		return "field"
+	case *ssa.IndexAddr:
+		return "index"
+	case *ssa.UnOp:
+		return "unary"
+	case *ssa.MakeInterface:
+		return "iface"
+	case *ssa.Convert:
+		return "conv"
+	case *ssa.Parameter:
+		return "param"
+	case *ssa.Global:
+		return "glob"
+	case *ssa.Phi:
+		return "phi"
+	case *ssa.Extract:
+		return "extr"
+	case *ssa.BinOp:
+		return "binary"
+	}
+	return ""
+}
+
+func parseInstr(graph *Graph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *Node {
+	fmt.Printf("[A] %02d [%T] %v\n", instrIdx, instr, instr.String())
+
+	id := getInstructionID(instr)
+	if id == "" { // e.g., conditions or jumps (instructions and not values)
+		log.Printf("skipping instruction with invalid id: %v\n", instr)
+		return nil
+	}
 
 	if val, ok := instr.(ssa.Value); ok {
-		parseValue(graph, instr, id, val)
-		return
+		return parseValue(graph, instr, instrIdx, val, visited)
 	}
 	node := RegisterNewNode(graph, instr, id)
 
 	switch t := instr.(type) {
 	case *ssa.Store:
 		// 04 [store] *t1 = currency
-		addrNode := parseValue(graph, instr, id, t.Addr)
-		valNode := parseValue(graph, instr, id, t.Val)
+		addrNode := parseValue(graph, instr, instrIdx, t.Addr, visited)
+		valNode := parseValue(graph, instr, instrIdx, t.Val, visited)
 
-		edge1 := newEdge(addrNode, node, EDGE_STORE, 0, "")
-		graph.addEdge(edge1)
+		graph.createAndAddNewEdge(addrNode, node, EDGE_STORE, 0, "")
+		graph.createAndAddNewEdge(valNode, node, EDGE_USAGE, 0, "")
 
-		if valNode != nil { // nil whever an *ssa.Const is parsed
-			edge2 := newEdge(valNode, node, EDGE_USAGE, 0, "")
-			graph.addEdge(edge2)
-		}
+		fmt.Printf("ADDING EDGE FOR ADDR NDOE AND VAL NODE: %v // %v \n", t.Addr, t.Val)
 	case *ssa.Return:
 		for _, res := range t.Results {
-			resNode := parseValue(graph, instr, id, res)
-			if resNode != nil { // nil whever an *ssa.Const is parsed
-				edge := newEdge(resNode, node, EDGE_STORE, 0, "")
-				graph.addEdge(edge)
-			}
+			resNode := parseValue(graph, instr, instrIdx, res, visited)
+			graph.createAndAddNewEdge(resNode, node, EDGE_STORE, 0, "")
 		}
-	case *ssa.Jump:
-		//fmt.Printf("[A] skipping... %02d [%T] %v\n", id, instr, instr.String())
 	default:
-		//fmt.Printf("[1] ignoring... %02d [%T] %v\n", id, instr, instr.String())
+		fmt.Printf("[1] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 	}
+
+	return node
 }
 
-func parseValue(graph *Graph, instr ssa.Instruction, id int, val ssa.Value) *Node {
-	fmt.Printf("[B] %02d [%T] %v\n", id, val, val.String())
+func parseValue(graph *Graph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *Node {
+	fmt.Printf("[B] %02d [%T] %v\n", instrIdx, val, val.String())
 
-	if _, ok := val.(*ssa.Const); ok {
+	if visited[val] {
+		return graph.defs[val.Name()]
+	}
+	visited[val] = true
+
+	id := getValueID(val)
+	if id == "" { // sanity check
+		log.Fatalf("unexpected invalid id for value: %v\n", val)
 		return nil
 	}
 
-	if node, exists := graph.defs[val.Name()]; exists {
-		return node
+	node, exists := graph.defs[val.Name()]
+	if !exists {
+		node = RegisterNewNodeValue(graph, instr, val, id)
 	}
-
-	node := RegisterNewNodeValue(graph, instr, val, id)
 
 	switch t := val.(type) {
 	case *ssa.Call:
 		for _, arg := range t.Call.Args {
-			argNode := parseValue(graph, instr, id, arg)
-			if argNode != nil { // nil whever an *ssa.Const is parsed
-				edge := newEdge(argNode, node, EDGE_STORE, 0, "")
-				graph.addEdge(edge)
+			for _, edges := range graph.getEdgesFromNode(node) {
+				if edges.to.name == arg.Name() {
+					fmt.Printf("[INFO] skipping arg edge for %s\n", t.Name())
+					continue
+				}
 			}
+			for _, edges := range graph.getEdgesToNode(node) {
+				if edges.from.name == arg.Name() {
+					fmt.Printf("[INFO] skipping arg edge for %s\n", t.Name())
+					continue
+				}
+			}
+			argNode := parseValue(graph, instr, instrIdx, arg, visited)
+			graph.createAndAddNewEdge(argNode, node, EDGE_STORE, 0, "")
 		}
 	case *ssa.Alloc:
 		// nothing to do
 	case *ssa.Slice:
 		// nothing to do
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.createAndAddNewEdge(targetNode, node, EDGE_USAGE, 0, "")
 	case *ssa.FieldAddr:
 		// 00 [field] t27 = &t0.Items [#3]
-		targetNode := parseValue(graph, instr, id, t.X)
-		edge := newEdge(targetNode, node, EDGE_FIELD, 0, fieldIndexToName(t))
-		graph.addEdge(edge)
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.createAndAddNewEdge(targetNode, node, EDGE_FIELD, 0, fieldIndexToName(t))
 	case *ssa.IndexAddr:
-		targetNode := parseValue(graph, instr, id, t.X)
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
 		//FIXME: should parse value for t.Index
-		edge := newEdge(targetNode, node, EDGE_FIELD, 0, t.Index.String())
-		graph.addEdge(edge)
+		graph.createAndAddNewEdge(targetNode, node, EDGE_FIELD, 0, t.Index.String())
 	case *ssa.UnOp:
 		// 01 [unary] t14 = *t13
 		// 05 [unary] t31 = *t30
-		targetNode := parseValue(graph, instr, id, t.X)
-		edge := newEdge(targetNode, node, EDGE_LOAD, 0, "")
-		graph.addEdge(edge)
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.createAndAddNewEdge(targetNode, node, EDGE_LOAD, 0, "")
 
 	case *ssa.MakeInterface: // same as *ssa.UnOp
-		targetNode := parseValue(graph, instr, id, t.X)
-		edge := newEdge(targetNode, node, EDGE_USAGE, 0, "")
-		graph.addEdge(edge)
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.createAndAddNewEdge(targetNode, node, EDGE_USAGE, 0, "")
 	case *ssa.Convert:
-		targetNode := parseValue(graph, instr, id, t.X)
-		edge := newEdge(targetNode, node, EDGE_USAGE, 0, "")
-		graph.addEdge(edge)
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.createAndAddNewEdge(targetNode, node, EDGE_USAGE, 0, "")
 
 	case *ssa.Parameter:
 		// nothing to do
@@ -348,34 +535,40 @@ func parseValue(graph *Graph, instr ssa.Instruction, id int, val ssa.Value) *Nod
 
 	case *ssa.Phi:
 		for _, phiEdge := range t.Edges {
-			edgeNode := parseValue(graph, instr, id, phiEdge)
-			edge := newEdge(edgeNode, node, EDGE_STORE, 0, "")
-			graph.addEdge(edge)
+			for _, edges := range graph.getEdgesFromNode(node) {
+				if edges.to.name == phiEdge.Name() {
+					fmt.Printf("[INFO] skipping phi edge for %s\n", t.Name())
+					continue
+				}
+			}
+			for _, edges := range graph.getEdgesToNode(node) {
+				if edges.from.name == phiEdge.Name() {
+					fmt.Printf("[INFO] skipping phi edge for %s\n", t.Name())
+					continue
+				}
+			}
+			edgeNode := parseValue(graph, instr, instrIdx, phiEdge, visited)
+			graph.createAndAddNewEdge(edgeNode, node, EDGE_STORE, 0, "")
 		}
 
 	case *ssa.Extract:
-		extractFromNode := parseValue(graph, instr, id, t.Tuple)
-		edge := newEdge(extractFromNode, node, EDGE_USAGE, t.Index, "")
-		graph.addEdge(edge)
+		extractFromNode := parseValue(graph, instr, instrIdx, t.Tuple, visited)
+		graph.createAndAddNewEdge(extractFromNode, node, EDGE_USAGE, t.Index, "")
 
 	case *ssa.BinOp:
-		xNode := parseValue(graph, instr, id, t.X)
-		yNode := parseValue(graph, instr, id, t.Y)
-
-		edge1 := newEdge(xNode, node, EDGE_STORE, 0, "")
-		graph.addEdge(edge1)
-
-		edge2 := newEdge(yNode, node, EDGE_USAGE, 0, "")
-		graph.addEdge(edge2)
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		yNode := parseValue(graph, instr, instrIdx, t.Y, visited)
+		graph.createAndAddNewEdge(xNode, node, EDGE_STORE, 0, "")
+		graph.createAndAddNewEdge(yNode, node, EDGE_USAGE, 0, "")
 
 	default:
-		//fmt.Printf("[2] ignoring... %02d [%T] %s = %v\n", id, val, val.Name(), val.String())
+		fmt.Printf("[2] ignoring... %02d [%T] %s = %v\n", id, val, val.Name(), val.String())
 	}
 	return node
 }
 
 func (g *Graph) writeToDOTFile(fn string) error {
-	filename := fmt.Sprintf("%s.dot", fn)
+	filename := fmt.Sprintf("output/%s/graphs/%s.dot", appname, fn)
 	file, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -386,13 +579,16 @@ func (g *Graph) writeToDOTFile(fn string) error {
 	fmt.Fprintln(file, "\trankdir=TD;")
 
 	for _, node := range g.nodes {
-		str := node.String() + "\n" + node.taintString()
+		str := node.String()
+		if node.isTainted() {
+			str += "\n\n==== tainted ====\n" + node.taintString()
+		}
 		label := strings.ReplaceAll(str, `"`, `\"`)
 		nodecolor := node.colorForSSA()
 
-		shape := "box"
+		shape := "ellipse"
 		if node.isTainted() {
-			shape = "ellipse"
+			shape = "box"
 		}
 
 		color := "black"
@@ -400,15 +596,15 @@ func (g *Graph) writeToDOTFile(fn string) error {
 			color = nodecolor
 		}
 
-		fmt.Fprintf(file, "\tN%d [label=\"%s\", style=bold, shape=%s, color=\"%s\"];\n", node.id, label, shape, color)
+		fmt.Fprintf(file, "\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];\n", node.id, label, shape, color)
 	}
 
 	for _, edge := range g.edges {
 		if edge.edgeType == EDGE_POINTS_TO {
 			path := strings.ReplaceAll(edge.path, `"`, `\"`)
-			fmt.Fprintf(file, "\tN%d -> N%d [label=\"%s\", style=dashed, color=blue];\n", edge.from.id, edge.to.id, path)
-		} else {
-			fmt.Fprintf(file, "\tN%d -> N%d;\n", edge.from.id, edge.to.id)
+			fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", style=dashed, color=blue];\n", edge.from.id, edge.to.id, path)
+		} else if edge.from != nil && edge.to != nil {
+			fmt.Fprintf(file, "\tN_%s -> N_%s;\n", edge.from.id, edge.to.id)
 		}
 	}
 
@@ -450,9 +646,9 @@ func main() {
 				prefix = "\t"
 			}
 			if node.instr != nil {
-				fmt.Printf("[%s] [%02d] [%T] \t %s %v\n", fn, node.id, node.instr, prefix, node.instr.String())
+				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.id, node.instr, prefix, node.instr.String())
 			} else {
-				fmt.Printf("[%s] [%02d] [%T] \t %s %v\n", fn, node.id, node.val, prefix, node.val.String())
+				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.id, node.val, prefix, node.val.String())
 			}
 		}
 	}
@@ -462,7 +658,7 @@ func main() {
 		for _, node := range graph.nodes {
 			if node.isTainted() {
 				for obj, dbfields := range node.taints {
-					fmt.Printf("[%s] %s [%s]: %s\n", fn, node.val.String(), node.name, obj)
+					fmt.Printf("[%s] %s [%s]: %s\n", fn, node.String(), node.name, obj)
 					for _, dbfield := range dbfields {
 						fmt.Printf("\t\t |--> %s\n", dbfield)
 					}
@@ -479,29 +675,29 @@ func main() {
 }
 
 func runSSAAnalysis(prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*Graph) {
-	outFile, err := os.Create("app.ssa")
+	outfile1, err := os.Create(fmt.Sprintf("output/%s/app.ssa", appname))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer outFile.Close()
+	defer outfile1.Close()
 
-	outfile, err := os.Create(fmt.Sprintf("%s.out", pkg.Pkg.Name()))
+	outfile2, err := os.Create(fmt.Sprintf("output/%s/%s.out", appname, pkg.Pkg.Name()))
 	if err != nil {
 		log.Fatalf("failed to create output file: %v", err)
 	}
-	defer outfile.Close()
-	pkg.WriteTo(outfile)
+	defer outfile2.Close()
+	pkg.WriteTo(outfile2)
 
 	for _, member := range pkg.Members {
 		switch m := member.(type) {
 		case *ssa.Function:
-			iterateFunc(outFile, m, nil, funcGraphs)
+			iterateFunc(outfile1, m, nil, funcGraphs)
 
 		case *ssa.Global:
-			fmt.Fprintf(outFile, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
+			fmt.Fprintf(outfile1, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
 
 		case *ssa.Type:
-			fmt.Fprintf(outFile, "\tType: %s\n", m.Type())
+			fmt.Fprintf(outfile1, "\tType: %s\n", m.Type())
 
 			// this logic was copied from
 			// package: golang.org/x/tools/go/ssa
@@ -509,54 +705,65 @@ func runSSAAnalysis(prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*
 			// function: func (p *Package) WriteTo(w io.Writer) (int64, error)
 			for _, sel := range typeutil.IntuitiveMethodSet(m.Type(), &prog.MethodSets) {
 				method := prog.MethodValue(sel)
-				fmt.Fprintf(outFile, "\tMethod: %v\n", sel.Obj().Type())
+				fmt.Fprintf(outfile1, "\tMethod: %v\n", sel.Obj().Type())
 				if method != nil {
-					iterateFunc(outFile, method, m.Type(), funcGraphs)
+					iterateFunc(outfile1, method, m.Type(), funcGraphs)
 				}
 			}
 
 			methods := prog.MethodSets.MethodSet(m.Type().Underlying())
 			for i := 0; i < methods.Len(); i++ {
 				sel := methods.At(i)
-				fmt.Fprintf(outFile, "\tMethod: %v\n", sel.Obj().Type())
+				fmt.Fprintf(outfile1, "\tMethod: %v\n", sel.Obj().Type())
 				method := prog.MethodValue(sel)
 				if method != nil {
-					iterateFunc(outFile, method, m.Type(), funcGraphs)
+					iterateFunc(outfile1, method, m.Type(), funcGraphs)
 				}
 			}
 
 		default:
-			fmt.Fprintf(outFile, "\tUnknown member type: %T\n", m)
+			fmt.Fprintf(outfile1, "\tUnknown member type: %T\n", m)
 		}
 	}
 }
 
 func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*Graph) {
+	fullfuncname := fn.Package().Pkg.Name() + "." + fn.Name()
 	graph := &Graph{
 		defs: make(map[string]*Node),
 	}
 	if _, exists := funcGraphs[fn.Name()]; exists {
-		log.Fatalf("graph for function (%s) already exists\n", fn.Name())
+		log.Fatalf("graph for function (%s) already exists\n", fullfuncname)
 	}
 	funcGraphs[fn.Name()] = graph
-	fmt.Printf("added new graph for function (%s)\n", fn.Name())
+	fmt.Printf("added new graph for function (%s)\n", fullfuncname)
 
+	var visited = make(map[ssa.Value]bool)
+
+	fmt.Fprintf(outFile, "\t\tParameters:\n")
 	for i, param := range fn.Params {
-		parseValue(graph, nil, -i-1, param)
+		fmt.Fprintf(outFile, "\t\t\t%s = %s\n", param.Name(), param.String())
+		parseValue(graph, nil, -i-1, param, visited)
 	}
 
-	fmt.Fprintf(outFile, "Function: %s\n", fn.Name())
+	fmt.Fprintf(outFile, "Function: %s\n", fullfuncname)
 	for i, block := range fn.Blocks {
-		fmt.Fprintf(outFile, "Block #%d: %s.%s\n", i, fn.Name(), block.Comment)
+		fmt.Fprintf(outFile, "Block #%d: %s.%s\n", i, fullfuncname, block.Comment)
 		for j, instr := range block.Instrs {
-			parseInstr(graph, instr, j)
+			parseInstr(graph, instr, j, visited)
+
+			if val, ok := instr.(ssa.Value); ok {
+				fmt.Fprintf(outFile, "\t\t\t%02d: %s = %s\n", j, val.Name(), instr.String())
+			} else {
+				fmt.Fprintf(outFile, "\t\t\t%02d: %s\n", j, instr.String())
+			}
 		}
 	}
 }
 
 func initPackages() (*ssa.Program, *ssa.Package, *pointer.Result, error) {
-	// e.g. "../examples/test2/main.go"
-	filepath := "../examples/" + appname + "/main.go"
+	// e.g. "../apps/test2/main.go"
+	filepath := "apps/" + appname + "/main.go"
 	source, err := os.ReadFile(filepath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read file %s: %v\n", filepath, err)
@@ -650,7 +857,7 @@ func initPackages() (*ssa.Program, *ssa.Package, *pointer.Result, error) {
 }
 
 func runPointerToAnalysis(prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*Graph) {
-	outFile, err := os.Create("app.ptrs")
+	outFile, err := os.Create(fmt.Sprintf("output/%s/app.ptrs", appname))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -692,9 +899,10 @@ func runPointerToAnalysis(prog *ssa.Program, pkg *ssa.Package, result *pointer.R
 						}
 					}
 					if !exists {
-						edge := newEdge(node, pointsToNode, EDGE_POINTS_TO, 0, "")
-						edge.path = lbl.Path()
-						graph.addEdge(edge)
+						edge, _ := graph.createAndAddNewEdge(node, pointsToNode, EDGE_POINTS_TO, 0, "")
+						if edge != nil {
+							edge.path = lbl.Path()
+						}
 					}
 				}
 			}
