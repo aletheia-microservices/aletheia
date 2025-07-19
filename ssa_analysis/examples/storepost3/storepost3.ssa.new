@@ -1,0 +1,147 @@
+Function: processCreator
+Block #0: processCreator.entry
+			00: t0 = &creator.Profile [#1]
+			01: t1 = *t0
+			02: t2 = &t1.Age [#2]
+			03: *t2 = -1:int
+			04: t3 = new MongoDB (complit)
+			05: t4 = make interface{} <- *Creator (creator)
+			06: t5 = (*MongoDB).Insert(t3, ctx, t4)
+			07: return
+	Type: analyzer/ssa-pointerto/examples/storepost3.Product
+Function: StorePost
+Block #0: StorePost.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = math/rand.Int63()
+			02: t2 = getUserInput()
+			03: t3 = sanitize(t2)
+			04: t4 = new Creator (complit)
+			05: t5 = &t4.Username [#0]
+			06: t6 = &t4.Profile [#1]
+			07: t7 = new Profile (complit)
+			08: t8 = &t7.Bio [#0]
+			09: t9 = &t7.Website [#1]
+			10: t10 = getUserWebsite()
+			11: *t8 = "researcher":string
+			12: *t9 = t10
+			13: *t5 = t3
+			14: *t6 = t7
+			15: t11 = local Post (post)
+			16: t12 = &t11.reqID [#0]
+			17: t13 = &t11.postID [#1]
+			18: t14 = &t11.text [#2]
+			19: t15 = &t11.mentions [#3]
+			20: t16 = &t11.timestamp [#4]
+			21: t17 = &t11.creator [#5]
+			22: *t12 = reqID
+			23: *t13 = t0
+			24: *t14 = text
+			25: *t15 = mentions
+			26: *t16 = t1
+			27: *t17 = t4
+			28: t18 = new MongoDB (complit)
+			29: t19 = *t11
+			30: t20 = make interface{} <- Post (t19)
+			31: t21 = (*MongoDB).Insert(t18, ctx, t20)
+			32: t22 = &t11.reqID [#0]
+			33: *t22 = -1:int64
+			34: t23 = *t11
+			35: t24 = make interface{} <- Post (t23)
+			36: t25 = (*MongoDB).Insert(t18, ctx, t24)
+			37: t26 = &t11.reqID [#0]
+			38: t27 = &t11.postID [#1]
+			39: *t11 = Post{}:Post
+			40: *t26 = reqID
+			41: *t27 = t0
+			42: t28 = *t11
+			43: t29 = make interface{} <- Post (t28)
+			44: t30 = (*MongoDB).Insert(t18, ctx, t29)
+			45: t31 = local Product (product)
+			46: t32 = &t31.productID [#0]
+			47: *t32 = 0:int64
+			48: t33 = local Notification (notification)
+			49: t34 = &t33.reqID [#0]
+			50: t35 = &t33.postID [#1]
+			51: t36 = &t33.user [#2]
+			52: t37 = &t4.Username [#0]
+			53: t38 = *t37
+			54: *t34 = reqID
+			55: *t35 = t0
+			56: *t36 = t38
+			57: t39 = new RabbitMQ (complit)
+			58: t40 = *t33
+			59: t41 = make interface{} <- Notification (t40)
+			60: t42 = (*RabbitMQ).Push(t39, ctx, t41)
+			61: t43 = &t31.productID [#0]
+			62: t44 = *t43
+			63: t45 = &t33.postID [#1]
+			64: *t45 = t44
+			65: t46 = &t33.postID [#1]
+			66: t47 = *t46
+			67: t48 = make interface{} <- int64 (t47)
+			68: t49 = (*RabbitMQ).Push(t39, ctx, t48)
+			69: t50 = processCreator(ctx, t4)
+			70: return t0, nil:error
+	Type: analyzer/ssa-pointerto/examples/storepost3.MongoInserter
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/storepost3.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/storepost3.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+Function: Push
+Block #0: Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/storepost3.Notification
+Function: getUserWebsite
+Block #0: getUserWebsite.entry
+			00: return "mywebsite":string
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = new [2]string (slicelit)
+			02: t2 = &t1[0:int]
+			03: *t2 = "mention1":string
+			04: t3 = &t1[1:int]
+			05: *t3 = "mention2":string
+			06: t4 = slice t1[:]
+			07: t5 = StorePost(t0, 0:int64, "mytext":string, t4)
+			08: return
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = math/rand.init()
+			04: jump 2
+Block #2: init.init.done
+			00: return
+	Type: analyzer/ssa-pointerto/examples/storepost3.Creator
+Function: getUserInput
+Block #0: getUserInput.entry
+			00: return "myuser":string
+	Type: analyzer/ssa-pointerto/examples/storepost3.MongoDB
+	Method: func(ctx context.Context, document interface{}) error
+Function: Insert
+Block #0: Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/storepost3.Post
+Function: sanitize
+Block #0: sanitize.entry
+			00: return username
+	Global: init$guard, Type: *bool
+	Type: analyzer/ssa-pointerto/examples/storepost3.Profile

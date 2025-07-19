@@ -1,0 +1,129 @@
+	Type: analyzer/ssa-pointerto/examples/test2.MongoInserter
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/test2.Nested2
+Function: Test
+Block #0: Test.entry
+			00: t0 = new MongoDB (complit)
+			01: t1 = new Inventory (complit)
+			02: t2 = &t1.Amount [#0]
+			03: *t2 = 50:int
+			04: t3 = local Inventory (inv2)
+			05: t4 = &t3.Amount [#0]
+			06: *t4 = postid
+			07: t5 = make interface{} <- int (postid)
+			08: t6 = (*MongoDB).Insert(t0, ctx, "db1":string, "ids":string, t5)
+			09: t7 = local Product (prod1)
+			10: t8 = &t7.ID [#0]
+			11: t9 = &t7.Name [#1]
+			12: t10 = &t7.Metadata [#6]
+			13: t11 = &t7.InventoryPtr [#2]
+			14: t12 = &t7.InventoryVal [#3]
+			15: t13 = *t3
+			16: *t8 = 1:int
+			17: *t9 = "prod1":string
+			18: *t10 = metadata
+			19: *t11 = t1
+			20: *t12 = t13
+			21: metadata["alice":string] = "bob":string
+			22: *t3 = Inventory{}:Inventory
+			23: t14 = &t1.Amount [#0]
+			24: *t14 = 10:int
+			25: t15 = &t3.Amount [#0]
+			26: *t15 = 20:int
+			27: t16 = &t7.InventoryPtr [#2]
+			28: t17 = *t16
+			29: t18 = &t17.Amount [#0]
+			30: *t18 = 30:int
+			31: t19 = &t7.InventoryVal [#3]
+			32: t20 = &t19.Amount [#0]
+			33: *t20 = 40:int
+			34: t21 = &t7.InventoryPtr [#2]
+			35: t22 = *t21
+			36: t23 = make interface{} <- *Inventory (t22)
+			37: t24 = (*MongoDB).Insert(t0, ctx, "db2":string, "inventory":string, t23)
+			38: t25 = &t7.InventoryVal [#3]
+			39: t26 = *t25
+			40: t27 = make interface{} <- Inventory (t26)
+			41: t28 = (*MongoDB).Insert(t0, ctx, "db2":string, "inventory":string, t27)
+			42: t29 = *t7
+			43: t30 = make interface{} <- Product (t29)
+			44: t31 = (*MongoDB).Insert(t0, ctx, "db3":string, "product":string, t30)
+			45: t32 = local Product (prod2)
+			46: t33 = *t7
+			47: *t32 = t33
+			48: t34 = &t32.Name [#1]
+			49: *t34 = "MyName":string
+			50: t35 = *t32
+			51: t36 = make interface{} <- Product (t35)
+			52: t37 = (*MongoDB).Insert(t0, ctx, "db3":string, "product":string, t36)
+			53: t38 = &t7.Metadata [#6]
+			54: t39 = *t38
+			55: t39["alice2":string] = "bob2":string
+			56: t40 = local Nested1 (nested1)
+			57: t41 = &t40.Val1 [#0]
+			58: t42 = &t40.Nested2 [#1]
+			59: t43 = &t42.Val2 [#0]
+			60: t44 = &t42.Nested3 [#1]
+			61: t45 = &t44.Val3 [#0]
+			62: *t41 = 1:int
+			63: *t43 = 2:int
+			64: *t45 = 3:int
+			65: t46 = *t40
+			66: t47 = &t7.Nested1 [#4]
+			67: *t47 = t46
+			68: t48 = &t40.Nested2 [#1]
+			69: t49 = &t48.Nested3 [#1]
+			70: t50 = &t49.Val3 [#0]
+			71: *t50 = 4:int
+			72: t51 = new Nested1 (complit)
+			73: t52 = &t51.Val1 [#0]
+			74: t53 = &t51.Nested2 [#1]
+			75: t54 = &t53.Val2 [#0]
+			76: t55 = &t53.Nested3 [#1]
+			77: t56 = &t55.Val3 [#0]
+			78: *t52 = 11:int
+			79: *t54 = 22:int
+			80: *t56 = 33:int
+			81: t57 = &t7.Nested1Ptr [#5]
+			82: *t57 = t51
+			83: t58 = &t51.Nested2 [#1]
+			84: t59 = &t58.Nested3 [#1]
+			85: t60 = &t59.Val3 [#0]
+			86: *t60 = 44:int
+			87: t61 = *t7
+			88: t62 = make interface{} <- Product (t61)
+			89: t63 = (*MongoDB).Insert(t0, ctx, "db3":string, "product":string, t62)
+			90: return
+	Type: analyzer/ssa-pointerto/examples/test2.Inventory
+	Type: analyzer/ssa-pointerto/examples/test2.Product
+	Type: analyzer/ssa-pointerto/examples/test2.MongoDB
+	Method: func(ctx context.Context, database string, collection string, document interface{}) error
+Function: Insert
+Block #0: Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/test2.Nested3
+	Type: analyzer/ssa-pointerto/examples/test2.Nested1
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = make map[string]string 
+			02: t2 = Test(t0, 1:int, t1)
+			03: return
+	Global: init$guard, Type: *bool
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+Block #2: init.init.done
+			00: return

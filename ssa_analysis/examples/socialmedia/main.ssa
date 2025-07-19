@@ -1,0 +1,89 @@
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+Block #2: init.init.done
+			00: return
+	Type: analyzer/ssa-pointerto/examples/socialmedia.User
+	Type: analyzer/ssa-pointerto/examples/socialmedia.Message
+	Type: analyzer/ssa-pointerto/examples/socialmedia.InMemoryDB
+	Method: func(ctx context.Context, data interface{}) error
+Function: Save
+Block #0: Save.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = data
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[DB] Saved: %+v\n":string, t2...)
+			05: return nil:error
+Function: sendMessage
+Block #0: sendMessage.entry
+			00: t0 = new Message (complit) 					//t0: message
+			01: t1 = &t0.Sender [#0] 						//t1: message.Sender
+			02: t2 = &t0.Recipient [#1] 					//t2: message.Recipient
+			03: t3 = &t0.Content [#2] 						//t3: message.Content
+			04: *t1 = sender 								//_sender: message.Sender
+			05: *t2 = recipient 							//_recipient: message.Recipient
+			06: *t3 = content 								//_content: message.Content
+			07: t4 = make interface{} <- *Message (t0) 		//t0: message
+			08: t5 = invoke db.Save(ctx, t4) 				//t4: message
+			09: return
+	Global: init$guard, Type: *bool
+	Type: analyzer/ssa-pointerto/examples/socialmedia.DB
+	Method: func(ctx context.Context, data interface{}) error
+	Method: func(ctx context.Context, data interface{}) error
+Function: createUser
+Block #0: createUser.entry
+			00: t0 = new User (complit)
+			01: t1 = &t0.ID [#0]
+			02: t2 = &t0.Username [#1]
+			03: *t1 = id
+			04: *t2 = username
+			05: return t0
+Function: addFriend
+Block #0: addFriend.entry
+			00: t0 = &u.Friends [#2]
+			01: t1 = *t0
+			02: t2 = new [1]*User (varargs)
+			03: t3 = &t2[0:int]
+			04: *t3 = friend
+			05: t4 = slice t2[:]
+			06: t5 = append(t1, t4...)
+			07: t6 = &u.Friends [#2]
+			08: *t6 = t5
+			09: return
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = new InMemoryDB (complit)
+			02: t2 = createUser(1:int, "alice":string) 		//t2: message.Sender
+			03: t3 = createUser(2:int, "bob":string)
+			04: t4 = createUser(3:int, "charlie":string)
+			05: t5 = addFriend(t2, t3)
+			06: t6 = addFriend(t2, t4)
+			07: t7 = &t2.Friends [#2]
+			08: t8 = *t7
+			09: t9 = len(t8)
+			10: jump 1
+Block #1: main.rangeindex.loop
+			00: t10 = phi [0: -1:int, 2: t11] #rangeindex
+			01: t11 = t10 + 1:int
+			02: t12 = t11 < t9
+			03: if t12 goto 2 else 3
+Block #2: main.rangeindex.body
+			00: t13 = &t8[t11] 								//t8[*]: message.Recipient
+			01: t14 = *t13 									//t13: message.Recipient
+			02: t15 = &t14.Username [#1] 					//t15: message.Recipient.Username
+			03: t16 = *t15
+			04: t17 = "Hi ":string + t16
+			05: t18 = t17 + "!":string
+			06: t19 = make DB <- *InMemoryDB (t1)
+			07: t20 = sendMessage(t0, t19, t2, t14, t18) //t2: message.Sender //t14: message.Recipient //t18: message.Content
+			08: jump 1
+Block #3: main.rangeindex.done
+			00: return

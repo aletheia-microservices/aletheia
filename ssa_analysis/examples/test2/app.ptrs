@@ -1,0 +1,255 @@
+### Function: (*main.MongoDB).Insert ###
+m (@Insert): (*ssa.Parameter) (parameter m : *MongoDB)
+	 → t0 (@Test): (*ssa.Alloc)
+
+ctx (@Insert): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+		X (interface of) → struct{context.emptyCtx}{}:context.backgroundCtx (@?): (*ssa.Const)
+
+document (@Insert): (*ssa.Parameter) (parameter document : interface{})
+	 → t5 (@Test): (*ssa.MakeInterface)
+		X (interface of) → i (@Test): (*ssa.Parameter)
+	 → t23 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t22 (@Test): (*ssa.UnOp)
+	 → t27 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t26 (@Test): (*ssa.UnOp)
+	 → t30 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t29 (@Test): (*ssa.UnOp)
+	 → t36 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t35 (@Test): (*ssa.UnOp)
+	 → t62 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t61 (@Test): (*ssa.UnOp)
+
+t0 (@Insert): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t1 (@Insert): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t2 (@Insert): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t3 (@Insert): (*ssa.Call) (fmt.Printf("[INFO] inserted d...":string, t2...))
+
+
+### Function: main.Test ###
+ctx (@Test): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+		X (interface of) → struct{context.emptyCtx}{}:context.backgroundCtx (@?): (*ssa.Const)
+
+metadata (@Test): (*ssa.Parameter) (parameter metadata : map[string]string)
+	 → t1 (@main): (*ssa.MakeMap)
+
+t0 (@Test): (*ssa.Alloc) (new MongoDB (complit))
+	 → t0 (@Test): (*ssa.Alloc)
+
+t1 (@Test): (*ssa.Alloc) (new Inventory (complit))
+	 → t1 (@Test): (*ssa.Alloc)
+
+t2 (@Test): (*ssa.FieldAddr) (&t1.Amount [#0])
+	 → t1 (@Test): (*ssa.Alloc)
+
+t3 (@Test): (*ssa.Alloc) (local Inventory (inv2))
+	 → t3 (@Test): (*ssa.Alloc)
+
+t4 (@Test): (*ssa.FieldAddr) (&t3.Amount [#0])
+	 → t3 (@Test): (*ssa.Alloc)
+
+t5 (@Test): (*ssa.MakeInterface) (make interface{} <- int (i))
+	 → t5 (@Test): (*ssa.MakeInterface)
+		X (interface of) → i (@Test): (*ssa.Parameter)
+
+t6 (@Test): (*ssa.Call) ((*MongoDB).Insert(t0, ctx, t5))
+		arg #0 → t0 (@Test): (*ssa.Alloc)
+		arg #1 → ctx (@Test): (*ssa.Parameter)
+		arg #2 → t5 (@Test): (*ssa.MakeInterface)
+
+t7 (@Test): (*ssa.Alloc) (local Product (prod1))
+	 → t7 (@Test): (*ssa.Alloc)
+
+t8 (@Test): (*ssa.FieldAddr) (&t7.ID [#0])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t9 (@Test): (*ssa.FieldAddr) (&t7.Name [#1])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t10 (@Test): (*ssa.FieldAddr) (&t7.Metadata [#6])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t11 (@Test): (*ssa.FieldAddr) (&t7.InventoryPtr [#2])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t12 (@Test): (*ssa.FieldAddr) (&t7.InventoryVal [#3])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t13 (@Test): (*ssa.UnOp) (*t3)
+
+t14 (@Test): (*ssa.FieldAddr) (&t1.Amount [#0])
+	 → t1 (@Test): (*ssa.Alloc)
+
+t15 (@Test): (*ssa.FieldAddr) (&t3.Amount [#0])
+	 → t3 (@Test): (*ssa.Alloc)
+
+t16 (@Test): (*ssa.FieldAddr) (&t7.InventoryPtr [#2])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t17 (@Test): (*ssa.UnOp) (*t16)
+	 → t1 (@Test): (*ssa.Alloc)
+
+t18 (@Test): (*ssa.FieldAddr) (&t17.Amount [#0])
+	 → t1 (@Test): (*ssa.Alloc)
+
+t19 (@Test): (*ssa.FieldAddr) (&t7.InventoryVal [#3])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t20 (@Test): (*ssa.FieldAddr) (&t19.Amount [#0])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t21 (@Test): (*ssa.FieldAddr) (&t7.InventoryPtr [#2])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t22 (@Test): (*ssa.UnOp) (*t21)
+	 → t1 (@Test): (*ssa.Alloc)
+
+t23 (@Test): (*ssa.MakeInterface) (make interface{} <- *Inventory (t22))
+	 → t23 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t22 (@Test): (*ssa.UnOp)
+
+t24 (@Test): (*ssa.Call) ((*MongoDB).Insert(t0, ctx, t23))
+		arg #0 → t0 (@Test): (*ssa.Alloc)
+		arg #1 → ctx (@Test): (*ssa.Parameter)
+		arg #2 → t23 (@Test): (*ssa.MakeInterface)
+
+t25 (@Test): (*ssa.FieldAddr) (&t7.InventoryVal [#3])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t26 (@Test): (*ssa.UnOp) (*t25)
+
+t27 (@Test): (*ssa.MakeInterface) (make interface{} <- Inventory (t26))
+	 → t27 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t26 (@Test): (*ssa.UnOp)
+
+t28 (@Test): (*ssa.Call) ((*MongoDB).Insert(t0, ctx, t27))
+		arg #0 → t0 (@Test): (*ssa.Alloc)
+		arg #1 → ctx (@Test): (*ssa.Parameter)
+		arg #2 → t27 (@Test): (*ssa.MakeInterface)
+
+t29 (@Test): (*ssa.UnOp) (*t7)
+
+t30 (@Test): (*ssa.MakeInterface) (make interface{} <- Product (t29))
+	 → t30 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t29 (@Test): (*ssa.UnOp)
+
+t31 (@Test): (*ssa.Call) ((*MongoDB).Insert(t0, ctx, t30))
+		arg #0 → t0 (@Test): (*ssa.Alloc)
+		arg #1 → ctx (@Test): (*ssa.Parameter)
+		arg #2 → t30 (@Test): (*ssa.MakeInterface)
+
+t32 (@Test): (*ssa.Alloc) (local Product (prod2))
+	 → t32 (@Test): (*ssa.Alloc)
+
+t33 (@Test): (*ssa.UnOp) (*t7)
+
+t34 (@Test): (*ssa.FieldAddr) (&t32.Name [#1])
+	 → t32 (@Test): (*ssa.Alloc)
+
+t35 (@Test): (*ssa.UnOp) (*t32)
+
+t36 (@Test): (*ssa.MakeInterface) (make interface{} <- Product (t35))
+	 → t36 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t35 (@Test): (*ssa.UnOp)
+
+t37 (@Test): (*ssa.Call) ((*MongoDB).Insert(t0, ctx, t36))
+		arg #0 → t0 (@Test): (*ssa.Alloc)
+		arg #1 → ctx (@Test): (*ssa.Parameter)
+		arg #2 → t36 (@Test): (*ssa.MakeInterface)
+
+t38 (@Test): (*ssa.FieldAddr) (&t7.Metadata [#6])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t39 (@Test): (*ssa.UnOp) (*t38)
+	 → t1 (@main): (*ssa.MakeMap)
+
+t40 (@Test): (*ssa.Alloc) (local Nested1 (nested1))
+	 → t40 (@Test): (*ssa.Alloc)
+
+t41 (@Test): (*ssa.FieldAddr) (&t40.Val1 [#0])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t42 (@Test): (*ssa.FieldAddr) (&t40.Nested2 [#1])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t43 (@Test): (*ssa.FieldAddr) (&t42.Val2 [#0])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t44 (@Test): (*ssa.FieldAddr) (&t42.Nested3 [#1])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t45 (@Test): (*ssa.FieldAddr) (&t44.Val3 [#0])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t46 (@Test): (*ssa.UnOp) (*t40)
+
+t47 (@Test): (*ssa.FieldAddr) (&t7.Nested1 [#4])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t48 (@Test): (*ssa.FieldAddr) (&t40.Nested2 [#1])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t49 (@Test): (*ssa.FieldAddr) (&t48.Nested3 [#1])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t50 (@Test): (*ssa.FieldAddr) (&t49.Val3 [#0])
+	 → t40 (@Test): (*ssa.Alloc)
+
+t51 (@Test): (*ssa.Alloc) (new Nested1 (complit))
+	 → t51 (@Test): (*ssa.Alloc)
+
+t52 (@Test): (*ssa.FieldAddr) (&t51.Val1 [#0])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t53 (@Test): (*ssa.FieldAddr) (&t51.Nested2 [#1])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t54 (@Test): (*ssa.FieldAddr) (&t53.Val2 [#0])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t55 (@Test): (*ssa.FieldAddr) (&t53.Nested3 [#1])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t56 (@Test): (*ssa.FieldAddr) (&t55.Val3 [#0])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t57 (@Test): (*ssa.FieldAddr) (&t7.Nested1Ptr [#5])
+	 → t7 (@Test): (*ssa.Alloc)
+
+t58 (@Test): (*ssa.FieldAddr) (&t51.Nested2 [#1])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t59 (@Test): (*ssa.FieldAddr) (&t58.Nested3 [#1])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t60 (@Test): (*ssa.FieldAddr) (&t59.Val3 [#0])
+	 → t51 (@Test): (*ssa.Alloc)
+
+t61 (@Test): (*ssa.UnOp) (*t7)
+
+t62 (@Test): (*ssa.MakeInterface) (make interface{} <- Product (t61))
+	 → t62 (@Test): (*ssa.MakeInterface)
+		X (interface of) → t61 (@Test): (*ssa.UnOp)
+
+t63 (@Test): (*ssa.Call) ((*MongoDB).Insert(t0, ctx, t62))
+		arg #0 → t0 (@Test): (*ssa.Alloc)
+		arg #1 → ctx (@Test): (*ssa.Parameter)
+		arg #2 → t62 (@Test): (*ssa.MakeInterface)
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+		X (interface of) → struct{context.emptyCtx}{}:context.backgroundCtx (@?): (*ssa.Const)
+
+t1 (@main): (*ssa.MakeMap) (make map[string]string )
+	 → t1 (@main): (*ssa.MakeMap)
+
+t2 (@main): (*ssa.Call) (Test(t0, 1:int, t1))

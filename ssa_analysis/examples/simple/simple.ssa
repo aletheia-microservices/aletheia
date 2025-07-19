@@ -1,0 +1,88 @@
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+Block #2: init.init.done
+			00: return
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = myfunc_ptrs(t0)
+			02: t2 = myfunc_vals(t0)
+			03: t3 = myfunc_channels(t0)
+			04: return
+	Type: analyzer/ssa-pointerto/examples/simple.Product
+Function: myfunc_ptrs
+Block #0: myfunc_ptrs.entry
+			00: t0 = new InMemoryDB (db)
+			01: t1 = new Product (complit)
+			02: t2 = &t1.name [#0]
+			03: *t2 = "name":string
+			04: t3 = new Product (complit)
+			05: t4 = &t3.name [#0]
+			06: *t4 = "name":string
+			07: t5 = new Product (complit)
+			08: t6 = &t5.name [#0]
+			09: *t6 = "name":string
+			10: t7 = &t1.desc [#1]
+			11: *t7 = "desc":string
+			12: t8 = make interface{} <- *Product (t3)
+			13: t9 = (*InMemoryDB).Save(t0, ctx, t8)
+			14: t10 = make interface{} <- *Product (t5)
+			15: t11 = (*InMemoryDB).Save(t0, ctx, t10)
+			16: return
+Function: myfunc_vals
+Block #0: myfunc_vals.entry
+			00: t0 = local Product (prod1)
+			01: t1 = &t0.name [#0]
+			02: *t0 = Product{}:Product
+			03: *t1 = "name":string
+			04: t2 = local Product (prod2)
+			05: t3 = *t0
+			06: *t2 = t3
+			07: t4 = &t2.desc [#1]
+			08: *t4 = "desc":string
+			09: t5 = new InMemoryDB (db)
+			10: t6 = *t2
+			11: t7 = make interface{} <- Product (t6)
+			12: t8 = (*InMemoryDB).Save(t5, ctx, t7)
+			13: return
+	Global: init$guard, Type: *bool
+	Type: analyzer/ssa-pointerto/examples/simple.DB
+	Method: func(ctx context.Context, data interface{}) error
+	Method: func(ctx context.Context, data interface{}) error
+	Type: analyzer/ssa-pointerto/examples/simple.InMemoryDB
+	Method: func(ctx context.Context, data interface{}) error
+Function: Save
+Block #0: Save.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = data
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[DB] Saved: %+v\n":string, t2...)
+			05: return nil:error
+Function: myfunc_channels
+Block #0: myfunc_channels.entry
+			00: t0 = local Product (prod1)
+			01: t1 = &t0.name [#0]
+			02: *t0 = Product{}:Product
+			03: *t1 = "chan":string
+			04: t2 = &t0.desc [#1]
+			05: *t2 = "sent over channel":string
+			06: t3 = new chan Product (ch)
+			07: t4 = make chan Product 0:int
+			08: *t3 = t4
+			09: t5 = make closure myfunc_channels$1 [t3]
+			10: t6 = *t0
+			11: go t5(t6)
+			12: t7 = *t3
+			13: t8 = <-t7
+			14: t9 = new InMemoryDB (db)
+			15: t10 = make interface{} <- Product (t8)
+			16: t11 = (*InMemoryDB).Save(t9, ctx, t10)
+			17: return

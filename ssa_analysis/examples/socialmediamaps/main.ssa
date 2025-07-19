@@ -1,0 +1,112 @@
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.UserMentions
+Function: StorePost
+Block #0: StorePost.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = math/rand.Int63()
+			02: t2 = local UserMentions (usermentions) 	//t02: post.usermentions
+			03: t3 = &t2.mentions [#0] 					//t03: post.usermentions
+			04: t4 = make map[string]string  			//t04: post.usermentions
+			05: *t3 = t4 								//t04: post.usermentions
+			06: t5 = &t2.mentions [#0] 					//t05: post.usermentions.mentions
+			07: t6 = *t5 								//t06: post.usermentions.mentions
+			08: t6["alice":string] = "hello alice":string
+			09: t7 = &t2.mentions [#0]
+			10: t8 = *t7
+			11: t8["bob":string] = "hello bob":string
+			12: t9 = &t2.mentions [#0]
+			13: t10 = *t9
+			14: t10[someuser] = "hello some user":string
+			15: t11 = local Post (post) 				//t11: post
+			16: t12 = &t11.reqID [#0] 					//t11: post.reqID
+			17: t13 = &t11.postID [#1] 					//t13: post.postID
+			18: t14 = &t11.text [#2] 					//t14: post.text
+			19: t15 = &t11.timestamp [#4] 				//t15: post.timestamp
+			20: t16 = &t11.creator [#5] 				//t16: post.creator
+			21: t17 = new Creator (complit) 			//t17: post.creator
+			22: t18 = &t17.Username [#0] 				//t18: post.creator.username
+			23: *t18 = "some username":string
+			24: t19 = &t11.usermentions [#3] 			//t19: post.usermentions
+			25: t20 = *t2 								//t02: post.usermentions
+			26: *t12 = reqID
+			27: *t13 = t0
+			28: *t14 = text
+			29: *t15 = t1
+			30: *t16 = t17 								//t17: post.creator
+			31: *t19 = t20 								//t20: post.usermentions
+			32: t21 = new MongoDB (complit)
+			33: t22 = *t11 								//t11: post
+			34: t23 = make interface{} <- Post (t22) 	//t22: post
+			35: t24 = (*MongoDB).Insert(t21, ctx, t23) 	//t23: post
+			36: t25 = &t2.mentions [#0] 				//t25: post.usermentions.mentions
+			37: t26 = *t25 								//t26: post.usermentions.mentions
+			38: t27 = t26["alice":string] 				//t27: post.usermentions.mentions["alice"]
+			39: t28 = make interface{} <- string (t27)
+			40: t29 = (*MongoDB).Insert(t21, ctx, t28)
+			41: t30 = &t2.mentions [#0] 				//t30: post.usermentions.mentions
+			42: t31 = *t30 								//t31: post.usermentions.mentions
+			43: t32 = t31[someuser] 					//t32: post.usermentions.mentions[*]
+			44: t33 = make interface{} <- string (t32)
+			45: t34 = (*MongoDB).Insert(t21, ctx, t33)
+			46: t35 = &t2.mentions [#0]
+			47: t36 = *t35
+			48: t37 = t36[someuser]
+			49: t38 = make interface{} <- string (t37)
+			50: t39 = (*MongoDB).Insert(t21, ctx, t38)
+			51: t40 = local Notification (notification)
+			52: t41 = &t40.reqID [#0]
+			53: t42 = &t40.postID [#1]
+			54: *t41 = reqID
+			55: *t42 = t0
+			56: t43 = new RabbitMQ (complit)
+			57: t44 = *t40
+			58: t45 = make interface{} <- Notification (t44)
+			59: t46 = (*RabbitMQ).Push(t43, ctx, t45)
+			60: return t0, nil:error
+	Global: init$guard, Type: *bool
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.MongoDB
+	Method: func(ctx context.Context, document interface{}) error
+Function: Insert
+Block #0: Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+Function: Push
+Block #0: Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.Post
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.Notification
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = StorePost(t0, 0:int64, "mytext":string, "some other user":string)
+			02: return
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = math/rand.init()
+			04: jump 2
+Block #2: init.init.done
+			00: return
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.MongoInserter
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.Creator
+	Type: analyzer/ssa-pointerto/examples/socialmediamaps.UserMentions

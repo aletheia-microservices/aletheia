@@ -1,0 +1,171 @@
+	Type: analyzer/ssa-pointerto/examples/new2.Sku
+	Type: analyzer/ssa-pointerto/examples/new2.Order
+Function: main
+Block #0: main.entry
+			00: t0 = context.Background()
+			01: t1 = new [0]*OrderItem (slicelit)
+			02: t2 = slice t1[:]
+			03: t3 = make map[string]string 0:int
+			04: t4 = new Shipping (complit)
+			05: t5 = New(t0, 0:int32, t2, t3, "":string, t4)
+			06: return
+	Type: analyzer/ssa-pointerto/examples/new2.MongoDB
+	Method: func(ctx context.Context, document interface{}) error
+Function: Insert
+Block #0: Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/new2.OrderItems
+Function: New
+Block #0: New.entry
+			00: t0 = new Order (complit) 		//t0: order
+			01: t1 = &t0.Currency [#0]
+			02: t2 = &t0.Items [#1]
+			03: t3 = &t0.Metadata [#2]
+			04: t4 = &t0.Shipping [#4]
+			05: *t1 = currency
+			06: *t2 = items
+			07: *t3 = metadata
+			08: *t4 = shipping
+			09: t5 = len(items)
+			10: jump 1
+Block #1: New.rangeindex.loop
+			00: t6 = phi [0: nil:[]*OrderItem, 2: t6, 6: t21] #orderItems
+			01: t7 = phi [0: -1:int, 2: t8, 6: t8] #rangeindex
+			02: t8 = t7 + 1:int
+			03: t9 = t8 < t5
+			04: if t9 goto 2 else 3
+Block #2: New.rangeindex.body
+			00: t10 = &items[t8] 						//t10: order.items[*]
+			01: t11 = *t10 								//t11: order.items[*]
+			02: t12 = (*OrderItem).IsTypeTax(t11)
+			03: if t12 goto 4 else 1
+Block #3: New.rangeindex.done
+			00: t13 = len(t6)
+			01: jump 7
+Block #4: New.if.then
+			00: t14 = &t11.Quantity [#1]
+			01: t15 = *t14
+			02: t16 = t15 <= 0:int64
+			03: if t16 goto 5 else 6
+Block #5: New.if.then
+			00: t17 = &t11.Quantity [#1]
+			01: *t17 = 1:int64
+			02: jump 6
+Block #6: New.if.done
+			00: t18 = new [1]*OrderItem (varargs) 		//t18: order.items
+
+			###### t19: &t18[0:int] #####
+
+			01: t19 = &t18[0:int] 						//t19: order.items[*]
+			02: *t19 = t11
+			03: t20 = slice t18[:] 						//t18: order.items
+			04: t21 = append(t6, t20...)  				//t21, t20: order.items
+			05: jump 1
+Block #7: New.rangeindex.loop
+			00: t22 = phi [3: -1:int, 8: t23, 10: t23] #rangeindex
+			01: t23 = t22 + 1:int
+			02: t24 = t23 < t13
+			03: if t24 goto 8 else 9
+Block #8: New.rangeindex.body
+			00: t25 = &t6[t23] 							//t25: order.items[*]
+			01: t26 = *t25 								//t26: order.items[*]
+			02: t27 = (*OrderItem).IsTypeSku(t26)
+			03: if t27 goto 10 else 7
+Block #9: New.rangeindex.done
+			00: t28 = new Shipping (complit)
+			01: t29 = &t0.Shipping [#4]
+			02: *t29 = t28
+			03: t30 = &t0.Shipping [#4]
+			04: t31 = *t30
+			05: t32 = new Address (complit)
+			06: t33 = &t31.Address [#0]
+			07: *t33 = t32
+			08: t34 = &t0.Currency [#0]
+			09: *t34 = 50:int32
+
+			###### t35: &t0.Items #####
+
+			10: t35 = &t0.Items [#1] 					//t35: order.items
+			11: *t35 = t6 								//t6: order.items
+			12: t36 = new MongoDB (complit)
+			13: t37 = make interface{} <- *Order (t0)	//t0: order
+			14: t38 = (*MongoDB).Insert(t36, ctx, t37) 	//t37: order
+			15: return t0, nil:error
+Block #10: New.if.then
+			00: t39 = &t26.Parent [#4] 					//t26: order.items[*].Parent
+			01: t40 = *t39 								//t40: order.items[*].Parent
+			02: t41 = Get(ctx, t40)
+			03: t42 = extract t41 #0 					//t42: sku
+			04: t43 = extract t41 #1
+			05: t44 = &t42.Price [#1] 					//t44: sku.Price
+			06: t45 = *t44 								//t45: sku.Price
+			07: t46 = convert int64 <- uint64 (t45)    *//t46: sku.Price
+
+			###### t47: &t26.Amount #####
+
+			08: t47 = &t26.Amount [#2] 					//t47: order.items[*].Amount
+			09: *t47 = t46 							   *//t46: order.items[*].Amount
+			10: t48 = &t42.Currency [#2] 				//t48: sku.Currency, order.items[*].Currency
+			11: t49 = *t48 							 ***//t49: sku.Currency, order.items[*].Currency
+
+			###### t50: &t26.Currency #####
+
+			12: t50 = &t26.Currency [#3] 				//t50: order.items[*].Currency, sku.Currency
+			13: *t50 = t49 							 ***//t49: order.items[*].Currency, sku.Currency
+			14: t51 = &t42.Name [#0] 					//t51: sku.Name
+			15: t52 = *t51 								//t52: sku.Name
+
+			###### t53: &t26.Description #####
+			16: t53 = &t26.Description [#5]			  **//t53: order.items[*].Description
+			17: *t53 = t52 							  **//t53: sku.Name
+			18: jump 7
+Function: init
+Block #0: init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+Block #2: init.init.done
+			00: return
+	Type: analyzer/ssa-pointerto/examples/new2.MongoInserter
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: analyzer/ssa-pointerto/examples/new2.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+Function: Get
+Block #0: Get.entry
+			00: t0 = new Sku (complit)
+			01: return t0, nil:error
+	Type: analyzer/ssa-pointerto/examples/new2.Product
+	Type: analyzer/ssa-pointerto/examples/new2.Shipping
+	Type: analyzer/ssa-pointerto/examples/new2.OrderItem
+	Method: func() bool
+Function: IsTypeSku
+Block #0: IsTypeSku.entry
+			00: return true:bool
+	Method: func() bool
+Function: IsTypeTax
+Block #0: IsTypeTax.entry
+			00: return true:bool
+	Global: init$guard, Type: *bool
+	Type: analyzer/ssa-pointerto/examples/new2.Inventory
+	Type: analyzer/ssa-pointerto/examples/new2.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+Function: Push
+Block #0: Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
+	Type: analyzer/ssa-pointerto/examples/new2.Address
