@@ -56,7 +56,8 @@
     Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions
     struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
     (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated
-    int64} --> r-tainted 1x: read(skus_db.Sku)'
+    int64} --> r-tainted 6x: read(skus_db.Sku, skus_db.Sku.Sku, skus_db.Sku.Sku.Sku,
+    skus_db.Sku.Sku.Currency, skus_db.Sku.Sku.Name, skus_db.Sku.Sku.Price)'
   - 0 depth 0 (InterfaceObject UserType) err .error
   - 0 depth 0 (PointerObject PointerType) sku (*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory
     (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated
@@ -183,8 +184,12 @@
   - '0 depth 0 (BasicObject BasicType) currency int32 --> w-tainted 1x: write(orders_db.Order.Currency)'
   - '_1 depth 1 (Reference BasicType) ref <currency int32> @ OrderService --> w-tainted
     1x: write(orders_db.Order.Currency)'
-  - 0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-  - _1 depth 1 (Reference ArrayType) ref <orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})> @ OrderService
+  - '0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type
+    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
+    string}) --> w-tainted 1x: write(orders_db.Order.Items)'
+  - '_1 depth 1 (Reference ArrayType) ref <items [](*digota.OrderItem struct{Type
+    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
+    string})> @ OrderService --> w-tainted 1x: write(orders_db.Order.Items)'
   - 0 depth 0 (BasicObject BasicType) err error
   - 0 depth 0 (BasicObject BasicType) currencyString string
   - _1 depth 1 (BasicObject BasicType) * string

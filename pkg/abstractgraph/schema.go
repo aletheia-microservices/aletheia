@@ -177,8 +177,13 @@ func TaintDataflowReadNoSQL(app *app.App, obj objects.Object, call *AbstractData
 	logger.Logger.Infof("[TENTATIVE TAINT READ (DOC) VAR] [%s] (%02d) @ %s", utils.GetType(obj), obj.GetId(), obj.LongString())
 	obj = getTargetVariableIfNoSQLCursorRead(datastore, obj)
 	deps := obj.GetNestedDependencies(false)
+
+	for _, ref := range obj.GetVariableInfo().GetNestedRefByDependencies(nil) {
+		deps = append(deps, ref)
+		deps = append(deps, ref.GetNestedDependencies(false)...)
+	}
+
 	logger.Logger.Infof("[TENTATIVE TAINT READ (DOC) VAR] [%s] NUM DEPS = %d @ %s", utils.GetType(obj), len(deps), obj.LongString())
-	
 
 	var prefix string
 	for _, dep := range deps {

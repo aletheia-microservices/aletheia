@@ -85,7 +85,7 @@ def build_digraph(data, graph_type, labeled):
             digraph, pos,
             edge_labels=combined_edge_labels,
             font_color='black',
-            font_size=10,
+            font_size=18,
             label_pos=0.65,
             connectionstyle='arc3,rad=0.3',
         )

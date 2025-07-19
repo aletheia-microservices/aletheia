@@ -78,7 +78,7 @@ func getTaintedFieldsListAndString(dfs []*objects.ObjectDataflow) ([]string, str
 	return fieldsLst, fieldsStr
 }
 
-func getIndirectDependencies(v objects.Object, i int) ([]objects.Object, string, []int) {
+func getIndirectDependencies(obj objects.Object, i int) ([]objects.Object, string, []int) {
 	blockVarsStr := ""
 
 	padding := ""
@@ -93,7 +93,8 @@ func getIndirectDependencies(v objects.Object, i int) ([]objects.Object, string,
 	opStr := ""
 
 	visitedOp := make(map[string]bool)
-	for _, df := range v.GetVariableInfo().GetAllDataflows() {
+	for _, df := range obj.GetVariableInfo().GetAllDataflows() {
+
 		s := df.GetOpString() + "(" + df.Datastore + "), "
 		if ok := visitedOp[s]; !ok {
 			visitedOp[s] = true
@@ -105,8 +106,8 @@ func getIndirectDependencies(v objects.Object, i int) ([]objects.Object, string,
 		opStr = "// " + opStr
 	} */
 
-	dfsWriteOps := v.GetVariableInfo().GetAllWriteDataflows()
-	dfsReadOps := v.GetVariableInfo().GetAllReadDataflows()
+	dfsWriteOps := obj.GetVariableInfo().GetAllWriteDataflows()
+	dfsReadOps := obj.GetVariableInfo().GetAllReadDataflows()
 	if len(dfsWriteOps) > 0 || len(dfsReadOps) > 0 {
 		writeOpsLst, writeOpsStr := getTaintedFieldsListAndString(dfsWriteOps)
 		readOpsLst, readOpsStr := getTaintedFieldsListAndString(dfsReadOps)
@@ -120,20 +121,27 @@ func getIndirectDependencies(v objects.Object, i int) ([]objects.Object, string,
 		blockVarsStr += "\n"
 	}
 
-	blockVarsStr += fmt.Sprintf("[%s] (%s) %s\n", padding, objects.VariableTypeName(v), v.String())
+	blockVarsStr += fmt.Sprintf("[%s] (%s) %s\n", padding, objects.VariableTypeName(obj), obj.String())
 
-	var deps = []objects.Object{v}
+	/* if obj.GetVariableInfo().GetName() == "items" && (len(dfsWriteOps) > 0 || len(dfsReadOps) > 0) {
+		for _, df := range obj.GetVariableInfo().GetAllDataflows() {
+			logger.Logger.Warnf("DF: %s", df.String())
+		}
+		logger.Logger.Fatalf("HERE: %s\n%s", obj.String(), blockVarsStr)
+	} */
+
+	var deps = []objects.Object{obj}
 	var depth = []int{i}
 
 	// indirect dependencies from reference
-	for _, ref := range v.GetVariableInfo().GetReferences() {
+	for _, ref := range obj.GetVariableInfo().GetReferences() {
 		indirectDeps, indirectStr, indirectDepth := getIndirectDependencies(ref, i+1)
 		blockVarsStr += indirectStr
 		deps = append(deps, indirectDeps...)
 		depth = append(depth, indirectDepth...)
 	}
 	// direct dependencies
-	for _, dep := range v.GetDependencies() {
+	for _, dep := range obj.GetDependencies() {
 		directDeps, indirectStr, indirectDepth := getIndirectDependencies(dep, i+1)
 		blockVarsStr += indirectStr
 		deps = append(deps, directDeps...)
@@ -162,8 +170,8 @@ func (block *Block) Yaml() ([]string, string) {
 	data := []string{}
 	visited := make(map[objects.Object]bool)
 	allBlockVarsStr := ""
-	for _, v := range block.Objs {
-		deps, blockVarsStr, depths := getIndirectDependencies(v, 0)
+	for _, obj := range block.Objs {
+		deps, blockVarsStr, depths := getIndirectDependencies(obj, 0)
 		allBlockVarsStr += blockVarsStr + "\n"
 		/* slices.Reverse(deps) */
 		for i, v := range deps {

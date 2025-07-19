@@ -27,13 +27,13 @@
 
     --> r-tainted: read(skus_db._) {1}
 [0] (BlueprintBackendObject BlueprintBackendType) result NoSQLCursor {database = skus, collection = skus}
-     --> r-tainted: read(skus_db.Sku) {1}
+     --> r-tainted: read(skus_db.Sku, skus_db.Sku.Sku, skus_db.Sku.Sku.Sku, skus_db.Sku.Sku.Currency, skus_db.Sku.Sku.Name, skus_db.Sku.Sku.Price) {6}
 [_1] (StructObject UserType) digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
 
 [0] (InterfaceObject UserType) err .error
 
 [0] (PointerObject PointerType) sku (*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64})
-     --> r-tainted: read(skus_db.Sku) {1}
+     --> r-tainted: read(skus_db.Sku, skus_db.Sku.Sku, skus_db.Sku.Sku.Sku, skus_db.Sku.Sku.Currency, skus_db.Sku.Sku.Name, skus_db.Sku.Sku.Price) {6}
 [_1] (StructObject UserType) digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
 
 [0] (BasicObject BasicType) found bool

@@ -54,32 +54,40 @@
         --> w-tainted: write(orders_db.Order.Shipping) {1}
 [____4] (StructObject UserType) digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}
 
-[0] (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-
 [0] (PointerObject PointerType) myitem1 (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
      --> w-tainted: write(orders_db.Order.Items) {1}
 [_1] (ArrayObject ArrayType) items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
 [_1] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
 [__2] (FieldObject FieldType) Amount int64
 [___3] (BasicObject BasicType) int64
+        --> r-tainted: read(skus_db.Sku.Sku.Price) {1}
 [____4] (BasicObject BasicType) Price uint64
 [__2] (FieldObject FieldType) Currency int32
+       --> r-tainted: read(skus_db.Sku.Sku.Currency) {1}
 [___3] (BasicObject BasicType) Currency int32
 [__2] (FieldObject FieldType) Description string
+       --> r-tainted: read(skus_db.Sku.Sku.Name) {1}
 [___3] (BasicObject BasicType) Name string
 [__2] (FieldObject FieldType) Parent string
        --> r-tainted: read(skus_db._.id) {1}
 [___3] (BasicObject BasicType) Parent string
 
 [0] (PointerObject PointerType) itemFromSku (*digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64})
+     --> r-tainted: read(skus_db.Sku.Sku) {1}
 [_1] (StructObject UserType) digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}
-      --> r-tainted: read(skus_db.Sku) {1}
+      --> r-tainted: read(skus_db.Sku, skus_db.Sku.Sku, skus_db.Sku.Sku.Sku, skus_db.Sku.Sku.Currency, skus_db.Sku.Sku.Name, skus_db.Sku.Sku.Price) {6}
 [__2] (Reference UserType) ref <digota.Sku struct{Id string, Name string, Price uint64, Currency int32, Active bool, Parent string, Metadata map[string]string, Attributes map[string]string, Image string, PackageDimensions (*digota.PackageDimensions struct{Height float64, Length float64, Weight float64, Width float64}), Inventory (*digota.Inventory struct{Quantity int64, Type int32}), Created int64, Updated int64}> @ SkuService
+      --> r-tainted: read(skus_db.Sku.Sku.Currency) {1}
 [__2] (FieldObject FieldType) Currency int32
+       --> r-tainted: read(skus_db.Sku.Sku.Currency) {1}
 [___3] (BasicObject BasicType) Currency int32
+      --> r-tainted: read(skus_db.Sku.Sku.Name) {1}
 [__2] (FieldObject FieldType) Name string
+       --> r-tainted: read(skus_db.Sku.Sku.Name) {1}
 [___3] (BasicObject BasicType) Name string
+      --> r-tainted: read(skus_db.Sku.Sku.Price) {1}
 [__2] (FieldObject FieldType) Price uint64
+       --> r-tainted: read(skus_db.Sku.Sku.Price) {1}
 [___3] (BasicObject BasicType) Price uint64
 
 [0] (InterfaceObject UserType) err .error
@@ -141,18 +149,19 @@
         --> w-tainted: write(orders_db.Order.Shipping) {1}
 [____4] (StructObject UserType) digota.Shipping struct{Name string, Phone string, Address (*digota.Shipping_Address struct{Line1 string, City string, Country string, Line2 string, PostalCode string, State string}), Carrier string, TrackingNumber string}
 
-[0] (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-
 [0] (PointerObject PointerType) myitem1 (*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
      --> w-tainted: write(orders_db.Order.Items) {1}
 [_1] (ArrayObject ArrayType) items [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
 [_1] (StructObject UserType) digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string}
 [__2] (FieldObject FieldType) Amount int64
 [___3] (BasicObject BasicType) int64
+        --> r-tainted: read(skus_db.Sku.Sku.Price) {1}
 [____4] (BasicObject BasicType) Price uint64
 [__2] (FieldObject FieldType) Currency int32
+       --> r-tainted: read(skus_db.Sku.Sku.Currency) {1}
 [___3] (BasicObject BasicType) Currency int32
 [__2] (FieldObject FieldType) Description string
+       --> r-tainted: read(skus_db.Sku.Sku.Name) {1}
 [___3] (BasicObject BasicType) Name string
 [__2] (FieldObject FieldType) Parent string
        --> r-tainted: read(skus_db._.id) {1}

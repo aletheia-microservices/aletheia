@@ -312,8 +312,12 @@
   - '0 depth 0 (BasicObject BasicType) currency int32 --> w-tainted 1x: write(orders_db.Order.Currency)'
   - '_1 depth 1 (Reference BasicType) ref <currency int32> @ OrderService --> w-tainted
     1x: write(orders_db.Order.Currency)'
-  - 0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})
-  - _1 depth 1 (Reference ArrayType) ref <orderItems [](*digota.OrderItem struct{Type int32, Quantity int64, Amount int64, Currency int32, Parent string, Description string})> @ OrderService
+  - '0 depth 0 (ArrayObject ArrayType) orderItems [](*digota.OrderItem struct{Type
+    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
+    string}) --> w-tainted 1x: write(orders_db.Order.Items)'
+  - '_1 depth 1 (Reference ArrayType) ref <items [](*digota.OrderItem struct{Type
+    int32, Quantity int64, Amount int64, Currency int32, Parent string, Description
+    string})> @ OrderService --> w-tainted 1x: write(orders_db.Order.Items)'
   - 0 depth 0 (BasicObject BasicType) err error
   - 0 depth 0 (BasicObject BasicType) currencyString string
   - _1 depth 1 (BasicObject BasicType) * string

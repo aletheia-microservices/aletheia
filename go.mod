@@ -79,6 +79,7 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/lib/pq v1.10.9
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
+	golang.org/x/tools/go/pointer v0.1.0-deprecated
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -122,7 +123,6 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
-	github.com/hailocab/go-geoindex v0.0.0-20160127134810-64631bfe9711 // indirect
 	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
