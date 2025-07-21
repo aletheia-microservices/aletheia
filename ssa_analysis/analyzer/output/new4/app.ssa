@@ -1,3 +1,4 @@
+	Global: init$guard, Type: *bool
 	Type: main.MongoDB
 	Method: func(ctx context.Context, database string, collection string, id string) main.Sku
 		Parameters:
@@ -32,132 +33,8 @@ Block #0: main.Insert.entry
 			03: t2 = slice t0[:]
 			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
 			05: return nil:error
-	Type: main.Sku
-	Global: init$guard, Type: *bool
-		Parameters:
-Function: main.init
-Block #0: main.init.entry
-			00: t0 = *init$guard
-			01: if t0 goto 2 else 1
-Block #1: main.init.init.start
-			00: *init$guard = true:bool
-			01: t1 = context.init()
-			02: t2 = fmt.init()
-			03: jump 2
-Block #2: main.init.init.done
-			00: return
-	Type: main.Inventory
-		Parameters:
-			ctx = parameter ctx : context.Context
-			currency = parameter currency : int32
-			items = parameter items : []*OrderItem
-			metadata = parameter metadata : map[string]string
-			email = parameter email : string
-			shipping = parameter shipping : Shipping
-Function: main.New
-Block #0: main.New.entry
-			00: t0 = local Shipping (shipping)
-			01: *t0 = shipping
-			02: t1 = new Order (complit)
-			03: t2 = &t1.Currency [#0]
-			04: t3 = &t1.Items [#1]
-			05: t4 = &t1.Metadata [#2]
-			06: t5 = &t1.Shipping [#4]
-			07: t6 = *t0
-			08: *t2 = currency
-			09: *t3 = items
-			10: *t4 = metadata
-			11: *t5 = t6
-			12: t7 = len(items)
-			13: jump 1
-Block #1: main.New.rangeindex.loop
-			00: t8 = phi [0: nil:[]*OrderItem, 2: t8, 6: t23] #orderItems
-			01: t9 = phi [0: -1:int, 2: t10, 6: t10]
-			02: t10 = t9 + 1:int
-			03: t11 = t10 < t7
-			04: if t11 goto 2 else 3
-Block #2: main.New.rangeindex.body
-			00: t12 = &items[t10]
-			01: t13 = *t12
-			02: t14 = (*OrderItem).IsTypeTax(t13)
-			03: if t14 goto 4 else 1
-Block #3: main.New.rangeindex.done
-			00: t15 = len(t8)
-			01: jump 7
-Block #4: main.New.if.then
-			00: t16 = &t13.Quantity [#1]
-			01: t17 = *t16
-			02: t18 = t17 <= 0:int64
-			03: if t18 goto 5 else 6
-Block #5: main.New.if.then
-			00: t19 = &t13.Quantity [#1]
-			01: *t19 = 1:int64
-			02: jump 6
-Block #6: main.New.if.done
-			00: t20 = new [1]*OrderItem (varargs)
-			01: t21 = &t20[0:int]
-			02: *t21 = t13
-			03: t22 = slice t20[:]
-			04: t23 = append(t8, t22...)
-			05: jump 1
-Block #7: main.New.rangeindex.loop
-			00: t24 = phi [3: -1:int, 8: t25, 10: t25]
-			01: t25 = t24 + 1:int
-			02: t26 = t25 < t15
-			03: if t26 goto 8 else 9
-Block #8: main.New.rangeindex.body
-			00: t27 = &t8[t25]
-			01: t28 = *t27
-			02: t29 = (*OrderItem).IsTypeSku(t28)
-			03: if t29 goto 10 else 7
-Block #9: main.New.rangeindex.done
-			00: t30 = &t1.Items [#1]
-			01: *t30 = t8
-			02: t31 = &t1.Amount [#5]
-			03: *t31 = 100:int
-			04: t32 = new MongoDB (complit)
-			05: t33 = make interface{} <- *Order (t1)
-			06: t34 = (*MongoDB).Insert(t32, ctx, "order_db":string, "order":string, t33)
-			07: t35 = new ShippingService (complit)
-			08: t36 = &t1.Shipping [#4]
-			09: t37 = *t36
-			10: t38 = (*ShippingService).NewShipment(t35, ctx, t37)
-			11: return t1, nil:error
-Block #10: main.New.if.then
-			00: t39 = new MongoDB (complit)
-			01: t40 = local Sku (sku)
-			02: t41 = &t28.Parent [#4]
-			03: t42 = *t41
-			04: t43 = (*MongoDB).Find(t39, ctx, "sku_db":string, "sku":string, t42)
-			05: *t40 = t43
-			06: t44 = &t40.Price [#1]
-			07: t45 = *t44
-			08: t46 = convert int64 <- uint64 (t45)
-			09: t47 = &t28.Amount [#2]
-			10: *t47 = t46
-			11: t48 = &t40.Currency [#2]
-			12: t49 = *t48
-			13: t50 = &t28.Currency [#3]
-			14: *t50 = t49
-			15: t51 = &t40.Name [#0]
-			16: t52 = *t51
-			17: t53 = &t28.Description [#5]
-			18: *t53 = t52
-			19: jump 7
-	Type: main.RabbitMQ
-	Method: func(ctx context.Context, message interface{}) error
-		Parameters:
-			r = parameter r : *RabbitMQ
-			ctx = parameter ctx : context.Context
-			message = parameter message : interface{}
-Function: main.Push
-Block #0: main.Push.entry
-			00: t0 = new [1]any (varargs)
-			01: t1 = &t0[0:int]
-			02: *t1 = message
-			03: t2 = slice t0[:]
-			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
-			05: return nil:error
+	Type: main.OrderItems
+	Type: main.Address
 	Type: main.Shipping
 	Type: main.OrderItem
 	Method: func() bool
@@ -172,23 +49,35 @@ Block #0: main.IsTypeSku.entry
 Function: main.IsTypeTax
 Block #0: main.IsTypeTax.entry
 			00: return true:bool
-	Type: main.OrderItems
-		Parameters:
-Function: main.main
-Block #0: main.main.entry
-			00: t0 = context.Background()
-			01: t1 = new [0]*OrderItem (slicelit)
-			02: t2 = slice t1[:]
-			03: t3 = make map[string]string 0:int
-			04: t4 = local Shipping (shipping)
-			05: t5 = *t4
-			06: t6 = New(t0, 0:int32, t2, t3, "":string, t5)
-			07: return
-	Type: main.RabbitMQPusher
-	Method: func(ctx context.Context, document interface{}) error
-	Method: func(ctx context.Context, document interface{}) error
-	Type: main.Address
+	Type: main.Sku
 	Type: main.Order
+		Parameters:
+Function: main.init
+Block #0: main.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: main.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+Block #2: main.init.init.done
+			00: return
+	Type: main.Product
+	Type: main.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+		Parameters:
+			r = parameter r : *RabbitMQ
+			ctx = parameter ctx : context.Context
+			message = parameter message : interface{}
+Function: main.Push
+Block #0: main.Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
 		Parameters:
 			ctx = parameter ctx : context.Context
 			id = parameter id : string
@@ -196,7 +85,112 @@ Function: main.Get
 Block #0: main.Get.entry
 			00: t0 = new Sku (complit)
 			01: return t0, nil:error
-	Type: main.Product
+		Parameters:
+			ctx = parameter ctx : context.Context
+			currency = parameter currency : int32
+			items = parameter items : []*OrderItem
+			metadata = parameter metadata : map[string]string
+			email = parameter email : string
+			shipping = parameter shipping : *Shipping
+Function: main.New
+Block #0: main.New.entry
+			00: t0 = new Order (complit)
+			01: t1 = &t0.Currency [#0]
+			02: t2 = &t0.Items [#1]
+			03: t3 = &t0.Metadata [#2]
+			04: t4 = &t0.Shipping [#4]
+			05: *t1 = currency
+			06: *t2 = items
+			07: *t3 = metadata
+			08: *t4 = shipping
+			09: t5 = len(items)
+			10: jump 1
+Block #1: main.New.rangeindex.loop
+			00: t6 = phi [0: nil:[]*OrderItem, 2: t6, 6: t21] #orderItems
+			01: t7 = phi [0: -1:int, 2: t8, 6: t8]
+			02: t8 = t7 + 1:int
+			03: t9 = t8 < t5
+			04: if t9 goto 2 else 3
+Block #2: main.New.rangeindex.body
+			00: t10 = &items[t8]
+			01: t11 = *t10
+			02: t12 = (*OrderItem).IsTypeTax(t11)
+			03: if t12 goto 4 else 1
+Block #3: main.New.rangeindex.done
+			00: t13 = len(t6)
+			01: jump 7
+Block #4: main.New.if.then
+			00: t14 = &t11.Quantity [#1]
+			01: t15 = *t14
+			02: t16 = t15 <= 0:int64
+			03: if t16 goto 5 else 6
+Block #5: main.New.if.then
+			00: t17 = &t11.Quantity [#1]
+			01: *t17 = 1:int64
+			02: jump 6
+Block #6: main.New.if.done
+			00: t18 = new [1]*OrderItem (varargs)
+			01: t19 = &t18[0:int]
+			02: *t19 = t11
+			03: t20 = slice t18[:]
+			04: t21 = append(t6, t20...)
+			05: jump 1
+Block #7: main.New.rangeindex.loop
+			00: t22 = phi [3: -1:int, 8: t23, 10: t23]
+			01: t23 = t22 + 1:int
+			02: t24 = t23 < t13
+			03: if t24 goto 8 else 9
+Block #8: main.New.rangeindex.body
+			00: t25 = &t6[t23]
+			01: t26 = *t25
+			02: t27 = (*OrderItem).IsTypeSku(t26)
+			03: if t27 goto 10 else 7
+Block #9: main.New.rangeindex.done
+			00: t28 = &t0.Items [#1]
+			01: *t28 = t6
+			02: t29 = &t0.Amount [#5]
+			03: *t29 = 100:int
+			04: t30 = new MongoDB (complit)
+			05: t31 = make interface{} <- *Order (t0)
+			06: t32 = (*MongoDB).Insert(t30, ctx, "order_db":string, "order":string, t31)
+			07: t33 = new ShippingService (complit)
+			08: t34 = &t0.Shipping [#4]
+			09: t35 = *t34
+			10: t36 = *t35
+			11: t37 = (*ShippingService).NewShipment(t33, ctx, t36)
+			12: return t0, nil:error
+Block #10: main.New.if.then
+			00: t38 = new MongoDB (complit)
+			01: t39 = local Sku (sku)
+			02: t40 = &t26.Parent [#4]
+			03: t41 = *t40
+			04: t42 = (*MongoDB).Find(t38, ctx, "sku_db":string, "sku":string, t41)
+			05: *t39 = t42
+			06: t43 = &t39.Price [#1]
+			07: t44 = *t43
+			08: t45 = convert int64 <- uint64 (t44)
+			09: t46 = &t26.Amount [#2]
+			10: *t46 = t45
+			11: t47 = &t39.Currency [#2]
+			12: t48 = *t47
+			13: t49 = &t26.Currency [#3]
+			14: *t49 = t48
+			15: t50 = &t39.Name [#0]
+			16: t51 = *t50
+			17: t52 = &t26.Description [#5]
+			18: *t52 = t51
+			19: jump 7
+		Parameters:
+Function: main.main
+Block #0: main.main.entry
+			00: t0 = context.Background()
+			01: t1 = new [0]*OrderItem (slicelit)
+			02: t2 = slice t1[:]
+			03: t3 = make map[string]string 0:int
+			04: t4 = new Shipping (complit)
+			05: t5 = New(t0, 0:int32, t2, t3, "":string, t4)
+			06: return
+	Type: main.Inventory
 	Type: main.ShippingService
 	Method: func(ctx context.Context, shipping main.Shipping) error
 		Parameters:
@@ -215,3 +209,6 @@ Block #0: main.NewShipment.entry
 			07: t5 = slice t2[:]
 			08: t6 = fmt.Printf("[INFO] inserted d...":string, t5...)
 			09: return nil:error
+	Type: main.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error

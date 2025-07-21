@@ -86,7 +86,7 @@ type Order struct {
 	Items    []*OrderItem
 	Metadata map[string]string
 	Email    string
-	Shipping Shipping
+	Shipping *Shipping
 	Amount   int
 }
 
@@ -94,7 +94,7 @@ func Get(ctx context.Context, id string) (*Sku, error) {
 	return &Sku{}, nil
 }
 
-func New(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping Shipping) (*Order, error) {
+func New(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error) {
 	order := &Order{
 		Currency: currency,
 		Items:    items,
@@ -129,7 +129,7 @@ func New(ctx context.Context, currency int32, items []*OrderItem, metadata map[s
 	orderDB.Insert(ctx, "order_db", "order", order)
 
 	shippingService := &ShippingService{}
-	shippingService.NewShipment(ctx, order.Shipping)
+	shippingService.NewShipment(ctx, *order.Shipping)
 
 	return order, nil
 }
@@ -140,6 +140,6 @@ func main() {
 	items := []*OrderItem{}
 	metadata := make(map[string]string, 0)
 	email := ""
-	shipping := Shipping{}
+	shipping := &Shipping{}
 	New(ctx, currency, items, metadata, email, shipping)
 }

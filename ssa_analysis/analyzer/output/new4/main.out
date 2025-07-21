@@ -5,8 +5,8 @@ package main:
   type  MongoDB         struct{}
     method (*MongoDB) Find(ctx context.Context, database string, collection string, id string) Sku
     method (*MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error
-  func  New             func(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping Shipping) (*Order, error)
-  type  Order           struct{Currency int32; Items []*OrderItem; Metadata map[string]string; Email string; Shipping Shipping; Amount int}
+  func  New             func(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error)
+  type  Order           struct{Currency int32; Items []*OrderItem; Metadata map[string]string; Email string; Shipping *Shipping; Amount int}
   type  OrderItem       struct{Type int32; Quantity int64; Amount int64; Currency int32; Parent string; Description string}
     method (*OrderItem) IsTypeSku() bool
     method (*OrderItem) IsTypeTax() bool

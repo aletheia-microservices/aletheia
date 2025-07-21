@@ -41,13 +41,20 @@ func (node *Node) IsTainted() bool {
 	return len(node.taints) > 0
 }
 
+func (node *Node) GetTaintsForPath(path string) []string {
+	if t, ok := node.taints[path]; ok { // avoid creating new key entry
+		return t
+	}
+	return nil
+}
+
 func (node *Node) GetTaints() map[string][]string {
 	return node.taints
 }
 
-func (node *Node) AddTaintIfNotExists(objField string, dbField string) {
-	if !slices.Contains(node.taints[objField], dbField) {
-		node.taints[objField] = append(node.taints[objField], dbField)
+func (node *Node) AddTaintIfNotExists(objPath string, dbField string) {
+	if !slices.Contains(node.taints[objPath], dbField) {
+		node.taints[objPath] = append(node.taints[objPath], dbField)
 	}
 }
 

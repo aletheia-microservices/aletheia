@@ -1,6 +1,6 @@
 ### Function: (*main.MongoDB).Find ###
 m (@Find): (*ssa.Parameter) (parameter m : *MongoDB)
-	 → t39 (@New): (*ssa.Alloc)
+	 → t38 (@New): (*ssa.Alloc)
 
 ctx (@Find): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t2 (@Background): (*ssa.MakeInterface)
@@ -23,13 +23,13 @@ t5 (@Find): (*ssa.Alloc) (local Sku (complit))
 
 ### Function: (*main.MongoDB).Insert ###
 m (@Insert): (*ssa.Parameter) (parameter m : *MongoDB)
-	 → t32 (@New): (*ssa.Alloc)
+	 → t30 (@New): (*ssa.Alloc)
 
 ctx (@Insert): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t2 (@Background): (*ssa.MakeInterface)
 
 document (@Insert): (*ssa.Parameter) (parameter document : interface{})
-	 → t33 (@New): (*ssa.MakeInterface)
+	 → t31 (@New): (*ssa.MakeInterface)
 
 t0 (@Insert): (*ssa.Alloc) (new [1]any (varargs))
 	 → t0 (@Insert): (*ssa.Alloc)
@@ -68,7 +68,7 @@ t2 (@Push): (*ssa.Slice) (slice t0[:])
 
 ### Function: (*main.ShippingService).NewShipment ###
 s (@NewShipment): (*ssa.Parameter) (parameter s : *ShippingService)
-	 → t35 (@New): (*ssa.Alloc)
+	 → t33 (@New): (*ssa.Alloc)
 
 ctx (@NewShipment): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t2 (@Background): (*ssa.MakeInterface)
@@ -99,97 +99,100 @@ items (@New): (*ssa.Parameter) (parameter items : []*OrderItem)
 metadata (@New): (*ssa.Parameter) (parameter metadata : map[string]string)
 	 → t3 (@main): (*ssa.MakeMap)
 
-t0 (@New): (*ssa.Alloc) (local Shipping (shipping))
+shipping (@New): (*ssa.Parameter) (parameter shipping : *Shipping)
+	 → t4 (@main): (*ssa.Alloc)
+
+t0 (@New): (*ssa.Alloc) (new Order (complit))
 	 → t0 (@New): (*ssa.Alloc)
 
-t1 (@New): (*ssa.Alloc) (new Order (complit))
-	 → t1 (@New): (*ssa.Alloc)
+t1 (@New): (*ssa.FieldAddr) (&t0.Currency [#0])
+	 → t0 (@New): (*ssa.Alloc)
 
-t2 (@New): (*ssa.FieldAddr) (&t1.Currency [#0])
-	 → t1 (@New): (*ssa.Alloc)
+t2 (@New): (*ssa.FieldAddr) (&t0.Items [#1])
+	 → t0 (@New): (*ssa.Alloc)
 
-t3 (@New): (*ssa.FieldAddr) (&t1.Items [#1])
-	 → t1 (@New): (*ssa.Alloc)
+t3 (@New): (*ssa.FieldAddr) (&t0.Metadata [#2])
+	 → t0 (@New): (*ssa.Alloc)
 
-t4 (@New): (*ssa.FieldAddr) (&t1.Metadata [#2])
-	 → t1 (@New): (*ssa.Alloc)
+t4 (@New): (*ssa.FieldAddr) (&t0.Shipping [#4])
+	 → t0 (@New): (*ssa.Alloc)
 
-t5 (@New): (*ssa.FieldAddr) (&t1.Shipping [#4])
-	 → t1 (@New): (*ssa.Alloc)
+t6 (@New): (*ssa.Phi) (phi [0: nil:[]*OrderItem, 2: t6, 6: t21] #orderItems)
+	 → t21 (@New): (*ssa.Call)
 
-t8 (@New): (*ssa.Phi) (phi [0: nil:[]*OrderItem, 2: t8, 6: t23] #orderItems)
-	 → t23 (@New): (*ssa.Call)
-
-t12 (@New): (*ssa.IndexAddr) (&items[t10])
+t10 (@New): (*ssa.IndexAddr) (&items[t8])
 	 → t1 (@main): (*ssa.Alloc)
 
-t13 (@New): (*ssa.UnOp) (*t12)
+t11 (@New): (*ssa.UnOp) (*t10)
 
-t16 (@New): (*ssa.FieldAddr) (&t13.Quantity [#1])
+t14 (@New): (*ssa.FieldAddr) (&t11.Quantity [#1])
 
-t19 (@New): (*ssa.FieldAddr) (&t13.Quantity [#1])
+t17 (@New): (*ssa.FieldAddr) (&t11.Quantity [#1])
 
-t20 (@New): (*ssa.Alloc) (new [1]*OrderItem (varargs))
-	 → t20 (@New): (*ssa.Alloc)
+t18 (@New): (*ssa.Alloc) (new [1]*OrderItem (varargs))
+	 → t18 (@New): (*ssa.Alloc)
 
-t21 (@New): (*ssa.IndexAddr) (&t20[0:int])
-	 → t20 (@New): (*ssa.Alloc)
+t19 (@New): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@New): (*ssa.Alloc)
 
-t22 (@New): (*ssa.Slice) (slice t20[:])
-	 → t20 (@New): (*ssa.Alloc)
+t20 (@New): (*ssa.Slice) (slice t18[:])
+	 → t18 (@New): (*ssa.Alloc)
 
-t23 (@New): (*ssa.Call) (append(t8, t22...))
-	 → t23 (@New): (*ssa.Call)
+t21 (@New): (*ssa.Call) (append(t6, t20...))
+	 → t21 (@New): (*ssa.Call)
 
-t27 (@New): (*ssa.IndexAddr) (&t8[t25])
-	 → t23 (@New): (*ssa.Call)
+t25 (@New): (*ssa.IndexAddr) (&t6[t23])
+	 → t21 (@New): (*ssa.Call)
 
-t28 (@New): (*ssa.UnOp) (*t27)
+t26 (@New): (*ssa.UnOp) (*t25)
 
-t30 (@New): (*ssa.FieldAddr) (&t1.Items [#1])
-	 → t1 (@New): (*ssa.Alloc)
+t28 (@New): (*ssa.FieldAddr) (&t0.Items [#1])
+	 → t0 (@New): (*ssa.Alloc)
 
-t31 (@New): (*ssa.FieldAddr) (&t1.Amount [#5])
-	 → t1 (@New): (*ssa.Alloc)
+t29 (@New): (*ssa.FieldAddr) (&t0.Amount [#5])
+	 → t0 (@New): (*ssa.Alloc)
 
-t32 (@New): (*ssa.Alloc) (new MongoDB (complit))
-	 → t32 (@New): (*ssa.Alloc)
+t30 (@New): (*ssa.Alloc) (new MongoDB (complit))
+	 → t30 (@New): (*ssa.Alloc)
 
-t33 (@New): (*ssa.MakeInterface) (make interface{} <- *Order (t1))
-	 → t33 (@New): (*ssa.MakeInterface)
+t31 (@New): (*ssa.MakeInterface) (make interface{} <- *Order (t0))
+	 → t31 (@New): (*ssa.MakeInterface)
 
-t34 (@New): (*ssa.Call) ((*MongoDB).Insert(t32, ctx, "order_db":string, "order":string, t33))
+t32 (@New): (*ssa.Call) ((*MongoDB).Insert(t30, ctx, "order_db":string, "order":string, t31))
 
-t35 (@New): (*ssa.Alloc) (new ShippingService (complit))
-	 → t35 (@New): (*ssa.Alloc)
+t33 (@New): (*ssa.Alloc) (new ShippingService (complit))
+	 → t33 (@New): (*ssa.Alloc)
 
-t36 (@New): (*ssa.FieldAddr) (&t1.Shipping [#4])
-	 → t1 (@New): (*ssa.Alloc)
+t34 (@New): (*ssa.FieldAddr) (&t0.Shipping [#4])
+	 → t0 (@New): (*ssa.Alloc)
 
-t38 (@New): (*ssa.Call) ((*ShippingService).NewShipment(t35, ctx, t37))
+t35 (@New): (*ssa.UnOp) (*t34)
+	 → t4 (@main): (*ssa.Alloc)
 
-t39 (@New): (*ssa.Alloc) (new MongoDB (complit))
+t37 (@New): (*ssa.Call) ((*ShippingService).NewShipment(t33, ctx, t36))
+
+t38 (@New): (*ssa.Alloc) (new MongoDB (complit))
+	 → t38 (@New): (*ssa.Alloc)
+
+t39 (@New): (*ssa.Alloc) (local Sku (sku))
 	 → t39 (@New): (*ssa.Alloc)
 
-t40 (@New): (*ssa.Alloc) (local Sku (sku))
-	 → t40 (@New): (*ssa.Alloc)
+t40 (@New): (*ssa.FieldAddr) (&t26.Parent [#4])
 
-t41 (@New): (*ssa.FieldAddr) (&t28.Parent [#4])
+t43 (@New): (*ssa.FieldAddr) (&t39.Price [#1])
+	 → t39 (@New): (*ssa.Alloc)
 
-t44 (@New): (*ssa.FieldAddr) (&t40.Price [#1])
-	 → t40 (@New): (*ssa.Alloc)
+t46 (@New): (*ssa.FieldAddr) (&t26.Amount [#2])
 
-t47 (@New): (*ssa.FieldAddr) (&t28.Amount [#2])
+t47 (@New): (*ssa.FieldAddr) (&t39.Currency [#2])
+	 → t39 (@New): (*ssa.Alloc)
 
-t48 (@New): (*ssa.FieldAddr) (&t40.Currency [#2])
-	 → t40 (@New): (*ssa.Alloc)
+t49 (@New): (*ssa.FieldAddr) (&t26.Currency [#3])
 
-t50 (@New): (*ssa.FieldAddr) (&t28.Currency [#3])
+t50 (@New): (*ssa.FieldAddr) (&t39.Name [#0])
+	 → t39 (@New): (*ssa.Alloc)
 
-t51 (@New): (*ssa.FieldAddr) (&t40.Name [#0])
-	 → t40 (@New): (*ssa.Alloc)
-
-t53 (@New): (*ssa.FieldAddr) (&t28.Description [#5])
+t52 (@New): (*ssa.FieldAddr) (&t26.Description [#5])
 
 
 ### Function: main.main ###
@@ -205,7 +208,7 @@ t2 (@main): (*ssa.Slice) (slice t1[:])
 t3 (@main): (*ssa.MakeMap) (make map[string]string 0:int)
 	 → t3 (@main): (*ssa.MakeMap)
 
-t4 (@main): (*ssa.Alloc) (local Shipping (shipping))
+t4 (@main): (*ssa.Alloc) (new Shipping (complit))
 	 → t4 (@main): (*ssa.Alloc)
 
 
