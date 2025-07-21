@@ -1,0 +1,217 @@
+	Type: main.MongoDB
+	Method: func(ctx context.Context, database string, collection string, id string) main.Sku
+		Parameters:
+			m = parameter m : *MongoDB
+			ctx = parameter ctx : context.Context
+			database = parameter database : string
+			collection = parameter collection : string
+			id = parameter id : string
+Function: main.Find
+Block #0: main.Find.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: t2 = make any <- string (id)
+			03: *t1 = t2
+			04: t3 = slice t0[:]
+			05: t4 = fmt.Printf("[INFO] found docu...":string, t3...)
+			06: t5 = local Sku (complit)
+			07: t6 = *t5
+			08: return t6
+	Method: func(ctx context.Context, database string, collection string, document interface{}) error
+		Parameters:
+			m = parameter m : *MongoDB
+			ctx = parameter ctx : context.Context
+			database = parameter database : string
+			collection = parameter collection : string
+			document = parameter document : interface{}
+Function: main.Insert
+Block #0: main.Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: main.Sku
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: main.init
+Block #0: main.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: main.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: jump 2
+Block #2: main.init.init.done
+			00: return
+	Type: main.Inventory
+		Parameters:
+			ctx = parameter ctx : context.Context
+			currency = parameter currency : int32
+			items = parameter items : []*OrderItem
+			metadata = parameter metadata : map[string]string
+			email = parameter email : string
+			shipping = parameter shipping : Shipping
+Function: main.New
+Block #0: main.New.entry
+			00: t0 = local Shipping (shipping)
+			01: *t0 = shipping
+			02: t1 = new Order (complit)
+			03: t2 = &t1.Currency [#0]
+			04: t3 = &t1.Items [#1]
+			05: t4 = &t1.Metadata [#2]
+			06: t5 = &t1.Shipping [#4]
+			07: t6 = *t0
+			08: *t2 = currency
+			09: *t3 = items
+			10: *t4 = metadata
+			11: *t5 = t6
+			12: t7 = len(items)
+			13: jump 1
+Block #1: main.New.rangeindex.loop
+			00: t8 = phi [0: nil:[]*OrderItem, 2: t8, 6: t23] #orderItems
+			01: t9 = phi [0: -1:int, 2: t10, 6: t10]
+			02: t10 = t9 + 1:int
+			03: t11 = t10 < t7
+			04: if t11 goto 2 else 3
+Block #2: main.New.rangeindex.body
+			00: t12 = &items[t10]
+			01: t13 = *t12
+			02: t14 = (*OrderItem).IsTypeTax(t13)
+			03: if t14 goto 4 else 1
+Block #3: main.New.rangeindex.done
+			00: t15 = len(t8)
+			01: jump 7
+Block #4: main.New.if.then
+			00: t16 = &t13.Quantity [#1]
+			01: t17 = *t16
+			02: t18 = t17 <= 0:int64
+			03: if t18 goto 5 else 6
+Block #5: main.New.if.then
+			00: t19 = &t13.Quantity [#1]
+			01: *t19 = 1:int64
+			02: jump 6
+Block #6: main.New.if.done
+			00: t20 = new [1]*OrderItem (varargs)
+			01: t21 = &t20[0:int]
+			02: *t21 = t13
+			03: t22 = slice t20[:]
+			04: t23 = append(t8, t22...)
+			05: jump 1
+Block #7: main.New.rangeindex.loop
+			00: t24 = phi [3: -1:int, 8: t25, 10: t25]
+			01: t25 = t24 + 1:int
+			02: t26 = t25 < t15
+			03: if t26 goto 8 else 9
+Block #8: main.New.rangeindex.body
+			00: t27 = &t8[t25]
+			01: t28 = *t27
+			02: t29 = (*OrderItem).IsTypeSku(t28)
+			03: if t29 goto 10 else 7
+Block #9: main.New.rangeindex.done
+			00: t30 = &t1.Items [#1]
+			01: *t30 = t8
+			02: t31 = &t1.Amount [#5]
+			03: *t31 = 100:int
+			04: t32 = new MongoDB (complit)
+			05: t33 = make interface{} <- *Order (t1)
+			06: t34 = (*MongoDB).Insert(t32, ctx, "order_db":string, "order":string, t33)
+			07: t35 = new ShippingService (complit)
+			08: t36 = &t1.Shipping [#4]
+			09: t37 = *t36
+			10: t38 = (*ShippingService).NewShipment(t35, ctx, t37)
+			11: return t1, nil:error
+Block #10: main.New.if.then
+			00: t39 = new MongoDB (complit)
+			01: t40 = local Sku (sku)
+			02: t41 = &t28.Parent [#4]
+			03: t42 = *t41
+			04: t43 = (*MongoDB).Find(t39, ctx, "sku_db":string, "sku":string, t42)
+			05: *t40 = t43
+			06: t44 = &t40.Price [#1]
+			07: t45 = *t44
+			08: t46 = convert int64 <- uint64 (t45)
+			09: t47 = &t28.Amount [#2]
+			10: *t47 = t46
+			11: t48 = &t40.Currency [#2]
+			12: t49 = *t48
+			13: t50 = &t28.Currency [#3]
+			14: *t50 = t49
+			15: t51 = &t40.Name [#0]
+			16: t52 = *t51
+			17: t53 = &t28.Description [#5]
+			18: *t53 = t52
+			19: jump 7
+	Type: main.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
+		Parameters:
+			r = parameter r : *RabbitMQ
+			ctx = parameter ctx : context.Context
+			message = parameter message : interface{}
+Function: main.Push
+Block #0: main.Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
+	Type: main.Shipping
+	Type: main.OrderItem
+	Method: func() bool
+		Parameters:
+			item = parameter item : *OrderItem
+Function: main.IsTypeSku
+Block #0: main.IsTypeSku.entry
+			00: return true:bool
+	Method: func() bool
+		Parameters:
+			item = parameter item : *OrderItem
+Function: main.IsTypeTax
+Block #0: main.IsTypeTax.entry
+			00: return true:bool
+	Type: main.OrderItems
+		Parameters:
+Function: main.main
+Block #0: main.main.entry
+			00: t0 = context.Background()
+			01: t1 = new [0]*OrderItem (slicelit)
+			02: t2 = slice t1[:]
+			03: t3 = make map[string]string 0:int
+			04: t4 = local Shipping (shipping)
+			05: t5 = *t4
+			06: t6 = New(t0, 0:int32, t2, t3, "":string, t5)
+			07: return
+	Type: main.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: main.Address
+	Type: main.Order
+		Parameters:
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: main.Get
+Block #0: main.Get.entry
+			00: t0 = new Sku (complit)
+			01: return t0, nil:error
+	Type: main.Product
+	Type: main.ShippingService
+	Method: func(ctx context.Context, shipping main.Shipping) error
+		Parameters:
+			s = parameter s : *ShippingService
+			ctx = parameter ctx : context.Context
+			shipping = parameter shipping : Shipping
+Function: main.NewShipment
+Block #0: main.NewShipment.entry
+			00: t0 = local Shipping (shipping)
+			01: *t0 = shipping
+			02: t1 = *t0
+			03: t2 = new [1]any (varargs)
+			04: t3 = &t2[0:int]
+			05: t4 = make any <- Shipping (t1)
+			06: *t3 = t4
+			07: t5 = slice t2[:]
+			08: t6 = fmt.Printf("[INFO] inserted d...":string, t5...)
+			09: return nil:error

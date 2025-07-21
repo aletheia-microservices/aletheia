@@ -1,0 +1,26 @@
+package main:
+  type  Address         struct{City string}
+  func  Get             func(ctx context.Context, id string) (*Sku, error)
+  type  Inventory       struct{amount int}
+  type  MongoDB         struct{}
+    method (*MongoDB) Find(ctx context.Context, database string, collection string, id string) Sku
+    method (*MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error
+  func  New             func(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping Shipping) (*Order, error)
+  type  Order           struct{Currency int32; Items []*OrderItem; Metadata map[string]string; Email string; Shipping Shipping; Amount int}
+  type  OrderItem       struct{Type int32; Quantity int64; Amount int64; Currency int32; Parent string; Description string}
+    method (*OrderItem) IsTypeSku() bool
+    method (*OrderItem) IsTypeTax() bool
+  type  OrderItems      struct{Items []*OrderItem}
+  type  Product         struct{ID int; Name string; InventoryPtr *Inventory; InventoryVal Inventory}
+  type  RabbitMQ        struct{}
+    method (*RabbitMQ) Push(ctx context.Context, message interface{}) error
+  type  RabbitMQPusher  interface{Push(ctx context.Context, document interface{}) error}
+    method (RabbitMQPusher) Push(ctx context.Context, document interface{}) error
+  type  Shipping        struct{Address *Address}
+  type  ShippingService struct{}
+    method (*ShippingService) NewShipment(ctx context.Context, shipping Shipping) error
+  type  Sku             struct{Name string; Price uint64; Currency int32}
+  func  init            func()
+  var   init$guard      bool
+  func  main            func()
+

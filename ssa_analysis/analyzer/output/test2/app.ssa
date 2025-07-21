@@ -1,9 +1,26 @@
-	Global: init$guard, Type: *bool
+	Type: main.Nested3
+	Type: main.Nested2
+	Type: main.MongoDB
+	Method: func(ctx context.Context, database string, collection string, document interface{}) error
+		Parameters:
+			m = parameter m : *MongoDB
+			ctx = parameter ctx : context.Context
+			database = parameter database : string
+			collection = parameter collection : string
+			document = parameter document : interface{}
+Function: main.Insert
+Block #0: main.Insert.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = document
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
+			05: return nil:error
+	Type: main.Inventory
+	Type: main.Product
 	Type: main.MongoInserter
 	Method: func(ctx context.Context, document interface{}) error
 	Method: func(ctx context.Context, document interface{}) error
-	Type: main.Nested3
-	Type: main.Nested2
 	Type: main.Nested1
 		Parameters:
 			ctx = parameter ctx : context.Context
@@ -111,6 +128,7 @@ Block #0: main.main.entry
 			01: t1 = make map[string]string 
 			02: t2 = Test(t0, 1:int, t1)
 			03: return
+	Global: init$guard, Type: *bool
 		Parameters:
 Function: main.init
 Block #0: main.init.entry
@@ -123,21 +141,3 @@ Block #1: main.init.init.start
 			03: jump 2
 Block #2: main.init.init.done
 			00: return
-	Type: main.Inventory
-	Type: main.Product
-	Type: main.MongoDB
-	Method: func(ctx context.Context, database string, collection string, document interface{}) error
-		Parameters:
-			m = parameter m : *MongoDB
-			ctx = parameter ctx : context.Context
-			database = parameter database : string
-			collection = parameter collection : string
-			document = parameter document : interface{}
-Function: main.Insert
-Block #0: main.Insert.entry
-			00: t0 = new [1]any (varargs)
-			01: t1 = &t0[0:int]
-			02: *t1 = document
-			03: t2 = slice t0[:]
-			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
-			05: return nil:error

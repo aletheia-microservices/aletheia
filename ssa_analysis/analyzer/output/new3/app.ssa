@@ -1,3 +1,19 @@
+	Type: main.MongoInserter
+	Method: func(ctx context.Context, database string, collection string, id string) error
+	Method: func(ctx context.Context, database string, collection string, document interface{}) error
+	Method: func(ctx context.Context, database string, collection string, id string) error
+	Method: func(ctx context.Context, database string, collection string, document interface{}) error
+	Global: init$guard, Type: *bool
+	Type: main.Address
+	Type: main.Shipping
+	Type: main.Order
+		Parameters:
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: main.Get
+Block #0: main.Get.entry
+			00: t0 = new Sku (complit)
+			01: return t0, nil:error
 		Parameters:
 Function: main.init
 Block #0: main.init.entry
@@ -10,38 +26,21 @@ Block #1: main.init.init.start
 			03: jump 2
 Block #2: main.init.init.done
 			00: return
-	Type: main.Shipping
-	Type: main.Sku
+	Type: main.RabbitMQ
+	Method: func(ctx context.Context, message interface{}) error
 		Parameters:
-Function: main.main
-Block #0: main.main.entry
-			00: t0 = context.Background()
-			01: t1 = new [0]*OrderItem (slicelit)
-			02: t2 = slice t1[:]
-			03: t3 = make map[string]string 0:int
-			04: t4 = new Shipping (complit)
-			05: t5 = New(t0, 0:int32, t2, t3, "":string, t4)
-			06: return
-	Type: main.Inventory
-	Type: main.Product
-	Type: main.Address
-	Type: main.OrderItem
-	Method: func() bool
-		Parameters:
-			item = parameter item : *OrderItem
-Function: main.IsTypeSku
-Block #0: main.IsTypeSku.entry
-			00: return true:bool
-	Method: func() bool
-		Parameters:
-			item = parameter item : *OrderItem
-Function: main.IsTypeTax
-Block #0: main.IsTypeTax.entry
-			00: return true:bool
+			r = parameter r : *RabbitMQ
+			ctx = parameter ctx : context.Context
+			message = parameter message : interface{}
+Function: main.Push
+Block #0: main.Push.entry
+			00: t0 = new [1]any (varargs)
+			01: t1 = &t0[0:int]
+			02: *t1 = message
+			03: t2 = slice t0[:]
+			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
+			05: return nil:error
 	Type: main.OrderItems
-	Type: main.RabbitMQPusher
-	Method: func(ctx context.Context, document interface{}) error
-	Method: func(ctx context.Context, document interface{}) error
 		Parameters:
 			ctx = parameter ctx : context.Context
 			currency = parameter currency : int32
@@ -132,12 +131,18 @@ Block #10: main.New.if.then
 			17: t47 = &t26.Description [#5]
 			18: *t47 = t46
 			19: jump 7
-	Global: init$guard, Type: *bool
-	Type: main.MongoInserter
-	Method: func(ctx context.Context, database string, collection string, id string) error
-	Method: func(ctx context.Context, database string, collection string, document interface{}) error
-	Method: func(ctx context.Context, database string, collection string, id string) error
-	Method: func(ctx context.Context, database string, collection string, document interface{}) error
+		Parameters:
+Function: main.main
+Block #0: main.main.entry
+			00: t0 = context.Background()
+			01: t1 = new [0]*OrderItem (slicelit)
+			02: t2 = slice t1[:]
+			03: t3 = make map[string]string 0:int
+			04: t4 = new Shipping (complit)
+			05: t5 = New(t0, 0:int32, t2, t3, "":string, t4)
+			06: return
+	Type: main.Inventory
+	Type: main.Product
 	Type: main.MongoDB
 	Method: func(ctx context.Context, database string, collection string, id string) main.Sku
 		Parameters:
@@ -172,25 +177,20 @@ Block #0: main.Insert.entry
 			03: t2 = slice t0[:]
 			04: t3 = fmt.Printf("[INFO] inserted d...":string, t2...)
 			05: return nil:error
-	Type: main.RabbitMQ
-	Method: func(ctx context.Context, message interface{}) error
+	Type: main.RabbitMQPusher
+	Method: func(ctx context.Context, document interface{}) error
+	Method: func(ctx context.Context, document interface{}) error
+	Type: main.OrderItem
+	Method: func() bool
 		Parameters:
-			r = parameter r : *RabbitMQ
-			ctx = parameter ctx : context.Context
-			message = parameter message : interface{}
-Function: main.Push
-Block #0: main.Push.entry
-			00: t0 = new [1]any (varargs)
-			01: t1 = &t0[0:int]
-			02: *t1 = message
-			03: t2 = slice t0[:]
-			04: t3 = fmt.Printf("[INFO] pushed mes...":string, t2...)
-			05: return nil:error
-	Type: main.Order
+			item = parameter item : *OrderItem
+Function: main.IsTypeSku
+Block #0: main.IsTypeSku.entry
+			00: return true:bool
+	Method: func() bool
 		Parameters:
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-Function: main.Get
-Block #0: main.Get.entry
-			00: t0 = new Sku (complit)
-			01: return t0, nil:error
+			item = parameter item : *OrderItem
+Function: main.IsTypeTax
+Block #0: main.IsTypeTax.entry
+			00: return true:bool
+	Type: main.Sku

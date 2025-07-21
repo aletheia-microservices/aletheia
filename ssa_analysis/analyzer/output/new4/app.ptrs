@@ -1,0 +1,211 @@
+### Function: (*main.MongoDB).Find ###
+m (@Find): (*ssa.Parameter) (parameter m : *MongoDB)
+	 → t39 (@New): (*ssa.Alloc)
+
+ctx (@Find): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+t0 (@Find): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Find): (*ssa.Alloc)
+
+t1 (@Find): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Find): (*ssa.Alloc)
+
+t2 (@Find): (*ssa.MakeInterface) (make any <- string (id))
+	 → t2 (@Find): (*ssa.MakeInterface)
+
+t3 (@Find): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Find): (*ssa.Alloc)
+
+t5 (@Find): (*ssa.Alloc) (local Sku (complit))
+	 → t5 (@Find): (*ssa.Alloc)
+
+
+### Function: (*main.MongoDB).Insert ###
+m (@Insert): (*ssa.Parameter) (parameter m : *MongoDB)
+	 → t32 (@New): (*ssa.Alloc)
+
+ctx (@Insert): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+document (@Insert): (*ssa.Parameter) (parameter document : interface{})
+	 → t33 (@New): (*ssa.MakeInterface)
+
+t0 (@Insert): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t1 (@Insert): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t2 (@Insert): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Insert): (*ssa.Alloc)
+
+
+### Function: (*main.OrderItem).IsTypeSku ###
+item (@IsTypeSku): (*ssa.Parameter) (parameter item : *OrderItem)
+
+
+### Function: (*main.OrderItem).IsTypeTax ###
+item (@IsTypeTax): (*ssa.Parameter) (parameter item : *OrderItem)
+
+
+### Function: (*main.RabbitMQ).Push ###
+r (@Push): (*ssa.Parameter) (parameter r : *RabbitMQ)
+
+ctx (@Push): (*ssa.Parameter) (parameter ctx : context.Context)
+
+message (@Push): (*ssa.Parameter) (parameter message : interface{})
+
+t0 (@Push): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Push): (*ssa.Alloc)
+
+t1 (@Push): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Push): (*ssa.Alloc)
+
+t2 (@Push): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Push): (*ssa.Alloc)
+
+
+### Function: (*main.ShippingService).NewShipment ###
+s (@NewShipment): (*ssa.Parameter) (parameter s : *ShippingService)
+	 → t35 (@New): (*ssa.Alloc)
+
+ctx (@NewShipment): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+t0 (@NewShipment): (*ssa.Alloc) (local Shipping (shipping))
+	 → t0 (@NewShipment): (*ssa.Alloc)
+
+t2 (@NewShipment): (*ssa.Alloc) (new [1]any (varargs))
+	 → t2 (@NewShipment): (*ssa.Alloc)
+
+t3 (@NewShipment): (*ssa.IndexAddr) (&t2[0:int])
+	 → t2 (@NewShipment): (*ssa.Alloc)
+
+t4 (@NewShipment): (*ssa.MakeInterface) (make any <- Shipping (t1))
+	 → t4 (@NewShipment): (*ssa.MakeInterface)
+
+t5 (@NewShipment): (*ssa.Slice) (slice t2[:])
+	 → t2 (@NewShipment): (*ssa.Alloc)
+
+
+### Function: main.New ###
+ctx (@New): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+items (@New): (*ssa.Parameter) (parameter items : []*OrderItem)
+	 → t1 (@main): (*ssa.Alloc)
+
+metadata (@New): (*ssa.Parameter) (parameter metadata : map[string]string)
+	 → t3 (@main): (*ssa.MakeMap)
+
+t0 (@New): (*ssa.Alloc) (local Shipping (shipping))
+	 → t0 (@New): (*ssa.Alloc)
+
+t1 (@New): (*ssa.Alloc) (new Order (complit))
+	 → t1 (@New): (*ssa.Alloc)
+
+t2 (@New): (*ssa.FieldAddr) (&t1.Currency [#0])
+	 → t1 (@New): (*ssa.Alloc)
+
+t3 (@New): (*ssa.FieldAddr) (&t1.Items [#1])
+	 → t1 (@New): (*ssa.Alloc)
+
+t4 (@New): (*ssa.FieldAddr) (&t1.Metadata [#2])
+	 → t1 (@New): (*ssa.Alloc)
+
+t5 (@New): (*ssa.FieldAddr) (&t1.Shipping [#4])
+	 → t1 (@New): (*ssa.Alloc)
+
+t8 (@New): (*ssa.Phi) (phi [0: nil:[]*OrderItem, 2: t8, 6: t23] #orderItems)
+	 → t23 (@New): (*ssa.Call)
+
+t12 (@New): (*ssa.IndexAddr) (&items[t10])
+	 → t1 (@main): (*ssa.Alloc)
+
+t13 (@New): (*ssa.UnOp) (*t12)
+
+t16 (@New): (*ssa.FieldAddr) (&t13.Quantity [#1])
+
+t19 (@New): (*ssa.FieldAddr) (&t13.Quantity [#1])
+
+t20 (@New): (*ssa.Alloc) (new [1]*OrderItem (varargs))
+	 → t20 (@New): (*ssa.Alloc)
+
+t21 (@New): (*ssa.IndexAddr) (&t20[0:int])
+	 → t20 (@New): (*ssa.Alloc)
+
+t22 (@New): (*ssa.Slice) (slice t20[:])
+	 → t20 (@New): (*ssa.Alloc)
+
+t23 (@New): (*ssa.Call) (append(t8, t22...))
+	 → t23 (@New): (*ssa.Call)
+
+t27 (@New): (*ssa.IndexAddr) (&t8[t25])
+	 → t23 (@New): (*ssa.Call)
+
+t28 (@New): (*ssa.UnOp) (*t27)
+
+t30 (@New): (*ssa.FieldAddr) (&t1.Items [#1])
+	 → t1 (@New): (*ssa.Alloc)
+
+t31 (@New): (*ssa.FieldAddr) (&t1.Amount [#5])
+	 → t1 (@New): (*ssa.Alloc)
+
+t32 (@New): (*ssa.Alloc) (new MongoDB (complit))
+	 → t32 (@New): (*ssa.Alloc)
+
+t33 (@New): (*ssa.MakeInterface) (make interface{} <- *Order (t1))
+	 → t33 (@New): (*ssa.MakeInterface)
+
+t34 (@New): (*ssa.Call) ((*MongoDB).Insert(t32, ctx, "order_db":string, "order":string, t33))
+
+t35 (@New): (*ssa.Alloc) (new ShippingService (complit))
+	 → t35 (@New): (*ssa.Alloc)
+
+t36 (@New): (*ssa.FieldAddr) (&t1.Shipping [#4])
+	 → t1 (@New): (*ssa.Alloc)
+
+t38 (@New): (*ssa.Call) ((*ShippingService).NewShipment(t35, ctx, t37))
+
+t39 (@New): (*ssa.Alloc) (new MongoDB (complit))
+	 → t39 (@New): (*ssa.Alloc)
+
+t40 (@New): (*ssa.Alloc) (local Sku (sku))
+	 → t40 (@New): (*ssa.Alloc)
+
+t41 (@New): (*ssa.FieldAddr) (&t28.Parent [#4])
+
+t44 (@New): (*ssa.FieldAddr) (&t40.Price [#1])
+	 → t40 (@New): (*ssa.Alloc)
+
+t47 (@New): (*ssa.FieldAddr) (&t28.Amount [#2])
+
+t48 (@New): (*ssa.FieldAddr) (&t40.Currency [#2])
+	 → t40 (@New): (*ssa.Alloc)
+
+t50 (@New): (*ssa.FieldAddr) (&t28.Currency [#3])
+
+t51 (@New): (*ssa.FieldAddr) (&t40.Name [#0])
+	 → t40 (@New): (*ssa.Alloc)
+
+t53 (@New): (*ssa.FieldAddr) (&t28.Description [#5])
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+t1 (@main): (*ssa.Alloc) (new [0]*OrderItem (slicelit))
+	 → t1 (@main): (*ssa.Alloc)
+
+t2 (@main): (*ssa.Slice) (slice t1[:])
+	 → t1 (@main): (*ssa.Alloc)
+
+t3 (@main): (*ssa.MakeMap) (make map[string]string 0:int)
+	 → t3 (@main): (*ssa.MakeMap)
+
+t4 (@main): (*ssa.Alloc) (local Shipping (shipping))
+	 → t4 (@main): (*ssa.Alloc)
+
+

@@ -1,0 +1,21 @@
+digraph G {
+	rankdir=TD;
+	N_val_"":string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_0:int32 [label="0:int32: 0:int32", style=bold, shape=ellipse, color="yellow"];
+	N_val__2769 [label="t3: make map[string]string 0:int", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2749 [label="t1: new [0]*OrderItem (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2806 [label="t4: local Shipping (shipping)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2702 [label="t0: context.Background()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2833 [label="t6: New(t0, 0:int32, t2, t3, \"\":string, t5)", style=bold, shape=ellipse, color="yellow"];
+	N_val_slice_2749 [label="t2: slice t1[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2873 [label="t5: *t4", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_2749 -> N_val_slice_2749;
+	N_val_alloc_2806 -> N_val_unary_2873;
+	N_val_call_2702 -> N_val_call_2833;
+	N_val_0:int32 -> N_val_call_2833;
+	N_val_slice_2749 -> N_val_call_2833;
+	N_val__2769 -> N_val_call_2833;
+	N_val_"":string -> N_val_call_2833;
+	N_val_unary_2873 -> N_val_call_2833;
+	N_val_slice_2749 -> N_val_alloc_2749 [label="", style=dashed, color=blue];
+}
