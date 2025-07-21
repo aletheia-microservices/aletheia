@@ -6,7 +6,7 @@ import (
 )
 
 type Inventory struct {
-	amount int
+	Amount int
 }
 
 type Product struct {
@@ -21,6 +21,12 @@ type ShippingService struct{}
 func (s *ShippingService) NewShipment(ctx context.Context, shipping Shipping) error {
 	fmt.Printf("[INFO] inserted document: %v\n", shipping)
 	return nil
+}
+
+type SkuService struct{}
+
+func (s *SkuService) GetSku(ctx context.Context, id string) (*Sku, error) {
+	return &Sku{}, nil
 }
 
 type MongoDB struct{}
@@ -90,11 +96,7 @@ type Order struct {
 	Amount   int
 }
 
-func Get(ctx context.Context, id string) (*Sku, error) {
-	return &Sku{}, nil
-}
-
-func New(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error) {
+func NewOrder(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error) {
 	order := &Order{
 		Currency: currency,
 		Items:    items,
@@ -141,5 +143,5 @@ func main() {
 	metadata := make(map[string]string, 0)
 	email := ""
 	shipping := &Shipping{}
-	New(ctx, currency, items, metadata, email, shipping)
+	NewOrder(ctx, currency, items, metadata, email, shipping)
 }

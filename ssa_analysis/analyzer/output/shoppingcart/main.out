@@ -1,11 +1,10 @@
 package main:
   type  Address         struct{City string}
-  func  Get             func(ctx context.Context, id string) (*Sku, error)
-  type  Inventory       struct{amount int}
+  type  Inventory       struct{Amount int}
   type  MongoDB         struct{}
     method (*MongoDB) Find(ctx context.Context, database string, collection string, id string) Sku
     method (*MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error
-  func  New             func(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error)
+  func  NewOrder        func(ctx context.Context, currency int32, items []*OrderItem, metadata map[string]string, email string, shipping *Shipping) (*Order, error)
   type  Order           struct{Currency int32; Items []*OrderItem; Metadata map[string]string; Email string; Shipping *Shipping; Amount int}
   type  OrderItem       struct{Type int32; Quantity int64; Amount int64; Currency int32; Parent string; Description string}
     method (*OrderItem) IsTypeSku() bool
@@ -20,6 +19,8 @@ package main:
   type  ShippingService struct{}
     method (*ShippingService) NewShipment(ctx context.Context, shipping Shipping) error
   type  Sku             struct{Name string; Price uint64; Currency int32}
+  type  SkuService      struct{}
+    method (*SkuService) GetSku(ctx context.Context, id string) (*Sku, error)
   func  init            func()
   var   init$guard      bool
   func  main            func()

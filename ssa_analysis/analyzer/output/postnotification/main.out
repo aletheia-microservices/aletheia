@@ -1,0 +1,16 @@
+package main:
+  type  Analytics        struct{ReqID string; PostID string; Username string}
+  type  AnalyticsService struct{}
+    method (*AnalyticsService) UpdateAnalytics(ctx context.Context, reqID string, postID string) error
+  type  MongoDB          struct{}
+    method (*MongoDB) Find(ctx context.Context, database string, collection string, id string) interface{}
+    method (*MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error
+  type  Notification     struct{ReqID string; PostID string}
+  type  Post             struct{ReqID string; PostID string; Text string; Username string; Mentions []string}
+  type  RabbitMQ         struct{}
+    method (*RabbitMQ) Push(ctx context.Context, database string, topic string, message interface{}) error
+  func  StorePost        func(ctx context.Context, reqID string, postID string, text string, username string, mentions []string) (Post, error)
+  func  init             func()
+  var   init$guard       bool
+  func  main             func()
+

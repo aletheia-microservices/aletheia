@@ -1,0 +1,71 @@
+### Function: main.main ###
+t0 (@main): (*ssa.Alloc) (local reflect.Value (v))
+	 → t0 (@main): (*ssa.Alloc)
+
+t1 (@main): (*ssa.MakeInterface) (make any <- float64 (3.14:float64))
+	 → t1 (@main): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Call) (reflect.ValueOf(t1))
+
+t3 (@main): (*ssa.UnOp) (*t0)
+
+t4 (@main): (*ssa.Call) ((reflect.Value).Type(t3))
+
+t5 (@main): (*ssa.Alloc) (new [2]any (varargs))
+	 → t5 (@main): (*ssa.Alloc)
+
+t6 (@main): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@main): (*ssa.Alloc)
+
+t7 (@main): (*ssa.MakeInterface) (make any <- string ("Type:":string))
+	 → t7 (@main): (*ssa.MakeInterface)
+
+t8 (@main): (*ssa.IndexAddr) (&t5[1:int])
+	 → t5 (@main): (*ssa.Alloc)
+
+t9 (@main): (*ssa.ChangeInterface) (change interface any <- reflect.Type (t4))
+
+t10 (@main): (*ssa.Slice) (slice t5[:])
+	 → t5 (@main): (*ssa.Alloc)
+
+t12 (@main): (*ssa.UnOp) (*t0)
+
+t14 (@main): (*ssa.Alloc) (new [2]any (varargs))
+	 → t14 (@main): (*ssa.Alloc)
+
+t15 (@main): (*ssa.IndexAddr) (&t14[0:int])
+	 → t14 (@main): (*ssa.Alloc)
+
+t16 (@main): (*ssa.MakeInterface) (make any <- string ("Kind:":string))
+	 → t16 (@main): (*ssa.MakeInterface)
+
+t17 (@main): (*ssa.IndexAddr) (&t14[1:int])
+	 → t14 (@main): (*ssa.Alloc)
+
+t18 (@main): (*ssa.MakeInterface) (make any <- reflect.Kind (t13))
+	 → t18 (@main): (*ssa.MakeInterface)
+
+t19 (@main): (*ssa.Slice) (slice t14[:])
+	 → t14 (@main): (*ssa.Alloc)
+
+t21 (@main): (*ssa.UnOp) (*t0)
+
+t23 (@main): (*ssa.Alloc) (new [2]any (varargs))
+	 → t23 (@main): (*ssa.Alloc)
+
+t24 (@main): (*ssa.IndexAddr) (&t23[0:int])
+	 → t23 (@main): (*ssa.Alloc)
+
+t25 (@main): (*ssa.MakeInterface) (make any <- string ("Value:":string))
+	 → t25 (@main): (*ssa.MakeInterface)
+
+t26 (@main): (*ssa.IndexAddr) (&t23[1:int])
+	 → t23 (@main): (*ssa.Alloc)
+
+t27 (@main): (*ssa.MakeInterface) (make any <- float64 (t22))
+	 → t27 (@main): (*ssa.MakeInterface)
+
+t28 (@main): (*ssa.Slice) (slice t23[:])
+	 → t23 (@main): (*ssa.Alloc)
+
+

@@ -1,0 +1,151 @@
+### Function: (*main.AnalyticsService).UpdateAnalytics ###
+s (@UpdateAnalytics): (*ssa.Parameter) (parameter s : *AnalyticsService)
+	 → t10 (@StorePost): (*ssa.Alloc)
+
+ctx (@UpdateAnalytics): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+t0 (@UpdateAnalytics): (*ssa.Alloc) (local Analytics (analytics))
+	 → t0 (@UpdateAnalytics): (*ssa.Alloc)
+
+t1 (@UpdateAnalytics): (*ssa.FieldAddr) (&t0.ReqID [#0])
+	 → t0 (@UpdateAnalytics): (*ssa.Alloc)
+
+t2 (@UpdateAnalytics): (*ssa.FieldAddr) (&t0.PostID [#1])
+	 → t0 (@UpdateAnalytics): (*ssa.Alloc)
+
+t3 (@UpdateAnalytics): (*ssa.Alloc) (new MongoDB (complit))
+	 → t3 (@UpdateAnalytics): (*ssa.Alloc)
+
+t5 (@UpdateAnalytics): (*ssa.MakeInterface) (make interface{} <- Analytics (t4))
+	 → t5 (@UpdateAnalytics): (*ssa.MakeInterface)
+
+t6 (@UpdateAnalytics): (*ssa.Call) ((*MongoDB).Insert(t3, ctx, "analytics_db":string, "analytics":string, t5))
+
+
+### Function: (*main.MongoDB).Find ###
+m (@Find): (*ssa.Parameter) (parameter m : *MongoDB)
+
+ctx (@Find): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Find): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Find): (*ssa.Alloc)
+
+t1 (@Find): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Find): (*ssa.Alloc)
+
+t2 (@Find): (*ssa.MakeInterface) (make any <- string (id))
+	 → t2 (@Find): (*ssa.MakeInterface)
+
+t3 (@Find): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Find): (*ssa.Alloc)
+
+
+### Function: (*main.MongoDB).Insert ###
+m (@Insert): (*ssa.Parameter) (parameter m : *MongoDB)
+	 → t3 (@UpdateAnalytics): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+ctx (@Insert): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+document (@Insert): (*ssa.Parameter) (parameter document : interface{})
+	 → t5 (@UpdateAnalytics): (*ssa.MakeInterface)
+	 → t8 (@StorePost): (*ssa.MakeInterface)
+
+t0 (@Insert): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t1 (@Insert): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Insert): (*ssa.Alloc)
+
+t2 (@Insert): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Insert): (*ssa.Alloc)
+
+
+### Function: (*main.RabbitMQ).Push ###
+r (@Push): (*ssa.Parameter) (parameter r : *RabbitMQ)
+	 → t19 (@StorePost): (*ssa.Alloc)
+
+ctx (@Push): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+message (@Push): (*ssa.Parameter) (parameter message : interface{})
+	 → t21 (@StorePost): (*ssa.MakeInterface)
+
+t0 (@Push): (*ssa.Alloc) (new [1]any (varargs))
+	 → t0 (@Push): (*ssa.Alloc)
+
+t1 (@Push): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@Push): (*ssa.Alloc)
+
+t2 (@Push): (*ssa.Slice) (slice t0[:])
+	 → t0 (@Push): (*ssa.Alloc)
+
+
+### Function: main.StorePost ###
+ctx (@StorePost): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+mentions (@StorePost): (*ssa.Parameter) (parameter mentions : []string)
+
+t0 (@StorePost): (*ssa.Alloc) (local Post (post))
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t1 (@StorePost): (*ssa.FieldAddr) (&t0.ReqID [#0])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t2 (@StorePost): (*ssa.FieldAddr) (&t0.PostID [#1])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t3 (@StorePost): (*ssa.FieldAddr) (&t0.Text [#2])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t4 (@StorePost): (*ssa.FieldAddr) (&t0.Username [#3])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t5 (@StorePost): (*ssa.FieldAddr) (&t0.Mentions [#4])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t6 (@StorePost): (*ssa.Alloc) (new MongoDB (complit))
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t8 (@StorePost): (*ssa.MakeInterface) (make interface{} <- Post (t7))
+	 → t8 (@StorePost): (*ssa.MakeInterface)
+
+t9 (@StorePost): (*ssa.Call) ((*MongoDB).Insert(t6, ctx, "posts_db":string, "post":string, t8))
+
+t10 (@StorePost): (*ssa.Alloc) (new AnalyticsService (complit))
+	 → t10 (@StorePost): (*ssa.Alloc)
+
+t11 (@StorePost): (*ssa.FieldAddr) (&t0.PostID [#1])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t13 (@StorePost): (*ssa.Call) ((*AnalyticsService).UpdateAnalytics(t10, ctx, reqID, t12))
+
+t14 (@StorePost): (*ssa.Alloc) (local Notification (notification))
+	 → t14 (@StorePost): (*ssa.Alloc)
+
+t15 (@StorePost): (*ssa.FieldAddr) (&t14.ReqID [#0])
+	 → t14 (@StorePost): (*ssa.Alloc)
+
+t16 (@StorePost): (*ssa.FieldAddr) (&t14.PostID [#1])
+	 → t14 (@StorePost): (*ssa.Alloc)
+
+t17 (@StorePost): (*ssa.FieldAddr) (&t0.PostID [#1])
+	 → t0 (@StorePost): (*ssa.Alloc)
+
+t19 (@StorePost): (*ssa.Alloc) (new RabbitMQ (complit))
+	 → t19 (@StorePost): (*ssa.Alloc)
+
+t21 (@StorePost): (*ssa.MakeInterface) (make interface{} <- Notification (t20))
+	 → t21 (@StorePost): (*ssa.MakeInterface)
+
+t22 (@StorePost): (*ssa.Call) ((*RabbitMQ).Push(t19, ctx, "notif_queue":string, "notification":string, t21))
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t2 (@Background): (*ssa.MakeInterface)
+
+

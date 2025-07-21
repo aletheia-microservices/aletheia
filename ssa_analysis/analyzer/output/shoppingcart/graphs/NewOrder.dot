@@ -1,0 +1,280 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1486007682 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__155428900 [label="if t27 goto 10 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1748673099 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1891567573 [label="if t16 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__233537825 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__409748865 [label="jump 6", style=bold, shape=ellipse, color="black"];
+	N_instr__431213041 [label="if t12 goto 4 else 1", style=bold, shape=ellipse, color="black"];
+	N_instr__480687870 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__745433567 [label="if t24 goto 8 else 9", style=bold, shape=ellipse, color="black"];
+	N_instr__815072820 [label="if t9 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2694 [label="return t0, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1919 [label="*t1 = currency", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1938 [label="*t2 = items", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1960 [label="*t3 = metadata", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1982 [label="*t4 = shipping", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2129 [label="*t17 = 1:int64", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2182 [label="*t19 = t11", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2312 [label="*t39 = t42", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2379 [label="*t46 = t45", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2416 [label="*t49 = t48", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2451 [label="*t52 = t51", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2489 [label="*t28 = t6
+
+==== tainted ====
+
+_obj[*].Parent
+@ sku_db.sku
+", style=bold, shape=box, color="blue"];
+	N_instr_store_2515 [label="*t29 = 100:int", style=bold, shape=ellipse, color="blue"];
+	N_nil_1330792106 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_262746008 [label="nil:[]*main.OrderItem: nil:[]*main.OrderItem", style=bold, shape=ellipse, color="black"];
+	N_val_"order":string [label="\"order\":string: \"order\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"order_db":string [label="\"order_db\":string: \"order_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"sku":string [label="\"sku\":string: \"sku\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"sku_db":string [label="\"sku_db\":string: \"sku_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_-1:int [label="-1:int: -1:int", style=bold, shape=ellipse, color="black"];
+	N_val_0:int64 [label="0:int64: 0:int64", style=bold, shape=ellipse, color="black"];
+	N_val_100:int [label="100:int: 100:int", style=bold, shape=ellipse, color="blue"];
+	N_val_1:int [label="1:int: 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_1:int64 [label="1:int64: 1:int64", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_1907 [label="t0: new Order (complit)
+
+==== tainted ====
+
+_obj
+@ order_db.order
+
+_obj.Items[*].Parent
+@ sku_db.sku
+
+_obj.Shipping
+@ order_db.order.Shipping
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_2189 [label="t18: new [1]*OrderItem (varargs)", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2306 [label="t38: new MongoDB (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2312 [label="t39: local Sku (sku)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2549 [label="t30: new MongoDB (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2638 [label="t33: new ShippingService (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_2110 [label="t16: t15 <= 0:int64", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt23 [label="t23: t22 + 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt24 [label="t24: t23 < t13", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt8 [label="t8: t7 + 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt9 [label="t9: t8 < t5", style=bold, shape=ellipse, color="black"];
+	N_val_call_2082 [label="t12: (*OrderItem).IsTypeTax(t11)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2169 [label="t21: append(t6, t20...)
+
+==== tainted ====
+
+_obj[*].Parent
+@ sku_db.sku
+", style=bold, shape=box, color="black"];
+	N_val_call_2258 [label="t27: (*OrderItem).IsTypeSku(t26)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2329 [label="t42: (*MongoDB).Find(t38, ctx, \"sku_db\":string, \"sku\":string, t41)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2567 [label="t32: (*MongoDB).Insert(t30, ctx, \"order_db\":string, \"order\":string, t31)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2669 [label="t37: (*ShippingService).NewShipment(t33, ctx, t36)", style=bold, shape=ellipse, color="yellow"];
+	N_val_callt13 [label="t13: len(t6)", style=bold, shape=ellipse, color="yellow"];
+	N_val_callt5 [label="t5: len(items)", style=bold, shape=ellipse, color="yellow"];
+	N_val_conv_2393 [label="t45: convert int64 <- uint64 (t44)", style=bold, shape=ellipse, color="black"];
+	N_val_field_1919 [label="t1: &t0.Currency [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1938 [label="t2: &t0.Items [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1960 [label="t3: &t0.Metadata [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1982 [label="t4: &t0.Shipping [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2101 [label="t14: &t11.Quantity [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2129 [label="t17: &t11.Quantity [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2360 [label="t40: &t26.Parent [#4]
+
+==== tainted ====
+
+_obj
+@ sku_db.sku
+", style=bold, shape=box, color="green"];
+	N_val_field_2379 [label="t46: &t26.Amount [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2398 [label="t43: &t39.Price [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2416 [label="t49: &t26.Currency [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2431 [label="t47: &t39.Currency [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2451 [label="t52: &t26.Description [#5]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2469 [label="t50: &t39.Name [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2489 [label="t28: &t0.Items [#1]
+
+==== tainted ====
+
+_obj[*].Parent
+@ sku_db.sku
+", style=bold, shape=box, color="green"];
+	N_val_field_2515 [label="t29: &t0.Amount [#5]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2682 [label="t34: &t0.Shipping [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet31 [label="t31: make interface{} <- *Order (t0)
+
+==== tainted ====
+
+_obj
+@ order_db.order
+
+_obj.Items[*].Parent
+@ sku_db.sku
+
+_obj.Shipping
+@ order_db.order.Shipping
+", style=bold, shape=box, color="black"];
+	N_val_index_2052 [label="t10: &items[t8]", style=bold, shape=ellipse, color="green"];
+	N_val_index_2223 [label="t25: &t6[t23]
+
+==== tainted ====
+
+_obj.Parent
+@ sku_db.sku
+", style=bold, shape=box, color="green"];
+	N_val_indext19 [label="t19: &t18[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_1754 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1775 [label="currency: parameter currency : int32", style=bold, shape=ellipse, color="black"];
+	N_val_param_1791 [label="items: parameter items : []*OrderItem", style=bold, shape=ellipse, color="black"];
+	N_val_param_1811 [label="metadata: parameter metadata : map[string]string", style=bold, shape=ellipse, color="black"];
+	N_val_param_1839 [label="email: parameter email : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_1853 [label="shipping: parameter shipping : *Shipping", style=bold, shape=ellipse, color="black"];
+	N_val_phi_2003 [label="t6: phi [0: nil:[]*OrderItem, 2: t6, 6: t21] #orderItems
+
+==== tainted ====
+
+_obj[*].Parent
+@ sku_db.sku
+", style=bold, shape=box, color="black"];
+	N_val_phit22 [label="t22: phi [3: -1:int, 8: t23, 10: t23]", style=bold, shape=ellipse, color="black"];
+	N_val_phit7 [label="t7: phi [0: -1:int, 2: t8, 6: t8]", style=bold, shape=ellipse, color="black"];
+	N_val_slicet20 [label="t20: slice t18[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2101 [label="t15: *t14", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2360 [label="t41: *t40
+
+==== tainted ====
+
+_obj
+@ sku_db.sku
+", style=bold, shape=box, color="red"];
+	N_val_unary_2398 [label="t44: *t43", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2431 [label="t48: *t47", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2469 [label="t51: *t50", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2675 [label="t36: *t35
+
+==== tainted ====
+
+_obj
+@ order_db.order.Shipping
+", style=bold, shape=box, color="red"];
+	N_val_unary_2682 [label="t35: *t34", style=bold, shape=ellipse, color="red"];
+	N_val_unaryt11 [label="t11: *t10", style=bold, shape=ellipse, color="red"];
+	N_val_unaryt26 [label="t26: *t25
+
+==== tainted ====
+
+_obj.Parent
+@ sku_db.sku
+", style=bold, shape=box, color="red"];
+	N_val_alloc_1907 -> N_val_field_1919;
+	N_val_alloc_1907 -> N_val_field_1938;
+	N_val_alloc_1907 -> N_val_field_1960;
+	N_val_alloc_1907 -> N_val_field_1982;
+	N_val_field_1919 -> N_instr_store_1919;
+	N_val_param_1775 -> N_instr_store_1919;
+	N_val_field_1938 -> N_instr_store_1938;
+	N_val_param_1791 -> N_instr_store_1938;
+	N_val_field_1960 -> N_instr_store_1960;
+	N_val_param_1811 -> N_instr_store_1960;
+	N_val_field_1982 -> N_instr_store_1982;
+	N_val_param_1853 -> N_instr_store_1982;
+	N_val_param_1791 -> N_val_callt5;
+	N_nil_262746008 -> N_val_phi_2003;
+	N_val_phi_2003 -> N_val_phi_2003;
+	N_val_phi_2003 -> N_val_call_2169;
+	N_val_alloc_2189 -> N_val_slicet20;
+	N_val_slicet20 -> N_val_call_2169;
+	N_val_call_2169 -> N_val_phi_2003;
+	N_val_-1:int -> N_val_phit7;
+	N_val_phit7 -> N_val_binaryt8;
+	N_val_1:int -> N_val_binaryt8;
+	N_val_binaryt8 -> N_val_phit7;
+	N_val_binaryt8 -> N_val_binaryt9;
+	N_val_callt5 -> N_val_binaryt9;
+	N_val_param_1791 -> N_val_index_2052;
+	N_val_index_2052 -> N_val_unaryt11;
+	N_val_unaryt11 -> N_val_call_2082;
+	N_val_phi_2003 -> N_val_callt13;
+	N_val_unaryt11 -> N_val_field_2101;
+	N_val_field_2101 -> N_val_unary_2101;
+	N_val_unary_2101 -> N_val_binary_2110;
+	N_val_0:int64 -> N_val_binary_2110;
+	N_val_unaryt11 -> N_val_field_2129;
+	N_val_field_2129 -> N_instr_store_2129;
+	N_val_1:int64 -> N_instr_store_2129;
+	N_val_alloc_2189 -> N_val_indext19;
+	N_val_indext19 -> N_instr_store_2182;
+	N_val_unaryt11 -> N_instr_store_2182;
+	N_val_-1:int -> N_val_phit22;
+	N_val_phit22 -> N_val_binaryt23;
+	N_val_1:int -> N_val_binaryt23;
+	N_val_binaryt23 -> N_val_phit22;
+	N_val_binaryt23 -> N_val_binaryt24;
+	N_val_callt13 -> N_val_binaryt24;
+	N_val_phi_2003 -> N_val_index_2223;
+	N_val_index_2223 -> N_val_unaryt26;
+	N_val_unaryt26 -> N_val_call_2258;
+	N_val_alloc_1907 -> N_val_field_2489;
+	N_val_field_2489 -> N_instr_store_2489;
+	N_val_phi_2003 -> N_instr_store_2489;
+	N_val_alloc_1907 -> N_val_field_2515;
+	N_val_field_2515 -> N_instr_store_2515;
+	N_val_100:int -> N_instr_store_2515;
+	N_val_alloc_1907 -> N_val_ifacet31;
+	N_val_alloc_2549 -> N_val_call_2567;
+	N_val_param_1754 -> N_val_call_2567;
+	N_val_"order_db":string -> N_val_call_2567;
+	N_val_"order":string -> N_val_call_2567;
+	N_val_ifacet31 -> N_val_call_2567;
+	N_val_alloc_1907 -> N_val_field_2682;
+	N_val_field_2682 -> N_val_unary_2682;
+	N_val_unary_2682 -> N_val_unary_2675;
+	N_val_alloc_2638 -> N_val_call_2669;
+	N_val_param_1754 -> N_val_call_2669;
+	N_val_unary_2675 -> N_val_call_2669;
+	N_val_alloc_1907 -> N_instr_ret_2694;
+	N_nil_1330792106 -> N_instr_ret_2694;
+	N_val_unaryt26 -> N_val_field_2360;
+	N_val_field_2360 -> N_val_unary_2360;
+	N_val_alloc_2306 -> N_val_call_2329;
+	N_val_param_1754 -> N_val_call_2329;
+	N_val_"sku_db":string -> N_val_call_2329;
+	N_val_"sku":string -> N_val_call_2329;
+	N_val_unary_2360 -> N_val_call_2329;
+	N_val_alloc_2312 -> N_instr_store_2312;
+	N_val_call_2329 -> N_instr_store_2312;
+	N_val_alloc_2312 -> N_val_field_2398;
+	N_val_field_2398 -> N_val_unary_2398;
+	N_val_unary_2398 -> N_val_conv_2393;
+	N_val_unaryt26 -> N_val_field_2379;
+	N_val_field_2379 -> N_instr_store_2379;
+	N_val_conv_2393 -> N_instr_store_2379;
+	N_val_alloc_2312 -> N_val_field_2431;
+	N_val_field_2431 -> N_val_unary_2431;
+	N_val_unaryt26 -> N_val_field_2416;
+	N_val_field_2416 -> N_instr_store_2416;
+	N_val_unary_2431 -> N_instr_store_2416;
+	N_val_alloc_2312 -> N_val_field_2469;
+	N_val_field_2469 -> N_val_unary_2469;
+	N_val_unaryt26 -> N_val_field_2451;
+	N_val_field_2451 -> N_instr_store_2451;
+	N_val_unary_2469 -> N_instr_store_2451;
+	N_val_indext19 -> N_val_alloc_2189 [label="[*]", style=dashed, color=blue];
+	N_val_field_2515 -> N_val_alloc_1907 [label=".Amount", style=dashed, color=blue];
+	N_val_field_2469 -> N_val_alloc_2312 [label=".Name", style=dashed, color=blue];
+	N_val_field_2431 -> N_val_alloc_2312 [label=".Currency", style=dashed, color=blue];
+	N_val_slicet20 -> N_val_alloc_2189 [label="", style=dashed, color=blue];
+	N_val_field_2489 -> N_val_alloc_1907 [label=".Items", style=dashed, color=blue];
+	N_val_field_1919 -> N_val_alloc_1907 [label=".Currency", style=dashed, color=blue];
+	N_val_field_1982 -> N_val_alloc_1907 [label=".Shipping", style=dashed, color=blue];
+	N_val_field_1960 -> N_val_alloc_1907 [label=".Metadata", style=dashed, color=blue];
+	N_val_index_2223 -> N_val_call_2169 [label="[*]", style=dashed, color=blue];
+	N_val_field_2398 -> N_val_alloc_2312 [label=".Price", style=dashed, color=blue];
+	N_val_field_1938 -> N_val_alloc_1907 [label=".Items", style=dashed, color=blue];
+	N_val_field_2682 -> N_val_alloc_1907 [label=".Shipping", style=dashed, color=blue];
+}

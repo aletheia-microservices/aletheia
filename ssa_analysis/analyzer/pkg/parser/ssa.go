@@ -242,7 +242,11 @@ func parseValue(g *graph.Graph, instr ssa.Instruction, instrIdx int, val ssa.Val
 
 func getInstructionID(instr ssa.Instruction) string {
 	if !instr.Pos().IsValid() { // meaning there is no position
-		return ""
+		n, err := rand.Int(rand.Reader, big.NewInt(1<<31))
+		if err != nil {
+			return ""
+		}
+		return "instr_" + instrString(instr) + "_" +fmt.Sprintf("%d", n)
 	}
 	return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", instr.Pos())
 }
@@ -263,7 +267,7 @@ func getValueID(val ssa.Value) string {
 			if c.IsNil() {
 				n, err := rand.Int(rand.Reader, big.NewInt(1<<31))
 				if err != nil {
-					return "nil_rand_error"
+					return ""
 				}
 				return fmt.Sprintf("nil_%d", n)
 			}

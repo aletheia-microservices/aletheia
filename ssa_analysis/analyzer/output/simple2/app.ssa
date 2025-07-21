@@ -1,0 +1,54 @@
+		Parameters:
+Function: main.init
+Block #0: main.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: main.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = fmt.init()
+			02: t2 = reflect.init()
+			03: jump 2
+Block #2: main.init.init.done
+			00: return
+		Parameters:
+Function: main.main
+Block #0: main.main.entry
+			00: t0 = local reflect.Value (v)
+			01: t1 = make any <- float64 (3.14:float64)
+			02: t2 = reflect.ValueOf(t1)
+			03: *t0 = t2
+			04: t3 = *t0
+			05: t4 = (reflect.Value).Type(t3)
+			06: t5 = new [2]any (varargs)
+			07: t6 = &t5[0:int]
+			08: t7 = make any <- string ("Type:":string)
+			09: *t6 = t7
+			10: t8 = &t5[1:int]
+			11: t9 = change interface any <- reflect.Type (t4)
+			12: *t8 = t9
+			13: t10 = slice t5[:]
+			14: t11 = fmt.Println(t10...)
+			15: t12 = *t0
+			16: t13 = (reflect.Value).Kind(t12)
+			17: t14 = new [2]any (varargs)
+			18: t15 = &t14[0:int]
+			19: t16 = make any <- string ("Kind:":string)
+			20: *t15 = t16
+			21: t17 = &t14[1:int]
+			22: t18 = make any <- reflect.Kind (t13)
+			23: *t17 = t18
+			24: t19 = slice t14[:]
+			25: t20 = fmt.Println(t19...)
+			26: t21 = *t0
+			27: t22 = (reflect.Value).Float(t21)
+			28: t23 = new [2]any (varargs)
+			29: t24 = &t23[0:int]
+			30: t25 = make any <- string ("Value:":string)
+			31: *t24 = t25
+			32: t26 = &t23[1:int]
+			33: t27 = make any <- float64 (t22)
+			34: *t26 = t27
+			35: t28 = slice t23[:]
+			36: t29 = fmt.Println(t28...)
+			37: return
+	Global: init$guard, Type: *bool

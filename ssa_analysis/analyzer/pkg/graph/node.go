@@ -52,10 +52,12 @@ func (node *Node) GetTaints() map[string][]string {
 	return node.taints
 }
 
-func (node *Node) AddTaintIfNotExists(objPath string, dbField string) {
+func (node *Node) AddTaintIfNotExists(objPath string, dbField string) bool {
 	if !slices.Contains(node.taints[objPath], dbField) {
 		node.taints[objPath] = append(node.taints[objPath], dbField)
+		return true
 	}
+	return false
 }
 
 func (node *Node) taintString() string {

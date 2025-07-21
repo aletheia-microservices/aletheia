@@ -1,0 +1,54 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_575 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_457 [label="*t1 = reqID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_475 [label="*t2 = postID", style=bold, shape=ellipse, color="blue"];
+	N_nil_179421681 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_"analytics":string [label="\"analytics\":string: \"analytics\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"analytics_db":string [label="\"analytics_db\":string: \"analytics_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_426 [label="t0: local Analytics (analytics)
+
+==== tainted ====
+
+_obj
+@ analytics_db.analytics
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_509 [label="t3: new MongoDB (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_527 [label="t6: (*MongoDB).Insert(t3, ctx, \"analytics_db\":string, \"analytics\":string, t5)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_457 [label="t1: &t0.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_475 [label="t2: &t0.PostID [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet5 [label="t5: make interface{} <- Analytics (t4)
+
+==== tainted ====
+
+_obj
+@ analytics_db.analytics
+", style=bold, shape=box, color="black"];
+	N_val_param_330 [label="s: parameter s : *AnalyticsService", style=bold, shape=ellipse, color="black"];
+	N_val_param_367 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_388 [label="reqID: parameter reqID : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_402 [label="postID: parameter postID : string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_562 [label="t4: *t0
+
+==== tainted ====
+
+_obj
+@ analytics_db.analytics
+", style=bold, shape=box, color="red"];
+	N_val_alloc_426 -> N_val_field_457;
+	N_val_alloc_426 -> N_val_field_475;
+	N_val_field_457 -> N_instr_store_457;
+	N_val_param_388 -> N_instr_store_457;
+	N_val_field_475 -> N_instr_store_475;
+	N_val_param_402 -> N_instr_store_475;
+	N_val_alloc_426 -> N_val_unary_562;
+	N_val_unary_562 -> N_val_ifacet5;
+	N_val_alloc_509 -> N_val_call_527;
+	N_val_param_367 -> N_val_call_527;
+	N_val_"analytics_db":string -> N_val_call_527;
+	N_val_"analytics":string -> N_val_call_527;
+	N_val_ifacet5 -> N_val_call_527;
+	N_nil_179421681 -> N_instr_ret_575;
+	N_val_field_475 -> N_val_alloc_426 [label=".PostID", style=dashed, color=blue];
+	N_val_field_457 -> N_val_alloc_426 [label=".ReqID", style=dashed, color=blue];
+}
