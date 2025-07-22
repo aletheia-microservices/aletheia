@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"log"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,15 +17,15 @@ import (
 	"analyzer/pkg/graph"
 )
 
-func InitPointerAnalysis(prog *ssa.Program, mainPkg *ssa.Package) (*pointer.Result, error) {
+func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Result, error) {
 
 	config := &pointer.Config{
-		Mains:          []*ssa.Package{mainPkg},
+		Mains:          pkgs,
 		BuildCallGraph: true,
 	}
 
 	for fn := range ssautil.AllFunctions(prog) {
-		if fn == nil || fn.Pkg == nil || fn.Pkg.Pkg.Path() != "main" {
+		if fn == nil || fn.Pkg == nil || !slices.Contains(pkgs, fn.Pkg) {
 			continue
 		}
 		for _, param := range fn.Params {
@@ -82,8 +83,26 @@ func InitPointerAnalysis(prog *ssa.Program, mainPkg *ssa.Package) (*pointer.Resu
 	return result, nil
 }
 
+func cleanName(s string) string {
+	// remove leading (* if present
+	if strings.HasPrefix(s, "(*") {
+		s = s[2:]
+	}
+
+	// extract everything after "workflow/"
+	if idx := strings.Index(s, "workflow/"); idx != -1 {
+		s = s[idx+len("workflow/"):]
+		s = strings.ReplaceAll(s, ")", "")
+	}
+
+	return s
+}
+
+
+
 func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*graph.Graph) {
-	outFile, err := os.Create(fmt.Sprintf("output/%s/app.ptrs", appname))
+	fmt.Printf("[PTA] running pointer analysis for package: %s\n", pkg.String())
+	outFile, err := os.Create(fmt.Sprintf("output/%s/%s.ptrs", appname, pkg.Pkg.Name()))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,11 +118,22 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 
 	for value, pts := range result.Queries {
 		fn := valueParent(value)
-		if fn == nil || fn.Pkg == nil || fn.Pkg.Pkg.Path() != pkg.Pkg.Path() {
+		if fn == nil {
 			continue
 		}
 
-		g := funcGraphs[fn.Name()]
+		fnFullname := cleanName(fn.String())
+		fmt.Printf("[PTA] analyzing value: %v // pointers = %v // fn = %s\n", value, pts, fnFullname)
+		if fn.Pkg == nil || fn.Pkg.Pkg.Path() != pkg.Pkg.Path() {
+			continue
+		}
+
+		g := funcGraphs[fnFullname]
+		if g == nil {
+			fmt.Printf("could not find graph for name %s\n", fnFullname)
+			fmt.Println("skipping...")
+			return
+		}
 
 		pos := prog.Fset.Position(value.Pos())
 		desc := valueDesc(fn, value) + "\n"

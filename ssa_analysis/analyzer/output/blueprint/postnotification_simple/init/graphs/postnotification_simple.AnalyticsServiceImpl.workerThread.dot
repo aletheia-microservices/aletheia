@@ -1,0 +1,21 @@
+digraph G {
+	rankdir=TD;
+	N_instr__27079 [label="go t2()", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_27237 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_56846867 [label="*t1 = ctx", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_897955096 [label="*t0 = n", style=bold, shape=ellipse, color="blue"];
+	N_nil_2057175515 [label="nil:chan struct{}: nil:chan struct{}", style=bold, shape=ellipse, color="red"];
+	N_nil_548456072 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_26984 [label="t0: new *AnalyticsServiceImpl (n)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_27022 [label="t1: new context.Context (ctx)", style=bold, shape=ellipse, color="orange"];
+	N_val_param_26984 [label="n: parameter n : *AnalyticsServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_27022 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_t2 [label="t2: make closure (*AnalyticsServiceImpl).workerThread$1 [t0, t1]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_27226 [label="t3: <-nil:chan struct{}", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_26984 -> N_instr_store_897955096;
+	N_val_param_26984 -> N_instr_store_897955096;
+	N_val_alloc_27022 -> N_instr_store_56846867;
+	N_val_param_27022 -> N_instr_store_56846867;
+	N_nil_2057175515 -> N_val_unary_27226;
+	N_nil_548456072 -> N_instr_ret_27237;
+}

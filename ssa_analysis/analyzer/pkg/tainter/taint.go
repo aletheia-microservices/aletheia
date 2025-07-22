@@ -2,6 +2,7 @@ package tainter
 
 import (
 	"fmt"
+	"log"
 	"slices"
 	"strings"
 
@@ -227,20 +228,30 @@ func backwardsAnalysis(g *graph.Graph, val ssa.Value, taintInfo TaintInfo, visit
 func RunTaint(g *graph.Graph) {
 	var nodes []*graph.Node
 	for _, node := range g.GetNodes() {
-		if call, _, ok := isDatabaseCall(node.GetInstruction()); ok {
+		if args, ok := isDatabaseCall(g, node.GetInstruction()); ok {
+			/* if node.GetName() == "t21" {
+				log.Fatal("HERE!")
+			} */
+			fmt.Printf("[TAINT] got func args: %v\n", args)
 			var database, collection string
+			var valDocumentOrMessage ssa.Value
 
-			valDatabase := call.Call.Args[2]
-			if c, ok := valDatabase.(*ssa.Const); ok {
-				database = strings.Trim(c.Value.ExactString(), "\"")
+			database = "mydb"
+			collection = "mycollection"
+			valDocumentOrMessage = args[0]
+
+			if len(args) == 3 { 
+				valDatabase := args[0]
+				if c, ok := valDatabase.(*ssa.Const); ok {
+					database = strings.Trim(c.Value.ExactString(), "\"")
+				}
+				valCollectionOrTopic := args[1]
+				if c, ok := valCollectionOrTopic.(*ssa.Const); ok {
+					collection = strings.Trim(c.Value.ExactString(), "\"")
+				}
+				valDocumentOrMessage = args[2]
 			}
 
-			valCollectionOrTopic := call.Call.Args[3]
-			if c, ok := valCollectionOrTopic.(*ssa.Const); ok {
-				collection = strings.Trim(c.Value.ExactString(), "\"")
-			}
-
-			valDocumentOrMessage := call.Call.Args[4]
 
 			fmt.Printf("[RUN] tainting object %s.%s: %s\n", database, collection, valDocumentOrMessage.String())
 			visited := make(map[TaintInfo]bool)
@@ -374,19 +385,48 @@ func recurseEdgesForwardUntilStoreTo(g *graph.Graph, node *graph.Node, storeEdge
 	return storeEdges
 }
 
-func isDatabaseCall(instr ssa.Instruction) (*ssa.Call, *ssa.Function, bool) {
+func isDatabaseCall(g *graph.Graph, instr ssa.Instruction) ([]ssa.Value, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
 		if fn, ok := call.Call.Value.(*ssa.Function); ok && len(fn.Params) > 0 {
 			maybeRcv := fn.Params[0]
 			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" || fn.Name() == "Find" {
-				return call, fn, true
+				// return arg without receiver and context
+				return call.Call.Args[2:], true
 			}
 			if maybeRcv.Type().String() == "*main.RabbitMQ" && fn.Name() == "Push" {
-				return call, fn, true
+				// return arg without receiver and context
+				return call.Call.Args[2:], true
 			}
 		}
+		if _, ok := call.Call.Value.(*ssa.UnOp); ok {
+			if slices.Contains([]string{"Push"}, call.Call.Method.Name()) {
+				fmt.Printf("1. HERE [%T] %v // %s\n", call.Call.Method, call.Call.Method, call.String())
+			}
+			// return arg without context
+			return call.Call.Args[1:], true
+		}
+		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
+			if slices.Contains([]string{"InsertOne"}, call.Call.Method.Name()) {
+				fmt.Printf("2. HERE [%T] %v // %s\n", call.Call.Method, call.Call.Method, call.String())
+			}
+			
+			getCollectionNodeCall := g.GetNodeByName(extr.Tuple.Name())
+			var dbArgs []ssa.Value
+			if call, ok := getCollectionNodeCall.GetInstruction().(*ssa.Call); ok {
+				if _, ok := call.Call.Value.(*ssa.UnOp); ok {
+					dbVal := call.Call.Args[1]
+					colVal := call.Call.Args[2]
+					dbArgs = []ssa.Value{dbVal, colVal}
+				}
+			}
+			// return arg without context
+			return append(dbArgs, call.Call.Args[1:]...), true
+		}
+		if strings.Contains(instr.String(), "InsertOne") {
+			log.Fatalf("WTF???? [%T] %v // %v", call.Call.Value, call.Call.Value, instr)
+		}
 	}
-	return nil, nil, false
+	return nil, false
 }
 
 func isServiceCall(instr ssa.Instruction) (*ssa.Call, *ssa.Function, bool) {
@@ -400,6 +440,13 @@ func isServiceCall(instr ssa.Instruction) (*ssa.Call, *ssa.Function, bool) {
 				return call, fn, true
 			}
 			if maybeRcv.Type().String() == "*main.AnalyticsService" && fn.Name() == "UpdateAnalytics" {
+				return call, fn, true
+			}
+			if slices.Contains([]string{
+				"StorePost", "ReadPost", "DeletePost", // storage
+				"ReadAnalytics", // analytics
+				"UploadPost", "DeletePost", "ReadPostWithAnalytics", // upload
+				}, fn.Name()){
 				return call, fn, true
 			}
 		}

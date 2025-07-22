@@ -1,0 +1,21 @@
+digraph G {
+	rankdir=TD;
+	N_instr__147092 [label="go t2()", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_147281 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1633296457 [label="*t1 = ctx", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_487337141 [label="*t0 = n", style=bold, shape=ellipse, color="blue"];
+	N_nil_1225963037 [label="nil:chan struct{}: nil:chan struct{}", style=bold, shape=ellipse, color="red"];
+	N_nil_1304288180 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_147000 [label="t0: new *NotifyServiceImpl (n)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_147035 [label="t1: new context.Context (ctx)", style=bold, shape=ellipse, color="orange"];
+	N_val_param_147000 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_147035 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_t2 [label="t2: make closure (*NotifyServiceImpl).workerThread$1 [t0, t1]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_147270 [label="t3: <-nil:chan struct{}", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_147000 -> N_instr_store_487337141;
+	N_val_param_147000 -> N_instr_store_487337141;
+	N_val_alloc_147035 -> N_instr_store_1633296457;
+	N_val_param_147035 -> N_instr_store_1633296457;
+	N_nil_1225963037 -> N_val_unary_147270;
+	N_nil_1304288180 -> N_instr_ret_147281;
+}

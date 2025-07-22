@@ -16,29 +16,29 @@ import (
 )
 
 func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*graph.Graph) {
-	outfile1, err := os.Create(fmt.Sprintf("output/%s/app.ssa", appname))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer outfile1.Close()
-
-	outfile2, err := os.Create(fmt.Sprintf("output/%s/%s.out", appname, pkg.Pkg.Name()))
+	outfile1, err := os.Create(fmt.Sprintf("output/%s/%s.out", appname, pkg.Pkg.Name()))
 	if err != nil {
 		log.Fatalf("failed to create output file: %v", err)
 	}
+	defer outfile1.Close()
+	pkg.WriteTo(outfile1)
+
+	outfile2, err := os.Create(fmt.Sprintf("output/%s/%s.ssa", appname, pkg.Pkg.Name()))
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer outfile2.Close()
-	pkg.WriteTo(outfile2)
 
 	for _, member := range pkg.Members {
 		switch m := member.(type) {
 		case *ssa.Function:
-			iterateFunc(outfile1, m, nil, funcGraphs)
+			iterateFunc(outfile2, m, nil, funcGraphs)
 
 		case *ssa.Global:
-			fmt.Fprintf(outfile1, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
+			fmt.Fprintf(outfile2, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
 
 		case *ssa.Type:
-			fmt.Fprintf(outfile1, "\tType: %s\n", m.Type())
+			fmt.Fprintf(outfile2, "\tType: %s\n", m.Type())
 
 			// this logic was copied from
 			// package: golang.org/x/tools/go/ssa
@@ -46,35 +46,40 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 			// function: func (p *Package) WriteTo(w io.Writer) (int64, error)
 			for _, sel := range typeutil.IntuitiveMethodSet(m.Type(), &prog.MethodSets) {
 				method := prog.MethodValue(sel)
-				fmt.Fprintf(outfile1, "\tMethod: %v\n", sel.Obj().Type())
+				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				if method != nil {
-					iterateFunc(outfile1, method, m.Type(), funcGraphs)
+					iterateFunc(outfile2, method, m.Type(), funcGraphs)
 				}
 			}
 
 			methods := prog.MethodSets.MethodSet(m.Type().Underlying())
 			for i := 0; i < methods.Len(); i++ {
 				sel := methods.At(i)
-				fmt.Fprintf(outfile1, "\tMethod: %v\n", sel.Obj().Type())
+				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				method := prog.MethodValue(sel)
 				if method != nil {
-					iterateFunc(outfile1, method, m.Type(), funcGraphs)
+					iterateFunc(outfile2, method, m.Type(), funcGraphs)
 				}
 			}
 
 		default:
-			fmt.Fprintf(outfile1, "\tUnknown member type: %T\n", m)
+			fmt.Fprintf(outfile2, "\tUnknown member type: %T\n", m)
 		}
 	}
 }
 
 func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*graph.Graph) {
-	fullfuncname := fn.Package().Pkg.Name() + "." + fn.Name()
+	fullfuncname := cleanName(fn.String())
+
+	fmt.Printf("[SSA] iterating function %s\n", fullfuncname)
+
 	g := graph.NewGraph()
-	if _, exists := funcGraphs[fn.Name()]; exists {
-		log.Fatalf("graph for function (%s) already exists\n", fullfuncname)
+	if _, exists := funcGraphs[fullfuncname]; exists {
+		log.Printf("graph for function (%s) already exists\n", fullfuncname)
+		log.Println("skipping...")
+		return
 	}
-	funcGraphs[fn.Name()] = g
+	funcGraphs[fullfuncname] = g
 	fmt.Printf("added new graph for function (%s)\n", fullfuncname)
 
 	var visited = make(map[ssa.Value]bool)

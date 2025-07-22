@@ -3,7 +3,7 @@ m (@Find): (*ssa.Parameter) (parameter m : *MongoDB)
 	 → t38 (@NewOrder): (*ssa.Alloc)
 
 ctx (@Find): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 t0 (@Find): (*ssa.Alloc) (new [1]any (varargs))
 	 → t0 (@Find): (*ssa.Alloc)
@@ -17,16 +17,13 @@ t2 (@Find): (*ssa.MakeInterface) (make any <- string (id))
 t3 (@Find): (*ssa.Slice) (slice t0[:])
 	 → t0 (@Find): (*ssa.Alloc)
 
-t5 (@Find): (*ssa.Alloc) (local Sku (complit))
-	 → t5 (@Find): (*ssa.Alloc)
-
 
 ### Function: (*main.MongoDB).Insert ###
 m (@Insert): (*ssa.Parameter) (parameter m : *MongoDB)
 	 → t30 (@NewOrder): (*ssa.Alloc)
 
 ctx (@Insert): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 document (@Insert): (*ssa.Parameter) (parameter document : interface{})
 	 → t31 (@NewOrder): (*ssa.MakeInterface)
@@ -71,22 +68,19 @@ s (@NewShipment): (*ssa.Parameter) (parameter s : *ShippingService)
 	 → t33 (@NewOrder): (*ssa.Alloc)
 
 ctx (@NewShipment): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
-t0 (@NewShipment): (*ssa.Alloc) (local Shipping (shipping))
+t0 (@NewShipment): (*ssa.Alloc) (new [1]any (varargs))
 	 → t0 (@NewShipment): (*ssa.Alloc)
 
-t2 (@NewShipment): (*ssa.Alloc) (new [1]any (varargs))
-	 → t2 (@NewShipment): (*ssa.Alloc)
+t1 (@NewShipment): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@NewShipment): (*ssa.Alloc)
 
-t3 (@NewShipment): (*ssa.IndexAddr) (&t2[0:int])
-	 → t2 (@NewShipment): (*ssa.Alloc)
+t2 (@NewShipment): (*ssa.MakeInterface) (make any <- Shipping (shipping))
+	 → t2 (@NewShipment): (*ssa.MakeInterface)
 
-t4 (@NewShipment): (*ssa.MakeInterface) (make any <- Shipping (t1))
-	 → t4 (@NewShipment): (*ssa.MakeInterface)
-
-t5 (@NewShipment): (*ssa.Slice) (slice t2[:])
-	 → t2 (@NewShipment): (*ssa.Alloc)
+t3 (@NewShipment): (*ssa.Slice) (slice t0[:])
+	 → t0 (@NewShipment): (*ssa.Alloc)
 
 
 ### Function: (*main.SkuService).GetSku ###
@@ -100,7 +94,7 @@ t0 (@GetSku): (*ssa.Alloc) (new Sku (complit))
 
 ### Function: main.NewOrder ###
 ctx (@NewOrder): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 items (@NewOrder): (*ssa.Parameter) (parameter items : []*OrderItem)
 	 → t1 (@main): (*ssa.Alloc)
@@ -206,7 +200,7 @@ t52 (@NewOrder): (*ssa.FieldAddr) (&t26.Description [#5])
 
 ### Function: main.main ###
 t0 (@main): (*ssa.Call) (context.Background())
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 t1 (@main): (*ssa.Alloc) (new [0]*OrderItem (slicelit))
 	 → t1 (@main): (*ssa.Alloc)

@@ -1,0 +1,29 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_26008 [label="return t4, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_25945 [label="*t1 = analyticsDb", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_25974 [label="*t2 = analyticsQueue", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_26002 [label="*t3 = 4:int", style=bold, shape=ellipse, color="blue"];
+	N_nil_301454660 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_4:int [label="4:int: 4:int", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_25933 [label="t0: new AnalyticsServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_25945 [label="t1: &t0.analyticsDb [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_25974 [label="t2: &t0.analyticsQueue [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_26002 [label="t3: &t0.numWorkers [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet4 [label="t4: make AnalyticsService <- *AnalyticsServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_25792 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_25813 [label="analyticsDb: parameter analyticsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_param_25848 [label="analyticsQueue: parameter analyticsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_25933 -> N_val_field_25945;
+	N_val_alloc_25933 -> N_val_field_25974;
+	N_val_alloc_25933 -> N_val_field_26002;
+	N_val_field_25945 -> N_instr_store_25945;
+	N_val_param_25813 -> N_instr_store_25945;
+	N_val_field_25974 -> N_instr_store_25974;
+	N_val_param_25848 -> N_instr_store_25974;
+	N_val_field_26002 -> N_instr_store_26002;
+	N_val_4:int -> N_instr_store_26002;
+	N_val_alloc_25933 -> N_val_ifacet4;
+	N_val_ifacet4 -> N_instr_ret_26008;
+	N_nil_301454660 -> N_instr_ret_26008;
+}

@@ -29,25 +29,48 @@ func main() {
 		appname = os.Args[1]
 	}
 
-	prog, pkg, err := buildProgram()
+	// ensure output sub directory exists
+	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	result, err := parser.InitPointerAnalysis(prog, pkg)
+	// ensure output sub directory for graphs exists
+	err = os.MkdirAll(fmt.Sprintf("output/%s/graphs", appname), os.ModePerm)
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
+
+	prog, pkgs, err := buildProgram(appname)
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
+
+	fmt.Println("[INFO] running analysis for packages:")
+	for _, pkg := range pkgs {
+		fmt.Printf("\t- %s\n", pkg.String())
+	}
+
+
+	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
 
 	funcGraphs := make(map[string]*graph.Graph)
 
-	parser.RunSSAAnalysis(appname, prog, pkg, funcGraphs)
+	for _, pkg := range pkgs {
+		parser.RunSSAAnalysis(appname, prog, pkg, funcGraphs)
+	}
 
 	for _, graph := range funcGraphs {
 		graph.SortNodes()
 	}
 
-	parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
+	for _, pkg := range pkgs {
+		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
+	}
+
 
 	for _, graph := range funcGraphs {
 		tainter.RunTaint(graph)
@@ -91,7 +114,7 @@ func main() {
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
 }
 
-func buildProgram() (*ssa.Program, *ssa.Package, error) {
+func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {
 	// e.g. "../apps/test2/main.go"
 	filepath := "apps/" + appname + "/main.go"
 	source, err := os.ReadFile(filepath)
@@ -119,7 +142,17 @@ func buildProgram() (*ssa.Program, *ssa.Package, error) {
 
 	prog := ssautil.CreateProgram(iprog, 0)
 	mainPkg := prog.Package(iprog.Created[0].Pkg)
-
+	
 	prog.Build()
-	return prog, mainPkg, nil
+	
+	var pkgs = []*ssa.Package{mainPkg}
+	
+	for _, pkg := range prog.AllPackages() {
+		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
+			if pkg.Pkg.Path() == "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple" {
+				pkgs = append(pkgs, pkg)
+			}
+		}
+	}
+	return prog, pkgs, nil
 }

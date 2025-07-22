@@ -1,0 +1,226 @@
+digraph G {
+	rankdir=TD;
+	N_instr__149496171 [label="if t46 goto 10 else 11", style=bold, shape=ellipse, color="black"];
+	N_instr__1901284400 [label="if t32 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__358817027 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__462842462 [label="if t19 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__528778086 [label="if t41 goto 8 else 9", style=bold, shape=ellipse, color="black"];
+	N_instr__541965232 [label="if t35 goto 6 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__830127773 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_294057 [label="return nil:*Post, t31", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_294134 [label="return nil:*Post, t34", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_294242 [label="return nil:*Post, t40", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_294327 [label="return nil:*Post, t45", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_294486 [label="return t6, t45", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_293621 [label="*t3 = \"alice\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293630 [label="*t4 = \"bob\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293661 [label="*t7 = reqID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293682 [label="*t8 = t0", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293713 [label="*t9 = text", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293736 [label="*t10 = t5", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293760 [label="*t11 = t1", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293804 [label="*t13 = \"some username\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_293956 [label="*t24 = t21", style=bold, shape=ellipse, color="blue"];
+	N_nil_1076598163 [label="nil:*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post: nil:*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1483070119 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_385056446 [label="nil:[]string: nil:[]string", style=bold, shape=ellipse, color="black"];
+	N_val_"alice":string [label="\"alice\":string: \"alice\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_"bob":string [label="\"bob\":string: \"bob\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_"post":string [label="\"post\":string: \"post\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"posts_db":string [label="\"posts_db\":string: \"posts_db\":string
+
+==== tainted ====
+
+_obj
+@ mydb.mycollection
+", style=bold, shape=box, color="yellow"];
+	N_val_"some username":string [label="\"some username\":string: \"some username\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_"test":string [label="\"test\":string: \"test\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_"test_tb":string [label="\"test_tb\":string: \"test_tb\":string
+
+==== tainted ====
+
+_obj
+@ mydb.mycollection
+", style=bold, shape=box, color="yellow"];
+	N_val_-1:int [label="-1:int: -1:int", style=bold, shape=ellipse, color="black"];
+	N_val_0:int [label="0:int: 0:int", style=bold, shape=ellipse, color="black"];
+	N_val_1:int [label="1:int: 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_293620 [label="t2: new [2]string (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_293652 [label="t6: new Post (complit)
+
+==== tainted ====
+
+_obj
+@ posts_db.post
+
+_obj.PostID
+@ test_tb.test
+@ posts_db.post.PostID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_293963 [label="t23: new [1]string (varargs)", style=bold, shape=ellipse, color="black"];
+	N_val_binary_293909 [label="t22: t15 + t18", style=bold, shape=ellipse, color="black"];
+	N_val_binary_294046 [label="t32: t31 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_294123 [label="t35: t34 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_294231 [label="t41: t40 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_294316 [label="t46: t45 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt18 [label="t18: t17 + 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt19 [label="t19: t18 < t14", style=bold, shape=ellipse, color="black"];
+	N_val_call_293569 [label="t0: math/rand.Int63()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_293596 [label="t1: math/rand.Int63()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_293943 [label="t26: append(t16, t25...)", style=bold, shape=ellipse, color="black"];
+	N_val_call_294012 [label="t29: invoke t28.GetCollection(ctx, \"posts_db\":string, \"post\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_294103 [label="t34: invoke t30.InsertOne(ctx, t33)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_294198 [label="t38: invoke t37.GetCollection(ctx, \"test_tb\":string, \"test\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_294289 [label="t45: invoke t39.InsertOne(ctx, t44)", style=bold, shape=ellipse, color="yellow"];
+	N_val_callt14 [label="t14: len(t5)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt30 [label="t30: extract t29 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt31 [label="t31: extract t29 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt39 [label="t39: extract t38 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt40 [label="t40: extract t38 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_293661 [label="t7: &t6.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293682 [label="t8: &t6.PostID [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293713 [label="t9: &t6.Text [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293736 [label="t10: &t6.Mentions [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293760 [label="t11: &t6.Timestamp [#5]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293782 [label="t12: &t6.Creator [#6]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293804 [label="t13: &t12.Username [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_293991 [label="t27: &s.postsDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_294177 [label="t36: &s.postsDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_294300 [label="t42: &t6.PostID [#1]
+
+==== tainted ====
+
+_obj
+@ test_tb.test
+", style=bold, shape=box, color="green"];
+	N_val_ifacet33 [label="t33: make interface{} <- *Post (t6)
+
+==== tainted ====
+
+_obj
+@ posts_db.post
+
+_obj.PostID
+@ test_tb.test
+@ posts_db.post.PostID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet44 [label="t44: make interface{} <- int64 (t43)
+
+==== tainted ====
+
+_obj
+@ test_tb.test
+@ posts_db.post.PostID
+", style=bold, shape=box, color="black"];
+	N_val_index_293896 [label="t20: &t5[t18]", style=bold, shape=ellipse, color="green"];
+	N_val_indext24 [label="t24: &t23[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_indext3 [label="t3: &t2[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_indext4 [label="t4: &t2[1:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_293439 [label="s: parameter s : *StorageServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_293472 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_293493 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_293506 [label="text: parameter text : string", style=bold, shape=ellipse, color="black"];
+	N_val_phi_293833 [label="t15: phi [0: 0:int, 2: t22] #myval", style=bold, shape=ellipse, color="black"];
+	N_val_phi_293849 [label="t16: phi [0: nil:[]string, 2: t26] #mymentions", style=bold, shape=ellipse, color="black"];
+	N_val_phit17 [label="t17: phi [0: -1:int, 2: t18]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_293620 [label="t5: slice t2[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slicet25 [label="t25: slice t23[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_293991 [label="t28: *t27", style=bold, shape=ellipse, color="red"];
+	N_val_unary_294177 [label="t37: *t36", style=bold, shape=ellipse, color="red"];
+	N_val_unary_294300 [label="t43: *t42
+
+==== tainted ====
+
+_obj
+@ test_tb.test
+", style=bold, shape=box, color="red"];
+	N_val_unaryt21 [label="t21: *t20", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_293620 -> N_val_indext3;
+	N_val_indext3 -> N_instr_store_293621;
+	N_val_"alice":string -> N_instr_store_293621;
+	N_val_alloc_293620 -> N_val_indext4;
+	N_val_indext4 -> N_instr_store_293630;
+	N_val_"bob":string -> N_instr_store_293630;
+	N_val_alloc_293620 -> N_val_slice_293620;
+	N_val_alloc_293652 -> N_val_field_293661;
+	N_val_alloc_293652 -> N_val_field_293682;
+	N_val_alloc_293652 -> N_val_field_293713;
+	N_val_alloc_293652 -> N_val_field_293736;
+	N_val_alloc_293652 -> N_val_field_293760;
+	N_val_alloc_293652 -> N_val_field_293782;
+	N_val_field_293782 -> N_val_field_293804;
+	N_val_field_293661 -> N_instr_store_293661;
+	N_val_param_293493 -> N_instr_store_293661;
+	N_val_field_293682 -> N_instr_store_293682;
+	N_val_call_293569 -> N_instr_store_293682;
+	N_val_field_293713 -> N_instr_store_293713;
+	N_val_param_293506 -> N_instr_store_293713;
+	N_val_field_293736 -> N_instr_store_293736;
+	N_val_slice_293620 -> N_instr_store_293736;
+	N_val_field_293760 -> N_instr_store_293760;
+	N_val_call_293596 -> N_instr_store_293760;
+	N_val_field_293804 -> N_instr_store_293804;
+	N_val_"some username":string -> N_instr_store_293804;
+	N_val_slice_293620 -> N_val_callt14;
+	N_val_0:int -> N_val_phi_293833;
+	N_val_-1:int -> N_val_phit17;
+	N_val_binaryt18 -> N_val_phit17;
+	N_val_phit17 -> N_val_binaryt18;
+	N_val_1:int -> N_val_binaryt18;
+	N_val_phi_293833 -> N_val_binary_293909;
+	N_val_binaryt18 -> N_val_binary_293909;
+	N_val_binary_293909 -> N_val_phi_293833;
+	N_nil_385056446 -> N_val_phi_293849;
+	N_val_phi_293849 -> N_val_call_293943;
+	N_val_alloc_293963 -> N_val_slicet25;
+	N_val_slicet25 -> N_val_call_293943;
+	N_val_call_293943 -> N_val_phi_293849;
+	N_val_binaryt18 -> N_val_binaryt19;
+	N_val_callt14 -> N_val_binaryt19;
+	N_val_slice_293620 -> N_val_index_293896;
+	N_val_index_293896 -> N_val_unaryt21;
+	N_val_alloc_293963 -> N_val_indext24;
+	N_val_indext24 -> N_instr_store_293956;
+	N_val_unaryt21 -> N_instr_store_293956;
+	N_val_param_293439 -> N_val_field_293991;
+	N_val_field_293991 -> N_val_unary_293991;
+	N_val_param_293472 -> N_val_call_294012;
+	N_val_"posts_db":string -> N_val_call_294012;
+	N_val_"post":string -> N_val_call_294012;
+	N_val_call_294012 -> N_val_extrt30;
+	N_val_call_294012 -> N_val_extrt31;
+	N_val_extrt31 -> N_val_binary_294046;
+	N_nil_1483070119 -> N_val_binary_294046;
+	N_nil_1076598163 -> N_instr_ret_294057;
+	N_val_extrt31 -> N_instr_ret_294057;
+	N_val_alloc_293652 -> N_val_ifacet33;
+	N_val_param_293472 -> N_val_call_294103;
+	N_val_ifacet33 -> N_val_call_294103;
+	N_val_call_294103 -> N_val_binary_294123;
+	N_nil_1483070119 -> N_val_binary_294123;
+	N_nil_1076598163 -> N_instr_ret_294134;
+	N_val_call_294103 -> N_instr_ret_294134;
+	N_val_param_293439 -> N_val_field_294177;
+	N_val_field_294177 -> N_val_unary_294177;
+	N_val_param_293472 -> N_val_call_294198;
+	N_val_"test_tb":string -> N_val_call_294198;
+	N_val_"test":string -> N_val_call_294198;
+	N_val_call_294198 -> N_val_extrt39;
+	N_val_call_294198 -> N_val_extrt40;
+	N_val_extrt40 -> N_val_binary_294231;
+	N_nil_1483070119 -> N_val_binary_294231;
+	N_nil_1076598163 -> N_instr_ret_294242;
+	N_val_extrt40 -> N_instr_ret_294242;
+	N_val_alloc_293652 -> N_val_field_294300;
+	N_val_field_294300 -> N_val_unary_294300;
+	N_val_unary_294300 -> N_val_ifacet44;
+	N_val_param_293472 -> N_val_call_294289;
+	N_val_ifacet44 -> N_val_call_294289;
+	N_val_call_294289 -> N_val_binary_294316;
+	N_nil_1483070119 -> N_val_binary_294316;
+	N_nil_1076598163 -> N_instr_ret_294327;
+	N_val_call_294289 -> N_instr_ret_294327;
+	N_val_alloc_293652 -> N_instr_ret_294486;
+	N_val_call_294289 -> N_instr_ret_294486;
+}
