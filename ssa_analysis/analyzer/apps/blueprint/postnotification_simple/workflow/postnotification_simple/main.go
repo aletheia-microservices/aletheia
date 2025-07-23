@@ -10,8 +10,7 @@ func main() {
 	ctx := context.Background()
 	
 	var postsDB backend.NoSQLDatabase
-	var analyticsQueue backend.Queue
-	storageService, _ := NewStorageServiceImpl(ctx, postsDB, analyticsQueue)
+	storageService, _ := NewStorageServiceImpl(ctx, postsDB)
 
 	var reqID int64
 	var text string

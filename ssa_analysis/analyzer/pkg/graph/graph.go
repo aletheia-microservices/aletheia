@@ -72,7 +72,7 @@ func (graph *Graph) GetNodeByName(name string) *Node {
 	return nil
 }
 
-func (graph *Graph) GetNodeByIfExists(name string) (*Node, bool) {
+func (graph *Graph) GetNodeByNameIfExists(name string) (*Node, bool) {
 	node, exists := graph.defs[name]
 	return node, exists
 }
@@ -83,12 +83,14 @@ func (graph *Graph) CreateAndAddNewEdge(from *Node, to *Node, edgeType EdgeType,
 		return nil, false
 	}
 	for _, edge := range graph.GetEdgesFromNode(from) {
-		if edge.to == to {
+		if edge.to == to /* && edge.edgeType == edgeType */ {
+			fmt.Printf("[GRAPH] [1] found existing edge with type: %v\n", edge.edgeType)
 			return edge, false
 		}
 	}
 	for _, edge := range graph.GetEdgesToNode(to) {
-		if edge.from == from {
+		if edge.from == from /* && edge.edgeType == edgeType */ {
+			fmt.Printf("[GRAPH] [2] found existing edge with type: %v\n", edge.edgeType)
 			return edge, false
 		}
 	}

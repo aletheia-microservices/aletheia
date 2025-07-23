@@ -1,9 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_210006104 [label="return", style=bold, shape=ellipse, color="yellow"];
-	N_nil_229359745 [label="nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue: nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="yellow"];
-	N_nil_62777544 [label="nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase: nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="yellow"];
-	N_val_"mytext":string [label="\"mytext\":string: \"mytext\":string", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_510007405 [label="return", style=bold, shape=ellipse, color="yellow"];
+	N_nil_859316612 [label="nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase: nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="yellow"];
+	N_val_"":string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val_0:int64 [label="0:int64: 0:int64
 
 ==== tainted ====
@@ -11,17 +10,16 @@ digraph G {
 _obj
 @ mydb.mycollection
 ", style=bold, shape=box, color="yellow"];
-	N_val_call_113809 [label="t0: context.Background()", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_113926 [label="t1: NewStorageServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_114020 [label="t4: invoke t2.StorePost(t0, 0:int64, \"mytext\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3243117 [label="t0: context.Background()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3243200 [label="t1: NewStorageServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3243275 [label="t4: invoke t2.StorePost(t0, 0:int64, \"\":string)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt2 [label="t2: extract t1 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt3 [label="t3: extract t1 #1", style=bold, shape=ellipse, color="black"];
-	N_val_call_113809 -> N_val_call_113926;
-	N_nil_62777544 -> N_val_call_113926;
-	N_nil_229359745 -> N_val_call_113926;
-	N_val_call_113926 -> N_val_extrt2;
-	N_val_call_113926 -> N_val_extrt3;
-	N_val_call_113809 -> N_val_call_114020;
-	N_val_0:int64 -> N_val_call_114020;
-	N_val_"mytext":string -> N_val_call_114020;
+	N_val_call_3243117 -> N_val_call_3243200;
+	N_nil_859316612 -> N_val_call_3243200;
+	N_val_call_3243200 -> N_val_extrt2;
+	N_val_call_3243200 -> N_val_extrt3;
+	N_val_call_3243117 -> N_val_call_3243275;
+	N_val_0:int64 -> N_val_call_3243275;
+	N_val_"":string -> N_val_call_3243275;
 }

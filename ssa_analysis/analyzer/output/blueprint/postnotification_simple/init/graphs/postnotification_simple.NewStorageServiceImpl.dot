@@ -1,23 +1,18 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_292879 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_292835 [label="*t1 = postsDb", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_292860 [label="*t2 = analyticsQueue", style=bold, shape=ellipse, color="blue"];
-	N_nil_981512701 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_292827 [label="t0: new StorageServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
-	N_val_field_292835 [label="t1: &t0.postsDb [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_292860 [label="t2: &t0.analyticsQueue [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_ifacet3 [label="t3: make StorageService <- *StorageServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
-	N_val_param_292694 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_292715 [label="postsDb: parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
-	N_val_param_292746 [label="analyticsQueue: parameter analyticsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="black"];
-	N_val_alloc_292827 -> N_val_field_292835;
-	N_val_alloc_292827 -> N_val_field_292860;
-	N_val_field_292835 -> N_instr_store_292835;
-	N_val_param_292715 -> N_instr_store_292835;
-	N_val_field_292860 -> N_instr_store_292860;
-	N_val_param_292746 -> N_instr_store_292860;
-	N_val_alloc_292827 -> N_val_ifacet3;
-	N_val_ifacet3 -> N_instr_ret_292879;
-	N_nil_981512701 -> N_instr_ret_292879;
+	N_instr_ret_2616482 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2616470 [label="*t1 = postsDb", style=bold, shape=ellipse, color="blue"];
+	N_nil_958275070 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2616462 [label="t0: new StorageServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2616470 [label="t1: &t0.postsDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet2 [label="t2: make StorageService <- *StorageServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2616359 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2616380 [label="postsDb: parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2616462 -> N_val_field_2616470;
+	N_val_field_2616470 -> N_instr_store_2616470;
+	N_val_param_2616380 -> N_instr_store_2616470;
+	N_val_alloc_2616462 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_2616482;
+	N_nil_958275070 -> N_instr_ret_2616482;
+	N_val_field_2616470 -> N_val_alloc_2616462 [label=".postsDb", style=dashed, color=blue];
 }

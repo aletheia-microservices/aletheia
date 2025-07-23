@@ -155,7 +155,7 @@ func parseValue(g *graph.Graph, instr ssa.Instruction, instrIdx int, val ssa.Val
 		return nil
 	}
 
-	node, exists := g.GetNodeByIfExists(val.Name())
+	node, exists := g.GetNodeByNameIfExists(val.Name())
 	if !exists {
 		node = graph.RegisterNewNodeValue(g, instr, val, id)
 	}
@@ -251,7 +251,7 @@ func getInstructionID(instr ssa.Instruction) string {
 		if err != nil {
 			return ""
 		}
-		return "instr_" + instrString(instr) + "_" +fmt.Sprintf("%d", n)
+		return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", n)
 	}
 	return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", instr.Pos())
 }

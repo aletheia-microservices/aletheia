@@ -15,19 +15,18 @@ import (
 	"analyzer/pkg/tainter"
 )
 
-// -------------------------------------
-// ------------- CONSTANTS -------------
-// -------------------------------------
-
-var appname = "new3"
-
-// -------------------------------------
-
 
 func main() {
-	if len(os.Args) >= 2 {
-		appname = os.Args[1]
+	if len(os.Args) < 2 {
+		fmt.Fprintf(os.Stderr, "usage: program <appname>\n")
+		fmt.Fprintln(os.Stderr, "available appnames:")
+		fmt.Fprintln(os.Stderr, "- postnotification")
+		fmt.Fprintln(os.Stderr, "- shoppingcart")
+		fmt.Fprintln(os.Stderr, "- blueprint/postnotification_simple/init")
+		os.Exit(1)
 	}
+
+	appname := os.Args[1]
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)

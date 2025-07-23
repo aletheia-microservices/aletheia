@@ -3,7 +3,7 @@ s (@UpdateAnalytics): (*ssa.Parameter) (parameter s : *AnalyticsService)
 	 → t10 (@StorePost): (*ssa.Alloc)
 
 ctx (@UpdateAnalytics): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 t0 (@UpdateAnalytics): (*ssa.Alloc) (local Analytics (analytics))
 	 → t0 (@UpdateAnalytics): (*ssa.Alloc)
@@ -47,7 +47,7 @@ m (@Insert): (*ssa.Parameter) (parameter m : *MongoDB)
 	 → t6 (@StorePost): (*ssa.Alloc)
 
 ctx (@Insert): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 document (@Insert): (*ssa.Parameter) (parameter document : interface{})
 	 → t5 (@UpdateAnalytics): (*ssa.MakeInterface)
@@ -68,7 +68,7 @@ r (@Push): (*ssa.Parameter) (parameter r : *RabbitMQ)
 	 → t19 (@StorePost): (*ssa.Alloc)
 
 ctx (@Push): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 message (@Push): (*ssa.Parameter) (parameter message : interface{})
 	 → t21 (@StorePost): (*ssa.MakeInterface)
@@ -85,7 +85,7 @@ t2 (@Push): (*ssa.Slice) (slice t0[:])
 
 ### Function: main.StorePost ###
 ctx (@StorePost): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 mentions (@StorePost): (*ssa.Parameter) (parameter mentions : []string)
 
@@ -146,6 +146,6 @@ t22 (@StorePost): (*ssa.Call) ((*RabbitMQ).Push(t19, ctx, "notif_queue":string, 
 
 ### Function: main.main ###
 t0 (@main): (*ssa.Call) (context.Background())
-	 → t2 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
 
 

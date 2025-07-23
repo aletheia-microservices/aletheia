@@ -1,15 +1,15 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1300245240 [label="if t9 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1368095566 [label="if t16 goto 5 else 6", style=bold, shape=ellipse, color="black"];
-	N_instr__1573319400 [label="if t24 goto 8 else 9", style=bold, shape=ellipse, color="black"];
-	N_instr__1693944253 [label="jump 6", style=bold, shape=ellipse, color="black"];
-	N_instr__2014862055 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__288717836 [label="jump 7", style=bold, shape=ellipse, color="black"];
-	N_instr__397433706 [label="if t27 goto 10 else 7", style=bold, shape=ellipse, color="black"];
-	N_instr__398109676 [label="if t12 goto 4 else 1", style=bold, shape=ellipse, color="black"];
-	N_instr__419137073 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__947450819 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1045492394 [label="if t16 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1156189083 [label="if t24 goto 8 else 9", style=bold, shape=ellipse, color="black"];
+	N_instr__1198042313 [label="if t9 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__131550110 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1469417597 [label="jump 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1509471450 [label="if t12 goto 4 else 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1902242335 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__411281048 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__773549465 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__803874648 [label="if t27 goto 10 else 7", style=bold, shape=ellipse, color="black"];
 	N_instr_ret_2694 [label="return t0, nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_instr_store_1919 [label="*t1 = currency", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_1938 [label="*t2 = items", style=bold, shape=ellipse, color="blue"];
@@ -29,8 +29,8 @@ _obj[*].Parent
 @ sku_db.sku
 ", style=bold, shape=box, color="blue"];
 	N_instr_store_2515 [label="*t29 = 100:int", style=bold, shape=ellipse, color="blue"];
-	N_nil_1210916737 [label="nil:[]*main.OrderItem: nil:[]*main.OrderItem", style=bold, shape=ellipse, color="black"];
-	N_nil_1996754634 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1413445737 [label="nil:[]*main.OrderItem: nil:[]*main.OrderItem", style=bold, shape=ellipse, color="black"];
+	N_nil_412307470 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val_"order":string [label="\"order\":string: \"order\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val_"order_db":string [label="\"order_db\":string: \"order_db\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val_"sku":string [label="\"sku\":string: \"sku\":string", style=bold, shape=ellipse, color="yellow"];
@@ -110,14 +110,14 @@ _obj[*].Parent
 
 ==== tainted ====
 
-_obj.Shipping
-@ order_db.order.Shipping
-
 _obj
 @ order_db.order
 
 _obj.Items[*].Parent
 @ sku_db.sku
+
+_obj.Shipping
+@ order_db.order.Shipping
 ", style=bold, shape=box, color="black"];
 	N_val_index_2052 [label="t10: &items[t8]", style=bold, shape=ellipse, color="green"];
 	N_val_index_2223 [label="t25: &t6[t23]
@@ -184,7 +184,7 @@ _obj.Parent
 	N_val_field_1982 -> N_instr_store_1982;
 	N_val_param_1853 -> N_instr_store_1982;
 	N_val_param_1791 -> N_val_callt5;
-	N_nil_1210916737 -> N_val_phi_2003;
+	N_nil_1413445737 -> N_val_phi_2003;
 	N_val_phi_2003 -> N_val_phi_2003;
 	N_val_phi_2003 -> N_val_call_2169;
 	N_val_alloc_2189 -> N_val_slicet20;
@@ -238,7 +238,7 @@ _obj.Parent
 	N_val_param_1754 -> N_val_call_2669;
 	N_val_unary_2675 -> N_val_call_2669;
 	N_val_alloc_1907 -> N_instr_ret_2694;
-	N_nil_1996754634 -> N_instr_ret_2694;
+	N_nil_412307470 -> N_instr_ret_2694;
 	N_val_unaryt26 -> N_val_field_2360;
 	N_val_field_2360 -> N_val_unary_2360;
 	N_val_alloc_2306 -> N_val_call_2329;
@@ -264,17 +264,17 @@ _obj.Parent
 	N_val_unaryt26 -> N_val_field_2451;
 	N_val_field_2451 -> N_instr_store_2451;
 	N_val_unary_2469 -> N_instr_store_2451;
-	N_val_field_2515 -> N_val_alloc_1907 [label=".Amount", style=dashed, color=blue];
-	N_val_field_2431 -> N_val_alloc_2312 [label=".Currency", style=dashed, color=blue];
-	N_val_index_2223 -> N_val_call_2169 [label="[*]", style=dashed, color=blue];
-	N_val_field_2682 -> N_val_alloc_1907 [label=".Shipping", style=dashed, color=blue];
-	N_val_field_1919 -> N_val_alloc_1907 [label=".Currency", style=dashed, color=blue];
-	N_val_field_1938 -> N_val_alloc_1907 [label=".Items", style=dashed, color=blue];
-	N_val_field_2398 -> N_val_alloc_2312 [label=".Price", style=dashed, color=blue];
-	N_val_field_2469 -> N_val_alloc_2312 [label=".Name", style=dashed, color=blue];
 	N_val_indext19 -> N_val_alloc_2189 [label="[*]", style=dashed, color=blue];
-	N_val_slicet20 -> N_val_alloc_2189 [label="", style=dashed, color=blue];
+	N_val_field_2398 -> N_val_alloc_2312 [label=".Price", style=dashed, color=blue];
 	N_val_field_1960 -> N_val_alloc_1907 [label=".Metadata", style=dashed, color=blue];
-	N_val_field_1982 -> N_val_alloc_1907 [label=".Shipping", style=dashed, color=blue];
+	N_val_slicet20 -> N_val_alloc_2189 [label="", style=dashed, color=blue];
 	N_val_field_2489 -> N_val_alloc_1907 [label=".Items", style=dashed, color=blue];
+	N_val_field_1919 -> N_val_alloc_1907 [label=".Currency", style=dashed, color=blue];
+	N_val_field_2682 -> N_val_alloc_1907 [label=".Shipping", style=dashed, color=blue];
+	N_val_field_1938 -> N_val_alloc_1907 [label=".Items", style=dashed, color=blue];
+	N_val_field_2515 -> N_val_alloc_1907 [label=".Amount", style=dashed, color=blue];
+	N_val_field_2469 -> N_val_alloc_2312 [label=".Name", style=dashed, color=blue];
+	N_val_field_2431 -> N_val_alloc_2312 [label=".Currency", style=dashed, color=blue];
+	N_val_field_1982 -> N_val_alloc_1907 [label=".Shipping", style=dashed, color=blue];
+	N_val_index_2223 -> N_val_call_2169 [label="[*]", style=dashed, color=blue];
 }

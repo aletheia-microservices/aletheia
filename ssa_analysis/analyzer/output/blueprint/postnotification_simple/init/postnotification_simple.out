@@ -1,41 +1,26 @@
 package github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple:
   type  Analytics               struct{PostID int64}
-  type  AnalyticsService        interface{ReadAnalytics(ctx context.Context, postID int64) (Analytics, error); Run(ctx context.Context) error}
-    method (AnalyticsService) ReadAnalytics(ctx context.Context, postID int64) (Analytics, error)
-    method (AnalyticsService) Run(ctx context.Context) error
-  type  AnalyticsServiceImpl    struct{analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue; analyticsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase; numWorkers int}
-    method (*AnalyticsServiceImpl) ReadAnalytics(ctx context.Context, postID int64) (Analytics, error)
-    method (*AnalyticsServiceImpl) Run(ctx context.Context) error
-    method (*AnalyticsServiceImpl) handleMessage(ctx context.Context, message TriggerAnalyticsMessage) error
-    method (*AnalyticsServiceImpl) workerThread(ctx context.Context) error
   type  Creator                 struct{Username string}
   type  Message                 struct{ReqID int64; PostID_MESSAGE int64; Timestamp int64}
-  func  NewAnalyticsServiceImpl func(ctx context.Context, analyticsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (AnalyticsService, error)
   func  NewNotifyServiceImpl    func(ctx context.Context, storageService StorageService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (NotifyService, error)
-  func  NewStorageServiceImpl   func(ctx context.Context, postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (StorageService, error)
-  func  NewUploadServiceImpl    func(ctx context.Context, storageService StorageService, analyticsService AnalyticsService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (UploadService, error)
+  func  NewStorageServiceImpl   func(ctx context.Context, postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase) (StorageService, error)
+  func  NewUploadServiceImpl    func(ctx context.Context, storageService StorageService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (UploadService, error)
   type  NotifyService           interface{Run(ctx context.Context) error}
     method (NotifyService) Run(ctx context.Context) error
   type  NotifyServiceImpl       struct{storageService StorageService; notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue; num_workers int}
     method (*NotifyServiceImpl) Run(ctx context.Context) error
     method (*NotifyServiceImpl) workerThread(ctx context.Context) error
   type  Post                    struct{ReqID int64; PostID int64; MediaID int64; Text string; Mentions []string; Timestamp int64; Creator Creator}
-  type  StorageService          interface{DeletePost(ctx context.Context, postID int64) error; ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error); StorePost(ctx context.Context, reqID int64, text string) (*Post, error)}
-    method (StorageService) DeletePost(ctx context.Context, postID int64) error
+  type  StorageService          interface{ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error); StorePost(ctx context.Context, reqID int64, text string) (*Post, error)}
     method (StorageService) ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error)
     method (StorageService) StorePost(ctx context.Context, reqID int64, text string) (*Post, error)
-  type  StorageServiceImpl      struct{postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase; analyticsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue}
-    method (*StorageServiceImpl) DeletePost(ctx context.Context, postID int64) error
+  type  StorageServiceImpl      struct{postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase}
     method (*StorageServiceImpl) ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error)
     method (*StorageServiceImpl) StorePost(ctx context.Context, reqID int64, text string) (*Post, error)
   type  TriggerAnalyticsMessage struct{PostID string}
-  type  UploadService           interface{DeletePost(ctx context.Context, postID int64) error; ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64) (Post, Analytics, error); UploadPost(ctx context.Context, username string, text string) (int64, error)}
-    method (UploadService) DeletePost(ctx context.Context, postID int64) error
-    method (UploadService) ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64) (Post, Analytics, error)
+  type  UploadService           interface{UploadPost(ctx context.Context, username string, text string) (int64, error)}
     method (UploadService) UploadPost(ctx context.Context, username string, text string) (int64, error)
-  type  UploadServiceImpl       struct{storageService StorageService; analyticsService AnalyticsService; notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue}
-    method (*UploadServiceImpl) DeletePost(ctx context.Context, postID int64) error
-    method (*UploadServiceImpl) ReadPostWithAnalytics(ctx context.Context, reqID int64, postID int64) (Post, Analytics, error)
+  type  UploadServiceImpl       struct{storageService StorageService; notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue}
     method (*UploadServiceImpl) UploadPost(ctx context.Context, username string, text string) (int64, error)
   func  init                    func()
   var   init$guard              bool

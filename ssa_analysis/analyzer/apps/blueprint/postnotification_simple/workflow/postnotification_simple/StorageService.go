@@ -19,11 +19,10 @@ type StorageService interface {
 
 type StorageServiceImpl struct {
 	postsDb        backend.NoSQLDatabase
-	analyticsQueue backend.Queue
 }
 
-func NewStorageServiceImpl(ctx context.Context, postsDb backend.NoSQLDatabase, analyticsQueue backend.Queue) (StorageService, error) {
-	s := &StorageServiceImpl{postsDb: postsDb, analyticsQueue: analyticsQueue}
+func NewStorageServiceImpl(ctx context.Context, postsDb backend.NoSQLDatabase) (StorageService, error) {
+	s := &StorageServiceImpl{postsDb: postsDb}
 	return s, nil
 }
 

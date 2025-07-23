@@ -83,25 +83,8 @@ func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Resul
 	return result, nil
 }
 
-func cleanName(s string) string {
-	// remove leading (* if present
-	if strings.HasPrefix(s, "(*") {
-		s = s[2:]
-	}
-
-	// extract everything after "workflow/"
-	if idx := strings.Index(s, "workflow/"); idx != -1 {
-		s = s[idx+len("workflow/"):]
-		s = strings.ReplaceAll(s, ")", "")
-	}
-
-	return s
-}
-
-
-
 func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*graph.Graph) {
-	fmt.Printf("[PTA] running pointer analysis for package: %s\n", pkg.String())
+	fmt.Printf("\n[PTA] running pointer analysis for package: %s\n", pkg.String())
 	outFile, err := os.Create(fmt.Sprintf("output/%s/%s.ptrs", appname, pkg.Pkg.Name()))
 	if err != nil {
 		log.Fatal(err)
@@ -122,42 +105,57 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 			continue
 		}
 
-		fnFullname := cleanName(fn.String())
-		fmt.Printf("[PTA] analyzing value: %v // pointers = %v // fn = %s\n", value, pts, fnFullname)
-		if fn.Pkg == nil || fn.Pkg.Pkg.Path() != pkg.Pkg.Path() {
+		fnLongName := cleanName(fn.String())
+		fmt.Println()
+		fmt.Printf("\t[PTA] [%s] analyzing value: %v // pointers = %v\n", fnLongName, value, pts)
+		if fn.Pkg == nil {
 			continue
 		}
 
-		g := funcGraphs[fnFullname]
+		g := funcGraphs[fnLongName]
 		if g == nil {
-			fmt.Printf("could not find graph for name %s\n", fnFullname)
-			fmt.Println("skipping...")
-			return
+			fmt.Printf("skipping graph not found for name (%s)\n", fnLongName)
+			continue
 		}
 
 		pos := prog.Fset.Position(value.Pos())
 		desc := valueDesc(fn, value) + "\n"
 		name := value.Name()
-		node := g.GetNodeByName(name)
+		node, ok := g.GetNodeByNameIfExists(name)
+		if !ok {
+			fmt.Printf("skipping node not found for name (%s)\n", name)
+			continue
+		}
+		//fmt.Printf("points to set of [%T] %v @ %v:\n", value, value, value.Parent())
 		for _, lbl := range pts.PointsTo().Labels() {
+			lblFn := lbl.Value().Parent()
+			lblFnLongName := cleanName(lblFn.String())
+			fmt.Printf("\t\t- [%s] got label: [%T] %s\n", lblFnLongName, lbl.Value(), lbl.Value())
 			desc += fmt.Sprintf("\t → %s\n", valueDescShort(lbl.Value().Parent(), lbl.Value()))
 
 			if lbl.Value().Parent() == fn {
-				pointsToNode, _ := g.GetNodeByIfExists(lbl.Value().Name())
+				pointsToNode, _ := g.GetNodeByNameIfExists(lbl.Value().Name())
 
 				if node != nil && pointsToNode != nil && node != pointsToNode {
 					var exists bool
-					for _, edge := range g.GetEdges() {
+					/* for _, edge := range g.GetEdges() {
 						// this is reverse on purpose for field and index addresses
 						//if edge.from == pointsToNode && edge.to == node {
 						if edge.GetFromNode() == node && edge.GetToNode() == pointsToNode {
 							exists = true
 						}
-					}
+					} */
 					if !exists {
+						fmt.Printf("creating edge\n")
+
 						edge, _ := g.CreateAndAddNewEdge(node, pointsToNode, graph.EDGE_POINTS_TO, 0, "")
 						if edge != nil {
 							edge.SetPath(lbl.Path())
+
+							fmt.Printf("created edge from: %v\n",edge.GetFromNode())
+							for _, edge := range g.GetEdgesFromNode(edge.GetFromNode()) {
+								fmt.Printf("- edge to (%v): %v\n", edge.GetType(), edge.GetToNode().String())
+							}
 						}
 					}
 				}
