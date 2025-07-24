@@ -1,0 +1,25 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_702 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_691 [label="*t1 = document", style=bold, shape=ellipse, color="blue"];
+	N_nil_1315511807 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_"[INFO] inserted d...":string [label="\"[INFO] inserted d...\":string: \"[INFO] inserted d...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_699 [label="t0: new [1]any (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_656 [label="t3: fmt.Printf(\"[INFO] inserted d...\":string, t2...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_indext1 [label="t1: &t0[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_539 [label="m: parameter m : *MongoDB", style=bold, shape=ellipse, color="black"];
+	N_val_param_558 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_579 [label="database: parameter database : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_596 [label="collection: parameter collection : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_615 [label="document: parameter document : interface{}", style=bold, shape=ellipse, color="black"];
+	N_val_slicet2 [label="t2: slice t0[:]", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_699 -> N_val_indext1;
+	N_val_indext1 -> N_instr_store_691;
+	N_val_param_615 -> N_instr_store_691;
+	N_val_alloc_699 -> N_val_slicet2;
+	N_val_"[INFO] inserted d...":string -> N_val_call_656;
+	N_val_slicet2 -> N_val_call_656;
+	N_nil_1315511807 -> N_instr_ret_702;
+	N_val_indext1 -> N_val_alloc_699 [label="[*]", style=dashed, color=blue];
+	N_val_slicet2 -> N_val_alloc_699 [label="", style=dashed, color=blue];
+}

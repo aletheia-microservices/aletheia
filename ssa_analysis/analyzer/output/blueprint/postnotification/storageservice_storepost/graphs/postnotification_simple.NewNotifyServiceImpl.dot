@@ -1,0 +1,29 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2735732 [label="return t4, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2735657 [label="*t1 = storageService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2735693 [label="*t2 = notificationsQueue", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2735726 [label="*t3 = 4:int", style=bold, shape=ellipse, color="blue"];
+	N_nil_1184321110 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_4:int [label="4:int: 4:int", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_2735642 [label="t0: new NotifyServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2735657 [label="t1: &t0.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2735693 [label="t2: &t0.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2735726 [label="t3: &t0.num_workers [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet4 [label="t4: make NotifyService <- *NotifyServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2735507 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2735528 [label="storageService: parameter storageService : StorageService", style=bold, shape=ellipse, color="black"];
+	N_val_param_2735559 [label="notificationsQueue: parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2735642 -> N_val_field_2735657;
+	N_val_alloc_2735642 -> N_val_field_2735693;
+	N_val_alloc_2735642 -> N_val_field_2735726;
+	N_val_field_2735657 -> N_instr_store_2735657;
+	N_val_param_2735528 -> N_instr_store_2735657;
+	N_val_field_2735693 -> N_instr_store_2735693;
+	N_val_param_2735559 -> N_instr_store_2735693;
+	N_val_field_2735726 -> N_instr_store_2735726;
+	N_val_4:int -> N_instr_store_2735726;
+	N_val_alloc_2735642 -> N_val_ifacet4;
+	N_val_ifacet4 -> N_instr_ret_2735732;
+	N_nil_1184321110 -> N_instr_ret_2735732;
+}

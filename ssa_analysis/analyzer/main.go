@@ -20,9 +20,9 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Fprintf(os.Stderr, "usage: program <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- postnotification")
-		fmt.Fprintln(os.Stderr, "- shoppingcart")
-		fmt.Fprintln(os.Stderr, "- blueprint/postnotification_simple/init")
+		fmt.Fprintln(os.Stderr, "- examples/postnotification")
+		fmt.Fprintln(os.Stderr, "- examples/shoppingcart")
+		fmt.Fprintln(os.Stderr, "- blueprint/postnotification/storageservice_storepost")
 		os.Exit(1)
 	}
 
