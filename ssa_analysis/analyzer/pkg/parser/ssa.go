@@ -11,11 +11,11 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/types/typeutil"
 
-	"analyzer/pkg/graph"
+	"analyzer/pkg/ssa_graph"
 	"analyzer/pkg/utils"
 )
 
-func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*graph.Graph) {
+func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*ssa_graph.SSAGraph) {
 	outfile1, err := os.Create(fmt.Sprintf("output/%s/%s.out", appname, pkg.Pkg.Name()))
 	if err != nil {
 		log.Fatalf("failed to create output file: %v", err)
@@ -68,33 +68,33 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 	}
 }
 
-func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*graph.Graph) {
-	fullfuncname := cleanName(fn.String())
+func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*ssa_graph.SSAGraph) {
+	shortFuncPath := getShortFunctionPath(fn.String())
 
-	fmt.Printf("[SSA] iterating function %s\n", fullfuncname)
+	fmt.Printf("[SSA] iterating function %s\n", shortFuncPath)
 
-	g := graph.NewGraph()
-	if _, exists := funcGraphs[fullfuncname]; exists {
-		log.Printf("graph for function (%s) already exists\n", fullfuncname)
+	graph := ssa_graph.NewGraph(fn.Pkg.Pkg.Name(), shortFuncPath)
+	if _, exists := funcGraphs[shortFuncPath]; exists {
+		log.Printf("ssa_graph for function (%s) already exists\n", shortFuncPath)
 		log.Println("skipping...")
 		return
 	}
-	funcGraphs[fullfuncname] = g
-	fmt.Printf("added new graph for function (%s)\n", fullfuncname)
+	funcGraphs[shortFuncPath] = graph
+	fmt.Printf("added new ssa_graph for function (%s)\n", shortFuncPath)
 
 	var visited = make(map[ssa.Value]bool)
 
 	fmt.Fprintf(outFile, "\t\tParameters:\n")
 	for i, param := range fn.Params {
 		fmt.Fprintf(outFile, "\t\t\t%s = %s\n", param.Name(), param.String())
-		parseValue(g, nil, -i-1, param, visited)
+		parseValue(graph, nil, -i-1, param, visited)
 	}
 
-	fmt.Fprintf(outFile, "Function: %s\n", fullfuncname)
+	fmt.Fprintf(outFile, "Function: %s\n", shortFuncPath)
 	for i, block := range fn.Blocks {
-		fmt.Fprintf(outFile, "Block #%d: %s.%s\n", i, fullfuncname, block.Comment)
+		fmt.Fprintf(outFile, "Block #%d: %s.%s\n", i, shortFuncPath, block.Comment)
 		for j, instr := range block.Instrs {
-			parseInstr(g, instr, j, visited)
+			parseInstr(graph, instr, j, visited)
 
 			if val, ok := instr.(ssa.Value); ok {
 				fmt.Fprintf(outFile, "\t\t\t%02d: %s = %s\n", j, val.Name(), instr.String())
@@ -105,34 +105,34 @@ func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, func
 	}
 }
 
-func parseInstr(g *graph.Graph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *graph.Node {
+func parseInstr(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *ssa_graph.SSANode {
 	fmt.Printf("[A] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	id := getInstructionID(instr)
-	if id == "" { // e.g., conditions or jumps (instructions and not values)
+	if id == "" { // e.graph., conditions or jumps (instructions and not values)
 		log.Printf("skipping instruction with invalid id: %v\n", instr)
 		return nil
 	}
 
 	if val, ok := instr.(ssa.Value); ok {
-		return parseValue(g, instr, instrIdx, val, visited)
+		return parseValue(graph, instr, instrIdx, val, visited)
 	}
-	node := graph.RegisterNewNode(g, instr, id)
+	node := ssa_graph.RegisterNewNode(graph, instr, id)
 
 	switch t := instr.(type) {
 	case *ssa.Store:
 		// 04 [store] *t1 = currency
-		addrNode := parseValue(g, instr, instrIdx, t.Addr, visited)
-		valNode := parseValue(g, instr, instrIdx, t.Val, visited)
+		addrNode := parseValue(graph, instr, instrIdx, t.Addr, visited)
+		valNode := parseValue(graph, instr, instrIdx, t.Val, visited)
 
-		g.CreateAndAddNewEdge(addrNode, node, graph.EDGE_STORE, 0, "")
-		g.CreateAndAddNewEdge(valNode, node, graph.EDGE_USAGE, 0, "")
+		graph.CreateAndAddNewEdge(addrNode, node, ssa_graph.EDGE_STORE, 0, "")
+		graph.CreateAndAddNewEdge(valNode, node, ssa_graph.EDGE_USAGE, 0, "")
 
 		fmt.Printf("ADDING EDGE FOR ADDR NDOE AND VAL NODE: %v // %v \n", t.Addr, t.Val)
 	case *ssa.Return:
 		for _, res := range t.Results {
-			resNode := parseValue(g, instr, instrIdx, res, visited)
-			g.CreateAndAddNewEdge(resNode, node, graph.EDGE_STORE, 0, "")
+			resNode := parseValue(graph, instr, instrIdx, res, visited)
+			graph.CreateAndAddNewEdge(resNode, node, ssa_graph.EDGE_STORE, 0, "")
 		}
 	default:
 		fmt.Printf("[1] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
@@ -141,11 +141,11 @@ func parseInstr(g *graph.Graph, instr ssa.Instruction, instrIdx int, visited map
 	return node
 }
 
-func parseValue(g *graph.Graph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *graph.Node {
+func parseValue(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *ssa_graph.SSANode {
 	fmt.Printf("[B] %02d [%T] %v\n", instrIdx, val, val.String())
 
 	if visited[val] {
-		return g.GetNodeByName(val.Name())
+		return graph.GetNodeByName(val.Name())
 	}
 	visited[val] = true
 
@@ -155,55 +155,55 @@ func parseValue(g *graph.Graph, instr ssa.Instruction, instrIdx int, val ssa.Val
 		return nil
 	}
 
-	node, exists := g.GetNodeByNameIfExists(val.Name())
+	node, exists := graph.GetNodeByNameIfExists(val.Name())
 	if !exists {
-		node = graph.RegisterNewNodeValue(g, instr, val, id)
+		node = ssa_graph.RegisterNewNodeValue(graph, instr, val, id)
 	}
 
 	switch t := val.(type) {
 	case *ssa.Call:
 		for _, arg := range t.Call.Args {
-			for _, edges := range g.GetEdgesFromNode(node) {
+			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == arg.Name() {
 					fmt.Printf("[INFO] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
-			for _, edges := range g.GetEdgesToNode(node) {
+			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == arg.Name() {
 					fmt.Printf("[INFO] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
-			argNode := parseValue(g, instr, instrIdx, arg, visited)
-			g.CreateAndAddNewEdge(argNode, node, graph.EDGE_STORE, 0, "")
+			argNode := parseValue(graph, instr, instrIdx, arg, visited)
+			graph.CreateAndAddNewEdge(argNode, node, ssa_graph.EDGE_STORE, 0, "")
 		}
 	case *ssa.Alloc:
 		// nothing to do
 	case *ssa.Slice:
 		// nothing to do
-		targetNode := parseValue(g, instr, instrIdx, t.X, visited)
-		g.CreateAndAddNewEdge(targetNode, node, graph.EDGE_USAGE, 0, "")
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_USAGE, 0, "")
 	case *ssa.FieldAddr:
 		// 00 [field] t27 = &t0.Items [#3]
-		targetNode := parseValue(g, instr, instrIdx, t.X, visited)
-		g.CreateAndAddNewEdge(targetNode, node, graph.EDGE_FIELD, 0, utils.FieldIndexToName(t))
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_FIELD, 0, utils.FieldIndexToName(t))
 	case *ssa.IndexAddr:
-		targetNode := parseValue(g, instr, instrIdx, t.X, visited)
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
 		//FIXME: should parse value for t.Index
-		g.CreateAndAddNewEdge(targetNode, node, graph.EDGE_FIELD, 0, t.Index.String())
+		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_FIELD, 0, t.Index.String())
 	case *ssa.UnOp:
 		// 01 [unary] t14 = *t13
 		// 05 [unary] t31 = *t30
-		targetNode := parseValue(g, instr, instrIdx, t.X, visited)
-		g.CreateAndAddNewEdge(targetNode, node, graph.EDGE_LOAD, 0, "")
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_LOAD, 0, "")
 
 	case *ssa.MakeInterface: // same as *ssa.UnOp
-		targetNode := parseValue(g, instr, instrIdx, t.X, visited)
-		g.CreateAndAddNewEdge(targetNode, node, graph.EDGE_USAGE, 0, "")
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_USAGE, 0, "")
 	case *ssa.Convert:
-		targetNode := parseValue(g, instr, instrIdx, t.X, visited)
-		g.CreateAndAddNewEdge(targetNode, node, graph.EDGE_USAGE, 0, "")
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_USAGE, 0, "")
 
 	case *ssa.Parameter:
 		// nothing to do
@@ -213,31 +213,31 @@ func parseValue(g *graph.Graph, instr ssa.Instruction, instrIdx int, val ssa.Val
 
 	case *ssa.Phi:
 		for _, phiEdge := range t.Edges {
-			for _, edges := range g.GetEdgesFromNode(node) {
+			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == phiEdge.Name() {
 					fmt.Printf("[INFO] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
-			for _, edges := range g.GetEdgesToNode(node) {
+			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == phiEdge.Name() {
 					fmt.Printf("[INFO] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
-			edgeNode := parseValue(g, instr, instrIdx, phiEdge, visited)
-			g.CreateAndAddNewEdge(edgeNode, node, graph.EDGE_STORE, 0, "")
+			edgeNode := parseValue(graph, instr, instrIdx, phiEdge, visited)
+			graph.CreateAndAddNewEdge(edgeNode, node, ssa_graph.EDGE_STORE, 0, "")
 		}
 
 	case *ssa.Extract:
-		extractFromNode := parseValue(g, instr, instrIdx, t.Tuple, visited)
-		g.CreateAndAddNewEdge(extractFromNode, node, graph.EDGE_USAGE, t.Index, "")
+		extractFromNode := parseValue(graph, instr, instrIdx, t.Tuple, visited)
+		graph.CreateAndAddNewEdge(extractFromNode, node, ssa_graph.EDGE_USAGE, t.Index, "")
 
 	case *ssa.BinOp:
-		xNode := parseValue(g, instr, instrIdx, t.X, visited)
-		yNode := parseValue(g, instr, instrIdx, t.Y, visited)
-		g.CreateAndAddNewEdge(xNode, node, graph.EDGE_STORE, 0, "")
-		g.CreateAndAddNewEdge(yNode, node, graph.EDGE_USAGE, 0, "")
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		yNode := parseValue(graph, instr, instrIdx, t.Y, visited)
+		graph.CreateAndAddNewEdge(xNode, node, ssa_graph.EDGE_STORE, 0, "")
+		graph.CreateAndAddNewEdge(yNode, node, ssa_graph.EDGE_USAGE, 0, "")
 
 	default:
 		fmt.Printf("[2] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())

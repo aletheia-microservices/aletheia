@@ -1,21 +1,60 @@
 digraph G {
 	rankdir=TD;
-	N_instr__2735847 [label="go t2()", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2736036 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_1595124727 [label="*t1 = ctx", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_583858365 [label="*t0 = n", style=bold, shape=ellipse, color="blue"];
-	N_nil_1793382789 [label="nil:chan struct{}: nil:chan struct{}", style=bold, shape=ellipse, color="red"];
-	N_nil_839034713 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2735755 [label="t0: new *NotifyServiceImpl (n)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2735790 [label="t1: new context.Context (ctx)", style=bold, shape=ellipse, color="orange"];
-	N_val_param_2735755 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2735790 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_t2 [label="t2: make closure (*NotifyServiceImpl).workerThread$1 [t0, t1]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2736025 [label="t3: <-nil:chan struct{}", style=bold, shape=ellipse, color="red"];
-	N_val_alloc_2735755 -> N_instr_store_583858365;
-	N_val_param_2735755 -> N_instr_store_583858365;
-	N_val_alloc_2735790 -> N_instr_store_1595124727;
-	N_val_param_2735790 -> N_instr_store_1595124727;
-	N_nil_1793382789 -> N_val_unary_2736025;
-	N_nil_839034713 -> N_instr_ret_2736036;
+	N_instr_ret_2737408 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1712157948 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2737231 [label="t0: new Message (workerMessage)
+
+==== tainted ====
+
+_obj
+@ notify_queue.notify_message
+
+_obj.PostID_MESSAGE
+@ notify_queue.notify_message.PostID_MESSAGE
+", style=bold, shape=box, color="orange"];
+	N_val_call_2737279 [label="t4: invoke t2.Pop(ctx, t3)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2737328 [label="t11: invoke t6.ReadPost(ctx, t8, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2737257 [label="t1: &n.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2737305 [label="t5: &n.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2737348 [label="t7: &t0.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2737369 [label="t9: &t0.PostID_MESSAGE [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make interface{} <- *Message (t0)
+
+==== tainted ====
+
+_obj.PostID_MESSAGE
+@ notify_queue.notify_message.PostID_MESSAGE
+
+_obj
+@ notify_queue.notify_message
+", style=bold, shape=box, color="black"];
+	N_val_param_2737115 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2737150 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2737257 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2737305 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2737348 [label="t8: *t7", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2737369 [label="t10: *t9
+
+==== tainted ====
+
+_obj
+@ notify_queue.notify_message.PostID_MESSAGE
+", style=bold, shape=box, color="red"];
+	N_val_param_2737115 -> N_val_field_2737257;
+	N_val_field_2737257 -> N_val_unary_2737257;
+	N_val_alloc_2737231 -> N_val_ifacet3;
+	N_val_param_2737150 -> N_val_call_2737279;
+	N_val_ifacet3 -> N_val_call_2737279;
+	N_val_param_2737115 -> N_val_field_2737305;
+	N_val_field_2737305 -> N_val_unary_2737305;
+	N_val_alloc_2737231 -> N_val_field_2737348;
+	N_val_field_2737348 -> N_val_unary_2737348;
+	N_val_alloc_2737231 -> N_val_field_2737369;
+	N_val_field_2737369 -> N_val_unary_2737369;
+	N_val_param_2737150 -> N_val_call_2737328;
+	N_val_unary_2737348 -> N_val_call_2737328;
+	N_val_unary_2737369 -> N_val_call_2737328;
+	N_nil_1712157948 -> N_instr_ret_2737408;
+	N_val_field_2737348 -> N_val_alloc_2737231 [label=".ReqID", style=dashed, color=blue];
+	N_val_field_2737369 -> N_val_alloc_2737231 [label=".PostID_MESSAGE", style=dashed, color=blue];
 }

@@ -1,4 +1,4 @@
-package graph
+package ssa_graph
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"golang.org/x/tools/go/ssa"
 )
 
-type Node struct {
+type SSANode struct {
 	id    string
 	name  string
 	val   ssa.Value
@@ -21,38 +21,38 @@ type Node struct {
 	taints map[string][]string
 }
 
-func (node *Node) GetID() string {
+func (node *SSANode) GetID() string {
 	return node.id
 }
 
-func (node *Node) GetName() string {
+func (node *SSANode) GetName() string {
 	return node.name
 }
 
-func (node *Node) GetInstruction() ssa.Instruction {
+func (node *SSANode) GetInstruction() ssa.Instruction {
 	return node.instr
 }
 
-func (node *Node) GetValue() ssa.Value {
+func (node *SSANode) GetValue() ssa.Value {
 	return node.val
 }
 
-func (node *Node) IsTainted() bool {
+func (node *SSANode) IsTainted() bool {
 	return len(node.taints) > 0
 }
 
-func (node *Node) GetTaintsForPath(path string) []string {
+func (node *SSANode) GetTaintsForPath(path string) []string {
 	if t, ok := node.taints[path]; ok { // avoid creating new key entry
 		return t
 	}
 	return nil
 }
 
-func (node *Node) GetTaints() map[string][]string {
+func (node *SSANode) GetTaints() map[string][]string {
 	return node.taints
 }
 
-func (node *Node) AddTaintIfNotExists(objPath string, dbField string) bool {
+func (node *SSANode) AddTaintIfNotExists(objPath string, dbField string) bool {
 	if !slices.Contains(node.taints[objPath], dbField) {
 		node.taints[objPath] = append(node.taints[objPath], dbField)
 		return true
@@ -60,7 +60,7 @@ func (node *Node) AddTaintIfNotExists(objPath string, dbField string) bool {
 	return false
 }
 
-func (node *Node) taintString() string {
+func (node *SSANode) taintString() string {
 	if len(node.taints) == 0 {
 		return ""
 	}
@@ -74,14 +74,14 @@ func (node *Node) taintString() string {
 	return taintStr
 }
 
-func (node *Node) String() string {
+func (node *SSANode) String() string {
 	if node.val != nil {
 		return node.name + ": " + node.val.String()
 	}
 	return node.instr.String()
 }
 
-func (node *Node) colorForSSA() string {
+func (node *SSANode) colorForSSA() string {
 	switch node.instr.(type) {
 	case *ssa.Store:
 		return "blue"
@@ -99,8 +99,8 @@ func (node *Node) colorForSSA() string {
 	return "black"
 }
 
-func RegisterNewNodeValue(graph *Graph, instr ssa.Instruction, val ssa.Value, id string) *Node {
-	node := &Node{
+func RegisterNewNodeValue(graph *SSAGraph, instr ssa.Instruction, val ssa.Value, id string) *SSANode {
+	node := &SSANode{
 		name:   val.Name(),
 		val:    val,
 		instr:  instr,
@@ -113,8 +113,8 @@ func RegisterNewNodeValue(graph *Graph, instr ssa.Instruction, val ssa.Value, id
 	return node
 }
 
-func RegisterNewNode(graph *Graph, instr ssa.Instruction, id string) *Node {
-	node := &Node{
+func RegisterNewNode(graph *SSAGraph, instr ssa.Instruction, id string) *SSANode {
+	node := &SSANode{
 		id:     id,
 		instr:  instr,
 		taints: make(map[string][]string),

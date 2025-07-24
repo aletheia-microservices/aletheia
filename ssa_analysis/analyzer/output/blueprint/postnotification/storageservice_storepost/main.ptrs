@@ -1,8 +1,8 @@
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).Run ###
+n (@Run): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
+
 t0 (@Run): (*ssa.Alloc) (new *NotifyServiceImpl (n))
 	 → t0 (@Run): (*ssa.Alloc)
-
-n (@Run): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
 
 ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -66,75 +66,30 @@ t31 (@Run): (*ssa.UnOp) (*t0)
 t32 (@Run): (*ssa.FieldAddr) (&t31.num_workers [#2])
 
 
-### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).Run$1 ###
-n (@Run$1): (*ssa.FreeVar) (freevar n : **NotifyServiceImpl)
-	 → t0 (@Run): (*ssa.Alloc)
-
-ctx (@Run$1): (*ssa.FreeVar) (freevar ctx : *context.Context)
-	 → t1 (@Run): (*ssa.Alloc)
-
-t0 (@Run$1): (*ssa.UnOp) (*n)
-
-t1 (@Run$1): (*ssa.UnOp) (*ctx)
-
-t2 (@Run$1): (*ssa.Call) ((*NotifyServiceImpl).workerThread(t0, t1))
-
-t4 (@Run$1): (*ssa.Call) (github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger())
-	 → t1 (@init#1): (*ssa.MakeInterface)
-
-t5 (@Run$1): (*ssa.UnOp) (*ctx)
-
-t7 (@Run$1): (*ssa.Alloc) (new [2]any (varargs))
-	 → t7 (@Run$1): (*ssa.Alloc)
-
-t8 (@Run$1): (*ssa.IndexAddr) (&t7[0:int])
-	 → t7 (@Run$1): (*ssa.Alloc)
-
-t9 (@Run$1): (*ssa.MakeInterface) (make any <- int (i))
-	 → t9 (@Run$1): (*ssa.MakeInterface)
-
-t10 (@Run$1): (*ssa.IndexAddr) (&t7[1:int])
-	 → t7 (@Run$1): (*ssa.Alloc)
-
-t11 (@Run$1): (*ssa.MakeInterface) (make any <- string (t6))
-	 → t11 (@Run$1): (*ssa.MakeInterface)
-
-t12 (@Run$1): (*ssa.Slice) (slice t7[:])
-	 → t7 (@Run$1): (*ssa.Alloc)
-
-t14 (@Run$1): (*ssa.ChangeInterface) (change interface interface{} <- error (t2))
-
-
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).workerThread ###
 n (@workerThread): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
 
-t0 (@workerThread): (*ssa.Alloc) (new *NotifyServiceImpl (n))
-	 → t0 (@workerThread): (*ssa.Alloc)
-
 ctx (@workerThread): (*ssa.Parameter) (parameter ctx : context.Context)
 
-t1 (@workerThread): (*ssa.Alloc) (new context.Context (ctx))
-	 → t1 (@workerThread): (*ssa.Alloc)
-
-t2 (@workerThread): (*ssa.MakeClosure) (make closure (*NotifyServiceImpl).workerThread$1 [t0, t1])
-	 → workerThread$1 (@workerThread): (*ssa.Function)
-
-
-### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).workerThread$1 ###
-n (@workerThread$1): (*ssa.FreeVar) (freevar n : **NotifyServiceImpl)
+t0 (@workerThread): (*ssa.Alloc) (new Message (workerMessage))
 	 → t0 (@workerThread): (*ssa.Alloc)
 
-ctx (@workerThread$1): (*ssa.FreeVar) (freevar ctx : *context.Context)
-	 → t1 (@workerThread): (*ssa.Alloc)
+t1 (@workerThread): (*ssa.FieldAddr) (&n.notificationsQueue [#1])
 
-t0 (@workerThread$1): (*ssa.Alloc) (new Message (workerMessage))
-	 → t0 (@workerThread$1): (*ssa.Alloc)
+t2 (@workerThread): (*ssa.UnOp) (*t1)
 
-t1 (@workerThread$1): (*ssa.UnOp) (*n)
+t3 (@workerThread): (*ssa.MakeInterface) (make interface{} <- *Message (t0))
+	 → t3 (@workerThread): (*ssa.MakeInterface)
 
-t2 (@workerThread$1): (*ssa.FieldAddr) (&t1.notificationsQueue [#1])
+t5 (@workerThread): (*ssa.FieldAddr) (&n.storageService [#0])
 
-t3 (@workerThread$1): (*ssa.UnOp) (*t2)
+t6 (@workerThread): (*ssa.UnOp) (*t5)
+
+t7 (@workerThread): (*ssa.FieldAddr) (&t0.ReqID [#0])
+	 → t0 (@workerThread): (*ssa.Alloc)
+
+t9 (@workerThread): (*ssa.FieldAddr) (&t0.PostID_MESSAGE [#1])
+	 → t0 (@workerThread): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).ReadPost ###
@@ -258,24 +213,6 @@ t33 (@StorePost): (*ssa.MakeInterface) (make interface{} <- *Post (t6))
 	 → t33 (@StorePost): (*ssa.MakeInterface)
 
 t34 (@StorePost): (*ssa.Call) (invoke t30.InsertOne(ctx, t33))
-
-t36 (@StorePost): (*ssa.FieldAddr) (&s.postsDb [#0])
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
-
-t37 (@StorePost): (*ssa.UnOp) (*t36)
-
-t39 (@StorePost): (*ssa.Extract) (extract t38 #0)
-
-t40 (@StorePost): (*ssa.Extract) (extract t38 #1)
-
-t42 (@StorePost): (*ssa.FieldAddr) (&t6.PostID [#1])
-	 → t6 (@StorePost): (*ssa.Alloc)
-
-t44 (@StorePost): (*ssa.MakeInterface) (make interface{} <- int64 (t43))
-	 → t44 (@StorePost): (*ssa.MakeInterface)
-
-t45 (@StorePost): (*ssa.Call) (invoke t39.InsertOne(ctx, t44))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl).UploadPost ###

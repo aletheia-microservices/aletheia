@@ -10,11 +10,11 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 
-	"analyzer/pkg/graph"
 	"analyzer/pkg/parser"
+	"analyzer/pkg/ssa_graph"
+	"analyzer/pkg/abstractcallgraph"
 	"analyzer/pkg/tainter"
 )
-
 
 func main() {
 	if len(os.Args) < 2 {
@@ -50,34 +50,32 @@ func main() {
 		fmt.Printf("\t- %s\n", pkg.String())
 	}
 
-
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	funcGraphs := make(map[string]*graph.Graph)
+	funcGraphs := make(map[string]*ssa_graph.SSAGraph)
 
 	for _, pkg := range pkgs {
 		parser.RunSSAAnalysis(appname, prog, pkg, funcGraphs)
 	}
 
-	for _, graph := range funcGraphs {
-		graph.SortNodes()
+	for _, ssa_graph := range funcGraphs {
+		ssa_graph.SortNodes()
 	}
 
 	for _, pkg := range pkgs {
 		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
 	}
 
-
-	for _, graph := range funcGraphs {
-		tainter.RunTaint(graph)
+	for _, ssa_graph := range funcGraphs {
+		tainter.RunTaint(ssa_graph)
 	}
 
 	fmt.Print("\n\n ========== NODES ========== \n\n")
-	for fn, graph := range funcGraphs {
-		for _, node := range graph.GetNodes() {
+	for fn, ssa_graph := range funcGraphs {
+		for _, node := range ssa_graph.GetNodes() {
 			var prefix string
 			if node.GetName() != "" {
 				prefix = node.GetName() + ":"
@@ -93,8 +91,8 @@ func main() {
 	}
 
 	fmt.Print("\n\n ========== TAINTS ========== \n\n")
-	for fn, graph := range funcGraphs {
-		for _, node := range graph.GetNodes() {
+	for fn, ssa_graph := range funcGraphs {
+		for _, node := range ssa_graph.GetNodes() {
 			if node.IsTainted() {
 				for obj, dbfields := range node.GetTaints() {
 					fmt.Printf("[%s] %s [%s]: %s\n", fn, node.String(), node.GetName(), obj)
@@ -106,15 +104,25 @@ func main() {
 		}
 	}
 
-	for fn, g := range funcGraphs {
-		g.WriteToDOTFile(appname, fn)
+	for fn, ssaGraph := range funcGraphs {
+		ssaGraph.WriteToDOTFile(appname, fn)
 	}
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
+	
+	var entryPoints = []string{
+		"postnotification_simple.UploadServiceImpl.UploadPost",
+		"postnotification_simple.StorageServiceImpl.StorePost",
+		"postnotification_simple.StorageServiceImpl.ReadPost",
+		"postnotification_simple.NotifyServiceImpl.workerThread",
+	}
+
+	abstractGraph := abstractcallgraph.NewAbstractGraph()
+	abstractGraph.Init(entryPoints, funcGraphs)
 }
 
 func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {
-	// e.g. "../apps/test2/main.go"
+	// e.graph. "../apps/test2/main.go"
 	filepath := "apps/" + appname + "/main.go"
 	source, err := os.ReadFile(filepath)
 	if err != nil {
@@ -141,11 +149,11 @@ func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {
 
 	prog := ssautil.CreateProgram(iprog, 0)
 	mainPkg := prog.Package(iprog.Created[0].Pkg)
-	
+
 	prog.Build()
-	
+
 	var pkgs = []*ssa.Package{mainPkg}
-	
+
 	for _, pkg := range prog.AllPackages() {
 		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
 			if pkg.Pkg.Path() == "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple" {

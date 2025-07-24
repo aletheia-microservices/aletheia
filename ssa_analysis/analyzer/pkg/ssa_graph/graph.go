@@ -1,4 +1,4 @@
-package graph
+package ssa_graph
 
 import (
 	"fmt"
@@ -8,32 +8,106 @@ import (
 	"strings"
 )
 
-type Graph struct {
-	nodes []*Node
-	edges []*Edge
-	defs  map[string]*Node
+type ServiceCall struct {
+	node    *SSANode
+	args    []*SSANode
+	service string
+	method  string
 }
 
-func NewGraph() *Graph {
-	return &Graph{
-		defs: make(map[string]*Node),
+func (call *ServiceCall) GetNode() *SSANode {
+	return call.node
+}
+
+func (call *ServiceCall) GetArguments() []*SSANode {
+	return call.args
+}
+
+type DatabaseCall struct {
+	node *SSANode
+	args []*SSANode
+}
+
+func (call *DatabaseCall) GetNode() *SSANode {
+	return call.node
+}
+
+func (call *DatabaseCall) GetArguments() []*SSANode {
+	return call.args
+}
+
+type SSAGraph struct {
+	pkg      string
+	fn       string
+	nodes    []*SSANode
+	edges    []*SSAEdge
+	defs     map[string]*SSANode
+	svcCalls []*ServiceCall
+	dbCalls  []*DatabaseCall
+}
+
+func NewGraph(pkg string, fn string) *SSAGraph {
+	return &SSAGraph{
+		defs: make(map[string]*SSANode),
+		pkg:  pkg,
+		fn:   fn,
 	}
 }
 
-func (graph *Graph) addEdge(edge *Edge) {
+func (graph *SSAGraph) GetPackageName() string {
+	return graph.pkg
+}
+
+func (graph *SSAGraph) GetFunctionShortPath() string {
+	return graph.fn
+}
+
+func (graph *SSAGraph) addEdge(edge *SSAEdge) {
 	graph.edges = append(graph.edges, edge)
 }
 
-func (graph *Graph) GetNodes() []*Node {
+func (graph *SSAGraph) GetNodes() []*SSANode {
 	return graph.nodes
 }
 
-func (graph *Graph) GetEdges() []*Edge {
+func (graph *SSAGraph) GetEdges() []*SSAEdge {
 	return graph.edges
 }
 
-func (graph *Graph) GetEdgesFromNode(node *Node) []*Edge {
-	var edges []*Edge
+func (graph *SSAGraph) AddServiceCall(node *SSANode, args []*SSANode, service string, method string) {
+	graph.svcCalls = append(graph.svcCalls, &ServiceCall{
+		node: node,
+		args: args,
+		service: service,
+		method: method,
+	})
+}
+
+func (graph *SSAGraph) HasServiceCalls() bool {
+	return len(graph.svcCalls) > 0
+}
+
+func (graph *SSAGraph) GetServiceCalls() []*ServiceCall {
+	return graph.svcCalls
+}
+
+func (graph *SSAGraph) AddDatabaseCall(node *SSANode, args []*SSANode) {
+	graph.dbCalls = append(graph.dbCalls, &DatabaseCall{
+		node: node,
+		args: args,
+	})
+}
+
+func (graph *SSAGraph) HasDatabaseCalls() bool {
+	return len(graph.dbCalls) > 0
+}
+
+func (graph *SSAGraph) GetDatabaseCalls() []*DatabaseCall {
+	return graph.dbCalls
+}
+
+func (graph *SSAGraph) GetEdgesFromNode(node *SSANode) []*SSAEdge {
+	var edges []*SSAEdge
 	for _, edge := range graph.edges {
 		if edge.from == node {
 			edges = append(edges, edge)
@@ -42,8 +116,8 @@ func (graph *Graph) GetEdgesFromNode(node *Node) []*Edge {
 	return edges
 }
 
-func (graph *Graph) GetEdgesToNode(node *Node) []*Edge {
-	var edges []*Edge
+func (graph *SSAGraph) GetEdgesToNode(node *SSANode) []*SSAEdge {
+	var edges []*SSAEdge
 	for _, edge := range graph.edges {
 		if edge.to == node {
 			edges = append(edges, edge)
@@ -52,7 +126,7 @@ func (graph *Graph) GetEdgesToNode(node *Node) []*Edge {
 	return edges
 }
 
-func (graph *Graph) SortNodes() {
+func (graph *SSAGraph) SortNodes() {
 	sort.Slice(graph.nodes, func(i, j int) bool {
 		/* ni, err1 := strconv.Atoi(strings.TrimPrefix(graph.nodes[i].name, "t"))
 		nj, err2 := strconv.Atoi(strings.TrimPrefix(graph.nodes[j].name, "t"))
@@ -64,7 +138,7 @@ func (graph *Graph) SortNodes() {
 	})
 }
 
-func (graph *Graph) GetNodeByName(name string) *Node {
+func (graph *SSAGraph) GetNodeByName(name string) *SSANode {
 	if node, exists := graph.defs[name]; exists {
 		return node
 	}
@@ -72,12 +146,12 @@ func (graph *Graph) GetNodeByName(name string) *Node {
 	return nil
 }
 
-func (graph *Graph) GetNodeByNameIfExists(name string) (*Node, bool) {
+func (graph *SSAGraph) GetNodeByNameIfExists(name string) (*SSANode, bool) {
 	node, exists := graph.defs[name]
 	return node, exists
 }
 
-func (graph *Graph) CreateAndAddNewEdge(from *Node, to *Node, edgeType EdgeType, index int, param string) (*Edge, bool) {
+func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType EdgeType, index int, param string) (*SSAEdge, bool) {
 	// 1st is for sanity check; 2nd is for nodes obtained from *ssa.Const
 	if from == nil || to == nil {
 		return nil, false
@@ -94,7 +168,7 @@ func (graph *Graph) CreateAndAddNewEdge(from *Node, to *Node, edgeType EdgeType,
 			return edge, false
 		}
 	}
-	edge := &Edge{
+	edge := &SSAEdge{
 		from:     from,
 		to:       to,
 		edgeType: edgeType,
@@ -105,7 +179,7 @@ func (graph *Graph) CreateAndAddNewEdge(from *Node, to *Node, edgeType EdgeType,
 	return edge, true
 }
 
-func (graph *Graph) WriteToDOTFile(appname string, fn string) error {
+func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {
 	filename := fmt.Sprintf("output/%s/graphs/%s.dot", appname, fn)
 	file, err := os.Create(filename)
 	if err != nil {

@@ -1,4 +1,4 @@
-package graph
+package ssa_graph
 
 type EdgeType int
 
@@ -12,10 +12,10 @@ const (
 	EDGE_POINTS_TO
 )
 
-type Edge struct {
+type SSAEdge struct {
 	edgeType EdgeType
-	from     *Node
-	to       *Node
+	from     *SSANode
+	to       *SSANode
 
 	index int
 	param string
@@ -23,26 +23,26 @@ type Edge struct {
 	path string //pointer only
 }
 
-func (edge *Edge) GetType() EdgeType {
+func (edge *SSAEdge) GetType() EdgeType {
 	return edge.edgeType
 }
 
-func (edge *Edge) HasFromNode(node *Node) bool {
+func (edge *SSAEdge) HasFromNode(node *SSANode) bool {
 	return edge.from == node
 }
 
-func (edge *Edge) GetFromNode() *Node {
+func (edge *SSAEdge) GetFromNode() *SSANode {
 	return edge.from
 }
 
-func (edge *Edge) GetToNode() *Node {
+func (edge *SSAEdge) GetToNode() *SSANode {
 	return edge.to
 }
 
-func (edge *Edge) GetPath() string {
+func (edge *SSAEdge) GetPath() string {
 	return edge.path
 }
 
-func (edge *Edge) SetPath(path string) {
+func (edge *SSAEdge) SetPath(path string) {
 	edge.path = path
 }

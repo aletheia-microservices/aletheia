@@ -14,7 +14,7 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 
-	"analyzer/pkg/graph"
+	"analyzer/pkg/ssa_graph"
 )
 
 func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Result, error) {
@@ -83,7 +83,7 @@ func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Resul
 	return result, nil
 }
 
-func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*graph.Graph) {
+func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*ssa_graph.SSAGraph) {
 	fmt.Printf("\n[PTA] running pointer analysis for package: %s\n", pkg.String())
 	outFile, err := os.Create(fmt.Sprintf("output/%s/%s.ptrs", appname, pkg.Pkg.Name()))
 	if err != nil {
@@ -105,23 +105,23 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 			continue
 		}
 
-		fnLongName := cleanName(fn.String())
+		shortFuncPath := getShortFunctionPath(fn.String())
 		fmt.Println()
-		fmt.Printf("\t[PTA] [%s] analyzing value: %v // pointers = %v\n", fnLongName, value, pts)
+		fmt.Printf("\t[PTA] [%s] analyzing value: %v // pointers = %v\n", shortFuncPath, value, pts)
 		if fn.Pkg == nil {
 			continue
 		}
 
-		g := funcGraphs[fnLongName]
-		if g == nil {
-			fmt.Printf("skipping graph not found for name (%s)\n", fnLongName)
+		graph := funcGraphs[shortFuncPath]
+		if graph == nil {
+			fmt.Printf("skipping graph not found for name (%s)\n", shortFuncPath)
 			continue
 		}
 
 		pos := prog.Fset.Position(value.Pos())
 		desc := valueDesc(fn, value) + "\n"
 		name := value.Name()
-		node, ok := g.GetNodeByNameIfExists(name)
+		node, ok := graph.GetNodeByNameIfExists(name)
 		if !ok {
 			fmt.Printf("skipping node not found for name (%s)\n", name)
 			continue
@@ -129,16 +129,16 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 		//fmt.Printf("points to set of [%T] %v @ %v:\n", value, value, value.Parent())
 		for _, lbl := range pts.PointsTo().Labels() {
 			lblFn := lbl.Value().Parent()
-			lblFnLongName := cleanName(lblFn.String())
+			lblFnLongName := getShortFunctionPath(lblFn.String())
 			fmt.Printf("\t\t- [%s] got label: [%T] %s\n", lblFnLongName, lbl.Value(), lbl.Value())
 			desc += fmt.Sprintf("\t → %s\n", valueDescShort(lbl.Value().Parent(), lbl.Value()))
 
 			if lbl.Value().Parent() == fn {
-				pointsToNode, _ := g.GetNodeByNameIfExists(lbl.Value().Name())
+				pointsToNode, _ := graph.GetNodeByNameIfExists(lbl.Value().Name())
 
 				if node != nil && pointsToNode != nil && node != pointsToNode {
 					var exists bool
-					/* for _, edge := range g.GetEdges() {
+					/* for _, edge := range graph.GetEdges() {
 						// this is reverse on purpose for field and index addresses
 						//if edge.from == pointsToNode && edge.to == node {
 						if edge.GetFromNode() == node && edge.GetToNode() == pointsToNode {
@@ -148,12 +148,12 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 					if !exists {
 						fmt.Printf("creating edge\n")
 
-						edge, _ := g.CreateAndAddNewEdge(node, pointsToNode, graph.EDGE_POINTS_TO, 0, "")
+						edge, _ := graph.CreateAndAddNewEdge(node, pointsToNode, ssa_graph.EDGE_POINTS_TO, 0, "")
 						if edge != nil {
 							edge.SetPath(lbl.Path())
 
-							fmt.Printf("created edge from: %v\n",edge.GetFromNode())
-							for _, edge := range g.GetEdgesFromNode(edge.GetFromNode()) {
+							fmt.Printf("created edge from: %v\n", edge.GetFromNode())
+							for _, edge := range graph.GetEdgesFromNode(edge.GetFromNode()) {
 								fmt.Printf("- edge to (%v): %v\n", edge.GetType(), edge.GetToNode().String())
 							}
 						}

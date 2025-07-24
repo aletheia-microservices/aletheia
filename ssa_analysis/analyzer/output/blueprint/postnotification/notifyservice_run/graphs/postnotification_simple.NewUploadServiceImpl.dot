@@ -1,0 +1,23 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3082985 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3083025 [label="*t1 = storageService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3083061 [label="*t2 = notificationsQueue", style=bold, shape=ellipse, color="blue"];
+	N_nil_741250897 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3083010 [label="t0: new UploadServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_3083025 [label="t1: &t0.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3083061 [label="t2: &t0.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make UploadService <- *UploadServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_3082873 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3082894 [label="storageService: parameter storageService : StorageService", style=bold, shape=ellipse, color="black"];
+	N_val_param_3082925 [label="notificationsQueue: parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3083010 -> N_val_field_3083025;
+	N_val_alloc_3083010 -> N_val_field_3083061;
+	N_val_field_3083025 -> N_instr_store_3083025;
+	N_val_param_3082894 -> N_instr_store_3083025;
+	N_val_field_3083061 -> N_instr_store_3083061;
+	N_val_param_3082925 -> N_instr_store_3083061;
+	N_val_alloc_3083010 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_3082985;
+	N_nil_741250897 -> N_instr_ret_3082985;
+}

@@ -1,0 +1,328 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).Run ###
+n (@Run): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
+
+t0 (@Run): (*ssa.Alloc) (new *NotifyServiceImpl (n))
+	 → t0 (@Run): (*ssa.Alloc)
+
+ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@Run): (*ssa.Alloc) (new context.Context (ctx))
+	 → t1 (@Run): (*ssa.Alloc)
+
+t2 (@Run): (*ssa.Call) (github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger())
+	 → t1 (@init#1): (*ssa.MakeInterface)
+
+t3 (@Run): (*ssa.UnOp) (*t1)
+
+t4 (@Run): (*ssa.UnOp) (*t0)
+
+t5 (@Run): (*ssa.FieldAddr) (&t4.num_workers [#2])
+
+t7 (@Run): (*ssa.Alloc) (new [1]any (varargs))
+	 → t7 (@Run): (*ssa.Alloc)
+
+t8 (@Run): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Run): (*ssa.Alloc)
+
+t9 (@Run): (*ssa.MakeInterface) (make any <- int (t6))
+	 → t9 (@Run): (*ssa.MakeInterface)
+
+t10 (@Run): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Run): (*ssa.Alloc)
+
+t12 (@Run): (*ssa.Alloc) (new sync.WaitGroup (wg))
+	 → t12 (@Run): (*ssa.Alloc)
+
+t13 (@Run): (*ssa.UnOp) (*t0)
+
+t14 (@Run): (*ssa.FieldAddr) (&t13.num_workers [#2])
+
+t17 (@Run): (*ssa.MakeClosure) (make closure (*NotifyServiceImpl).Run$1 [t12, t0, t1])
+	 → Run$1 (@Run): (*ssa.Function)
+
+t20 (@Run): (*ssa.Call) (github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger())
+	 → t1 (@init#1): (*ssa.MakeInterface)
+
+t21 (@Run): (*ssa.UnOp) (*t1)
+
+t22 (@Run): (*ssa.UnOp) (*t0)
+
+t23 (@Run): (*ssa.FieldAddr) (&t22.num_workers [#2])
+
+t25 (@Run): (*ssa.Alloc) (new [1]any (varargs))
+	 → t25 (@Run): (*ssa.Alloc)
+
+t26 (@Run): (*ssa.IndexAddr) (&t25[0:int])
+	 → t25 (@Run): (*ssa.Alloc)
+
+t27 (@Run): (*ssa.MakeInterface) (make any <- int (t24))
+	 → t27 (@Run): (*ssa.MakeInterface)
+
+t28 (@Run): (*ssa.Slice) (slice t25[:])
+	 → t25 (@Run): (*ssa.Alloc)
+
+t31 (@Run): (*ssa.UnOp) (*t0)
+
+t32 (@Run): (*ssa.FieldAddr) (&t31.num_workers [#2])
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).workerThread ###
+n (@workerThread): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
+
+ctx (@workerThread): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@workerThread): (*ssa.Alloc) (new Message (workerMessage))
+	 → t0 (@workerThread): (*ssa.Alloc)
+
+t1 (@workerThread): (*ssa.FieldAddr) (&n.notificationsQueue [#1])
+
+t2 (@workerThread): (*ssa.UnOp) (*t1)
+
+t3 (@workerThread): (*ssa.MakeInterface) (make interface{} <- *Message (t0))
+	 → t3 (@workerThread): (*ssa.MakeInterface)
+
+t5 (@workerThread): (*ssa.FieldAddr) (&n.storageService [#0])
+
+t6 (@workerThread): (*ssa.UnOp) (*t5)
+
+t7 (@workerThread): (*ssa.FieldAddr) (&t0.ReqID [#0])
+	 → t0 (@workerThread): (*ssa.Alloc)
+
+t9 (@workerThread): (*ssa.FieldAddr) (&t0.PostID_MESSAGE [#1])
+	 → t0 (@workerThread): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).ReadPost ###
+s (@ReadPost): (*ssa.Parameter) (parameter s : *StorageServiceImpl)
+
+ctx (@ReadPost): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ReadPost): (*ssa.Alloc) (new Post (post))
+	 → t0 (@ReadPost): (*ssa.Alloc)
+
+t1 (@ReadPost): (*ssa.FieldAddr) (&s.postsDb [#0])
+
+t2 (@ReadPost): (*ssa.UnOp) (*t1)
+
+t4 (@ReadPost): (*ssa.Extract) (extract t3 #0)
+
+t5 (@ReadPost): (*ssa.Extract) (extract t3 #1)
+
+t8 (@ReadPost): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@ReadPost): (*ssa.Alloc)
+
+t9 (@ReadPost): (*ssa.IndexAddr) (&t8[0:int])
+	 → t8 (@ReadPost): (*ssa.Alloc)
+
+t10 (@ReadPost): (*ssa.FieldAddr) (&t9.Key [#0])
+	 → t8 (@ReadPost): (*ssa.Alloc)
+
+t11 (@ReadPost): (*ssa.FieldAddr) (&t9.Value [#1])
+	 → t8 (@ReadPost): (*ssa.Alloc)
+
+t12 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- int64 (postID))
+	 → t12 (@ReadPost): (*ssa.MakeInterface)
+
+t13 (@ReadPost): (*ssa.Slice) (slice t8[:])
+	 → t8 (@ReadPost): (*ssa.Alloc)
+
+t15 (@ReadPost): (*ssa.Extract) (extract t14 #0)
+
+t16 (@ReadPost): (*ssa.Extract) (extract t14 #1)
+
+t19 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- *Post (t0))
+	 → t19 (@ReadPost): (*ssa.MakeInterface)
+
+t22 (@ReadPost): (*ssa.Extract) (extract t20 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).StorePost ###
+s (@StorePost): (*ssa.Parameter) (parameter s : *StorageServiceImpl)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+
+ctx (@StorePost): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@StorePost): (*ssa.Alloc) (new [2]string (slicelit))
+	 → t2 (@StorePost): (*ssa.Alloc)
+
+t3 (@StorePost): (*ssa.IndexAddr) (&t2[0:int])
+	 → t2 (@StorePost): (*ssa.Alloc)
+
+t4 (@StorePost): (*ssa.IndexAddr) (&t2[1:int])
+	 → t2 (@StorePost): (*ssa.Alloc)
+
+t5 (@StorePost): (*ssa.Slice) (slice t2[:])
+	 → t2 (@StorePost): (*ssa.Alloc)
+
+t6 (@StorePost): (*ssa.Alloc) (new Post (complit))
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t7 (@StorePost): (*ssa.FieldAddr) (&t6.ReqID [#0])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t8 (@StorePost): (*ssa.FieldAddr) (&t6.PostID [#1])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t9 (@StorePost): (*ssa.FieldAddr) (&t6.Text [#3])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t10 (@StorePost): (*ssa.FieldAddr) (&t6.Mentions [#4])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t11 (@StorePost): (*ssa.FieldAddr) (&t6.Timestamp [#5])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t12 (@StorePost): (*ssa.FieldAddr) (&t6.Creator [#6])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t13 (@StorePost): (*ssa.FieldAddr) (&t12.Username [#0])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t16 (@StorePost): (*ssa.Phi) (phi [0: nil:[]string, 2: t26] #mymentions)
+	 → t26 (@StorePost): (*ssa.Call)
+
+t20 (@StorePost): (*ssa.IndexAddr) (&t5[t18])
+	 → t2 (@StorePost): (*ssa.Alloc)
+
+t23 (@StorePost): (*ssa.Alloc) (new [1]string (varargs))
+	 → t23 (@StorePost): (*ssa.Alloc)
+
+t24 (@StorePost): (*ssa.IndexAddr) (&t23[0:int])
+	 → t23 (@StorePost): (*ssa.Alloc)
+
+t25 (@StorePost): (*ssa.Slice) (slice t23[:])
+	 → t23 (@StorePost): (*ssa.Alloc)
+
+t26 (@StorePost): (*ssa.Call) (append(t16, t25...))
+	 → t26 (@StorePost): (*ssa.Call)
+
+t27 (@StorePost): (*ssa.FieldAddr) (&s.postsDb [#0])
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+
+t28 (@StorePost): (*ssa.UnOp) (*t27)
+
+t30 (@StorePost): (*ssa.Extract) (extract t29 #0)
+
+t31 (@StorePost): (*ssa.Extract) (extract t29 #1)
+
+t33 (@StorePost): (*ssa.MakeInterface) (make interface{} <- *Post (t6))
+	 → t33 (@StorePost): (*ssa.MakeInterface)
+
+t34 (@StorePost): (*ssa.Call) (invoke t30.InsertOne(ctx, t33))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl).UploadPost ###
+u (@UploadPost): (*ssa.Parameter) (parameter u : *UploadServiceImpl)
+	 → t0 (@NewUploadServiceImpl): (*ssa.Alloc)
+
+ctx (@UploadPost): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@UploadPost): (*ssa.FieldAddr) (&u.storageService [#0])
+	 → t0 (@NewUploadServiceImpl): (*ssa.Alloc)
+
+t3 (@UploadPost): (*ssa.UnOp) (*t2)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+
+t5 (@UploadPost): (*ssa.Extract) (extract t4 #0)
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t6 (@UploadPost): (*ssa.Extract) (extract t4 #1)
+
+t7 (@UploadPost): (*ssa.Alloc) (local Message (message))
+	 → t7 (@UploadPost): (*ssa.Alloc)
+
+t8 (@UploadPost): (*ssa.FieldAddr) (&t7.ReqID [#0])
+	 → t7 (@UploadPost): (*ssa.Alloc)
+
+t9 (@UploadPost): (*ssa.FieldAddr) (&t7.PostID_MESSAGE [#1])
+	 → t7 (@UploadPost): (*ssa.Alloc)
+
+t10 (@UploadPost): (*ssa.FieldAddr) (&t5.PostID [#1])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+t12 (@UploadPost): (*ssa.FieldAddr) (&u.notificationsQueue [#1])
+	 → t0 (@NewUploadServiceImpl): (*ssa.Alloc)
+
+t13 (@UploadPost): (*ssa.UnOp) (*t12)
+
+t15 (@UploadPost): (*ssa.MakeInterface) (make interface{} <- Message (t14))
+	 → t15 (@UploadPost): (*ssa.MakeInterface)
+
+t18 (@UploadPost): (*ssa.Extract) (extract t16 #1)
+
+t20 (@UploadPost): (*ssa.FieldAddr) (&t5.PostID [#1])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NewStorageServiceImpl ###
+ctx (@NewStorageServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+postsDb (@NewStorageServiceImpl): (*ssa.Parameter) (parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+
+t0 (@NewStorageServiceImpl): (*ssa.Alloc) (new StorageServiceImpl (complit))
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+
+t1 (@NewStorageServiceImpl): (*ssa.FieldAddr) (&t0.postsDb [#0])
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+
+t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) (make StorageService <- *StorageServiceImpl (t0))
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NewUploadServiceImpl ###
+ctx (@NewUploadServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+storageService (@NewUploadServiceImpl): (*ssa.Parameter) (parameter storageService : StorageService)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+
+notificationsQueue (@NewUploadServiceImpl): (*ssa.Parameter) (parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue)
+
+t0 (@NewUploadServiceImpl): (*ssa.Alloc) (new UploadServiceImpl (complit))
+	 → t0 (@NewUploadServiceImpl): (*ssa.Alloc)
+
+t1 (@NewUploadServiceImpl): (*ssa.FieldAddr) (&t0.storageService [#0])
+	 → t0 (@NewUploadServiceImpl): (*ssa.Alloc)
+
+t2 (@NewUploadServiceImpl): (*ssa.FieldAddr) (&t0.notificationsQueue [#1])
+	 → t0 (@NewUploadServiceImpl): (*ssa.Alloc)
+
+t3 (@NewUploadServiceImpl): (*ssa.MakeInterface) (make UploadService <- *UploadServiceImpl (t0))
+	 → t3 (@NewUploadServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+t5 (@main): (*ssa.Extract) (extract t4 #0)
+	 → t3 (@NewUploadServiceImpl): (*ssa.MakeInterface)
+
+t6 (@main): (*ssa.Extract) (extract t4 #1)
+
+

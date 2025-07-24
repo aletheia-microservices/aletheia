@@ -1,0 +1,60 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4103423 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_2082022765 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4103246 [label="t0: new Message (workerMessage)
+
+==== tainted ====
+
+_obj
+@ notify_queue.notify_message
+
+_obj.PostID_MESSAGE
+@ notify_queue.notify_message.PostID_MESSAGE
+", style=bold, shape=box, color="orange"];
+	N_val_call_4103294 [label="t4: invoke t2.Pop(ctx, t3)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4103343 [label="t11: invoke t6.ReadPost(ctx, t8, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_4103272 [label="t1: &n.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4103320 [label="t5: &n.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4103363 [label="t7: &t0.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4103384 [label="t9: &t0.PostID_MESSAGE [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make interface{} <- *Message (t0)
+
+==== tainted ====
+
+_obj
+@ notify_queue.notify_message
+
+_obj.PostID_MESSAGE
+@ notify_queue.notify_message.PostID_MESSAGE
+", style=bold, shape=box, color="black"];
+	N_val_param_4103130 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4103165 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4103272 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4103320 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4103363 [label="t8: *t7", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4103384 [label="t10: *t9
+
+==== tainted ====
+
+_obj
+@ notify_queue.notify_message.PostID_MESSAGE
+", style=bold, shape=box, color="red"];
+	N_val_param_4103130 -> N_val_field_4103272;
+	N_val_field_4103272 -> N_val_unary_4103272;
+	N_val_alloc_4103246 -> N_val_ifacet3;
+	N_val_param_4103165 -> N_val_call_4103294;
+	N_val_ifacet3 -> N_val_call_4103294;
+	N_val_param_4103130 -> N_val_field_4103320;
+	N_val_field_4103320 -> N_val_unary_4103320;
+	N_val_alloc_4103246 -> N_val_field_4103363;
+	N_val_field_4103363 -> N_val_unary_4103363;
+	N_val_alloc_4103246 -> N_val_field_4103384;
+	N_val_field_4103384 -> N_val_unary_4103384;
+	N_val_param_4103165 -> N_val_call_4103343;
+	N_val_unary_4103363 -> N_val_call_4103343;
+	N_val_unary_4103384 -> N_val_call_4103343;
+	N_nil_2082022765 -> N_instr_ret_4103423;
+	N_val_field_4103384 -> N_val_alloc_4103246 [label=".PostID_MESSAGE", style=dashed, color=blue];
+	N_val_field_4103363 -> N_val_alloc_4103246 [label=".ReqID", style=dashed, color=blue];
+}
