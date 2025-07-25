@@ -15,6 +15,14 @@ type ServiceCall struct {
 	method  string
 }
 
+func (call *ServiceCall) GetService() string {
+	return call.service
+}
+
+func (call *ServiceCall) GetMethod() string {
+	return call.method
+}
+
 func (call *ServiceCall) GetNode() *SSANode {
 	return call.node
 }
@@ -24,8 +32,23 @@ func (call *ServiceCall) GetArguments() []*SSANode {
 }
 
 type DatabaseCall struct {
-	node *SSANode
-	args []*SSANode
+	node              *SSANode
+	args              []*SSANode
+	database          string
+	collectionOrTopic string
+	method            string
+}
+
+func (call *DatabaseCall) GetDatabase() string {
+	return call.database
+}
+
+func (call *DatabaseCall) GetCollectionOrTopic() string {
+	return call.collectionOrTopic
+}
+
+func (call *DatabaseCall) GetMethod() string {
+	return call.method
 }
 
 func (call *DatabaseCall) GetNode() *SSANode {
@@ -37,8 +60,10 @@ func (call *DatabaseCall) GetArguments() []*SSANode {
 }
 
 type SSAGraph struct {
-	pkg      string
-	fn       string
+	pkgName     string
+	fnShortPath string
+	serviceName string
+
 	nodes    []*SSANode
 	edges    []*SSAEdge
 	defs     map[string]*SSANode
@@ -46,20 +71,25 @@ type SSAGraph struct {
 	dbCalls  []*DatabaseCall
 }
 
-func NewGraph(pkg string, fn string) *SSAGraph {
+func NewGraph(pkg string, fn string, service string) *SSAGraph {
 	return &SSAGraph{
-		defs: make(map[string]*SSANode),
-		pkg:  pkg,
-		fn:   fn,
+		defs:        make(map[string]*SSANode),
+		pkgName:     pkg,
+		fnShortPath: fn,
+		serviceName: service,
 	}
 }
 
+func (graph *SSAGraph) GetServiceName() string {
+	return graph.serviceName
+}
+
 func (graph *SSAGraph) GetPackageName() string {
-	return graph.pkg
+	return graph.pkgName
 }
 
 func (graph *SSAGraph) GetFunctionShortPath() string {
-	return graph.fn
+	return graph.fnShortPath
 }
 
 func (graph *SSAGraph) addEdge(edge *SSAEdge) {
@@ -76,10 +106,10 @@ func (graph *SSAGraph) GetEdges() []*SSAEdge {
 
 func (graph *SSAGraph) AddServiceCall(node *SSANode, args []*SSANode, service string, method string) {
 	graph.svcCalls = append(graph.svcCalls, &ServiceCall{
-		node: node,
-		args: args,
+		node:    node,
+		args:    args,
 		service: service,
-		method: method,
+		method:  method,
 	})
 }
 
@@ -91,10 +121,13 @@ func (graph *SSAGraph) GetServiceCalls() []*ServiceCall {
 	return graph.svcCalls
 }
 
-func (graph *SSAGraph) AddDatabaseCall(node *SSANode, args []*SSANode) {
+func (graph *SSAGraph) AddDatabaseCall(node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string) {
 	graph.dbCalls = append(graph.dbCalls, &DatabaseCall{
-		node: node,
-		args: args,
+		node:              node,
+		args:              args,
+		database:          database,
+		collectionOrTopic: collectionOrTopic,
+		method:            method,
 	})
 }
 

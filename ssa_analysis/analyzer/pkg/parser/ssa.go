@@ -70,10 +70,11 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 
 func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*ssa_graph.SSAGraph) {
 	shortFuncPath := getShortFunctionPath(fn.String())
+	serviceName := extractServiceNameFromShortFunctionPath(shortFuncPath)
 
 	fmt.Printf("[SSA] iterating function %s\n", shortFuncPath)
 
-	graph := ssa_graph.NewGraph(fn.Pkg.Pkg.Name(), shortFuncPath)
+	graph := ssa_graph.NewGraph(fn.Pkg.Pkg.Name(), shortFuncPath, serviceName)
 	if _, exists := funcGraphs[shortFuncPath]; exists {
 		log.Printf("ssa_graph for function (%s) already exists\n", shortFuncPath)
 		log.Println("skipping...")

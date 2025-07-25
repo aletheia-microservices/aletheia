@@ -12,12 +12,17 @@ type AbstractNode struct {
 	name string
 }
 
+func (node *AbstractNode) String() string {
+	return node.name
+}
+
 func (node *AbstractNode) GetNodeType() NodeType {
 	return node.t
 }
 
-func NewAbstractNode(name string) *AbstractNode {
+func NewAbstractNode(name string, t NodeType) *AbstractNode {
 	return &AbstractNode{
 		name: name,
+		t:    t,
 	}
 }

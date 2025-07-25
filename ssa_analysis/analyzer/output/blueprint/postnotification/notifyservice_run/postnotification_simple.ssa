@@ -1,22 +1,45 @@
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Message
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Analytics
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService
-	Method: func(ctx context.Context) error
-	Method: func(ctx context.Context) error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.TriggerAnalyticsMessage
 	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService
 	Method: func(ctx context.Context, username string, text string) (int64, error)
 	Method: func(ctx context.Context, username string, text string) (int64, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl
+	Method: func(ctx context.Context, username string, text string) (int64, error)
 		Parameters:
+			u = parameter u : *UploadServiceImpl
 			ctx = parameter ctx : context.Context
-			postsDb = parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: postnotification_simple.NewStorageServiceImpl
-Block #0: postnotification_simple.NewStorageServiceImpl.entry
-			00: t0 = new StorageServiceImpl (complit)
-			01: t1 = &t0.postsDb [#0]
-			02: *t1 = postsDb
-			03: t2 = make StorageService <- *StorageServiceImpl (t0)
-			04: return t2, nil:error
+			username = parameter username : string
+			text = parameter text : string
+Function: postnotification_simple.UploadServiceImpl.UploadPost
+Block #0: postnotification_simple.UploadServiceImpl.UploadPost.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple/common.TestFunc()
+			02: t2 = &u.storageService [#0]
+			03: t3 = *t2
+			04: t4 = invoke t3.StorePost(ctx, t0, text)
+			05: t5 = extract t4 #0
+			06: t6 = extract t4 #1
+			07: t7 = local Message (message)
+			08: t8 = &t7.ReqID [#0]
+			09: t9 = &t7.PostID_MESSAGE [#1]
+			10: t10 = &t5.PostID [#1]
+			11: t11 = *t10
+			12: *t8 = t0
+			13: *t9 = t11
+			14: t12 = &u.notificationsQueue [#1]
+			15: t13 = *t12
+			16: t14 = *t7
+			17: t15 = make interface{} <- Message (t14)
+			18: t16 = invoke t13.Push(ctx, t15)
+			19: t17 = extract t16 #0
+			20: t18 = extract t16 #1
+			21: t19 = t18 != nil:error
+			22: if t19 goto 1 else 2
+Block #1: postnotification_simple.UploadServiceImpl.UploadPost.if.then
+			00: return 0:int64, t18
+Block #2: postnotification_simple.UploadServiceImpl.UploadPost.if.done
+			00: t20 = &t5.PostID [#1]
+			01: t21 = *t20
+			02: return t21, nil:error
 		Parameters:
 Function: postnotification_simple.main
 Block #0: postnotification_simple.main.entry
@@ -26,7 +49,22 @@ Block #0: postnotification_simple.main.entry
 			03: t3 = extract t1 #1
 			04: t4 = invoke t2.StorePost(t0, 0:int64, "":string)
 			05: return
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Creator
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Analytics
+		Parameters:
+			ctx = parameter ctx : context.Context
+			storageService = parameter storageService : StorageService
+			notificationsQueue = parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+Function: postnotification_simple.NewNotifyServiceImpl
+Block #0: postnotification_simple.NewNotifyServiceImpl.entry
+			00: t0 = new NotifyServiceImpl (complit)
+			01: t1 = &t0.storageService [#0]
+			02: t2 = &t0.notificationsQueue [#1]
+			03: t3 = &t0.num_workers [#2]
+			04: *t1 = storageService
+			05: *t2 = notificationsQueue
+			06: *t3 = 4:int
+			07: t4 = make NotifyService <- *NotifyServiceImpl (t0)
+			08: return t4, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl
 	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
 		Parameters:
@@ -39,7 +77,7 @@ Block #0: postnotification_simple.StorageServiceImpl.ReadPost.entry
 			00: t0 = new Post (post)
 			01: t1 = &s.postsDb [#0]
 			02: t2 = *t1
-			03: t3 = invoke t2.GetCollection(ctx, "post":string, "post":string)
+			03: t3 = invoke t2.GetCollection(ctx, "posts_db":string, "post":string)
 			04: t4 = extract t3 #0
 			05: t5 = extract t3 #1
 			06: t6 = t5 != nil:error
@@ -147,74 +185,16 @@ Block #6: postnotification_simple.StorageServiceImpl.StorePost.if.then
 			00: return nil:*Post, t34
 Block #7: postnotification_simple.StorageServiceImpl.StorePost.if.done
 			00: return t6, t34
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl
-	Method: func(ctx context.Context, username string, text string) (int64, error)
-		Parameters:
-			u = parameter u : *UploadServiceImpl
-			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			text = parameter text : string
-Function: postnotification_simple.UploadServiceImpl.UploadPost
-Block #0: postnotification_simple.UploadServiceImpl.UploadPost.entry
-			00: t0 = math/rand.Int63()
-			01: t1 = github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple/common.TestFunc()
-			02: t2 = &u.storageService [#0]
-			03: t3 = *t2
-			04: t4 = invoke t3.StorePost(ctx, t0, text)
-			05: t5 = extract t4 #0
-			06: t6 = extract t4 #1
-			07: t7 = local Message (message)
-			08: t8 = &t7.ReqID [#0]
-			09: t9 = &t7.PostID_MESSAGE [#1]
-			10: t10 = &t5.PostID [#1]
-			11: t11 = *t10
-			12: *t8 = t0
-			13: *t9 = t11
-			14: t12 = &u.notificationsQueue [#1]
-			15: t13 = *t12
-			16: t14 = *t7
-			17: t15 = make interface{} <- Message (t14)
-			18: t16 = invoke t13.Push(ctx, t15)
-			19: t17 = extract t16 #0
-			20: t18 = extract t16 #1
-			21: t19 = t18 != nil:error
-			22: if t19 goto 1 else 2
-Block #1: postnotification_simple.UploadServiceImpl.UploadPost.if.then
-			00: return 0:int64, t18
-Block #2: postnotification_simple.UploadServiceImpl.UploadPost.if.done
-			00: t20 = &t5.PostID [#1]
-			01: t21 = *t20
-			02: return t21, nil:error
 		Parameters:
 			ctx = parameter ctx : context.Context
-			storageService = parameter storageService : StorageService
-			notificationsQueue = parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-Function: postnotification_simple.NewUploadServiceImpl
-Block #0: postnotification_simple.NewUploadServiceImpl.entry
-			00: t0 = new UploadServiceImpl (complit)
-			01: t1 = &t0.storageService [#0]
-			02: t2 = &t0.notificationsQueue [#1]
-			03: *t1 = storageService
-			04: *t2 = notificationsQueue
-			05: t3 = make UploadService <- *UploadServiceImpl (t0)
-			06: return t3, nil:error
-	Global: init$guard, Type: *bool
-		Parameters:
-Function: postnotification_simple.init
-Block #0: postnotification_simple.init.entry
-			00: t0 = *init$guard
-			01: if t0 goto 2 else 1
-Block #1: postnotification_simple.init.init.start
-			00: *init$guard = true:bool
-			01: t1 = context.init()
-			02: t2 = sync.init()
-			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
-			04: t4 = math/rand.init()
-			05: t5 = go.mongodb.org/mongo-driver/bson.init()
-			06: t6 = github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple/common.init()
-			07: jump 2
-Block #2: postnotification_simple.init.init.done
-			00: return
+			postsDb = parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: postnotification_simple.NewStorageServiceImpl
+Block #0: postnotification_simple.NewStorageServiceImpl.entry
+			00: t0 = new StorageServiceImpl (complit)
+			01: t1 = &t0.postsDb [#0]
+			02: *t1 = postsDb
+			03: t2 = make StorageService <- *StorageServiceImpl (t0)
+			04: return t2, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
 	Method: func(ctx context.Context) error
 		Parameters:
@@ -288,24 +268,44 @@ Block #0: postnotification_simple.NotifyServiceImpl.workerThread.entry
 			10: t10 = *t9
 			11: t11 = invoke t6.ReadPost(ctx, t8, t10)
 			12: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Creator
+	Global: init$guard, Type: *bool
 		Parameters:
 			ctx = parameter ctx : context.Context
 			storageService = parameter storageService : StorageService
 			notificationsQueue = parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-Function: postnotification_simple.NewNotifyServiceImpl
-Block #0: postnotification_simple.NewNotifyServiceImpl.entry
-			00: t0 = new NotifyServiceImpl (complit)
+Function: postnotification_simple.NewUploadServiceImpl
+Block #0: postnotification_simple.NewUploadServiceImpl.entry
+			00: t0 = new UploadServiceImpl (complit)
 			01: t1 = &t0.storageService [#0]
 			02: t2 = &t0.notificationsQueue [#1]
-			03: t3 = &t0.num_workers [#2]
-			04: *t1 = storageService
-			05: *t2 = notificationsQueue
-			06: *t3 = 4:int
-			07: t4 = make NotifyService <- *NotifyServiceImpl (t0)
-			08: return t4, nil:error
+			03: *t1 = storageService
+			04: *t2 = notificationsQueue
+			05: t3 = make UploadService <- *UploadServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Message
+		Parameters:
+Function: postnotification_simple.init
+Block #0: postnotification_simple.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: postnotification_simple.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = sync.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = math/rand.init()
+			05: t5 = go.mongodb.org/mongo-driver/bson.init()
+			06: t6 = github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple/common.init()
+			07: jump 2
+Block #2: postnotification_simple.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context) error
 	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService
 	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
 	Method: func(ctx context.Context, reqID int64, text string) (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
 	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
 	Method: func(ctx context.Context, reqID int64, text string) (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.TriggerAnalyticsMessage

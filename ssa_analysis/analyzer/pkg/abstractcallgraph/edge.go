@@ -1,5 +1,7 @@
 package abstractcallgraph
 
+import "fmt"
+
 type EdgeType int
 
 const (
@@ -8,10 +10,15 @@ const (
 )
 
 type AbstractEdge struct {
-	t    EdgeType
-	str  string
-	from *AbstractNode
-	to   *AbstractNode
+	t      EdgeType
+	method string
+	from   *AbstractNode
+	to     *AbstractNode
+	args   []*AbstractArgument
+}
+
+func (edge *AbstractEdge) String() string {
+	return fmt.Sprintf("(%s) --> (%s).%s(...)", edge.from.String(), edge.to.String(), edge.method)
 }
 
 func (edge *AbstractEdge) GetEdgeType() EdgeType {
@@ -26,11 +33,15 @@ func (edge *AbstractEdge) GetToNode() *AbstractNode {
 	return edge.to
 }
 
-func NewAbstractEdge(str string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {
+func (edge *AbstractEdge) AddArgument(arg *AbstractArgument) {
+	edge.args = append(edge.args, arg)
+}
+
+func NewAbstractEdge(method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {
 	return &AbstractEdge{
-		t:    t,
-		str:  str,
-		from: from,
-		to:   to,
+		t:      t,
+		method: method,
+		from:   from,
+		to:     to,
 	}
 }

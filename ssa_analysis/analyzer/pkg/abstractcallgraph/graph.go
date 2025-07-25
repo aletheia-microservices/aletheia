@@ -28,7 +28,15 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 }
 
 func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
+	fmt.Printf("[ABSTRACT GRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
+
+	for i, arg := range edge.args {
+		fmt.Printf("\t\t - ARG #%d: %s\n", i, arg.SSAString())
+		for obj, dbfields := range arg.GetTaints() {
+			fmt.Printf("\t\t\t - TAINT: %s @ %s\n", obj, strings.Join(dbfields, ", "))
+		}
+	}
 }
 
 func (graph *AbstractCallGraph) GetNodeByNameIfExists(name string) *AbstractNode {
@@ -71,41 +79,53 @@ func (graph *AbstractCallGraph) Init(entryPoints []string, funcGraphs map[string
 		if !slices.Contains(entryPoints, ssaGraph.GetFunctionShortPath()) {
 			continue
 		}
-		
-		fnShortPath := ssaGraph.GetFunctionShortPath()
-		node := graph.GetNodeByNameIfExists(fnShortPath)
-		if node == nil {
-			node = NewAbstractNode(fnShortPath)
-			graph.AddNode(fnShortPath, node)
+
+		fromService := ssaGraph.GetServiceName()
+		fromNode := graph.GetNodeByNameIfExists(fromService)
+		if fromNode == nil {
+			fromNode = NewAbstractNode(fromService, NODE_SERVICE)
+			graph.AddNode(fromService, fromNode)
 		}
 
 		if ssaGraph.HasServiceCalls() {
-			fmt.Printf("[INFO] function (%s) has service calls:\n", ssaGraph.GetFunctionShortPath())
+			fmt.Printf("[INFO] [%s] found function (%s) with service calls\n", ssaGraph.GetServiceName(), ssaGraph.GetFunctionShortPath())
 			for _, call := range ssaGraph.GetServiceCalls() {
-				fmt.Printf("\t - call %s\n", call.GetNode().String())
-
-				edge := NewAbstractEdge(call.GetNode().String(), node, nil, EDGE_SERVICE_RPC)
-				graph.AddEdge(edge)
-
-				for _, arg := range call.GetArguments() {
-					fmt.Printf("\t\t - arg %s\n", arg.String())
-					for obj, dbfields := range arg.GetTaints() {
-						fmt.Printf("\t\t\t - taint %s @ %s\n", obj, strings.Join(dbfields, ", "))
-					}
+				toService := call.GetService()
+				toNode := graph.GetNodeByNameIfExists(toService)
+				if toNode == nil {
+					toNode = NewAbstractNode(toService, NODE_SERVICE)
+					graph.AddNode(toService, toNode)
 				}
+
+				edge := NewAbstractEdge(call.GetMethod(), fromNode, toNode, EDGE_SERVICE_RPC)
+				
+				for _, callArg := range call.GetArguments() {
+					arg := NewAbstractArgument(callArg.GetTaints(), callArg.String())
+					edge.AddArgument(arg)
+				}
+				
+				graph.AddEdge(edge)
 			}
 			fmt.Println()
 		}
 		if ssaGraph.HasDatabaseCalls() {
-			fmt.Printf("[INFO] function (%s) has database calls:\n", ssaGraph.GetFunctionShortPath())
+			fmt.Printf("[INFO] found [%s] function (%s) with database calls\n", ssaGraph.GetServiceName(), ssaGraph.GetFunctionShortPath())
 			for _, call := range ssaGraph.GetDatabaseCalls() {
-				fmt.Printf("\t - %s\n", call.GetNode().String())
-				for _, arg := range call.GetArguments() {
-					fmt.Printf("\t\t - arg %s\n", arg.String())
-					for obj, dbfields := range arg.GetTaints() {
-						fmt.Printf("\t\t\t - taint %s @ %s\n", obj, strings.Join(dbfields, ", "))
-					}
+				toDatabasePath := call.GetDatabase() + "." + call.GetCollectionOrTopic()
+				toNode := graph.GetNodeByNameIfExists(toDatabasePath)
+				if toNode == nil {
+					toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE)
+					graph.AddNode(toDatabasePath, toNode)
 				}
+
+				edge := NewAbstractEdge(call.GetMethod(), fromNode, toNode, EDGE_SERVICE_RPC)
+				
+				for _, callArg := range call.GetArguments() {
+					arg := NewAbstractArgument(callArg.GetTaints(), callArg.String())
+					edge.AddArgument(arg)
+				}
+				
+				graph.AddEdge(edge)
 			}
 			fmt.Println()
 		}

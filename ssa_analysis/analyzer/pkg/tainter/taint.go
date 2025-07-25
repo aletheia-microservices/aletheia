@@ -229,12 +229,21 @@ func backwardsAnalysis(graph *ssa_graph.SSAGraph, val ssa.Value, taintInfo Taint
 func RunTaint(graph *ssa_graph.SSAGraph) {
 	var nodes []*ssa_graph.SSANode
 	for _, node := range graph.GetNodes() {
-		if database, collectionOrTopic, args, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
+		if database, collectionOrTopic, method, args, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
+			/* if node.String() == "t14: invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)" {
+				log.Fatal("EXIT!")
+			} */
+			if node.String() == "nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D" {
+				//FIXME (this variable is nil because it is not passed in the call and is optional but for some reason it's assuming it is a db call)
+				continue
+			}
+
 			var argNodes []*ssa_graph.SSANode
 			for _, arg := range args {
 				argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
 			}
-			graph.AddDatabaseCall(node, argNodes)
+			graph.AddDatabaseCall(node, argNodes, database, collectionOrTopic, method)
+
 
 			fmt.Printf("[TAINT] got func args: %v\n", args)
 			valDocumentOrMessage := args[0]
@@ -377,22 +386,22 @@ func recurseEdgesForwardUntilStoreTo(graph *ssa_graph.SSAGraph, node *ssa_graph.
 	return storeEdges
 }
 
-func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, string, []ssa.Value, bool) {
+func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
-		fmt.Printf("[TAINT] found call: %v\n", call)
-
+		
 		// ------------
 		// example apps
 		// ------------
 		if fn, ok := call.Call.Value.(*ssa.Function); ok && len(fn.Params) > 0 {
+			fmt.Printf("[TAINT] [1] found call: %v\n", call)
 			maybeRcv := fn.Params[0]
 			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" || fn.Name() == "Find" {
 				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Args[2:], true
+				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], true
 			}
 			if maybeRcv.Type().String() == "*main.RabbitMQ" && fn.Name() == "Push" {
 				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Args[2:], true
+				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], true
 			}
 		}
 
@@ -402,15 +411,17 @@ func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, s
 		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
 			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue" {
 				if slices.Contains([]string{"Push", "Pop"}, call.Call.Method.Name()) {
-					fmt.Printf("[TAINT] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
+					fmt.Printf("[TAINT] [2] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
 					if fieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
 						if ptr, ok := fieldAddr.X.Type().(*types.Pointer); ok {
-							if named, ok := ptr.Elem().(*types.Named); ok {
-								service, _ := strings.CutSuffix(strings.ToLower(named.Obj().Id()), "serviceimpl")
-								queue := service + "_queue"
-								topic := service + "_message"
+							if _, ok := ptr.Elem().(*types.Named); ok {
+								//service, _ := strings.CutSuffix(strings.ToLower(named.Obj().Id()), "serviceimpl")
+								//queue := service + "_queue"
+								queue := "queue"
+								//topic := service + "_message"
+								topic := "notification"
 								// return arg without context
-								return queue, topic, call.Call.Args[1:], true
+								return queue, topic, call.Call.Method.Id(), call.Call.Args[1:], true
 							}
 						}
 					}
@@ -419,12 +430,12 @@ func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, s
 			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase" {
 				// call for nosqldatabase.GetCollection(...)
 				// skip for now
-				return "", "", nil, false
+				return "", "", "", nil, false
 			}
 		}
 		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
-			if slices.Contains([]string{"InsertOne"}, call.Call.Method.Name()) {
-				fmt.Printf("[TAINT] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
+			if slices.Contains([]string{"InsertOne", "FindOne"}, call.Call.Method.Name()) {
+				fmt.Printf("[TAINT] [3] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
 				getCollectionNodeCall := graph.GetNodeByName(extr.Tuple.Name())
 				if colCal, ok := getCollectionNodeCall.GetInstruction().(*ssa.Call); ok {
 					if _, ok := colCal.Call.Value.(*ssa.UnOp); ok {
@@ -438,13 +449,13 @@ func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, s
 							collection = strings.Trim(c.Value.ExactString(), "\"")
 						}
 						// return arg without context
-						return database, collection, call.Call.Args[1:], true
+						return database, collection, call.Call.Method.Id(), call.Call.Args[1:], true
 					}
 				}
 			}
 		}
 	}
-	return "", "", nil, false
+	return "", "", "", nil, false
 }
 
 func isServiceCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (*ssa.Call, string, string, bool) {
@@ -483,7 +494,7 @@ func isServiceCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (*ssa.Call,
 
 					service := unOp.Type().String()
 					var found bool
-					service, found = strings.CutPrefix(service, "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple")
+					service, found = strings.CutPrefix(service, "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.")
 					
 					if !found {
 						log.Fatalf("could not find prefix for service (%s)", service)
