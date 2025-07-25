@@ -9,14 +9,19 @@ import (
 )
 
 type ServiceCall struct {
-	node    *SSANode
-	args    []*SSANode
-	service string
-	method  string
+	node          *SSANode
+	args          []*SSANode
+	service       string
+	method        string
+	funcShortPath string
 }
 
 func (call *ServiceCall) GetService() string {
 	return call.service
+}
+
+func (call *ServiceCall) GetFuncShortPath() string {
+	return call.funcShortPath
 }
 
 func (call *ServiceCall) GetMethod() string {
@@ -69,6 +74,7 @@ type SSAGraph struct {
 	defs     map[string]*SSANode
 	svcCalls []*ServiceCall
 	dbCalls  []*DatabaseCall
+	params   []*SSANode
 }
 
 func NewGraph(pkg string, fn string, service string) *SSAGraph {
@@ -104,12 +110,13 @@ func (graph *SSAGraph) GetEdges() []*SSAEdge {
 	return graph.edges
 }
 
-func (graph *SSAGraph) AddServiceCall(node *SSANode, args []*SSANode, service string, method string) {
+func (graph *SSAGraph) AddServiceCall(node *SSANode, args []*SSANode, service string, method string, funcShortPath string) {
 	graph.svcCalls = append(graph.svcCalls, &ServiceCall{
-		node:    node,
-		args:    args,
-		service: service,
-		method:  method,
+		node:          node,
+		args:          args,
+		service:       service,
+		method:        method,
+		funcShortPath: funcShortPath,
 	})
 }
 
@@ -119,6 +126,14 @@ func (graph *SSAGraph) HasServiceCalls() bool {
 
 func (graph *SSAGraph) GetServiceCalls() []*ServiceCall {
 	return graph.svcCalls
+}
+
+func (graph *SSAGraph) AddParameter(param *SSANode) {
+	graph.params = append(graph.params, param)
+}
+
+func (graph *SSAGraph) GetParametersExceptMemberAndContext() []*SSANode {
+	return graph.params[2:]
 }
 
 func (graph *SSAGraph) AddDatabaseCall(node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string) {
@@ -139,10 +154,30 @@ func (graph *SSAGraph) GetDatabaseCalls() []*DatabaseCall {
 	return graph.dbCalls
 }
 
+func (graph *SSAGraph) GetEdgesFromNodeExceptPointerTo(node *SSANode) []*SSAEdge {
+	var edges []*SSAEdge
+	for _, edge := range graph.edges {
+		if edge.from == node && edge.GetType() != EDGE_POINTS_TO {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
+}
+
 func (graph *SSAGraph) GetEdgesFromNode(node *SSANode) []*SSAEdge {
 	var edges []*SSAEdge
 	for _, edge := range graph.edges {
 		if edge.from == node {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
+}
+
+func (graph *SSAGraph) GetEdgesToNodeExceptPointerTo(node *SSANode) []*SSAEdge {
+	var edges []*SSAEdge
+	for _, edge := range graph.edges {
+		if edge.to == node && edge.GetType() != EDGE_POINTS_TO {
 			edges = append(edges, edge)
 		}
 	}

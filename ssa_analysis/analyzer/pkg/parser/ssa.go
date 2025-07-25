@@ -69,8 +69,8 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 }
 
 func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*ssa_graph.SSAGraph) {
-	shortFuncPath := getShortFunctionPath(fn.String())
-	serviceName := extractServiceNameFromShortFunctionPath(shortFuncPath)
+	shortFuncPath := utils.GetShortFunctionPath(fn.String())
+	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
 
 	fmt.Printf("[SSA] iterating function %s\n", shortFuncPath)
 
@@ -126,14 +126,14 @@ func parseInstr(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, 
 		addrNode := parseValue(graph, instr, instrIdx, t.Addr, visited)
 		valNode := parseValue(graph, instr, instrIdx, t.Val, visited)
 
-		graph.CreateAndAddNewEdge(addrNode, node, ssa_graph.EDGE_STORE, 0, "")
-		graph.CreateAndAddNewEdge(valNode, node, ssa_graph.EDGE_USAGE, 0, "")
+		graph.CreateAndAddNewEdge(addrNode, node, ssa_graph.EDGE_STORE_ADDRESS, 0, "")
+		graph.CreateAndAddNewEdge(valNode, node, ssa_graph.EDGE_STORE_VALUE, 0, "")
 
 		fmt.Printf("ADDING EDGE FOR ADDR NDOE AND VAL NODE: %v // %v \n", t.Addr, t.Val)
 	case *ssa.Return:
 		for _, res := range t.Results {
 			resNode := parseValue(graph, instr, instrIdx, res, visited)
-			graph.CreateAndAddNewEdge(resNode, node, ssa_graph.EDGE_STORE, 0, "")
+			graph.CreateAndAddNewEdge(resNode, node, ssa_graph.EDGE_STORE_ADDRESS, 0, "")
 		}
 	default:
 		fmt.Printf("[1] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
@@ -177,7 +177,7 @@ func parseValue(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, 
 				}
 			}
 			argNode := parseValue(graph, instr, instrIdx, arg, visited)
-			graph.CreateAndAddNewEdge(argNode, node, ssa_graph.EDGE_STORE, 0, "")
+			graph.CreateAndAddNewEdge(argNode, node, ssa_graph.EDGE_STORE_ADDRESS, 0, "")
 		}
 	case *ssa.Alloc:
 		// nothing to do
@@ -207,6 +207,7 @@ func parseValue(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, 
 		graph.CreateAndAddNewEdge(targetNode, node, ssa_graph.EDGE_USAGE, 0, "")
 
 	case *ssa.Parameter:
+		graph.AddParameter(node)
 		// nothing to do
 
 	case *ssa.Global:
@@ -227,7 +228,7 @@ func parseValue(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, 
 				}
 			}
 			edgeNode := parseValue(graph, instr, instrIdx, phiEdge, visited)
-			graph.CreateAndAddNewEdge(edgeNode, node, ssa_graph.EDGE_STORE, 0, "")
+			graph.CreateAndAddNewEdge(edgeNode, node, ssa_graph.EDGE_STORE_ADDRESS, 0, "")
 		}
 
 	case *ssa.Extract:
@@ -237,7 +238,7 @@ func parseValue(graph *ssa_graph.SSAGraph, instr ssa.Instruction, instrIdx int, 
 	case *ssa.BinOp:
 		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
 		yNode := parseValue(graph, instr, instrIdx, t.Y, visited)
-		graph.CreateAndAddNewEdge(xNode, node, ssa_graph.EDGE_STORE, 0, "")
+		graph.CreateAndAddNewEdge(xNode, node, ssa_graph.EDGE_STORE_ADDRESS, 0, "")
 		graph.CreateAndAddNewEdge(yNode, node, ssa_graph.EDGE_USAGE, 0, "")
 
 	default:

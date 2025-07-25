@@ -111,10 +111,10 @@ func main() {
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
 	
 	var entryPoints = []string{
-		"postnotification_simple.UploadServiceImpl.UploadPost",
-		"postnotification_simple.StorageServiceImpl.StorePost",
-		"postnotification_simple.StorageServiceImpl.ReadPost",
-		"postnotification_simple.NotifyServiceImpl.workerThread",
+		"postnotification_simple.UploadService.UploadPost",
+		"postnotification_simple.StorageService.StorePost",
+		"postnotification_simple.StorageService.ReadPost",
+		"postnotification_simple.NotifyService.workerThread",
 	}
 
 	abstractGraph := abstractcallgraph.NewAbstractGraph()

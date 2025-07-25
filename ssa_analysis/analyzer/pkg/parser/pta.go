@@ -15,6 +15,7 @@ import (
 	"golang.org/x/tools/go/ssa/ssautil"
 
 	"analyzer/pkg/ssa_graph"
+	"analyzer/pkg/utils"
 )
 
 func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Result, error) {
@@ -105,7 +106,7 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 			continue
 		}
 
-		shortFuncPath := getShortFunctionPath(fn.String())
+		shortFuncPath := utils.GetShortFunctionPath(fn.String())
 		fmt.Println()
 		fmt.Printf("\t[PTA] [%s] analyzing value: %v // pointers = %v\n", shortFuncPath, value, pts)
 		if fn.Pkg == nil {
@@ -129,7 +130,7 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 		//fmt.Printf("points to set of [%T] %v @ %v:\n", value, value, value.Parent())
 		for _, lbl := range pts.PointsTo().Labels() {
 			lblFn := lbl.Value().Parent()
-			lblFnLongName := getShortFunctionPath(lblFn.String())
+			lblFnLongName := utils.GetShortFunctionPath(lblFn.String())
 			fmt.Printf("\t\t- [%s] got label: [%T] %s\n", lblFnLongName, lbl.Value(), lbl.Value())
 			desc += fmt.Sprintf("\t → %s\n", valueDescShort(lbl.Value().Parent(), lbl.Value()))
 

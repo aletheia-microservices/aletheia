@@ -10,11 +10,12 @@ const (
 )
 
 type AbstractEdge struct {
-	t      EdgeType
-	method string
-	from   *AbstractNode
-	to     *AbstractNode
-	args   []*AbstractArgument
+	t            EdgeType
+	method       string
+	from         *AbstractNode
+	to           *AbstractNode
+	callArgs     []*AbstractArgument // caller side
+	methodParams []*AbstractArgument // callee side
 }
 
 func (edge *AbstractEdge) String() string {
@@ -33,8 +34,12 @@ func (edge *AbstractEdge) GetToNode() *AbstractNode {
 	return edge.to
 }
 
-func (edge *AbstractEdge) AddArgument(arg *AbstractArgument) {
-	edge.args = append(edge.args, arg)
+func (edge *AbstractEdge) AddCallArgument(arg *AbstractArgument) {
+	edge.callArgs = append(edge.callArgs, arg)
+}
+
+func (edge *AbstractEdge) AddMethodParameter(arg *AbstractArgument) {
+	edge.methodParams = append(edge.methodParams, arg)
 }
 
 func NewAbstractEdge(method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {

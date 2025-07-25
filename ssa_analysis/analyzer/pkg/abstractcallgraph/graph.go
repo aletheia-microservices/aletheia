@@ -31,10 +31,23 @@ func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
 	fmt.Printf("[ABSTRACT GRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
 
-	for i, arg := range edge.args {
-		fmt.Printf("\t\t - ARG #%d: %s\n", i, arg.SSAString())
-		for obj, dbfields := range arg.GetTaints() {
-			fmt.Printf("\t\t\t - TAINT: %s @ %s\n", obj, strings.Join(dbfields, ", "))
+	for i, arg := range edge.callArgs {
+		fmt.Printf("\t\t - CALL ARG #%d: %s\n", i, arg.SSAString())
+		for obj, dbfields := range arg.GetDirectTaints() {
+			fmt.Printf("\t\t\t - TAINT (DIRECT): %s @ %s\n", obj, strings.Join(dbfields, ", "))
+		}
+		for obj, dbfields := range arg.GetIndirectTaints() {
+			fmt.Printf("\t\t\t - TAINT (INDIRECT): %s @ %s\n", obj, strings.Join(dbfields, ", "))
+		}
+	}
+
+	for i, param := range edge.methodParams {
+		fmt.Printf("\t\t - METHOD PARAM #%d: %s\n", i, param.SSAString())
+		for obj, dbfields := range param.GetDirectTaints() {
+			fmt.Printf("\t\t\t - TAINT (DIRECT): %s @ %s\n", obj, strings.Join(dbfields, ", "))
+		}
+		for obj, dbfields := range param.GetIndirectTaints() {
+			fmt.Printf("\t\t\t - TAINT (INDIRECT): %s @ %s\n", obj, strings.Join(dbfields, ", "))
 		}
 	}
 }
@@ -88,7 +101,7 @@ func (graph *AbstractCallGraph) Init(entryPoints []string, funcGraphs map[string
 		}
 
 		if ssaGraph.HasServiceCalls() {
-			fmt.Printf("[INFO] [%s] found function (%s) with service calls\n", ssaGraph.GetServiceName(), ssaGraph.GetFunctionShortPath())
+			fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetServiceName(), ssaGraph.GetFunctionShortPath())
 			for _, call := range ssaGraph.GetServiceCalls() {
 				toService := call.GetService()
 				toNode := graph.GetNodeByNameIfExists(toService)
@@ -98,18 +111,31 @@ func (graph *AbstractCallGraph) Init(entryPoints []string, funcGraphs map[string
 				}
 
 				edge := NewAbstractEdge(call.GetMethod(), fromNode, toNode, EDGE_SERVICE_RPC)
-				
-				for _, callArg := range call.GetArguments() {
-					arg := NewAbstractArgument(callArg.GetTaints(), callArg.String())
-					edge.AddArgument(arg)
+
+				toFuncGraph := funcGraphs[call.GetFuncShortPath()]
+				fmt.Printf("[ABSTRACTGRAPH] ssaGraph = (%s) // toFuncGraph = (%s)\n", ssaGraph.GetFunctionShortPath(), toFuncGraph.GetFunctionShortPath())
+				if toFuncGraph == nil {
+					log.Fatalf("could not find ssa graph for short func path (%s)", call.GetFuncShortPath())
 				}
-				
+
+				methodParams := toFuncGraph.GetParametersExceptMemberAndContext()
+				for i, callArg := range call.GetArguments() {
+					arg := NewAbstractArgument(callArg.GetTaints(), methodParams[i].GetTaints(), callArg.String())
+					edge.AddCallArgument(arg)
+				}
+
+				callArgs := call.GetArguments()
+				for i, methodParam := range toFuncGraph.GetParametersExceptMemberAndContext() {
+					param := NewAbstractArgument(methodParam.GetTaints(), callArgs[i].GetTaints(), methodParam.String())
+					edge.AddMethodParameter(param)
+				}
+
 				graph.AddEdge(edge)
 			}
 			fmt.Println()
 		}
 		if ssaGraph.HasDatabaseCalls() {
-			fmt.Printf("[INFO] found [%s] function (%s) with database calls\n", ssaGraph.GetServiceName(), ssaGraph.GetFunctionShortPath())
+			fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetServiceName(), ssaGraph.GetFunctionShortPath())
 			for _, call := range ssaGraph.GetDatabaseCalls() {
 				toDatabasePath := call.GetDatabase() + "." + call.GetCollectionOrTopic()
 				toNode := graph.GetNodeByNameIfExists(toDatabasePath)
@@ -119,12 +145,12 @@ func (graph *AbstractCallGraph) Init(entryPoints []string, funcGraphs map[string
 				}
 
 				edge := NewAbstractEdge(call.GetMethod(), fromNode, toNode, EDGE_SERVICE_RPC)
-				
+
 				for _, callArg := range call.GetArguments() {
-					arg := NewAbstractArgument(callArg.GetTaints(), callArg.String())
-					edge.AddArgument(arg)
+					arg := NewAbstractArgument(callArg.GetTaints(), nil, callArg.String())
+					edge.AddCallArgument(arg)
 				}
-				
+
 				graph.AddEdge(edge)
 			}
 			fmt.Println()

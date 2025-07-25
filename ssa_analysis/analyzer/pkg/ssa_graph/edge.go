@@ -4,7 +4,8 @@ type EdgeType int
 
 const (
 	EDGE_USAGE EdgeType = iota
-	EDGE_STORE
+	EDGE_STORE_ADDRESS
+	EDGE_STORE_VALUE // usually pointed by element that is used as copy in store
 	EDGE_LOAD
 	EDGE_FIELD
 	EDGE_INDEX

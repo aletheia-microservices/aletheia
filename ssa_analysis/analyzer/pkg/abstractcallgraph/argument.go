@@ -1,19 +1,27 @@
 package abstractcallgraph
 
 type AbstractArgument struct {
-	ssaStr string
-	taints map[string][]string
+	ssaStr        string
+	directTaints  map[string][]string
+	indirectTaints map[string][]string
 }
 
-func NewAbstractArgument(taints map[string][]string, ssaStr string) *AbstractArgument {
+func NewAbstractArgument(directTaints map[string][]string, indirectTaints map[string][]string, ssaStr string) *AbstractArgument {
 	arg := &AbstractArgument{
-		ssaStr: ssaStr,
-		taints: make(map[string][]string, len(taints)),
+		ssaStr:        ssaStr,
+		directTaints:  make(map[string][]string, len(directTaints)),
+		indirectTaints: make(map[string][]string),
 	}
-	for k, v := range taints {
+	for k, v := range directTaints {
 		copied := make([]string, len(v))
 		copy(copied, v)
-		arg.taints[k] = copied
+		arg.directTaints[k] = copied
+	}
+	
+	for k, v := range indirectTaints {
+		copied := make([]string, len(v))
+		copy(copied, v)
+		arg.indirectTaints[k] = copied
 	}
 	return arg
 }
@@ -22,6 +30,10 @@ func (arg *AbstractArgument) SSAString() string {
 	return arg.ssaStr
 }
 
-func (arg *AbstractArgument) GetTaints() map[string][]string {
-	return arg.taints
+func (arg *AbstractArgument) GetDirectTaints() map[string][]string {
+	return arg.directTaints
+}
+
+func (arg *AbstractArgument) GetIndirectTaints() map[string][]string {
+	return arg.indirectTaints
 }
