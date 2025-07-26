@@ -9,98 +9,32 @@ import (
 
 	"golang.org/x/tools/go/ssa"
 
-	"analyzer/pkg/ssa_graph"
+	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/utils"
 )
 
-type TaintMode int
-
-const (
-	TAINT_MARK_UPPER TaintMode = iota
-	TAINT_CHECK_UPPER
-)
-
-type TaintInfo struct {
-	dbfield string
-	path    string
-	val     ssa.Value
-}
-
-func NewTaintInfo(database string, collection string) TaintInfo {
-	return TaintInfo{
-		dbfield: database + "." + collection,
-		path:    "",
-	}
-}
-
-func NewTaintInfoWithDbField(dbfield string) TaintInfo {
-	return TaintInfo{
-		dbfield: dbfield,
-		path:    "",
-	}
-}
-
-func (t TaintInfo) objectFullPath() string {
-	return "_obj" + t.path
-}
-
-func (t TaintInfo) objectPath() string {
-	return t.path
-}
-
-func (t TaintInfo) databaseField() string {
-	return t.dbfield
-}
-
-func (t TaintInfo) updateValue(val ssa.Value) TaintInfo {
-	t.val = val
-	return t
-}
-
-func (t TaintInfo) updatePathPrefix(prefix string) TaintInfo {
-	t.path = prefix + t.path
-	return t
-}
-
-type CheckTaintInfo struct {
-	indirectTaints  []string
-	inheritedTaints map[string][]string
-}
-
-func (t *CheckTaintInfo) addToInheritedTaints(objPath string, dbField string) {
-	if !slices.Contains(t.inheritedTaints[objPath], dbField) {
-		t.inheritedTaints[objPath] = append(t.inheritedTaints[objPath], dbField)
-	}
-}
-
-func (t *CheckTaintInfo) addToIndirectTaints(field string) {
-	if !slices.Contains(t.indirectTaints, field) {
-		t.indirectTaints = append(t.indirectTaints, field)
-	}
-}
-
-func doTaintNode(node *ssa_graph.SSANode, taintInfo TaintInfo, taintMode TaintMode) {
+func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMode) {
 	switch taintMode {
 	case TAINT_MARK_UPPER:
 		// note that objfields/dbfields already have "." before them
-		fmt.Printf("[TAINT] [1] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.objectFullPath(), taintInfo.databaseField())
-		ok := node.AddTaintIfNotExists(taintInfo.objectFullPath(), taintInfo.databaseField())
+		fmt.Printf("[TAINT] [1] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabaseField())
+		ok := node.AddTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabaseField(), taintInfo.getDbCall())
 		if ok {
 			fmt.Printf("\t[TAINT] OK!\n")
 		}
 	case TAINT_CHECK_UPPER:
-		fmt.Printf("[TAINT] [2] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.objectFullPath(), taintInfo.databaseField()+taintInfo.objectPath())
-		ok := node.AddTaintIfNotExists(taintInfo.objectFullPath(), taintInfo.databaseField()+taintInfo.objectPath())
+		fmt.Printf("[TAINT] [2] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabaseField()+taintInfo.getObjectPath())
+		ok := node.AddTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabaseField()+taintInfo.getObjectPath(), taintInfo.getDbCall())
 		if ok {
 			fmt.Printf("\t[TAINT] OK!\n")
 		}
 	}
 }
 
-func doTaintPointerToSets(graph *ssa_graph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool) {
+func doTaintPointerToSets(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool) {
 	node := graph.GetNodeByName(val.Name())
 	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetType() == ssa_graph.EDGE_POINTS_TO {
+		if edge.GetType() == ssagraph.EDGE_POINTS_TO {
 			if edge.GetPath() != "" {
 				// add before
 				// note that both edge.path and objfields/dbfields already have "." before them
@@ -120,10 +54,10 @@ func getObjectPathDiff(longPath1 string, shortPath2 string) string {
 	return strings.TrimPrefix(longPath1, shortPath2)
 }
 
-func backwardsAnalysis(graph *ssa_graph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool, taintMode TaintMode, checkTaintInfo *CheckTaintInfo) {
+func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool, taintMode TaintMode, checkTaintInfo *CheckTaintInfo) {
 	taintInfo = taintInfo.updateValue(val)
 
-	fmt.Printf("[BACKWARD] visiting %s: %s // %v // TAINT INFO (%s, %s)\n", val.Name(), val.String(), val, taintInfo.path, taintInfo.dbfield)
+	fmt.Printf("[BACKWARD] visiting %s: %s // %v // TAINT INFO (%s, %s)\n", val.Name(), val.String(), val, taintInfo.getPath(), taintInfo.getDatabaseField())
 	if visited[taintInfo] {
 		fmt.Printf("\t[BACKWARD] skipping value %s: %s\n", val.Name(), val.String())
 		return
@@ -137,11 +71,11 @@ func backwardsAnalysis(graph *ssa_graph.SSAGraph, val ssa.Value, taintInfo Taint
 		doTaintNode(node, taintInfo, taintMode)
 	case TAINT_CHECK_UPPER:
 		fmt.Printf("[BACKWARD] checking upper taints: %v\n", node.GetTaints())
-		for objPath, dbFields := range node.GetTaints() {
+		for objPath, taints := range node.GetTaints() {
 
-			fmt.Printf("[BACKWARD] comparing prefixes:\n\t - tainted obj path:\t %s\n\t - bottom to upper:\t %s\n", objPath, taintInfo.objectFullPath())
+			fmt.Printf("[BACKWARD] comparing prefixes:\n\t - tainted obj path:\t %s\n\t - bottom to upper:\t %s\n", objPath, taintInfo.getObjectFullPath())
 
-			if strings.HasPrefix(taintInfo.objectFullPath(), objPath) && taintInfo.objectFullPath() != objPath {
+			if strings.HasPrefix(taintInfo.getObjectFullPath(), objPath) && taintInfo.getObjectFullPath() != objPath {
 				// e.graph.,
 				// existing path: 	_obj
 				// current path: 	_obj.Shipping
@@ -151,26 +85,30 @@ func backwardsAnalysis(graph *ssa_graph.SSAGraph, val ssa.Value, taintInfo Taint
 				//
 				// existing taint: 	_obj			@ order_db.order
 				// potential taint: _obj.Shipping 	@ order_db.order.Shipping
-				for _, dbField := range dbFields {
+				for _, taint := range taints {
 					// save the taint in the upper node
 					taintInfoTmp := taintInfo
-					taintInfoTmp.dbfield = dbField
+					taintInfoTmp.dbTaint.dbfield = taint.GetDbField()
+					taintInfoTmp.dbTaint.dbcall = taint.GetDbCall()
 					doTaintNode(node, taintInfoTmp, taintMode)
 
 					// so that we can later taint the bottom node
-					dbFieldIndirect := taintInfoTmp.databaseField() + taintInfo.objectPath()
-					checkTaintInfo.addToIndirectTaints(dbFieldIndirect)
+					dbFieldIndirect := taintInfoTmp.getDatabaseField() + taintInfo.getObjectPath()
+					if taintInfoTmp.getDbCall() == nil {
+						log.Fatalf("[4] nil db call for taint info tmp: %v\n", taintInfoTmp)
+					}
+					checkTaintInfo.addToIndirectTaints(dbFieldIndirect, taintInfoTmp.getDbCall())
 				}
 				break
-			} else if strings.HasPrefix(objPath, taintInfo.objectFullPath()) { // also true if strings are equal
+			} else if strings.HasPrefix(objPath, taintInfo.getObjectFullPath()) { // also true if strings are equal
 				// e.graph.,
 				// upper's taint: 		_obj.PostID @ posts_db.post.PostID
 				// bottom's path: 		_obj.PostID
 				// => bottom's taint: 	_obj		@ posts_db.post.PostID
 
-				pathDiff := getObjectPathDiff(objPath, taintInfo.objectFullPath())
-				for _, dbField := range dbFields {
-					checkTaintInfo.addToInheritedTaints(pathDiff, dbField)
+				pathDiff := getObjectPathDiff(objPath, taintInfo.getObjectFullPath())
+				for _, taint := range taints {
+					checkTaintInfo.addToInheritedTaints(pathDiff, taint.GetDbField(), taint.GetDbCall())
 				}
 			}
 		}
@@ -220,69 +158,10 @@ func backwardsAnalysis(graph *ssa_graph.SSAGraph, val ssa.Value, taintInfo Taint
 		doTaintPointerToSets(graph, val, taintInfo, visited)
 	}
 
-	fmt.Printf("[BACKWARD] exit %s: %s // %v // TAINT INFO (%s, %s)\n", val.Name(), val.String(), val, taintInfo.path, taintInfo.dbfield)
+	fmt.Printf("[BACKWARD] exit %s: %s // %v // TAINT INFO (%s, %s)\n", val.Name(), val.String(), val, taintInfo.getPath(), taintInfo.getDatabaseField())
 }
 
-func spreadTaintsInStorePoint(graph *ssa_graph.SSAGraph, node *ssa_graph.SSANode, valToAddr bool) {
-	var edges []*ssa_graph.SSAEdge
-
-	if valToAddr { // addr <<< val
-		edges = recurseEdgesForwardUntilStoreAddress(graph, node, nil, make(map[*ssa_graph.SSANode]bool))
-	} else { // addr >>> val
-		edges = recurseEdgesForwardUntilStoreValue(graph, node, nil, make(map[*ssa_graph.SSANode]bool))
-	}
-	for _, edge := range edges {
-		// if valToAddr is true, then srcNode is the Value and dstNode is the Address
-		// if valToAddr is false, then srcNode is the Address and dstNode is the Value
-		var dstNode, storeNode, srcNode *ssa_graph.SSANode
-		
-		dstNode = edge.GetFromNode()
-		storeNode = edge.GetToNode()
-
-		var srcNodes []*ssa_graph.SSANode // THIS IS NOT NECESSARY??
-		if sr, ok := storeNode.GetInstruction().(*ssa.Store); ok {
-			if valToAddr {
-				srcNode = graph.GetNodeByName(sr.Val.Name())
-			} else {
-				srcNode = graph.GetNodeByName(sr.Addr.Name())
-			}
-			// sanity check
-			if !slices.Contains(srcNodes, srcNode) { // THIS IS NOT NECESSARY!
-				srcNodes = append(srcNodes, srcNode)
-			}
-		}
-
-		for _, srcNode := range srcNodes {
-			visited := make(map[TaintInfo]bool)
-			taintInfo := TaintInfo{}
-			checkTaintInfo := &CheckTaintInfo{inheritedTaints: make(map[string][]string)}
-
-			// go up to fetch all possible indirect taints for the current node
-			backwardsAnalysis(graph, srcNode.GetValue(), taintInfo, visited, TAINT_CHECK_UPPER, checkTaintInfo)
-
-			// indirect taints
-			for _, dbfield := range checkTaintInfo.indirectTaints {
-				taintInfo := TaintInfo{
-					dbfield: dbfield,
-					val:     srcNode.GetValue(),
-				}
-
-				// taint current node with all possible indirect taints
-				doTaintNode(srcNode, taintInfo, TAINT_MARK_UPPER)
-
-				// not needed but helps in visualization ssa_graph
-				doTaintNode(storeNode, taintInfo, TAINT_MARK_UPPER)
-
-				// now "spread" the previous obtained taints to the addrNode
-				visited2 := make(map[TaintInfo]bool)
-				taintInfo2 := NewTaintInfoWithDbField(dbfield)
-				backwardsAnalysis(graph, dstNode.GetValue(), taintInfo2, visited2, TAINT_MARK_UPPER, nil)
-			}
-		}
-	}
-}
-
-func parseArgumentsForMongoDBFilter(graph *ssa_graph.SSAGraph, bsonFilter ssa.Value) ([]ssa.Value, []string) {
+func parseArgumentsForMongoDBFilter(graph *ssagraph.SSAGraph, bsonFilter ssa.Value) ([]ssa.Value, []string) {
 	var args []ssa.Value
 	var keys []string
 	bsonFilterNode := graph.GetNodeByName(bsonFilter.Name())
@@ -290,16 +169,16 @@ func parseArgumentsForMongoDBFilter(graph *ssa_graph.SSAGraph, bsonFilter ssa.Va
 	elemNode := graph.GetEdgesFromNodeExceptPointerTo(bsonFilterAllocNode)[0].GetToNode()
 	bsonFilterKeyNode := graph.GetEdgesFromNode(elemNode)[0].GetToNode()
 	// only 1 expected
-	edge := recurseEdgesForwardUntilStoreAddress(graph, bsonFilterKeyNode, nil, make(map[*ssa_graph.SSANode]bool))[0]
+	edge := recurseEdgesForwardUntilStoreAddress(graph, bsonFilterKeyNode, nil, make(map[*ssagraph.SSANode]bool))[0]
 	key := edge.GetToNode().GetInstruction().(*ssa.Store).Val.(*ssa.Const).Value.ExactString()
-	keys = append(keys, "." + key)
+	keys = append(keys, "."+key)
 	arg := graph.GetEdgesFromNode(elemNode)[1].GetToNode().GetValue()
 	args = append(args, arg)
 	return args, keys
 }
 
-func RunTaint(graph *ssa_graph.SSAGraph) {
-	var nodes []*ssa_graph.SSANode
+func RunTainter(graph *ssagraph.SSAGraph) {
+	var nodes []*ssagraph.SSANode
 	for _, node := range graph.GetNodes() {
 		var foundDatabaseCall bool
 		if database, collectionOrTopic, method, args, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
@@ -312,16 +191,20 @@ func RunTaint(graph *ssa_graph.SSAGraph) {
 				continue
 			}
 
-			var argNodes []*ssa_graph.SSANode
+			var argNodes []*ssagraph.SSANode
 			for _, arg := range args {
 				argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
 			}
-			graph.AddDatabaseCall(node, argNodes, database, collectionOrTopic, method)
+
+			callId := ssagraph.ComputeCallID(graph, node)
+			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method)
+			graph.AddDatabaseCall(dbCall)
 
 			valDocumentOrMessage := args[0]
 
 			visited := make(map[TaintInfo]bool)
-			taintInfo := NewTaintInfo(database, collectionOrTopic)
+			dbfield := database + "." + collectionOrTopic
+			taintInfo := NewTaintInfo(dbfield, "", nil, dbCall)
 
 			backwardsAnalysis(graph, valDocumentOrMessage, taintInfo, visited, TAINT_MARK_UPPER, nil)
 
@@ -332,7 +215,7 @@ func RunTaint(graph *ssa_graph.SSAGraph) {
 		// check for common taints
 		for _, originNode := range nodes {
 			fmt.Printf("[TAINT] visiting node (origin): %v\n", originNode.String())
-			for _, edge := range recurseEdgesBackwardsUntilLoadFrom(graph, originNode, nil, make(map[*ssa_graph.SSANode]bool)) {
+			for _, edge := range recurseEdgesBackwardsUntilLoadFrom(graph, originNode, nil, make(map[*ssagraph.SSANode]bool)) {
 				// expecting only one node
 				node := edge.GetFromNode()
 				fmt.Printf("\t[TAINT] visiting node (load): %v\n", node.String())
@@ -342,11 +225,15 @@ func RunTaint(graph *ssa_graph.SSAGraph) {
 
 		// keep track of arguments passed in service RPCs so that we can get their indirect taints
 		if service, method, funcShortPath, args, ok := isServiceCall(graph, node.GetInstruction()); ok {
-			var argNodes []*ssa_graph.SSANode
+			var argNodes []*ssagraph.SSANode
 			for _, arg := range args {
 				argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
 			}
-			graph.AddServiceCall(node, argNodes, service, method, funcShortPath)
+			
+			callId := ssagraph.ComputeCallID(graph, node)
+			svcCall := ssagraph.NewServiceCall(callId, node, argNodes, service, method, funcShortPath)
+			graph.AddServiceCall(svcCall)
+
 			fmt.Printf("[TAINT] added service call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
 			for _, arg := range args {
 				fmt.Printf("[TAINT] checking taint for service call with arg: %s\n", arg.String())
@@ -363,10 +250,10 @@ func RunTaint(graph *ssa_graph.SSAGraph) {
 				spreadTaintsInStorePoint(graph, param, false)
 			}
 
-			/* var valNodesOnStore []*ssa_graph.SSANode
+			/* var valNodesOnStore []*ssagraph.SSANode
 			for _, node := range params {
 				fmt.Printf("iterating param: %s\n", node)
-				for _, edge := range recurseEdgesForwardUntilStoreValue(graph, node, nil, make(map[*ssa_graph.SSANode]bool)) {
+				for _, edge := range recurseEdgesForwardUntilStoreValue(graph, node, nil, make(map[*ssagraph.SSANode]bool)) {
 					toStoreNode := edge.GetToNode()
 					fmt.Printf("got toStoreNode: [%T] %s\n", toStoreNode.GetInstruction(), toStoreNode)
 
@@ -389,29 +276,28 @@ func RunTaint(graph *ssa_graph.SSAGraph) {
 			fmt.Println()
 			fmt.Printf("[TAINT] check upper taints for node: %v\n", originNode.String())
 			visited := make(map[TaintInfo]bool)
-			taintInfo := TaintInfo{}
-			checkTaintInfo := &CheckTaintInfo{inheritedTaints: make(map[string][]string)}
+			taintInfo := NewTaintInfo("", "", nil, nil)
+			checkTaintInfo := NewCheckTaintInfo()
 			backwardsAnalysis(graph, originNode.GetValue(), taintInfo, visited, TAINT_CHECK_UPPER, checkTaintInfo)
 			node = graph.GetNodeByName(originNode.GetValue().Name())
 
 			// indirect taints
-			for _, dbfield := range checkTaintInfo.indirectTaints {
-				taintInfo := TaintInfo{
-					dbfield: dbfield,
-					val:     originNode.GetValue(),
+			for _, taint := range checkTaintInfo.indirectTaints {
+				if taint.dbcall == nil {
+					log.Fatalf("[1] nil db call for taint: %v\n", taint)
 				}
+				taintInfo := NewTaintInfo(taint.dbfield, "", originNode.GetValue(), taint.dbcall)
 				doTaintNode(node, taintInfo, TAINT_MARK_UPPER)
 			}
 
 			// inherited taints
-			for objpath, dbfields := range checkTaintInfo.inheritedTaints {
-				fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, dbfields)
-				for _, dbfield := range dbfields {
-					taintInfo := TaintInfo{
-						dbfield: dbfield,
-						path:    objpath,
-						val:     originNode.GetValue(),
+			for objpath, taints := range checkTaintInfo.inheritedTaints {
+				fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, taints)
+				for _, taint := range taints {
+					if taint.dbcall == nil {
+						log.Fatalf("[2] nil db call for taint: %v\n", taint)
 					}
+					taintInfo := NewTaintInfo(taint.dbfield, objpath, originNode.GetValue(), taint.dbcall)
 					doTaintNode(node, taintInfo, TAINT_MARK_UPPER)
 				}
 			}
@@ -419,14 +305,73 @@ func RunTaint(graph *ssa_graph.SSAGraph) {
 	}
 }
 
-func recurseEdgesBackwardsUntilLoadFrom(graph *ssa_graph.SSAGraph, node *ssa_graph.SSANode, storeEdges []*ssa_graph.SSAEdge, visited map[*ssa_graph.SSANode]bool) []*ssa_graph.SSAEdge {
+func spreadTaintsInStorePoint(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, valToAddr bool) {
+	var edges []*ssagraph.SSAEdge
+
+	if valToAddr { // addr <<< val
+		edges = recurseEdgesForwardUntilStoreAddress(graph, node, nil, make(map[*ssagraph.SSANode]bool))
+	} else { // addr >>> val
+		edges = recurseEdgesForwardUntilStoreValue(graph, node, nil, make(map[*ssagraph.SSANode]bool))
+	}
+	for _, edge := range edges {
+		// if valToAddr is true, then srcNode is the Value and dstNode is the Address
+		// if valToAddr is false, then srcNode is the Address and dstNode is the Value
+		var dstNode, storeNode, srcNode *ssagraph.SSANode
+
+		dstNode = edge.GetFromNode()
+		storeNode = edge.GetToNode()
+
+		var srcNodes []*ssagraph.SSANode // THIS IS NOT NECESSARY??
+		if sr, ok := storeNode.GetInstruction().(*ssa.Store); ok {
+			if valToAddr {
+				srcNode = graph.GetNodeByName(sr.Val.Name())
+			} else {
+				srcNode = graph.GetNodeByName(sr.Addr.Name())
+			}
+			// sanity check
+			if !slices.Contains(srcNodes, srcNode) { // THIS IS NOT NECESSARY!
+				srcNodes = append(srcNodes, srcNode)
+			}
+		}
+
+		for _, srcNode := range srcNodes {
+			visited := make(map[TaintInfo]bool)
+			taintInfo := NewTaintInfo("", "", nil, nil)
+			checkTaintInfo := NewCheckTaintInfo()
+
+			// go up to fetch all possible indirect taints for the current node
+			backwardsAnalysis(graph, srcNode.GetValue(), taintInfo, visited, TAINT_CHECK_UPPER, checkTaintInfo)
+
+			// indirect taints
+			for _, taint := range checkTaintInfo.indirectTaints {
+				if taint.dbcall == nil {
+					log.Fatalf("[3] nil db call for taint: %v\n", taint)
+				}
+				taintInfo := NewTaintInfo(taint.dbfield, "", srcNode.GetValue(), taint.dbcall)
+
+				// taint current node with all possible indirect taints
+				doTaintNode(srcNode, taintInfo, TAINT_MARK_UPPER)
+
+				// not needed but helps in visualization ssagraph
+				doTaintNode(storeNode, taintInfo, TAINT_MARK_UPPER)
+
+				// now "spread" the previous obtained taints to the addrNode
+				visited2 := make(map[TaintInfo]bool)
+				taintInfo2 := NewTaintInfo(taint.dbfield, "", nil, taint.dbcall)
+				backwardsAnalysis(graph, dstNode.GetValue(), taintInfo2, visited2, TAINT_MARK_UPPER, nil)
+			}
+		}
+	}
+}
+
+func recurseEdgesBackwardsUntilLoadFrom(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
 	if _, ok := visited[node]; ok {
 		return storeEdges
 	}
 	visited[node] = true
 
 	for _, edge := range graph.GetEdgesToNode(node) {
-		if edge.GetType() == ssa_graph.EDGE_LOAD {
+		if edge.GetType() == ssagraph.EDGE_LOAD {
 			storeEdges = append(storeEdges, edge)
 		} else {
 			storeEdges = append(storeEdges, recurseEdgesBackwardsUntilLoadFrom(graph, edge.GetFromNode(), storeEdges, visited)...)
@@ -435,38 +380,38 @@ func recurseEdgesBackwardsUntilLoadFrom(graph *ssa_graph.SSAGraph, node *ssa_gra
 	return storeEdges
 }
 
-func recurseEdgesForwardUntilStoreAddress(graph *ssa_graph.SSAGraph, node *ssa_graph.SSANode, storeEdges []*ssa_graph.SSAEdge, visited map[*ssa_graph.SSANode]bool) []*ssa_graph.SSAEdge {
+func recurseEdgesForwardUntilStoreAddress(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
 	if _, ok := visited[node]; ok {
 		return storeEdges
 	}
 	visited[node] = true
 
 	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetType() == ssa_graph.EDGE_STORE_ADDRESS {
+		if edge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
 			storeEdges = append(storeEdges, edge)
-		} else if edge.GetType() == ssa_graph.EDGE_FIELD || edge.GetType() == ssa_graph.EDGE_INDEX || edge.GetType() == ssa_graph.EDGE_USAGE {
+		} else if edge.GetType() == ssagraph.EDGE_FIELD || edge.GetType() == ssagraph.EDGE_INDEX || edge.GetType() == ssagraph.EDGE_USAGE {
 			storeEdges = append(storeEdges, recurseEdgesForwardUntilStoreAddress(graph, edge.GetToNode(), storeEdges, visited)...)
 		}
 	}
 	return storeEdges
 }
 
-func recurseEdgesForwardUntilStoreValue(graph *ssa_graph.SSAGraph, node *ssa_graph.SSANode, storeEdges []*ssa_graph.SSAEdge, visited map[*ssa_graph.SSANode]bool) []*ssa_graph.SSAEdge {
+func recurseEdgesForwardUntilStoreValue(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
 	if _, ok := visited[node]; ok {
 		return storeEdges
 	}
 	visited[node] = true
 	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetType() == ssa_graph.EDGE_STORE_VALUE {
+		if edge.GetType() == ssagraph.EDGE_STORE_VALUE {
 			storeEdges = append(storeEdges, edge)
-		} else if edge.GetType() == ssa_graph.EDGE_FIELD || edge.GetType() == ssa_graph.EDGE_INDEX || edge.GetType() == ssa_graph.EDGE_USAGE {
+		} else if edge.GetType() == ssagraph.EDGE_FIELD || edge.GetType() == ssagraph.EDGE_INDEX || edge.GetType() == ssagraph.EDGE_USAGE {
 			storeEdges = append(storeEdges, recurseEdgesForwardUntilStoreValue(graph, edge.GetToNode(), storeEdges, visited)...)
 		}
 	}
 	return storeEdges
 }
 
-func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
+func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
 
 		// ------------
@@ -540,7 +485,7 @@ func isDatabaseCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, s
 	return "", "", "", nil, false
 }
 
-func isServiceCall(graph *ssa_graph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
+func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
 		// ------------
 		// example apps

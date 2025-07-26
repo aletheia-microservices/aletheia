@@ -10,10 +10,10 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 
-	"analyzer/pkg/parser"
-	"analyzer/pkg/ssa_graph"
 	"analyzer/pkg/abstractcallgraph"
-	"analyzer/pkg/tainter"
+	"analyzer/pkg/ssagraph"
+	"analyzer/pkg/ssagraph/parser"
+	"analyzer/pkg/ssagraph/tainter"
 )
 
 func main() {
@@ -55,27 +55,27 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	funcGraphs := make(map[string]*ssa_graph.SSAGraph)
+	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
 	for _, pkg := range pkgs {
 		parser.RunSSAAnalysis(appname, prog, pkg, funcGraphs)
 	}
 
-	for _, ssa_graph := range funcGraphs {
-		ssa_graph.SortNodes()
+	for _, ssagraph := range funcGraphs {
+		ssagraph.SortNodes()
 	}
 
 	for _, pkg := range pkgs {
 		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
 	}
 
-	for _, ssa_graph := range funcGraphs {
-		tainter.RunTaint(ssa_graph)
+	for _, ssagraph := range funcGraphs {
+		tainter.RunTainter(ssagraph)
 	}
 
 	fmt.Print("\n\n ========== NODES ========== \n\n")
-	for fn, ssa_graph := range funcGraphs {
-		for _, node := range ssa_graph.GetNodes() {
+	for fn, ssagraph := range funcGraphs {
+		for _, node := range ssagraph.GetNodes() {
 			var prefix string
 			if node.GetName() != "" {
 				prefix = node.GetName() + ":"
@@ -91,13 +91,13 @@ func main() {
 	}
 
 	fmt.Print("\n\n ========== TAINTS ========== \n\n")
-	for fn, ssa_graph := range funcGraphs {
-		for _, node := range ssa_graph.GetNodes() {
+	for fn, ssagraph := range funcGraphs {
+		for _, node := range ssagraph.GetNodes() {
 			if node.IsTainted() {
-				for obj, dbfields := range node.GetTaints() {
+				for obj, taints := range node.GetTaints() {
 					fmt.Printf("[%s] %s [%s]: %s\n", fn, node.String(), node.GetName(), obj)
-					for _, dbfield := range dbfields {
-						fmt.Printf("\t\t |--> %s\n", dbfield)
+					for _, taint := range taints {
+						fmt.Printf("\t\t |--> %s\n", taint.String())
 					}
 				}
 			}
@@ -109,7 +109,7 @@ func main() {
 	}
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
-	
+
 	var entryPoints = []string{
 		"postnotification_simple.UploadService.UploadPost",
 		"postnotification_simple.StorageService.StorePost",
@@ -118,7 +118,7 @@ func main() {
 	}
 
 	abstractGraph := abstractcallgraph.NewAbstractGraph()
-	abstractGraph.Init(entryPoints, funcGraphs)
+	abstractGraph.Parse(entryPoints, funcGraphs)
 }
 
 func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {

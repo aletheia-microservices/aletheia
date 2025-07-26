@@ -61,3 +61,8 @@ func ExtractServiceNameFromShortFunctionPath(s string) string {
 	member, _ := strings.CutSuffix(memberImpl, "Impl")
 	return member
 }
+
+func ExtractMethodNameFromShortFunctionPath(s string) string {
+	parts := strings.Split(s, ".")
+	return parts[len(parts)-1]
+}

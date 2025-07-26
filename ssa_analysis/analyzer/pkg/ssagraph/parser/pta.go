@@ -14,7 +14,7 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 
-	"analyzer/pkg/ssa_graph"
+	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/utils"
 )
 
@@ -84,7 +84,7 @@ func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Resul
 	return result, nil
 }
 
-func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*ssa_graph.SSAGraph) {
+func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*ssagraph.SSAGraph) {
 	fmt.Printf("\n[PTA] running pointer analysis for package: %s\n", pkg.String())
 	outFile, err := os.Create(fmt.Sprintf("output/%s/%s.ptrs", appname, pkg.Pkg.Name()))
 	if err != nil {
@@ -149,7 +149,7 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 					if !exists {
 						fmt.Printf("creating edge\n")
 
-						edge, _ := graph.CreateAndAddNewEdge(node, pointsToNode, ssa_graph.EDGE_POINTS_TO, 0, "")
+						edge, _ := graph.CreateAndAddNewEdge(node, pointsToNode, ssagraph.EDGE_POINTS_TO, 0, "")
 						if edge != nil {
 							edge.SetPath(lbl.Path())
 

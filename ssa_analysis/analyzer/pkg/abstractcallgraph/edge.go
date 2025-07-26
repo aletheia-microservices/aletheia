@@ -11,6 +11,7 @@ const (
 
 type AbstractEdge struct {
 	t            EdgeType
+	id           string // the ssa instr name for the db call on the callee side
 	method       string
 	from         *AbstractNode
 	to           *AbstractNode
@@ -42,8 +43,9 @@ func (edge *AbstractEdge) AddMethodParameter(arg *AbstractArgument) {
 	edge.methodParams = append(edge.methodParams, arg)
 }
 
-func NewAbstractEdge(method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {
+func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {
 	return &AbstractEdge{
+		id:     id,
 		t:      t,
 		method: method,
 		from:   from,

@@ -1,4 +1,4 @@
-package ssa_graph
+package ssagraph
 
 type EdgeType int
 

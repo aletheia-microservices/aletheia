@@ -1,4 +1,4 @@
-package ssa_graph
+package ssagraph
 
 import (
 	"fmt"
@@ -8,86 +8,37 @@ import (
 	"strings"
 )
 
-type ServiceCall struct {
-	node          *SSANode
-	args          []*SSANode
-	service       string
-	method        string
-	funcShortPath string
-}
-
-func (call *ServiceCall) GetService() string {
-	return call.service
-}
-
-func (call *ServiceCall) GetFuncShortPath() string {
-	return call.funcShortPath
-}
-
-func (call *ServiceCall) GetMethod() string {
-	return call.method
-}
-
-func (call *ServiceCall) GetNode() *SSANode {
-	return call.node
-}
-
-func (call *ServiceCall) GetArguments() []*SSANode {
-	return call.args
-}
-
-type DatabaseCall struct {
-	node              *SSANode
-	args              []*SSANode
-	database          string
-	collectionOrTopic string
-	method            string
-}
-
-func (call *DatabaseCall) GetDatabase() string {
-	return call.database
-}
-
-func (call *DatabaseCall) GetCollectionOrTopic() string {
-	return call.collectionOrTopic
-}
-
-func (call *DatabaseCall) GetMethod() string {
-	return call.method
-}
-
-func (call *DatabaseCall) GetNode() *SSANode {
-	return call.node
-}
-
-func (call *DatabaseCall) GetArguments() []*SSANode {
-	return call.args
-}
-
 type SSAGraph struct {
 	pkgName     string
 	fnShortPath string
 	serviceName string
+	methodName  string
 
-	nodes    []*SSANode
-	edges    []*SSAEdge
-	defs     map[string]*SSANode
+	nodes []*SSANode
+	edges []*SSAEdge
+	defs  map[string]*SSANode
+
 	svcCalls []*ServiceCall
 	dbCalls  []*DatabaseCall
 	params   []*SSANode
 }
 
-func NewGraph(pkg string, fn string, service string) *SSAGraph {
+func NewGraph(pkg string, fn string, service string, method string) *SSAGraph {
 	return &SSAGraph{
 		defs:        make(map[string]*SSANode),
 		pkgName:     pkg,
 		fnShortPath: fn,
 		serviceName: service,
+		methodName:  method,
 	}
 }
 
 func (graph *SSAGraph) GetServiceName() string {
 	return graph.serviceName
+}
+
+func (graph *SSAGraph) GetMethodName() string {
+	return graph.methodName
 }
 
 func (graph *SSAGraph) GetPackageName() string {
@@ -110,14 +61,8 @@ func (graph *SSAGraph) GetEdges() []*SSAEdge {
 	return graph.edges
 }
 
-func (graph *SSAGraph) AddServiceCall(node *SSANode, args []*SSANode, service string, method string, funcShortPath string) {
-	graph.svcCalls = append(graph.svcCalls, &ServiceCall{
-		node:          node,
-		args:          args,
-		service:       service,
-		method:        method,
-		funcShortPath: funcShortPath,
-	})
+func (graph *SSAGraph) AddServiceCall(call *ServiceCall) {
+	graph.svcCalls = append(graph.svcCalls, call)
 }
 
 func (graph *SSAGraph) HasServiceCalls() bool {
@@ -136,14 +81,8 @@ func (graph *SSAGraph) GetParametersExceptMemberAndContext() []*SSANode {
 	return graph.params[2:]
 }
 
-func (graph *SSAGraph) AddDatabaseCall(node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string) {
-	graph.dbCalls = append(graph.dbCalls, &DatabaseCall{
-		node:              node,
-		args:              args,
-		database:          database,
-		collectionOrTopic: collectionOrTopic,
-		method:            method,
-	})
+func (graph *SSAGraph) AddDatabaseCall(call *DatabaseCall) {
+	graph.dbCalls = append(graph.dbCalls, call)
 }
 
 func (graph *SSAGraph) HasDatabaseCalls() bool {
