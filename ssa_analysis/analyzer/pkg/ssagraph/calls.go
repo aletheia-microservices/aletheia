@@ -5,7 +5,7 @@ func ComputeCallID(graph *SSAGraph, node *SSANode) string {
 }
 
 type ServiceCall struct {
-	id   string // format: <func_short_path>_<ssa
+	id   string // format: <func_short_path>_<ssa_instr_name>
 	node *SSANode
 	args []*SSANode
 

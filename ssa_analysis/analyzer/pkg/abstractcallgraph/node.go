@@ -5,6 +5,7 @@ type NodeType int
 const (
 	NODE_SERVICE NodeType = iota
 	NODE_DATABASE
+	NODE_CLIENT
 )
 
 type AbstractNode struct {
@@ -13,6 +14,10 @@ type AbstractNode struct {
 }
 
 func (node *AbstractNode) String() string {
+	return node.name
+}
+
+func (node *AbstractNode) GetName() string {
 	return node.name
 }
 

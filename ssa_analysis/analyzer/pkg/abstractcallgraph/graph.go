@@ -3,6 +3,8 @@ package abstractcallgraph
 import (
 	"fmt"
 	"log"
+	"os"
+	"strings"
 )
 
 type AbstractCallGraph struct {
@@ -12,7 +14,7 @@ type AbstractCallGraph struct {
 	edges map[string]*AbstractEdge
 }
 
-func NewAbstractGraph() *AbstractCallGraph {
+func NewAbstractCallGraph() *AbstractCallGraph {
 	return &AbstractCallGraph{
 		nodes: make(map[string]*AbstractNode),
 		edges: make(map[string]*AbstractEdge),
@@ -38,7 +40,7 @@ func taintsListToString(taints []*AbstractTaint) string {
 }
 
 func (graph *AbstractCallGraph) AddEdge(id string, edge *AbstractEdge) {
-	fmt.Printf("[ABSTRACT GRAPH] added new edge: %s\n", edge.String())
+	fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges[id] = edge
 
 	for i, arg := range edge.callArgs {
@@ -95,4 +97,94 @@ func (graph *AbstractCallGraph) GetEdgesToNode(node *AbstractNode) []*AbstractEd
 		}
 	}
 	return edges
+}
+
+func (graph *AbstractCallGraph) WriteToDOTFile(appname string) error {
+	filename := fmt.Sprintf("output/%s/abstractcallgraph.dot", appname)
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	fmt.Fprintln(file, "digraph G {")
+	fmt.Fprintln(file, "\trankdir=TD;")
+	fmt.Fprintln(file, "\tranksep=1.5;")
+	fmt.Fprintln(file, "\tnodesep=1;")
+
+	services := []string{}
+	databases := []string{}
+	clients := []string{}
+	others := []string{}
+
+	for _, node := range graph.GetNodes() {
+		nodeID := strings.ReplaceAll(node.GetName(), ".", "_")
+		label := node.GetName()
+		var color, shape string
+
+		switch node.GetNodeType() {
+		case NODE_SERVICE:
+			color = "blue"
+			shape = "box"
+			services = append(services, fmt.Sprintf("\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];", nodeID, label, shape, color))
+		case NODE_DATABASE:
+			color = "green"
+			shape = "cylinder"
+			databases = append(databases, fmt.Sprintf("\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];", nodeID, label, shape, color))
+		case NODE_CLIENT:
+			color = "orange"
+			shape = "invhouse"
+			clients = append(clients, fmt.Sprintf("\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];", nodeID, label, shape, color))
+		default:
+			color = "black"
+			shape = "ellipse"
+			others = append(others, fmt.Sprintf("\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];", nodeID, label, shape, color))
+		}
+	}
+
+	//fmt.Fprintln(file, "\tsubgraph cluster_clients {\n\t\tlabel = \"Clients\";")
+	fmt.Fprintln(file, "\tsubgraph cluster_clients {\n\t\tstyle=invis;")
+	for _, line := range clients {
+		fmt.Fprintln(file, "\t"+line)
+	}
+	fmt.Fprintln(file, "\t}")
+
+	//fmt.Fprintln(file, "\tsubgraph cluster_services {\n\t\tlabel = \"Services\";")
+	fmt.Fprintln(file, "\tsubgraph cluster_services {\n\t\tstyle=invis;")
+	for _, line := range services {
+		fmt.Fprintln(file, "\t"+line)
+	}
+	fmt.Fprintln(file, "\t}")
+
+	//fmt.Fprintln(file, "\tsubgraph cluster_databases {\n\t\tlabel = \"Databases\";")
+	fmt.Fprintln(file, "\tsubgraph cluster_databases {\n\t\tstyle=invis;")
+	for _, line := range databases {
+		fmt.Fprintln(file, "\t"+line)
+	}
+	fmt.Fprintln(file, "\t}")
+
+	for _, line := range others {
+		fmt.Fprintln(file, "\t"+line)
+	}
+
+	for _, edge := range graph.GetEdges() {
+		fromNodeID := strings.ReplaceAll(edge.GetFromNode().GetName(), ".", "_")
+		toNodeID := strings.ReplaceAll(edge.GetToNode().GetName(), ".", "_")
+
+		var color string
+		switch edge.GetEdgeType() {
+		case EDGE_SERVICE_RPC:
+			color = "blue"
+		case EDGE_DATABASE_CALL:
+			color = "green"
+		case EDGE_SERVICE_ENTRYPOINT:
+			color = "orange"
+		default:
+			color = "black"
+		}
+		fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", color=%s];\n", fromNodeID, toNodeID, edge.GetMethod()+"()", color)
+	}
+
+	fmt.Fprintln(file, "}")
+	return nil
 }

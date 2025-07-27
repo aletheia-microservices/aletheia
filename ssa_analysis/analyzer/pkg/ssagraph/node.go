@@ -20,7 +20,7 @@ func (taint *SSATaint) GetDbCall() *DatabaseCall {
 }
 
 func (taint *SSATaint) String() string {
-	return fmt.Sprintf("%s (call at %s)", taint.dbfield, taint.dbcall.GetID())
+	return taint.dbfield
 }
 
 type SSANode struct {

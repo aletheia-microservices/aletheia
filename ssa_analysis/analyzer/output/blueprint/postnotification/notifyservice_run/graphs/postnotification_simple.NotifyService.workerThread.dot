@@ -1,72 +1,72 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_3752340 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_724040383 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_3752163 [label="t0: new Message (workerMessage)
+	N_instr_ret_3038590 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_166781527 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3038413 [label="t0: new Message (workerMessage)
 
 ==== tainted ====
 
+_obj
+@ queue.notification
+
 _obj.ReqID
-@ queue.notification.ReqID (call at NotifyService.workerThread.t4)
+@ queue.notification.ReqID
 
 _obj.PostID_MESSAGE
-@ queue.notification.PostID_MESSAGE (call at NotifyService.workerThread.t4)
-
-_obj
-@ queue.notification (call at NotifyService.workerThread.t4)
+@ queue.notification.PostID_MESSAGE
 ", style=bold, shape=box, color="orange"];
-	N_val_call_3752211 [label="t4: invoke t2.Pop(ctx, t3)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_3752260 [label="t11: invoke t6.ReadPost(ctx, t8, t10)", style=bold, shape=ellipse, color="yellow"];
-	N_val_field_3752189 [label="t1: &n.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3752237 [label="t5: &n.storageService [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3752280 [label="t7: &t0.ReqID [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3752301 [label="t9: &t0.PostID_MESSAGE [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_call_3038461 [label="t4: invoke t2.Pop(ctx, t3)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3038510 [label="t11: invoke t6.ReadPost(ctx, t8, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_3038439 [label="t1: &n.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3038487 [label="t5: &n.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3038530 [label="t7: &t0.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3038551 [label="t9: &t0.PostID_MESSAGE [#1]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet3 [label="t3: make interface{} <- *Message (t0)
 
 ==== tainted ====
 
 _obj
-@ queue.notification (call at NotifyService.workerThread.t4)
+@ queue.notification
 
 _obj.ReqID
-@ queue.notification.ReqID (call at NotifyService.workerThread.t4)
+@ queue.notification.ReqID
 
 _obj.PostID_MESSAGE
-@ queue.notification.PostID_MESSAGE (call at NotifyService.workerThread.t4)
+@ queue.notification.PostID_MESSAGE
 ", style=bold, shape=box, color="black"];
-	N_val_param_3752047 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_3752082 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_unary_3752189 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_3752237 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
-	N_val_unary_3752280 [label="t8: *t7
+	N_val_param_3038297 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3038332 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3038439 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3038487 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3038530 [label="t8: *t7
 
 ==== tainted ====
 
 _obj
-@ queue.notification.ReqID (call at NotifyService.workerThread.t4)
+@ queue.notification.ReqID
 ", style=bold, shape=box, color="red"];
-	N_val_unary_3752301 [label="t10: *t9
+	N_val_unary_3038551 [label="t10: *t9
 
 ==== tainted ====
 
 _obj
-@ queue.notification.PostID_MESSAGE (call at NotifyService.workerThread.t4)
+@ queue.notification.PostID_MESSAGE
 ", style=bold, shape=box, color="red"];
-	N_val_param_3752047 -> N_val_field_3752189;
-	N_val_field_3752189 -> N_val_unary_3752189;
-	N_val_alloc_3752163 -> N_val_ifacet3;
-	N_val_param_3752082 -> N_val_call_3752211;
-	N_val_ifacet3 -> N_val_call_3752211;
-	N_val_param_3752047 -> N_val_field_3752237;
-	N_val_field_3752237 -> N_val_unary_3752237;
-	N_val_alloc_3752163 -> N_val_field_3752280;
-	N_val_field_3752280 -> N_val_unary_3752280;
-	N_val_alloc_3752163 -> N_val_field_3752301;
-	N_val_field_3752301 -> N_val_unary_3752301;
-	N_val_param_3752082 -> N_val_call_3752260;
-	N_val_unary_3752280 -> N_val_call_3752260;
-	N_val_unary_3752301 -> N_val_call_3752260;
-	N_nil_724040383 -> N_instr_ret_3752340;
-	N_val_field_3752301 -> N_val_alloc_3752163 [label=".PostID_MESSAGE", style=dashed, color=blue];
-	N_val_field_3752280 -> N_val_alloc_3752163 [label=".ReqID", style=dashed, color=blue];
+	N_val_param_3038297 -> N_val_field_3038439;
+	N_val_field_3038439 -> N_val_unary_3038439;
+	N_val_alloc_3038413 -> N_val_ifacet3;
+	N_val_param_3038332 -> N_val_call_3038461;
+	N_val_ifacet3 -> N_val_call_3038461;
+	N_val_param_3038297 -> N_val_field_3038487;
+	N_val_field_3038487 -> N_val_unary_3038487;
+	N_val_alloc_3038413 -> N_val_field_3038530;
+	N_val_field_3038530 -> N_val_unary_3038530;
+	N_val_alloc_3038413 -> N_val_field_3038551;
+	N_val_field_3038551 -> N_val_unary_3038551;
+	N_val_param_3038332 -> N_val_call_3038510;
+	N_val_unary_3038530 -> N_val_call_3038510;
+	N_val_unary_3038551 -> N_val_call_3038510;
+	N_nil_166781527 -> N_instr_ret_3038590;
+	N_val_field_3038530 -> N_val_alloc_3038413 [label=".ReqID", style=dashed, color=blue];
+	N_val_field_3038551 -> N_val_alloc_3038413 [label=".PostID_MESSAGE", style=dashed, color=blue];
 }

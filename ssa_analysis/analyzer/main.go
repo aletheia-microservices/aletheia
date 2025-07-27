@@ -104,8 +104,8 @@ func main() {
 		}
 	}
 
-	for fn, ssaGraph := range funcGraphs {
-		ssaGraph.WriteToDOTFile(appname, fn)
+	for fn, ssagraph := range funcGraphs {
+		ssagraph.WriteToDOTFile(appname, fn)
 	}
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
@@ -117,8 +117,9 @@ func main() {
 		"postnotification_simple.NotifyService.workerThread",
 	}
 
-	abstractGraph := abstractcallgraph.NewAbstractGraph()
-	abstractGraph.Parse(entryPoints, funcGraphs)
+	absgraph := abstractcallgraph.NewAbstractCallGraph()
+	absgraph.Parse(entryPoints, funcGraphs)
+	absgraph.WriteToDOTFile(appname)
 }
 
 func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {

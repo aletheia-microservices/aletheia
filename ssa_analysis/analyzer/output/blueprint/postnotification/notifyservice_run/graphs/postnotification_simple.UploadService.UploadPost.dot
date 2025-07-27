@@ -1,87 +1,87 @@
 digraph G {
 	rankdir=TD;
-	N_instr__406391706 [label="if t19 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_3755948 [label="return 0:int64, t18", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_3755966 [label="return t21, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_3755826 [label="*t8 = t0", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_3755860 [label="*t9 = t11", style=bold, shape=ellipse, color="blue"];
-	N_nil_546670754 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_instr__145594166 [label="if t19 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3042198 [label="return 0:int64, t18", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3042216 [label="return t21, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3042076 [label="*t8 = t0", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3042110 [label="*t9 = t11", style=bold, shape=ellipse, color="blue"];
+	N_nil_888145306 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
 	N_val_0:int64 [label="0:int64: 0:int64", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_3755799 [label="t7: local Message (message)
+	N_val_alloc_3042049 [label="t7: local Message (message)
 
 ==== tainted ====
 
 _obj
-@ queue.notification (call at UploadService.UploadPost.t16)
+@ queue.notification
 ", style=bold, shape=box, color="orange"];
-	N_val_binary_3755937 [label="t19: t18 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_3755716 [label="t0: math/rand.Int63()", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_3755736 [label="t1: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple/common.TestFunc()", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_3755778 [label="t4: invoke t3.StorePost(ctx, t0, text)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_3755914 [label="t16: invoke t13.Push(ctx, t15)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_3042187 [label="t19: t18 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3041966 [label="t0: math/rand.Int63()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3041986 [label="t1: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple/common.TestFunc()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3042028 [label="t4: invoke t3.StorePost(ctx, t0, text)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3042164 [label="t16: invoke t13.Push(ctx, t15)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt17 [label="t17: extract t16 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt18 [label="t18: extract t16 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt5 [label="t5: extract t4 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt6 [label="t6: extract t4 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_3755754 [label="t2: &u.storageService [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3755826 [label="t8: &t7.ReqID [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3755860 [label="t9: &t7.PostID_MESSAGE [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3755867 [label="t10: &t5.PostID [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3755891 [label="t12: &u.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_3755978 [label="t20: &t5.PostID [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3042004 [label="t2: &u.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3042076 [label="t8: &t7.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3042110 [label="t9: &t7.PostID_MESSAGE [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3042117 [label="t10: &t5.PostID [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3042141 [label="t12: &u.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3042228 [label="t20: &t5.PostID [#1]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet15 [label="t15: make interface{} <- Message (t14)
 
 ==== tainted ====
 
 _obj
-@ queue.notification (call at UploadService.UploadPost.t16)
+@ queue.notification
 ", style=bold, shape=box, color="black"];
-	N_val_param_3755595 [label="u: parameter u : *UploadServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_3755628 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_3755649 [label="username: parameter username : string", style=bold, shape=ellipse, color="black"];
-	N_val_param_3755666 [label="text: parameter text : string", style=bold, shape=ellipse, color="black"];
-	N_val_unary_3755754 [label="t3: *t2", style=bold, shape=ellipse, color="red"];
-	N_val_unary_3755867 [label="t11: *t10", style=bold, shape=ellipse, color="red"];
-	N_val_unary_3755891 [label="t13: *t12", style=bold, shape=ellipse, color="red"];
-	N_val_unary_3755920 [label="t14: *t7
+	N_val_param_3041845 [label="u: parameter u : *UploadServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3041878 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3041899 [label="username: parameter username : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_3041916 [label="text: parameter text : string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3042004 [label="t3: *t2", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3042117 [label="t11: *t10", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3042141 [label="t13: *t12", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3042170 [label="t14: *t7
 
 ==== tainted ====
 
 _obj
-@ queue.notification (call at UploadService.UploadPost.t16)
+@ queue.notification
 ", style=bold, shape=box, color="red"];
-	N_val_unary_3755978 [label="t21: *t20", style=bold, shape=ellipse, color="red"];
-	N_val_param_3755595 -> N_val_field_3755754;
-	N_val_field_3755754 -> N_val_unary_3755754;
-	N_val_param_3755628 -> N_val_call_3755778;
-	N_val_call_3755716 -> N_val_call_3755778;
-	N_val_param_3755666 -> N_val_call_3755778;
-	N_val_call_3755778 -> N_val_extrt5;
-	N_val_call_3755778 -> N_val_extrt6;
-	N_val_alloc_3755799 -> N_val_field_3755826;
-	N_val_alloc_3755799 -> N_val_field_3755860;
-	N_val_extrt5 -> N_val_field_3755867;
-	N_val_field_3755867 -> N_val_unary_3755867;
-	N_val_field_3755826 -> N_instr_store_3755826;
-	N_val_call_3755716 -> N_instr_store_3755826;
-	N_val_field_3755860 -> N_instr_store_3755860;
-	N_val_unary_3755867 -> N_instr_store_3755860;
-	N_val_param_3755595 -> N_val_field_3755891;
-	N_val_field_3755891 -> N_val_unary_3755891;
-	N_val_alloc_3755799 -> N_val_unary_3755920;
-	N_val_unary_3755920 -> N_val_ifacet15;
-	N_val_param_3755628 -> N_val_call_3755914;
-	N_val_ifacet15 -> N_val_call_3755914;
-	N_val_call_3755914 -> N_val_extrt17;
-	N_val_call_3755914 -> N_val_extrt18;
-	N_val_extrt18 -> N_val_binary_3755937;
-	N_nil_546670754 -> N_val_binary_3755937;
-	N_val_0:int64 -> N_instr_ret_3755948;
-	N_val_extrt18 -> N_instr_ret_3755948;
-	N_val_extrt5 -> N_val_field_3755978;
-	N_val_field_3755978 -> N_val_unary_3755978;
-	N_val_unary_3755978 -> N_instr_ret_3755966;
-	N_nil_546670754 -> N_instr_ret_3755966;
-	N_val_field_3755860 -> N_val_alloc_3755799 [label=".PostID_MESSAGE", style=dashed, color=blue];
-	N_val_field_3755826 -> N_val_alloc_3755799 [label=".ReqID", style=dashed, color=blue];
+	N_val_unary_3042228 [label="t21: *t20", style=bold, shape=ellipse, color="red"];
+	N_val_param_3041845 -> N_val_field_3042004;
+	N_val_field_3042004 -> N_val_unary_3042004;
+	N_val_param_3041878 -> N_val_call_3042028;
+	N_val_call_3041966 -> N_val_call_3042028;
+	N_val_param_3041916 -> N_val_call_3042028;
+	N_val_call_3042028 -> N_val_extrt5;
+	N_val_call_3042028 -> N_val_extrt6;
+	N_val_alloc_3042049 -> N_val_field_3042076;
+	N_val_alloc_3042049 -> N_val_field_3042110;
+	N_val_extrt5 -> N_val_field_3042117;
+	N_val_field_3042117 -> N_val_unary_3042117;
+	N_val_field_3042076 -> N_instr_store_3042076;
+	N_val_call_3041966 -> N_instr_store_3042076;
+	N_val_field_3042110 -> N_instr_store_3042110;
+	N_val_unary_3042117 -> N_instr_store_3042110;
+	N_val_param_3041845 -> N_val_field_3042141;
+	N_val_field_3042141 -> N_val_unary_3042141;
+	N_val_alloc_3042049 -> N_val_unary_3042170;
+	N_val_unary_3042170 -> N_val_ifacet15;
+	N_val_param_3041878 -> N_val_call_3042164;
+	N_val_ifacet15 -> N_val_call_3042164;
+	N_val_call_3042164 -> N_val_extrt17;
+	N_val_call_3042164 -> N_val_extrt18;
+	N_val_extrt18 -> N_val_binary_3042187;
+	N_nil_888145306 -> N_val_binary_3042187;
+	N_val_0:int64 -> N_instr_ret_3042198;
+	N_val_extrt18 -> N_instr_ret_3042198;
+	N_val_extrt5 -> N_val_field_3042228;
+	N_val_field_3042228 -> N_val_unary_3042228;
+	N_val_unary_3042228 -> N_instr_ret_3042216;
+	N_nil_888145306 -> N_instr_ret_3042216;
+	N_val_field_3042110 -> N_val_alloc_3042049 [label=".PostID_MESSAGE", style=dashed, color=blue];
+	N_val_field_3042076 -> N_val_alloc_3042049 [label=".ReqID", style=dashed, color=blue];
 }
