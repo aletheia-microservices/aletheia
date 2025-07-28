@@ -1,7 +1,7 @@
 package ssagraph
 
 func ComputeCallID(graph *SSAGraph, node *SSANode) string {
-	return graph.GetServiceName() + "." + graph.GetMethodName() + "." + node.GetName()
+	return graph.GetService() + "." + graph.GetMethodName() + "." + node.GetName()
 }
 
 type ServiceCall struct {
@@ -27,6 +27,10 @@ func NewServiceCall(id string, node *SSANode, args []*SSANode, service string, m
 
 func (call *ServiceCall) GetID() string {
 	return call.id
+}
+
+func (call *ServiceCall) GetServiceWithMethod() string {
+	return call.service + "." + call.method
 }
 
 func (call *ServiceCall) GetService() string {

@@ -9,8 +9,8 @@ import (
 type TaintMode int
 
 const (
-	TAINT_MARK_UPPER TaintMode = iota
-	TAINT_CHECK_UPPER
+	TAINT_BACKWARDS_MARK_AND_PROPAGATE TaintMode = iota
+	TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH
 )
 
 type DBTaint struct {

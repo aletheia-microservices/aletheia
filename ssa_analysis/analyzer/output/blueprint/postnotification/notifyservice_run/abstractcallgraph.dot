@@ -17,13 +17,13 @@ digraph G {
 		N_queue_notification [label="queue.notification", style=bold, shape=cylinder, color="green"];
 		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 	}
-	N_client -> N_StorageService [label="ReadPost()", color=orange];
-	N_client -> N_NotifyService [label="workerThread()", color=orange];
-	N_NotifyService -> N_queue_notification [label="Pop()", color=green];
 	N_client -> N_StorageService [label="StorePost()", color=orange];
-	N_StorageService -> N_posts_db_post [label="InsertOne()", color=green];
 	N_client -> N_UploadService [label="UploadPost()", color=orange];
 	N_UploadService -> N_StorageService [label="StorePost()", color=blue];
+	N_client -> N_NotifyService [label="workerThread()", color=orange];
+	N_NotifyService -> N_queue_notification [label="Pop()", color=green];
+	N_client -> N_StorageService [label="ReadPost()", color=orange];
+	N_StorageService -> N_posts_db_post [label="InsertOne()", color=green];
 	N_UploadService -> N_queue_notification [label="Push()", color=green];
 	N_NotifyService -> N_StorageService [label="ReadPost()", color=blue];
 	N_StorageService -> N_posts_db_post [label="FindOne()", color=green];

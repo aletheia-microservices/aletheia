@@ -33,7 +33,11 @@ func NewGraph(pkg string, fn string, service string, method string) *SSAGraph {
 	}
 }
 
-func (graph *SSAGraph) GetServiceName() string {
+func (graph *SSAGraph) GetServiceWithMethod() string {
+	return graph.serviceName + "." + graph.methodName
+}
+
+func (graph *SSAGraph) GetService() string {
 	return graph.serviceName
 }
 
@@ -77,7 +81,7 @@ func (graph *SSAGraph) AddParameter(param *SSANode) {
 	graph.params = append(graph.params, param)
 }
 
-func (graph *SSAGraph) GetParametersExceptMemberAndContext() []*SSANode {
+func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
 	return graph.params[2:]
 }
 
