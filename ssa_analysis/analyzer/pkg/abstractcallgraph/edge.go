@@ -1,6 +1,9 @@
 package abstractcallgraph
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type EdgeType int
 
@@ -11,16 +14,15 @@ const (
 )
 
 type AbstractEdge struct {
-	t            EdgeType
+	t EdgeType
 
 	// format: <func_short_path>_<ssa_instr_name>
 	// except for entrypoint edges where format is just <func_short_path>
-	id           string
-	method       string
-	from         *AbstractNode
-	to           *AbstractNode
-	callArgs     []*AbstractArgument // caller side
-	methodParams []*AbstractArgument // callee side
+	id     string
+	method string
+	from   *AbstractNode
+	to     *AbstractNode
+	args   []*AbstractObject // caller side
 }
 
 func (edge *AbstractEdge) String() string {
@@ -47,12 +49,19 @@ func (edge *AbstractEdge) GetMethod() string {
 	return edge.method
 }
 
-func (edge *AbstractEdge) AddCallArgument(arg *AbstractArgument) {
-	edge.callArgs = append(edge.callArgs, arg)
+func (edge *AbstractEdge) GetArguments() []*AbstractObject {
+	return edge.args
 }
 
-func (edge *AbstractEdge) AddMethodParameter(arg *AbstractArgument) {
-	edge.methodParams = append(edge.methodParams, arg)
+func (edge *AbstractEdge) GetArgumentAt(i int) *AbstractObject {
+	if i > len(edge.args)-1 {
+		log.Fatalf("index (%d) out of bounds for edge arguments: %v\n", i, edge.args)
+	}
+	return edge.args[i]
+}
+
+func (edge *AbstractEdge) AddArgument(arg *AbstractObject) {
+	edge.args = append(edge.args, arg)
 }
 
 func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {

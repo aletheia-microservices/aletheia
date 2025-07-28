@@ -82,6 +82,7 @@ func (graph *SSAGraph) AddParameter(param *SSANode) {
 }
 
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
+	fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
 	return graph.params[2:]
 }
 

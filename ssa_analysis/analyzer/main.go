@@ -119,7 +119,8 @@ func main() {
 
 	absgraph := abstractcallgraph.NewAbstractCallGraph()
 	absgraph.Parse(entryPoints, funcGraphs)
-	absgraph.WriteToDOTFile(appname)
+	absgraph.WriteToDOTFile(appname, true)
+	absgraph.WriteToDOTFile(appname, false)
 }
 
 func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {

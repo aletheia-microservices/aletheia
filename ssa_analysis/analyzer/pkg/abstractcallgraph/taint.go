@@ -1,17 +1,21 @@
 package abstractcallgraph
 
-import "fmt"
-
 type AbstractTaint struct {
 	dbfield  string
 	dbcallID string //i.e., the ID of the abstract edge representing the call
+	primary  bool
 }
 
-func NewAbstractTaint(dbfield string, dbcall string) *AbstractTaint {
+func NewAbstractTaint(dbfield string, dbcall string, primary bool) *AbstractTaint {
 	return &AbstractTaint{
 		dbfield:  dbfield,
 		dbcallID: dbcall,
+		primary:  primary,
 	}
+}
+
+func (taint *AbstractTaint) IsPrimary() bool {
+	return taint.primary
 }
 
 func (taint *AbstractTaint) GetDbField() string {
@@ -23,8 +27,5 @@ func (taint *AbstractTaint) GetDbCall() string {
 }
 
 func (taint *AbstractTaint) String() string {
-	if taint.dbcallID == "" {
-		return fmt.Sprintf("%s (call at <nil>)", taint.dbfield)
-	}
-	return fmt.Sprintf("%s (call at %s)", taint.dbfield, taint.dbcallID)
+	return taint.dbfield
 }

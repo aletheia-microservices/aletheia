@@ -43,23 +43,17 @@ func (graph *AbstractCallGraph) AddEdge(id string, edge *AbstractEdge) {
 	fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges[id] = edge
 
-	for i, arg := range edge.callArgs {
-		fmt.Printf("\t\t - CALL ARG #%d: %s\n", i, arg.SSAString())
-		for obj, directTaints := range arg.GetDirectTaints() {
-			fmt.Printf("\t\t\t - TAINT: %s @ %s\n", obj, taintsListToString(directTaints))
-		}
-		for obj, indirectTaints := range arg.GetIndirectTaints() {
-			fmt.Printf("\t\t\t - TAINT (INDIRECT): %s @ %s\n", obj, taintsListToString(indirectTaints))
+	for i, arg := range edge.args {
+		fmt.Printf("\t\t - CALL ARG #%d: %s\n", i, arg.String())
+		if arg.IsTainted() {
+			fmt.Printf("\t\t\t==== arg %d (%s) tainted ====\n%s", i, arg.name, arg.taintString())
 		}
 	}
 
-	for i, param := range edge.methodParams {
-		fmt.Printf("\t\t - METHOD PARAM #%d: %s\n", i, param.SSAString())
-		for obj, directTaints := range param.GetDirectTaints() {
-			fmt.Printf("\t\t\t - TAINT: %s @ %s\n", obj, taintsListToString(directTaints))
-		}
-		for obj, indirectTaints := range param.GetIndirectTaints() {
-			fmt.Printf("\t\t\t - TAINT (INDIRECT): %s @ %s\n", obj, taintsListToString(indirectTaints))
+	for i, param := range edge.GetToNode().params {
+		fmt.Printf("\t\t - METHOD PARAM #%d: %s\n", i, param.String())
+		if param.IsTainted() {
+			fmt.Printf("\n\n==== arg %d (%s) tainted ====\n%s", i, param.name, param.taintString())
 		}
 	}
 }
@@ -99,8 +93,14 @@ func (graph *AbstractCallGraph) GetEdgesToNode(node *AbstractNode) []*AbstractEd
 	return edges
 }
 
-func (graph *AbstractCallGraph) WriteToDOTFile(appname string) error {
-	filename := fmt.Sprintf("output/%s/abstractcallgraph.dot", appname)
+func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) error {
+	var filename string
+
+	if detailed {
+		filename = fmt.Sprintf("output/%s/abstractcallgraph_detailed.dot", appname)
+	} else {
+		filename = fmt.Sprintf("output/%s/abstractcallgraph.dot", appname)
+	}
 	file, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -120,6 +120,17 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string) error {
 	for _, node := range graph.GetNodes() {
 		nodeID := strings.ReplaceAll(node.GetName(), ".", "_")
 		label := node.GetName()
+
+		if detailed {
+			for i, param := range node.GetParams() {
+				if param.IsTainted() {
+					label += fmt.Sprintf("\n\n==== param %d (%s) tainted ====\n%s", i, param.name, param.taintString())
+				}
+
+			}
+			label = strings.ReplaceAll(label, `"`, `\"`)
+		}
+
 		var color, shape string
 
 		switch node.GetNodeType() {
@@ -171,6 +182,7 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string) error {
 		fromNodeID := strings.ReplaceAll(edge.GetFromNode().GetName(), ".", "_")
 		toNodeID := strings.ReplaceAll(edge.GetToNode().GetName(), ".", "_")
 
+		label := edge.GetMethod() + "()"
 		var color string
 		switch edge.GetEdgeType() {
 		case EDGE_SERVICE_RPC:
@@ -182,7 +194,7 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string) error {
 		default:
 			color = "black"
 		}
-		fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", color=%s];\n", fromNodeID, toNodeID, edge.GetMethod()+"()", color)
+		fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", color=%s];\n", fromNodeID, toNodeID, label, color)
 	}
 
 	fmt.Fprintln(file, "}")

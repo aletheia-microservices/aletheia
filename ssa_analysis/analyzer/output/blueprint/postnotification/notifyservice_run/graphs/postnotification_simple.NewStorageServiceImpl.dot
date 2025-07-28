@@ -1,18 +1,18 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2812707 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2812695 [label="*t1 = postsDb", style=bold, shape=ellipse, color="blue"];
-	N_nil_1992891904 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2812687 [label="t0: new StorageServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
-	N_val_field_2812695 [label="t1: &t0.postsDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_instr_ret_2760834 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2760822 [label="*t1 = postsDb", style=bold, shape=ellipse, color="blue"];
+	N_nil_595710753 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2760814 [label="t0: new StorageServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2760822 [label="t1: &t0.postsDb [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet2 [label="t2: make StorageService <- *StorageServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
-	N_val_param_2812584 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2812605 [label="postsDb: parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
-	N_val_alloc_2812687 -> N_val_field_2812695;
-	N_val_field_2812695 -> N_instr_store_2812695;
-	N_val_param_2812605 -> N_instr_store_2812695;
-	N_val_alloc_2812687 -> N_val_ifacet2;
-	N_val_ifacet2 -> N_instr_ret_2812707;
-	N_nil_1992891904 -> N_instr_ret_2812707;
-	N_val_field_2812695 -> N_val_alloc_2812687 [label=".postsDb", style=dashed, color=blue];
+	N_val_param_2760711 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2760732 [label="postsDb: parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2760814 -> N_val_field_2760822;
+	N_val_field_2760822 -> N_instr_store_2760822;
+	N_val_param_2760732 -> N_instr_store_2760822;
+	N_val_alloc_2760814 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_2760834;
+	N_nil_595710753 -> N_instr_ret_2760834;
+	N_val_field_2760822 -> N_val_alloc_2760814 [label=".postsDb", style=dashed, color=blue];
 }
