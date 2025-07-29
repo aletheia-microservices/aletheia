@@ -66,3 +66,8 @@ func ExtractMethodNameFromShortFunctionPath(s string) string {
 	parts := strings.Split(s, ".")
 	return parts[len(parts)-1]
 }
+
+func ExtractDatabaseNameFromFieldPath(s string) string {
+	parts := strings.Split(s, ".")
+	return parts[0]
+}

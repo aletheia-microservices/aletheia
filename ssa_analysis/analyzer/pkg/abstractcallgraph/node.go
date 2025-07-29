@@ -11,11 +11,16 @@ const (
 )
 
 type AbstractNode struct {
-	t       NodeType
-	name    string
+	t    NodeType
+	name string
+
+	// for service nodes only
 	service string
 	method  string
 	params  []*AbstractObject
+
+	// for database nodes only
+	dbname string
 }
 
 func (node *AbstractNode) String() string {
@@ -24,6 +29,10 @@ func (node *AbstractNode) String() string {
 
 func (node *AbstractNode) GetName() string {
 	return node.name
+}
+
+func (node *AbstractNode) GetDatabaseName() string {
+	return node.dbname
 }
 
 func (node *AbstractNode) GetNodeType() NodeType {
@@ -45,11 +54,12 @@ func (node *AbstractNode) AddParam(param *AbstractObject) {
 	node.params = append(node.params, param)
 }
 
-func NewAbstractNode(name string, t NodeType, service string, method string) *AbstractNode {
+func NewAbstractNode(name string, t NodeType, service string, method string, dbname string) *AbstractNode {
 	return &AbstractNode{
 		name:    name,
 		t:       t,
 		service: service,
 		method:  method,
+		dbname:  dbname,
 	}
 }

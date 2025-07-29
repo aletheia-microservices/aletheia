@@ -11,6 +11,7 @@ import (
 	"golang.org/x/tools/go/ssa/ssautil"
 
 	"analyzer/pkg/abstractcallgraph"
+	"analyzer/pkg/app"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/tainter"
@@ -110,17 +111,24 @@ func main() {
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
 
+	app := app.NewApp(appname)
+
 	var entryPoints = []string{
 		"postnotification_simple.UploadService.UploadPost",
-		"postnotification_simple.StorageService.StorePost",
-		"postnotification_simple.StorageService.ReadPost",
+		//"postnotification_simple.StorageService.StorePost",
+		//"postnotification_simple.StorageService.ReadPost",
 		"postnotification_simple.NotifyService.workerThread",
 	}
 
-	absgraph := abstractcallgraph.NewAbstractCallGraph()
-	absgraph.Parse(entryPoints, funcGraphs)
+	absgraph := abstractcallgraph.NewAbstractCallGraph(app)
+	for _, entrypoint := range entryPoints {
+		absgraph.Parse(entrypoint, funcGraphs)
+	}
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
+
+	fmt.Println()
+	fmt.Println(app.String())
 }
 
 func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {

@@ -5,20 +5,28 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"analyzer/pkg/app"
 )
 
 type AbstractCallGraph struct {
+	app *app.App
 	// can either be service (key is the service name) or database (key is the database path)
 	nodes map[string]*AbstractNode
 	// key is the id of the ssa instr name for the svc or db call on the callee side
 	edges map[string]*AbstractEdge
 }
 
-func NewAbstractCallGraph() *AbstractCallGraph {
+func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
 	return &AbstractCallGraph{
+		app:   app,
 		nodes: make(map[string]*AbstractNode),
 		edges: make(map[string]*AbstractEdge),
 	}
+}
+
+func (graph *AbstractCallGraph) GetApp() *app.App {
+	return graph.app
 }
 
 func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
@@ -26,17 +34,6 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 		log.Fatalf("node with name (%s) already exists in graph: %v", name, graph)
 	}
 	graph.nodes[name] = node
-}
-
-func taintsListToString(taints []*AbstractTaint) string {
-	var str string
-	for i, taint := range taints {
-		str += taint.String()
-		if i < len(taints)-1 {
-			str += ", "
-		}
-	}
-	return str
 }
 
 func (graph *AbstractCallGraph) AddEdge(id string, edge *AbstractEdge) {

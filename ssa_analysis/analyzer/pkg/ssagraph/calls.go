@@ -90,6 +90,10 @@ func (call *DatabaseCall) GetMethod() string {
 	return call.method
 }
 
+func (call *DatabaseCall) GetDatabaseName() string {
+	return call.database
+}
+
 func (call *DatabaseCall) GetNode() *SSANode {
 	return call.node
 }
