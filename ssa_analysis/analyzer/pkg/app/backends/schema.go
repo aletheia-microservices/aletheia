@@ -53,11 +53,7 @@ func (schema *Schema) String() string {
 		fieldsLst[i] = field.GetPath()
 		i++
 	}
-
-	// sort by field path
-	sort.Slice(fieldsLst, func(i, j int) bool {
-		return fieldsLst[i] < fieldsLst[j]
-	})
+	sort.Strings(fieldsLst)
 
 	var str string
 	for _, field := range fieldsLst {

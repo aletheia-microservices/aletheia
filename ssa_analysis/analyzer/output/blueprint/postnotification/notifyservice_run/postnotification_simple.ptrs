@@ -1,9 +1,9 @@
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).Run ###
-n (@Run): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
-
 t0 (@Run): (*ssa.Alloc) (new *NotifyServiceImpl (n))
 	 → t0 (@Run): (*ssa.Alloc)
+
+n (@Run): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
 
 ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t0 (@Background): (*ssa.MakeInterface)
@@ -231,6 +231,9 @@ t33 (@StorePost): (*ssa.MakeInterface) (make interface{} <- *Post (t6))
 
 t34 (@StorePost): (*ssa.Call) (invoke t30.InsertOne(ctx, t33))
 
+t36 (@StorePost): (*ssa.FieldAddr) (&t6.PostID [#1])
+	 → t6 (@StorePost): (*ssa.Alloc)
+
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl).UploadPost ###
 u (@UploadPost): (*ssa.Parameter) (parameter u : *UploadServiceImpl)
@@ -240,8 +243,6 @@ ctx (@UploadPost): (*ssa.Parameter) (parameter ctx : context.Context)
 t2 (@UploadPost): (*ssa.FieldAddr) (&u.storageService [#0])
 
 t3 (@UploadPost): (*ssa.UnOp) (*t2)
-
-t5 (@UploadPost): (*ssa.Extract) (extract t4 #0)
 
 t6 (@UploadPost): (*ssa.Extract) (extract t4 #1)
 
@@ -254,18 +255,14 @@ t8 (@UploadPost): (*ssa.FieldAddr) (&t7.ReqID [#0])
 t9 (@UploadPost): (*ssa.FieldAddr) (&t7.PostID [#1])
 	 → t7 (@UploadPost): (*ssa.Alloc)
 
-t10 (@UploadPost): (*ssa.FieldAddr) (&t5.PostID [#1])
+t10 (@UploadPost): (*ssa.FieldAddr) (&u.notificationsQueue [#1])
 
-t12 (@UploadPost): (*ssa.FieldAddr) (&u.notificationsQueue [#1])
+t11 (@UploadPost): (*ssa.UnOp) (*t10)
 
-t13 (@UploadPost): (*ssa.UnOp) (*t12)
+t13 (@UploadPost): (*ssa.MakeInterface) (make interface{} <- Message (t12))
+	 → t13 (@UploadPost): (*ssa.MakeInterface)
 
-t15 (@UploadPost): (*ssa.MakeInterface) (make interface{} <- Message (t14))
-	 → t15 (@UploadPost): (*ssa.MakeInterface)
-
-t18 (@UploadPost): (*ssa.Extract) (extract t16 #1)
-
-t20 (@UploadPost): (*ssa.FieldAddr) (&t5.PostID [#1])
+t16 (@UploadPost): (*ssa.Extract) (extract t14 #1)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NewNotifyServiceImpl ###

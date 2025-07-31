@@ -110,7 +110,7 @@ func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, func
 func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *ssagraph.SSANode {
 	fmt.Printf("[A] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
-	id := getInstructionID(instr)
+	id := computeInstructionID(instr)
 	if id == "" { // e.graph., conditions or jumps (instructions and not values)
 		log.Printf("skipping instruction with invalid id: %v\n", instr)
 		return nil
@@ -151,7 +151,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	}
 	visited[val] = true
 
-	id := getValueID(val)
+	id := computeValueID(val)
 	if id == "" { // sanity check
 		log.Fatalf("unexpected invalid id for value: %v\n", val)
 		return nil
@@ -234,7 +234,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 	case *ssa.Extract:
 		extractFromNode := parseValue(graph, instr, instrIdx, t.Tuple, visited)
-		graph.CreateAndAddNewEdge(extractFromNode, node, ssagraph.EDGE_USAGE, t.Index, "")
+		graph.CreateAndAddNewEdge(extractFromNode, node, ssagraph.EDGE_EXTRACT, t.Index, "")
 
 	case *ssa.BinOp:
 		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
@@ -248,7 +248,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	return node
 }
 
-func getInstructionID(instr ssa.Instruction) string {
+func computeInstructionID(instr ssa.Instruction) string {
 	if !instr.Pos().IsValid() { // meaning there is no position
 		n, err := rand.Int(rand.Reader, big.NewInt(1<<31))
 		if err != nil {
@@ -269,7 +269,7 @@ func instrString(instr ssa.Instruction) string {
 	return ""
 }
 
-func getValueID(val ssa.Value) string {
+func computeValueID(val ssa.Value) string {
 	if !val.Pos().IsValid() { // meaning there is no position
 		if c, ok := val.(*ssa.Const); ok {
 			if c.IsNil() {

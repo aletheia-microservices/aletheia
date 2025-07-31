@@ -124,6 +124,9 @@ func main() {
 	for _, entrypoint := range entryPoints {
 		absgraph.Parse(entrypoint, funcGraphs)
 	}
+
+	clientNode := absgraph.GetNodeByNameIfExists("client")
+	absgraph.Visit(clientNode)
 	
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)

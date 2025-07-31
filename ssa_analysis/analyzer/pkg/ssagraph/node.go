@@ -130,8 +130,8 @@ func RegisterNewNodeValue(graph *SSAGraph, instr ssa.Instruction, val ssa.Value,
 		id:      id,
 		taints: make(map[string][]*SSATaint),
 	}
-	graph.nodes = append(graph.nodes, node)
-	graph.defs[node.name] = node
+	graph.AddNode(node)
+	graph.AddNodeDef(node)
 	return node
 }
 
@@ -141,6 +141,7 @@ func RegisterNewNode(graph *SSAGraph, instr ssa.Instruction, id string) *SSANode
 		instr:   instr,
 		taints: make(map[string][]*SSATaint),
 	}
+	graph.AddNode(node)
 	graph.nodes = append(graph.nodes, node)
 	return node
 }

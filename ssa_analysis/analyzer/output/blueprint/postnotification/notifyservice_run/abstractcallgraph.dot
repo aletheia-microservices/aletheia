@@ -15,17 +15,17 @@ digraph G {
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 		N_queue_notification [label="queue.notification", style=bold, shape=cylinder, color="green"];
+		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 	}
-	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()", color=blue];
 	N_UploadService_UploadPost -> N_queue_notification [label="Push()", color=green];
+	N_NotifyService_workerThread -> N_queue_notification [label="Pop()", color=green];
+	N_client -> N_StorageService_ReadPost [label="ReadPost()", color=orange];
+	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
+	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()", color=blue];
 	N_client -> N_StorageService_StorePost [label="StorePost()", color=orange];
 	N_StorageService_StorePost -> N_posts_db_post [label="InsertOne()", color=green];
-	N_NotifyService_workerThread -> N_queue_notification [label="Pop()", color=green];
-	N_StorageService_ReadPost -> N_posts_db_post [label="FindOne()", color=green];
-	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_client -> N_NotifyService_workerThread [label="workerThread()", color=orange];
 	N_NotifyService_workerThread -> N_StorageService_ReadPost [label="ReadPost()", color=blue];
-	N_client -> N_StorageService_ReadPost [label="ReadPost()", color=orange];
+	N_StorageService_ReadPost -> N_posts_db_post [label="FindOne()", color=green];
 }

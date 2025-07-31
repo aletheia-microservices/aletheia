@@ -29,3 +29,7 @@ func (taint *AbstractTaint) GetDbCall() string {
 func (taint *AbstractTaint) String() string {
 	return taint.dbfield
 }
+
+func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
+	return taint.dbfield == other.dbfield && taint.dbcallID == other.dbcallID && taint.primary == other.primary
+}

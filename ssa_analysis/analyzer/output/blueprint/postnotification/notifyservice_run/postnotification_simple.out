@@ -11,12 +11,12 @@ package github.com/blueprint-uservices/blueprint/examples/postnotification_simpl
     method (*NotifyServiceImpl) Run(ctx context.Context) error
     method (*NotifyServiceImpl) workerThread(ctx context.Context) error
   type  Post                    struct{ReqID int64; PostID int64; MediaID int64; Text string; Mentions []string; Timestamp int64; Creator Creator}
-  type  StorageService          interface{ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error); StorePost(ctx context.Context, reqID int64, text string) (*Post, error)}
+  type  StorageService          interface{ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error); StorePost(ctx context.Context, reqID int64, text string) (int64, error)}
     method (StorageService) ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error)
-    method (StorageService) StorePost(ctx context.Context, reqID int64, text string) (*Post, error)
+    method (StorageService) StorePost(ctx context.Context, reqID int64, text string) (int64, error)
   type  StorageServiceImpl      struct{postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase}
     method (*StorageServiceImpl) ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error)
-    method (*StorageServiceImpl) StorePost(ctx context.Context, reqID int64, text string) (*Post, error)
+    method (*StorageServiceImpl) StorePost(ctx context.Context, reqID int64, text string) (int64, error)
   type  TriggerAnalyticsMessage struct{PostID string}
   type  UploadService           interface{UploadPost(ctx context.Context, username string, text string) (int64, error)}
     method (UploadService) UploadPost(ctx context.Context, username string, text string) (int64, error)

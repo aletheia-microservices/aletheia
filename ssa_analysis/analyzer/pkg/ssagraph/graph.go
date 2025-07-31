@@ -21,6 +21,7 @@ type SSAGraph struct {
 	svcCalls []*ServiceCall
 	dbCalls  []*DatabaseCall
 	params   []*SSANode
+	returns  [][]*SSANode // can have multiple return tuples depending on controlflow
 }
 
 func NewGraph(pkg string, fn string, service string, method string) *SSAGraph {
@@ -31,6 +32,14 @@ func NewGraph(pkg string, fn string, service string, method string) *SSAGraph {
 		serviceName: service,
 		methodName:  method,
 	}
+}
+
+func (graph *SSAGraph) AddNode(node *SSANode) {
+	graph.nodes = append(graph.nodes, node)
+}
+
+func (graph *SSAGraph) AddNodeDef(node *SSANode) {
+	graph.defs[node.GetName()] = node
 }
 
 func (graph *SSAGraph) GetServiceWithMethod() string {
@@ -81,8 +90,19 @@ func (graph *SSAGraph) AddParameter(param *SSANode) {
 	graph.params = append(graph.params, param)
 }
 
+func (graph *SSAGraph) AddReturnsToLst(rets []*SSANode) {
+	graph.returns = append(graph.returns, rets)
+}
+
+func (graph *SSAGraph) GetReturnsLst() [][]*SSANode {
+	return graph.returns
+}
+
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
 	fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
+	if len(graph.params) <= 2 {
+		return nil
+	}
 	return graph.params[2:]
 }
 

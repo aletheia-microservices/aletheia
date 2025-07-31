@@ -124,14 +124,14 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 		for _, edge := range graph.GetEdgesFromNode(node) {
 			toVal := edge.GetToNode().GetValue()
 			switch toVal.(type) {
-				case *ssa.MakeInterface, *ssa.Slice:
-					backwardsAnalysis(graph, toVal, taintInfo, visited, taintMode, checkTaintInfo)
+			case *ssa.MakeInterface, *ssa.Slice:
+				backwardsAnalysis(graph, toVal, taintInfo, visited, taintMode, checkTaintInfo)
 				// TODO: maybe we also need to do this for:
 				// (i) nodes whose pointerto set have the current node
 				// (ii) nodes within the pointerto set of the current node
 				// (iii) load and store instrs?
 			}
-			
+
 		}
 
 	}
@@ -211,11 +211,55 @@ func parseArgumentsForMongoDBFilter(graph *ssagraph.SSAGraph, bsonFilter ssa.Val
 }
 
 func RunTainter(graph *ssagraph.SSAGraph) {
-	var nodes []*ssagraph.SSANode
+	// for simplicity, always run taint on database calls before service calls due to cases where
+	// 1st there is a service call that returns some value
+	// 2nd that value is then used in a database call
+	//
+	// the taint is detected when analyzing the service call
+	// only if the database call was analyzed before
+	// because of the way we are checking upper taints with the "spreading of taints in store points"
+	// at the service call
+	//
+	// this logic is close to the tainting process of returns and parameters
+	// where we only taint them after all database calls have been processed
+	runTainterOnDatabaseCalls(graph)
+	runTainterOnServiceCalls(graph)
+	runTainterOnParameters(graph)
+	runTainterOnReturns(graph)
+}
+
+func runTainterOnParameters(graph *ssagraph.SSAGraph) {
+	// mark the parameters of the current function so that we can get their indirect taints
+	// NOTE: currently not adding to nodes array
+	params := graph.GetFuncParametersExceptMemberAndContext()
+	for _, param := range params {
+		spreadTaintsInStorePoint(graph, param, false)
+	}
+}
+
+func runTainterOnReturns(graph *ssagraph.SSAGraph) {
+	var nodesToVisit []*ssagraph.SSANode
 	for _, node := range graph.GetNodes() {
-		var foundDatabaseCall bool
+		// keep track of arguments returned in the current function possibly invoked by other services
+		// so that we can mark their indirect taints
+		if ret, ok := node.GetInstruction().(*ssa.Return); ok {
+			var rets []*ssagraph.SSANode
+			for _, res := range ret.Results {
+				resNode := graph.GetNodeByName(res.Name())
+				nodesToVisit = append(nodesToVisit, resNode)
+				rets = append(rets, resNode)
+			}
+			graph.AddReturnsToLst(rets)
+		}
+
+		checkUpperTaintsForObjects(graph, nodesToVisit)
+	}
+}
+
+func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
+	for _, node := range graph.GetNodes() {
+		var nodesToVisit []*ssagraph.SSANode
 		if database, collectionOrTopic, method, args, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
-			foundDatabaseCall = true
 			/* if node.String() == "t14: invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)" {
 				log.Fatal("EXIT!")
 			} */
@@ -242,77 +286,106 @@ func RunTainter(graph *ssagraph.SSAGraph) {
 			backwardsAnalysis(graph, valDocumentOrMessage, taintInfo, visited, TAINT_BACKWARDS_MARK_AND_PROPAGATE, nil)
 
 			node := graph.GetNodeByName(valDocumentOrMessage.Name())
-			nodes = append(nodes, node)
-		}
+			nodesToVisit = append(nodesToVisit, node)
 
-		// check for common taints
-		for _, originNode := range nodes {
-			fmt.Printf("[TAINT] visiting node (origin): %v\n", originNode.String())
-			for _, edge := range recurseEdgesBackwardsUntilLoadFrom(graph, originNode, nil, make(map[*ssagraph.SSANode]bool)) {
-				// expecting only one node
-				node := edge.GetFromNode()
-				fmt.Printf("\t[TAINT] visiting node (load): %v\n", node.String())
-				spreadTaintsInStorePoint(graph, node, true)
+			// check for common taints
+			for _, originNode := range nodesToVisit {
+				fmt.Printf("[TAINT] visiting node (origin): %v\n", originNode.String())
+				for _, edge := range recurseEdgesBackwardsUntilLoadFrom(graph, originNode, nil, make(map[*ssagraph.SSANode]bool)) {
+					// expecting only one node
+					node := edge.GetFromNode()
+					fmt.Printf("\t[TAINT] visiting node (load): %v\n", node.String())
+					spreadTaintsInStorePoint(graph, node, true)
+				}
 			}
-		}
 
-		// keep track of arguments passed in service RPCs so that we can get their indirect taints
-		if service, method, funcShortPath, args, ok := isServiceCall(graph, node.GetInstruction()); ok {
+			checkUpperTaintsForObjects(graph, nodesToVisit)
+		}
+	}
+}
+
+func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
+	for _, node := range graph.GetNodes() {
+		var nodesToVisit []*ssagraph.SSANode
+		// keep track of arguments passed in service RPCs
+		// so that we can mark their indirect taints
+		if service, method, funcShortPath, args, call, ok := isServiceCall(graph, node.GetInstruction()); ok {
+			// keep track of objects passed as arguments
 			var argNodes []*ssagraph.SSANode
 			for _, arg := range args {
 				argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
 			}
 
-			callId := ssagraph.ComputeCallID(graph, node)
-			svcCall := ssagraph.NewServiceCall(callId, node, argNodes, service, method, funcShortPath)
-			graph.AddServiceCall(svcCall)
-
 			fmt.Printf("[TAINT] added service call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
 			for _, arg := range args {
 				fmt.Printf("[TAINT] checking taint for service call with arg: %s\n", arg.String())
 				node := graph.GetNodeByName(arg.Name())
-				nodes = append(nodes, node)
-			}
-		}
-
-		// mark the parameters of the current function so that we can get their indirect taints
-		// NOTE: currently not adding to nodes array
-		if foundDatabaseCall {
-			params := graph.GetFuncParametersExceptMemberAndContext()
-			for _, param := range params {
-				spreadTaintsInStorePoint(graph, param, false)
-			}
-		}
-
-		// check for upper taints affecting the current database/service calls objects
-		for _, originNode := range nodes {
-			fmt.Println()
-			fmt.Printf("[TAINT] check upper taints for node: %v\n", originNode.String())
-			visited := make(map[TaintInfo]bool)
-			taintInfo := NewTaintInfo("", "", nil, nil)
-			checkTaintInfo := NewCheckTaintInfo()
-			backwardsAnalysis(graph, originNode.GetValue(), taintInfo, visited, TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH, checkTaintInfo)
-			node = graph.GetNodeByName(originNode.GetValue().Name())
-
-			// indirect taints
-			for _, taint := range checkTaintInfo.indirectTaints {
-				if taint.dbcall == nil {
-					log.Fatalf("[1] nil db call for taint: %v\n", taint)
-				}
-				taintInfo := NewTaintInfo(taint.dbfield, "", originNode.GetValue(), taint.dbcall)
-				doTaintNode(node, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
+				nodesToVisit = append(nodesToVisit, node)
 			}
 
-			// inherited taints
-			for objpath, taints := range checkTaintInfo.inheritedTaints {
-				fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, taints)
-				for _, taint := range taints {
-					if taint.dbcall == nil {
-						log.Fatalf("[2] nil db call for taint: %v\n", taint)
+			// keep track of objects extracted from returns
+			var retNodes []*ssagraph.SSANode
+			callNode := graph.GetNodeByName(call.Name())
+			if call.Call.Signature().Results().Len() > 1 {
+				for _, edge := range graph.GetEdgesFromNode(callNode) {
+					if edge.GetType() == ssagraph.EDGE_EXTRACT {
+						nodesToVisit = append(nodesToVisit, edge.GetToNode())
+						retNodes = append(retNodes, edge.GetToNode())
 					}
-					taintInfo := NewTaintInfo(taint.dbfield, objpath, originNode.GetValue(), taint.dbcall)
-					doTaintNode(node, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
 				}
+			} else {
+				// when there is only one return value then there
+				// are no extract instructions and the value is just
+				// the one declared when invoking the function
+				nodesToVisit = append(nodesToVisit, callNode)
+				retNodes = append(retNodes, callNode)
+			}
+			fmt.Printf("[TAINT] [%s] got ret nodes: %v\n", node.String(), retNodes)
+
+			callId := ssagraph.ComputeCallID(graph, node)
+			svcCall := ssagraph.NewServiceCall(callId, node, argNodes, retNodes, service, method, funcShortPath)
+			graph.AddServiceCall(svcCall)
+
+			// check for common taints
+			for _, retNode := range retNodes {
+				fmt.Printf("[TAINT] spreading taints for ret node: %s\n", retNode)
+				spreadTaintsInStorePoint(graph, retNode, false)
+			}
+		}
+
+		checkUpperTaintsForObjects(graph, nodesToVisit)
+	}
+}
+
+func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagraph.SSANode) {
+	// check for upper taints affecting the current database/service calls objects
+	for _, originNode := range nodesToVisit {
+		fmt.Println()
+		fmt.Printf("[TAINT] check upper taints for node: %v\n", originNode.String())
+		visited := make(map[TaintInfo]bool)
+		taintInfo := NewTaintInfo("", "", nil, nil)
+		checkTaintInfo := NewCheckTaintInfo()
+		backwardsAnalysis(graph, originNode.GetValue(), taintInfo, visited, TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH, checkTaintInfo)
+		node := graph.GetNodeByName(originNode.GetValue().Name())
+
+		// indirect taints
+		for _, taint := range checkTaintInfo.indirectTaints {
+			if taint.dbcall == nil {
+				log.Fatalf("[1] nil db call for taint: %v\n", taint)
+			}
+			taintInfo := NewTaintInfo(taint.dbfield, "", originNode.GetValue(), taint.dbcall)
+			doTaintNode(node, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
+		}
+
+		// inherited taints
+		for objpath, taints := range checkTaintInfo.inheritedTaints {
+			fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, taints)
+			for _, taint := range taints {
+				if taint.dbcall == nil {
+					log.Fatalf("[2] nil db call for taint: %v\n", taint)
+				}
+				taintInfo := NewTaintInfo(taint.dbfield, objpath, originNode.GetValue(), taint.dbcall)
+				doTaintNode(node, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
 			}
 		}
 	}
@@ -498,7 +571,7 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 	return "", "", "", nil, false
 }
 
-func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
+func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, *ssa.Call, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
 		// ------------
 		// example apps
@@ -507,15 +580,15 @@ func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, str
 			maybeRcv := fn.Params[0]
 			if maybeRcv.Type().String() == "*main.ShippingService" && fn.Name() == "NewShipment" {
 				// return all args except receiver and context
-				return "ShippingService", "NewShipment", "", call.Call.Args[2:], true
+				return "ShippingService", "NewShipment", "", call.Call.Args[2:], call, true
 			}
 			if maybeRcv.Type().String() == "*main.SkuService" && fn.Name() == "GetSku" {
 				// return all args except receiver and context
-				return "SkuService", "GetSku", "", call.Call.Args[2:], true
+				return "SkuService", "GetSku", "", call.Call.Args[2:], call, true
 			}
 			if maybeRcv.Type().String() == "*main.AnalyticsService" && fn.Name() == "UpdateAnalytics" {
 				// return all args except receiver and context
-				return "AnalyticsService", "UpdateAnalytics", "", call.Call.Args[2:], true
+				return "AnalyticsService", "UpdateAnalytics", "", call.Call.Args[2:], call, true
 			}
 			if slices.Contains([]string{
 				"StorePost", "ReadPost", "DeletePost", // storage
@@ -524,7 +597,7 @@ func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, str
 			}, fn.Name()) {
 				log.Fatal("EXIT!")
 				// return all args except receiver and context
-				return "", "", "", call.Call.Args[2:], true
+				return "", "", "", call.Call.Args[2:], call, true
 			}
 		}
 
@@ -551,9 +624,9 @@ func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, str
 
 				// return all args except context
 				// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-				return service, method, funcShortPath, call.Call.Args[1:], true
+				return service, method, funcShortPath, call.Call.Args[1:], call, true
 			}
 		}
 	}
-	return "", "", "", nil, false
+	return "", "", "", nil, nil, false
 }

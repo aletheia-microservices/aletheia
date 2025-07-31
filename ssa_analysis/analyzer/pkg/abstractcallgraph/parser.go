@@ -51,12 +51,38 @@ func (graph *AbstractCallGraph) Parse(funcshortpath string, funcGraphs map[strin
 
 		fmt.Printf("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
-			param := NewAbstractObject(funcParam.GetName(), graph.ssaTaintToAbstractTaint(funcParam.GetTaints()))
-			node.AddParam(param)
+			obj := NewAbstractObject(funcParam.GetName(), graph.ssaTaintToAbstractTaint(funcParam.GetTaints()))
+			node.AddParam(obj)
 		}
 	}
 
-	// 1. build dummy edges for entrypoints
+	fmt.Printf("[ABSTRACTGRAPH] parsing returns for node: %s\n", node.String())
+	retsLst := ssaGraph.GetReturnsLst()
+	var retsObjs []*AbstractObject
+	// first, just create new abstract objects using the first set of returns (could be any other)
+	for i, ret := range retsLst[0] {
+		obj := NewAbstractObject(ret.GetValue().Type().String(), graph.ssaTaintToAbstractTaint(ret.GetTaints()))
+		node.AddReturn(obj)
+		retsObjs = append(retsObjs, obj)
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", i, obj.String())
+	}
+	// then, merge taints with corresponding object in the remaining set of returns
+	if len(retsLst) > 1 {
+		for _, rets := range retsLst[1:] {
+			for i, ret := range rets {
+				obj := retsObjs[i]
+				obj.MergeTaints(graph.ssaTaintToAbstractTaint(ret.GetTaints()), true)
+				fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
+			}
+		}
+	}
+	// debug
+	for i, obj := range node.GetReturns() {
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.taintString())
+	}
+
+	// build dummy edges for entrypoints
+	// FIXME: must not always happen!
 	edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, EDGE_SERVICE_ENTRYPOINT)
 	for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 		arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint))
@@ -64,7 +90,7 @@ func (graph *AbstractCallGraph) Parse(funcshortpath string, funcGraphs map[strin
 	}
 	graph.AddEdge(edge.GetID(), edge)
 
-	// 2. build edges for service/database RPCs/calls
+	// build edges for service/database RPCs/calls
 	if ssaGraph.HasServiceCalls() {
 		fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
 		for _, call := range ssaGraph.GetServiceCalls() {
@@ -96,16 +122,23 @@ func (graph *AbstractCallGraph) Parse(funcshortpath string, funcGraphs map[strin
 				edge.AddArgument(arg)
 			}
 
-			// propagate taints (indirect): fromArgs >>> toParams
-			for i, toParam := range toNode.GetParams() {
-				fromArg := edge.GetArgumentAt(i)
-				toParam.AddSecondaryTaints(fromArg.GetPrimaryTaints())
+			// create call returns
+			for _, callRet := range call.GetReturns() {
+				ret := NewAbstractObject(callRet.GetName(), graph.ssaTaintToAbstractTaint(callRet.GetTaints()))
+				fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
+				edge.AddReturn(ret)
 			}
 
-			// propagate taints (indirect): fromArgs <<< toParams
+			// propagate taints across services (forwards): fromArgs >>> toParams
+			for i, toParam := range toNode.GetParams() {
+				fromArg := edge.GetArgumentAt(i)
+				toParam.MergeTaints(fromArg.GetPrimaryTaints(), false)
+			}
+
+			// propagate taints across services (backwards): fromArgs <<< toParams
 			for i, fromArg := range edge.GetArguments() {
 				toParam := toNode.GetParamAt(i)
-				fromArg.AddSecondaryTaints(toParam.GetPrimaryTaints())
+				fromArg.MergeTaints(toParam.GetPrimaryTaints(), false)
 			}
 
 			graph.AddEdge(edge.GetID(), edge)
@@ -193,7 +226,7 @@ func (graph *AbstractCallGraph) Parse(funcshortpath string, funcGraphs map[strin
 				}
 
 				fmt.Printf("GOT NEW TAINTS: %v\n", newtaints)
-				toArg.AddSecondaryTaints(newtaints)
+				toArg.MergeTaints(newtaints, false)
 			}
 
 			fmt.Printf("[ABSTRACTGRAPH] getting current database for name (%s)\n", toNode.GetDatabaseName())
@@ -250,6 +283,64 @@ func (graph *AbstractCallGraph) Parse(funcshortpath string, funcGraphs map[strin
 
 		for _, call := range ssaGraph.GetServiceCalls() {
 			graph.Parse(call.GetFuncShortPath(), funcGraphs)
+		}
+	}
+}
+
+func (graph *AbstractCallGraph) Visit(node *AbstractNode) {
+	fmt.Printf("[ABSTRACTCALLGRAPH] visiting service node: %s\n", node.String())
+	for _, edge := range graph.GetEdgesFromNode(node) {
+		if edge.GetEdgeType() == EDGE_SERVICE_ENTRYPOINT {
+			graph.Visit(edge.GetToNode())
+		}
+		
+		if edge.GetEdgeType() == EDGE_SERVICE_RPC {
+			fmt.Printf("\t[ABSTRACTGRAPH] visiting service call: %s\n", edge.String())
+			toNode := edge.GetToNode()
+			taintMapping := &TaintMapping{mapping: make(map[string][]string)}
+	
+			// propagate taints across services (backwards): args (from) <<< params (to)
+			for i, fromArg := range edge.GetArguments() {
+				toParam := toNode.GetParamAt(i)
+				taintMappingTmp := fromArg.MergeTaints(toParam.GetPrimaryTaints(), false)
+				taintMapping.Merge(taintMappingTmp)
+				fmt.Printf("\t\t[ABSTRACTGRAPH] [ARGS] [index=%d] taint mapping for arg (%s): %s\n", i, fromArg.String(), taintMappingTmp.String())
+			}
+			
+			// propagate taints across services (backwards): rets (from) <<< rets (to)
+			for i, fromRet := range edge.GetReturns() {
+				toRet := toNode.GetReturnAt(i)
+				fmt.Printf("to ret: (%s): %v\n", toRet.String(), toRet.GetPrimaryTaints())
+				taintMappingTmp := fromRet.MergeTaints(toRet.GetPrimaryTaints(), false)
+				taintMapping.Merge(taintMappingTmp)
+				fmt.Printf("\t\t[ABSTRACTGRAPH] [RETS] [index=%d] taint mapping for ret (%s): %s\n", i, fromRet.String(), taintMappingTmp.String())
+			}
+
+			fmt.Printf("\t\t[ABSTRACTGRAPH] final taint mapping: %s\n", taintMapping.String())
+
+			// propagate taints into databases
+			for currFieldPath, otherFieldsPathLst := range taintMapping.mapping {
+				currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currFieldPath))
+
+				var currField *backends.Field
+				if !currDb.GetSchema().HasField(currFieldPath) {
+					currField = backends.NewField(currFieldPath, currDb)
+					currDb.GetSchema().AddField(currField)
+				} else {
+					currField = currDb.GetSchema().GetFieldByPath(currFieldPath)
+				}
+
+				for _, otherFieldPath := range otherFieldsPathLst {
+					otherField := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherFieldPath)).GetSchema().GetFieldByPath(otherFieldPath)
+					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
+					currField.AddConstraint(constraint)
+					currDb.GetSchema().AddConstraint(constraint)
+					fmt.Printf("\t\t[ABSTRACTGRAPH] added new constraint: %s\n", constraint)
+				}
+			}
+
+			fmt.Println()
+			graph.Visit(edge.GetToNode())
 		}
 	}
 }

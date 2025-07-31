@@ -18,6 +18,7 @@ type AbstractNode struct {
 	service string
 	method  string
 	params  []*AbstractObject
+	rets    []*AbstractObject
 
 	// for database nodes only
 	dbname string
@@ -52,6 +53,21 @@ func (node *AbstractNode) GetParamAt(i int) *AbstractObject {
 
 func (node *AbstractNode) AddParam(param *AbstractObject) {
 	node.params = append(node.params, param)
+}
+
+func (node *AbstractNode) AddReturn(obj *AbstractObject) {
+	node.rets = append(node.rets, obj)
+}
+
+func (node *AbstractNode) GetReturns() []*AbstractObject {
+	return node.rets
+}
+
+func (node *AbstractNode) GetReturnAt(i int) *AbstractObject {
+	if i > len(node.rets)-1 {
+		log.Fatalf("index (%d) out of bounds for node returns: %v\n", i, node.rets)
+	}
+	return node.rets[i]
 }
 
 func NewAbstractNode(name string, t NodeType, service string, method string, dbname string) *AbstractNode {

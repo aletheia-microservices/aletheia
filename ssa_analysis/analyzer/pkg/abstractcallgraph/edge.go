@@ -23,6 +23,7 @@ type AbstractEdge struct {
 	from   *AbstractNode
 	to     *AbstractNode
 	args   []*AbstractObject // caller side
+	rets   []*AbstractObject // caller side
 }
 
 func (edge *AbstractEdge) String() string {
@@ -62,6 +63,21 @@ func (edge *AbstractEdge) GetArgumentAt(i int) *AbstractObject {
 
 func (edge *AbstractEdge) AddArgument(arg *AbstractObject) {
 	edge.args = append(edge.args, arg)
+}
+
+func (edge *AbstractEdge) GetReturns() []*AbstractObject {
+	return edge.rets
+}
+
+func (edge *AbstractEdge) GetReturnAt(i int) *AbstractObject {
+	if i > len(edge.rets)-1 {
+		log.Fatalf("index (%d) out of bounds for edge returns: %v\n", i, edge.rets)
+	}
+	return edge.rets[i]
+}
+
+func (edge *AbstractEdge) AddReturn(ret *AbstractObject) {
+	edge.rets = append(edge.rets, ret)
 }
 
 func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {

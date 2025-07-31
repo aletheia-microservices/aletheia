@@ -8,17 +8,19 @@ type ServiceCall struct {
 	id   string // format: <func_short_path>_<ssa_instr_name>
 	node *SSANode
 	args []*SSANode
+	rets []*SSANode
 
 	service       string
 	method        string
 	funcShortPath string
 }
 
-func NewServiceCall(id string, node *SSANode, args []*SSANode, service string, method string, funcShortPath string) *ServiceCall {
+func NewServiceCall(id string, node *SSANode, args []*SSANode, rets []*SSANode, service string, method string, funcShortPath string) *ServiceCall {
 	return &ServiceCall{
 		id:            id,
 		node:          node,
 		args:          args,
+		rets:          rets,
 		service:       service,
 		method:        method,
 		funcShortPath: funcShortPath,
@@ -27,6 +29,10 @@ func NewServiceCall(id string, node *SSANode, args []*SSANode, service string, m
 
 func (call *ServiceCall) GetID() string {
 	return call.id
+}
+
+func (call *ServiceCall) GetReturns() []*SSANode {
+	return call.rets
 }
 
 func (call *ServiceCall) GetServiceWithMethod() string {
