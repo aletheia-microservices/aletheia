@@ -1,7 +1,7 @@
 package github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple:
   type  Analytics               struct{PostID int64}
   type  Creator                 struct{Username string}
-  type  Message                 struct{ReqID int64; PostID_MESSAGE int64; Timestamp int64}
+  type  Message                 struct{ReqID int64; PostID int64; Timestamp int64}
   func  NewNotifyServiceImpl    func(ctx context.Context, storageService StorageService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (NotifyService, error)
   func  NewStorageServiceImpl   func(ctx context.Context, postsDb github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase) (StorageService, error)
   func  NewUploadServiceImpl    func(ctx context.Context, storageService StorageService, notificationsQueue github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue) (UploadService, error)

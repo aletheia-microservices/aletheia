@@ -1,6 +1,8 @@
 package backends
 
-import "log"
+import (
+	"log"
+)
 
 type ConstraintType int
 
@@ -31,7 +33,7 @@ func (constraint *Constraint) String() string {
 		if constraint.fields[1] == nil {
 			log.Fatal("unexpected nil field in index 1 for constraint")
 		}
-		return "REFERENCES " + constraint.fields[1].path
+		return "FOREIGN_KEY " + constraint.fields[0].path + " REFERENCES " + constraint.fields[1].path
 	}
 	return ""
 }

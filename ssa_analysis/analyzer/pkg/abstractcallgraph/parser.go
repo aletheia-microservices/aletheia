@@ -236,6 +236,7 @@ func (graph *AbstractCallGraph) Parse(funcshortpath string, funcGraphs map[strin
 										log.Fatal("unexpected!")
 									}
 									currField.AddConstraint(constraint)
+									currField.GetDatabase().GetSchema().AddConstraint(constraint)
 								}
 							}
 						}

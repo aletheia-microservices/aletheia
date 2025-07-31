@@ -124,8 +124,10 @@ func main() {
 	for _, entrypoint := range entryPoints {
 		absgraph.Parse(entrypoint, funcGraphs)
 	}
+	
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
+	app.WriteToJSON()
 
 	fmt.Println()
 	fmt.Println(app.String())
