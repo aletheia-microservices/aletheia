@@ -86,6 +86,15 @@ func (schema *Schema) GetFieldByPath(path string) *Field {
 	return field
 }
 
+func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
+	field, ok := schema.fields[path]
+	if !ok {
+		field = NewField(path, database)
+		schema.fields[path] = field
+	}
+	return field
+}
+
 func (schema *Schema) AddConstraint(constraint *Constraint) {
 	schema.constraints = append(schema.constraints, constraint)
 }

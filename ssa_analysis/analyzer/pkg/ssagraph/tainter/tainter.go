@@ -259,7 +259,7 @@ func runTainterOnReturns(graph *ssagraph.SSAGraph) {
 func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 	for _, node := range graph.GetNodes() {
 		var nodesToVisit []*ssagraph.SSANode
-		if database, collectionOrTopic, method, args, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
+		if database, collectionOrTopic, method, args, isWrite, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
 			/* if node.String() == "t14: invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)" {
 				log.Fatal("EXIT!")
 			} */
@@ -274,7 +274,7 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 			}
 
 			callId := ssagraph.ComputeCallID(graph, node)
-			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method)
+			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method, isWrite)
 			graph.AddDatabaseCall(dbCall)
 
 			valDocumentOrMessage := args[0]
@@ -497,7 +497,8 @@ func recurseEdgesForwardUntilStoreValue(graph *ssagraph.SSAGraph, node *ssagraph
 	return storeEdges
 }
 
-func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool) {
+func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool, bool) {
+	var isWrite bool
 	if call, ok := instr.(*ssa.Call); ok {
 
 		// ------------
@@ -507,12 +508,16 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 			fmt.Printf("[TAINT] [1] found call: %v\n", call)
 			maybeRcv := fn.Params[0]
 			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" || fn.Name() == "Find" {
+				if fn.Name() == "Insert" {
+					isWrite = true
+				}
 				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], true
+				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], isWrite, true
 			}
 			if maybeRcv.Type().String() == "*main.RabbitMQ" && fn.Name() == "Push" {
+				isWrite = true
 				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], true
+				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], isWrite, true
 			}
 		}
 
@@ -522,6 +527,9 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
 			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue" {
 				if slices.Contains([]string{"Push", "Pop"}, call.Call.Method.Name()) {
+					if call.Call.Method.Name() == "Push" {
+						isWrite = true
+					}
 					fmt.Printf("[TAINT] [2] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
 					if fieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
 						if ptr, ok := fieldAddr.X.Type().(*types.Pointer); ok {
@@ -533,7 +541,7 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 								topic := "notification"
 								// return all args except context
 								// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-								return queue, topic, call.Call.Method.Id(), call.Call.Args[1:], true
+								return queue, topic, call.Call.Method.Id(), call.Call.Args[1:], isWrite, true
 							}
 						}
 					}
@@ -542,11 +550,14 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase" {
 				// call for nosqldatabase.GetCollection(...)
 				// skip for now
-				return "", "", "", nil, false
+				return "", "", "", nil, false, false
 			}
 		}
 		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
 			if slices.Contains([]string{"InsertOne", "FindOne"}, call.Call.Method.Name()) {
+				if call.Call.Method.Name() == "InsertOne" {
+					isWrite = true
+				}
 				fmt.Printf("[TAINT] [3] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
 				getCollectionNodeCall := graph.GetNodeByName(extr.Tuple.Name())
 				if colCal, ok := getCollectionNodeCall.GetInstruction().(*ssa.Call); ok {
@@ -562,13 +573,13 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 						}
 						// return all args except context
 						// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-						return database, collection, call.Call.Method.Id(), call.Call.Args[1:], true
+						return database, collection, call.Call.Method.Id(), call.Call.Args[1:], isWrite, true
 					}
 				}
 			}
 		}
 	}
-	return "", "", "", nil, false
+	return "", "", "", nil, false, false
 }
 
 func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, *ssa.Call, bool) {

@@ -2,20 +2,6 @@
   "name": "blueprint/postnotification/notifyservice_run",
   "databases": [
     {
-      "name": "queue",
-      "schema": {
-        "fields": [
-          "queue.notification",
-          "queue.notification.PostID",
-          "queue.notification.ReqID"
-        ],
-        "constraints": [
-          "FOREIGN_KEY queue.notification.PostID REFERENCES posts_db.post.PostID",
-          "FOREIGN_KEY queue.notification.PostID REFERENCES posts_db.post[*].Value"
-        ]
-      }
-    },
-    {
       "name": "posts_db",
       "schema": {
         "fields": [
@@ -25,8 +11,20 @@
           "posts_db.post.Text",
           "posts_db.post[*].Value"
         ],
+        "constraints": []
+      }
+    },
+    {
+      "name": "queue",
+      "schema": {
+        "fields": [
+          "queue.notification",
+          "queue.notification.PostID",
+          "queue.notification.ReqID"
+        ],
         "constraints": [
-          "FOREIGN_KEY posts_db.post[*].Value REFERENCES queue.notification.PostID"
+          "FOREIGN_KEY queue.notification.PostID REFERENCES posts_db.post[*].Value",
+          "FOREIGN_KEY queue.notification.PostID REFERENCES posts_db.post.PostID"
         ]
       }
     }

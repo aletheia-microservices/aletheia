@@ -1,4 +1,4 @@
-package abstractcallgraph
+package abstractgraph
 
 import (
 	"fmt"

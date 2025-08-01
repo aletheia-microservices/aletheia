@@ -64,16 +64,17 @@ func (call *ServiceCall) String() string {
 }
 
 type DatabaseCall struct {
-	id   string // the ssa instr name for the db call on the callee side
-	node *SSANode
-	args []*SSANode
+	id    string // the ssa instr name for the db call on the callee side
+	node  *SSANode
+	args  []*SSANode
+	write bool
 
 	database          string
 	collectionOrTopic string
 	method            string
 }
 
-func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string) *DatabaseCall {
+func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string, write bool) *DatabaseCall {
 	return &DatabaseCall{
 		id:                id,
 		node:              node,
@@ -81,11 +82,16 @@ func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string,
 		database:          database,
 		collectionOrTopic: collectionOrTopic,
 		method:            method,
+		write:             write,
 	}
 }
 
 func (call *DatabaseCall) GetID() string {
 	return call.id
+}
+
+func (call *DatabaseCall) IsWrite() bool {
+	return call.write
 }
 
 func (call *DatabaseCall) GetDatabasePath() string {

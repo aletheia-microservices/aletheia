@@ -1,4 +1,4 @@
-package abstractcallgraph
+package abstractgraph
 
 import (
 	"fmt"
@@ -15,6 +15,8 @@ const (
 
 type AbstractEdge struct {
 	t EdgeType
+
+	write bool // for database calls
 
 	// format: <func_short_path>_<ssa_instr_name>
 	// except for entrypoint edges where format is just <func_short_path>

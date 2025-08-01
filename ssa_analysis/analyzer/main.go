@@ -10,7 +10,7 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 
-	"analyzer/pkg/abstractcallgraph"
+	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
@@ -120,14 +120,15 @@ func main() {
 		"postnotification_simple.NotifyService.workerThread",
 	}
 
-	absgraph := abstractcallgraph.NewAbstractCallGraph(app)
+	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range entryPoints {
-		absgraph.Parse(entrypoint, funcGraphs)
+		abstractgraph.Parse(absgraph, entrypoint, funcGraphs)
 	}
 
 	clientNode := absgraph.GetNodeByNameIfExists("client")
-	absgraph.Visit(clientNode)
-	
+	abstractgraph.Visit(absgraph, clientNode)
+	abstractgraph.Clean(absgraph, clientNode)
+
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
 	app.WriteToJSON()
