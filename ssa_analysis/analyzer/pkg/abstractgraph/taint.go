@@ -1,6 +1,9 @@
 package abstractgraph
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type AbstractTaint struct {
 	dbfield  string // field path in db
@@ -43,9 +46,24 @@ func (taint *AbstractTaint) LongString() string {
 }
 
 func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
-	fmt.Printf("checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.dbfield == other.dbfield &&
 		taint.dbcallID == other.dbcallID &&
 		taint.primary == other.primary &&
 		taint.write == other.write
+}
+
+// taint.dbfield: notification
+// other.dbfield: notification.PostID
+func (taint *AbstractTaint) IsUpperPath(other *AbstractTaint) (bool, string) {
+	fmt.Printf("[ABSTRACT TAINT] [SUPER] checking if taint is super path:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	if taint.dbfield != other.dbfield && strings.HasPrefix(other.dbfield, taint.dbfield) {
+		var subpath string
+		_, subpath, _ = strings.Cut(other.dbfield, taint.dbfield)
+		fmt.Printf("got subpath: %s\n", subpath)
+		return taint.dbcallID == other.dbcallID &&
+			taint.primary == other.primary &&
+			taint.write == other.write, subpath
+	}
+	return false, ""
 }

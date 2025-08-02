@@ -14,14 +14,13 @@ type AbstractCallGraph struct {
 	// can either be service (key is the service name) or database (key is the database path)
 	nodes map[string]*AbstractNode
 	// key is the id of the ssa instr name for the svc or db call on the callee side
-	edges map[string]*AbstractEdge
+	edges []*AbstractEdge
 }
 
 func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
 	return &AbstractCallGraph{
 		app:   app,
 		nodes: make(map[string]*AbstractNode),
-		edges: make(map[string]*AbstractEdge),
 	}
 }
 
@@ -38,21 +37,29 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 
 func (graph *AbstractCallGraph) AddEdge(id string, edge *AbstractEdge) {
 	fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
-	graph.edges[id] = edge
+	graph.edges = append(graph.edges, edge)
 
 	for i, arg := range edge.args {
 		fmt.Printf("\t\t - CALL ARG #%d: %s\n", i, arg.String())
 		if arg.IsTainted() {
-			fmt.Printf("\t\t\t==== arg %d (%s) tainted ====\n%s", i, arg.name, arg.taintString())
+			fmt.Printf("\t\t\t==== arg %d (%s) tainted ====\n%s", i, arg.name, arg.TaintString())
 		}
 	}
 
 	for i, param := range edge.GetToNode().params {
 		fmt.Printf("\t\t - METHOD PARAM #%d: %s\n", i, param.String())
 		if param.IsTainted() {
-			fmt.Printf("\n\n==== arg %d (%s) tainted ====\n%s", i, param.name, param.taintString())
+			fmt.Printf("\n\n==== arg %d (%s) tainted ====\n%s", i, param.name, param.TaintString())
 		}
 	}
+}
+
+func (graph *AbstractCallGraph) GetNodeByName(name string) *AbstractNode {
+	if node, ok := graph.nodes[name]; ok {
+		return node
+	}
+	log.Fatalf("node with name (%s) not found in graph: %v", name, graph)
+	return nil
 }
 
 func (graph *AbstractCallGraph) GetNodeByNameIfExists(name string) *AbstractNode {
@@ -66,7 +73,7 @@ func (graph *AbstractCallGraph) GetNodes() map[string]*AbstractNode {
 	return graph.nodes
 }
 
-func (graph *AbstractCallGraph) GetEdges() map[string]*AbstractEdge {
+func (graph *AbstractCallGraph) GetEdges() []*AbstractEdge {
 	return graph.edges
 }
 
@@ -121,7 +128,7 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 		if detailed {
 			for i, param := range node.GetParams() {
 				if param.IsTainted() {
-					label += fmt.Sprintf("\n\n==== param %d (%s) tainted ====\n%s", i, param.name, param.taintString())
+					label += fmt.Sprintf("\n\n==== param %d (%s) tainted ====\n%s", i, param.name, param.TaintString())
 				}
 
 			}

@@ -45,6 +45,12 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)
+	
+	if node != nil && node.IsParsed() {
+		fmt.Printf("[ABSTRACTGRAPH] ignoring node already visited: %s\n", node.String())
+		return
+	}
+
 	if node == nil {
 		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "")
 		graph.AddNode(name, node)
@@ -52,10 +58,14 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 		fmt.Printf("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 			obj := NewAbstractObject(funcParam.GetName(), ssaTaintToAbstractTaint(graph, (funcParam.GetTaints())))
+			fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
 			node.AddParam(obj)
 		}
 	}
+	
+	node.SetParsed()
 
+	// finalize parsing
 	fmt.Printf("[ABSTRACTGRAPH] parsing returns for node: %s\n", node.String())
 	retsLst := ssaGraph.GetReturnsLst()
 	var retsObjs []*AbstractObject
@@ -78,12 +88,12 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 	}
 	// debug
 	for i, obj := range node.GetReturns() {
-		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.taintString())
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.TaintString())
 	}
 
 	// build dummy edges for entrypoints
 	// FIXME: must not always happen!
-	edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, EDGE_SERVICE_ENTRYPOINT)
+	edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, false, EDGE_SERVICE_ENTRYPOINT)
 	for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 		arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint))
 		edge.AddArgument(arg)
@@ -111,10 +121,11 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 				for _, funcParam := range toSSAGraph.GetFuncParametersExceptMemberAndContext() {
 					param := NewAbstractObject(funcParam.GetName(), ssaTaintToAbstractTaint(graph, (funcParam.GetTaints())))
 					toNode.AddParam(param)
+					fmt.Printf("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
 				}
 			}
 
-			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, EDGE_SERVICE_RPC)
+			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, false, EDGE_SERVICE_RPC)
 
 			// create call arguments
 			for _, callArg := range call.GetArguments() {
@@ -150,7 +161,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 				}
 			}
 
-			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, EDGE_DATABASE_CALL)
+			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, call.IsWrite(), EDGE_DATABASE_CALL)
 
 			for _, callArg := range call.GetArguments() {
 				arg := NewAbstractObject(callArg.GetName(), ssaTaintToAbstractTaint(graph, (callArg.GetTaints())))
@@ -179,69 +190,6 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 	}
 }
 
-func Visit(graph *AbstractCallGraph, node *AbstractNode) {
-	fmt.Printf("[ABSTRACTCALLGRAPH] visiting node: %s\n", node.String())
-	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetEdgeType() == EDGE_SERVICE_ENTRYPOINT {
-			Visit(graph, edge.GetToNode())
-		}
-
-		if edge.GetEdgeType() == EDGE_SERVICE_RPC {
-			fmt.Printf("\t[ABSTRACTGRAPH] visiting service call: %s\n", edge.String())
-			toNode := edge.GetToNode()
-			taintMapping := NewTaintMapping()
-
-			// propagate taints across services (forward): args (from) >>> params (to)
-			for i, toParam := range toNode.GetParams() {
-				fromArg := edge.GetArgumentAt(i)
-				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), false)
-				taintMapping.Merge(taintMappingTmp)
-			}
-
-			// propagate taints across services (backwards): args (from) <<< params (to)
-			/* for i, fromArg := range edge.GetArguments() {
-				toParam := toNode.GetParamAt(i)
-				taintMappingTmp := MergeTaints(fromArg, toParam.GetPrimaryTaints(), false)
-				taintMapping.Merge(taintMappingTmp)
-				fmt.Printf("\t\t[ABSTRACTGRAPH] [ARGS] [index=%d] taint mapping for arg (%s): %s\n", i, fromArg.String(), taintMappingTmp.String())
-			} */
-
-			// propagate taints across services (backwards): rets (from) <<< rets (to)
-			for i, fromRet := range edge.GetReturns() {
-				toRet := toNode.GetReturnAt(i)
-				taintMappingTmp := MergeTaints(fromRet, toRet.GetPrimaryTaints(), false)
-				taintMapping.Merge(taintMappingTmp)
-				fmt.Printf("\t\t[ABSTRACTGRAPH] [RETS] [index=%d] taint mapping for ret (%s): %s\n", i, fromRet.String(), taintMappingTmp.String())
-			}
-
-			propagateNewTaintsToDatabases(graph, taintMapping)
-			fmt.Printf("\t\t[ABSTRACTGRAPH] final taint mapping: %s\n", taintMapping.String())
-			fmt.Println()
-
-			for _, param := range node.GetParams() {
-				propagateNewTaintsToObject(graph, param, taintMapping)
-			}
-
-			// TODO: do the same above for rets and args in edges from this node
-
-			Visit(graph, edge.GetToNode())
-		}
-	}
-}
-
-func Clean(graph *AbstractCallGraph, node *AbstractNode) {
-	fmt.Printf("[ABSTRACTCALLGRAPH] cleaning node: %s\n", node.String())
-	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetEdgeType() == EDGE_SERVICE_ENTRYPOINT {
-			Clean(graph, edge.GetToNode())
-		}
-		for _, param := range node.GetParams() {
-			param.CleanSecondaryTaints()
-		}
-		Clean(graph, edge.GetToNode())
-	}
-}
-
 func registerDatabaseFields(graph *AbstractCallGraph, args []*AbstractObject) {
 	for _, arg := range args {
 		for _, taintLst := range arg.GetPrimaryTaints() {
@@ -254,11 +202,6 @@ func registerDatabaseFields(graph *AbstractCallGraph, args []*AbstractObject) {
 			}
 		}
 	}
-}
-
-func propagateNewTaintsToObject(graph *AbstractCallGraph, obj *AbstractObject, taintMapping *TaintMapping) {
-	//TODO
-	return
 }
 
 func propagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *TaintMapping) {

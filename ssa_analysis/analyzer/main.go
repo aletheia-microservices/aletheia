@@ -12,6 +12,8 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/detection/detector/foreignkeycoordination"
+	"analyzer/pkg/detection/iterator"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/tainter"
@@ -125,9 +127,9 @@ func main() {
 		abstractgraph.Parse(absgraph, entrypoint, funcGraphs)
 	}
 
-	clientNode := absgraph.GetNodeByNameIfExists("client")
-	abstractgraph.Visit(absgraph, clientNode)
-	abstractgraph.Clean(absgraph, clientNode)
+	detector := foreignkeycoordination.NewDetector("foreign-key")
+	iterator := iterator.NewIterator(app, absgraph, detector)
+	iterator.Run()
 
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)

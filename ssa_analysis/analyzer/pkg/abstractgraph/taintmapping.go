@@ -20,6 +20,10 @@ func NewTaintMapping() *TaintMapping {
 	return &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 }
 
+func (tm *TaintMapping) GetMapping() map[AbstractTaint][]AbstractTaint{
+	return tm.mapping
+}
+
 func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint) {
 	if !slices.Contains(tm.mapping[key], valElem) {
 		tm.mapping[key] = append(tm.mapping[key], valElem)
@@ -74,6 +78,8 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 	}
 
+
+	//TODO: deal with upper/lower paths
 	for objpath, otherTaints := range otherTaintsMap {
 		existingTaints := obj.taints[objpath]
 

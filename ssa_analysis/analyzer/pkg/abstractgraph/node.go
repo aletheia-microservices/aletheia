@@ -11,8 +11,9 @@ const (
 )
 
 type AbstractNode struct {
-	t    NodeType
-	name string
+	t      NodeType
+	name   string
+	parsed bool
 
 	// for service nodes only
 	service string
@@ -26,6 +27,14 @@ type AbstractNode struct {
 
 func (node *AbstractNode) String() string {
 	return node.name
+}
+
+func (node *AbstractNode) IsParsed() bool {
+	return node.parsed
+}
+
+func (node *AbstractNode) SetParsed() {
+	node.parsed = true
 }
 
 func (node *AbstractNode) GetName() string {

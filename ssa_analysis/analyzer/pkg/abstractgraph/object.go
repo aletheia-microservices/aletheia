@@ -1,6 +1,7 @@
 package abstractgraph
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -25,7 +26,7 @@ func (obj *AbstractObject) IsTainted() bool {
 	return len(obj.taints) > 0
 }
 
-func (obj *AbstractObject) taintString() string {
+func (obj *AbstractObject) TaintString() string {
 	if len(obj.taints) == 0 {
 		return ""
 	}
@@ -108,5 +109,52 @@ func (obj *AbstractObject) CleanSecondaryTaints() {
 		} else {
 			delete(obj.taints, objpath)
 		}
+	}
+}
+
+// argument 'other' must not be a pointer because the objective is to compare taints with same content
+func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTaint) (string, bool) {
+	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	for objpath, taintLst := range obj.GetAllTaints() {
+		for _, taint := range taintLst {
+			if taint.Equals(&other) {
+				return objpath, true
+			}
+			// taint.dbfield: notification
+			// other.dbfield: notification.PostID
+			if ok, subpath := taint.IsUpperPath(&other); ok {
+				return objpath + subpath, true
+			}
+		}
+	}
+	return "", false
+}
+
+// argument 'other' must not be a pointer because the objective is to compare taints with same content
+func (obj *AbstractObject) HasEqualTaint(other AbstractTaint) bool {
+	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	for _, taintLst := range obj.GetAllTaints() {
+		for _, taint := range taintLst {
+			if taint.Equals(&other) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// argument 'newtaint' must not be a pointer because the objective is is to compare taints with the same content
+func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint AbstractTaint) {
+	fmt.Printf("[ABSTRACT OBJECT] propagate taint\n")
+	exists := obj.HasEqualTaint(newtaint)
+	if !exists {
+		taint := &AbstractTaint{
+			dbfield:  newtaint.dbfield,
+			dbcallID: newtaint.dbcallID,
+			primary:  newtaint.primary,
+			write:    newtaint.write,
+		}
+		obj.taints[objpath] = append(obj.taints[objpath], taint)
+		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)
 	}
 }

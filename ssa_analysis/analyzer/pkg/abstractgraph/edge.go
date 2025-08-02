@@ -32,6 +32,10 @@ func (edge *AbstractEdge) String() string {
 	return fmt.Sprintf("(%s) --> (%s).%s(...)", edge.from.String(), edge.to.String(), edge.method)
 }
 
+func (edge *AbstractEdge) IsWrite() bool {
+	return edge.write
+}
+
 func (edge *AbstractEdge) GetID() string {
 	return edge.id
 }
@@ -82,12 +86,13 @@ func (edge *AbstractEdge) AddReturn(ret *AbstractObject) {
 	edge.rets = append(edge.rets, ret)
 }
 
-func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, t EdgeType) *AbstractEdge {
+func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, write bool, t EdgeType) *AbstractEdge {
 	return &AbstractEdge{
 		id:     id,
 		t:      t,
 		method: method,
 		from:   from,
 		to:     to,
+		write:  write,
 	}
 }
