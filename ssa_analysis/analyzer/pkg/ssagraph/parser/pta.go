@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"log"
 	"os"
+	"path/filepath"
 	"slices"
 	"sort"
 	"strconv"
@@ -86,7 +87,13 @@ func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Resul
 
 func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*ssagraph.SSAGraph) {
 	fmt.Printf("\n[PTA] running pointer analysis for package: %s\n", pkg.String())
-	outFile, err := os.Create(fmt.Sprintf("output/%s/%s.ptrs", appname, pkg.Pkg.Name()))
+
+	path := fmt.Sprintf("output/%s/ssa/%s.ptrs", appname, pkg.Pkg.Name())
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	outFile, err := os.Create(path)
 	if err != nil {
 		log.Fatal(err)
 	}

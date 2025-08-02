@@ -2,6 +2,7 @@ package abstractgraph
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -26,13 +27,39 @@ func (obj *AbstractObject) IsTainted() bool {
 	return len(obj.taints) > 0
 }
 
+func (obj *AbstractObject) TaintLongString() string {
+	if len(obj.taints) == 0 {
+		return ""
+	}
+	var objpaths []string
+	for objpath := range obj.taints {
+		objpaths = append(objpaths, objpath)
+	}
+	sort.Strings(objpaths)
+
+	var builder strings.Builder
+	for _, objpath := range objpaths {
+		for _, taint := range obj.taints[objpath] {
+			builder.WriteString("\t" + objpath + " @ " + taint.LongString() + "\n")
+		}
+	}
+	return builder.String()
+}
+
 func (obj *AbstractObject) TaintString() string {
 	if len(obj.taints) == 0 {
 		return ""
 	}
 
+	var objpaths []string
+	for objpath := range obj.taints {
+		objpaths = append(objpaths, objpath)
+	}
+	sort.Strings(objpaths)
+
 	var builder strings.Builder
-	for objpath, taints := range obj.taints {
+	for _, objpath := range objpaths {
+		taints := obj.taints[objpath]
 		builder.WriteString(objpath)
 		builder.WriteByte('\n')
 		for _, taint := range taints {
@@ -52,7 +79,6 @@ func (obj *AbstractObject) TaintString() string {
 			builder.WriteByte('\n')
 		}
 	}
-
 	return builder.String()
 }
 
@@ -94,6 +120,18 @@ func (obj *AbstractObject) GetSecondaryTaints() map[string][]*AbstractTaint {
 		}
 	}
 	return obj.taints
+}
+
+func (obj *AbstractObject) GetSecondaryTaintsFlatList() []*AbstractTaint {
+	var lst []*AbstractTaint
+	for _, taints := range obj.taints {
+		for _, taint := range taints {
+			if !taint.IsPrimary() {
+				lst = append(lst, taint)
+			}
+		}
+	}
+	return lst
 }
 
 func (obj *AbstractObject) CleanSecondaryTaints() {

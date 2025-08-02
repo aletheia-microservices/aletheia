@@ -8,13 +8,6 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_NotifyService_workerThread [label="NotifyService.workerThread", style=bold, shape=box, color="blue"];
-		N_StorageService_ReadPost [label="StorageService.ReadPost
-
-==== param 1 (postID) tainted ====
-_obj
-[P,R] @ posts_db.post[*].Value
-", style=bold, shape=box, color="blue"];
 		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
 		N_StorageService_StorePost [label="StorageService.StorePost
 
@@ -26,6 +19,13 @@ _obj
 ==== param 1 (text) tainted ====
 _obj
 [P,W] @ posts_db.post.Text
+", style=bold, shape=box, color="blue"];
+		N_NotifyService_workerThread [label="NotifyService.workerThread", style=bold, shape=box, color="blue"];
+		N_StorageService_ReadPost [label="StorageService.ReadPost
+
+==== param 1 (postID) tainted ====
+_obj
+[P,R] @ posts_db.post[*].Value
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
@@ -39,8 +39,8 @@ _obj
 	N_client -> N_StorageService_StorePost [label="StorePost()", color=orange];
 	N_StorageService_StorePost -> N_posts_db_post [label="InsertOne()", color=green];
 	N_client -> N_NotifyService_workerThread [label="workerThread()", color=orange];
-	N_NotifyService_workerThread -> N_StorageService_ReadPost [label="ReadPost()", color=blue];
 	N_NotifyService_workerThread -> N_queue_notification [label="Pop()", color=green];
+	N_NotifyService_workerThread -> N_StorageService_ReadPost [label="ReadPost()", color=blue];
 	N_client -> N_StorageService_ReadPost [label="ReadPost()", color=orange];
 	N_StorageService_ReadPost -> N_posts_db_post [label="FindOne()", color=green];
 }

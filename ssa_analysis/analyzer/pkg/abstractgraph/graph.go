@@ -35,23 +35,9 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 	graph.nodes[name] = node
 }
 
-func (graph *AbstractCallGraph) AddEdge(id string, edge *AbstractEdge) {
+func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
 	fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
-
-	for i, arg := range edge.args {
-		fmt.Printf("\t\t - CALL ARG #%d: %s\n", i, arg.String())
-		if arg.IsTainted() {
-			fmt.Printf("\t\t\t==== arg %d (%s) tainted ====\n%s", i, arg.name, arg.TaintString())
-		}
-	}
-
-	for i, param := range edge.GetToNode().params {
-		fmt.Printf("\t\t - METHOD PARAM #%d: %s\n", i, param.String())
-		if param.IsTainted() {
-			fmt.Printf("\n\n==== arg %d (%s) tainted ====\n%s", i, param.name, param.TaintString())
-		}
-	}
 }
 
 func (graph *AbstractCallGraph) GetNodeByName(name string) *AbstractNode {

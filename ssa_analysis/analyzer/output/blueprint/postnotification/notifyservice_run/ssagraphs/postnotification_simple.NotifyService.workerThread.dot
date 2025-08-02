@@ -1,0 +1,73 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_28158 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_28158 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1856743735 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_27991 [label="t0: new Message (workerMessage)
+
+==== tainted ====
+
+_obj
+@ queue.notification
+
+_obj.ReqID
+@ queue.notification.ReqID
+
+_obj.PostID
+@ queue.notification.PostID
+", style=bold, shape=box, color="orange"];
+	N_val_call_28038 [label="t4: invoke t2.Pop(ctx, t3)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_28086 [label="t11: invoke t6.ReadPost(ctx, t8, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_28016 [label="t1: &n.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_28063 [label="t5: &n.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_28106 [label="t7: &t0.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_28127 [label="t9: &t0.PostID [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make interface{} <- *Message (t0)
+
+==== tainted ====
+
+_obj.PostID
+@ queue.notification.PostID
+
+_obj
+@ queue.notification
+
+_obj.ReqID
+@ queue.notification.ReqID
+", style=bold, shape=box, color="black"];
+	N_val_param_27876 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_27911 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_28016 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_28063 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_28106 [label="t8: *t7
+
+==== tainted ====
+
+_obj
+@ queue.notification.ReqID
+", style=bold, shape=box, color="red"];
+	N_val_unary_28127 [label="t10: *t9
+
+==== tainted ====
+
+_obj
+@ queue.notification.PostID
+", style=bold, shape=box, color="red"];
+	N_val_param_27876 -> N_val_field_28016;
+	N_val_field_28016 -> N_val_unary_28016;
+	N_val_alloc_27991 -> N_val_ifacet3;
+	N_val_param_27911 -> N_val_call_28038;
+	N_val_ifacet3 -> N_val_call_28038;
+	N_val_param_27876 -> N_val_field_28063;
+	N_val_field_28063 -> N_val_unary_28063;
+	N_val_alloc_27991 -> N_val_field_28106;
+	N_val_field_28106 -> N_val_unary_28106;
+	N_val_alloc_27991 -> N_val_field_28127;
+	N_val_field_28127 -> N_val_unary_28127;
+	N_val_param_27911 -> N_val_call_28086;
+	N_val_unary_28106 -> N_val_call_28086;
+	N_val_unary_28127 -> N_val_call_28086;
+	N_nil_1856743735 -> N_instr_ret_28158;
+	N_val_field_28106 -> N_val_alloc_27991 [label=".ReqID", style=dashed, color=blue];
+	N_val_field_28127 -> N_val_alloc_27991 [label=".PostID", style=dashed, color=blue];
+}

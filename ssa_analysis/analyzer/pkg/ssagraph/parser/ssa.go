@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/big"
 	"os"
+	"path/filepath"
 
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/types/typeutil"
@@ -16,14 +17,21 @@ import (
 )
 
 func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*ssagraph.SSAGraph) {
-	outfile1, err := os.Create(fmt.Sprintf("output/%s/%s.out", appname, pkg.Pkg.Name()))
+	path1 := fmt.Sprintf("output/%s/ssa/%s.out", appname, pkg.Pkg.Name())
+	if err := os.MkdirAll(filepath.Dir(path1), 0755); err != nil {
+		log.Fatal(err)
+	}
+	outfile1, err := os.Create(path1)
 	if err != nil {
-		log.Fatalf("failed to create output file: %v", err)
+		log.Fatal(err)
 	}
 	defer outfile1.Close()
-	pkg.WriteTo(outfile1)
 
-	outfile2, err := os.Create(fmt.Sprintf("output/%s/%s.ssa", appname, pkg.Pkg.Name()))
+	path2 := fmt.Sprintf("output/%s/ssa/%s.ssa", appname, pkg.Pkg.Name())
+	if err := os.MkdirAll(filepath.Dir(path2), 0755); err != nil {
+		log.Fatal(err)
+	}
+	outfile2, err := os.Create(path2)
 	if err != nil {
 		log.Fatal(err)
 	}

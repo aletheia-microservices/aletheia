@@ -3,6 +3,8 @@ package abstractgraph
 import (
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 )
 
 type EdgeType int
@@ -38,6 +40,20 @@ func (edge *AbstractEdge) IsWrite() bool {
 
 func (edge *AbstractEdge) GetID() string {
 	return edge.id
+}
+
+func (edge *AbstractEdge) GetIDNumber() int {
+	parts := strings.Split(edge.id, ".t")
+	if len(parts) != 2 {
+		log.Fatalf("unexpected format for edge with ID = %s: %s", edge.id, edge.String())
+		return 0
+	}
+	n, err := strconv.Atoi(parts[1])
+	if err != nil {
+		log.Fatalf("unexpected format for edge with ID = %s: %s", edge.id, edge.String())
+		return 0
+	}
+	return n
 }
 
 func (edge *AbstractEdge) GetEdgeType() EdgeType {

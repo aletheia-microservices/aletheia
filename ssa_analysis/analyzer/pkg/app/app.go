@@ -21,6 +21,10 @@ func NewApp(name string) *App {
 	}
 }
 
+func (app *App) GetName() string {
+	return app.name
+}
+
 func (app *App) MarshalJSON() ([]byte, error) {
 	databases := make([]*backends.Database, len(app.databases))
 	i := 0

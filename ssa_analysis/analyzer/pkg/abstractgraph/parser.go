@@ -3,6 +3,7 @@ package abstractgraph
 import (
 	"fmt"
 	"log"
+	"sort"
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/ssagraph"
@@ -88,7 +89,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 	}
 	// debug
 	for i, obj := range node.GetReturns() {
-		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.TaintString())
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.TaintLongString())
 	}
 
 	// build dummy edges for entrypoints
@@ -98,7 +99,9 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 		arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint))
 		edge.AddArgument(arg)
 	}
-	graph.AddEdge(edge.GetID(), edge)
+	graph.AddEdge(edge)
+
+	var edges []*AbstractEdge
 
 	// build edges for service/database RPCs/calls
 	if ssaGraph.HasServiceCalls() {
@@ -140,7 +143,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 				edge.AddReturn(ret)
 			}
 
-			graph.AddEdge(edge.GetID(), edge)
+			edges = append(edges, edge)
 		}
 		fmt.Println()
 	}
@@ -180,9 +183,20 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 			}
 			propagateNewTaintsToDatabases(graph, taintMapping)
 
-			graph.AddEdge(edge.GetID(), edge)
+			edges = append(edges, edge)
 		}
 		fmt.Println()
+
+		// at the end, we need to sort edges by ID (which also includes original ssa ID)
+		// this is because the tainter first checks database calls and then service calls
+		// so their order is not the real one after parsing them here
+		sort.Slice(edges, func(i, j int) bool {
+			return edges[i].GetIDNumber() < edges[j].GetIDNumber()
+		})
+
+		for _, edge := range edges {
+			graph.AddEdge(edge)
+		}
 
 		for _, call := range ssaGraph.GetServiceCalls() {
 			Parse(graph, call.GetFuncShortPath(), funcGraphs)

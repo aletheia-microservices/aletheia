@@ -1,0 +1,36 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_27853 [label="return t4, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_27853 [label="return t4, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_27778 [label="*t1 = storageService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_27778 [label="*t1 = storageService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_27814 [label="*t2 = notificationsQueue", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_27814 [label="*t2 = notificationsQueue", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_27847 [label="*t3 = 4:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_27847 [label="*t3 = 4:int", style=bold, shape=ellipse, color="blue"];
+	N_nil_279121730 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_4:int [label="4:int: 4:int", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_27763 [label="t0: new NotifyServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_27778 [label="t1: &t0.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_27814 [label="t2: &t0.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_27847 [label="t3: &t0.num_workers [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet4 [label="t4: make NotifyService <- *NotifyServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_27628 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_27649 [label="storageService: parameter storageService : StorageService", style=bold, shape=ellipse, color="black"];
+	N_val_param_27680 [label="notificationsQueue: parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_27763 -> N_val_field_27778;
+	N_val_alloc_27763 -> N_val_field_27814;
+	N_val_alloc_27763 -> N_val_field_27847;
+	N_val_field_27778 -> N_instr_store_27778;
+	N_val_param_27649 -> N_instr_store_27778;
+	N_val_field_27814 -> N_instr_store_27814;
+	N_val_param_27680 -> N_instr_store_27814;
+	N_val_field_27847 -> N_instr_store_27847;
+	N_val_4:int -> N_instr_store_27847;
+	N_val_alloc_27763 -> N_val_ifacet4;
+	N_val_ifacet4 -> N_instr_ret_27853;
+	N_nil_279121730 -> N_instr_ret_27853;
+	N_val_field_27814 -> N_val_alloc_27763 [label=".notificationsQueue", style=dashed, color=blue];
+	N_val_field_27778 -> N_val_alloc_27763 [label=".storageService", style=dashed, color=blue];
+	N_val_field_27847 -> N_val_alloc_27763 [label=".num_workers", style=dashed, color=blue];
+}

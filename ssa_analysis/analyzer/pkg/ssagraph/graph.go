@@ -212,7 +212,7 @@ func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType 
 }
 
 func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {
-	filename := fmt.Sprintf("output/%s/graphs/%s.dot", appname, fn)
+	filename := fmt.Sprintf("output/%s/ssagraphs/%s.dot", appname, fn)
 	file, err := os.Create(filename)
 	if err != nil {
 		return err
