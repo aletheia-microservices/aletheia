@@ -7,11 +7,12 @@ import (
 )
 
 type Schema struct {
+	name        string // can be name of (sql) table, (nosql) collection, or (queue) topic
 	fields      map[string]*Field
 	constraints []*Constraint
 }
 
-func NewSchema() *Schema {
+func NewSchema(name string) *Schema {
 	return &Schema{
 		fields: make(map[string]*Field),
 	}

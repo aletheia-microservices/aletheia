@@ -3,14 +3,14 @@ package backends
 import "encoding/json"
 
 type Database struct {
-	name   string
-	schema *Schema
+	name    string
+	schemas []*Schema
 }
 
-func NewDatabase(name string, schema *Schema) *Database {
+func NewDatabase(name string, schemas ...*Schema) *Database {
 	return &Database{
-		name:   name,
-		schema: schema,
+		name:    name,
+		schemas: schemas,
 	}
 }
 
@@ -20,7 +20,7 @@ func (database *Database) MarshalJSON() ([]byte, error) {
 		Schema *Schema `json:"schema"`
 	}{
 		Name:   database.name,
-		Schema: database.schema,
+		Schema: database.schemas[0],
 	})
 }
 
@@ -28,10 +28,23 @@ func (database *Database) GetName() string {
 	return database.name
 }
 
+func (database *Database) AddSchema(schema *Schema) {
+	database.schemas = append(database.schemas, schema)
+}
+
+func (database *Database) HasSchema(name string) bool {
+	for _, schema := range database.schemas {
+		if schema.name == name {
+			return true
+		}
+	}
+	return false
+}
+
 func (database *Database) GetSchema() *Schema {
-	return database.schema
+	return database.schemas[0]
 }
 
 func (database *Database) String() string {
-	return database.name + " // schema: \n" + database.schema.String()
+	return database.name + " // schema: \n" + database.schemas[0].String()
 }

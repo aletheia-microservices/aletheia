@@ -1,0 +1,29 @@
+{
+  "posts_db": {
+    "name": "posts_db",
+    "schema": {
+      "fields": [
+        "posts_db.post",
+        "posts_db.post.PostID",
+        "posts_db.post.ReqID",
+        "posts_db.post.Text",
+        "posts_db.post[*].Value"
+      ],
+      "constraints": []
+    }
+  },
+  "queue": {
+    "name": "queue",
+    "schema": {
+      "fields": [
+        "queue.notification",
+        "queue.notification.PostID",
+        "queue.notification.ReqID"
+      ],
+      "constraints": [
+        "FOREIGN_KEY queue.notification.PostID REFERENCES posts_db.post.PostID",
+        "FOREIGN_KEY queue.notification.PostID REFERENCES posts_db.post[*].Value"
+      ]
+    }
+  }
+}

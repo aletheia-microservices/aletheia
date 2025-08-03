@@ -12,12 +12,35 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/app/backends"
+	"analyzer/pkg/app/services"
 	"analyzer/pkg/detection"
 	"analyzer/pkg/detection/constraints/foreignkeycoordination"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/tainter"
 )
+
+func initPostNotification(app *app.App) {
+	service1 := services.NewService("UploadService", "UploadServiceImpl", "postnotification_simple", "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService")
+	service2 := services.NewService("StorageService", "StorageServiceImpl", "postnotification_simple", "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService")
+	service3 := services.NewService("NotifyService", "NotifyServiceImpl", "postnotification_simple", "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService")
+
+	service2.SetMethods("StorePost", "ReadPost")
+
+	service1.AddDependency(service2)
+	service3.AddDependency(service2)
+
+	app.AddService(service1)
+	app.AddService(service2)
+	app.AddService(service3)
+
+	database1 := backends.NewDatabase("queue")
+	database2 := backends.NewDatabase("posts_db")
+
+	app.AddDatabase(database1)
+	app.AddDatabase(database2)
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -30,6 +53,8 @@ func main() {
 	}
 
 	appname := os.Args[1]
+	app := app.NewApp(appname)
+	initPostNotification(app)
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
@@ -49,7 +74,6 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-
 	prog, pkgs, err := buildProgram(appname)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
@@ -68,7 +92,7 @@ func main() {
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
 	for _, pkg := range pkgs {
-		parser.RunSSAAnalysis(appname, prog, pkg, funcGraphs)
+		parser.RunSSAAnalysis(app, prog, pkg, funcGraphs)
 	}
 
 	for _, ssagraph := range funcGraphs {
@@ -120,8 +144,6 @@ func main() {
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
 
-	app := app.NewApp(appname)
-
 	var entryPoints = []string{
 		"postnotification_simple.UploadService.UploadPost",
 		//"postnotification_simple.StorageService.StorePost",
@@ -140,7 +162,8 @@ func main() {
 
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
-	app.WriteToJSON()
+	app.WriteAppToJSON()
+	app.WriteSchemaToJSON()
 
 	fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
 	for _, node := range absgraph.GetNodes() {
