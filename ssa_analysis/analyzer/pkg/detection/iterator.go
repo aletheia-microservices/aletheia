@@ -1,4 +1,4 @@
-package iterator
+package detection
 
 import (
 	"fmt"
@@ -7,17 +7,16 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
-	"analyzer/pkg/detection/detector"
 	"analyzer/pkg/utils"
 )
 
 type Iterator struct {
 	app      *app.App
 	graph    *abstractgraph.AbstractCallGraph
-	detector detector.Detector
+	detector Detector
 }
 
-func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detector detector.Detector) *Iterator {
+func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detector Detector) *Iterator {
 	return &Iterator{
 		app:      app,
 		graph:    graph,
@@ -53,6 +52,13 @@ func (iterator *Iterator) clean(node *abstractgraph.AbstractNode) {
 func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 	fmt.Printf("[ITERATOR] visiting node: %s\n", node.String())
 	iterator.detector.OnNewNode(iterator.app, node)
+
+	fmt.Printf("[ITERATOR] on new node (%s) with edges:\n", node.String())
+	for _, edge := range iterator.graph.GetEdgesFromNode(node) {
+		fmt.Printf("\t[ITERATOR] (ID = %s) %s\n", edge.GetID(), edge.String())
+	}
+	fmt.Println()
+
 	for i, edge := range iterator.graph.GetEdgesFromNode(node) {
 		if edge.GetEdgeType() == abstractgraph.EDGE_SERVICE_RPC {
 			fmt.Printf("\t[ITERATOR] visiting service call: %s\n", edge.String())

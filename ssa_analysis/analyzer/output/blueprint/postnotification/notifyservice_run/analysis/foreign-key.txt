@@ -1,0 +1,7 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
+---------------------------------------------------------------------
+request #2 @ NotifyService.workerThread:
+	foreign read #0:
+		read_1 = (StorageService.ReadPost) --> (posts_db.post).FindOne(...)
+		read_2 = (NotifyService.workerThread) --> (queue.notification).Pop(...)

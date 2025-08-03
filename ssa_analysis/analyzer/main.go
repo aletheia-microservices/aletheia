@@ -12,8 +12,8 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
-	"analyzer/pkg/detection/detector/foreignkeycoordination"
-	"analyzer/pkg/detection/iterator"
+	"analyzer/pkg/detection"
+	"analyzer/pkg/detection/constraints/foreignkeycoordination"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/tainter"
@@ -25,7 +25,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "available appnames:")
 		fmt.Fprintln(os.Stderr, "- examples/postnotification")
 		fmt.Fprintln(os.Stderr, "- examples/shoppingcart")
-		fmt.Fprintln(os.Stderr, "- blueprint/postnotification/storageservice_storepost")
+		fmt.Fprintln(os.Stderr, "- blueprint/postnotification/notifyservice_run")
 		os.Exit(1)
 	}
 
@@ -38,10 +38,17 @@ func main() {
 	}
 
 	// ensure output sub directory for graphs exists
-	err = os.MkdirAll(fmt.Sprintf("output/%s/graphs", appname), os.ModePerm)
+	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs", appname), os.ModePerm)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
+
+	// ensure output sub directory for graphs exists
+	err = os.MkdirAll(fmt.Sprintf("output/%s/ssa", appname), os.ModePerm)
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
+
 
 	prog, pkgs, err := buildProgram(appname)
 	if err != nil {
@@ -128,15 +135,32 @@ func main() {
 	}
 
 	detector := foreignkeycoordination.NewDetector("foreign-key")
-	iterator := iterator.NewIterator(app, absgraph, detector)
+	iterator := detection.NewIterator(app, absgraph, detector)
 	iterator.Run()
 
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
 	app.WriteToJSON()
 
-	fmt.Println()
+	fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
+	for _, node := range absgraph.GetNodes() {
+		if node.GetNodeType() == abstractgraph.NODE_DATABASE {
+			for _, edge := range absgraph.GetEdgesToNode(node) {
+				fmt.Printf("DATABASE CALL: %s\n", edge.String())
+				for i, arg := range edge.GetArguments() {
+					fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
+				}
+				fmt.Println()
+			}
+		}
+	}
+
+	fmt.Print("\n\n ========== APP ========== \n\n")
 	fmt.Println(app.String())
+
+	detector.ComputeResults()
+	res := detection.SaveResults(app, detector)
+	fmt.Println(res)
 }
 
 func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {
