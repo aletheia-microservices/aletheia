@@ -8,24 +8,42 @@ import (
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/app/services"
+	"analyzer/pkg/frameworks/blueprint"
 )
 
 type App struct {
-	name      string
-	databases map[string]*backends.Database
-	services  map[string]*services.Service
+	name        string
+	databases   map[string]*backends.Database
+	services    map[string]*services.Service
+	entrypoints map[*services.Service][]string
 }
 
 func NewApp(name string) *App {
 	return &App{
-		name:      name,
-		databases: make(map[string]*backends.Database),
-		services:  make(map[string]*services.Service),
+		name:        name,
+		databases:   make(map[string]*backends.Database),
+		services:    make(map[string]*services.Service),
+		entrypoints: make(map[*services.Service][]string),
 	}
 }
 
 func (app *App) GetName() string {
 	return app.name
+}
+
+func (app *App) AddEntrypoint(service *services.Service, method string) {
+	app.entrypoints[service] = append(app.entrypoints[service], method)
+}
+
+// e.g., postnotification.UploadService.UploadPost
+func (app *App) GetEntrypointsShortPaths() []string {
+	var entrypoints []string
+	for service, serviceEntrypoints := range app.entrypoints {
+		for _, method := range serviceEntrypoints {
+			entrypoints = append(entrypoints, service.GetPackage()+"."+service.GetName()+"."+method)
+		}
+	}
+	return entrypoints
 }
 
 func (app *App) GetServiceWithPathIfExists(path string) *services.Service {
@@ -46,12 +64,28 @@ func (app *App) HasDatabase(name string) bool {
 	return ok
 }
 
+func (app *App) GetAllDatabases() []*backends.Database {
+	var lst []*backends.Database
+	for _, db := range app.databases {
+		lst = append(lst, db)
+	}
+	return lst
+}
+
 func (app *App) GetDatabaseByName(name string) *backends.Database {
 	db, ok := app.databases[name]
 	if !ok {
 		log.Fatalf("could not find database for name (%s) in app", name)
 	}
 	return db
+}
+
+func (app *App) GetAllServices() []*services.Service {
+	var lst []*services.Service
+	for _, service := range app.services {
+		lst = append(lst, service)
+	}
+	return lst
 }
 
 func (app *App) AddService(service *services.Service) {
@@ -69,6 +103,53 @@ func (app *App) GetServiceByName(name string) *services.Service {
 		log.Fatalf("could not find service for name (%s) in app", name)
 	}
 	return service
+}
+
+
+func (app *App) Init() {
+	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName())
+
+	// parse services
+	for _, svcInfo := range servicesInfo {
+		name := svcInfo.Name
+		constructor := svcInfo.ConstructorName
+		pkg := svcInfo.Package
+		path := svcInfo.PackagePath + "." + svcInfo.Name
+		impl := svcInfo.Name + "Impl"
+		methods := svcInfo.Methods
+
+		service := services.NewService(name, impl, pkg, path, constructor)
+		service.SetMethods(methods...)
+		app.AddService(service)
+	}
+	for _, svcInfo := range servicesInfo {
+		service := app.GetServiceByName(svcInfo.Name)
+		for _, dep := range svcInfo.Edges {
+			otherService := app.GetServiceByName(dep)
+			service.AddDependency(otherService)
+		}
+	}
+
+	// parse databases
+	for _, dsInfo := range datastoresInfo {
+		database := backends.NewDatabase(dsInfo.Name)
+		app.AddDatabase(database)
+	}
+
+	// parse entrypoints
+	for _, serviceName := range frontends {
+		service := app.GetServiceByName(serviceName)
+		for _, method := range service.GetMethods() {
+			app.AddEntrypoint(service, method)
+		}
+	}
+	for _, service := range app.GetAllServices() {
+		if service.HasInitializerMethod() {
+			// Run() method can also be considered as entrypoint
+			// because they are always called when initializing services
+			app.AddEntrypoint(service, "Run")
+		}
+	}
 }
 
 func (app *App) String() string {

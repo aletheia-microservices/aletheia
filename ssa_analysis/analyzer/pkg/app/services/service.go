@@ -10,28 +10,44 @@ import (
 type Service struct {
 	name string // service name
 
-	impl string // impl name
-	pkg  string // simple package name
-	path string // format: <pkgpath>.<name>
+	impl        string // impl name
+	pkg         string // simple package name
+	path        string // format: <pkgpath>.<name>
+	constructor string // method name
 
 	deps []*Service
 	dbs  []*backends.Database
 
 	// TODO: create a struct with more info for methods
-	methods []string
+	methods     []string
+	initializer bool // true if it has Run method
 }
 
-func NewService(name string, impl string, pkg string, path string) *Service {
+func NewService(name string, impl string, pkg string, path string, constructor string) *Service {
 	return &Service{
-		name: name,
-		impl: impl,
-		pkg:  pkg,
-		path: path,
+		name:        name,
+		impl:        impl,
+		pkg:         pkg,
+		path:        path,
+		constructor: constructor,
 	}
 }
 
+func (service *Service) GetMethods() []string {
+	return service.methods
+}
+
 func (service *Service) SetMethods(methods ...string) {
-	service.methods = methods
+	for _, method := range methods {
+		if method == "Run" {
+			service.initializer = true
+		}
+		service.methods = append(service.methods, method)
+	}
+}
+
+func (service *Service) HasInitializerMethod() bool {
+	return service.initializer
 }
 
 func (service *Service) HasMethod(name string) bool {
@@ -109,6 +125,7 @@ func (service *Service) MarshalJSON() ([]byte, error) {
 		Path      string   `json:"path"`
 		Pkg       string   `json:"pkg"`
 		Impl      string   `json:"impl"`
+		Methods   []string `json:"methods"`
 		Services  []string `json:"services"`
 		Databases []string `json:"databases"`
 	}{
@@ -116,6 +133,7 @@ func (service *Service) MarshalJSON() ([]byte, error) {
 		Path:      service.path,
 		Pkg:       service.pkg,
 		Impl:      service.impl,
+		Methods:   service.methods,
 		Services:  depNames,
 		Databases: dbNames,
 	})

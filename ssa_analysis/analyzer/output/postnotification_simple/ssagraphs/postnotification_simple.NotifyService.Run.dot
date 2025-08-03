@@ -1,0 +1,96 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4130799 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4130799 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_4130249 [label="*t4 = t5", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4130249 [label="*t4 = t5", style=bold, shape=ellipse, color="blue"];
+	N_nil_197097165 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_"initializing %d w...":string [label="\"initializing %d w...\":string: \"initializing %d w...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4130260 [label="t3: new [1]any (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_4130268 [label="t8: new Message (workerMessage)
+
+==== tainted ====
+
+_obj
+@ notifications_queue.notification
+
+_obj.ReqID
+@ notifications_queue.notification.ReqID
+
+_obj.PostID
+@ notifications_queue.notification.PostID
+", style=bold, shape=box, color="orange"];
+	N_val_call_4130207 [label="t0: github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4130214 [label="t7: invoke t0.Info(ctx, \"initializing %d w...\":string, t6...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4130315 [label="t12: invoke t10.Pop(ctx, t11)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4130363 [label="t19: invoke t14.ReadPost(ctx, t16, t18)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_4130249 [label="t1: &n.num_workers [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4130293 [label="t9: &n.notificationsQueue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4130340 [label="t13: &n.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4130383 [label="t15: &t8.ReqID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4130404 [label="t17: &t8.PostID [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet11 [label="t11: make interface{} <- *Message (t8)
+
+==== tainted ====
+
+_obj
+@ notifications_queue.notification
+
+_obj.ReqID
+@ notifications_queue.notification.ReqID
+
+_obj.PostID
+@ notifications_queue.notification.PostID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet5 [label="t5: make any <- int (t2)", style=bold, shape=ellipse, color="black"];
+	N_val_indext4 [label="t4: &t3[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4130134 [label="n: parameter n : *NotifyServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4130160 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_slicet6 [label="t6: slice t3[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4130249 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4130293 [label="t10: *t9", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4130340 [label="t14: *t13", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4130383 [label="t16: *t15
+
+==== tainted ====
+
+_obj
+@ notifications_queue.notification.ReqID
+", style=bold, shape=box, color="red"];
+	N_val_unary_4130404 [label="t18: *t17
+
+==== tainted ====
+
+_obj
+@ notifications_queue.notification.PostID
+", style=bold, shape=box, color="red"];
+	N_val_param_4130134 -> N_val_field_4130249;
+	N_val_field_4130249 -> N_val_unary_4130249;
+	N_val_alloc_4130260 -> N_val_indext4;
+	N_val_unary_4130249 -> N_val_ifacet5;
+	N_val_indext4 -> N_instr_store_4130249;
+	N_val_ifacet5 -> N_instr_store_4130249;
+	N_val_alloc_4130260 -> N_val_slicet6;
+	N_val_param_4130160 -> N_val_call_4130214;
+	N_val_"initializing %d w...":string -> N_val_call_4130214;
+	N_val_slicet6 -> N_val_call_4130214;
+	N_val_param_4130134 -> N_val_field_4130293;
+	N_val_field_4130293 -> N_val_unary_4130293;
+	N_val_alloc_4130268 -> N_val_ifacet11;
+	N_val_param_4130160 -> N_val_call_4130315;
+	N_val_ifacet11 -> N_val_call_4130315;
+	N_val_param_4130134 -> N_val_field_4130340;
+	N_val_field_4130340 -> N_val_unary_4130340;
+	N_val_alloc_4130268 -> N_val_field_4130383;
+	N_val_field_4130383 -> N_val_unary_4130383;
+	N_val_alloc_4130268 -> N_val_field_4130404;
+	N_val_field_4130404 -> N_val_unary_4130404;
+	N_val_param_4130160 -> N_val_call_4130363;
+	N_val_unary_4130383 -> N_val_call_4130363;
+	N_val_unary_4130404 -> N_val_call_4130363;
+	N_nil_197097165 -> N_instr_ret_4130799;
+	N_val_field_4130404 -> N_val_alloc_4130268 [label=".PostID", style=dashed, color=blue];
+	N_val_field_4130383 -> N_val_alloc_4130268 [label=".ReqID", style=dashed, color=blue];
+	N_val_slicet6 -> N_val_alloc_4130260 [label="", style=dashed, color=blue];
+	N_val_indext4 -> N_val_alloc_4130260 [label="[*]", style=dashed, color=blue];
+}

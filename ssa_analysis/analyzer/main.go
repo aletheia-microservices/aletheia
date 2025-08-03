@@ -12,8 +12,6 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
-	"analyzer/pkg/app/backends"
-	"analyzer/pkg/app/services"
 	"analyzer/pkg/detection"
 	"analyzer/pkg/detection/constraints/foreignkeycoordination"
 	"analyzer/pkg/ssagraph"
@@ -21,40 +19,20 @@ import (
 	"analyzer/pkg/ssagraph/tainter"
 )
 
-func initPostNotification(app *app.App) {
-	service1 := services.NewService("UploadService", "UploadServiceImpl", "postnotification_simple", "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService")
-	service2 := services.NewService("StorageService", "StorageServiceImpl", "postnotification_simple", "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService")
-	service3 := services.NewService("NotifyService", "NotifyServiceImpl", "postnotification_simple", "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService")
-
-	service2.SetMethods("StorePost", "ReadPost")
-
-	service1.AddDependency(service2)
-	service3.AddDependency(service2)
-
-	app.AddService(service1)
-	app.AddService(service2)
-	app.AddService(service3)
-
-	database1 := backends.NewDatabase("queue")
-	database2 := backends.NewDatabase("posts_db")
-
-	app.AddDatabase(database1)
-	app.AddDatabase(database2)
-}
-
 func main() {
-	if len(os.Args) < 2 {
+	if len(os.Args) < 3 {
 		fmt.Fprintf(os.Stderr, "usage: program <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- examples/postnotification")
-		fmt.Fprintln(os.Stderr, "- examples/shoppingcart")
-		fmt.Fprintln(os.Stderr, "- blueprint/postnotification/notifyservice_run")
+		fmt.Fprintln(os.Stderr, "- postnotification examples/postnotification")
+		fmt.Fprintln(os.Stderr, "- shoppingcart examples/shoppingcart")
+		fmt.Fprintln(os.Stderr, "- postnotification_simple blueprint/postnotification/notifyservice_run")
 		os.Exit(1)
 	}
 
 	appname := os.Args[1]
+	apppath := os.Args[2]
 	app := app.NewApp(appname)
-	initPostNotification(app)
+	app.Init()
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
@@ -74,7 +52,7 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	prog, pkgs, err := buildProgram(appname)
+	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
@@ -144,15 +122,8 @@ func main() {
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
 
-	var entryPoints = []string{
-		"postnotification_simple.UploadService.UploadPost",
-		//"postnotification_simple.StorageService.StorePost",
-		//"postnotification_simple.StorageService.ReadPost",
-		"postnotification_simple.NotifyService.workerThread",
-	}
-
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
-	for _, entrypoint := range entryPoints {
+	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, funcGraphs)
 	}
 
@@ -186,9 +157,9 @@ func main() {
 	fmt.Println(res)
 }
 
-func buildProgram(appname string) (*ssa.Program, []*ssa.Package, error) {
+func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 	// e.graph. "../apps/test2/main.go"
-	filepath := "apps/" + appname + "/main.go"
+	filepath := "apps/" + apppath + "/main.go"
 	source, err := os.ReadFile(filepath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read file %s: %v\n", filepath, err)

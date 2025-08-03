@@ -215,7 +215,7 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 							fmt.Printf("[TAINT - QUEUE] got type name (%s) @ (%s)\n", serviceImplName, serviceImplPath)
 
 							// dummy logic
-							database := "queue"
+							database := "notifications_queue"
 							schema := "notification"
 							// sanity check
 							if !graph.GetApp().HasDatabase(database) {

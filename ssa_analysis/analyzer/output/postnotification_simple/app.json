@@ -1,0 +1,47 @@
+{
+  "name": "postnotification_simple",
+  "databases": [
+    "notifications_queue",
+    "posts_db"
+  ],
+  "services": [
+    {
+      "name": "NotifyService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService",
+      "pkg": "postnotification_simple",
+      "impl": "NotifyServiceImpl",
+      "methods": [
+        "Run"
+      ],
+      "services": [
+        "StorageService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "StorageService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService",
+      "pkg": "postnotification_simple",
+      "impl": "StorageServiceImpl",
+      "methods": [
+        "StorePost",
+        "ReadPost"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UploadService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService",
+      "pkg": "postnotification_simple",
+      "impl": "UploadServiceImpl",
+      "methods": [
+        "UploadPost"
+      ],
+      "services": [
+        "StorageService"
+      ],
+      "databases": []
+    }
+  ]
+}

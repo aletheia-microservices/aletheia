@@ -18,6 +18,10 @@ func NewSchema(name string) *Schema {
 	}
 }
 
+func (schema *Schema) GetName() string {
+	return schema.name
+}
+
 func (schema *Schema) MarshalJSON() ([]byte, error) {
 	fieldsLst := make([]string, len(schema.fields))
 	i := 0

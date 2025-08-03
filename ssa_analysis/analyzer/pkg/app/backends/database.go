@@ -1,6 +1,8 @@
 package backends
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type Database struct {
 	name    string
@@ -16,11 +18,11 @@ func NewDatabase(name string, schemas ...*Schema) *Database {
 
 func (database *Database) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Name   string  `json:"name"`
-		Schema *Schema `json:"schema"`
+		Name   string                     `json:"name"`
+		Schema []*Schema `json:"schemas"`
 	}{
 		Name:   database.name,
-		Schema: database.schemas[0],
+		Schema: database.schemas,
 	})
 }
 

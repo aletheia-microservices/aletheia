@@ -1,0 +1,33 @@
+{
+  "notifications_queue": {
+    "name": "notifications_queue",
+    "schemas": [
+      {
+        "fields": [
+          "notifications_queue.notification",
+          "notifications_queue.notification.PostID",
+          "notifications_queue.notification.ReqID"
+        ],
+        "constraints": [
+          "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID",
+          "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post[*].Value"
+        ]
+      }
+    ]
+  },
+  "posts_db": {
+    "name": "posts_db",
+    "schemas": [
+      {
+        "fields": [
+          "posts_db.post",
+          "posts_db.post.PostID",
+          "posts_db.post.ReqID",
+          "posts_db.post.Text",
+          "posts_db.post[*].Value"
+        ],
+        "constraints": []
+      }
+    ]
+  }
+}
