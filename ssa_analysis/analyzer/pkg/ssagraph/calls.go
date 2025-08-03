@@ -106,6 +106,10 @@ func (call *DatabaseCall) GetDatabaseName() string {
 	return call.database
 }
 
+func (call *DatabaseCall) GetSchemaName() string {
+	return call.collectionOrTopic
+}
+
 func (call *DatabaseCall) GetNode() *SSANode {
 	return call.node
 }

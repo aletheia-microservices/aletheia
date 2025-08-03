@@ -18,12 +18,17 @@ func ssaTaintToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[string][
 			dbPath := ssaTaint.GetDbCall().GetDatabasePath()
 			dbname := ssaTaint.GetDbCall().GetDatabaseName()
 			dbNode := graph.GetNodeByNameIfExists(dbPath)
+			schemaName := ssaTaint.GetDbCall().GetSchemaName()
 			if dbNode == nil {
 				dbNode = NewAbstractNode(dbPath, NODE_DATABASE, "", "", dbname)
 				graph.AddNode(dbPath, dbNode)
 
-				if !graph.GetApp().HasDatabase(dbname) { // sanity check
-					graph.GetApp().AddDatabase(backends.NewDatabase(dbname, backends.NewSchema()))
+				if !graph.GetApp().HasDatabase(dbname) {
+					log.Fatalf("database (%s) not found", dbname)
+				}
+				db := graph.GetApp().GetDatabaseByName(dbname)
+				if !db.HasSchema(schemaName) {
+					db.AddSchema(backends.NewSchema(schemaName))
 				}
 			}
 
@@ -158,9 +163,15 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 			if toNode == nil {
 				toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE, "", "", dbname)
 				graph.AddNode(toDatabasePath, toNode)
+				schemaName := call.GetSchemaName()
 
-				if !graph.GetApp().HasDatabase(dbname) { // sanity check
-					graph.GetApp().AddDatabase(backends.NewDatabase(dbname, backends.NewSchema()))
+				if !graph.GetApp().HasDatabase(dbname) {
+					log.Fatalf("database (%s) not found", dbname)
+				}
+				
+				db := graph.GetApp().GetDatabaseByName(dbname)
+				if !db.HasSchema(schemaName) {
+					db.AddSchema(backends.NewSchema(schemaName))
 				}
 			}
 

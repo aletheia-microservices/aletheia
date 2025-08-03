@@ -6,9 +6,12 @@ import (
 	"os"
 	"sort"
 	"strings"
+
+	"analyzer/pkg/app"
 )
 
 type SSAGraph struct {
+	app         *app.App
 	pkgName     string
 	fnShortPath string
 	serviceName string
@@ -24,14 +27,19 @@ type SSAGraph struct {
 	returns  [][]*SSANode // can have multiple return tuples depending on controlflow
 }
 
-func NewGraph(pkg string, fn string, service string, method string) *SSAGraph {
+func NewGraph(app *app.App, pkg string, fn string, service string, method string) *SSAGraph {
 	return &SSAGraph{
+		app:         app,
 		defs:        make(map[string]*SSANode),
 		pkgName:     pkg,
 		fnShortPath: fn,
 		serviceName: service,
 		methodName:  method,
 	}
+}
+
+func (graph *SSAGraph) GetApp() *app.App {
+	return graph.app
 }
 
 func (graph *SSAGraph) AddNode(node *SSANode) {

@@ -2,7 +2,6 @@ package tainter
 
 import (
 	"fmt"
-	"go/types"
 	"log"
 	"slices"
 	"strings"
@@ -60,9 +59,9 @@ func getObjectPathDiff(longPath1 string, shortPath2 string) string {
 func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[TaintInfo]bool, taintMode TaintMode, checkTaintInfo *CheckTaintInfo) {
 	taintInfo = taintInfo.updateValue(val)
 
-	fmt.Printf("[TAINT|BACKWARD] visiting %s: %s // TAINT INFO (%s, %s)\n", val.Name(), val.String(), taintInfo.getPath(), taintInfo.getDatabaseField())
+	fmt.Printf("[TAINT - BACKWARD] visiting %s: %s // TAINT INFO (%s, %s)\n", val.Name(), val.String(), taintInfo.getPath(), taintInfo.getDatabaseField())
 	if visited[taintInfo] {
-		fmt.Printf("\t[TAINT|BACKWARD] skipping value %s: %s\n", val.Name(), val.String())
+		fmt.Printf("\t[TAINT - BACKWARD] skipping value %s: %s\n", val.Name(), val.String())
 		return
 	}
 	visited[taintInfo] = true
@@ -73,11 +72,11 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 	case TAINT_BACKWARDS_MARK_AND_PROPAGATE:
 		doTaintNode(node, taintInfo, taintMode)
 	case TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH:
-		fmt.Printf("\t[TAINT|BACKWARD] checking upper taints: %v\n", node.GetTaints())
+		fmt.Printf("\t[TAINT - BACKWARD] checking upper taints: %v\n", node.GetTaints())
 		// 1. taint "subpaths" for current variable and save to later taint the corresponding "subobjects" that requested the upper taint
 		for objPath, taints := range node.GetTaints() {
 
-			fmt.Printf("\t[TAINT|BACKWARD] comparing prefixes:\n\t - tainted obj path:\t %s\n\t - bottom to upper:\t %s\n", objPath, taintInfo.getObjectFullPath())
+			fmt.Printf("\t[TAINT - BACKWARD] comparing prefixes:\n\t - tainted obj path:\t %s\n\t - bottom to upper:\t %s\n", objPath, taintInfo.getObjectFullPath())
 
 			if strings.HasPrefix(taintInfo.getObjectFullPath(), objPath) && taintInfo.getObjectFullPath() != objPath {
 				// e.graph.,
@@ -157,24 +156,24 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 		}
 	case *ssa.FieldAddr:
 		fieldName := utils.FieldIndexToName(t)
-		fmt.Printf("\t[TAINT|BACKWARD] field addr %s, tainting %s\n", fieldName, t.X.String())
+		fmt.Printf("\t[TAINT - BACKWARD] field addr %s, tainting %s\n", fieldName, t.X.String())
 		// add after
 		taintInfoTmp := taintInfo
 		taintInfoTmp = taintInfoTmp.updatePathPrefix("." + fieldName)
 		backwardsAnalysis(graph, t.X, taintInfoTmp, visited, taintMode, checkTaintInfo)
 	case *ssa.IndexAddr:
 		// add after
-		fmt.Printf("\t[TAINT|BACKWARD] index addr %s, tainting %s\n", t.Index.String(), t.X.String())
+		fmt.Printf("\t[TAINT - BACKWARD] index addr %s, tainting %s\n", t.Index.String(), t.X.String())
 		taintInfoTmp := taintInfo
 		taintInfoTmp = taintInfoTmp.updatePathPrefix("[*]")
 		backwardsAnalysis(graph, t.X, taintInfoTmp, visited, taintMode, checkTaintInfo)
 	case *ssa.Slice:
-		fmt.Printf("\t[TAINT|BACKWARD] slice of: %s\n", t.X.Name())
+		fmt.Printf("\t[TAINT - BACKWARD] slice of: %s\n", t.X.Name())
 		// usually t.X is already contained in the set of pointers of the current one
 		// note that objects in the pointer set are already tainted in the beginning of this function
 		backwardsAnalysis(graph, t.X, taintInfo, visited, taintMode, checkTaintInfo)
 	case *ssa.Alloc:
-		/* fmt.Printf("\t[TAINT|BACKWARD] alloc used by: %s\n")
+		/* fmt.Printf("\t[TAINT - BACKWARD] alloc used by: %s\n")
 		// usually t.X is already contained in the set of pointers of the current one
 		// note that objects in the pointer set are already tainted in the beginning of this function
 		switch taintMode {
@@ -182,7 +181,7 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 			backwardsAnalysis(graph, t.X, taintInfo, visited, taintMode, checkTaintInfo)
 		} */
 	default:
-		fmt.Printf("\t[TAINT|BACKWARD] ignoring value: [%T] %v\n", val, val)
+		fmt.Printf("\t[TAINT - BACKWARD] ignoring value: [%T] %v\n", val, val)
 	}
 
 	if taintMode == TAINT_BACKWARDS_MARK_AND_PROPAGATE {
@@ -191,23 +190,7 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 		doTaintPointerToSets(graph, val, taintInfo, visited)
 	}
 
-	fmt.Printf("\t[TAINT|BACKWARD] exiting %s: %s\n", val.Name(), val.String())
-}
-
-func parseArgumentsForMongoDBFilter(graph *ssagraph.SSAGraph, bsonFilter ssa.Value) ([]ssa.Value, []string) {
-	var args []ssa.Value
-	var keys []string
-	bsonFilterNode := graph.GetNodeByName(bsonFilter.Name())
-	bsonFilterAllocNode := graph.GetEdgesToNodeExceptPointerTo(bsonFilterNode)[0].GetFromNode()
-	elemNode := graph.GetEdgesFromNodeExceptPointerTo(bsonFilterAllocNode)[0].GetToNode()
-	bsonFilterKeyNode := graph.GetEdgesFromNode(elemNode)[0].GetToNode()
-	// only 1 expected
-	edge := recurseEdgesForwardUntilStoreAddress(graph, bsonFilterKeyNode, nil, make(map[*ssagraph.SSANode]bool))[0]
-	key := edge.GetToNode().GetInstruction().(*ssa.Store).Val.(*ssa.Const).Value.ExactString()
-	keys = append(keys, "."+key)
-	arg := graph.GetEdgesFromNode(elemNode)[1].GetToNode().GetValue()
-	args = append(args, arg)
-	return args, keys
+	fmt.Printf("\t[TAINT - BACKWARD] exiting %s: %s\n", val.Name(), val.String())
 }
 
 func RunTainter(graph *ssagraph.SSAGraph) {
@@ -291,8 +274,8 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 			// check for common taints
 			for _, originNode := range nodesToVisit {
 				fmt.Printf("[TAINT] visiting node (origin): %v\n", originNode.String())
-				for _, edge := range recurseEdgesBackwardsUntilLoadFrom(graph, originNode, nil, make(map[*ssagraph.SSANode]bool)) {
-					// expecting only one node
+				edge := recurseEdgesBackwardsUntilLoadFrom(graph, originNode, make(map[*ssagraph.SSANode]bool))
+				if edge != nil {
 					node := edge.GetFromNode()
 					fmt.Printf("\t[TAINT] visiting node (load): %v\n", node.String())
 					spreadTaintsInStorePoint(graph, node, true)
@@ -450,20 +433,22 @@ func spreadTaintsInStorePoint(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, 
 	}
 }
 
-func recurseEdgesBackwardsUntilLoadFrom(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
-	if _, ok := visited[node]; ok {
-		return storeEdges
+func recurseEdgesBackwardsUntilLoadFrom(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, visited map[*ssagraph.SSANode]bool) *ssagraph.SSAEdge {
+	if visited[node] {
+		return nil
 	}
 	visited[node] = true
 
 	for _, edge := range graph.GetEdgesToNode(node) {
 		if edge.GetType() == ssagraph.EDGE_LOAD {
-			storeEdges = append(storeEdges, edge)
-		} else {
-			storeEdges = append(storeEdges, recurseEdgesBackwardsUntilLoadFrom(graph, edge.GetFromNode(), storeEdges, visited)...)
+			return edge
+		}
+		result := recurseEdgesBackwardsUntilLoadFrom(graph, edge.GetFromNode(), visited)
+		if result != nil {
+			return result
 		}
 	}
-	return storeEdges
+	return nil
 }
 
 func recurseEdgesForwardUntilStoreAddress(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
@@ -495,149 +480,4 @@ func recurseEdgesForwardUntilStoreValue(graph *ssagraph.SSAGraph, node *ssagraph
 		}
 	}
 	return storeEdges
-}
-
-func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool, bool) {
-	var isWrite bool
-	if call, ok := instr.(*ssa.Call); ok {
-
-		// ------------
-		// example apps
-		// ------------
-		if fn, ok := call.Call.Value.(*ssa.Function); ok && len(fn.Params) > 0 {
-			fmt.Printf("[TAINT] [1] found call: %v\n", call)
-			maybeRcv := fn.Params[0]
-			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" || fn.Name() == "Find" {
-				if fn.Name() == "Insert" {
-					isWrite = true
-				}
-				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], isWrite, true
-			}
-			if maybeRcv.Type().String() == "*main.RabbitMQ" && fn.Name() == "Push" {
-				isWrite = true
-				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], isWrite, true
-			}
-		}
-
-		// --------------
-		// blueprint apps
-		// --------------
-		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
-			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue" {
-				if slices.Contains([]string{"Push", "Pop"}, call.Call.Method.Name()) {
-					if call.Call.Method.Name() == "Push" {
-						isWrite = true
-					}
-					fmt.Printf("[TAINT] [2] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
-					if fieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
-						if ptr, ok := fieldAddr.X.Type().(*types.Pointer); ok {
-							if _, ok := ptr.Elem().(*types.Named); ok {
-								//service, _ := strings.CutSuffix(strings.ToLower(named.Obj().Id()), "serviceimpl")
-								//queue := service + "_queue"
-								queue := "queue"
-								//topic := service + "_message"
-								topic := "notification"
-								// return all args except context
-								// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-								return queue, topic, call.Call.Method.Id(), call.Call.Args[1:], isWrite, true
-							}
-						}
-					}
-				}
-			}
-			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase" {
-				// call for nosqldatabase.GetCollection(...)
-				// skip for now
-				return "", "", "", nil, false, false
-			}
-		}
-		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
-			if slices.Contains([]string{"InsertOne", "FindOne"}, call.Call.Method.Name()) {
-				if call.Call.Method.Name() == "InsertOne" {
-					isWrite = true
-				}
-				fmt.Printf("[TAINT] [3] found %s() call: %v\n", call.Call.Method.Name(), call.Call.Method)
-				getCollectionNodeCall := graph.GetNodeByName(extr.Tuple.Name())
-				if colCal, ok := getCollectionNodeCall.GetInstruction().(*ssa.Call); ok {
-					if _, ok := colCal.Call.Value.(*ssa.UnOp); ok {
-						dbVal := colCal.Call.Args[1]
-						colVal := colCal.Call.Args[2]
-						var database, collection string
-						if c, ok := dbVal.(*ssa.Const); ok {
-							database = strings.Trim(c.Value.ExactString(), "\"")
-						}
-						if c, ok := colVal.(*ssa.Const); ok {
-							collection = strings.Trim(c.Value.ExactString(), "\"")
-						}
-						// return all args except context
-						// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-						return database, collection, call.Call.Method.Id(), call.Call.Args[1:], isWrite, true
-					}
-				}
-			}
-		}
-	}
-	return "", "", "", nil, false, false
-}
-
-func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, *ssa.Call, bool) {
-	if call, ok := instr.(*ssa.Call); ok {
-		// ------------
-		// example apps
-		// ------------
-		if fn, ok := call.Call.Value.(*ssa.Function); ok && len(fn.Params) > 0 {
-			maybeRcv := fn.Params[0]
-			if maybeRcv.Type().String() == "*main.ShippingService" && fn.Name() == "NewShipment" {
-				// return all args except receiver and context
-				return "ShippingService", "NewShipment", "", call.Call.Args[2:], call, true
-			}
-			if maybeRcv.Type().String() == "*main.SkuService" && fn.Name() == "GetSku" {
-				// return all args except receiver and context
-				return "SkuService", "GetSku", "", call.Call.Args[2:], call, true
-			}
-			if maybeRcv.Type().String() == "*main.AnalyticsService" && fn.Name() == "UpdateAnalytics" {
-				// return all args except receiver and context
-				return "AnalyticsService", "UpdateAnalytics", "", call.Call.Args[2:], call, true
-			}
-			if slices.Contains([]string{
-				"StorePost", "ReadPost", "DeletePost", // storage
-				"ReadAnalytics",                                     // analytics
-				"UploadPost", "DeletePost", "ReadPostWithAnalytics", // upload
-			}, fn.Name()) {
-				log.Fatal("EXIT!")
-				// return all args except receiver and context
-				return "", "", "", call.Call.Args[2:], call, true
-			}
-		}
-
-		// --------------
-		// blueprint apps
-		// --------------
-		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
-			if unOp.Type().String() == "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService" ||
-				unOp.Type().String() == "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService" ||
-				unOp.Type().String() == "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService" {
-
-				service := unOp.Type().String()
-				var found bool
-				service, found = strings.CutPrefix(service, "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.")
-
-				if !found {
-					log.Fatalf("could not find prefix for service (%s)", service)
-				}
-
-				method := call.Call.Method.Id()
-
-				// NOTE: unOp.Type().String() does not contain "Impl" suffix here so GetShortFunctionPath will just ignore
-				funcShortPath := utils.GetShortFunctionPath(unOp.Type().String() + "." + method)
-
-				// return all args except context
-				// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-				return service, method, funcShortPath, call.Call.Args[1:], call, true
-			}
-		}
-	}
-	return "", "", "", nil, nil, false
 }

@@ -46,5 +46,13 @@ func (database *Database) GetSchema() *Schema {
 }
 
 func (database *Database) String() string {
-	return database.name + " // schema: \n" + database.schemas[0].String()
+	var str string
+	str += "// schema: \n"
+	for i, schema := range database.schemas {
+		str += schema.String()
+		if i < len(database.schemas)-1 {
+			str += "\n"
+		}
+	}
+	return database.name + str
 }

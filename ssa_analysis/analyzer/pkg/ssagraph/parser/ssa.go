@@ -12,12 +12,13 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/types/typeutil"
 
+	"analyzer/pkg/app"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/utils"
 )
 
-func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*ssagraph.SSAGraph) {
-	path1 := fmt.Sprintf("output/%s/ssa/%s.out", appname, pkg.Pkg.Name())
+func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*ssagraph.SSAGraph) {
+	path1 := fmt.Sprintf("output/%s/ssa/%s.out", app.GetName(), pkg.Pkg.Name())
 	if err := os.MkdirAll(filepath.Dir(path1), 0755); err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +28,7 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 	}
 	defer outfile1.Close()
 
-	path2 := fmt.Sprintf("output/%s/ssa/%s.ssa", appname, pkg.Pkg.Name())
+	path2 := fmt.Sprintf("output/%s/ssa/%s.ssa", app.GetName(), pkg.Pkg.Name())
 	if err := os.MkdirAll(filepath.Dir(path2), 0755); err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +41,7 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 	for _, member := range pkg.Members {
 		switch m := member.(type) {
 		case *ssa.Function:
-			iterateFunc(outfile2, m, nil, funcGraphs)
+			iterateFunc(app, outfile2, m, nil, funcGraphs)
 
 		case *ssa.Global:
 			fmt.Fprintf(outfile2, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
@@ -56,7 +57,7 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 				method := prog.MethodValue(sel)
 				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				if method != nil {
-					iterateFunc(outfile2, method, m.Type(), funcGraphs)
+					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
 				}
 			}
 
@@ -66,7 +67,7 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				method := prog.MethodValue(sel)
 				if method != nil {
-					iterateFunc(outfile2, method, m.Type(), funcGraphs)
+					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
 				}
 			}
 
@@ -76,21 +77,21 @@ func RunSSAAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, funcGra
 	}
 }
 
-func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*ssagraph.SSAGraph) {
+func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*ssagraph.SSAGraph) {
 	shortFuncPath := utils.GetShortFunctionPath(fn.String())
 	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
 	methodName := utils.ExtractMethodNameFromShortFunctionPath(shortFuncPath)
 
 	fmt.Printf("[SSA] iterating function %s\n", shortFuncPath)
 
-	graph := ssagraph.NewGraph(fn.Pkg.Pkg.Name(), shortFuncPath, serviceName, methodName)
+	graph := ssagraph.NewGraph(app, fn.Pkg.Pkg.Name(), shortFuncPath, serviceName, methodName)
 	if _, exists := funcGraphs[shortFuncPath]; exists {
-		log.Printf("ssagraph for function (%s) already exists\n", shortFuncPath)
-		log.Println("skipping...")
+		fmt.Printf("[SSA] ssagraph for function (%s) already exists\n", shortFuncPath)
+		fmt.Println("[SSA] skipping...")
 		return
 	}
 	funcGraphs[shortFuncPath] = graph
-	fmt.Printf("added new ssagraph for function (%s)\n", shortFuncPath)
+	fmt.Printf("[SSA] added new ssagraph for function (%s)\n", shortFuncPath)
 
 	var visited = make(map[ssa.Value]bool)
 
@@ -116,11 +117,11 @@ func iterateFunc(outFile *os.File, fn *ssa.Function, memberType types.Type, func
 }
 
 func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	fmt.Printf("[A] %02d [%T] %v\n", instrIdx, instr, instr.String())
+	fmt.Printf("[SSA] [A] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	id := computeInstructionID(instr)
 	if id == "" { // e.graph., conditions or jumps (instructions and not values)
-		log.Printf("skipping instruction with invalid id: %v\n", instr)
+		fmt.Printf("[SSA] skipping instruction with invalid id: %v\n", instr)
 		return nil
 	}
 
@@ -137,22 +138,20 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 		graph.CreateAndAddNewEdge(addrNode, node, ssagraph.EDGE_STORE_ADDRESS, 0, "")
 		graph.CreateAndAddNewEdge(valNode, node, ssagraph.EDGE_STORE_VALUE, 0, "")
-
-		fmt.Printf("ADDING EDGE FOR ADDR NDOE AND VAL NODE: %v // %v \n", t.Addr, t.Val)
 	case *ssa.Return:
 		for _, res := range t.Results {
 			resNode := parseValue(graph, instr, instrIdx, res, visited)
 			graph.CreateAndAddNewEdge(resNode, node, ssagraph.EDGE_STORE_ADDRESS, 0, "")
 		}
 	default:
-		fmt.Printf("[1] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
+		fmt.Printf("[SSA] [1] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 	}
 
 	return node
 }
 
 func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	fmt.Printf("[B] %02d [%T] %v\n", instrIdx, val, val.String())
+	fmt.Printf("[SSA] [B] %02d [%T] %v\n", instrIdx, val, val.String())
 
 	if visited[val] {
 		return graph.GetNodeByName(val.Name())
@@ -175,13 +174,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		for _, arg := range t.Call.Args {
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == arg.Name() {
-					fmt.Printf("[INFO] skipping arg edge for %s\n", t.Name())
+					fmt.Printf("[SSA] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == arg.Name() {
-					fmt.Printf("[INFO] skipping arg edge for %s\n", t.Name())
+					fmt.Printf("[SSA] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -226,13 +225,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		for _, phiEdge := range t.Edges {
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == phiEdge.Name() {
-					fmt.Printf("[INFO] skipping phi edge for %s\n", t.Name())
+					fmt.Printf("[SSA] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == phiEdge.Name() {
-					fmt.Printf("[INFO] skipping phi edge for %s\n", t.Name())
+					fmt.Printf("[SSA] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -251,7 +250,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		graph.CreateAndAddNewEdge(yNode, node, ssagraph.EDGE_USAGE, 0, "")
 
 	default:
-		fmt.Printf("[2] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		fmt.Printf("[SSA] [2] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 	}
 	return node
 }
