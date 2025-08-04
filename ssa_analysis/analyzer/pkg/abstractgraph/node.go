@@ -41,6 +41,10 @@ func (node *AbstractNode) GetName() string {
 	return node.name
 }
 
+func (node *AbstractNode) GetMethod() string {
+	return node.method
+}
+
 func (node *AbstractNode) GetDatabaseName() string {
 	return node.dbname
 }

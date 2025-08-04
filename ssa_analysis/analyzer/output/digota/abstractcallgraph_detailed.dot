@@ -8,6 +8,7 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
+		N_OrderService_Run [label="OrderService.Run", style=bold, shape=box, color="blue"];
 		N_ProductService_New [label="ProductService.New
 
 ==== param 0 (name) tainted ====
@@ -49,24 +50,31 @@ _obj
 _obj
 [write, primary] @ products_db.products.Url
 ", style=bold, shape=box, color="blue"];
-		N_ProductService_Get [label="ProductService.Get
+		N_OrderService_New [label="OrderService.New
 
-==== param 0 (id) tainted ====
+==== param 0 (currency) tainted ====
 _obj
-[read, primary] @ products_db.products[*].Value
-", style=bold, shape=box, color="blue"];
-		N_ProductService_Delete [label="ProductService.Delete
+[write, primary] @ orders_db.orders.Currency
 
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ products_db.products[*].Value
-", style=bold, shape=box, color="blue"];
-		N_SkuService_Delete [label="SkuService.Delete
 
-==== param 0 (id) tainted ====
+==== param 1 (items) tainted ====
 _obj
-[delete, primary] @ skus_db.skus[*].Value
-[write, primary] @ queue.notification.id
+[write, primary] @ orders_db.orders.Items
+
+
+==== param 2 (metadata) tainted ====
+_obj
+[write, primary] @ orders_db.orders.Metadata
+
+
+==== param 3 (email) tainted ====
+_obj
+[write, primary] @ orders_db.orders.Email
+
+
+==== param 4 (shipping) tainted ====
+_obj
+[write, primary] @ orders_db.orders.Shipping
 ", style=bold, shape=box, color="blue"];
 		N_SkuService_Get [label="SkuService.Get
 
@@ -74,7 +82,6 @@ _obj
 _obj
 [read, primary] @ skus_db.skus[*].Value
 ", style=bold, shape=box, color="blue"];
-		N_OrderService_Run [label="OrderService.Run", style=bold, shape=box, color="blue"];
 		N_SkuService_New [label="SkuService.New
 
 ==== param 0 (name) tainted ====
@@ -122,6 +129,12 @@ _obj
 [write, primary] @ skus_db.skus.Attributes
 ", style=bold, shape=box, color="blue"];
 		N_ProductService_List [label="ProductService.List", style=bold, shape=box, color="blue"];
+		N_ProductService_Get [label="ProductService.Get
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ products_db.products[*].Value
+", style=bold, shape=box, color="blue"];
 		N_ProductService_Update [label="ProductService.Update
 
 ==== param 0 (id) tainted ====
@@ -168,38 +181,30 @@ _obj
 _obj
 [write, primary] @ products_db.products.Url
 ", style=bold, shape=box, color="blue"];
-		N_OrderService_New [label="OrderService.New
+		N_ProductService_Delete [label="ProductService.Delete
 
-==== param 0 (currency) tainted ====
+==== param 0 (id) tainted ====
 _obj
-[write, primary] @ orders_db.orders.Currency
+[delete, primary] @ products_db.products[*].Value
+", style=bold, shape=box, color="blue"];
+		N_SkuService_Delete [label="SkuService.Delete
 
-
-==== param 1 (items) tainted ====
+==== param 0 (id) tainted ====
 _obj
-[write, primary] @ orders_db.orders.Items
-
-
-==== param 2 (metadata) tainted ====
-_obj
-[write, primary] @ orders_db.orders.Metadata
+[delete, primary] @ skus_db.skus[*].Value
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_queue_notification [label="queue.notification", style=bold, shape=cylinder, color="green"];
-		N_skus_db_skus [label="skus_db.skus", style=bold, shape=cylinder, color="green"];
 		N_products_db_products [label="products_db.products", style=bold, shape=cylinder, color="green"];
 		N_orders_db_orders [label="orders_db.orders", style=bold, shape=cylinder, color="green"];
+		N_skus_db_skus [label="skus_db.skus", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_OrderService_New [label="New()", color=orange];
 	N_OrderService_New -> N_SkuService_Get [label="Get()", color=blue];
 	N_OrderService_New -> N_orders_db_orders [label="InsertOne()", color=green];
-	N_client -> N_SkuService_Get [label="Get()", color=orange];
 	N_SkuService_Get -> N_skus_db_skus [label="FindOne()", color=green];
 	N_client -> N_OrderService_Run [label="Run()", color=orange];
-	N_OrderService_Run -> N_queue_notification [label="Pop()", color=green];
-	N_OrderService_Run -> N_orders_db_orders [label="DeleteOne()", color=green];
 	N_client -> N_ProductService_New [label="New()", color=orange];
 	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
 	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
@@ -211,7 +216,6 @@ _obj
 	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
 	N_ProductService_New -> N_products_db_products [label="InsertOne()", color=green];
 	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
-	N_client -> N_SkuService_New [label="New()", color=orange];
 	N_SkuService_New -> N_skus_db_skus [label="InsertOne()", color=green];
 	N_client -> N_ProductService_Get [label="Get()", color=orange];
 	N_ProductService_Get -> N_products_db_products [label="FindOne()", color=green];
@@ -222,7 +226,5 @@ _obj
 	N_client -> N_ProductService_Delete [label="Delete()", color=orange];
 	N_ProductService_Delete -> N_products_db_products [label="DeleteOne()", color=green];
 	N_ProductService_Delete -> N_SkuService_Delete [label="Delete()", color=blue];
-	N_client -> N_SkuService_Delete [label="Delete()", color=orange];
 	N_SkuService_Delete -> N_skus_db_skus [label="DeleteOne()", color=green];
-	N_SkuService_Delete -> N_queue_notification [label="Push()", color=green];
 }

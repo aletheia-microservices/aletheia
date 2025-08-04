@@ -84,17 +84,20 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 	for objpath, otherTaints := range otherTaintsMap {
 		existingTaints := obj.taints[objpath]
 
-		exists := func(t *AbstractTaint) bool {
+		exists := func(t *AbstractTaint) (string, bool) {
 			for _, e := range existingTaints {
 				if e.Equals(t) {
-					return true
+					return objpath, true
+				}
+				if ok, subpath := e.IsUpperPath(t); ok {
+					return objpath + subpath, false // must be false so that we create a new abstract taint
 				}
 			}
-			return false
+			return objpath, false
 		}
 
 		for _, otherTaint := range otherTaints {
-			if !exists(otherTaint) {
+			if objpath, ok := exists(otherTaint); !ok {
 				// need to create new AbstractTaint to avoid just storing the pointer and modifying its fields
 				newTaint := NewAbstractTaint(otherTaint.dbfield, otherTaint.dbcallID, primary, otherTaint.opType)
 				fmt.Printf("\t [TAINTMAPPING] adding new taint (op = %s): %v\n", common.OperationTypeToString(newTaint.opType), newTaint)

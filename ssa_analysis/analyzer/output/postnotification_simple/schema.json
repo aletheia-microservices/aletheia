@@ -21,12 +21,18 @@
       {
         "fields": [
           "posts_db.post",
+          "posts_db.post.Creator.Username",
+          "posts_db.post.Mentions",
           "posts_db.post.PostID",
           "posts_db.post.ReqID",
           "posts_db.post.Text",
+          "posts_db.post.Timestamp",
+          "posts_db.post[*].Key",
           "posts_db.post[*].Value"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY posts_db.post.ReqID REFERENCES notifications_queue.notification.ReqID"
+        ]
       }
     ]
   }

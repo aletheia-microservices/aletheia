@@ -36,6 +36,13 @@ func (iterator *Iterator) Run() {
 			detector.OnNewRequest(toNode)
 		}
 		
+		// FIXME: skip for now
+		// maybe for the future we can ensure we do not append the Run to the nodes list
+		// but let it be attached to edges
+		if toNode.GetMethod() == "Run" {
+			continue
+		}
+
 		iterator.transverse(toNode)
 		iterator.clean(toNode)
 
@@ -140,6 +147,42 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 					detector.OnUpdate(iterator.app, edge)
 				case common.OP_DELETE:
 					detector.OnDelete(iterator.app, edge)
+				}
+			}
+
+			// FIXME: this is a bit hardcoded for now
+			currDB := iterator.app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
+			if currDB.IsQueue() && edge.GetOpType() == common.OP_WRITE {
+				for _, otherEdge := range iterator.graph.GetEdges() {
+					if otherEdge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL && otherEdge.GetOpType() == common.OP_READ {
+						otherDB := iterator.app.GetDatabaseByName(otherEdge.GetToNode().GetDatabaseName())
+						if otherDB == currDB {
+							taintMapping := abstractgraph.NewTaintMapping()
+							for i, arg := range edge.GetArguments() {
+								otherArg := otherEdge.GetArgumentAt(i)
+								// FIXME: maybe we should also propagate secondary taints?
+								taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), false)
+								taintMapping.Merge(taintMappingTmp)
+							}
+
+							for _, edge := range iterator.graph.GetEdgesFromNode(otherEdge.GetFromNode()) {
+								if otherEdge == edge {
+									continue
+								}
+								fmt.Printf("\t\t[ITERATOR] propagate new taints to objects args on edge: %s\n", edge.String())
+								for i, obj := range edge.GetArguments() {
+									fmt.Printf("\t\t\t[ITERATOR] [ARG %d] > ENTER update object (%s) taints with new taint mapping\n", i, obj.String())
+									propagateNewTaintsToObject(obj, taintMapping)
+									fmt.Printf("\t\t\t[ITERATOR] [ARG %d] < EXIT update object (%s) taints with new taint mapping\n", i, obj.String())
+								}
+							}
+
+							abstractgraph.PropagateNewTaintsToDatabases(iterator.graph, taintMapping)
+							callerNode := otherEdge.GetFromNode()
+							iterator.transverse(callerNode)
+						}
+						
+					}
 				}
 			}
 		}

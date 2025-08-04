@@ -13,7 +13,7 @@ func (detector *ForeignKeyCoordinationDetector) ComputeResults() {
 
 	var results string
 	for request, foreignreads := range detector.foreignReads {
-		results += fmt.Sprintf("request #%d @ %s:\n", request.idx, request.entry.String())
+		results += fmt.Sprintf("request #%d: %s\n", request.idx, request.entry.String())
 		for i, foreignread := range foreignreads {
 			results += fmt.Sprintf("\tforeign read #%d:\n", i)
 			results += fmt.Sprintf("\t\tread_1 = %s\n", foreignread.op1.call.String())

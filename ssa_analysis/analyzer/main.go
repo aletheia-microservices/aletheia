@@ -140,9 +140,10 @@ func main() {
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
 
+
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
-		abstractgraph.Parse(absgraph, entrypoint, funcGraphs)
+		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
 	detector1 := foreignkeycoordination.NewDetector("foreign-key")

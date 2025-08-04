@@ -40,7 +40,7 @@ func ssaTaintToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[string][
 	return abstractTaintsMap
 }
 
-func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string]*ssagraph.SSAGraph) {
+func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, funcGraphs map[string]*ssagraph.SSAGraph) {
 	// dummy node
 	clientNode := graph.GetNodeByNameIfExists("client")
 	if clientNode == nil {
@@ -99,13 +99,14 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 	}
 
 	// build dummy edges for entrypoints
-	// FIXME: must not always happen!
-	edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
-	for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
-		arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint))
-		edge.AddArgument(arg)
+	if entrypoint {
+		edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
+		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
+			arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint))
+			edge.AddArgument(arg)
+		}
+		graph.AddEdge(edge)
 	}
-	graph.AddEdge(edge)
 
 	var edges []*AbstractEdge
 
@@ -211,7 +212,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 		}
 
 		for _, call := range ssaGraph.GetServiceCalls() {
-			Parse(graph, call.GetFuncShortPath(), funcGraphs)
+			Parse(graph, call.GetFuncShortPath(), false, funcGraphs)
 		}
 	}
 }

@@ -1,93 +1,9 @@
 digraph G {
 	rankdir=TD;
-	N_instr__181327996 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__181327996 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2224682 [label="return t9", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2224682 [label="return t9", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2224789 [label="return t19", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2224789 [label="return t19", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2224719 [label="*t13 = \"id\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2224719 [label="*t13 = \"id\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2224732 [label="*t14 = t17", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2224732 [label="*t14 = t17", style=bold, shape=ellipse, color="blue"];
-	N_nil_1698998509 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_"id":string [label="\"id\":string: \"id\":string", style=bold, shape=ellipse, color="blue"];
-	N_val_"orders":string [label="\"orders\":string: \"orders\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_"orders_db":string [label="\"orders_db\":string: \"orders_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2224546 [label="t0: new QueueMessage (message)
-
-==== tainted ====
-_obj
-[read] @ queue.notification
-", style=bold, shape=box, color="orange"];
-	N_val_alloc_2224714 [label="t11: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-
-==== tainted ====
-_obj
-[delete] @ orders_db.orders
-", style=bold, shape=box, color="orange"];
-	N_val_binary_2224671 [label="t10: t9 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2224579 [label="t4: invoke t2.Pop(ctx, t3)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2224634 [label="t7: invoke t6.GetCollection(ctx, \"orders_db\":string, \"orders\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2224774 [label="t19: invoke t8.DeleteOne(ctx, t18)", style=bold, shape=ellipse, color="yellow"];
-	N_val_extrt8 [label="t8: extract t7 #0", style=bold, shape=ellipse, color="black"];
-	N_val_extrt9 [label="t9: extract t7 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2224570 [label="t1: &s.queue [#2]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2224618 [label="t5: &s.db [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2224719 [label="t13: &t12.Key [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2224732 [label="t14: &t12.Value [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2224742 [label="t15: &t0.id [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_ifacet17 [label="t17: make interface{} <- string (t16)", style=bold, shape=ellipse, color="black"];
-	N_val_ifacet3 [label="t3: make interface{} <- *QueueMessage (t0)
-
-==== tainted ====
-_obj
-[read] @ queue.notification
-", style=bold, shape=box, color="black"];
-	N_val_indext12 [label="t12: &t11[0:int]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2224487 [label="s: parameter s : *OrderServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2224512 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_slice_2224714 [label="t18: slice t11[:]
-
-==== tainted ====
-_obj
-[delete] @ orders_db.orders
-", style=bold, shape=box, color="black"];
-	N_val_unary_2224570 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2224618 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2224742 [label="t16: *t15", style=bold, shape=ellipse, color="red"];
-	N_val_param_2224487 -> N_val_field_2224570;
-	N_val_field_2224570 -> N_val_unary_2224570;
-	N_val_alloc_2224546 -> N_val_ifacet3;
-	N_val_param_2224512 -> N_val_call_2224579;
-	N_val_ifacet3 -> N_val_call_2224579;
-	N_val_param_2224487 -> N_val_field_2224618;
-	N_val_field_2224618 -> N_val_unary_2224618;
-	N_val_param_2224512 -> N_val_call_2224634;
-	N_val_"orders_db":string -> N_val_call_2224634;
-	N_val_"orders":string -> N_val_call_2224634;
-	N_val_call_2224634 -> N_val_extrt8;
-	N_val_call_2224634 -> N_val_extrt9;
-	N_val_extrt9 -> N_val_binary_2224671;
-	N_nil_1698998509 -> N_val_binary_2224671;
-	N_val_extrt9 -> N_instr_ret_2224682;
-	N_val_alloc_2224714 -> N_val_indext12;
-	N_val_indext12 -> N_val_field_2224719;
-	N_val_indext12 -> N_val_field_2224732;
-	N_val_alloc_2224546 -> N_val_field_2224742;
-	N_val_field_2224742 -> N_val_unary_2224742;
-	N_val_field_2224719 -> N_instr_store_2224719;
-	N_val_"id":string -> N_instr_store_2224719;
-	N_val_unary_2224742 -> N_val_ifacet17;
-	N_val_field_2224732 -> N_instr_store_2224732;
-	N_val_ifacet17 -> N_instr_store_2224732;
-	N_val_alloc_2224714 -> N_val_slice_2224714;
-	N_val_param_2224512 -> N_val_call_2224774;
-	N_val_slice_2224714 -> N_val_call_2224774;
-	N_val_call_2224774 -> N_instr_ret_2224789;
-	N_val_field_2224742 -> N_val_alloc_2224546 [label=".id", style=dashed, color=blue];
-	N_val_field_2224732 -> N_val_alloc_2224714 [label="[*].Value", style=dashed, color=blue];
-	N_val_field_2224719 -> N_val_alloc_2224714 [label="[*].Key", style=dashed, color=blue];
-	N_val_indext12 -> N_val_alloc_2224714 [label="[*]", style=dashed, color=blue];
-	N_val_slice_2224714 -> N_val_alloc_2224714 [label="", style=dashed, color=blue];
+	N_instr_ret_2730804 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2730804 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_241031910 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_param_2730484 [label="s: parameter s : *OrderServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2730509 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_nil_241031910 -> N_instr_ret_2730804;
 }

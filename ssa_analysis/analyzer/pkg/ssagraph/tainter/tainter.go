@@ -232,6 +232,29 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 			fmt.Printf("\t[TAINT - BACKWARD] calling doTaintNode for pointed to/by: %s\n", node.GetName())
 			backwardsAnalysis(graph, node.GetValue(), taintInfo, visited, TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH, checkTaintInfo)
 		}
+
+		// TODO: verify this
+		// e.g. digota.SkuService.Delete
+		// fetch delete taint (skus_db.skus[*].Value) of t6 (slice) to later propagate to t19 (queue message)
+		//
+		// problem:
+		// it is adding a new incorrect constraint at postnotification
+		// FOREIGN_KEY posts_db.post.ReqID REFERENCES notifications_queue.notification.ReqID
+		for _, edge := range graph.GetEdgesFromNode(node) {
+			if edge.GetType() != ssagraph.EDGE_POINTS_TO {
+				if edge.GetPath() == "" {
+					if edge.GetToNode().GetValue() != nil {
+						if val, ok := edge.GetToNode().GetValue().(*ssa.MakeInterface); ok {
+							backwardsAnalysis(graph, val, taintInfo, visited, TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH, checkTaintInfo)
+						}
+					} else if edge.GetType() == ssagraph.EDGE_STORE_VALUE {
+						if instr, ok := edge.GetToNode().GetInstruction().(*ssa.Store); ok {
+							backwardsAnalysis(graph, instr.Addr, taintInfo, visited, TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH, checkTaintInfo)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	fmt.Printf("\t[TAINT - BACKWARD] exiting %s: %s\n", val.Name(), val.String())
@@ -318,8 +341,7 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 			// check for common taints
 			for _, originNode := range nodesToVisit {
 				fmt.Printf("[TAINT] visiting node (origin): %v\n", originNode.String())
-				edge := recurseEdgesBackwardsUntilLoadFrom(graph, originNode, make(map[*ssagraph.SSANode]bool))
-				if edge != nil {
+				for _, edge := range recurseEdgesBackwardsUntilLoadFrom(graph, originNode, nil, make(map[*ssagraph.SSANode]bool)) {
 					node := edge.GetFromNode()
 					fmt.Printf("\t[TAINT] visiting node (load): %v\n", node.String())
 					spreadTaintsInStorePoint(graph, node, true)
@@ -429,6 +451,11 @@ func spreadTaintsInStorePoint(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, 
 	} else { // addr >>> val
 		edges = recurseEdgesForwardUntilStoreValue(graph, node, nil, make(map[*ssagraph.SSANode]bool))
 	}
+
+	// [TO BE IMPROVED] 
+	// must declared visited here on top otherwise we have infinite recursion 
+	// when recurseEdgesBackwardsUntilLoadFrom() includes edges with type EDGE_FIELD and EDGE_INDEX
+	visited := make(map[TaintInfo]bool)
 	for _, edge := range edges {
 		// if valToAddr is true, then srcNode is the Value and dstNode is the Address
 		// if valToAddr is false, then srcNode is the Address and dstNode is the Value
@@ -451,7 +478,6 @@ func spreadTaintsInStorePoint(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, 
 		}
 
 		for _, srcNode := range srcNodes {
-			visited := make(map[TaintInfo]bool)
 			taintInfo := NewTaintInfo("", "", nil, nil)
 			checkTaintInfo := NewCheckTaintInfo()
 
@@ -472,30 +498,35 @@ func spreadTaintsInStorePoint(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, 
 				doTaintNode(storeNode, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
 
 				// now "spread" the previous obtained taints to the addrNode
-				visited2 := make(map[TaintInfo]bool)
 				taintInfo2 := NewTaintInfo(taint.dbfield, "", nil, taint.dbcall)
-				backwardsAnalysis(graph, dstNode.GetValue(), taintInfo2, visited2, TAINT_BACKWARDS_MARK_AND_PROPAGATE, nil)
+				backwardsAnalysis(graph, dstNode.GetValue(), taintInfo2, visited, TAINT_BACKWARDS_MARK_AND_PROPAGATE, nil)
 			}
 		}
 	}
 }
 
-func recurseEdgesBackwardsUntilLoadFrom(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, visited map[*ssagraph.SSANode]bool) *ssagraph.SSAEdge {
+func recurseEdgesBackwardsUntilLoadFrom(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, loadEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
+	fmt.Printf("[TAINT] recurse edges backward until load from for current node (%s) with load edges list: %v\n", node.String(), loadEdges)
 	if visited[node] {
-		return nil
+		return loadEdges
 	}
 	visited[node] = true
 
 	for _, edge := range graph.GetEdgesToNode(node) {
-		if edge.GetType() == ssagraph.EDGE_LOAD {
-			return edge
-		}
-		result := recurseEdgesBackwardsUntilLoadFrom(graph, edge.GetFromNode(), visited)
-		if result != nil {
-			return result
+		// [TO BE IMPROVED]
+		// include edges with type EDGE_FIELD and EDGE_INDEX
+		// to make sure we fetch taints from objects children
+		// e.g., digota.OrderService.Run() (for more info check .dot file):
+		// where t11 (bson slice) must fetch the read taint from t3 (queue message)
+		// by including edges like t14 (&t12.Value where t12: &t11[0])
+		// we will later spreadTaintsInStorePoint (*t14 = t17) - in code this means adding the id to the bson filter
+		if edge.GetType() == ssagraph.EDGE_LOAD || edge.GetType() == ssagraph.EDGE_FIELD || edge.GetType() == ssagraph.EDGE_INDEX {
+			loadEdges = append(loadEdges, edge)
+		} else {
+			loadEdges = append(loadEdges, recurseEdgesBackwardsUntilLoadFrom(graph, edge.GetFromNode(), loadEdges, visited)...)
 		}
 	}
-	return nil
+	return loadEdges
 }
 
 func recurseEdgesForwardUntilStoreAddress(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {

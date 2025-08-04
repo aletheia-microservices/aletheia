@@ -57,110 +57,142 @@ t2 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
 t3 (@New): (*ssa.FieldAddr) (&t0.Metadata [#4])
 	 → t0 (@New): (*ssa.Alloc)
 
-t5 (@New): (*ssa.Phi) (phi [0: nil:[]*OrderItem, 2: t5, 6: t20] #orderItems)
-	 → t20 (@New): (*ssa.Call)
-
-t9 (@New): (*ssa.IndexAddr) (&items[t7])
-
-t10 (@New): (*ssa.UnOp) (*t9)
-
-t13 (@New): (*ssa.FieldAddr) (&t10.Quantity [#1])
-
-t16 (@New): (*ssa.FieldAddr) (&t10.Quantity [#1])
-
-t17 (@New): (*ssa.Alloc) (new [1]*OrderItem (varargs))
-	 → t17 (@New): (*ssa.Alloc)
-
-t18 (@New): (*ssa.IndexAddr) (&t17[0:int])
-	 → t17 (@New): (*ssa.Alloc)
-
-t19 (@New): (*ssa.Slice) (slice t17[:])
-	 → t17 (@New): (*ssa.Alloc)
-
-t20 (@New): (*ssa.Call) (append(t5, t19...))
-	 → t20 (@New): (*ssa.Call)
-
-t24 (@New): (*ssa.IndexAddr) (&t5[t22])
-	 → t20 (@New): (*ssa.Call)
-
-t25 (@New): (*ssa.UnOp) (*t24)
-
-t27 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
+t4 (@New): (*ssa.FieldAddr) (&t0.Email [#5])
 	 → t0 (@New): (*ssa.Alloc)
 
-t28 (@New): (*ssa.FieldAddr) (&t0.Currency [#2])
+t5 (@New): (*ssa.FieldAddr) (&t0.Shipping [#8])
 	 → t0 (@New): (*ssa.Alloc)
 
-t30 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
+t7 (@New): (*ssa.Extract) (extract t6 #0)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
+
+t8 (@New): (*ssa.Extract) (extract t6 #1)
+
+t10 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
 	 → t0 (@New): (*ssa.Alloc)
 
-t31 (@New): (*ssa.UnOp) (*t30)
-	 → t20 (@New): (*ssa.Call)
+t12 (@New): (*ssa.Phi) (phi [2: t7, 4: t12, 8: t27] #orderItems)
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
 
-t34 (@New): (*ssa.Extract) (extract t32 #1)
+t16 (@New): (*ssa.IndexAddr) (&items[t14])
+
+t17 (@New): (*ssa.UnOp) (*t16)
+
+t20 (@New): (*ssa.FieldAddr) (&t17.Quantity [#1])
+
+t23 (@New): (*ssa.FieldAddr) (&t17.Quantity [#1])
+
+t24 (@New): (*ssa.Alloc) (new [1]*OrderItem (varargs))
+	 → t24 (@New): (*ssa.Alloc)
+
+t25 (@New): (*ssa.IndexAddr) (&t24[0:int])
+	 → t24 (@New): (*ssa.Alloc)
+
+t26 (@New): (*ssa.Slice) (slice t24[:])
+	 → t24 (@New): (*ssa.Alloc)
+
+t27 (@New): (*ssa.Call) (append(t12, t26...))
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
+
+t31 (@New): (*ssa.IndexAddr) (&t12[t29])
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
+
+t32 (@New): (*ssa.UnOp) (*t31)
+
+t34 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
+	 → t0 (@New): (*ssa.Alloc)
+
+t35 (@New): (*ssa.FieldAddr) (&t0.Currency [#2])
+	 → t0 (@New): (*ssa.Alloc)
+
+t37 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
+	 → t0 (@New): (*ssa.Alloc)
+
+t38 (@New): (*ssa.UnOp) (*t37)
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
+
+t41 (@New): (*ssa.Extract) (extract t39 #1)
 	 → t2 (@New): (*ssa.MakeInterface)
 
-t36 (@New): (*ssa.FieldAddr) (&s.skuService [#0])
+t43 (@New): (*ssa.FieldAddr) (&s.skuService [#0])
 
-t37 (@New): (*ssa.UnOp) (*t36)
+t44 (@New): (*ssa.UnOp) (*t43)
 
-t38 (@New): (*ssa.FieldAddr) (&t25.Parent [#4])
+t45 (@New): (*ssa.FieldAddr) (&t32.Parent [#4])
 
-t41 (@New): (*ssa.Extract) (extract t40 #0)
+t48 (@New): (*ssa.Extract) (extract t47 #0)
 
-t42 (@New): (*ssa.Extract) (extract t40 #1)
+t49 (@New): (*ssa.Extract) (extract t47 #1)
 
-t44 (@New): (*ssa.FieldAddr) (&t41.Price [#2])
+t52 (@New): (*ssa.FieldAddr) (&t48.Price [#2])
 
-t47 (@New): (*ssa.FieldAddr) (&t25.Amount [#2])
+t55 (@New): (*ssa.FieldAddr) (&t32.Amount [#2])
 
-t48 (@New): (*ssa.FieldAddr) (&t41.Currency [#3])
+t56 (@New): (*ssa.FieldAddr) (&t48.Currency [#3])
 
-t50 (@New): (*ssa.FieldAddr) (&t25.Currency [#3])
+t58 (@New): (*ssa.FieldAddr) (&t32.Currency [#3])
 
-t51 (@New): (*ssa.FieldAddr) (&t41.Name [#1])
+t59 (@New): (*ssa.FieldAddr) (&t48.Name [#1])
 
-t53 (@New): (*ssa.FieldAddr) (&t25.Description [#5])
+t61 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
 
-t54 (@New): (*ssa.FieldAddr) (&t0.Amount [#1])
+t62 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
+
+t66 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
+
+t67 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
+
+t71 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
+
+t72 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
+
+t75 (@New): (*ssa.FieldAddr) (&t32.Description [#5])
+
+t76 (@New): (*ssa.FieldAddr) (&t0.Amount [#1])
 	 → t0 (@New): (*ssa.Alloc)
 
-t55 (@New): (*ssa.FieldAddr) (&s.db [#1])
+t77 (@New): (*ssa.FieldAddr) (&s.db [#1])
 
-t56 (@New): (*ssa.UnOp) (*t55)
+t78 (@New): (*ssa.UnOp) (*t77)
 
-t58 (@New): (*ssa.Extract) (extract t57 #0)
+t80 (@New): (*ssa.Extract) (extract t79 #0)
 
-t59 (@New): (*ssa.Extract) (extract t57 #1)
+t81 (@New): (*ssa.Extract) (extract t79 #1)
 
-t62 (@New): (*ssa.MakeInterface) (make interface{} <- Order (t61))
-	 → t62 (@New): (*ssa.MakeInterface)
+t84 (@New): (*ssa.MakeInterface) (make interface{} <- Order (t83))
+	 → t84 (@New): (*ssa.MakeInterface)
 
-t63 (@New): (*ssa.Call) (invoke t58.InsertOne(ctx, t62))
+t85 (@New): (*ssa.Call) (invoke t80.InsertOne(ctx, t84))
 
-t64 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
+t86 (@New): (*ssa.FieldAddr) (&t0.Items [#3])
 	 → t0 (@New): (*ssa.Alloc)
 
-t65 (@New): (*ssa.UnOp) (*t64)
-	 → t20 (@New): (*ssa.Call)
+t87 (@New): (*ssa.UnOp) (*t86)
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
 
-t66 (@New): (*ssa.IndexAddr) (&t65[0:int])
-	 → t20 (@New): (*ssa.Call)
+t88 (@New): (*ssa.IndexAddr) (&t87[0:int])
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
 
-t67 (@New): (*ssa.UnOp) (*t66)
+t89 (@New): (*ssa.UnOp) (*t88)
 
-t68 (@New): (*ssa.FieldAddr) (&t67.Amount [#2])
+t90 (@New): (*ssa.FieldAddr) (&t89.Amount [#2])
 
-t69 (@New): (*ssa.FieldAddr) (&t0.Shipping [#8])
+t91 (@New): (*ssa.FieldAddr) (&t0.Shipping [#8])
 	 → t0 (@New): (*ssa.Alloc)
 
-t70 (@New): (*ssa.UnOp) (*t69)
+t92 (@New): (*ssa.UnOp) (*t91)
 
-t71 (@New): (*ssa.FieldAddr) (&t70.Address [#2])
+t93 (@New): (*ssa.FieldAddr) (&t92.Address [#2])
 
-t72 (@New): (*ssa.UnOp) (*t71)
+t94 (@New): (*ssa.UnOp) (*t93)
 
-t73 (@New): (*ssa.FieldAddr) (&t72.City [#1])
+t95 (@New): (*ssa.FieldAddr) (&t94.City [#1])
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderServiceImpl).New2 ###
@@ -219,47 +251,6 @@ t25 (@New2): (*ssa.Call) (invoke t19.InsertOne(ctx, t24))
 s (@Run): (*ssa.Parameter) (parameter s : *OrderServiceImpl)
 
 ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
-
-t0 (@Run): (*ssa.Alloc) (new QueueMessage (message))
-	 → t0 (@Run): (*ssa.Alloc)
-
-t1 (@Run): (*ssa.FieldAddr) (&s.queue [#2])
-
-t2 (@Run): (*ssa.UnOp) (*t1)
-
-t3 (@Run): (*ssa.MakeInterface) (make interface{} <- *QueueMessage (t0))
-	 → t3 (@Run): (*ssa.MakeInterface)
-
-t5 (@Run): (*ssa.FieldAddr) (&s.db [#1])
-
-t6 (@Run): (*ssa.UnOp) (*t5)
-
-t8 (@Run): (*ssa.Extract) (extract t7 #0)
-
-t9 (@Run): (*ssa.Extract) (extract t7 #1)
-
-t11 (@Run): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
-	 → t11 (@Run): (*ssa.Alloc)
-
-t12 (@Run): (*ssa.IndexAddr) (&t11[0:int])
-	 → t11 (@Run): (*ssa.Alloc)
-
-t13 (@Run): (*ssa.FieldAddr) (&t12.Key [#0])
-	 → t11 (@Run): (*ssa.Alloc)
-
-t14 (@Run): (*ssa.FieldAddr) (&t12.Value [#1])
-	 → t11 (@Run): (*ssa.Alloc)
-
-t15 (@Run): (*ssa.FieldAddr) (&t0.id [#0])
-	 → t0 (@Run): (*ssa.Alloc)
-
-t17 (@Run): (*ssa.MakeInterface) (make interface{} <- string (t16))
-	 → t17 (@Run): (*ssa.MakeInterface)
-
-t18 (@Run): (*ssa.Slice) (slice t11[:])
-	 → t11 (@Run): (*ssa.Alloc)
-
-t19 (@Run): (*ssa.Call) (invoke t8.DeleteOne(ctx, t18))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderServiceImpl).getUpdatedOrderItems ###
@@ -828,21 +819,6 @@ t11 (@Delete): (*ssa.Slice) (slice t6[:])
 
 t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
 
-t14 (@Delete): (*ssa.Alloc) (local QueueMessage (message))
-	 → t14 (@Delete): (*ssa.Alloc)
-
-t15 (@Delete): (*ssa.FieldAddr) (&t14.id [#0])
-	 → t14 (@Delete): (*ssa.Alloc)
-
-t16 (@Delete): (*ssa.FieldAddr) (&s.queue [#1])
-
-t17 (@Delete): (*ssa.UnOp) (*t16)
-
-t19 (@Delete): (*ssa.MakeInterface) (make interface{} <- QueueMessage (t18))
-	 → t19 (@Delete): (*ssa.MakeInterface)
-
-t22 (@Delete): (*ssa.Extract) (extract t20 #1)
-
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuServiceImpl).Get ###
 s (@Get): (*ssa.Parameter) (parameter s : *SkuServiceImpl)
@@ -993,7 +969,8 @@ t3 (@NewSkuServiceImpl): (*ssa.MakeInterface) (make SkuService <- *SkuServiceImp
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.calculateTotal ###
 orderItems (@calculateTotal): (*ssa.Parameter) (parameter orderItems : []*OrderItem)
-	 → t20 (@New): (*ssa.Call)
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
 
 t0 (@calculateTotal): (*ssa.UnOp) (*Currency_name)
 	 → t10 (@init): (*ssa.MakeMap)
@@ -1006,7 +983,8 @@ t4 (@calculateTotal): (*ssa.Phi) (phi [0: t2, 5: t29] #m)
 	 → t0 (@New): (*ssa.Alloc)
 
 t8 (@calculateTotal): (*ssa.IndexAddr) (&orderItems[t6])
-	 → t20 (@New): (*ssa.Call)
+	 → t27 (@New): (*ssa.Call)
+	 → t17 (@getUpdatedOrderItems): (*ssa.Call)
 
 t9 (@calculateTotal): (*ssa.UnOp) (*t8)
 
