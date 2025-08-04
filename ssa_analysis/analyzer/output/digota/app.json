@@ -1,0 +1,81 @@
+{
+  "name": "digota",
+  "databases": [
+    "orders_db",
+    "payments_db",
+    "products_db",
+    "skus_db"
+  ],
+  "services": [
+    {
+      "name": "OrderService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderService",
+      "pkg": "digota",
+      "impl": "OrderServiceImpl",
+      "fields": [
+        "skuService #0 (sku_service)",
+        "db #1 (orders_db)"
+      ],
+      "methods": [
+        "New"
+      ],
+      "services": [
+        "SkuService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "PaymentService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentService",
+      "pkg": "digota",
+      "impl": "PaymentServiceImpl",
+      "fields": [
+        "db #0 (payments_db)"
+      ],
+      "methods": [
+        "NewCharge",
+        "Get",
+        "List",
+        "RefundCharge"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ProductService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductService",
+      "pkg": "digota",
+      "impl": "ProductServiceImpl",
+      "fields": [
+        "skuService #0 (sku_service)",
+        "db #1 (products_db)"
+      ],
+      "methods": [
+        "New",
+        "Get",
+        "List",
+        "Update",
+        "Delete"
+      ],
+      "services": [
+        "SkuService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "SkuService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuService",
+      "pkg": "digota",
+      "impl": "SkuServiceImpl",
+      "fields": [
+        "db #0 (skus_db)"
+      ],
+      "methods": [
+        "New",
+        "Get"
+      ],
+      "services": [],
+      "databases": []
+    }
+  ]
+}

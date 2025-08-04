@@ -1,0 +1,206 @@
+digraph G {
+	rankdir=TD;
+	ranksep=1.5;
+	nodesep=1;
+	subgraph cluster_clients {
+		style=invis;
+		N_client [label="client", style=bold, shape=invhouse, color="orange"];
+	}
+	subgraph cluster_services {
+		style=invis;
+		N_ProductService_New [label="ProductService.New
+
+==== param 0 (name) tainted ====
+_obj
+[P,W] @ products_db.products.Name
+
+
+==== param 1 (active) tainted ====
+_obj
+[P,W] @ products_db.products.Active
+
+
+==== param 2 (attributes) tainted ====
+_obj
+[P,W] @ products_db.products.Attributes
+
+
+==== param 3 (description) tainted ====
+_obj
+[P,W] @ products_db.products.Description
+
+
+==== param 4 (images) tainted ====
+_obj
+[P,W] @ products_db.products.Images
+
+
+==== param 5 (metadata) tainted ====
+_obj
+[P,W] @ products_db.products.Metadata
+
+
+==== param 6 (shippable) tainted ====
+_obj
+[P,W] @ products_db.products.Shippable
+
+
+==== param 7 (url) tainted ====
+_obj
+[P,W] @ products_db.products.Url
+", style=bold, shape=box, color="blue"];
+		N_ProductService_Delete [label="ProductService.Delete", style=bold, shape=box, color="blue"];
+		N_OrderService_New [label="OrderService.New
+
+==== param 0 (currency) tainted ====
+_obj
+[P,W] @ orders_db.orders.Currency
+
+
+==== param 1 (items) tainted ====
+_obj
+[P,W] @ orders_db.orders.Items
+
+
+==== param 2 (metadata) tainted ====
+_obj
+[P,W] @ orders_db.orders.Metadata
+", style=bold, shape=box, color="blue"];
+		N_SkuService_Get [label="SkuService.Get
+
+==== param 0 (id) tainted ====
+_obj
+[P,R] @ skus_db.skus[*].Value
+", style=bold, shape=box, color="blue"];
+		N_ProductService_List [label="ProductService.List", style=bold, shape=box, color="blue"];
+		N_ProductService_Update [label="ProductService.Update
+
+==== param 0 (id) tainted ====
+_obj
+[P,R] @ products_db.products[*].Value
+
+
+==== param 1 (name) tainted ====
+_obj
+[P,W] @ products_db.products.Name
+
+
+==== param 2 (active) tainted ====
+_obj
+[P,W] @ products_db.products.Active
+
+
+==== param 3 (attributes) tainted ====
+_obj
+[P,W] @ products_db.products.Attributes
+
+
+==== param 4 (description) tainted ====
+_obj
+[P,W] @ products_db.products.Description
+
+
+==== param 5 (images) tainted ====
+_obj
+[P,W] @ products_db.products.Images
+
+
+==== param 6 (metadata) tainted ====
+_obj
+[P,W] @ products_db.products.Metadata
+
+
+==== param 7 (shippable) tainted ====
+_obj
+[P,W] @ products_db.products.Shippable
+
+
+==== param 8 (url) tainted ====
+_obj
+[P,W] @ products_db.products.Url
+", style=bold, shape=box, color="blue"];
+		N_SkuService_New [label="SkuService.New
+
+==== param 0 (name) tainted ====
+_obj
+[P,W] @ skus_db.skus.Name
+
+
+==== param 1 (currency) tainted ====
+_obj
+[P,W] @ skus_db.skus.Currency
+
+
+==== param 2 (active) tainted ====
+_obj
+[P,W] @ skus_db.skus.Active
+
+
+==== param 3 (price) tainted ====
+_obj
+[P,W] @ skus_db.skus.Price
+
+
+==== param 4 (parent) tainted ====
+_obj
+[P,W] @ skus_db.skus.Parent
+
+
+==== param 5 (metadata) tainted ====
+_obj
+[P,W] @ skus_db.skus.Metadata
+
+
+==== param 7 (packageDimensions) tainted ====
+_obj
+[P,W] @ skus_db.skus.PackageDimensions
+
+
+==== param 8 (inventory) tainted ====
+_obj
+[P,W] @ skus_db.skus.Inventory
+
+
+==== param 9 (attributes) tainted ====
+_obj
+[P,W] @ skus_db.skus.Attributes
+", style=bold, shape=box, color="blue"];
+		N_ProductService_Get [label="ProductService.Get
+
+==== param 0 (id) tainted ====
+_obj
+[P,R] @ products_db.products[*].Value
+", style=bold, shape=box, color="blue"];
+	}
+	subgraph cluster_databases {
+		style=invis;
+		N_skus_db_skus [label="skus_db.skus", style=bold, shape=cylinder, color="green"];
+		N_products_db_products [label="products_db.products", style=bold, shape=cylinder, color="green"];
+		N_orders_db_orders [label="orders_db.orders", style=bold, shape=cylinder, color="green"];
+	}
+	N_client -> N_OrderService_New [label="New()", color=orange];
+	N_OrderService_New -> N_SkuService_Get [label="Get()", color=blue];
+	N_OrderService_New -> N_orders_db_orders [label="InsertOne()", color=green];
+	N_client -> N_SkuService_Get [label="Get()", color=orange];
+	N_SkuService_Get -> N_skus_db_skus [label="FindOne()", color=green];
+	N_client -> N_ProductService_New [label="New()", color=orange];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_ProductService_New -> N_products_db_products [label="InsertOne()", color=green];
+	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
+	N_client -> N_SkuService_New [label="New()", color=orange];
+	N_SkuService_New -> N_skus_db_skus [label="InsertOne()", color=green];
+	N_client -> N_ProductService_Get [label="Get()", color=orange];
+	N_ProductService_Get -> N_products_db_products [label="FindOne()", color=green];
+	N_client -> N_ProductService_List [label="List()", color=orange];
+	N_client -> N_ProductService_Update [label="Update()", color=orange];
+	N_ProductService_Update -> N_products_db_products [label="FindOne()", color=green];
+	N_ProductService_Update -> N_products_db_products [label="InsertOne()", color=green];
+	N_client -> N_ProductService_Delete [label="Delete()", color=orange];
+}

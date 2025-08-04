@@ -1,0 +1,48 @@
+{
+  "orders_db": {
+    "name": "orders_db",
+    "schemas": [
+      {
+        "fields": [
+          "orders_db.orders",
+          "orders_db.orders.Items[*].Parent"
+        ],
+        "constraints": [
+          "FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus[*].Value"
+        ]
+      }
+    ]
+  },
+  "payments_db": {
+    "name": "payments_db",
+    "schemas": null
+  },
+  "products_db": {
+    "name": "products_db",
+    "schemas": [
+      {
+        "fields": [
+          "products_db.products",
+          "products_db.products.Name",
+          "products_db.products[*].Value"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "skus_db": {
+    "name": "skus_db",
+    "schemas": [
+      {
+        "fields": [
+          "skus_db.skus",
+          "skus_db.skus.Name",
+          "skus_db.skus[*].Value"
+        ],
+        "constraints": [
+          "FOREIGN_KEY skus_db.skus.Name REFERENCES products_db.products.Name"
+        ]
+      }
+    ]
+  }
+}

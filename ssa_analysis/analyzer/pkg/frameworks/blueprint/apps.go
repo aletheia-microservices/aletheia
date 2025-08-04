@@ -3,12 +3,13 @@ package blueprint
 import (
 	"log"
 
+	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_postnotification_simple "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring/specs"
+
 	/* specs_app_constraints_referential_integrity "github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring/specs"
 	specs_coupons_app "github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring/specs"
 	specs_coupons_app_cache "github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring/specs"
 	specs_coupons_app_sql "github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring/specs"
-	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_dsb_hotel "github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring/specs"
 	specs_dsb_media "github.com/blueprint-uservices/blueprint/examples/dsb_media/wiring/specs"
 	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
@@ -34,11 +35,11 @@ type AppInfo struct {
 }
 
 var APPS_INFO = map[string]AppInfo{
-	"postnotification_simple":               {BLUEPRINT_PATH_EXAMPLES + "postnotification_simple/workflow/postnotification_simple", specs_postnotification_simple.Docker},
+	"postnotification_simple": {BLUEPRINT_PATH_EXAMPLES + "postnotification_simple/workflow/postnotification_simple", specs_postnotification_simple.Docker},
+	"digota":                  {BLUEPRINT_PATH_EXAMPLES + "digota/workflow/digota", specs_digota.Docker},
 	/* "postnotification":                      {BLUEPRINT_PATH_EXAMPLES + "postnotification/workflow/postnotification", specs_postnotification.Docker},
 	"app_constraints_referential_integrity": {BLUEPRINT_PATH_EXAMPLES + "app_constraints_referential_integrity/workflow/app_constraints_referential_integrity", specs_app_constraints_referential_integrity.Docker},
 	"employee_app":                          {BLUEPRINT_PATH_EXAMPLES + "employee_app/workflow/employee_app", specs_employee_app.Docker},
-	"digota":                                {BLUEPRINT_PATH_EXAMPLES + "digota/workflow/digota", specs_digota.Docker},
 	"coupons_app":                           {BLUEPRINT_PATH_EXAMPLES + "coupons_app/workflow/coupons_app", specs_coupons_app.Docker},
 	"coupons_app_sql":                       {BLUEPRINT_PATH_EXAMPLES + "coupons_app_sql/workflow/coupons_app_sql", specs_coupons_app_sql.Docker},
 	"coupons_app_cache":                     {BLUEPRINT_PATH_EXAMPLES + "coupons_app_cache/workflow/coupons_app_cache", specs_coupons_app_cache.Docker},

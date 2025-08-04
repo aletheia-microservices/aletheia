@@ -13,6 +13,11 @@ import (
 )
 
 func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMode) {
+	if taintInfo.getDbCall() == nil {
+		// FIXME: verify this
+		fmt.Printf("[4] nil db call for taint info: %v\n", taintInfo)
+		return
+	}
 	switch taintMode {
 	case TAINT_BACKWARDS_MARK_AND_PROPAGATE:
 		// note that objfields/dbfields already have "." before them
@@ -98,9 +103,11 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 					// so that we can later taint the bottom node
 					dbFieldIndirect := taintInfoTmp.getDatabaseField() + taintInfo.getObjectPath()
 					if taintInfoTmp.getDbCall() == nil {
-						log.Fatalf("[4] nil db call for taint info tmp: %v\n", taintInfoTmp)
+						// FIXME: verify this
+						fmt.Printf("[4] nil db call for taint info tmp: %v\n", taintInfoTmp)
+					} else {
+						checkTaintInfo.addToIndirectTaints(dbFieldIndirect, taintInfoTmp.getDbCall())
 					}
-					checkTaintInfo.addToIndirectTaints(dbFieldIndirect, taintInfoTmp.getDbCall())
 				}
 				break
 			} else if strings.HasPrefix(objPath, taintInfo.getObjectFullPath()) { // also true if strings are equal
@@ -188,6 +195,43 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 		// if its fieldaddr then we use the objfield and dbfield
 		// from the parameters and not the updated ones
 		doTaintPointerToSets(graph, val, taintInfo, visited)
+	}
+
+	if taintMode == TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH {
+		// TODO: verify this
+
+		node := graph.GetNodeByName(val.Name())
+		var allEdges []*ssagraph.SSAEdge
+		var allNodes []*ssagraph.SSANode
+		numEdgesPointsTo := 0
+		for _, edge := range graph.GetEdgesFromNode(node) {
+			if edge.GetType() == ssagraph.EDGE_POINTS_TO {
+				allEdges = append(allEdges, edge)
+				allNodes = append(allNodes, edge.GetToNode())
+				numEdgesPointsTo++
+			}
+		}
+		numEdgesPointedBy := 0
+		for _, edge := range graph.GetEdgesToNode(node) {
+			if edge.GetType() == ssagraph.EDGE_POINTS_TO {
+				allEdges = append(allEdges, edge)
+				allNodes = append(allNodes, edge.GetFromNode())
+				numEdgesPointedBy++
+			}
+		}
+
+		for i, edge := range allEdges {
+			if edge.GetPath() != "" && i < numEdgesPointsTo {
+				// add before
+				// note that both edge.path and objfields/dbfields already have "." before them
+				taintInfo = taintInfo.updatePathPrefix(edge.GetPath())
+			} else if edge.GetPath() != "" && i >= numEdgesPointsTo {
+				continue
+			}
+			node := allNodes[i]
+			fmt.Printf("\t[TAINT - BACKWARD] calling doTaintNode for pointed to/by: %s\n", node.GetName())
+			backwardsAnalysis(graph, node.GetValue(), taintInfo, visited, TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH, checkTaintInfo)
+		}
 	}
 
 	fmt.Printf("\t[TAINT - BACKWARD] exiting %s: %s\n", val.Name(), val.String())
@@ -334,9 +378,10 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 				fmt.Printf("[TAINT] spreading taints for ret node: %s\n", retNode)
 				spreadTaintsInStorePoint(graph, retNode, false)
 			}
+			fmt.Printf("[TAINT] visiting nodes for call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
+			checkUpperTaintsForObjects(graph, nodesToVisit)
 		}
 
-		checkUpperTaintsForObjects(graph, nodesToVisit)
 	}
 }
 
@@ -365,10 +410,12 @@ func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagra
 			fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, taints)
 			for _, taint := range taints {
 				if taint.dbcall == nil {
-					log.Fatalf("[2] nil db call for taint: %v\n", taint)
+					// FIXME: verify this
+					fmt.Printf("[2] nil db call for taint: %v\n", taint)
+				} else {
+					taintInfo := NewTaintInfo(taint.dbfield, objpath, originNode.GetValue(), taint.dbcall)
+					doTaintNode(node, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
 				}
-				taintInfo := NewTaintInfo(taint.dbfield, objpath, originNode.GetValue(), taint.dbcall)
-				doTaintNode(node, taintInfo, TAINT_BACKWARDS_MARK_AND_PROPAGATE)
 			}
 		}
 	}

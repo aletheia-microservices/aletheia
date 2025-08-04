@@ -192,7 +192,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), true)
 				taintMapping.Merge(taintMappingTmp)
 			}
-			propagateNewTaintsToDatabases(graph, taintMapping)
+			PropagateNewTaintsToDatabases(graph, taintMapping)
 
 			edges = append(edges, edge)
 		}
@@ -229,7 +229,7 @@ func registerDatabaseFields(graph *AbstractCallGraph, args []*AbstractObject) {
 	}
 }
 
-func propagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *TaintMapping) {
+func PropagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *TaintMapping) {
 	for currTaint, otherTaintsLst := range taintMapping.mapping {
 		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetField()))
 		currField := currDb.GetSchema().GetOrCreateField(currDb, currTaint.GetField())
@@ -238,25 +238,23 @@ func propagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *Taint
 			otherDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherTaint.GetField()))
 			otherField := otherDb.GetSchema().GetOrCreateField(otherDb, otherTaint.GetField())
 
-			if currTaint.IsWrite() && otherTaint.IsWrite() {
-				if currField.HasConstraintForeignKeyToField(otherField) {
-					continue
+			if currTaint.IsWrite() && otherTaint.IsWrite() || currTaint.IsWrite() && otherTaint.IsRead() {
+				if !currField.HasConstraintForeignKeyToField(otherField) {
+					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
+					currField.AddConstraint(constraint)
+					currDb.GetSchema().AddConstraint(constraint)
+					fmt.Printf("\t\t[ITERATOR] [WRITE] added new constraint: %s\n", constraint)
 				}
-				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
-				currField.AddConstraint(constraint)
-				currDb.GetSchema().AddConstraint(constraint)
-				fmt.Printf("\t\t[ABSTRACTGRAPH] [WRITE] added new constraint: %s\n", constraint)
-			} else if !currTaint.IsWrite() && !otherTaint.IsWrite() {
-				if otherField.HasConstraintForeignKeyToField(currField) {
-					continue
+			} else if currTaint.IsRead() && otherTaint.IsRead() || currTaint.IsRead() && otherTaint.IsWrite() {
+				if !otherField.HasConstraintForeignKeyToField(currField) {
+					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
+					otherField.AddConstraint(constraint)
+					otherDb.GetSchema().AddConstraint(constraint)
+					fmt.Printf("\t\t[ITERATOR] [READ] added new constraint: %s\n", constraint)
 				}
-				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
-				otherField.AddConstraint(constraint)
-				otherDb.GetSchema().AddConstraint(constraint)
-				fmt.Printf("\t\t[ABSTRACTGRAPH] [READ] added new constraint: %s\n", constraint)
 			} else {
 				// TODO
-				log.Fatalf("\t\t[ABSTRACTGRAPH] unexpected taint mapping with write and read taints:\nCURR TAINT: %s\nOTHER TAINT:%s", currTaint.String(), otherTaint.String())
+				log.Fatalf("\t\t[ABSTRACTGRAPH] unexpected taint mapping with write and read taints:\nCURR TAINT: %s\nOTHER TAINT:%s", currTaint.LongString(), otherTaint.LongString())
 			}
 		}
 	}

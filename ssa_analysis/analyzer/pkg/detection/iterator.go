@@ -2,12 +2,9 @@ package detection
 
 import (
 	"fmt"
-	"log"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
-	"analyzer/pkg/app/backends"
-	"analyzer/pkg/utils"
 )
 
 type Iterator struct {
@@ -80,7 +77,7 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 					fmt.Printf("\t\t\t[ITERATOR] [ARG %d] < EXIT update object (%s) taints with new taint mapping\n", i, obj.String())
 				}
 			}
-			propagateNewTaintsToDatabases(iterator.graph, taintMapping)
+			abstractgraph.PropagateNewTaintsToDatabases(iterator.graph, taintMapping)
 
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			taintMapping = abstractgraph.NewTaintMapping()
@@ -90,7 +87,7 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				taintMapping.Merge(taintMappingTmp)
 				fmt.Printf("\t\t[ITERATOR] [RETS] [index=%d] taint mapping for ret (%s): %s\n", i, fromRet.String(), taintMappingTmp.String())
 			}
-			propagateNewTaintsToDatabases(iterator.graph, taintMapping)
+			abstractgraph.PropagateNewTaintsToDatabases(iterator.graph, taintMapping)
 
 			fmt.Printf("\t[ITERATOR] final taint mapping: %s\n", taintMapping.String())
 
@@ -135,39 +132,6 @@ func propagateNewTaintsToObject(obj *abstractgraph.AbstractObject, taintMapping 
 		for _, otherTaint := range otherTaintsLst {
 			if found {
 				obj.AddTaintIfNotExists(objpath, otherTaint)
-			}
-		}
-	}
-}
-
-func propagateNewTaintsToDatabases(graph *abstractgraph.AbstractCallGraph, taintMapping *abstractgraph.TaintMapping) {
-	for currTaint, otherTaintsLst := range taintMapping.GetMapping() {
-		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetField()))
-		currField := currDb.GetSchema().GetOrCreateField(currDb, currTaint.GetField())
-
-		for _, otherTaint := range otherTaintsLst {
-			otherDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherTaint.GetField()))
-			otherField := otherDb.GetSchema().GetOrCreateField(otherDb, otherTaint.GetField())
-
-			if currTaint.IsWrite() && otherTaint.IsWrite() {
-				if currField.HasConstraintForeignKeyToField(otherField) {
-					continue
-				}
-				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
-				currField.AddConstraint(constraint)
-				currDb.GetSchema().AddConstraint(constraint)
-				fmt.Printf("\t\t[ITERATOR] [WRITE] added new constraint: %s\n", constraint)
-			} else if !currTaint.IsWrite() && !otherTaint.IsWrite() {
-				if otherField.HasConstraintForeignKeyToField(currField) {
-					continue
-				}
-				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
-				otherField.AddConstraint(constraint)
-				otherDb.GetSchema().AddConstraint(constraint)
-				fmt.Printf("\t\t[ITERATOR] [READ] added new constraint: %s\n", constraint)
-			} else {
-				// TODO
-				log.Fatalf("\t\t[ITERATOR] unexpected taint mapping with write and read taints:\nCURR TAINT: %s\nOTHER TAINT:%s", currTaint.String(), otherTaint.String())
 			}
 		}
 	}
