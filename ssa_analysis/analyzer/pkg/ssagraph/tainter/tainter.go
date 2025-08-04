@@ -286,7 +286,7 @@ func runTainterOnReturns(graph *ssagraph.SSAGraph) {
 func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 	for _, node := range graph.GetNodes() {
 		var nodesToVisit []*ssagraph.SSANode
-		if database, collectionOrTopic, method, args, isWrite, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
+		if database, collectionOrTopic, method, args, opType, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
 			/* if node.String() == "t14: invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)" {
 				log.Fatal("EXIT!")
 			} */
@@ -301,7 +301,7 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 			}
 
 			callId := ssagraph.ComputeCallID(graph, node)
-			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method, isWrite)
+			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method, opType)
 			graph.AddDatabaseCall(dbCall)
 
 			valDocumentOrMessage := args[0]

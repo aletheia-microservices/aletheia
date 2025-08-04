@@ -3,30 +3,40 @@ package abstractgraph
 import (
 	"fmt"
 	"strings"
+
+	"analyzer/pkg/common"
 )
 
 type AbstractTaint struct {
 	dbfield  string // field path in db
 	dbcallID string //i.e., the ID of the abstract edge representing the call
 	primary  bool
-	write    bool
+	opType   common.DatabaseOperationType
 }
 
-func NewAbstractTaint(dbfield string, dbcall string, primary bool, write bool) *AbstractTaint {
+func NewAbstractTaint(dbfield string, dbcall string, primary bool, opType common.DatabaseOperationType) *AbstractTaint {
 	return &AbstractTaint{
 		dbfield:  dbfield,
 		dbcallID: dbcall,
 		primary:  primary,
-		write:    write,
+		opType:   opType,
 	}
 }
 
-func (taint *AbstractTaint) IsWrite() bool {
-	return taint.write
+func (taint *AbstractTaint) IsRead() bool {
+	return taint.opType == common.OP_READ
 }
 
-func (taint *AbstractTaint) IsRead() bool {
-	return !taint.write
+func (taint *AbstractTaint) IsWrite() bool {
+	return taint.opType == common.OP_WRITE
+}
+
+func (taint *AbstractTaint) IsUpdate() bool {
+	return taint.opType == common.OP_UPDATE
+}
+
+func (taint *AbstractTaint) IsDelete() bool {
+	return taint.opType == common.OP_DELETE
 }
 
 func (taint *AbstractTaint) IsPrimary() bool {
@@ -46,7 +56,7 @@ func (taint *AbstractTaint) String() string {
 }
 
 func (taint *AbstractTaint) LongString() string {
-	return fmt.Sprintf("{%s, %s, %t, %t}", taint.dbfield, taint.dbcallID, taint.primary, taint.write)
+	return fmt.Sprintf("{%s, %s, %s, %t}", taint.dbfield, taint.dbcallID, common.OperationTypeToString(taint.opType), taint.primary)
 }
 
 func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
@@ -54,7 +64,7 @@ func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
 	return taint.dbfield == other.dbfield &&
 		taint.dbcallID == other.dbcallID &&
 		taint.primary == other.primary &&
-		taint.write == other.write
+		taint.opType == other.opType
 }
 
 // taint.dbfield: notification
@@ -67,7 +77,7 @@ func (taint *AbstractTaint) IsUpperPath(other *AbstractTaint) (bool, string) {
 		fmt.Printf("got subpath: %s\n", subpath)
 		return taint.dbcallID == other.dbcallID &&
 			taint.primary == other.primary &&
-			taint.write == other.write, subpath
+			taint.opType == other.opType, subpath
 	}
 	return false, ""
 }

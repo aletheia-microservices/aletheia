@@ -1,5 +1,7 @@
 package ssagraph
 
+import "analyzer/pkg/common"
+
 func ComputeCallID(graph *SSAGraph, node *SSANode) string {
 	return graph.GetService() + "." + graph.GetMethodName() + "." + node.GetName()
 }
@@ -64,17 +66,17 @@ func (call *ServiceCall) String() string {
 }
 
 type DatabaseCall struct {
-	id    string // the ssa instr name for the db call on the callee side
-	node  *SSANode
-	args  []*SSANode
-	write bool
+	id     string // the ssa instr name for the db call on the callee side
+	node   *SSANode
+	args   []*SSANode
+	opType common.DatabaseOperationType
 
 	database          string
 	collectionOrTopic string
 	method            string
 }
 
-func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string, write bool) *DatabaseCall {
+func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string, opType common.DatabaseOperationType) *DatabaseCall {
 	return &DatabaseCall{
 		id:                id,
 		node:              node,
@@ -82,7 +84,7 @@ func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string,
 		database:          database,
 		collectionOrTopic: collectionOrTopic,
 		method:            method,
-		write:             write,
+		opType:            opType,
 	}
 }
 
@@ -90,8 +92,8 @@ func (call *DatabaseCall) GetID() string {
 	return call.id
 }
 
-func (call *DatabaseCall) IsWrite() bool {
-	return call.write
+func (call *DatabaseCall) GetOpType() common.DatabaseOperationType {
+	return call.opType
 }
 
 func (call *DatabaseCall) GetDatabasePath() string {

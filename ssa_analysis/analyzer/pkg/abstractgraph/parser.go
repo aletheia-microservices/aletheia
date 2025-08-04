@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"analyzer/pkg/app/backends"
+	"analyzer/pkg/common"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/utils"
 )
@@ -32,7 +33,7 @@ func ssaTaintToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[string][
 				}
 			}
 
-			abstractTaints[i] = NewAbstractTaint(ssaTaint.GetDbField(), ssaTaint.GetDbCall().GetID(), true, ssaTaint.GetDbCall().IsWrite())
+			abstractTaints[i] = NewAbstractTaint(ssaTaint.GetDbField(), ssaTaint.GetDbCall().GetID(), true, ssaTaint.GetDbCall().GetOpType())
 		}
 		abstractTaintsMap[objPath] = abstractTaints
 	}
@@ -99,7 +100,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 
 	// build dummy edges for entrypoints
 	// FIXME: must not always happen!
-	edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, false, EDGE_SERVICE_ENTRYPOINT)
+	edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
 	for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 		arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint))
 		edge.AddArgument(arg)
@@ -133,7 +134,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 				}
 			}
 
-			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, false, EDGE_SERVICE_RPC)
+			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
 
 			// create call arguments
 			for _, callArg := range call.GetArguments() {
@@ -175,7 +176,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, funcGraphs map[string
 				}
 			}
 
-			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, call.IsWrite(), EDGE_DATABASE_CALL)
+			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, call.GetOpType(), EDGE_DATABASE_CALL)
 
 			for _, callArg := range call.GetArguments() {
 				arg := NewAbstractObject(callArg.GetName(), ssaTaintToAbstractTaint(graph, (callArg.GetTaints())))

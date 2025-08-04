@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"analyzer/pkg/common"
 )
 
 type AbstractObject struct {
@@ -46,6 +48,7 @@ func (obj *AbstractObject) TaintLongString() string {
 	return builder.String()
 }
 
+// same logic as SSAGraph Node
 func (obj *AbstractObject) TaintString() string {
 	if len(obj.taints) == 0 {
 		return ""
@@ -64,16 +67,14 @@ func (obj *AbstractObject) TaintString() string {
 		builder.WriteByte('\n')
 		for _, taint := range taints {
 			builder.WriteString("[")
+			builder.WriteString(common.OperationTypeToString(taint.opType))
+
 			if taint.IsPrimary() {
-				builder.WriteString("P,")
+				builder.WriteString(", primary]")
 			} else {
-				builder.WriteString("S,")
+				builder.WriteString(", secondary]")
 			}
-			if taint.IsWrite() {
-				builder.WriteString("W]")
-			} else {
-				builder.WriteString("R]")
-			}
+			
 			builder.WriteString(" @ ")
 			builder.WriteString(taint.String())
 			builder.WriteByte('\n')
@@ -190,7 +191,7 @@ func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint Abstract
 			dbfield:  newtaint.dbfield,
 			dbcallID: newtaint.dbcallID,
 			primary:  newtaint.primary,
-			write:    newtaint.write,
+			opType:   newtaint.opType,
 		}
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
 		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)

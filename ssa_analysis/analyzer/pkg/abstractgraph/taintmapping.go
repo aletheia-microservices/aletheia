@@ -5,6 +5,8 @@ import (
 	"slices"
 	"sort"
 	"strings"
+
+	"analyzer/pkg/common"
 )
 
 // TaintMapping is a mapping between primary taint (key) that already existed
@@ -20,7 +22,7 @@ func NewTaintMapping() *TaintMapping {
 	return &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 }
 
-func (tm *TaintMapping) GetMapping() map[AbstractTaint][]AbstractTaint{
+func (tm *TaintMapping) GetMapping() map[AbstractTaint][]AbstractTaint {
 	return tm.mapping
 }
 
@@ -78,7 +80,6 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 	}
 
-
 	//TODO: deal with upper/lower paths
 	for objpath, otherTaints := range otherTaintsMap {
 		existingTaints := obj.taints[objpath]
@@ -95,8 +96,8 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		for _, otherTaint := range otherTaints {
 			if !exists(otherTaint) {
 				// need to create new AbstractTaint to avoid just storing the pointer and modifying its fields
-				newTaint := NewAbstractTaint(otherTaint.dbfield, otherTaint.dbcallID, primary, otherTaint.write)
-				fmt.Printf("\t [TAINTMAPPING] adding new taint (write = %t): %v\n", newTaint.write, newTaint)
+				newTaint := NewAbstractTaint(otherTaint.dbfield, otherTaint.dbcallID, primary, otherTaint.opType)
+				fmt.Printf("\t [TAINTMAPPING] adding new taint (op = %s): %v\n", common.OperationTypeToString(newTaint.opType), newTaint)
 				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
 
 				if !primary {

@@ -8,25 +8,25 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
 		N_StorageService_StorePost [label="StorageService.StorePost
 
 ==== param 0 (reqID) tainted ====
 _obj
-[P,W] @ posts_db.post.ReqID
+[write, primary] @ posts_db.post.ReqID
 
 
 ==== param 1 (text) tainted ====
 _obj
-[P,W] @ posts_db.post.Text
+[write, primary] @ posts_db.post.Text
 ", style=bold, shape=box, color="blue"];
 		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 		N_StorageService_ReadPost [label="StorageService.ReadPost
 
 ==== param 1 (postID) tainted ====
 _obj
-[P,R] @ posts_db.post[*].Value
+[read, primary] @ posts_db.post[*].Value
 ", style=bold, shape=box, color="blue"];
+		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;

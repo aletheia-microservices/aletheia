@@ -5,6 +5,8 @@ import (
 	"log"
 	"strconv"
 	"strings"
+
+	"analyzer/pkg/common"
 )
 
 type EdgeType int
@@ -18,7 +20,7 @@ const (
 type AbstractEdge struct {
 	t EdgeType
 
-	write bool // for database calls
+	opType common.DatabaseOperationType // for database calls
 
 	// format: <func_short_path>_<ssa_instr_name>
 	// except for entrypoint edges where format is just <func_short_path>
@@ -34,8 +36,20 @@ func (edge *AbstractEdge) String() string {
 	return fmt.Sprintf("(%s) --> (%s).%s(...)", edge.from.String(), edge.to.String(), edge.method)
 }
 
+func (edge *AbstractEdge) IsRead() bool {
+	return edge.opType == common.OP_READ
+}
+
 func (edge *AbstractEdge) IsWrite() bool {
-	return edge.write
+	return edge.opType == common.OP_WRITE
+}
+
+func (edge *AbstractEdge) IsUpdate() bool {
+	return edge.opType == common.OP_UPDATE
+}
+
+func (edge *AbstractEdge) IsDelete() bool {
+	return edge.opType == common.OP_DELETE
 }
 
 func (edge *AbstractEdge) GetID() string {
@@ -104,13 +118,13 @@ func (edge *AbstractEdge) AddReturn(ret *AbstractObject) {
 	edge.rets = append(edge.rets, ret)
 }
 
-func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, write bool, t EdgeType) *AbstractEdge {
+func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, opType common.DatabaseOperationType, t EdgeType) *AbstractEdge {
 	return &AbstractEdge{
 		id:     id,
 		t:      t,
 		method: method,
 		from:   from,
 		to:     to,
-		write:  write,
+		opType: opType,
 	}
 }

@@ -1,9 +1,12 @@
 package ssagraph
 
 import (
-	"fmt"
+	"sort"
+	"strings"
 
 	"golang.org/x/tools/go/ssa"
+
+	"analyzer/pkg/common"
 )
 
 type SSATaint struct {
@@ -82,18 +85,34 @@ func (node *SSANode) AddTaintIfNotExists(objPath string, dbField string, dbCall 
 	return true
 }
 
+// same logic as AbstractGraph Object
 func (node *SSANode) taintString() string {
 	if len(node.taints) == 0 {
 		return ""
 	}
-	var taintStr string
-	for obj, taints := range node.taints {
-		taintStr += fmt.Sprintf("\n%s\n", obj)
+
+	var objpaths []string
+	for objpath := range node.taints {
+		objpaths = append(objpaths, objpath)
+	}
+	sort.Strings(objpaths)
+
+	var builder strings.Builder
+	for _, objpath := range objpaths {
+		taints := node.taints[objpath]
+		builder.WriteString(objpath)
+		builder.WriteByte('\n')
 		for _, taint := range taints {
-			taintStr += fmt.Sprintf("@ %s\n", taint.String())
+			builder.WriteString("[")
+			builder.WriteString(common.OperationTypeToString(taint.GetDbCall().GetOpType()))
+			builder.WriteString("]")
+
+			builder.WriteString(" @ ")
+			builder.WriteString(taint.String())
+			builder.WriteByte('\n')
 		}
 	}
-	return taintStr
+	return builder.String()
 }
 
 func (node *SSANode) String() string {
@@ -123,11 +142,11 @@ func (node *SSANode) colorForSSA() string {
 
 func RegisterNewNodeValue(graph *SSAGraph, instr ssa.Instruction, val ssa.Value, id string) *SSANode {
 	node := &SSANode{
-		name:    val.Name(),
-		val:     val,
-		instr:   instr,
-		isdef:   true,
-		id:      id,
+		name:   val.Name(),
+		val:    val,
+		instr:  instr,
+		isdef:  true,
+		id:     id,
 		taints: make(map[string][]*SSATaint),
 	}
 	graph.AddNode(node)
@@ -137,8 +156,8 @@ func RegisterNewNodeValue(graph *SSAGraph, instr ssa.Instruction, val ssa.Value,
 
 func RegisterNewNode(graph *SSAGraph, instr ssa.Instruction, id string) *SSANode {
 	node := &SSANode{
-		id:      id,
-		instr:   instr,
+		id:     id,
+		instr:  instr,
 		taints: make(map[string][]*SSATaint),
 	}
 	graph.AddNode(node)

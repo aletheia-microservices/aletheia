@@ -9,6 +9,7 @@ import (
 
 	"golang.org/x/tools/go/ssa"
 
+	"analyzer/pkg/common"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/utils"
 )
@@ -17,7 +18,7 @@ const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runt
 
 var BLUEPRINT_BACKEND_QUEUE_CALLS = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_NOSQLDATABASE_CALLS = []string{"GetCollection"}
-var BLUEPRINT_BACKEND_NOSQLCOLLECTION_CALLS = []string{"InsertOne", "FindOne"}
+var BLUEPRINT_BACKEND_NOSQLCOLLECTION_CALLS = []string{"InsertOne", "FindOne", "DeleteOne"}
 
 func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, *ssa.Call, bool) {
 	if call, ok := instr.(*ssa.Call); ok {
@@ -77,9 +78,9 @@ func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, str
 	return "", "", "", nil, nil, false
 }
 
-func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, bool, bool) {
+func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, common.DatabaseOperationType, bool) {
 	if instr == nil {
-		return "", "", "", nil, false, false
+		return "", "", "", nil, -1, false
 	}
 
 	if call, ok := instr.(*ssa.Call); ok {
@@ -89,19 +90,19 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 		// blueprint apps
 		// --------------
 		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
-			if ok, queue, topic, isWrite := isBlueprintQueueCall(graph, call, unOp); ok {
+			if ok, queue, topic, opType := isBlueprintQueueCall(graph, call, unOp); ok {
 				// return all args except context
 				// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
-				return queue, topic, call.Call.Method.Id(), call.Call.Args[1:], isWrite, true
+				return queue, topic, call.Call.Method.Id(), call.Call.Args[1:], opType, true
 			} else if ok := isBlueprintNoSQLDatabaseCall(graph, call, unOp); ok {
 				// call for NoSQLDatabase.GetCollection(...)
 				// skip for now
-				return "", "", "", nil, false, false
+				return "", "", "", nil, -1, false
 			}
 		}
 		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
-			if ok, database, collection, isWrite := isBlueprintNoSQLCollectionCall(graph, call, extr); ok {
-				return database, collection, call.Call.Method.Id(), call.Call.Args[1:], isWrite, true
+			if ok, database, collection, opType := isBlueprintNoSQLCollectionCall(graph, call, extr); ok {
+				return database, collection, call.Call.Method.Id(), call.Call.Args[1:], opType, true
 			}
 		}
 
@@ -111,22 +112,22 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 		if fn, ok := call.Call.Value.(*ssa.Function); ok && len(fn.Params) > 0 {
 			fmt.Printf("[TAINT] [1] found call: %v\n", call)
 			maybeRcv := fn.Params[0]
-			var isWrite bool
+			var opType common.DatabaseOperationType
 			if maybeRcv.Type().String() == "*main.MongoDB" && fn.Name() == "Insert" || fn.Name() == "Find" {
 				if fn.Name() == "Insert" {
-					isWrite = true
+					opType = common.OP_WRITE
 				}
 				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], isWrite, true
+				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], opType, true
 			}
 			if maybeRcv.Type().String() == "*main.RabbitMQ" && fn.Name() == "Push" {
-				isWrite = true
+				opType = common.OP_WRITE
 				// return arg without receiver and context
-				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], isWrite, true
+				return "mydb", "mycollection", call.Call.Method.Id(), call.Call.Args[2:], opType, true
 			}
 		}
 	}
-	return "", "", "", nil, false, false
+	return "", "", "", nil, -1, false
 }
 
 func isBlueprintNoSQLDatabaseCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) bool {
@@ -144,16 +145,25 @@ func isBlueprintNoSQLDatabaseCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp
 }
 
 // TODO: get database name (not the db name of mongodb!)
-func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (bool, string, string, bool) {
+func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (bool, string, string, common.DatabaseOperationType) {
+	var opType common.DatabaseOperationType
 	if typeNamed, ok := extr.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCollection" {
 			if !slices.Contains(BLUEPRINT_BACKEND_NOSQLCOLLECTION_CALLS, call.Call.Method.Name()) {
-				return false, "", "", false
+				return false, "", "", -1
 			}
-			var isWrite bool
-			if call.Call.Method.Name() == "InsertOne" {
-				isWrite = true
+
+			switch call.Call.Method.Name() {
+			case "FindOne":
+				opType = common.OP_READ
+			case "InsertOne":
+				opType = common.OP_WRITE
+			case "DeleteOne":
+				opType = common.OP_DELETE
+			default:
+				log.Fatalf("unknown method name for queue call: %s\n", call.String())
 			}
+
 			// e.g.
 			// t29 = invoke t28.GetCollection(ctx, "posts_db":string, "post":string)
 			// t30 = extract t29 #0
@@ -176,27 +186,33 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 						log.Fatalf("database (%s) not found for app: %s", database, graph.GetApp().String())
 					}
 
-					return true, database, collection, isWrite
+					return true, database, collection, opType
 				}
 			}
 		}
 	}
-	return false, "", "", false
+	return false, "", "", -1
 }
 
 // e.g. where t11 is unaryOp and t10 is its unaryOp.X
 // t10 = &u.notificationsQueue [#1]
 // t11 = *t10
 // t14 = invoke t11.Push(ctx, t13)
-func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) (bool, string, string, bool) {
+func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) (bool, string, string, common.DatabaseOperationType) {
+	var opType common.DatabaseOperationType
 	if typeNamed, ok := unOp.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".Queue" {
 			if !slices.Contains(BLUEPRINT_BACKEND_QUEUE_CALLS, call.Call.Method.Name()) {
-				return false, "", "", false
+				return false, "", "", -1
 			}
-			var isWrite bool
-			if call.Call.Method.Name() == "Push" {
-				isWrite = true
+
+			switch call.Call.Method.Name() {
+			case "Pop":
+				opType = common.OP_READ
+			case "Push":
+				opType = common.OP_WRITE
+			default:
+				log.Fatalf("unknown method name for queue call: %s\n", call.String())
 			}
 
 			// e.g., t10 = &u.notificationsQueue [#1]
@@ -219,7 +235,7 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 								log.Fatalf("database (%s) not found for app: %s", database, graph.GetApp().String())
 							}
 
-							return true, database, schema, isWrite
+							return true, database, schema, opType
 						}
 					}
 				}
@@ -227,7 +243,7 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 		}
 
 	}
-	return false, "", "", false
+	return false, "", "", -1
 }
 
 // TODO
