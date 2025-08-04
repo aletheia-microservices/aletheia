@@ -35,7 +35,7 @@ func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, str
 					if service.HasMethod(method) {
 						// NOTE: unOp.Type().String() does not contain "Impl" suffix here so GetShortFunctionPath will just ignore
 						funcShortPath := utils.GetShortFunctionPath(unOp.Type().String() + "." + method)
-		
+
 						// return all args except context
 						// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
 						return serviceName, method, funcShortPath, call.Call.Args[1:], call, true
@@ -143,6 +143,7 @@ func isBlueprintNoSQLDatabaseCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp
 	return false
 }
 
+// TODO: get database name (not the db name of mongodb!)
 func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (bool, string, string, bool) {
 	if typeNamed, ok := extr.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCollection" {
@@ -170,6 +171,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					}
 
 					// sanity check
+					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
 						log.Fatalf("database (%s) not found for app: %s", database, graph.GetApp().String())
 					}
@@ -197,12 +199,6 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				isWrite = true
 			}
 
-			/* fmt.Printf("\tcall (sign):\t [%T] [%T] %s\n", call.Call.Method.Type(), call.Call.Method, call.Call.Method)
-			fmt.Printf("\tcall (rets):\t [%T] [%T] %s\n", call.Type(), call, call)
-			fmt.Printf("\tunary op:\t [%T] [%T] %s\n", unOp.Type(), unOp, unOp)
-			fmt.Printf("\tunary op X:\t [%T] [%T] %s\n", unOp.X.Type(), unOp.X, unOp.X)
-			fmt.Printf("\tunary op NAME:\t %s\n", unOp.Name()) */
-
 			// e.g., t10 = &u.notificationsQueue [#1]
 			if ssaFieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
 				if ssaParam, ok := ssaFieldAddr.X.(*ssa.Parameter); ok {
@@ -211,13 +207,14 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 						if typeNamed, ok := typesPointer.Elem().(*types.Named); ok {
 							// e.g., github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
 							serviceImplPath := typeNamed.String()
-							serviceImplName := typeNamed.Obj().Id()
-							fmt.Printf("[TAINT - QUEUE] got type name (%s) @ (%s)\n", serviceImplName, serviceImplPath)
+							service := graph.GetApp().GetServiceWithImplPath(serviceImplPath)
+							field := service.GetFieldAt(ssaFieldAddr.Field)
 
-							// dummy logic
-							database := "notifications_queue"
-							schema := "notification"
+							database := field.GetWiringName()
+							schema := "notification" // still dummy logic here
+
 							// sanity check
+							// keep this while database logic is not complete
 							if !graph.GetApp().HasDatabase(database) {
 								log.Fatalf("database (%s) not found for app: %s", database, graph.GetApp().String())
 							}

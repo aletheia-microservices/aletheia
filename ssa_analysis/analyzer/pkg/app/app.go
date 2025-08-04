@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/app/services"
-	"analyzer/pkg/frameworks/blueprint"
 )
 
 type App struct {
@@ -49,6 +49,34 @@ func (app *App) GetEntrypointsShortPaths() []string {
 func (app *App) GetServiceWithPathIfExists(path string) *services.Service {
 	for _, service := range app.services {
 		if service.GetPath() == path {
+			return service
+		}
+	}
+	return nil
+}
+
+func (app *App) GetServiceWithImplPath(implpath string) *services.Service {
+	for _, service := range app.services {
+		if service.GetPackagePath()+"."+service.GetImpl() == implpath {
+			return service
+		}
+	}
+	log.Fatalf("could not find service for impl path (%s)", implpath)
+	return nil
+}
+
+func (app *App) GetServiceWithImplPathIfExists(implpath string) *services.Service {
+	for _, service := range app.services {
+		if service.GetPackagePath()+"."+service.GetImpl() == implpath {
+			return service
+		}
+	}
+	return nil
+}
+
+func (app *App) GetServiceWithConstructorShortPathIfExists(constructorPath string) *services.Service {
+	for _, service := range app.services {
+		if service.GetPackage()+"."+service.GetConstructor() == constructorPath {
 			return service
 		}
 	}
@@ -105,53 +133,6 @@ func (app *App) GetServiceByName(name string) *services.Service {
 	return service
 }
 
-
-func (app *App) Init() {
-	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName())
-
-	// parse services
-	for _, svcInfo := range servicesInfo {
-		name := svcInfo.Name
-		constructor := svcInfo.ConstructorName
-		pkg := svcInfo.Package
-		path := svcInfo.PackagePath + "." + svcInfo.Name
-		impl := svcInfo.Name + "Impl"
-		methods := svcInfo.Methods
-
-		service := services.NewService(name, impl, pkg, path, constructor)
-		service.SetMethods(methods...)
-		app.AddService(service)
-	}
-	for _, svcInfo := range servicesInfo {
-		service := app.GetServiceByName(svcInfo.Name)
-		for _, dep := range svcInfo.Edges {
-			otherService := app.GetServiceByName(dep)
-			service.AddDependency(otherService)
-		}
-	}
-
-	// parse databases
-	for _, dsInfo := range datastoresInfo {
-		database := backends.NewDatabase(dsInfo.Name)
-		app.AddDatabase(database)
-	}
-
-	// parse entrypoints
-	for _, serviceName := range frontends {
-		service := app.GetServiceByName(serviceName)
-		for _, method := range service.GetMethods() {
-			app.AddEntrypoint(service, method)
-		}
-	}
-	for _, service := range app.GetAllServices() {
-		if service.HasInitializerMethod() {
-			// Run() method can also be considered as entrypoint
-			// because they are always called when initializing services
-			app.AddEntrypoint(service, "Run")
-		}
-	}
-}
-
 func (app *App) String() string {
 	str := "APP (" + app.name + ")\n"
 	str += "\n=== SERVICES ===\n"
@@ -182,15 +163,22 @@ func (app *App) MarshalJSON() ([]byte, error) {
 		databasesLst[i] = db.GetName()
 		i++
 	}
+	sort.Strings(databasesLst)
+
 	servicesLst := make([]*services.Service, len(app.services))
 	i = 0
 	for _, service := range app.services {
 		servicesLst[i] = service
 		i++
 	}
+
+	sort.Slice(servicesLst, func(i, j int) bool {
+		return servicesLst[i].GetName() < servicesLst[j].GetName()
+	})
+
 	return json.Marshal(&struct {
-		Name      string              `json:"name"`
-		Databases []string            `json:"databases"`
+		Name      string                       `json:"name"`
+		Databases []string                     `json:"databases"`
 		Services  []*services.Service `json:"services"`
 	}{
 		Name:      app.name,

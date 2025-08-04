@@ -42,16 +42,18 @@ func (edge *AbstractEdge) GetID() string {
 	return edge.id
 }
 
+// some exceptions can be:
+// ProductService.New.nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions
+// ProductService.New."image":string
 func (edge *AbstractEdge) GetIDNumber() int {
 	parts := strings.Split(edge.id, ".t")
 	if len(parts) != 2 {
-		log.Fatalf("unexpected format for edge with ID = %s: %s", edge.id, edge.String())
-		return 0
+		return -1
 	}
+
 	n, err := strconv.Atoi(parts[1])
 	if err != nil {
-		log.Fatalf("unexpected format for edge with ID = %s: %s", edge.id, edge.String())
-		return 0
+		return -1
 	}
 	return n
 }

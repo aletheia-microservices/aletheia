@@ -16,7 +16,13 @@ import (
 	"analyzer/pkg/detection/constraints/foreignkeycoordination"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
+	"analyzer/pkg/ssagraph/registry"
 	"analyzer/pkg/ssagraph/tainter"
+)
+
+const (
+	APP_PATH_POSTNOTIFICATION = "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple"
+	APP_PATH_DIGOTA           = "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota"
 )
 
 func main() {
@@ -26,6 +32,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- postnotification examples/postnotification")
 		fmt.Fprintln(os.Stderr, "- shoppingcart examples/shoppingcart")
 		fmt.Fprintln(os.Stderr, "- postnotification_simple blueprint/postnotification/notifyservice_run")
+		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")
 		os.Exit(1)
 	}
 
@@ -57,6 +64,8 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
+	app.InitFields(pkgs)
+
 	fmt.Println("[INFO] running analysis for packages:")
 	for _, pkg := range pkgs {
 		fmt.Printf("\t- %s\n", pkg.String())
@@ -80,6 +89,14 @@ func main() {
 	for _, pkg := range pkgs {
 		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
 	}
+
+	var graphsLst []*ssagraph.SSAGraph
+	for _, graph := range funcGraphs {
+		graphsLst = append(graphsLst, graph)
+	}
+
+	registry.RegisterFields(app, graphsLst)
+	app.WriteAppToJSON()
 
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
@@ -192,8 +209,12 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 
 	for _, pkg := range prog.AllPackages() {
 		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
-			if pkg.Pkg.Path() == "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple" {
+			if pkg.Pkg.Path() == APP_PATH_POSTNOTIFICATION {
 				pkgs = append(pkgs, pkg)
+			} else if pkg.Pkg.Path() == APP_PATH_DIGOTA {
+				pkgs = append(pkgs, pkg)
+			} else {
+				fmt.Printf("skipping... %s\n", pkg.Pkg.Path())
 			}
 		}
 	}

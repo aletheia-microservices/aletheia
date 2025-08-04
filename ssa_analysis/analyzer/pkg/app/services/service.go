@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"log"
 	"sort"
 
 	"analyzer/pkg/app/backends"
@@ -12,25 +13,54 @@ type Service struct {
 
 	impl        string // impl name
 	pkg         string // simple package name
+	pkgpath     string
 	path        string // format: <pkgpath>.<name>
 	constructor string // method name
 
 	deps []*Service
 	dbs  []*backends.Database
 
-	// TODO: create a struct with more info for methods
+	fields []*Field
+
 	methods     []string
-	initializer bool // true if it has Run method
+	initializer bool     // true if it has Run method
+	wiringNames []string // IDs for arguments passed in blueprint wiring
 }
 
-func NewService(name string, impl string, pkg string, path string, constructor string) *Service {
+func NewService(name string, impl string, pkg string, pkgpath string, path string, constructor string, constructorArgs []string) *Service {
 	return &Service{
 		name:        name,
 		impl:        impl,
 		pkg:         pkg,
 		path:        path,
+		pkgpath:     pkgpath,
 		constructor: constructor,
+		wiringNames: constructorArgs,
 	}
+}
+
+func (service *Service) GetAllWiringNames() []string {
+	return service.wiringNames
+}
+
+func (service *Service) GetWiringNameAt(idx int) string {
+	if idx < len(service.wiringNames) {
+		return service.wiringNames[idx]
+	}
+	log.Fatalf("index (%d) out of bounds for constructor args: %v", idx, service.wiringNames)
+	return ""
+}
+
+func (service *Service) AddField(field *Field) {
+	service.fields = append(service.fields, field)
+}
+
+func (service *Service) GetFieldAt(idx int) *Field {
+	if idx < len(service.fields) {
+		return service.fields[idx]
+	}
+	log.Fatalf("index (%d) out of bounds for service fields: %v", idx, service.fields)
+	return nil
 }
 
 func (service *Service) GetMethods() []string {
@@ -75,12 +105,20 @@ func (service *Service) GetImpl() string {
 	return service.impl
 }
 
+func (service *Service) GetConstructor() string {
+	return service.constructor
+}
+
 func (service *Service) GetPackage() string {
 	return service.pkg
 }
 
 func (service *Service) GetPath() string {
 	return service.path
+}
+
+func (service *Service) GetPackagePath() string {
+	return service.pkgpath
 }
 
 func (service *Service) String() string {
@@ -120,11 +158,18 @@ func (service *Service) MarshalJSON() ([]byte, error) {
 	sort.Strings(depNames)
 	sort.Strings(dbNames)
 
+	// do not sort these because they are already sorted by idx in the service struct
+	fieldsStrLst := make([]string, len(service.fields))
+	for idx, field := range service.fields {
+		fieldsStrLst[idx] = field.String()
+	}
+
 	return json.Marshal(&struct {
 		Name      string   `json:"name"`
 		Path      string   `json:"path"`
 		Pkg       string   `json:"pkg"`
 		Impl      string   `json:"impl"`
+		Fields    []string `json:"fields"`
 		Methods   []string `json:"methods"`
 		Services  []string `json:"services"`
 		Databases []string `json:"databases"`
@@ -133,6 +178,7 @@ func (service *Service) MarshalJSON() ([]byte, error) {
 		Path:      service.path,
 		Pkg:       service.pkg,
 		Impl:      service.impl,
+		Fields:    fieldsStrLst,
 		Methods:   service.methods,
 		Services:  depNames,
 		Databases: dbNames,

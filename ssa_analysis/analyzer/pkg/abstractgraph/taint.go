@@ -25,6 +25,10 @@ func (taint *AbstractTaint) IsWrite() bool {
 	return taint.write
 }
 
+func (taint *AbstractTaint) IsRead() bool {
+	return !taint.write
+}
+
 func (taint *AbstractTaint) IsPrimary() bool {
 	return taint.primary
 }

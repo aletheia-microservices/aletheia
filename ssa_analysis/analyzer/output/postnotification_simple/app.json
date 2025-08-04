@@ -10,6 +10,11 @@
       "path": "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService",
       "pkg": "postnotification_simple",
       "impl": "NotifyServiceImpl",
+      "fields": [
+        "storageService #0 (storage_service)",
+        "notificationsQueue #1 (notifications_queue)",
+        "num_workers #2"
+      ],
       "methods": [
         "Run"
       ],
@@ -23,6 +28,9 @@
       "path": "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService",
       "pkg": "postnotification_simple",
       "impl": "StorageServiceImpl",
+      "fields": [
+        "postsDb #0 (posts_db)"
+      ],
       "methods": [
         "StorePost",
         "ReadPost"
@@ -35,6 +43,10 @@
       "path": "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService",
       "pkg": "postnotification_simple",
       "impl": "UploadServiceImpl",
+      "fields": [
+        "storageService #0 (storage_service)",
+        "notificationsQueue #1 (notifications_queue)"
+      ],
       "methods": [
         "UploadPost"
       ],

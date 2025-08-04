@@ -38,6 +38,16 @@ func NewGraph(app *app.App, pkg string, fn string, service string, method string
 	}
 }
 
+func (graph *SSAGraph) GetIndexOfParameter(expParam *SSANode) int {
+	for i, param := range graph.params {
+		if param == expParam {
+			return i
+		}
+	}
+	log.Fatalf("[SSA GRAPH] could not find parameter (%s) in graph for method (%s)", expParam, graph.GetMethodName())
+	return -1
+}
+
 func (graph *SSAGraph) GetApp() *app.App {
 	return graph.app
 }

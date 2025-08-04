@@ -49,7 +49,7 @@ func (database *Database) GetSchema() *Schema {
 
 func (database *Database) String() string {
 	var str string
-	str += "// schema: \n"
+	str += " // schema: \n"
 	for i, schema := range database.schemas {
 		str += schema.String()
 		if i < len(database.schemas)-1 {
