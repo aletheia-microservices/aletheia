@@ -4,6 +4,7 @@
     "orders_db",
     "payments_db",
     "products_db",
+    "queue",
     "skus_db"
   ],
   "services": [
@@ -14,10 +15,12 @@
       "impl": "OrderServiceImpl",
       "fields": [
         "skuService #0 (sku_service)",
-        "db #1 (orders_db)"
+        "db #1 (orders_db)",
+        "queue #2 (queue)"
       ],
       "methods": [
-        "New"
+        "New",
+        "Run"
       ],
       "services": [
         "SkuService"
@@ -68,11 +71,13 @@
       "pkg": "digota",
       "impl": "SkuServiceImpl",
       "fields": [
-        "db #0 (skus_db)"
+        "db #0 (skus_db)",
+        "queue #1 (queue)"
       ],
       "methods": [
         "New",
-        "Get"
+        "Get",
+        "Delete"
       ],
       "services": [],
       "databases": []

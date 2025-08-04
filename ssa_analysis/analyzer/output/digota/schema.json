@@ -26,6 +26,20 @@
           "products_db.products.Name",
           "products_db.products[*].Value"
         ],
+        "constraints": [
+          "FOREIGN_KEY products_db.products[*].Value REFERENCES queue.notification.id"
+        ]
+      }
+    ]
+  },
+  "queue": {
+    "name": "queue",
+    "schemas": [
+      {
+        "fields": [
+          "queue.notification",
+          "queue.notification.id"
+        ],
         "constraints": []
       }
     ]

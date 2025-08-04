@@ -36,20 +36,8 @@ func (edge *AbstractEdge) String() string {
 	return fmt.Sprintf("(%s) --> (%s).%s(...)", edge.from.String(), edge.to.String(), edge.method)
 }
 
-func (edge *AbstractEdge) IsRead() bool {
-	return edge.opType == common.OP_READ
-}
-
-func (edge *AbstractEdge) IsWrite() bool {
-	return edge.opType == common.OP_WRITE
-}
-
-func (edge *AbstractEdge) IsUpdate() bool {
-	return edge.opType == common.OP_UPDATE
-}
-
-func (edge *AbstractEdge) IsDelete() bool {
-	return edge.opType == common.OP_DELETE
+func (edge *AbstractEdge) GetOpType() common.DatabaseOperationType {
+	return edge.opType
 }
 
 func (edge *AbstractEdge) GetID() string {

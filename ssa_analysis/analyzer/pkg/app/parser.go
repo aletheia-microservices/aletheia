@@ -39,7 +39,7 @@ func (app *App) Init() {
 
 	// parse databases
 	for _, dsInfo := range datastoresInfo {
-		database := backends.NewDatabase(dsInfo.Name)
+		database := backends.NewDatabase(dsInfo.Name, dsInfo.GetTypeString())
 		app.AddDatabase(database)
 	}
 

@@ -13,6 +13,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
+	"analyzer/pkg/detection/constraints/foreignkeycascade"
 	"analyzer/pkg/detection/constraints/foreignkeycoordination"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
@@ -144,8 +145,9 @@ func main() {
 		abstractgraph.Parse(absgraph, entrypoint, funcGraphs)
 	}
 
-	detector := foreignkeycoordination.NewDetector("foreign-key")
-	iterator := detection.NewIterator(app, absgraph, detector)
+	detector1 := foreignkeycoordination.NewDetector("foreign-key")
+	detector2 := foreignkeycascade.NewDetector()
+	iterator := detection.NewIterator(app, absgraph, detector1, detector2)
 	iterator.Run()
 
 	absgraph.WriteToDOTFile(appname, true)
@@ -169,9 +171,13 @@ func main() {
 	fmt.Print("\n\n ========== APP ========== \n\n")
 	fmt.Println(app.String())
 
-	detector.ComputeResults()
-	res := detection.SaveResults(app, detector)
-	fmt.Println(res)
+	detector1.ComputeResults()
+	res1 := detection.SaveResults(app, detector1)
+	fmt.Println(res1)
+
+	detector2.ComputeResults()
+	res2 := detection.SaveResults(app, detector2)
+	fmt.Println(res2)
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {

@@ -103,3 +103,7 @@ func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
 func (schema *Schema) AddConstraint(constraint *Constraint) {
 	schema.constraints = append(schema.constraints, constraint)
 }
+
+func (schema *Schema) GetAllConstraints() []*Constraint {
+	return schema.constraints
+}

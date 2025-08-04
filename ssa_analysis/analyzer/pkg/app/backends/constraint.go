@@ -24,8 +24,16 @@ func NewConstraint(t ConstraintType, fields ...*Field) *Constraint {
 	}
 }
 
+func (constraint *Constraint) IsTypeForeignKey() bool {
+	return constraint.t == CONSTRAINT_FOREIGN_KEY
+}
+
 func (constraint *Constraint) GetFields() []*Field {
 	return constraint.fields
+}
+
+func (constraint *Constraint) GetFieldAt(idx int) *Field {
+	return constraint.fields[idx]
 }
 
 func (constraint *Constraint) String() string {

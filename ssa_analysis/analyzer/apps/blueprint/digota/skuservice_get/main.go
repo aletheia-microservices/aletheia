@@ -11,7 +11,8 @@ func main() {
 	ctx := context.Background()
 
 	var skusDB backend.NoSQLDatabase
-	skuService, _ := digota.NewSkuServiceImpl(ctx, skusDB)
+	var queue backend.Queue
+	skuService, _ := digota.NewSkuServiceImpl(ctx, skusDB, queue)
 
 	var id string
 	skuService.Get(ctx, id)

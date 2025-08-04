@@ -5,36 +5,48 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/common"
 )
 
 type Iterator struct {
-	app      *app.App
-	graph    *abstractgraph.AbstractCallGraph
-	detector Detector
+	app       *app.App
+	graph     *abstractgraph.AbstractCallGraph
+	detectors []Detector
 }
 
-func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detector Detector) *Iterator {
+func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detectors ...Detector) *Iterator {
 	return &Iterator{
-		app:      app,
-		graph:    graph,
-		detector: detector,
+		app:       app,
+		graph:     graph,
+		detectors: detectors,
 	}
 }
 
 func (iterator *Iterator) Run() {
-	iterator.detector.OnNewRun(iterator.app)
+	for _, detector := range iterator.detectors {
+		detector.OnNewRun(iterator.app)
+	}
 
 	clientNode := iterator.graph.GetNodeByName("client")
 
 	for _, edge := range iterator.graph.GetEdgesFromNode(clientNode) {
 		toNode := edge.GetToNode()
-		iterator.detector.OnNewRequest(toNode)
+
+		for _, detector := range iterator.detectors {
+			detector.OnNewRequest(toNode)
+		}
+		
 		iterator.transverse(toNode)
 		iterator.clean(toNode)
-		iterator.detector.OnEndRequest(iterator.app)
+
+		for _, detector := range iterator.detectors {
+			detector.OnEndRequest(iterator.app)
+		}
 	}
 
-	iterator.detector.OnEndRun(iterator.app)
+	for _, detector := range iterator.detectors {
+		detector.OnEndRun(iterator.app)
+	}
 }
 
 func (iterator *Iterator) clean(node *abstractgraph.AbstractNode) {
@@ -48,7 +60,10 @@ func (iterator *Iterator) clean(node *abstractgraph.AbstractNode) {
 
 func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 	fmt.Printf("[ITERATOR] visiting node: %s\n", node.String())
-	iterator.detector.OnNewNode(iterator.app, node)
+
+	for _, detector := range iterator.detectors {
+		detector.OnNewNode(iterator.app, node)
+	}
 
 	fmt.Printf("[ITERATOR] on new node (%s) with edges:\n", node.String())
 	for _, edge := range iterator.graph.GetEdgesFromNode(node) {
@@ -115,15 +130,24 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
 			fmt.Printf("\t[ITERATOR] visiting database call: %s\n", edge.String())
-			if edge.IsWrite() {
-				iterator.detector.OnWrite(iterator.app, edge)
-			} else {
-				iterator.detector.OnRead(iterator.app, edge)
+			for _, detector := range iterator.detectors {
+				switch edge.GetOpType() {
+				case common.OP_READ:
+					detector.OnRead(iterator.app, edge)
+				case common.OP_WRITE:
+					detector.OnWrite(iterator.app, edge)
+				case common.OP_UPDATE:
+					detector.OnUpdate(iterator.app, edge)
+				case common.OP_DELETE:
+					detector.OnDelete(iterator.app, edge)
+				}
 			}
 		}
 	}
 
-	iterator.detector.OnEndNode(iterator.app, node)
+	for _, detector := range iterator.detectors {
+		detector.OnEndNode(iterator.app, node)
+	}
 }
 
 func propagateNewTaintsToObject(obj *abstractgraph.AbstractObject, taintMapping *abstractgraph.TaintMapping) {

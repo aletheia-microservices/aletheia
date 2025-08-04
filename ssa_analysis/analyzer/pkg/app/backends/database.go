@@ -5,20 +5,22 @@ import (
 )
 
 type Database struct {
-	name    string
-	schemas []*Schema
+	name       string
+	schemas    []*Schema
+	typeString string // RelationalDB, Cache, NoSQLDatabase, Queue
 }
 
-func NewDatabase(name string, schemas ...*Schema) *Database {
+func NewDatabase(name string, typeString string, schemas ...*Schema) *Database {
 	return &Database{
-		name:    name,
-		schemas: schemas,
+		name:       name,
+		schemas:    schemas,
+		typeString: typeString,
 	}
 }
 
 func (database *Database) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Name   string                     `json:"name"`
+		Name   string    `json:"name"`
 		Schema []*Schema `json:"schemas"`
 	}{
 		Name:   database.name,
@@ -45,6 +47,14 @@ func (database *Database) HasSchema(name string) bool {
 
 func (database *Database) GetSchema() *Schema {
 	return database.schemas[0]
+}
+
+func (database *Database) GetSchemas() []*Schema {
+	return database.schemas
+}
+
+func (database *Database) IsQueue() bool {
+	return database.typeString == "Queue"
 }
 
 func (database *Database) String() string {

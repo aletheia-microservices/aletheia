@@ -1,5 +1,65 @@
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Creator
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Analytics
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.TriggerAnalyticsMessage
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context) error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
+	Method: func(ctx context.Context) error
+		Parameters:
+			n = parameter n : *NotifyServiceImpl
+			ctx = parameter ctx : context.Context
+Function: postnotification_simple.NotifyService.Run
+Block #0: postnotification_simple.NotifyService.Run.entry
+			00: t0 = github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()
+			01: t1 = &n.num_workers [#2]
+			02: t2 = *t1
+			03: t3 = new [1]any (varargs)
+			04: t4 = &t3[0:int]
+			05: t5 = make any <- int (t2)
+			06: *t4 = t5
+			07: t6 = slice t3[:]
+			08: t7 = invoke t0.Info(ctx, "initializing %d w...":string, t6...)
+			09: t8 = new Message (workerMessage)
+			10: t9 = &n.notificationsQueue [#1]
+			11: t10 = *t9
+			12: t11 = make interface{} <- *Message (t8)
+			13: t12 = invoke t10.Pop(ctx, t11)
+			14: t13 = &n.storageService [#0]
+			15: t14 = *t13
+			16: t15 = &t8.ReqID [#0]
+			17: t16 = *t15
+			18: t17 = &t8.PostID [#1]
+			19: t18 = *t17
+			20: t19 = invoke t14.ReadPost(ctx, t16, t18)
+			21: return nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			storageService = parameter storageService : StorageService
+			notificationsQueue = parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+Function: postnotification_simple.NewNotifyServiceImpl
+Block #0: postnotification_simple.NewNotifyServiceImpl.entry
+			00: t0 = new NotifyServiceImpl (complit)
+			01: t1 = &t0.storageService [#0]
+			02: t2 = &t0.notificationsQueue [#1]
+			03: t3 = &t0.num_workers [#2]
+			04: *t1 = storageService
+			05: *t2 = notificationsQueue
+			06: *t3 = 4:int
+			07: t4 = make NotifyService <- *NotifyServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService
+	Method: func(ctx context.Context, username string, text string) (int64, error)
+	Method: func(ctx context.Context, username string, text string) (int64, error)
+		Parameters:
+Function: postnotification_simple.main
+Block #0: postnotification_simple.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewStorageServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.StorePost(t0, 0:int64, "":string)
+			05: return
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Message
 		Parameters:
 Function: postnotification_simple.init
 Block #0: postnotification_simple.init.entry
@@ -15,6 +75,13 @@ Block #1: postnotification_simple.init.init.start
 			06: jump 2
 Block #2: postnotification_simple.init.init.done
 			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
+	Method: func(ctx context.Context, reqID int64, text string) (int64, error)
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
+	Method: func(ctx context.Context, reqID int64, text string) (int64, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Creator
+	Global: init$guard, Type: *bool
 	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl
 	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
 		Parameters:
@@ -139,52 +206,14 @@ Block #7: postnotification_simple.StorageService.StorePost.if.done
 			02: return t37, t34
 		Parameters:
 			ctx = parameter ctx : context.Context
-			storageService = parameter storageService : StorageService
-			notificationsQueue = parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-Function: postnotification_simple.NewUploadServiceImpl
-Block #0: postnotification_simple.NewUploadServiceImpl.entry
-			00: t0 = new UploadServiceImpl (complit)
-			01: t1 = &t0.storageService [#0]
-			02: t2 = &t0.notificationsQueue [#1]
-			03: *t1 = storageService
-			04: *t2 = notificationsQueue
-			05: t3 = make UploadService <- *UploadServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
-	Method: func(ctx context.Context) error
-		Parameters:
-			n = parameter n : *NotifyServiceImpl
-			ctx = parameter ctx : context.Context
-Function: postnotification_simple.NotifyService.Run
-Block #0: postnotification_simple.NotifyService.Run.entry
-			00: t0 = github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger()
-			01: t1 = &n.num_workers [#2]
-			02: t2 = *t1
-			03: t3 = new [1]any (varargs)
-			04: t4 = &t3[0:int]
-			05: t5 = make any <- int (t2)
-			06: *t4 = t5
-			07: t6 = slice t3[:]
-			08: t7 = invoke t0.Info(ctx, "initializing %d w...":string, t6...)
-			09: t8 = new Message (workerMessage)
-			10: t9 = &n.notificationsQueue [#1]
-			11: t10 = *t9
-			12: t11 = make interface{} <- *Message (t8)
-			13: t12 = invoke t10.Pop(ctx, t11)
-			14: t13 = &n.storageService [#0]
-			15: t14 = *t13
-			16: t15 = &t8.ReqID [#0]
-			17: t16 = *t15
-			18: t17 = &t8.PostID [#1]
-			19: t18 = *t17
-			20: t19 = invoke t14.ReadPost(ctx, t16, t18)
-			21: return nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageService
-	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
-	Method: func(ctx context.Context, reqID int64, text string) (int64, error)
-	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post, error)
-	Method: func(ctx context.Context, reqID int64, text string) (int64, error)
-	Global: init$guard, Type: *bool
+			postsDb = parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: postnotification_simple.NewStorageServiceImpl
+Block #0: postnotification_simple.NewStorageServiceImpl.entry
+			00: t0 = new StorageServiceImpl (complit)
+			01: t1 = &t0.postsDb [#0]
+			02: *t1 = postsDb
+			03: t2 = make StorageService <- *StorageServiceImpl (t0)
+			04: return t2, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl
 	Method: func(ctx context.Context, username string, text string) (int64, error)
 		Parameters:
@@ -220,45 +249,16 @@ Block #1: postnotification_simple.UploadService.UploadPost.if.then
 Block #2: postnotification_simple.UploadService.UploadPost.if.done
 			00: return t5, nil:error
 		Parameters:
-Function: postnotification_simple.main
-Block #0: postnotification_simple.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewStorageServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = invoke t2.StorePost(t0, 0:int64, "":string)
-			05: return
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Message
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.TriggerAnalyticsMessage
-		Parameters:
 			ctx = parameter ctx : context.Context
 			storageService = parameter storageService : StorageService
 			notificationsQueue = parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-Function: postnotification_simple.NewNotifyServiceImpl
-Block #0: postnotification_simple.NewNotifyServiceImpl.entry
-			00: t0 = new NotifyServiceImpl (complit)
+Function: postnotification_simple.NewUploadServiceImpl
+Block #0: postnotification_simple.NewUploadServiceImpl.entry
+			00: t0 = new UploadServiceImpl (complit)
 			01: t1 = &t0.storageService [#0]
 			02: t2 = &t0.notificationsQueue [#1]
-			03: t3 = &t0.num_workers [#2]
-			04: *t1 = storageService
-			05: *t2 = notificationsQueue
-			06: *t3 = 4:int
-			07: t4 = make NotifyService <- *NotifyServiceImpl (t0)
-			08: return t4, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			postsDb = parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: postnotification_simple.NewStorageServiceImpl
-Block #0: postnotification_simple.NewStorageServiceImpl.entry
-			00: t0 = new StorageServiceImpl (complit)
-			01: t1 = &t0.postsDb [#0]
-			02: *t1 = postsDb
-			03: t2 = make StorageService <- *StorageServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadService
-	Method: func(ctx context.Context, username string, text string) (int64, error)
-	Method: func(ctx context.Context, username string, text string) (int64, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyService
-	Method: func(ctx context.Context) error
-	Method: func(ctx context.Context) error
-	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Analytics
+			03: *t1 = storageService
+			04: *t2 = notificationsQueue
+			05: t3 = make UploadService <- *UploadServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post

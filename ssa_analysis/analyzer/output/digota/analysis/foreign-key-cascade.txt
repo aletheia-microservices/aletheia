@@ -1,0 +1,15 @@
+---------------------------------------------------------------------
+------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
+---------------------------------------------------------------------
+request #2 @ OrderService.Run:
+	delete #0: (OrderService.Run) --> (orders_db.orders).DeleteOne(...)
+
+request #8 @ ProductService.Delete:
+	delete #0: (ProductService.Delete) --> (products_db.products).DeleteOne(...)
+	delete #1: (SkuService.Delete) --> (skus_db.skus).DeleteOne(...)
+		MISSING delete on field: orders_db.orders.Items[*].Parent
+
+request #9 @ SkuService.Delete:
+	delete #0: (SkuService.Delete) --> (skus_db.skus).DeleteOne(...)
+		MISSING delete on field: orders_db.orders.Items[*].Parent
+

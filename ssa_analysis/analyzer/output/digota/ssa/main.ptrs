@@ -215,6 +215,53 @@ t24 (@New2): (*ssa.MakeInterface) (make interface{} <- *Order (t1))
 t25 (@New2): (*ssa.Call) (invoke t19.InsertOne(ctx, t24))
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderServiceImpl).Run ###
+s (@Run): (*ssa.Parameter) (parameter s : *OrderServiceImpl)
+
+ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Run): (*ssa.Alloc) (new QueueMessage (message))
+	 → t0 (@Run): (*ssa.Alloc)
+
+t1 (@Run): (*ssa.FieldAddr) (&s.queue [#2])
+
+t2 (@Run): (*ssa.UnOp) (*t1)
+
+t3 (@Run): (*ssa.MakeInterface) (make interface{} <- *QueueMessage (t0))
+	 → t3 (@Run): (*ssa.MakeInterface)
+
+t5 (@Run): (*ssa.FieldAddr) (&s.db [#1])
+
+t6 (@Run): (*ssa.UnOp) (*t5)
+
+t8 (@Run): (*ssa.Extract) (extract t7 #0)
+
+t9 (@Run): (*ssa.Extract) (extract t7 #1)
+
+t11 (@Run): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@Run): (*ssa.Alloc)
+
+t12 (@Run): (*ssa.IndexAddr) (&t11[0:int])
+	 → t11 (@Run): (*ssa.Alloc)
+
+t13 (@Run): (*ssa.FieldAddr) (&t12.Key [#0])
+	 → t11 (@Run): (*ssa.Alloc)
+
+t14 (@Run): (*ssa.FieldAddr) (&t12.Value [#1])
+	 → t11 (@Run): (*ssa.Alloc)
+
+t15 (@Run): (*ssa.FieldAddr) (&t0.id [#0])
+	 → t0 (@Run): (*ssa.Alloc)
+
+t17 (@Run): (*ssa.MakeInterface) (make interface{} <- string (t16))
+	 → t17 (@Run): (*ssa.MakeInterface)
+
+t18 (@Run): (*ssa.Slice) (slice t11[:])
+	 → t11 (@Run): (*ssa.Alloc)
+
+t19 (@Run): (*ssa.Call) (invoke t8.DeleteOne(ctx, t18))
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderServiceImpl).getUpdatedOrderItems ###
 s (@getUpdatedOrderItems): (*ssa.Parameter) (parameter s : *OrderServiceImpl)
 
@@ -499,6 +546,12 @@ t11 (@Delete): (*ssa.Slice) (slice t6[:])
 
 t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
 
+t14 (@Delete): (*ssa.FieldAddr) (&s.skuService [#0])
+
+t15 (@Delete): (*ssa.UnOp) (*t14)
+
+t16 (@Delete): (*ssa.Call) (invoke t15.Delete(ctx, id))
+
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductServiceImpl).Get ###
 s (@Get): (*ssa.Parameter) (parameter s : *ProductServiceImpl)
@@ -742,6 +795,55 @@ t42 (@Update): (*ssa.MakeInterface) (make interface{} <- Product (t41))
 t43 (@Update): (*ssa.Call) (invoke t3.InsertOne(ctx, t42))
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuServiceImpl).Delete ###
+s (@Delete): (*ssa.Parameter) (parameter s : *SkuServiceImpl)
+
+ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Delete): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@Delete): (*ssa.UnOp) (*t0)
+
+t3 (@Delete): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Delete): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t7 (@Delete): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t8 (@Delete): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t9 (@Delete): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t10 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@Delete): (*ssa.MakeInterface)
+
+t11 (@Delete): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+t14 (@Delete): (*ssa.Alloc) (local QueueMessage (message))
+	 → t14 (@Delete): (*ssa.Alloc)
+
+t15 (@Delete): (*ssa.FieldAddr) (&t14.id [#0])
+	 → t14 (@Delete): (*ssa.Alloc)
+
+t16 (@Delete): (*ssa.FieldAddr) (&s.queue [#1])
+
+t17 (@Delete): (*ssa.UnOp) (*t16)
+
+t19 (@Delete): (*ssa.MakeInterface) (make interface{} <- QueueMessage (t18))
+	 → t19 (@Delete): (*ssa.MakeInterface)
+
+t22 (@Delete): (*ssa.Extract) (extract t20 #1)
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuServiceImpl).Get ###
 s (@Get): (*ssa.Parameter) (parameter s : *SkuServiceImpl)
 	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
@@ -870,6 +972,8 @@ ctx (@NewSkuServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
 
 db (@NewSkuServiceImpl): (*ssa.Parameter) (parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
 
+queue (@NewSkuServiceImpl): (*ssa.Parameter) (parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue)
+
 t0 (@NewSkuServiceImpl): (*ssa.Alloc) (new SkuServiceImpl (complit))
 	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
@@ -878,9 +982,13 @@ t1 (@NewSkuServiceImpl): (*ssa.FieldAddr) (&t0.db [#0])
 	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
 
-t2 (@NewSkuServiceImpl): (*ssa.MakeInterface) (make SkuService <- *SkuServiceImpl (t0))
-	 → t2 (@NewSkuServiceImpl): (*ssa.MakeInterface)
-	 → t2 (@NewSkuServiceImpl): (*ssa.MakeInterface)
+t2 (@NewSkuServiceImpl): (*ssa.FieldAddr) (&t0.queue [#1])
+	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewSkuServiceImpl): (*ssa.Alloc)
+
+t3 (@NewSkuServiceImpl): (*ssa.MakeInterface) (make SkuService <- *SkuServiceImpl (t0))
+	 → t3 (@NewSkuServiceImpl): (*ssa.MakeInterface)
+	 → t3 (@NewSkuServiceImpl): (*ssa.MakeInterface)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.calculateTotal ###
@@ -960,7 +1068,7 @@ t0 (@main): (*ssa.Call) (context.Background())
 	 → t0 (@Background): (*ssa.MakeInterface)
 
 t2 (@main): (*ssa.Extract) (extract t1 #0)
-	 → t2 (@NewSkuServiceImpl): (*ssa.MakeInterface)
+	 → t3 (@NewSkuServiceImpl): (*ssa.MakeInterface)
 
 t3 (@main): (*ssa.Extract) (extract t1 #1)
 
@@ -970,7 +1078,7 @@ t0 (@main): (*ssa.Call) (context.Background())
 	 → t0 (@Background): (*ssa.MakeInterface)
 
 t2 (@main): (*ssa.Extract) (extract t1 #0)
-	 → t2 (@NewSkuServiceImpl): (*ssa.MakeInterface)
+	 → t3 (@NewSkuServiceImpl): (*ssa.MakeInterface)
 
 t3 (@main): (*ssa.Extract) (extract t1 #1)
 

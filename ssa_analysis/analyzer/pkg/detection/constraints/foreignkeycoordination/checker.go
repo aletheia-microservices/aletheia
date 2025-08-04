@@ -1,18 +1,19 @@
 package foreignkeycoordination
 
 type ForeignRead struct {
-	read1 *ReadOperation // read1 has the secondary taint referencing read2
-	read2 *ReadOperation
+	op1 *ReadOperation // read1 has the secondary taint referencing read2
+	op2 *ReadOperation
 }
 
-func (detector *ForeignKeyCoordinationDetector) checkInconsistency(request *Request, read *ReadOperation) {
-	for _, arg := range read.arguments {
+func (detector *ForeignKeyCoordinationDetector) checkInconsistency(request *Request, currOp *ReadOperation) {
+	// same logic as in foreignkeycascade but here we verify if secondaryTaint.IsDelete()
+	for _, arg := range currOp.arguments {
 		for _, secondaryTaint := range arg.GetSecondaryTaintsFlatList() {
-			if secondaryTaint.GetCallID() != read.GetCallID() {
-				otherRead := request.FindOperationByCallID(secondaryTaint.GetCallID())
-				if otherRead != nil {
-					foreignRead := &ForeignRead{read1: read, read2: otherRead}
-					detector.addInconsistency(request, foreignRead)
+			if secondaryTaint.GetCallID() != currOp.GetCallID() && secondaryTaint.IsRead() {
+				otherOp := request.FindOperationByCallID(secondaryTaint.GetCallID())
+				if otherOp != nil {
+					foreignRead := &ForeignRead{op1: currOp, op2: otherOp}
+					detector.addForeignRead(request, foreignRead)
 				}
 			}
 		}

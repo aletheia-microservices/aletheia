@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
@@ -41,15 +40,13 @@ const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 func SaveResults(app *app.App, detector Detector) string {
 	detector.ComputeResults()
 	results := detector.GetResults()
-	analysisTypeString := detector.GetTypeString()
-	analysisPrefix := strings.ToUpper(analysisTypeString)
 
 	// ensure the path for the results file exists
 	path := fmt.Sprintf("output/%s/analysis/%s.txt", app.GetName(), detector.GetTypeString())
 	dir := filepath.Dir(path)
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
-		log.Fatalf("[%s] error creating directory %s: %s", analysisPrefix, dir, err.Error())
+		log.Fatalf("[%s] error creating directory %s: %s", path, dir, err.Error())
 	}
 
 	// read previous file (if it exists) and check if results have changed
@@ -57,7 +54,7 @@ func SaveResults(app *app.App, detector Detector) string {
 	if _, err := os.Stat(path); err == nil {
 		previousContent, err = os.ReadFile(path)
 		if err != nil {
-			log.Fatalf("[%s] error reading existing file %s: %s", analysisPrefix, path, err.Error())
+			log.Fatalf("[%s] error reading existing file %s: %s", path, path, err.Error())
 		}
 	}
 
@@ -73,7 +70,7 @@ func SaveResults(app *app.App, detector Detector) string {
 	// if we have a new file or the content has changed then update the results
 	err = os.WriteFile(path, []byte(results), 0644)
 	if err != nil {
-		log.Fatalf("[%s] error writing data to %s: %s", analysisPrefix, path, err.Error())
+		log.Fatalf("[%s] error writing data to %s: %s", path, path, err.Error())
 	}
 
 	str := fmt.Sprintf("%s\t\t\t\t\t\t\t   (modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
