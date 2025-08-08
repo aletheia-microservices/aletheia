@@ -1,0 +1,23 @@
+digraph G {
+	rankdir=TD;
+	ranksep=1.5;
+	nodesep=1;
+	subgraph cluster_clients {
+		style=invis;
+		N_client [label="client", style=bold, shape=invhouse, color="orange"];
+	}
+	subgraph cluster_services {
+		style=invis;
+		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo", style=bold, shape=box, color="blue"];
+		N_APIService_RegisterMovie [label="APIService.RegisterMovie", style=bold, shape=box, color="blue"];
+		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId", style=bold, shape=box, color="blue"];
+		N_MovieInfoService_WriteMovieInfo [label="MovieInfoService.WriteMovieInfo", style=bold, shape=box, color="blue"];
+		N_APIService_ReadMovie [label="APIService.ReadMovie", style=bold, shape=box, color="blue"];
+		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId", style=bold, shape=box, color="blue"];
+	}
+	subgraph cluster_databases {
+		style=invis;
+	}
+	N_client -> N_APIService_RegisterMovie [label="RegisterMovie()", color=orange];
+	N_client -> N_APIService_ReadMovie [label="ReadMovie()", color=orange];
+}

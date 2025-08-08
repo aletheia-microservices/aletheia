@@ -102,6 +102,9 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, st
 		}
 		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
 			if ok, database, collection, opType := isBlueprintNoSQLCollectionCall(graph, call, extr); ok {
+				/* if opType == common.OP_READ {
+					bsonFilter := call.Call.Args[]
+				} */
 				return database, collection, call.Call.Method.Id(), call.Call.Args[1:], opType, true
 			}
 		}

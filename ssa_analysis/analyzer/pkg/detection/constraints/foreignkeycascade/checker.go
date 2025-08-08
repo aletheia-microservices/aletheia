@@ -24,7 +24,7 @@ func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.
 		}
 		for _, schema := range db.GetSchemas() {
 			for _, constraint := range schema.GetAllConstraints() {
-				if constraint.IsTypeForeignKey() {
+				if constraint.IsForeignKey() {
 					currField := constraint.GetFieldAt(1)
 					if currField.GetDatabase() == currDB {
 						// found reference to current field

@@ -1,20 +1,36 @@
 package backends
 
+import "strings"
+
 type Field struct {
 	path        string
 	database    *Database
+	schema      *Schema
 	constraints []*Constraint
 }
 
-func NewField(path string, database *Database) *Field {
+func NewField(path string, database *Database, schema *Schema) *Field {
 	return &Field{
 		path:     path,
 		database: database,
+		schema:   schema,
 	}
 }
 
 func (field *Field) GetPath() string {
 	return field.path
+}
+
+// extract <name> from <db>.<schema>.<name
+func (field *Field) GetName() string {
+	if idx := strings.LastIndex(field.path, "."); idx != -1 {
+		return field.path[idx+1:]
+	}
+	return field.path
+}
+
+func (field *Field) GetSchema() *Schema {
+	return field.schema
 }
 
 func (field *Field) GetDatabase() *Database {

@@ -1,0 +1,58 @@
+{
+  "name": "dsb_media_sql",
+  "databases": [
+    "movieid_db",
+    "movieinfo_db"
+  ],
+  "services": [
+    {
+      "name": "APIService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIService",
+      "pkg": "mediamicroservices_sql",
+      "impl": "APIServiceImpl",
+      "fields": [
+        "movieIdService #0 (movieid_service)",
+        "movieInfoService #1 (movieinfo_service)"
+      ],
+      "methods": [
+        "RegisterMovie",
+        "ReadMovie"
+      ],
+      "services": [
+        "MovieIdService",
+        "MovieInfoService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "MovieIdService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdService",
+      "pkg": "mediamicroservices_sql",
+      "impl": "MovieIdServiceImpl",
+      "fields": [
+        "movieIdDB #0 (movieid_db)"
+      ],
+      "methods": [
+        "RegisterMovieId",
+        "ReadMovieId"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "MovieInfoService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoService",
+      "pkg": "mediamicroservices_sql",
+      "impl": "MovieInfoServiceImpl",
+      "fields": [
+        "movieInfoDB #0 (movieinfo_db)"
+      ],
+      "methods": [
+        "WriteMovieInfo",
+        "ReadMovieInfo"
+      ],
+      "services": [],
+      "databases": []
+    }
+  ]
+}

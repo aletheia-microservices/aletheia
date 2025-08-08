@@ -45,7 +45,17 @@ func (database *Database) HasSchema(name string) bool {
 	return false
 }
 
-func (database *Database) GetSchema() *Schema {
+// name can be, for example, nosql collection, sql table, queue topic, etc.
+func (database *Database) GetSchemaByNameIfExists(name string) *Schema {
+	for _, schema := range database.schemas {
+		if schema.GetName() == name {
+			return schema
+		}
+	}
+	return nil
+}
+
+func (database *Database) GetLastSchema() *Schema {
 	return database.schemas[0]
 }
 

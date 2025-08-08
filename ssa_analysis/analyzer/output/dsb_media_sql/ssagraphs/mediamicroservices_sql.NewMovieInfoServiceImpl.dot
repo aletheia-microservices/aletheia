@@ -1,0 +1,22 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2795182 [label="return t2, t3", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2795182 [label="return t2, t3", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2795166 [label="*t1 = movieInfoDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795166 [label="*t1 = movieInfoDB", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_2795154 [label="t0: new MovieInfoServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2795206 [label="t3: (*MovieInfoServiceImpl).createTables(t0, ctx)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2795166 [label="t1: &t0.movieInfoDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet2 [label="t2: make MovieInfoService <- *MovieInfoServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2795044 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2795065 [label="movieInfoDB: parameter movieInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2795154 -> N_val_field_2795166;
+	N_val_field_2795166 -> N_instr_store_2795166;
+	N_val_param_2795065 -> N_instr_store_2795166;
+	N_val_alloc_2795154 -> N_val_ifacet2;
+	N_val_alloc_2795154 -> N_val_call_2795206;
+	N_val_param_2795044 -> N_val_call_2795206;
+	N_val_ifacet2 -> N_instr_ret_2795182;
+	N_val_call_2795206 -> N_instr_ret_2795182;
+	N_val_field_2795166 -> N_val_alloc_2795154 [label=".movieInfoDB", style=dashed, color=blue];
+}

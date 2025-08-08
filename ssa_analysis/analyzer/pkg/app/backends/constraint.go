@@ -1,14 +1,11 @@
 package backends
 
-import (
-	"log"
-)
-
 type ConstraintType int
 
 const (
 	CONSTRAINT_FOREIGN_KEY ConstraintType = iota
 	CONSTRAINT_UNIQUE      ConstraintType = iota
+	CONSTRAINT_PRIMARY     ConstraintType = iota
 )
 
 type Constraint struct {
@@ -24,8 +21,17 @@ func NewConstraint(t ConstraintType, fields ...*Field) *Constraint {
 	}
 }
 
-func (constraint *Constraint) IsTypeForeignKey() bool {
+func (constraint *Constraint) IsForeignKey() bool {
 	return constraint.t == CONSTRAINT_FOREIGN_KEY
+}
+
+// also includes primary keys
+func (constraint *Constraint) IsUnique() bool {
+	return constraint.t == CONSTRAINT_UNIQUE || constraint.t == CONSTRAINT_PRIMARY
+}
+
+func (constraint *Constraint) AddField(field *Field) {
+	constraint.fields = append(constraint.fields, field)
 }
 
 func (constraint *Constraint) GetFields() []*Field {
@@ -36,12 +42,26 @@ func (constraint *Constraint) GetFieldAt(idx int) *Field {
 	return constraint.fields[idx]
 }
 
-func (constraint *Constraint) String() string {
-	if constraint.t == CONSTRAINT_FOREIGN_KEY {
-		if constraint.fields[1] == nil {
-			log.Fatal("unexpected nil field in index 1 for constraint")
+func (constraint *Constraint) GetFieldsNamesString() string {
+	str := "("
+	for i, field := range constraint.fields {
+		str += field.GetPath()
+		if i < len(constraint.fields)-1 {
+			str += ", "
 		}
-		return "FOREIGN_KEY " + constraint.fields[0].path + " REFERENCES " + constraint.fields[1].path
+	}
+	str += ")"
+	return str
+}
+
+func (constraint *Constraint) String() string {
+	switch constraint.t {
+	case CONSTRAINT_FOREIGN_KEY:
+		return "FOREIGN_KEY " + constraint.fields[0].GetPath() + " REFERENCES " + constraint.fields[1].GetPath()
+	case CONSTRAINT_UNIQUE:
+		return "UNIQUE " + constraint.GetFieldsNamesString()
+	case CONSTRAINT_PRIMARY:
+		return "PRIMARY KEY " + constraint.GetFieldsNamesString()
 	}
 	return ""
 }

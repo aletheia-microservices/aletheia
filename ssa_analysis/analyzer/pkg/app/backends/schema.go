@@ -14,6 +14,7 @@ type Schema struct {
 
 func NewSchema(name string) *Schema {
 	return &Schema{
+		name:   name,
 		fields: make(map[string]*Field),
 	}
 }
@@ -43,9 +44,11 @@ func (schema *Schema) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(&struct {
+		Name        string   `json:"name"`
 		Fields      []string `json:"fields"`
 		Constraints []string `json:"constraints"`
 	}{
+		Name:        schema.name,
 		Fields:      fieldsLst,
 		Constraints: constraintsLst,
 	})
@@ -91,10 +94,18 @@ func (schema *Schema) GetFieldByPath(path string) *Field {
 	return field
 }
 
+func (schema *Schema) GetFieldByPathIfExists(path string) *Field {
+	field, ok := schema.fields[path]
+	if ok {
+		return field
+	}
+	return nil
+}
+
 func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
 	field, ok := schema.fields[path]
 	if !ok {
-		field = NewField(path, database)
+		field = NewField(path, database, schema)
 		schema.fields[path] = field
 	}
 	return field

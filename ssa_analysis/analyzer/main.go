@@ -19,11 +19,7 @@ import (
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/registry"
 	"analyzer/pkg/ssagraph/tainter"
-)
-
-const (
-	APP_PATH_POSTNOTIFICATION = "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple"
-	APP_PATH_DIGOTA           = "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota"
+	"analyzer/pkg/utils"
 )
 
 func main() {
@@ -33,6 +29,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- postnotification examples/postnotification")
 		fmt.Fprintln(os.Stderr, "- shoppingcart examples/shoppingcart")
 		fmt.Fprintln(os.Stderr, "- postnotification_simple blueprint/postnotification/notifyservice_run")
+		fmt.Fprintln(os.Stderr, "- dsb_media_sql blueprint/dsb_media_sql/api_readmovie")
 		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")
 		os.Exit(1)
 	}
@@ -65,7 +62,8 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	app.InitFields(pkgs)
+	app.InitServiceFields(pkgs)
+	app.ParseSchemaFromUserFile()
 
 	fmt.Println("[INFO] running analysis for packages:")
 	for _, pkg := range pkgs {
@@ -139,7 +137,6 @@ func main() {
 	}
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
-
 
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
@@ -216,9 +213,11 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 
 	for _, pkg := range prog.AllPackages() {
 		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
-			if pkg.Pkg.Path() == APP_PATH_POSTNOTIFICATION {
+			if pkg.Pkg.Path() == utils.APP_PATH_POSTNOTIFICATION {
 				pkgs = append(pkgs, pkg)
-			} else if pkg.Pkg.Path() == APP_PATH_DIGOTA {
+			} else if pkg.Pkg.Path() == utils.APP_PATH_DIGOTA {
+				pkgs = append(pkgs, pkg)
+			} else if pkg.Pkg.Path() == utils.APP_PATH_DSB_MEDIA_SQL {
 				pkgs = append(pkgs, pkg)
 			} else {
 				fmt.Printf("skipping... %s\n", pkg.Pkg.Path())

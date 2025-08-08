@@ -52,7 +52,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)
-	
+
 	if node != nil && node.IsParsed() {
 		fmt.Printf("[ABSTRACTGRAPH] ignoring node already visited: %s\n", node.String())
 		return
@@ -69,7 +69,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			node.AddParam(obj)
 		}
 	}
-	
+
 	node.SetParsed()
 
 	// finalize parsing
@@ -170,7 +170,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				if !graph.GetApp().HasDatabase(dbname) {
 					log.Fatalf("database (%s) not found", dbname)
 				}
-				
+
 				db := graph.GetApp().GetDatabaseByName(dbname)
 				if !db.HasSchema(schemaName) {
 					db.AddSchema(backends.NewSchema(schemaName))
@@ -222,9 +222,10 @@ func registerDatabaseFields(graph *AbstractCallGraph, args []*AbstractObject) {
 		for _, taintLst := range arg.GetPrimaryTaints() {
 			for _, taint := range taintLst {
 				db := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(taint.GetField()))
-				if !db.GetSchema().HasField(taint.GetField()) {
-					field := backends.NewField(taint.GetField(), db)
-					db.GetSchema().AddField(field)
+				latestSchema := db.GetLastSchema()
+				if !latestSchema.HasField(taint.GetField()) {
+					field := backends.NewField(taint.GetField(), db, latestSchema)
+					latestSchema.AddField(field)
 				}
 			}
 		}

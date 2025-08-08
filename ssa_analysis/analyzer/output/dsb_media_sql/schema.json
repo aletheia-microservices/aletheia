@@ -1,0 +1,34 @@
+{
+  "movieid_db": {
+    "name": "movieid_db",
+    "schemas": [
+      {
+        "name": "movieid",
+        "fields": [
+          "movieid_db.movieid.movieid",
+          "movieid_db.movieid.title"
+        ],
+        "constraints": [
+          "UNIQUE (movieid_db.movieid.title)",
+          "PRIMARY KEY (movieid_db.movieid.movieid)"
+        ]
+      }
+    ]
+  },
+  "movieinfo_db": {
+    "name": "movieinfo_db",
+    "schemas": [
+      {
+        "name": "movieinfo",
+        "fields": [
+          "movieinfo_db.movieinfo.casts",
+          "movieinfo_db.movieinfo.movieid",
+          "movieinfo_db.movieinfo.title"
+        ],
+        "constraints": [
+          "PRIMARY KEY (movieinfo_db.movieinfo.movieid)"
+        ]
+      }
+    ]
+  }
+}
