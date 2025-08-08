@@ -71,3 +71,8 @@ func ExtractDatabaseNameFromFieldPath(s string) string {
 	parts := strings.Split(s, ".")
 	return parts[0]
 }
+
+func ExtractSchemaNameFromFieldPath(s string) string {
+	parts := strings.Split(s, ".")
+	return parts[1]
+}

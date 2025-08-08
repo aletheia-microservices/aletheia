@@ -50,6 +50,19 @@ func (field *Field) HasConstraintForeignKeyToField(otherField *Field) bool {
 	return false
 }
 
+// searches for unicity in single field
+// also includes primary key
+func (field *Field) HasContraintUnicity() bool {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_UNIQUE || constraint.t == CONSTRAINT_PRIMARY {
+			if len(constraint.fields) == 1 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (field *Field) String() string {
 	str := field.path
 	if len(field.constraints) > 0 {
