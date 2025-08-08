@@ -11,6 +11,7 @@
         ],
         "constraints": [
           "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID",
+          "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post[0].Value",
           "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post[*].Value"
         ]
       }
@@ -30,7 +31,9 @@
           "posts_db.post.Text",
           "posts_db.post.Timestamp",
           "posts_db.post[*].Key",
-          "posts_db.post[*].Value"
+          "posts_db.post[*].Value",
+          "posts_db.post[0].Key",
+          "posts_db.post[0].Value"
         ],
         "constraints": [
           "FOREIGN_KEY posts_db.post.ReqID REFERENCES notifications_queue.notification.ReqID"

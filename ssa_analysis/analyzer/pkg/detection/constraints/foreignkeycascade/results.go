@@ -13,7 +13,7 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults() {
 
 	var results string
 	for request, cascadeDeletes := range detector.cascadeDeletes {
-		results += fmt.Sprintf("request #%d: %s\n", request.idx, request.entry.String())
+		results += fmt.Sprintf("entry request: %s\n", request.entry.String())
 		for i, cascadeDelete := range cascadeDeletes {
 			results += fmt.Sprintf("\tdelete #%d: %s\n", i, cascadeDelete.op.call.String())
 			/* for _, op := range cascadeDelete.cascadingOps {

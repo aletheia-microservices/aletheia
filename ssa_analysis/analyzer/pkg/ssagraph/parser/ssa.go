@@ -200,7 +200,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.IndexAddr:
 		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
 		//FIXME: should parse value for t.Index
-		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_FIELD, 0, t.Index.String())
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_INDEX, 0, t.Index.String())
 	case *ssa.UnOp:
 		// 01 [unary] t14 = *t13
 		// 05 [unary] t31 = *t30

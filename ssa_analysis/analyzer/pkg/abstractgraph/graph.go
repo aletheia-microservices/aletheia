@@ -187,6 +187,13 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 		fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", color=%s];\n", fromNodeID, toNodeID, label, color)
 	}
 
+	/* for _, node := range graph.GetNodes() {
+		fmt.Printf("on node: %v\n", node)
+		for _, edge := range graph.GetEdgesFromNode(node) {
+			fmt.Printf("\t on edge: %v\n", edge)
+		}
+	} */
+
 	fmt.Fprintln(file, "}")
 	return nil
 }

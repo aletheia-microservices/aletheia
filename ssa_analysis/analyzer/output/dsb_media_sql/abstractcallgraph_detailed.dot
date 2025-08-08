@@ -9,15 +9,60 @@ digraph G {
 	subgraph cluster_services {
 		style=invis;
 		N_APIService_RegisterMovie [label="APIService.RegisterMovie", style=bold, shape=box, color="blue"];
-		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId", style=bold, shape=box, color="blue"];
-		N_MovieInfoService_WriteMovieInfo [label="MovieInfoService.WriteMovieInfo", style=bold, shape=box, color="blue"];
+		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+
+
+==== param 2 (title) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.title
+", style=bold, shape=box, color="blue"];
+		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[read, primary] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="blue"];
+		N_MovieInfoService_WriteMovieInfo [label="MovieInfoService.WriteMovieInfo
+
+==== param 1 (movieID) tainted ====
+_obj
+[write, primary] @ movieinfo_db.movieinfo.movieid
+
+
+==== param 2 (title) tainted ====
+_obj
+[write, primary] @ movieinfo_db.movieinfo.title
+
+
+==== param 3 (casts) tainted ====
+_obj
+[write, primary] @ movieinfo_db.movieinfo.casts
+", style=bold, shape=box, color="blue"];
 		N_APIService_ReadMovie [label="APIService.ReadMovie", style=bold, shape=box, color="blue"];
-		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId", style=bold, shape=box, color="blue"];
-		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo", style=bold, shape=box, color="blue"];
+		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
+
+==== param 1 (movieID) tainted ====
+_obj
+[read, primary] @ movieinfo_db.movieinfo.movieid
+", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
+		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
+		N_movieid_db_movieid [label="movieid_db.movieid", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_APIService_RegisterMovie [label="RegisterMovie()", color=orange];
+	N_APIService_RegisterMovie -> N_MovieIdService_RegisterMovieId [label="RegisterMovieId()", color=blue];
+	N_APIService_RegisterMovie -> N_MovieInfoService_WriteMovieInfo [label="WriteMovieInfo()", color=blue];
+	N_MovieIdService_RegisterMovieId -> N_movieid_db_movieid [label="Exec()", color=green];
+	N_MovieInfoService_WriteMovieInfo -> N_movieinfo_db_movieinfo [label="Exec()", color=green];
 	N_client -> N_APIService_ReadMovie [label="ReadMovie()", color=orange];
+	N_APIService_ReadMovie -> N_MovieIdService_ReadMovieId [label="ReadMovieId()", color=blue];
+	N_APIService_ReadMovie -> N_MovieInfoService_ReadMovieInfo [label="ReadMovieInfo()", color=blue];
+	N_MovieIdService_ReadMovieId -> N_movieid_db_movieid [label="Select()", color=green];
+	N_MovieInfoService_ReadMovieInfo -> N_movieinfo_db_movieinfo [label="Select()", color=green];
 }

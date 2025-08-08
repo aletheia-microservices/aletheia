@@ -1,3 +1,6 @@
+	Global: Inventory_Type_value, Type: *map[string]int32
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuList
+	Unknown member type: *ssa.NamedConst
 		Parameters:
 			ctx = parameter ctx : context.Context
 			skuService = parameter skuService : SkuService
@@ -14,61 +17,6 @@ Block #0: digota.NewOrderServiceImpl.entry
 			06: *t3 = queue
 			07: t4 = make OrderService <- *OrderServiceImpl (t0)
 			08: return t4, nil:error
-		Parameters:
-			currency = parameter currency : int32
-			orderItems = parameter orderItems : []*OrderItem
-Function: digota.calculateTotal
-Block #0: digota.calculateTotal.entry
-			00: t0 = *Currency_name
-			01: t1 = t0[currency]
-			02: t2 = github.com/Rhymond/go-money.New(0:int64, t1)
-			03: t3 = len(orderItems)
-			04: jump 1
-Block #1: digota.calculateTotal.rangeindex.loop
-			00: t4 = phi [0: t2, 5: t29] #m
-			01: t5 = phi [0: -1:int, 5: t6]
-			02: t6 = t5 + 1:int
-			03: t7 = t6 < t3
-			04: if t7 goto 2 else 3
-Block #2: digota.calculateTotal.rangeindex.body
-			00: t8 = &orderItems[t6]
-			01: t9 = *t8
-			02: t10 = &t9.Quantity [#1]
-			03: t11 = *t10
-			04: t12 = t11 <= 0:int64
-			05: if t12 goto 4 else 5
-Block #3: digota.calculateTotal.rangeindex.done
-			00: t13 = (*github.com/Rhymond/go-money.Money).Amount(t4)
-			01: return t13, nil:error
-Block #4: digota.calculateTotal.if.then
-			00: t14 = &t9.Quantity [#1]
-			01: *t14 = 1:int64
-			02: jump 5
-Block #5: digota.calculateTotal.if.done
-			00: t15 = *Currency_name
-			01: t16 = &t9.Currency [#3]
-			02: t17 = *t16
-			03: t18 = t15[t17]
-			04: t19 = &t9.Quantity [#1]
-			05: t20 = *t19
-			06: t21 = &t9.Amount [#2]
-			07: t22 = *t21
-			08: t23 = t20 * t22
-			09: t24 = github.com/Rhymond/go-money.New(t23, t18)
-			10: t25 = new [1]*github.com/Rhymond/go-money.Money (varargs)
-			11: t26 = &t25[0:int]
-			12: *t26 = t24
-			13: t27 = slice t25[:]
-			14: t28 = (*github.com/Rhymond/go-money.Money).Add(t4, t27...)
-			15: t29 = extract t28 #0
-			16: t30 = extract t28 #1
-			17: t31 = t30 != nil:error
-			18: if t31 goto 6 else 1
-Block #6: digota.calculateTotal.if.then
-			00: return 0:int64, t30
-	Global: OrderItem_Type_value, Type: *map[string]int32
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ListRequest
-	Unknown member type: *ssa.NamedConst
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductServiceImpl
 	Method: func(ctx context.Context, id string) error
 		Parameters:
@@ -359,6 +307,195 @@ Block #20: digota.ProductService.Update.if.done
 			01: t42 = make interface{} <- Product (t41)
 			02: t43 = invoke t3.InsertOne(ctx, t42)
 			03: return t16, t43
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping_Address
+	Global: Currency_value, Type: *map[string]int32
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentServiceImpl
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+		Parameters:
+			s = parameter s : *PaymentServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: digota.PaymentService.Get
+Block #0: digota.PaymentService.Get.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "payments_db":string, "payments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: digota.PaymentService.Get.if.then
+			00: return nil:*Charge, t4
+Block #2: digota.PaymentService.Get.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: digota.PaymentService.Get.if.then
+			00: return nil:*Charge, t14
+Block #4: digota.PaymentService.Get.if.done
+			00: t16 = make interface{} <- *Charge (nil:*Charge)
+			01: t17 = invoke t13.One(ctx, t16)
+			02: t18 = extract t17 #0
+			03: t19 = extract t17 #1
+			04: t20 = t19 != nil:error
+			05: if t20 goto 5 else 6
+Block #5: digota.PaymentService.Get.if.then
+			00: return nil:*Charge, t19
+Block #6: digota.PaymentService.Get.if.done
+			00: if t18 goto 8 else 7
+Block #7: digota.PaymentService.Get.if.then
+			00: t21 = new [1]any (varargs)
+			01: t22 = &t21[0:int]
+			02: t23 = make any <- string (id)
+			03: *t22 = t23
+			04: t24 = slice t21[:]
+			05: t25 = fmt.Errorf("charge not found ...":string, t24...)
+			06: return nil:*Charge, t25
+Block #8: digota.PaymentService.Get.if.done
+			00: return nil:*Charge, nil:error
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+		Parameters:
+			s = parameter s : *PaymentServiceImpl
+			ctx = parameter ctx : context.Context
+			page = parameter page : int64
+			limit = parameter limit : int64
+			sort = parameter sort : int32
+Function: digota.PaymentService.List
+Block #0: digota.PaymentService.List.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "payments_db":string, "payments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: digota.PaymentService.List.if.then
+			00: return nil:*ChargeList, t4
+Block #2: digota.PaymentService.List.if.done
+			00: t6 = invoke t3.FindMany(ctx, nil:go.mongodb.org/mongo-driver/bson/primitive.D, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			01: t7 = extract t6 #0
+			02: t8 = extract t6 #1
+			03: t9 = t8 != nil:error
+			04: if t9 goto 3 else 4
+Block #3: digota.PaymentService.List.if.then
+			00: return nil:*ChargeList, t8
+Block #4: digota.PaymentService.List.if.done
+			00: t10 = make interface{} <- []*Charge (nil:[]*Charge)
+			01: t11 = invoke t7.All(ctx, t10)
+			02: t12 = t11 != nil:error
+			03: if t12 goto 5 else 6
+Block #5: digota.PaymentService.List.if.then
+			00: return nil:*ChargeList, t11
+Block #6: digota.PaymentService.List.if.done
+			00: t13 = new ChargeList (complit)
+			01: t14 = &t13.Charges [#0]
+			02: t15 = &t13.Total [#1]
+			03: t16 = len(nil:[]*Charge)
+			04: t17 = convert int32 <- int (t16)
+			05: *t14 = nil:[]*Charge
+			06: *t15 = t17
+			07: return t13, nil:error
+	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+		Parameters:
+			s = parameter s : *PaymentServiceImpl
+			ctx = parameter ctx : context.Context
+			currency = parameter currency : int32
+			total = parameter total : uint64
+			card = parameter card : *Card
+			email = parameter email : string
+			statement = parameter statement : string
+			paymentProviderId = parameter paymentProviderId : int32
+			metadata = parameter metadata : map[string]string
+Function: digota.PaymentService.NewCharge
+Block #0: digota.PaymentService.NewCharge.entry
+			00: t0 = new Charge (complit)
+			01: t1 = &t0.Currency [#5]
+			02: t2 = &t0.ChargeAmount [#2]
+			03: t3 = &t0.Email [#6]
+			04: t4 = &t0.Statement [#1]
+			05: *t1 = currency
+			06: *t2 = total
+			07: *t3 = email
+			08: *t4 = statement
+			09: t5 = &s.db [#0]
+			10: t6 = *t5
+			11: t7 = invoke t6.GetCollection(ctx, "payments_db":string, "payments":string)
+			12: t8 = extract t7 #0
+			13: t9 = extract t7 #1
+			14: t10 = t9 != nil:error
+			15: if t10 goto 1 else 2
+Block #1: digota.PaymentService.NewCharge.if.then
+			00: return nil:*Charge, t9
+Block #2: digota.PaymentService.NewCharge.if.done
+			00: t11 = *t0
+			01: t12 = make interface{} <- Charge (t11)
+			02: t13 = invoke t8.InsertOne(ctx, t12)
+			03: return t0, t13
+	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+		Parameters:
+			s = parameter s : *PaymentServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+			amount = parameter amount : uint64
+			reason = parameter reason : int32
+Function: digota.PaymentService.RefundCharge
+Block #0: digota.PaymentService.RefundCharge.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "payments_db":string, "payments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: digota.PaymentService.RefundCharge.if.then
+			00: return nil:*Charge, t4
+Block #2: digota.PaymentService.RefundCharge.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: digota.PaymentService.RefundCharge.if.then
+			00: return nil:*Charge, t14
+Block #4: digota.PaymentService.RefundCharge.if.done
+			00: t16 = make interface{} <- *Charge (nil:*Charge)
+			01: t17 = invoke t13.One(ctx, t16)
+			02: t18 = extract t17 #0
+			03: t19 = extract t17 #1
+			04: t20 = t19 != nil:error
+			05: if t20 goto 5 else 6
+Block #5: digota.PaymentService.RefundCharge.if.then
+			00: return nil:*Charge, t19
+Block #6: digota.PaymentService.RefundCharge.if.done
+			00: if t18 goto 8 else 7
+Block #7: digota.PaymentService.RefundCharge.if.then
+			00: t21 = new [1]any (varargs)
+			01: t22 = &t21[0:int]
+			02: t23 = make any <- string (id)
+			03: *t22 = t23
+			04: t24 = slice t21[:]
+			05: t25 = fmt.Errorf("charge not found ...":string, t24...)
+			06: return nil:*Charge, t25
+Block #8: digota.PaymentService.RefundCharge.if.done
+			00: return nil:*Charge, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem
 	Method: func() int32
 		Parameters:
@@ -413,167 +550,18 @@ Block #0: digota.OrderItem.IsTypeTax.entry
 			01: t1 = *t0
 			02: t2 = t1 == 3:int32
 			03: return t2
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping_Address
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card
-	Global: Inventory_Type_value, Type: *map[string]int32
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Refund
 		Parameters:
-			ctx = parameter ctx : context.Context
-			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: digota.NewPaymentServiceImpl
-Block #0: digota.NewPaymentServiceImpl.entry
-			00: t0 = new PaymentServiceImpl (complit)
-			01: t1 = &t0.db [#0]
-			02: *t1 = db
-			03: t2 = make PaymentService <- *PaymentServiceImpl (t0)
-			04: return t2, nil:error
-	Unknown member type: *ssa.NamedConst
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuServiceImpl
-	Method: func(ctx context.Context, id string) error
-		Parameters:
-			s = parameter s : *SkuServiceImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-Function: digota.SkuService.Delete
-Block #0: digota.SkuService.Delete.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "skus_db":string, "skus":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: digota.SkuService.Delete.if.then
-			00: return t4
-Block #2: digota.SkuService.Delete.if.done
-			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t7 = &t6[0:int]
-			02: t8 = &t7.Key [#0]
-			03: t9 = &t7.Value [#1]
-			04: *t8 = "id":string
-			05: t10 = make interface{} <- string (id)
-			06: *t9 = t10
-			07: t11 = slice t6[:]
-			08: t12 = invoke t3.DeleteOne(ctx, t11)
-			09: return t12
-	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
-		Parameters:
-			s = parameter s : *SkuServiceImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-Function: digota.SkuService.Get
-Block #0: digota.SkuService.Get.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "skus_db":string, "skus":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: digota.SkuService.Get.if.then
-			00: return nil:*Sku, t4
-Block #2: digota.SkuService.Get.if.done
-			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t7 = &t6[0:int]
-			02: t8 = &t7.Key [#0]
-			03: t9 = &t7.Value [#1]
-			04: *t8 = "id":string
-			05: t10 = make interface{} <- string (id)
-			06: *t9 = t10
-			07: t11 = slice t6[:]
-			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t13 = extract t12 #0
-			10: t14 = extract t12 #1
-			11: t15 = t14 != nil:error
-			12: if t15 goto 3 else 4
-Block #3: digota.SkuService.Get.if.then
-			00: return nil:*Sku, t14
-Block #4: digota.SkuService.Get.if.done
-			00: t16 = make interface{} <- *Sku (nil:*Sku)
-			01: t17 = invoke t13.One(ctx, t16)
-			02: t18 = extract t17 #0
-			03: t19 = extract t17 #1
-			04: t20 = t19 != nil:error
-			05: if t20 goto 5 else 6
-Block #5: digota.SkuService.Get.if.then
-			00: return nil:*Sku, t19
-Block #6: digota.SkuService.Get.if.done
-			00: if t18 goto 8 else 7
-Block #7: digota.SkuService.Get.if.then
-			00: t21 = new [1]any (varargs)
-			01: t22 = &t21[0:int]
-			02: t23 = make any <- string (id)
-			03: *t22 = t23
-			04: t24 = slice t21[:]
-			05: t25 = fmt.Errorf("sku not found for...":string, t24...)
-			06: return nil:*Sku, t25
-Block #8: digota.SkuService.Get.if.done
-			00: return nil:*Sku, nil:error
-	Method: func(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions, inventory *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory, attributes map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
-		Parameters:
-			s = parameter s : *SkuServiceImpl
-			ctx = parameter ctx : context.Context
-			name = parameter name : string
-			currency = parameter currency : int32
-			active = parameter active : bool
-			price = parameter price : uint64
-			parent = parameter parent : string
-			metadata = parameter metadata : map[string]string
-			image = parameter image : string
-			packageDimensions = parameter packageDimensions : *PackageDimensions
-			inventory = parameter inventory : *Inventory
-			attributes = parameter attributes : map[string]string
-Function: digota.SkuService.New
-Block #0: digota.SkuService.New.entry
-			00: t0 = new Sku (complit)
-			01: t1 = &t0.Name [#1]
-			02: t2 = &t0.Currency [#3]
-			03: t3 = &t0.Active [#4]
-			04: t4 = &t0.Price [#2]
-			05: t5 = &t0.Parent [#5]
-			06: t6 = &t0.Metadata [#6]
-			07: t7 = &t0.PackageDimensions [#9]
-			08: t8 = &t0.Inventory [#10]
-			09: t9 = &t0.Attributes [#7]
-			10: *t1 = name
-			11: *t2 = currency
-			12: *t3 = active
-			13: *t4 = price
-			14: *t5 = parent
-			15: *t6 = metadata
-			16: *t7 = packageDimensions
-			17: *t8 = inventory
-			18: *t9 = attributes
-			19: t10 = &s.db [#0]
-			20: t11 = *t10
-			21: t12 = invoke t11.GetCollection(ctx, "skus_db":string, "skus":string)
-			22: t13 = extract t12 #0
-			23: t14 = extract t12 #1
-			24: t15 = t14 != nil:error
-			25: if t15 goto 1 else 2
-Block #1: digota.SkuService.New.if.then
-			00: return nil:*Sku, t14
-Block #2: digota.SkuService.New.if.done
-			00: t16 = *t0
-			01: t17 = make interface{} <- Sku (t16)
-			02: t18 = invoke t13.InsertOne(ctx, t17)
-			03: return t0, t18
-		Parameters:
-			ctx = parameter ctx : context.Context
-			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-Function: digota.NewSkuServiceImpl
-Block #0: digota.NewSkuServiceImpl.entry
-			00: t0 = new SkuServiceImpl (complit)
-			01: t1 = &t0.db [#0]
-			02: t2 = &t0.queue [#1]
-			03: *t1 = db
-			04: *t2 = queue
-			05: t3 = make SkuService <- *SkuServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderList
-	Global: Currency_name, Type: *map[int32]string
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product
+Function: digota.main
+Block #0: digota.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewSkuServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.Get(t0, "":string)
+			05: return
+	Global: Inventory_Type_name, Type: *map[int32]string
 		Parameters:
 Function: digota.init
 Block #0: digota.init.entry
@@ -875,8 +863,88 @@ Block #1: digota.init.init.start
 			292: jump 2
 Block #2: digota.init.init.done
 			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderService
+	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
+	Method: func(ctx context.Context) error
+		Parameters:
+			currency = parameter currency : int32
+			orderItems = parameter orderItems : []*OrderItem
+Function: digota.calculateTotal
+Block #0: digota.calculateTotal.entry
+			00: t0 = *Currency_name
+			01: t1 = t0[currency]
+			02: t2 = github.com/Rhymond/go-money.New(0:int64, t1)
+			03: t3 = len(orderItems)
+			04: jump 1
+Block #1: digota.calculateTotal.rangeindex.loop
+			00: t4 = phi [0: t2, 5: t29] #m
+			01: t5 = phi [0: -1:int, 5: t6]
+			02: t6 = t5 + 1:int
+			03: t7 = t6 < t3
+			04: if t7 goto 2 else 3
+Block #2: digota.calculateTotal.rangeindex.body
+			00: t8 = &orderItems[t6]
+			01: t9 = *t8
+			02: t10 = &t9.Quantity [#1]
+			03: t11 = *t10
+			04: t12 = t11 <= 0:int64
+			05: if t12 goto 4 else 5
+Block #3: digota.calculateTotal.rangeindex.done
+			00: t13 = (*github.com/Rhymond/go-money.Money).Amount(t4)
+			01: return t13, nil:error
+Block #4: digota.calculateTotal.if.then
+			00: t14 = &t9.Quantity [#1]
+			01: *t14 = 1:int64
+			02: jump 5
+Block #5: digota.calculateTotal.if.done
+			00: t15 = *Currency_name
+			01: t16 = &t9.Currency [#3]
+			02: t17 = *t16
+			03: t18 = t15[t17]
+			04: t19 = &t9.Quantity [#1]
+			05: t20 = *t19
+			06: t21 = &t9.Amount [#2]
+			07: t22 = *t21
+			08: t23 = t20 * t22
+			09: t24 = github.com/Rhymond/go-money.New(t23, t18)
+			10: t25 = new [1]*github.com/Rhymond/go-money.Money (varargs)
+			11: t26 = &t25[0:int]
+			12: *t26 = t24
+			13: t27 = slice t25[:]
+			14: t28 = (*github.com/Rhymond/go-money.Money).Add(t4, t27...)
+			15: t29 = extract t28 #0
+			16: t30 = extract t28 #1
+			17: t31 = t30 != nil:error
+			18: if t31 goto 6 else 1
+Block #6: digota.calculateTotal.if.then
+			00: return 0:int64, t30
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentService
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: digota.NewPaymentServiceImpl
+Block #0: digota.NewPaymentServiceImpl.entry
+			00: t0 = new PaymentServiceImpl (complit)
+			01: t1 = &t0.db [#0]
+			02: *t1 = db
+			03: t2 = make PaymentService <- *PaymentServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Test
+	Global: Currency_name, Type: *map[int32]string
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions
+	Unknown member type: *ssa.NamedConst
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderServiceImpl
 	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
 		Parameters:
@@ -1209,18 +1277,12 @@ Block #13: digota.OrderService.getUpdatedOrderItems.if.then
 			02: return nil:[]*OrderItem, t45
 Block #14: digota.OrderService.getUpdatedOrderItems.if.done
 			00: return t2, nil:error
-	Global: Currency_value, Type: *map[string]int32
-		Parameters:
-			currency = parameter currency : int32
-Function: digota.CurrencyIsReserved
-Block #0: digota.CurrencyIsReserved.entry
-			00: t0 = currency == 0:int32
-			01: return t0
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderService
-	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
-	Method: func(ctx context.Context) error
-	Method: func(ctx context.Context, currency int32, items []*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderItem, metadata map[string]string, email string, shipping *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order, error)
-	Method: func(ctx context.Context) error
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.QueueMessage
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Shipping
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory
+	Unknown member type: *ssa.NamedConst
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductService
 	Method: func(ctx context.Context, id string) error
 	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product, error)
@@ -1245,6 +1307,32 @@ Block #0: digota.NewProductServiceImpl.entry
 			04: *t2 = db
 			05: t3 = make ProductService <- *ProductServiceImpl (t0)
 			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductList
+	Unknown member type: *ssa.NamedConst
+		Parameters:
+			ctx = parameter ctx : context.Context
+			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+Function: digota.NewSkuServiceImpl
+Block #0: digota.NewSkuServiceImpl.entry
+			00: t0 = new SkuServiceImpl (complit)
+			01: t1 = &t0.db [#0]
+			02: t2 = &t0.queue [#1]
+			03: *t1 = db
+			04: *t2 = queue
+			05: t3 = make SkuService <- *SkuServiceImpl (t0)
+			06: return t3, nil:error
+		Parameters:
+			currency = parameter currency : int32
+Function: digota.CurrencyIsReserved
+Block #0: digota.CurrencyIsReserved.entry
+			00: t0 = currency == 0:int32
+			01: return t0
+	Global: OrderItem_Type_name, Type: *map[int32]string
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.OrderList
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ListRequest
+	Unknown member type: *ssa.NamedConst
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuService
 	Method: func(ctx context.Context, id string) error
 	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
@@ -1252,39 +1340,51 @@ Block #0: digota.NewProductServiceImpl.entry
 	Method: func(ctx context.Context, id string) error
 	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
 	Method: func(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions, inventory *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory, attributes map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuServiceImpl
+	Method: func(ctx context.Context, id string) error
 		Parameters:
-Function: digota.main
-Block #0: digota.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewSkuServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = invoke t2.Get(t0, "":string)
-			05: return
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Test
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ProductList
-	Unknown member type: *ssa.NamedConst
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions
-	Unknown member type: *ssa.NamedConst
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.QueueMessage
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentServiceImpl
-	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-		Parameters:
-			s = parameter s : *PaymentServiceImpl
+			s = parameter s : *SkuServiceImpl
 			ctx = parameter ctx : context.Context
 			id = parameter id : string
-Function: digota.PaymentService.Get
-Block #0: digota.PaymentService.Get.entry
+Function: digota.SkuService.Delete
+Block #0: digota.SkuService.Delete.entry
 			00: t0 = &s.db [#0]
 			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "payments_db":string, "payments":string)
+			02: t2 = invoke t1.GetCollection(ctx, "skus_db":string, "skus":string)
 			03: t3 = extract t2 #0
 			04: t4 = extract t2 #1
 			05: t5 = t4 != nil:error
 			06: if t5 goto 1 else 2
-Block #1: digota.PaymentService.Get.if.then
-			00: return nil:*Charge, t4
-Block #2: digota.PaymentService.Get.if.done
+Block #1: digota.SkuService.Delete.if.then
+			00: return t4
+Block #2: digota.SkuService.Delete.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.DeleteOne(ctx, t11)
+			09: return t12
+	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
+		Parameters:
+			s = parameter s : *SkuServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: digota.SkuService.Get
+Block #0: digota.SkuService.Get.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "skus_db":string, "skus":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: digota.SkuService.Get.if.then
+			00: return nil:*Sku, t4
+Block #2: digota.SkuService.Get.if.done
 			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
 			01: t7 = &t6[0:int]
 			02: t8 = &t7.Key [#0]
@@ -1298,177 +1398,77 @@ Block #2: digota.PaymentService.Get.if.done
 			10: t14 = extract t12 #1
 			11: t15 = t14 != nil:error
 			12: if t15 goto 3 else 4
-Block #3: digota.PaymentService.Get.if.then
-			00: return nil:*Charge, t14
-Block #4: digota.PaymentService.Get.if.done
-			00: t16 = make interface{} <- *Charge (nil:*Charge)
+Block #3: digota.SkuService.Get.if.then
+			00: return nil:*Sku, t14
+Block #4: digota.SkuService.Get.if.done
+			00: t16 = make interface{} <- *Sku (nil:*Sku)
 			01: t17 = invoke t13.One(ctx, t16)
 			02: t18 = extract t17 #0
 			03: t19 = extract t17 #1
 			04: t20 = t19 != nil:error
 			05: if t20 goto 5 else 6
-Block #5: digota.PaymentService.Get.if.then
-			00: return nil:*Charge, t19
-Block #6: digota.PaymentService.Get.if.done
+Block #5: digota.SkuService.Get.if.then
+			00: return nil:*Sku, t19
+Block #6: digota.SkuService.Get.if.done
 			00: if t18 goto 8 else 7
-Block #7: digota.PaymentService.Get.if.then
+Block #7: digota.SkuService.Get.if.then
 			00: t21 = new [1]any (varargs)
 			01: t22 = &t21[0:int]
 			02: t23 = make any <- string (id)
 			03: *t22 = t23
 			04: t24 = slice t21[:]
-			05: t25 = fmt.Errorf("charge not found ...":string, t24...)
-			06: return nil:*Charge, t25
-Block #8: digota.PaymentService.Get.if.done
-			00: return nil:*Charge, nil:error
-	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
+			05: t25 = fmt.Errorf("sku not found for...":string, t24...)
+			06: return nil:*Sku, t25
+Block #8: digota.SkuService.Get.if.done
+			00: return nil:*Sku, nil:error
+	Method: func(ctx context.Context, name string, currency int32, active bool, price uint64, parent string, metadata map[string]string, image string, packageDimensions *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions, inventory *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory, attributes map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku, error)
 		Parameters:
-			s = parameter s : *PaymentServiceImpl
+			s = parameter s : *SkuServiceImpl
 			ctx = parameter ctx : context.Context
-			page = parameter page : int64
-			limit = parameter limit : int64
-			sort = parameter sort : int32
-Function: digota.PaymentService.List
-Block #0: digota.PaymentService.List.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "payments_db":string, "payments":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: digota.PaymentService.List.if.then
-			00: return nil:*ChargeList, t4
-Block #2: digota.PaymentService.List.if.done
-			00: t6 = invoke t3.FindMany(ctx, nil:go.mongodb.org/mongo-driver/bson/primitive.D, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			01: t7 = extract t6 #0
-			02: t8 = extract t6 #1
-			03: t9 = t8 != nil:error
-			04: if t9 goto 3 else 4
-Block #3: digota.PaymentService.List.if.then
-			00: return nil:*ChargeList, t8
-Block #4: digota.PaymentService.List.if.done
-			00: t10 = make interface{} <- []*Charge (nil:[]*Charge)
-			01: t11 = invoke t7.All(ctx, t10)
-			02: t12 = t11 != nil:error
-			03: if t12 goto 5 else 6
-Block #5: digota.PaymentService.List.if.then
-			00: return nil:*ChargeList, t11
-Block #6: digota.PaymentService.List.if.done
-			00: t13 = new ChargeList (complit)
-			01: t14 = &t13.Charges [#0]
-			02: t15 = &t13.Total [#1]
-			03: t16 = len(nil:[]*Charge)
-			04: t17 = convert int32 <- int (t16)
-			05: *t14 = nil:[]*Charge
-			06: *t15 = t17
-			07: return t13, nil:error
-	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-		Parameters:
-			s = parameter s : *PaymentServiceImpl
-			ctx = parameter ctx : context.Context
+			name = parameter name : string
 			currency = parameter currency : int32
-			total = parameter total : uint64
-			card = parameter card : *Card
-			email = parameter email : string
-			statement = parameter statement : string
-			paymentProviderId = parameter paymentProviderId : int32
+			active = parameter active : bool
+			price = parameter price : uint64
+			parent = parameter parent : string
 			metadata = parameter metadata : map[string]string
-Function: digota.PaymentService.NewCharge
-Block #0: digota.PaymentService.NewCharge.entry
-			00: t0 = new Charge (complit)
-			01: t1 = &t0.Currency [#5]
-			02: t2 = &t0.ChargeAmount [#2]
-			03: t3 = &t0.Email [#6]
-			04: t4 = &t0.Statement [#1]
-			05: *t1 = currency
-			06: *t2 = total
-			07: *t3 = email
-			08: *t4 = statement
-			09: t5 = &s.db [#0]
-			10: t6 = *t5
-			11: t7 = invoke t6.GetCollection(ctx, "payments_db":string, "payments":string)
-			12: t8 = extract t7 #0
-			13: t9 = extract t7 #1
-			14: t10 = t9 != nil:error
-			15: if t10 goto 1 else 2
-Block #1: digota.PaymentService.NewCharge.if.then
-			00: return nil:*Charge, t9
-Block #2: digota.PaymentService.NewCharge.if.done
-			00: t11 = *t0
-			01: t12 = make interface{} <- Charge (t11)
-			02: t13 = invoke t8.InsertOne(ctx, t12)
-			03: return t0, t13
-	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-		Parameters:
-			s = parameter s : *PaymentServiceImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-			amount = parameter amount : uint64
-			reason = parameter reason : int32
-Function: digota.PaymentService.RefundCharge
-Block #0: digota.PaymentService.RefundCharge.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "payments_db":string, "payments":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: digota.PaymentService.RefundCharge.if.then
-			00: return nil:*Charge, t4
-Block #2: digota.PaymentService.RefundCharge.if.done
-			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t7 = &t6[0:int]
-			02: t8 = &t7.Key [#0]
-			03: t9 = &t7.Value [#1]
-			04: *t8 = "id":string
-			05: t10 = make interface{} <- string (id)
-			06: *t9 = t10
-			07: t11 = slice t6[:]
-			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t13 = extract t12 #0
-			10: t14 = extract t12 #1
-			11: t15 = t14 != nil:error
-			12: if t15 goto 3 else 4
-Block #3: digota.PaymentService.RefundCharge.if.then
-			00: return nil:*Charge, t14
-Block #4: digota.PaymentService.RefundCharge.if.done
-			00: t16 = make interface{} <- *Charge (nil:*Charge)
-			01: t17 = invoke t13.One(ctx, t16)
-			02: t18 = extract t17 #0
-			03: t19 = extract t17 #1
-			04: t20 = t19 != nil:error
-			05: if t20 goto 5 else 6
-Block #5: digota.PaymentService.RefundCharge.if.then
-			00: return nil:*Charge, t19
-Block #6: digota.PaymentService.RefundCharge.if.done
-			00: if t18 goto 8 else 7
-Block #7: digota.PaymentService.RefundCharge.if.then
-			00: t21 = new [1]any (varargs)
-			01: t22 = &t21[0:int]
-			02: t23 = make any <- string (id)
-			03: *t22 = t23
-			04: t24 = slice t21[:]
-			05: t25 = fmt.Errorf("charge not found ...":string, t24...)
-			06: return nil:*Charge, t25
-Block #8: digota.PaymentService.RefundCharge.if.done
-			00: return nil:*Charge, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Refund
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Sku
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Inventory
-	Global: Inventory_Type_name, Type: *map[int32]string
-	Unknown member type: *ssa.NamedConst
+			image = parameter image : string
+			packageDimensions = parameter packageDimensions : *PackageDimensions
+			inventory = parameter inventory : *Inventory
+			attributes = parameter attributes : map[string]string
+Function: digota.SkuService.New
+Block #0: digota.SkuService.New.entry
+			00: t0 = new Sku (complit)
+			01: t1 = &t0.Name [#1]
+			02: t2 = &t0.Currency [#3]
+			03: t3 = &t0.Active [#4]
+			04: t4 = &t0.Price [#2]
+			05: t5 = &t0.Parent [#5]
+			06: t6 = &t0.Metadata [#6]
+			07: t7 = &t0.PackageDimensions [#9]
+			08: t8 = &t0.Inventory [#10]
+			09: t9 = &t0.Attributes [#7]
+			10: *t1 = name
+			11: *t2 = currency
+			12: *t3 = active
+			13: *t4 = price
+			14: *t5 = parent
+			15: *t6 = metadata
+			16: *t7 = packageDimensions
+			17: *t8 = inventory
+			18: *t9 = attributes
+			19: t10 = &s.db [#0]
+			20: t11 = *t10
+			21: t12 = invoke t11.GetCollection(ctx, "skus_db":string, "skus":string)
+			22: t13 = extract t12 #0
+			23: t14 = extract t12 #1
+			24: t15 = t14 != nil:error
+			25: if t15 goto 1 else 2
+Block #1: digota.SkuService.New.if.then
+			00: return nil:*Sku, t14
+Block #2: digota.SkuService.New.if.done
+			00: t16 = *t0
+			01: t17 = make interface{} <- Sku (t16)
+			02: t18 = invoke t13.InsertOne(ctx, t17)
+			03: return t0, t18
 	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order
-	Global: OrderItem_Type_name, Type: *map[int32]string
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.SkuList
-	Global: init$guard, Type: *bool
-	Type: github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PaymentService
-	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
-	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-	Method: func(ctx context.Context, id string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-	Method: func(ctx context.Context, page int64, limit int64, sort int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.ChargeList, error)
-	Method: func(ctx context.Context, currency int32, total uint64, card *github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Card, email string, statement string, paymentProviderId int32, metadata map[string]string) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
-	Method: func(ctx context.Context, id string, amount uint64, reason int32) (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge, error)
+	Global: OrderItem_Type_value, Type: *map[string]int32

@@ -1,39 +1,54 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2735232 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2735232 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2735222 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2735222 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
-	N_val_"SELECT * FROM mov...":string [label="\"SELECT * FROM mov...\":string: \"SELECT * FROM mov...\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2735121 [label="t0: new MovieId (movieId)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2735229 [label="t4: new [1]any (varargs)", style=bold, shape=ellipse, color="orange"];
-	N_val_call_2735163 [label="t8: invoke t2.Select(ctx, t3, \"SELECT * FROM mov...\":string, t7...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_field_2735147 [label="t1: &m.movieIdDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_instr_ret_2719414 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2719414 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2719404 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719404 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
+	N_val_"SELECT * FROM mov...":string [label="\"SELECT * FROM mov...\":string: \"SELECT * FROM mov...\":string
+
+==== tainted ====
+_obj
+[read] @ movieid_db.movieid
+", style=bold, shape=box, color="yellow"];
+	N_val_alloc_2719303 [label="t0: new MovieId (movieId)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2719411 [label="t4: new [1]any (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2719345 [label="t8: invoke t2.Select(ctx, t3, \"SELECT * FROM mov...\":string, t7...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2719329 [label="t1: &m.movieIdDB [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet3 [label="t3: make interface{} <- *MovieId (t0)", style=bold, shape=ellipse, color="black"];
-	N_val_ifacet6 [label="t6: make any <- string (movieID)", style=bold, shape=ellipse, color="black"];
+	N_val_ifacet6 [label="t6: make any <- string (movieID)
+
+==== tainted ====
+_obj
+[read] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="black"];
 	N_val_indext5 [label="t5: &t4[0:int]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2735012 [label="m: parameter m : *MovieIdServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2735047 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2735068 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2735081 [label="movieID: parameter movieID : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_2719194 [label="m: parameter m : *MovieIdServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2719229 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2719250 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2719263 [label="movieID: parameter movieID : string
+
+==== tainted ====
+_obj
+[read] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="black"];
 	N_val_slicet7 [label="t7: slice t4[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2735147 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2735239 [label="t9: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2735012 -> N_val_field_2735147;
-	N_val_field_2735147 -> N_val_unary_2735147;
-	N_val_alloc_2735121 -> N_val_ifacet3;
-	N_val_alloc_2735229 -> N_val_indext5;
-	N_val_param_2735081 -> N_val_ifacet6;
-	N_val_indext5 -> N_instr_store_2735222;
-	N_val_ifacet6 -> N_instr_store_2735222;
-	N_val_alloc_2735229 -> N_val_slicet7;
-	N_val_param_2735047 -> N_val_call_2735163;
-	N_val_ifacet3 -> N_val_call_2735163;
-	N_val_"SELECT * FROM mov...":string -> N_val_call_2735163;
-	N_val_slicet7 -> N_val_call_2735163;
-	N_val_alloc_2735121 -> N_val_unary_2735239;
-	N_val_unary_2735239 -> N_instr_ret_2735232;
-	N_val_call_2735163 -> N_instr_ret_2735232;
-	N_val_indext5 -> N_val_alloc_2735229 [label="[*]", style=dashed, color=blue];
-	N_val_slicet7 -> N_val_alloc_2735229 [label="", style=dashed, color=blue];
+	N_val_unary_2719329 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2719421 [label="t9: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2719194 -> N_val_field_2719329;
+	N_val_field_2719329 -> N_val_unary_2719329;
+	N_val_alloc_2719303 -> N_val_ifacet3;
+	N_val_alloc_2719411 -> N_val_indext5;
+	N_val_param_2719263 -> N_val_ifacet6;
+	N_val_indext5 -> N_instr_store_2719404;
+	N_val_ifacet6 -> N_instr_store_2719404;
+	N_val_alloc_2719411 -> N_val_slicet7;
+	N_val_param_2719229 -> N_val_call_2719345;
+	N_val_ifacet3 -> N_val_call_2719345;
+	N_val_"SELECT * FROM mov...":string -> N_val_call_2719345;
+	N_val_slicet7 -> N_val_call_2719345;
+	N_val_alloc_2719303 -> N_val_unary_2719421;
+	N_val_unary_2719421 -> N_instr_ret_2719414;
+	N_val_call_2719345 -> N_instr_ret_2719414;
+	N_val_indext5 -> N_val_alloc_2719411 [label="[*]", style=dashed, color=blue];
+	N_val_slicet7 -> N_val_alloc_2719411 [label="", style=dashed, color=blue];
 }

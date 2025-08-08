@@ -1,64 +1,84 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2734983 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2734983 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2734846 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734846 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734864 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734864 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734966 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734966 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734975 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2734975 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_ret_2719165 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2719165 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2719028 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719028 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719046 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719046 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719148 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719148 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719157 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2719157 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
 	N_val_"INSERT INTO movie...":string [label="\"INSERT INTO movie...\":string: \"INSERT INTO movie...\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2734817 [label="t0: local MovieId (movieId)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2734980 [label="t5: new [2]any (varargs)", style=bold, shape=ellipse, color="orange"];
-	N_val_call_2734906 [label="t11: invoke t4.Exec(ctx, \"INSERT INTO movie...\":string, t10...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2718999 [label="t0: local MovieId (movieId)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2719162 [label="t5: new [2]any (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2719088 [label="t11: invoke t4.Exec(ctx, \"INSERT INTO movie...\":string, t10...)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2734846 [label="t1: &t0.MovieID [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2734864 [label="t2: &t0.Title [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2734892 [label="t3: &m.movieIdDB [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_ifacet7 [label="t7: make any <- string (movieID)", style=bold, shape=ellipse, color="black"];
-	N_val_ifacet9 [label="t9: make any <- string (title)", style=bold, shape=ellipse, color="black"];
+	N_val_field_2719028 [label="t1: &t0.MovieID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2719046 [label="t2: &t0.Title [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2719074 [label="t3: &m.movieIdDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet7 [label="t7: make any <- string (movieID)
+
+==== tainted ====
+_obj
+[write] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="black"];
+	N_val_ifacet9 [label="t9: make any <- string (title)
+
+==== tainted ====
+_obj
+[write] @ movieid_db.movieid.title
+", style=bold, shape=box, color="black"];
 	N_val_indext6 [label="t6: &t5[0:int]", style=bold, shape=ellipse, color="green"];
 	N_val_indext8 [label="t8: &t5[1:int]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2734694 [label="m: parameter m : *MovieIdServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2734733 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2734754 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2734767 [label="movieID: parameter movieID : string", style=bold, shape=ellipse, color="black"];
-	N_val_param_2734783 [label="title: parameter title : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_2718876 [label="m: parameter m : *MovieIdServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2718915 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2718936 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2718949 [label="movieID: parameter movieID : string
+
+==== tainted ====
+_obj
+[write] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="black"];
+	N_val_param_2718965 [label="title: parameter title : string
+
+==== tainted ====
+_obj
+[write] @ movieid_db.movieid.title
+", style=bold, shape=box, color="black"];
 	N_val_slicet10 [label="t10: slice t5[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2734892 [label="t4: *t3", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2734990 [label="t14: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_alloc_2734817 -> N_val_field_2734846;
-	N_val_alloc_2734817 -> N_val_field_2734864;
-	N_val_field_2734846 -> N_instr_store_2734846;
-	N_val_param_2734767 -> N_instr_store_2734846;
-	N_val_field_2734864 -> N_instr_store_2734864;
-	N_val_param_2734783 -> N_instr_store_2734864;
-	N_val_param_2734694 -> N_val_field_2734892;
-	N_val_field_2734892 -> N_val_unary_2734892;
-	N_val_alloc_2734980 -> N_val_indext6;
-	N_val_param_2734767 -> N_val_ifacet7;
-	N_val_indext6 -> N_instr_store_2734966;
-	N_val_ifacet7 -> N_instr_store_2734966;
-	N_val_alloc_2734980 -> N_val_indext8;
-	N_val_param_2734783 -> N_val_ifacet9;
-	N_val_indext8 -> N_instr_store_2734975;
-	N_val_ifacet9 -> N_instr_store_2734975;
-	N_val_alloc_2734980 -> N_val_slicet10;
-	N_val_param_2734733 -> N_val_call_2734906;
-	N_val_"INSERT INTO movie...":string -> N_val_call_2734906;
-	N_val_slicet10 -> N_val_call_2734906;
-	N_val_call_2734906 -> N_val_extrt12;
-	N_val_call_2734906 -> N_val_extrt13;
-	N_val_alloc_2734817 -> N_val_unary_2734990;
-	N_val_unary_2734990 -> N_instr_ret_2734983;
-	N_val_extrt13 -> N_instr_ret_2734983;
-	N_val_indext8 -> N_val_alloc_2734980 [label="[*]", style=dashed, color=blue];
-	N_val_slicet10 -> N_val_alloc_2734980 [label="", style=dashed, color=blue];
-	N_val_field_2734864 -> N_val_alloc_2734817 [label=".Title", style=dashed, color=blue];
-	N_val_field_2734846 -> N_val_alloc_2734817 [label=".MovieID", style=dashed, color=blue];
-	N_val_indext6 -> N_val_alloc_2734980 [label="[*]", style=dashed, color=blue];
+	N_val_unary_2719074 [label="t4: *t3", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2719172 [label="t14: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_2718999 -> N_val_field_2719028;
+	N_val_alloc_2718999 -> N_val_field_2719046;
+	N_val_field_2719028 -> N_instr_store_2719028;
+	N_val_param_2718949 -> N_instr_store_2719028;
+	N_val_field_2719046 -> N_instr_store_2719046;
+	N_val_param_2718965 -> N_instr_store_2719046;
+	N_val_param_2718876 -> N_val_field_2719074;
+	N_val_field_2719074 -> N_val_unary_2719074;
+	N_val_alloc_2719162 -> N_val_indext6;
+	N_val_param_2718949 -> N_val_ifacet7;
+	N_val_indext6 -> N_instr_store_2719148;
+	N_val_ifacet7 -> N_instr_store_2719148;
+	N_val_alloc_2719162 -> N_val_indext8;
+	N_val_param_2718965 -> N_val_ifacet9;
+	N_val_indext8 -> N_instr_store_2719157;
+	N_val_ifacet9 -> N_instr_store_2719157;
+	N_val_alloc_2719162 -> N_val_slicet10;
+	N_val_param_2718915 -> N_val_call_2719088;
+	N_val_"INSERT INTO movie...":string -> N_val_call_2719088;
+	N_val_slicet10 -> N_val_call_2719088;
+	N_val_call_2719088 -> N_val_extrt12;
+	N_val_call_2719088 -> N_val_extrt13;
+	N_val_alloc_2718999 -> N_val_unary_2719172;
+	N_val_unary_2719172 -> N_instr_ret_2719165;
+	N_val_extrt13 -> N_instr_ret_2719165;
+	N_val_slicet10 -> N_val_alloc_2719162 [label="", style=dashed, color=blue];
+	N_val_field_2719028 -> N_val_alloc_2718999 [label=".MovieID", style=dashed, color=blue];
+	N_val_field_2719046 -> N_val_alloc_2718999 [label=".Title", style=dashed, color=blue];
+	N_val_indext8 -> N_val_alloc_2719162 [label="[*]", style=dashed, color=blue];
+	N_val_indext6 -> N_val_alloc_2719162 [label="[*]", style=dashed, color=blue];
 }

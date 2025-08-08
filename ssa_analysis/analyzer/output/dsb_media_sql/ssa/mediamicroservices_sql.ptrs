@@ -13,6 +13,7 @@ t0 (@ReadMovie): (*ssa.FieldAddr) (&api.movieIdService [#0])
 
 t1 (@ReadMovie): (*ssa.UnOp) (*t0)
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 
 t4 (@ReadMovie): (*ssa.Extract) (extract t2 #1)
 
@@ -21,6 +22,7 @@ t5 (@ReadMovie): (*ssa.FieldAddr) (&api.movieInfoService [#1])
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
 t6 (@ReadMovie): (*ssa.UnOp) (*t5)
+	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
 t9 (@ReadMovie): (*ssa.Extract) (extract t7 #1)
@@ -47,6 +49,7 @@ t10 (@RegisterMovie): (*ssa.Extract) (extract t8 #1)
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl).ReadMovieId ###
 m (@ReadMovieId): (*ssa.Parameter) (parameter m : *MovieIdServiceImpl)
 	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
 
 ctx (@ReadMovieId): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t0 (@Background): (*ssa.MakeInterface)
@@ -56,6 +59,7 @@ t0 (@ReadMovieId): (*ssa.Alloc) (new MovieId (movieId))
 	 → t0 (@ReadMovieId): (*ssa.Alloc)
 
 t1 (@ReadMovieId): (*ssa.FieldAddr) (&m.movieIdDB [#0])
+	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
 
 t2 (@ReadMovieId): (*ssa.UnOp) (*t1)
@@ -119,59 +123,9 @@ t12 (@RegisterMovieId): (*ssa.Extract) (extract t11 #0)
 t13 (@RegisterMovieId): (*ssa.Extract) (extract t11 #1)
 
 
-### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl).createTables ###
-m (@createTables): (*ssa.Parameter) (parameter m : *MovieIdServiceImpl)
-	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
-
-ctx (@createTables): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
-	 → t0 (@Background): (*ssa.MakeInterface)
-
-t1 (@createTables): (*ssa.Extract) (extract t0 #0)
-	 → t17 (@ReadFile): (*ssa.MakeSlice)
-	 → t40 (@ReadFile): (*ssa.Call)
-
-t2 (@createTables): (*ssa.Extract) (extract t0 #1)
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
-
-t5 (@createTables): (*ssa.Call) (strings.Split(t4, ";":string))
-	 → t13 (@genSplit): (*ssa.MakeSlice)
-	 → t3 (@explode): (*ssa.MakeSlice)
-
-t10 (@createTables): (*ssa.IndexAddr) (&t5[t8])
-	 → t13 (@genSplit): (*ssa.MakeSlice)
-	 → t3 (@explode): (*ssa.MakeSlice)
-
-t12 (@createTables): (*ssa.FieldAddr) (&m.movieIdDB [#0])
-	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
-
-t13 (@createTables): (*ssa.UnOp) (*t12)
-
-t15 (@createTables): (*ssa.Extract) (extract t14 #0)
-
-t16 (@createTables): (*ssa.Extract) (extract t14 #1)
-
-
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoServiceImpl).ReadMovieInfo ###
 m (@ReadMovieInfo): (*ssa.Parameter) (parameter m : *MovieInfoServiceImpl)
+	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 
 ctx (@ReadMovieInfo): (*ssa.Parameter) (parameter ctx : context.Context)
@@ -182,6 +136,7 @@ t0 (@ReadMovieInfo): (*ssa.Alloc) (new MovieInfo (movieInfo))
 	 → t0 (@ReadMovieInfo): (*ssa.Alloc)
 
 t1 (@ReadMovieInfo): (*ssa.FieldAddr) (&m.movieInfoDB [#0])
+	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 
 t2 (@ReadMovieInfo): (*ssa.UnOp) (*t1)
@@ -254,57 +209,6 @@ t15 (@WriteMovieInfo): (*ssa.Extract) (extract t14 #0)
 t16 (@WriteMovieInfo): (*ssa.Extract) (extract t14 #1)
 
 
-### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoServiceImpl).createTables ###
-m (@createTables): (*ssa.Parameter) (parameter m : *MovieInfoServiceImpl)
-	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
-
-ctx (@createTables): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
-	 → t0 (@Background): (*ssa.MakeInterface)
-
-t1 (@createTables): (*ssa.Extract) (extract t0 #0)
-	 → t17 (@ReadFile): (*ssa.MakeSlice)
-	 → t40 (@ReadFile): (*ssa.Call)
-
-t2 (@createTables): (*ssa.Extract) (extract t0 #1)
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
-
-t5 (@createTables): (*ssa.Call) (strings.Split(t4, ";":string))
-	 → t13 (@genSplit): (*ssa.MakeSlice)
-	 → t3 (@explode): (*ssa.MakeSlice)
-
-t10 (@createTables): (*ssa.IndexAddr) (&t5[t8])
-	 → t13 (@genSplit): (*ssa.MakeSlice)
-	 → t3 (@explode): (*ssa.MakeSlice)
-
-t12 (@createTables): (*ssa.FieldAddr) (&m.movieInfoDB [#0])
-	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
-
-t13 (@createTables): (*ssa.UnOp) (*t12)
-
-t15 (@createTables): (*ssa.Extract) (extract t14 #0)
-
-t16 (@createTables): (*ssa.Extract) (extract t14 #1)
-
-
 ### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.NewAPIServiceImpl ###
 ctx (@NewAPIServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t0 (@Background): (*ssa.MakeInterface)
@@ -312,8 +216,10 @@ ctx (@NewAPIServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
 
 movieIdService (@NewAPIServiceImpl): (*ssa.Parameter) (parameter movieIdService : MovieIdService)
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 
 movieInfoService (@NewAPIServiceImpl): (*ssa.Parameter) (parameter movieInfoService : MovieInfoService)
+	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
 t0 (@NewAPIServiceImpl): (*ssa.Alloc) (new APIServiceImpl (complit))
@@ -342,33 +248,15 @@ movieIdDB (@NewMovieIdServiceImpl): (*ssa.Parameter) (parameter movieIdDB : gith
 
 t0 (@NewMovieIdServiceImpl): (*ssa.Alloc) (new MovieIdServiceImpl (complit))
 	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
 
 t1 (@NewMovieIdServiceImpl): (*ssa.FieldAddr) (&t0.movieIdDB [#0])
+	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewMovieIdServiceImpl): (*ssa.Alloc)
 
 t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface) (make MovieIdService <- *MovieIdServiceImpl (t0))
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
-
-t3 (@NewMovieIdServiceImpl): (*ssa.Call) ((*MovieIdServiceImpl).createTables(t0, ctx))
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
+	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.NewMovieInfoServiceImpl ###
@@ -380,33 +268,15 @@ movieInfoDB (@NewMovieInfoServiceImpl): (*ssa.Parameter) (parameter movieInfoDB 
 
 t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc) (new MovieInfoServiceImpl (complit))
 	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 
 t1 (@NewMovieInfoServiceImpl): (*ssa.FieldAddr) (&t0.movieInfoDB [#0])
+	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewMovieInfoServiceImpl): (*ssa.Alloc)
 
 t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface) (make MovieInfoService <- *MovieInfoServiceImpl (t0))
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
-
-t3 (@NewMovieInfoServiceImpl): (*ssa.Call) ((*MovieInfoServiceImpl).createTables(t0, ctx))
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
+	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.main ###
@@ -417,49 +287,11 @@ t2 (@main): (*ssa.Extract) (extract t1 #0)
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 
 t3 (@main): (*ssa.Extract) (extract t1 #1)
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
 
 t5 (@main): (*ssa.Extract) (extract t4 #0)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
 t6 (@main): (*ssa.Extract) (extract t4 #1)
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
 
 t8 (@main): (*ssa.Extract) (extract t7 #0)
 	 → t3 (@NewAPIServiceImpl): (*ssa.MakeInterface)
@@ -475,49 +307,11 @@ t2 (@main): (*ssa.Extract) (extract t1 #0)
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 
 t3 (@main): (*ssa.Extract) (extract t1 #1)
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
 
 t5 (@main): (*ssa.Extract) (extract t4 #0)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
 t6 (@main): (*ssa.Extract) (extract t4 #1)
-	 → t6 (@Seek): (*ssa.MakeInterface)
-	 → t15 (@wrapErr): (*ssa.MakeInterface)
-	 → t2 (@errClosing): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t4 (@NewSyscallError): (*ssa.MakeInterface)
-	 → t20 (@init): (*ssa.MakeInterface)
-	 → t21 (@init): (*ssa.MakeInterface)
-	 → t22 (@init): (*ssa.MakeInterface)
-	 → t16 (@init): (*ssa.MakeInterface)
-	 → t7 (@errnoErr): (*ssa.MakeInterface)
-	 → t112 (@anyToSockaddr): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t2 (@getPipe): (*ssa.MakeInterface)
-	 → t22 (@openFileNolog): (*ssa.MakeInterface)
-	 → t2 (@New): (*ssa.MakeInterface)
-	 → t14 (@CopyFileRange): (*ssa.MakeInterface)
 
 t8 (@main): (*ssa.Extract) (extract t7 #0)
 	 → t3 (@NewAPIServiceImpl): (*ssa.MakeInterface)

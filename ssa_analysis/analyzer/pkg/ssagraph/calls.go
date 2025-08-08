@@ -71,20 +71,20 @@ type DatabaseCall struct {
 	args   []*SSANode
 	opType common.DatabaseOperationType
 
-	database          string
-	collectionOrTopic string
-	method            string
+	database string
+	schema   string // can be e.g., collection, topic, table, etc.
+	method   string
 }
 
-func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, collectionOrTopic string, method string, opType common.DatabaseOperationType) *DatabaseCall {
+func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, schema string, method string, opType common.DatabaseOperationType) *DatabaseCall {
 	return &DatabaseCall{
-		id:                id,
-		node:              node,
-		args:              args,
-		database:          database,
-		collectionOrTopic: collectionOrTopic,
-		method:            method,
-		opType:            opType,
+		id:       id,
+		node:     node,
+		args:     args,
+		database: database,
+		schema:   schema,
+		method:   method,
+		opType:   opType,
 	}
 }
 
@@ -97,7 +97,7 @@ func (call *DatabaseCall) GetOpType() common.DatabaseOperationType {
 }
 
 func (call *DatabaseCall) GetDatabasePath() string {
-	return call.database + "." + call.collectionOrTopic
+	return call.database + "." + call.schema
 }
 
 func (call *DatabaseCall) GetMethod() string {
@@ -109,7 +109,7 @@ func (call *DatabaseCall) GetDatabaseName() string {
 }
 
 func (call *DatabaseCall) GetSchemaName() string {
-	return call.collectionOrTopic
+	return call.schema
 }
 
 func (call *DatabaseCall) GetNode() *SSANode {

@@ -172,7 +172,11 @@ func backwardsAnalysis(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintI
 		// add after
 		fmt.Printf("\t[TAINT - BACKWARD] index addr %s, tainting %s\n", t.Index.String(), t.X.String())
 		taintInfoTmp := taintInfo
-		taintInfoTmp = taintInfoTmp.updatePathPrefix("[*]")
+		prefix := "[*]"
+		if index, ok := utils.ExtractStringFromValue(t.Index); ok {
+			prefix = "[" + index + "]"
+		}
+		taintInfoTmp = taintInfoTmp.updatePathPrefix(prefix)
 		backwardsAnalysis(graph, t.X, taintInfoTmp, visited, taintMode, checkTaintInfo)
 	case *ssa.Slice:
 		fmt.Printf("\t[TAINT - BACKWARD] slice of: %s\n", t.X.Name())
@@ -309,34 +313,29 @@ func runTainterOnReturns(graph *ssagraph.SSAGraph) {
 func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 	for _, node := range graph.GetNodes() {
 		var nodesToVisit []*ssagraph.SSANode
-		if database, collectionOrTopic, method, args, opType, ok := isDatabaseCall(graph, node.GetInstruction()); ok {
-			/* if node.String() == "t14: invoke t4.FindOne(ctx, t13, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)" {
-				log.Fatal("EXIT!")
-			} */
-			if node.String() == "nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D" {
-				//FIXME (this variable is nil because it is not passed in the call and is optional but for some reason it's assuming it is a db call)
-				continue
-			}
-
+		if database, collectionOrTopic, method, opType, valFieldPathLst, ok := isDatabaseCall(graph, node.GetValue()); ok {
 			var argNodes []*ssagraph.SSANode
-			for _, arg := range args {
-				argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
+
+			for _, valFieldPath := range valFieldPathLst {
+				argNodes = append(argNodes, graph.GetNodeByName(valFieldPath.val.Name()))
 			}
 
 			callId := ssagraph.ComputeCallID(graph, node)
 			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method, opType)
 			graph.AddDatabaseCall(dbCall)
 
-			valDocumentOrMessage := args[0]
+			for _, valFieldPath := range valFieldPathLst {
+				dbfield := valFieldPath.fieldpath
+				arg := valFieldPath.val
 
-			visited := make(map[TaintInfo]bool)
-			dbfield := database + "." + collectionOrTopic
-			taintInfo := NewTaintInfo(dbfield, "", nil, dbCall)
+				visited := make(map[TaintInfo]bool)
+				taintInfo := NewTaintInfo(dbfield, "", nil, dbCall)
 
-			backwardsAnalysis(graph, valDocumentOrMessage, taintInfo, visited, TAINT_BACKWARDS_MARK_AND_PROPAGATE, nil)
+				backwardsAnalysis(graph, arg, taintInfo, visited, TAINT_BACKWARDS_MARK_AND_PROPAGATE, nil)
 
-			node := graph.GetNodeByName(valDocumentOrMessage.Name())
-			nodesToVisit = append(nodesToVisit, node)
+				node := graph.GetNodeByName(arg.Name())
+				nodesToVisit = append(nodesToVisit, node)
+			}
 
 			// check for common taints
 			for _, originNode := range nodesToVisit {

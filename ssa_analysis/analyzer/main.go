@@ -26,8 +26,6 @@ func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintf(os.Stderr, "usage: program <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- postnotification examples/postnotification")
-		fmt.Fprintln(os.Stderr, "- shoppingcart examples/shoppingcart")
 		fmt.Fprintln(os.Stderr, "- postnotification_simple blueprint/postnotification/notifyservice_run")
 		fmt.Fprintln(os.Stderr, "- dsb_media_sql blueprint/dsb_media_sql/api_readmovie")
 		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")

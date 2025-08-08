@@ -151,13 +151,14 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			}
 
 			edges = append(edges, edge)
+			fmt.Printf("[ABSTRACT GRAPH] added edge: %v\n", edge)
 		}
 		fmt.Println()
 	}
 
 	if ssaGraph.HasDatabaseCalls() {
 		fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
-
+		
 		for _, call := range ssaGraph.GetDatabaseCalls() {
 			toDatabasePath := call.GetDatabasePath()
 			toNode := graph.GetNodeByNameIfExists(toDatabasePath)
@@ -206,14 +207,14 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		sort.Slice(edges, func(i, j int) bool {
 			return edges[i].GetIDNumber() < edges[j].GetIDNumber()
 		})
+	}
+	
+	for _, edge := range edges {
+		graph.AddEdge(edge)
+	}
 
-		for _, edge := range edges {
-			graph.AddEdge(edge)
-		}
-
-		for _, call := range ssaGraph.GetServiceCalls() {
-			Parse(graph, call.GetFuncShortPath(), false, funcGraphs)
-		}
+	for _, call := range ssaGraph.GetServiceCalls() {
+		Parse(graph, call.GetFuncShortPath(), false, funcGraphs)
 	}
 }
 
