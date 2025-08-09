@@ -30,6 +30,13 @@ func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint)
 	if !slices.Contains(tm.mapping[key], valElem) {
 		tm.mapping[key] = append(tm.mapping[key], valElem)
 	}
+	/* if existingElems, exists := tm.mapping[key]; exists {
+		if !slices.Contains(existingElems, valElem) {
+			tm.mapping[key] = append(existingElems, valElem)
+		}
+	} else {
+		tm.mapping[key] = []AbstractTaint{valElem}
+	} */
 }
 
 func (tm *TaintMapping) Merge(other *TaintMapping) {
@@ -54,25 +61,25 @@ func (tm *TaintMapping) String() string {
 	}
 
 	sort.Slice(keys, func(i, j int) bool {
-		return keys[i].GetField() < keys[j].GetField()
+		return keys[i].GetDatabasePath() < keys[j].GetDatabasePath()
 	})
 
 	for _, key := range keys {
 		var valsStr []string
 		for _, val := range tm.mapping[key] {
-			valsStr = append(valsStr, val.GetField())
+			valsStr = append(valsStr, val.GetDatabasePath())
 		}
 
 		sort.Strings(valsStr)
 
-		builder.WriteString(fmt.Sprintf("  %s: [%s]\n", key.GetField(), strings.Join(valsStr, ", ")))
+		builder.WriteString(fmt.Sprintf("  %s: [%s]\n", key.GetDatabasePath(), strings.Join(valsStr, ", ")))
 	}
 
 	builder.WriteString("}")
 	return builder.String()
 }
 
-func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool) *TaintMapping {
+func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool, traced bool) *TaintMapping {
 	fmt.Printf("[TAINTMAPPING] merging taints (primary = %t): %v\n", primary, otherTaintsMap)
 	var taintMapping *TaintMapping
 
@@ -99,18 +106,26 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		for _, otherTaint := range otherTaints {
 			if objpath, ok := exists(otherTaint); !ok {
 				// need to create new AbstractTaint to avoid just storing the pointer and modifying its fields
-				newTaint := NewAbstractTaint(otherTaint.dbfield, otherTaint.dbcallID, primary, otherTaint.opType)
-				fmt.Printf("\t [TAINTMAPPING] adding new taint (op = %s): %v\n", common.OperationTypeToString(newTaint.opType), newTaint)
-				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
+				newTaint := NewAbstractTaint(
+					otherTaint.dbpath, 
+					otherTaint.dbcallID, 
+					otherTaint.dbOpType,
+					primary, traced,
+				)
 
+				// trace info for arguments and (especially) returns
+				// can still lead to secondary taints that we still want to track
 				if !primary {
 					for _, existingTaint := range obj.taints[objpath] {
 						// filter by writes to reduce number of foreign keys for now
-						if existingTaint.IsPrimary() /* && existingTaint.IsWrite() */ {
+						if existingTaint.IsPrimary() || traced /* && existingTaint.IsWrite() */ {
 							taintMapping.AddIfNotExists(*existingTaint, *newTaint)
 						}
 					}
 				}
+				
+				fmt.Printf("\t\t[TAINTMAPPING] [DATABASE] adding new taint (%s, traced=%t) on obj path (%s): %v\n", common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
+				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
 			}
 		}
 	}

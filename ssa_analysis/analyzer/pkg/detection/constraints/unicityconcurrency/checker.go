@@ -18,6 +18,10 @@ func (writeSet *VulnerableWriteSet) addOtherOperation(op *WriteOperation) {
 	writeSet.otherOps = append(writeSet.otherOps, op)
 }
 
+func (writeSet *VulnerableWriteSet) hasOtherOperation(op *WriteOperation) bool {
+	return slices.Contains(writeSet.otherOps, op)
+}
+
 func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, request *Request, currOp *WriteOperation) {
 	dbname := currOp.call.GetToNode().GetDatabaseName()
 	db := app.GetDatabaseByName(dbname)
@@ -25,7 +29,7 @@ func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, req
 	var constrainedFields []*backends.Field
 	for _, arg := range currOp.arguments {
 		for _, taint := range arg.GetPrimaryTaintsFlatList() {
-			fieldpath := taint.GetField()
+			fieldpath := taint.GetDatabasePath()
 
 			// [TO BE IMPROVED]
 			// there may be cases where primary taint is not related to this database
@@ -40,19 +44,18 @@ func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, req
 					constrainedFields = append(constrainedFields, field)
 				}
 			}
-
 		}
 	}
 
-	// same logic as in foreignkeycoordination and foreignkeycascade 
+	// same logic as in foreignkeycoordination and foreignkeycascade
 	// but here we verify if secondaryTaint.IsWrite()
 	for _, arg := range currOp.arguments {
 		for _, secondaryTaint := range arg.GetSecondaryTaintsFlatList() {
-			if secondaryTaint.GetCallID() != currOp.GetCallID() && secondaryTaint.IsWrite() {
-				otherOp := request.FindOperationByCallID(secondaryTaint.GetCallID())
+			if secondaryTaint.GetDatabaseCallID() != currOp.GetCallID() && secondaryTaint.IsWrite() {
+				otherOp := request.FindOperationByCallID(secondaryTaint.GetDatabaseCallID())
 				if otherOp != nil {
 					otherWriteSet := detector.findVulnerableWriteSetForOperation(request, otherOp)
-					if otherWriteSet != nil {
+					if otherWriteSet != nil && !otherWriteSet.hasOtherOperation(currOp) {
 						otherWriteSet.addOtherOperation(currOp)
 					}
 				}

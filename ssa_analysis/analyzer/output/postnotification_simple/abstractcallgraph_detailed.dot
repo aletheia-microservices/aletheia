@@ -8,18 +8,6 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_StorageService_StorePost [label="StorageService.StorePost
-
-==== param 0 (reqID) tainted ====
-_obj
-[write, primary] @ posts_db.post.ReqID
-
-
-==== param 1 (text) tainted ====
-_obj
-[write, primary] @ posts_db.post.Text
-", style=bold, shape=box, color="blue"];
-		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 		N_StorageService_ReadPost [label="StorageService.ReadPost
 
 ==== param 0 (reqID) tainted ====
@@ -33,21 +21,148 @@ _obj
 [read, primary] @ posts_db.post[*].Value
 [read, secondary] @ notifications_queue.notification.PostID
 [write, secondary] @ notifications_queue.notification.PostID
-[write, secondary] @ posts_db.post.PostID
 ", style=bold, shape=box, color="blue"];
-		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
+		N_UploadService_UploadPost [label="UploadService.UploadPost
+
+==== param 1 (text) tainted ====
+_obj
+[rpc] @ StorageService.StorePost.text
+
+
+==== ret 0 (int64) tainted ====
+_obj
+[write, primary] @ notifications_queue.notification.PostID
+", style=bold, shape=box, color="blue"];
+		N_StorageService_StorePost [label="StorageService.StorePost
+
+==== param 0 (reqID) tainted ====
+_obj
+[write, primary] @ posts_db.post.ReqID
+
+
+==== param 1 (text) tainted ====
+_obj
+[write, primary] @ posts_db.post.Text
+
+
+==== ret 0 (int64) tainted ====
+_obj
+[write, primary] @ posts_db.post.PostID
+", style=bold, shape=box, color="blue"];
+		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
+		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
-	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()", color=blue];
-	N_UploadService_UploadPost -> N_notifications_queue_notification [label="Push()", color=green];
-	N_StorageService_StorePost -> N_posts_db_post [label="InsertOne()", color=green];
+	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()
+
+==== arg 0 (t0) tainted ====
+_obj
+[write, primary] @ notifications_queue.notification.ReqID
+[write, secondary] @ posts_db.post.ReqID
+[rpc] @ StorageService.StorePost.t0
+
+
+==== arg 1 (text) tainted ====
+_obj
+[write, secondary] @ posts_db.post.Text
+[rpc] @ StorageService.StorePost.text
+
+
+==== ret 0 (t5) tainted ====
+_obj
+[write, primary] @ notifications_queue.notification.PostID
+[write, secondary] @ posts_db.post.PostID
+[rpc] @ StorageService.StorePost.t5
+
+
+==== ret 1 (t6) tainted ====
+_obj
+[rpc] @ StorageService.StorePost.t6
+", color=blue];
+	N_UploadService_UploadPost -> N_notifications_queue_notification [label="Push()
+
+==== arg 0 (t13) tainted ====
+_obj
+[write, primary] @ notifications_queue.notification
+_obj.PostID
+[write, primary] @ notifications_queue.notification.PostID
+[rpc] @ StorageService.StorePost.t5
+_obj.ReqID
+[write, primary] @ notifications_queue.notification.ReqID
+[rpc] @ StorageService.StorePost.t0
+", color=green];
+	N_StorageService_StorePost -> N_posts_db_post [label="InsertOne()
+
+==== arg 0 (t33) tainted ====
+_obj
+[write, primary] @ posts_db.post
+_obj.Creator
+[write, primary] @ posts_db.post.Creator
+_obj.Mentions
+[write, primary] @ posts_db.post.Mentions
+_obj.PostID
+[write, primary] @ posts_db.post.PostID
+_obj.ReqID
+[write, primary] @ posts_db.post.ReqID
+[write, secondary] @ notifications_queue.notification.ReqID
+_obj.Text
+[write, primary] @ posts_db.post.Text
+_obj.Timestamp
+[write, primary] @ posts_db.post.Timestamp
+_obj.Username.Creator
+[write, primary] @ posts_db.post.Creator.Username
+_obj[*].Mentions
+[write, primary] @ posts_db.post.Mentions[*]
+", color=green];
 	N_client -> N_NotifyService_Run [label="Run()", color=orange];
-	N_NotifyService_Run -> N_notifications_queue_notification [label="Pop()", color=green];
-	N_NotifyService_Run -> N_StorageService_ReadPost [label="ReadPost()", color=blue];
-	N_StorageService_ReadPost -> N_posts_db_post [label="FindOne()", color=green];
+	N_NotifyService_Run -> N_notifications_queue_notification [label="Pop()
+
+==== arg 0 (t11) tainted ====
+_obj
+[read, primary] @ notifications_queue.notification
+[write, secondary] @ notifications_queue.notification
+_obj.PostID
+[read, primary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+[rpc] @ StorageService.ReadPost.t18
+_obj.ReqID
+[read, primary] @ notifications_queue.notification.ReqID
+[write, secondary] @ notifications_queue.notification.ReqID
+[rpc] @ StorageService.ReadPost.t16
+", color=green];
+	N_NotifyService_Run -> N_StorageService_ReadPost [label="ReadPost()
+
+==== arg 0 (t16) tainted ====
+_obj
+[read, primary] @ notifications_queue.notification.ReqID
+[write, secondary] @ notifications_queue.notification.ReqID
+[rpc] @ StorageService.ReadPost.t16
+
+
+==== arg 1 (t18) tainted ====
+_obj
+[read, primary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+[read, secondary] @ posts_db.post[*].Value
+[rpc] @ StorageService.ReadPost.t18
+", color=blue];
+	N_StorageService_ReadPost -> N_posts_db_post [label="FindOne()
+
+==== arg 0 (t13) tainted ====
+_obj
+[read, primary] @ posts_db.post
+_obj.Key[*]
+[read, primary] @ posts_db.post[*].Key
+_obj.Value[*]
+[read, primary] @ posts_db.post[*].Value
+_obj[*]
+[read, primary] @ posts_db.post[*]
+_obj[*].Value
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+", color=green];
 }

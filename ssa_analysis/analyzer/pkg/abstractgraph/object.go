@@ -2,6 +2,7 @@ package abstractgraph
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
@@ -11,14 +12,36 @@ import (
 type AbstractObject struct {
 	name   string // ssa name
 	taints map[string][]*AbstractTaint
+	traces map[string][]*AbstractTrace
 }
 
-func NewAbstractObject(ssaStr string, directTaints map[string][]*AbstractTaint) *AbstractObject {
+func NewAbstractObject(ssaStr string, directTaints map[string][]*AbstractTaint, traces map[string][]*AbstractTrace) *AbstractObject {
 	obj := &AbstractObject{
 		name:   ssaStr,
 		taints: directTaints,
+		traces: traces,
 	}
 	return obj
+}
+
+func (obj *AbstractObject) GetName() string {
+	return obj.name
+}
+
+func (obj *AbstractObject) GetTaints() map[string][]*AbstractTaint {
+	return obj.taints
+}
+
+func (obj *AbstractObject) GetTaintsForObjectPath(objpath string) []*AbstractTaint {
+	return obj.taints[objpath]
+}
+
+func (obj *AbstractObject) GetTraces() map[string][]*AbstractTrace {
+	return obj.traces
+}
+
+func (obj *AbstractObject) GetTracesForObjectPath(objpath string) []*AbstractTrace {
+	return obj.traces[objpath]
 }
 
 func (obj *AbstractObject) String() string {
@@ -29,6 +52,10 @@ func (obj *AbstractObject) IsTainted() bool {
 	return len(obj.taints) > 0
 }
 
+func (obj *AbstractObject) IsTraced() bool {
+	return len(obj.traces) > 0
+}
+
 func (obj *AbstractObject) TaintLongString() string {
 	if len(obj.taints) == 0 {
 		return ""
@@ -37,6 +64,11 @@ func (obj *AbstractObject) TaintLongString() string {
 	for objpath := range obj.taints {
 		objpaths = append(objpaths, objpath)
 	}
+	for objpath := range obj.GetTraces() {
+		if !slices.Contains(objpaths, objpath) {
+			objpaths = append(objpaths, objpath)
+		}
+	}
 	sort.Strings(objpaths)
 
 	var builder strings.Builder
@@ -44,38 +76,54 @@ func (obj *AbstractObject) TaintLongString() string {
 		for _, taint := range obj.taints[objpath] {
 			builder.WriteString("\t" + objpath + " @ " + taint.LongString() + "\n")
 		}
+		for _, trace := range obj.traces[objpath] {
+			builder.WriteString("\t" + objpath + " @ " + trace.LongString() + "\n")
+		}
 	}
 	return builder.String()
 }
 
 // same logic as SSAGraph Node
 func (obj *AbstractObject) TaintString() string {
-	if len(obj.taints) == 0 {
+	if len(obj.taints) == 0 && len(obj.traces) == 0 {
 		return ""
 	}
 
 	var objpaths []string
-	for objpath := range obj.taints {
+	for objpath := range obj.GetTaints() {
 		objpaths = append(objpaths, objpath)
+	}
+	for objpath := range obj.GetTraces() {
+		if !slices.Contains(objpaths, objpath) {
+			objpaths = append(objpaths, objpath)
+		}
 	}
 	sort.Strings(objpaths)
 
 	var builder strings.Builder
 	for _, objpath := range objpaths {
-		taints := obj.taints[objpath]
+		taints := obj.GetTaintsForObjectPath(objpath)
 		builder.WriteString(objpath)
 		builder.WriteByte('\n')
 		for _, taint := range taints {
 			builder.WriteString("[")
-			builder.WriteString(common.OperationTypeToString(taint.opType))
+			builder.WriteString(common.OperationTypeToString(taint.dbOpType))
 
-			if taint.IsPrimary() {
+			if taint.IsTraced() {
+				builder.WriteString(", traced]")
+			} else if taint.IsPrimary() {
 				builder.WriteString(", primary]")
 			} else {
 				builder.WriteString(", secondary]")
 			}
-			
+
 			builder.WriteString(" @ ")
+			builder.WriteString(taint.String())
+			builder.WriteByte('\n')
+		}
+
+		for _, taint := range obj.GetTracesForObjectPath(objpath) {
+			builder.WriteString("[rpc] @ ")
 			builder.WriteString(taint.String())
 			builder.WriteByte('\n')
 		}
@@ -196,14 +244,14 @@ func (obj *AbstractObject) HasEqualTaint(other AbstractTaint) bool {
 
 // argument 'newtaint' must not be a pointer because the objective is is to compare taints with the same content
 func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint AbstractTaint) {
-	fmt.Printf("[ABSTRACT OBJECT] propagate taint\n")
+	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
 	exists := obj.HasEqualTaint(newtaint)
 	if !exists {
 		taint := &AbstractTaint{
-			dbfield:  newtaint.dbfield,
+			dbpath:   newtaint.dbpath,
 			dbcallID: newtaint.dbcallID,
 			primary:  newtaint.primary,
-			opType:   newtaint.opType,
+			dbOpType: newtaint.dbOpType,
 		}
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
 		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)

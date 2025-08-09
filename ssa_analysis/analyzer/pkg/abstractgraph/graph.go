@@ -113,8 +113,14 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 
 		if detailed {
 			for i, param := range node.GetParams() {
-				if param.IsTainted() {
+				if param.IsTainted() || param.IsTraced() {
 					label += fmt.Sprintf("\n\n==== param %d (%s) tainted ====\n%s", i, param.name, param.TaintString())
+				}
+
+			}
+			for i, ret := range node.GetReturns() {
+				if ret.IsTainted() || ret.IsTraced() {
+					label += fmt.Sprintf("\n\n==== ret %d (%s) tainted ====\n%s", i, ret.name, ret.TaintString())
 				}
 
 			}
@@ -173,6 +179,22 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 		toNodeID := strings.ReplaceAll(edge.GetToNode().GetName(), ".", "_")
 
 		label := edge.GetMethod() + "()"
+
+		if detailed {
+			for i, arg := range edge.GetArguments() {
+				if arg.IsTainted() || arg.IsTraced() {
+					label += fmt.Sprintf("\n\n==== arg %d (%s) tainted ====\n%s", i, arg.GetName(), arg.TaintString())
+				}
+
+			}
+			for i, ret := range edge.GetReturns() {
+				if ret.IsTainted() || ret.IsTraced() {
+					label += fmt.Sprintf("\n\n==== ret %d (%s) tainted ====\n%s", i, ret.GetName(), ret.TaintString())
+				}
+			}
+			label = strings.ReplaceAll(label, `"`, `\"`)
+		}
+
 		var color string
 		switch edge.GetEdgeType() {
 		case EDGE_SERVICE_RPC:

@@ -1,3 +1,7 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
+entry request: APIService.ReadMovie
+	FOREIGN READ #0:
+		read_1 = (MovieInfoService.ReadMovieInfo) --> (movieinfo_db.movieinfo).Select(...)
+		read_2 = (MovieIdService.ReadMovieId) --> (movieid_db.movieid).Select(...)

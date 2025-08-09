@@ -9,21 +9,50 @@ import (
 	"analyzer/pkg/common"
 )
 
+type TaintType int
+
+const (
+	TAINT_DATABASE TaintType = iota
+	TAINT_SERVICE
+)
+
 type SSATaint struct {
-	dbfield       string
-	call          *DatabaseCall
+	taintType TaintType
+	dbpath    string
+	dbcall    *DatabaseCall
+	svpath    string
+	svcall    *ServiceCall
 }
 
-func (taint *SSATaint) GetDbField() string {
-	return taint.dbfield
+func (taint *SSATaint) IsDatabaseTaint() bool {
+	return taint.taintType == TAINT_DATABASE
+}
+
+func (taint *SSATaint) IsServiceTaint() bool {
+	return taint.taintType == TAINT_SERVICE
+}
+
+func (taint *SSATaint) GetDatabasePath() string {
+	return taint.dbpath
 }
 
 func (taint *SSATaint) GetDatabaseCall() *DatabaseCall {
-	return taint.call
+	return taint.dbcall
+}
+
+func (taint *SSATaint) GetServicePath() string {
+	return taint.svpath
+}
+
+func (taint *SSATaint) GetServiceCall() *ServiceCall {
+	return taint.svcall
 }
 
 func (taint *SSATaint) String() string {
-	return taint.dbfield
+	if taint.taintType == TAINT_DATABASE {
+		return taint.dbpath
+	}
+	return taint.svpath
 }
 
 type SSANode struct {
@@ -71,16 +100,32 @@ func (node *SSANode) GetTaints() map[string][]*SSATaint {
 	return node.taints
 }
 
-func (node *SSANode) AddTaintIfNotExists(objPath string, dbField string, dbCall *DatabaseCall) bool {
-	lstTaints := node.taints[objPath]
+func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, dbcall *DatabaseCall) bool {
+	lstTaints := node.taints[objpath]
 	for _, taint := range lstTaints {
-		if taint.dbfield == dbField {
+		if taint.dbpath == dbpath {
 			return false // already exists
 		}
 	}
-	node.taints[objPath] = append(lstTaints, &SSATaint{
-		dbfield: dbField,
-		call:    dbCall,
+	node.taints[objpath] = append(lstTaints, &SSATaint{
+		taintType: TAINT_DATABASE,
+		dbpath:    dbpath,
+		dbcall:    dbcall,
+	})
+	return true
+}
+
+func (node *SSANode) AddServiceTaintIfNotExists(objpath string, svpath string, svcall *ServiceCall) bool {
+	lstTaints := node.taints[objpath]
+	for _, taint := range lstTaints {
+		if taint.svpath == svpath {
+			return false // already exists
+		}
+	}
+	node.taints[objpath] = append(lstTaints, &SSATaint{
+		taintType: TAINT_SERVICE,
+		svpath:    svpath,
+		svcall:    svcall,
 	})
 	return true
 }
@@ -104,7 +149,11 @@ func (node *SSANode) taintString() string {
 		builder.WriteByte('\n')
 		for _, taint := range taints {
 			builder.WriteString("[")
-			builder.WriteString(common.OperationTypeToString(taint.GetDatabaseCall().GetOpType()))
+			if taint.taintType == TAINT_DATABASE {
+				builder.WriteString(common.OperationTypeToString(taint.GetDatabaseCall().GetOpType()))
+			} else if taint.taintType == TAINT_SERVICE {
+				builder.WriteString("rpc")
+			}
 			builder.WriteString("]")
 
 			builder.WriteString(" @ ")

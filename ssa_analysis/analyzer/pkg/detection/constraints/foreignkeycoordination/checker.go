@@ -14,9 +14,9 @@ func (detector *ForeignKeyCoordinationDetector) checkInconsistency(request *Requ
 		fmt.Printf("\t[FOREIGN KEY CHECKER] arg (%s) w/ all taints: %v\n", arg.String(), arg.GetAllTaints())
 		for _, secondaryTaint := range arg.GetSecondaryTaintsFlatList() {
 			fmt.Printf("\t[FOREIGN KEY CHECKER] arg (%s) w/ secondary taints: %v\n", arg.String(), secondaryTaint.LongString())
-			if secondaryTaint.GetCallID() != currOp.GetCallID() && secondaryTaint.IsRead() {
-				otherOp := request.FindOperationByCallID(secondaryTaint.GetCallID())
-				if otherOp != nil {
+			if secondaryTaint.GetDatabaseCallID() != currOp.GetCallID() && secondaryTaint.IsRead() {
+				otherOp := request.FindOperationByCallID(secondaryTaint.GetDatabaseCallID())
+				if otherOp != nil && !detector.hasForeignRead(request, currOp, otherOp) {
 					foreignRead := &ForeignRead{op1: currOp, op2: otherOp}
 					detector.addForeignRead(request, foreignRead)
 				}

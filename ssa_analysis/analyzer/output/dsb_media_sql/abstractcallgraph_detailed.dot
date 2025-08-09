@@ -8,7 +8,57 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_APIService_RegisterMovie [label="APIService.RegisterMovie", style=bold, shape=box, color="blue"];
+		N_APIService_RegisterMovie [label="APIService.RegisterMovie
+
+==== param 0 (reqID) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.reqID
+[rpc] @ MovieInfoService.WriteMovieInfo.reqID
+
+
+==== param 1 (movieID) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.movieID
+
+
+==== param 2 (title) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.title
+[rpc] @ MovieInfoService.WriteMovieInfo.title
+
+
+==== param 3 (casts) tainted ====
+_obj
+[rpc] @ MovieInfoService.WriteMovieInfo.casts
+
+
+==== ret 2 (error) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.t6
+", style=bold, shape=box, color="blue"];
+		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+
+
+==== param 2 (title) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.title
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
+_obj.MovieID
+[write, primary] @ movieid_db.movieid.movieid
+_obj.Title
+[write, primary] @ movieid_db.movieid.title
+
+
+==== ret 1 (string) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="blue"];
 		N_MovieInfoService_WriteMovieInfo [label="MovieInfoService.WriteMovieInfo
 
 ==== param 1 (movieID) tainted ====
@@ -24,24 +74,39 @@ _obj
 ==== param 3 (casts) tainted ====
 _obj
 [write, primary] @ movieinfo_db.movieinfo.casts
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo) tainted ====
+_obj.Casts
+[write, primary] @ movieinfo_db.movieinfo.casts
+_obj.MovieID
+[write, primary] @ movieinfo_db.movieinfo.movieid
+_obj.Title
+[write, primary] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="blue"];
-		N_APIService_ReadMovie [label="APIService.ReadMovie", style=bold, shape=box, color="blue"];
 		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
 
 ==== param 1 (movieID) tainted ====
 _obj
 [read, primary] @ movieid_db.movieid.movieid
 ", style=bold, shape=box, color="blue"];
-		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
+		N_APIService_ReadMovie [label="APIService.ReadMovie
 
-==== param 1 (movieID) tainted ====
+==== param 0 (reqID) tainted ====
 _obj
-[write, primary] @ movieid_db.movieid.movieid
+[rpc] @ MovieIdService.ReadMovieId.reqID
+[rpc] @ MovieInfoService.ReadMovieInfo.reqID
 
 
-==== param 2 (title) tainted ====
+==== param 1 (movieId) tainted ====
 _obj
-[write, primary] @ movieid_db.movieid.title
+[rpc] @ MovieIdService.ReadMovieId.movieId
+[rpc] @ MovieInfoService.ReadMovieInfo.movieId
+
+
+==== ret 2 (error) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.t4
 ", style=bold, shape=box, color="blue"];
 		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
 
@@ -56,13 +121,202 @@ _obj
 		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_APIService_RegisterMovie [label="RegisterMovie()", color=orange];
-	N_APIService_RegisterMovie -> N_MovieIdService_RegisterMovieId [label="RegisterMovieId()", color=blue];
-	N_APIService_RegisterMovie -> N_MovieInfoService_WriteMovieInfo [label="WriteMovieInfo()", color=blue];
-	N_MovieIdService_RegisterMovieId -> N_movieid_db_movieid [label="Exec()", color=green];
-	N_MovieInfoService_WriteMovieInfo -> N_movieinfo_db_movieinfo [label="Exec()", color=green];
+	N_APIService_RegisterMovie -> N_MovieIdService_RegisterMovieId [label="RegisterMovieId()
+
+==== arg 0 (reqID) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.reqID
+[rpc] @ MovieInfoService.WriteMovieInfo.reqID
+
+
+==== arg 1 (movieID) tainted ====
+_obj
+[write, secondary] @ movieid_db.movieid.movieid
+[rpc] @ MovieIdService.RegisterMovieId.movieID
+
+
+==== arg 2 (title) tainted ====
+_obj
+[write, secondary] @ movieid_db.movieid.title
+[write, traced] @ movieinfo_db.movieinfo.title
+[rpc] @ MovieIdService.RegisterMovieId.title
+[rpc] @ MovieInfoService.WriteMovieInfo.title
+
+
+==== ret 0 (t4) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.t4
+_obj.MovieID
+[write, secondary] @ movieid_db.movieid.movieid
+[rpc] @ MovieIdService.RegisterMovieId.t4.MovieID
+[rpc] @ MovieInfoService.WriteMovieInfo.t11
+_obj.Title
+[write, secondary] @ movieid_db.movieid.title
+
+
+==== ret 1 (t5) tainted ====
+_obj
+[write, secondary] @ movieid_db.movieid.movieid
+[rpc] @ MovieIdService.RegisterMovieId.t5
+
+
+==== ret 2 (t6) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.t6
+", color=blue];
+	N_APIService_RegisterMovie -> N_MovieInfoService_WriteMovieInfo [label="WriteMovieInfo()
+
+==== arg 0 (reqID) tainted ====
+_obj
+[rpc] @ MovieIdService.RegisterMovieId.reqID
+[rpc] @ MovieInfoService.WriteMovieInfo.reqID
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[write, traced] @ movieid_db.movieid.movieid
+[write, secondary] @ movieinfo_db.movieinfo.movieid
+[rpc] @ MovieIdService.RegisterMovieId.t4.MovieID
+[rpc] @ MovieInfoService.WriteMovieInfo.t11
+
+
+==== arg 2 (title) tainted ====
+_obj
+[write, traced] @ movieid_db.movieid.title
+[write, secondary] @ movieinfo_db.movieinfo.title
+[rpc] @ MovieIdService.RegisterMovieId.title
+[rpc] @ MovieInfoService.WriteMovieInfo.title
+
+
+==== arg 3 (casts) tainted ====
+_obj
+[write, secondary] @ movieinfo_db.movieinfo.casts
+[rpc] @ MovieInfoService.WriteMovieInfo.casts
+
+
+==== ret 0 (t13) tainted ====
+_obj
+[rpc] @ MovieInfoService.WriteMovieInfo.t13
+_obj.Casts
+[write, secondary] @ movieinfo_db.movieinfo.casts
+_obj.MovieID
+[write, secondary] @ movieinfo_db.movieinfo.movieid
+_obj.Title
+[write, secondary] @ movieinfo_db.movieinfo.title
+
+
+==== ret 1 (t14) tainted ====
+_obj
+[rpc] @ MovieInfoService.WriteMovieInfo.t14
+", color=blue];
+	N_MovieIdService_RegisterMovieId -> N_movieid_db_movieid [label="Exec()
+
+==== arg 0 (t7) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.title
+[write, secondary] @ movieinfo_db.movieinfo.title
+", color=green];
+	N_MovieInfoService_WriteMovieInfo -> N_movieinfo_db_movieinfo [label="Exec()
+
+==== arg 0 (t8) tainted ====
+_obj
+[write, primary] @ movieinfo_db.movieinfo.movieid
+[write, secondary] @ movieid_db.movieid.movieid
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[write, primary] @ movieinfo_db.movieinfo.title
+[write, secondary] @ movieid_db.movieid.title
+
+
+==== arg 2 (t12) tainted ====
+_obj
+[write, primary] @ movieinfo_db.movieinfo.casts
+", color=green];
 	N_client -> N_APIService_ReadMovie [label="ReadMovie()", color=orange];
-	N_APIService_ReadMovie -> N_MovieIdService_ReadMovieId [label="ReadMovieId()", color=blue];
-	N_APIService_ReadMovie -> N_MovieInfoService_ReadMovieInfo [label="ReadMovieInfo()", color=blue];
-	N_MovieIdService_ReadMovieId -> N_movieid_db_movieid [label="Select()", color=green];
-	N_MovieInfoService_ReadMovieInfo -> N_movieinfo_db_movieinfo [label="Select()", color=green];
+	N_APIService_ReadMovie -> N_MovieIdService_ReadMovieId [label="ReadMovieId()
+
+==== arg 0 (reqID) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.reqID
+[rpc] @ MovieInfoService.ReadMovieInfo.reqID
+
+
+==== arg 1 (movieId) tainted ====
+_obj
+[read, secondary] @ movieid_db.movieid.movieid
+[read, traced] @ movieinfo_db.movieinfo.movieid
+[rpc] @ MovieIdService.ReadMovieId.movieId
+[rpc] @ MovieInfoService.ReadMovieInfo.movieId
+
+
+==== ret 0 (t3) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.t3
+
+
+==== ret 1 (t4) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.t4
+", color=blue];
+	N_APIService_ReadMovie -> N_MovieInfoService_ReadMovieInfo [label="ReadMovieInfo()
+
+==== arg 0 (reqID) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.reqID
+[rpc] @ MovieInfoService.ReadMovieInfo.reqID
+
+
+==== arg 1 (movieId) tainted ====
+_obj
+[read, traced] @ movieid_db.movieid.movieid
+[read, secondary] @ movieinfo_db.movieinfo.movieid
+[rpc] @ MovieIdService.ReadMovieId.movieId
+[rpc] @ MovieInfoService.ReadMovieInfo.movieId
+
+
+==== ret 0 (t8) tainted ====
+_obj
+[rpc] @ MovieInfoService.ReadMovieInfo.t8
+
+
+==== ret 1 (t9) tainted ====
+_obj
+[rpc] @ MovieInfoService.ReadMovieInfo.t9
+", color=blue];
+	N_MovieIdService_ReadMovieId -> N_movieid_db_movieid [label="Select()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ movieid_db.movieid.movieid
+[read, secondary] @ movieinfo_db.movieinfo.movieid
+
+
+==== arg 1 (\"SELECT * FROM mov...\":string) tainted ====
+_obj
+[read, primary] @ movieid_db.movieid
+_obj.movieid
+[read, secondary] @ movieinfo_db.movieinfo.movieid
+", color=green];
+	N_MovieInfoService_ReadMovieInfo -> N_movieinfo_db_movieinfo [label="Select()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ movieinfo_db.movieinfo.movieid
+[read, secondary] @ movieid_db.movieid.movieid
+
+
+==== arg 1 (\"SELECT * FROM mov...\":string) tainted ====
+_obj
+[read, primary] @ movieinfo_db.movieinfo
+_obj.movieid
+[read, secondary] @ movieid_db.movieid.movieid
+[read, secondary] @ movieinfo_db.movieinfo.movieid
+", color=green];
 }

@@ -26,9 +26,9 @@ type ValFieldPath struct {
 	fieldpath string
 }
 
-func isServiceCall(graph *ssagraph.SSAGraph, instr ssa.Instruction) (string, string, string, []ssa.Value, *ssa.Call, bool) {
-	if call, ok := instr.(*ssa.Call); ok {
-		fmt.Printf("[TAINT] checking for service call: %s\n", instr.String())
+func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
+	if call, ok := val.(*ssa.Call); ok {
+		fmt.Printf("[TAINT] checking for service call: %s\n", val.String())
 
 		// --------------
 		// blueprint apps

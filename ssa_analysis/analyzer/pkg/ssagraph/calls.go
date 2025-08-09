@@ -65,6 +65,10 @@ func (call *ServiceCall) String() string {
 	return call.GetService() + "." + call.GetMethod() + "(...)"
 }
 
+func (call *ServiceCall) String2() string {
+	return call.GetService() + "." + call.GetMethod()
+}
+
 type DatabaseCall struct {
 	id     string // the ssa instr name for the db call on the callee side
 	node   *SSANode

@@ -67,8 +67,8 @@ func (detector *ForeignKeyCascadeDetector) markCascadingDelete(app *app.App, req
 				// same logic as in foreignkeycoordination but here we verify if secondaryTaint.IsDelete()
 				for _, arg := range currOp.arguments {
 					for _, secondaryTaint := range arg.GetSecondaryTaintsFlatList() {
-						if secondaryTaint.GetCallID() != currOp.GetCallID() && secondaryTaint.IsDelete() {
-							otherOp := request.FindOperationByCallID(secondaryTaint.GetCallID())
+						if secondaryTaint.GetDatabaseCallID() != currOp.GetCallID() && secondaryTaint.IsDelete() {
+							otherOp := request.FindOperationByCallID(secondaryTaint.GetDatabaseCallID())
 							if otherOp != nil && otherOp == prevOp {
 								dbsWithCascade[somePendingField.GetDatabase()] = true
 								prevCascadeDelete.cascadingOps = append(prevCascadeDelete.cascadingOps, currOp)

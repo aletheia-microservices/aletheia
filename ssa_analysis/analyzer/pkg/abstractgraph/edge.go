@@ -80,6 +80,15 @@ func (edge *AbstractEdge) GetArguments() []*AbstractObject {
 	return edge.args
 }
 
+func (edge *AbstractEdge) GetArgumentByNameIfExists(name string) *AbstractObject {
+	for _, arg := range edge.args {
+		if arg.name == name {
+			return arg
+		}
+	}
+	return nil
+}
+
 func (edge *AbstractEdge) GetArgumentAt(i int) *AbstractObject {
 	if i > len(edge.args)-1 {
 		log.Fatalf("index (%d) out of bounds for edge arguments: %v\n", i, edge.args)

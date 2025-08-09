@@ -5,6 +5,7 @@ entry request: APIService.RegisterMovie
 	write (constrained) #0: (MovieIdService.RegisterMovieId) --> (movieid_db.movieid).Exec(...)
 		field (constrained): movieid_db.movieid.movieid
 		field (constrained): movieid_db.movieid.title
+		AFFECTED WRITE: (MovieInfoService.WriteMovieInfo) --> (movieinfo_db.movieinfo).Exec(...)
 	write (constrained) #1: (MovieInfoService.WriteMovieInfo) --> (movieinfo_db.movieinfo).Exec(...)
 		field (constrained): movieinfo_db.movieinfo.movieid
 

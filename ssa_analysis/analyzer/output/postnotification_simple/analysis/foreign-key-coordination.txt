@@ -2,6 +2,6 @@
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
 entry request: UploadService.UploadPost
-	foreign read #0:
+	FOREIGN READ #0:
 		read_1 = (StorageService.ReadPost) --> (posts_db.post).FindOne(...)
 		read_2 = (NotifyService.Run) --> (notifications_queue.notification).Pop(...)

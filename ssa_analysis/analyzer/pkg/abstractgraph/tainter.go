@@ -10,18 +10,18 @@ import (
 
 func PropagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *TaintMapping) {
 	for currTaint, otherTaintsLst := range taintMapping.mapping {
-		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetField()))
-		currField := currDb.GetLastSchema().GetOrCreateField(currDb, currTaint.GetField())
+		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetDatabasePath()))
+		currField := currDb.GetLastSchema().GetOrCreateField(currDb, currTaint.GetDatabasePath())
 
 		for _, otherTaint := range otherTaintsLst {
-			otherDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherTaint.GetField()))
+			otherDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherTaint.GetDatabasePath()))
 
 			if currDb == otherDb {
 				// skip if its the same
 				// may happen when iterating queue.Push() --> queue.Pop()
 				continue
 			}
-			otherField := otherDb.GetLastSchema().GetOrCreateField(otherDb, otherTaint.GetField())
+			otherField := otherDb.GetLastSchema().GetOrCreateField(otherDb, otherTaint.GetDatabasePath())
 
 			if currTaint.IsWrite() && otherTaint.IsWrite() || currTaint.IsWrite() && otherTaint.IsRead() {
 				if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {

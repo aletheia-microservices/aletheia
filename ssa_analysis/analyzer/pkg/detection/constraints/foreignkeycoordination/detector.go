@@ -32,6 +32,15 @@ func (detector *ForeignKeyCoordinationDetector) addForeignRead(req *Request, for
 	detector.foreignReads[req] = append(detector.foreignReads[req], foreignread)
 }
 
+func (detector *ForeignKeyCoordinationDetector) hasForeignRead(req *Request, op1 *ReadOperation, op2 *ReadOperation) bool {
+	for _, foreignRead := range detector.foreignReads[req] {
+		if foreignRead.op1 == op1 && foreignRead.op2 == op2 {
+			return true
+		}
+	}
+	return false
+}
+
 func (detector *ForeignKeyCoordinationDetector) getCurrentRequest() *Request {
 	return detector.requests[len(detector.requests)-1]
 }

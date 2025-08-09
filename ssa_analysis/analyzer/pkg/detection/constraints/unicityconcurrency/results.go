@@ -20,7 +20,7 @@ func (detector *UnicityConcurrencyDetector) ComputeResults() {
 				results += fmt.Sprintf("\t\tfield (constrained): %s\n", field.GetPath())
 			}
 			for _, op := range writeSet.otherOps {
-				results += fmt.Sprintf("\t\tother write: %s\n", op.call.String())
+				results += fmt.Sprintf("\t\tAFFECTED WRITE: %s\n", op.call.String())
 			}
 		}
 		results += "\n"

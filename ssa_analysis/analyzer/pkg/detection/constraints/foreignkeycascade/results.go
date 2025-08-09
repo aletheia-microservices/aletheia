@@ -20,7 +20,7 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults() {
 				results += fmt.Sprintf("\t\tcascading delete: %s\n", op.call.String())
 			} */
 			for _, pendingField := range cascadeDelete.pendingDBFields {
-				results += fmt.Sprintf("\t\tMISSING delete on field: %s\n", pendingField.GetPath())
+				results += fmt.Sprintf("\t\tMISSING DELETE on field: %s\n", pendingField.GetPath())
 			}
 		}
 		results += "\n"
