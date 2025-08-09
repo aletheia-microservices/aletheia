@@ -8,6 +8,7 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
+		N_APIService_RegisterMovie [label="APIService.RegisterMovie", style=bold, shape=box, color="blue"];
 		N_MovieInfoService_WriteMovieInfo [label="MovieInfoService.WriteMovieInfo
 
 ==== param 1 (movieID) tainted ====
@@ -24,13 +25,13 @@ _obj
 _obj
 [write, primary] @ movieinfo_db.movieinfo.casts
 ", style=bold, shape=box, color="blue"];
+		N_APIService_ReadMovie [label="APIService.ReadMovie", style=bold, shape=box, color="blue"];
 		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
 
 ==== param 1 (movieID) tainted ====
 _obj
 [read, primary] @ movieid_db.movieid.movieid
 ", style=bold, shape=box, color="blue"];
-		N_APIService_RegisterMovie [label="APIService.RegisterMovie", style=bold, shape=box, color="blue"];
 		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
 
 ==== param 1 (movieID) tainted ====
@@ -42,7 +43,6 @@ _obj
 _obj
 [write, primary] @ movieid_db.movieid.title
 ", style=bold, shape=box, color="blue"];
-		N_APIService_ReadMovie [label="APIService.ReadMovie", style=bold, shape=box, color="blue"];
 		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
 
 ==== param 1 (movieID) tainted ====
@@ -52,8 +52,8 @@ _obj
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
 		N_movieid_db_movieid [label="movieid_db.movieid", style=bold, shape=cylinder, color="green"];
+		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_APIService_RegisterMovie [label="RegisterMovie()", color=orange];
 	N_APIService_RegisterMovie -> N_MovieIdService_RegisterMovieId [label="RegisterMovieId()", color=blue];

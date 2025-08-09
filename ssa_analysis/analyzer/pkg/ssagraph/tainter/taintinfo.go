@@ -9,8 +9,8 @@ import (
 type TaintMode int
 
 const (
-	TAINT_BACKWARDS_MARK_AND_PROPAGATE TaintMode = iota
-	TAINT_BACKWARDS_UPDATE_SUBPATHS_AND_FETCH
+	PROPAGATE_TAINT_NEARBY TaintMode = iota
+	PROPAGATE_TAINT_FETCH_UPWARDS
 )
 
 type DBTaint struct {
@@ -62,6 +62,22 @@ func (t TaintInfo) updateValue(val ssa.Value) TaintInfo {
 
 func (t TaintInfo) updatePathPrefix(prefix string) TaintInfo {
 	t.path = prefix + t.path
+	return t
+}
+
+func (t TaintInfo) updatePathSuffix(suffix string) TaintInfo {
+	t.path = t.path + suffix
+	return t
+}
+
+func (t TaintInfo) updateFieldSuffix(prefix string) TaintInfo {
+	t.dbTaint.dbfield = t.dbTaint.dbfield + prefix
+	return t
+}
+
+func (t TaintInfo) updatePathSuffixAndField(prefix string) TaintInfo {
+	t.path = t.path + prefix
+	t.dbTaint.dbfield = t.dbTaint.dbfield + prefix
 	return t
 }
 

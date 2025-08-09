@@ -8,23 +8,6 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_StorageService_ReadPost [label="StorageService.ReadPost
-
-==== param 0 (reqID) tainted ====
-_obj
-[read, secondary] @ notifications_queue.notification.ReqID
-[write, secondary] @ notifications_queue.notification.ReqID
-
-
-==== param 1 (postID) tainted ====
-_obj
-[read, primary] @ posts_db.post[0].Value
-[read, primary] @ posts_db.post[*].Value
-[read, secondary] @ notifications_queue.notification.PostID
-[write, secondary] @ notifications_queue.notification.PostID
-[write, secondary] @ posts_db.post.PostID
-", style=bold, shape=box, color="blue"];
-		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
 		N_StorageService_StorePost [label="StorageService.StorePost
 
 ==== param 0 (reqID) tainted ====
@@ -37,11 +20,27 @@ _obj
 [write, primary] @ posts_db.post.Text
 ", style=bold, shape=box, color="blue"];
 		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
+		N_StorageService_ReadPost [label="StorageService.ReadPost
+
+==== param 0 (reqID) tainted ====
+_obj
+[read, secondary] @ notifications_queue.notification.ReqID
+[write, secondary] @ notifications_queue.notification.ReqID
+
+
+==== param 1 (postID) tainted ====
+_obj
+[read, primary] @ posts_db.post[*].Value
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ posts_db.post.PostID
+", style=bold, shape=box, color="blue"];
+		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
+		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()", color=blue];

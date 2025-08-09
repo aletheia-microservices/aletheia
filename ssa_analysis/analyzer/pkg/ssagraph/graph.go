@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -156,6 +157,16 @@ func (graph *SSAGraph) GetEdgesFromNode(node *SSANode) []*SSAEdge {
 	return edges
 }
 
+func (graph *SSAGraph) GetAllNodeEdges(node *SSANode) []*SSAEdge {
+	var edges []*SSAEdge
+	for _, edge := range graph.edges {
+		if edge.from == node || edge.to == node {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
+}
+
 func (graph *SSAGraph) GetEdgesToNodeExceptPointerTo(node *SSANode) []*SSAEdge {
 	var edges []*SSAEdge
 	for _, edge := range graph.edges {
@@ -229,6 +240,19 @@ func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType 
 	return edge, true
 }
 
+func safeLabel(s string) string {
+    s = strings.ReplaceAll(s, `\`, `\\`)
+    s = strings.ReplaceAll(s, `"`, `\"`)
+    s = strings.ReplaceAll(s, "\n", `\n`)
+    return s
+}
+
+func safeID(id string) string {
+    // replace anything that's not a letter, number, or underscore with underscore
+    re := regexp.MustCompile(`[^a-zA-Z0-9_]`)
+    return re.ReplaceAllString(id, "_")
+}
+
 func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {
 	filename := fmt.Sprintf("output/%s/ssagraphs/%s.dot", appname, fn)
 	file, err := os.Create(filename)
@@ -241,11 +265,10 @@ func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {
 	fmt.Fprintln(file, "\trankdir=TD;")
 
 	for _, node := range graph.nodes {
-		str := node.String()
+		label := safeLabel(node.String())
 		if node.IsTainted() {
-			str += "\n\n==== tainted ====\n" + node.taintString()
+			label += "\n\n==== tainted ====\n" + node.taintString()
 		}
-		label := strings.ReplaceAll(str, `"`, `\"`)
 		nodecolor := node.colorForSSA()
 
 		shape := "ellipse"
@@ -258,15 +281,15 @@ func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {
 			color = nodecolor
 		}
 
-		fmt.Fprintf(file, "\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];\n", node.id, label, shape, color)
+		fmt.Fprintf(file, "\tN_%s [label=\"%s\", style=bold, shape=%s, color=\"%s\"];\n", safeID(node.id), label, shape, color)
 	}
 
 	for _, edge := range graph.edges {
 		if edge.edgeType == EDGE_POINTS_TO {
 			path := strings.ReplaceAll(edge.path, `"`, `\"`)
-			fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", style=dashed, color=blue];\n", edge.from.id, edge.to.id, path)
+			fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", style=dashed, color=blue];\n", safeID(edge.from.id), safeID(edge.to.id), path)
 		} else if edge.from != nil && edge.to != nil {
-			fmt.Fprintf(file, "\tN_%s -> N_%s;\n", edge.from.id, edge.to.id)
+			fmt.Fprintf(file, "\tN_%s -> N_%s;\n", safeID(edge.from.id), safeID(edge.to.id))
 		}
 	}
 

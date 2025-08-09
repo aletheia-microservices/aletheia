@@ -358,3 +358,19 @@ func parseArgumentsForMongoDBFilter(graph *ssagraph.SSAGraph, bsonFilter ssa.Val
 	args = append(args, arg)
 	return args, keys
 }
+
+func recurseEdgesForwardUntilStoreAddress(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
+	if _, ok := visited[node]; ok {
+		return storeEdges
+	}
+	visited[node] = true
+
+	for _, edge := range graph.GetEdgesFromNode(node) {
+		if edge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
+			storeEdges = append(storeEdges, edge)
+		} else if edge.GetType() == ssagraph.EDGE_FIELD || edge.GetType() == ssagraph.EDGE_INDEX || edge.GetType() == ssagraph.EDGE_USAGE {
+			storeEdges = append(storeEdges, recurseEdgesForwardUntilStoreAddress(graph, edge.GetToNode(), storeEdges, visited)...)
+		}
+	}
+	return storeEdges
+}

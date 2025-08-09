@@ -16,10 +16,10 @@ func ssaTaintToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[string][
 	for objPath, ssaTaints := range ssaTaintsMap {
 		abstractTaints := make([]*AbstractTaint, len(ssaTaints))
 		for i, ssaTaint := range ssaTaints {
-			dbPath := ssaTaint.GetDbCall().GetDatabasePath()
-			dbname := ssaTaint.GetDbCall().GetDatabaseName()
+			dbPath := ssaTaint.GetDatabaseCall().GetDatabasePath()
+			dbname := ssaTaint.GetDatabaseCall().GetDatabaseName()
 			dbNode := graph.GetNodeByNameIfExists(dbPath)
-			schemaName := ssaTaint.GetDbCall().GetSchemaName()
+			schemaName := ssaTaint.GetDatabaseCall().GetSchemaName()
 			if dbNode == nil {
 				dbNode = NewAbstractNode(dbPath, NODE_DATABASE, "", "", dbname)
 				graph.AddNode(dbPath, dbNode)
@@ -33,7 +33,7 @@ func ssaTaintToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[string][
 				}
 			}
 
-			abstractTaints[i] = NewAbstractTaint(ssaTaint.GetDbField(), ssaTaint.GetDbCall().GetID(), true, ssaTaint.GetDbCall().GetOpType())
+			abstractTaints[i] = NewAbstractTaint(ssaTaint.GetDbField(), ssaTaint.GetDatabaseCall().GetID(), true, ssaTaint.GetDatabaseCall().GetOpType())
 		}
 		abstractTaintsMap[objPath] = abstractTaints
 	}
@@ -158,7 +158,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 	if ssaGraph.HasDatabaseCalls() {
 		fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
-		
+
 		for _, call := range ssaGraph.GetDatabaseCalls() {
 			toDatabasePath := call.GetDatabasePath()
 			toNode := graph.GetNodeByNameIfExists(toDatabasePath)
@@ -208,7 +208,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			return edges[i].GetIDNumber() < edges[j].GetIDNumber()
 		})
 	}
-	
+
 	for _, edge := range edges {
 		graph.AddEdge(edge)
 	}

@@ -86,11 +86,21 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// propagate taints across services (forward): args (from) >>> params (to)
 			taintMapping := abstractgraph.NewTaintMapping()
 			for i, toParam := range toNode.GetParams() {
-				fmt.Printf("debug to param: %s\n", toParam.String())
+				fmt.Printf("debug toParam: %s\n", toParam.String())
 				fromArg := edge.GetArgumentAt(i)
 				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetPrimaryTaints(), false)
 				taintMapping.Merge(taintMappingTmp)
 			}
+
+			// propagate taints across services (backwards): args (from) <<< params (to)
+			/* for i, fromArg := range edge.GetArguments() {
+				fmt.Printf("debug fromArg: %s\n", fromArg.String())
+				toParam := toNode.GetParamAt(i)
+				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetPrimaryTaints(), false)
+				taintMapping.Merge(taintMappingTmp)
+			} */
+
+
 			for _, edge := range iterator.graph.GetEdgesFromNode(toNode) {
 				fmt.Printf("\t\t[ITERATOR] propagate new taints to objects args on edge: %s\n", edge.String())
 				for i, obj := range edge.GetArguments() {

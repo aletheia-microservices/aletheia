@@ -10,16 +10,16 @@ import (
 )
 
 type SSATaint struct {
-	dbfield string
-	dbcall  *DatabaseCall
+	dbfield       string
+	call          *DatabaseCall
 }
 
 func (taint *SSATaint) GetDbField() string {
 	return taint.dbfield
 }
 
-func (taint *SSATaint) GetDbCall() *DatabaseCall {
-	return taint.dbcall
+func (taint *SSATaint) GetDatabaseCall() *DatabaseCall {
+	return taint.call
 }
 
 func (taint *SSATaint) String() string {
@@ -80,7 +80,7 @@ func (node *SSANode) AddTaintIfNotExists(objPath string, dbField string, dbCall 
 	}
 	node.taints[objPath] = append(lstTaints, &SSATaint{
 		dbfield: dbField,
-		dbcall:  dbCall,
+		call:    dbCall,
 	})
 	return true
 }
@@ -104,7 +104,7 @@ func (node *SSANode) taintString() string {
 		builder.WriteByte('\n')
 		for _, taint := range taints {
 			builder.WriteString("[")
-			builder.WriteString(common.OperationTypeToString(taint.GetDbCall().GetOpType()))
+			builder.WriteString(common.OperationTypeToString(taint.GetDatabaseCall().GetOpType()))
 			builder.WriteString("]")
 
 			builder.WriteString(" @ ")

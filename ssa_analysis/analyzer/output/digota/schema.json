@@ -6,16 +6,21 @@
         "name": "orders",
         "fields": [
           "orders_db.orders",
-          "orders_db.orders.Amount",
           "orders_db.orders.Currency",
           "orders_db.orders.Email",
           "orders_db.orders.Items",
+          "orders_db.orders.Items[*]",
+          "orders_db.orders.Items[*].Amount",
+          "orders_db.orders.Items[*].Currency",
+          "orders_db.orders.Items[*].Description",
           "orders_db.orders.Items[*].Parent",
+          "orders_db.orders.Items[*].Quantity",
           "orders_db.orders.Metadata",
-          "orders_db.orders.Shipping"
+          "orders_db.orders.Shipping",
+          "orders_db.orders.Shipping.Address",
+          "orders_db.orders.Shipping.Address.City"
         ],
         "constraints": [
-          "FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus[0].Value",
           "FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus[*].Value"
         ]
       }
@@ -40,10 +45,9 @@
           "products_db.products.Name",
           "products_db.products.Shippable",
           "products_db.products.Url",
+          "products_db.products[*]",
           "products_db.products[*].Key",
-          "products_db.products[*].Value",
-          "products_db.products[0].Key",
-          "products_db.products[0].Value"
+          "products_db.products[*].Value"
         ],
         "constraints": []
       }
@@ -69,10 +73,9 @@
           "skus_db.skus.PackageDimensions",
           "skus_db.skus.Parent",
           "skus_db.skus.Price",
+          "skus_db.skus[*]",
           "skus_db.skus[*].Key",
-          "skus_db.skus[*].Value",
-          "skus_db.skus[0].Key",
-          "skus_db.skus[0].Value"
+          "skus_db.skus[*].Value"
         ],
         "constraints": [
           "FOREIGN_KEY skus_db.skus.Name REFERENCES products_db.products.Name"

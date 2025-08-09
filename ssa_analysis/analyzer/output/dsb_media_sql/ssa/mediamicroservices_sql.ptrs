@@ -87,40 +87,31 @@ m (@RegisterMovieId): (*ssa.Parameter) (parameter m : *MovieIdServiceImpl)
 
 ctx (@RegisterMovieId): (*ssa.Parameter) (parameter ctx : context.Context)
 
-t0 (@RegisterMovieId): (*ssa.Alloc) (local MovieId (movieId))
-	 → t0 (@RegisterMovieId): (*ssa.Alloc)
+t0 (@RegisterMovieId): (*ssa.FieldAddr) (&m.movieIdDB [#0])
 
-t1 (@RegisterMovieId): (*ssa.FieldAddr) (&t0.MovieID [#0])
-	 → t0 (@RegisterMovieId): (*ssa.Alloc)
+t1 (@RegisterMovieId): (*ssa.UnOp) (*t0)
 
-t2 (@RegisterMovieId): (*ssa.FieldAddr) (&t0.Title [#1])
-	 → t0 (@RegisterMovieId): (*ssa.Alloc)
+t2 (@RegisterMovieId): (*ssa.Alloc) (new [2]any (varargs))
+	 → t2 (@RegisterMovieId): (*ssa.Alloc)
 
-t3 (@RegisterMovieId): (*ssa.FieldAddr) (&m.movieIdDB [#0])
+t3 (@RegisterMovieId): (*ssa.IndexAddr) (&t2[0:int])
+	 → t2 (@RegisterMovieId): (*ssa.Alloc)
 
-t4 (@RegisterMovieId): (*ssa.UnOp) (*t3)
+t4 (@RegisterMovieId): (*ssa.MakeInterface) (make any <- string (movieID))
+	 → t4 (@RegisterMovieId): (*ssa.MakeInterface)
 
-t5 (@RegisterMovieId): (*ssa.Alloc) (new [2]any (varargs))
-	 → t5 (@RegisterMovieId): (*ssa.Alloc)
+t5 (@RegisterMovieId): (*ssa.IndexAddr) (&t2[1:int])
+	 → t2 (@RegisterMovieId): (*ssa.Alloc)
 
-t6 (@RegisterMovieId): (*ssa.IndexAddr) (&t5[0:int])
-	 → t5 (@RegisterMovieId): (*ssa.Alloc)
+t6 (@RegisterMovieId): (*ssa.MakeInterface) (make any <- string (title))
+	 → t6 (@RegisterMovieId): (*ssa.MakeInterface)
 
-t7 (@RegisterMovieId): (*ssa.MakeInterface) (make any <- string (movieID))
-	 → t7 (@RegisterMovieId): (*ssa.MakeInterface)
+t7 (@RegisterMovieId): (*ssa.Slice) (slice t2[:])
+	 → t2 (@RegisterMovieId): (*ssa.Alloc)
 
-t8 (@RegisterMovieId): (*ssa.IndexAddr) (&t5[1:int])
-	 → t5 (@RegisterMovieId): (*ssa.Alloc)
+t9 (@RegisterMovieId): (*ssa.Extract) (extract t8 #0)
 
-t9 (@RegisterMovieId): (*ssa.MakeInterface) (make any <- string (title))
-	 → t9 (@RegisterMovieId): (*ssa.MakeInterface)
-
-t10 (@RegisterMovieId): (*ssa.Slice) (slice t5[:])
-	 → t5 (@RegisterMovieId): (*ssa.Alloc)
-
-t12 (@RegisterMovieId): (*ssa.Extract) (extract t11 #0)
-
-t13 (@RegisterMovieId): (*ssa.Extract) (extract t11 #1)
+t10 (@RegisterMovieId): (*ssa.Extract) (extract t8 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoServiceImpl).ReadMovieInfo ###

@@ -153,6 +153,31 @@ func main() {
 	app.WriteAppToJSON()
 	app.WriteSchemaToJSON()
 
+	fmt.Print("\n\n ========== SERVICE CALLS ========== \n\n")
+	for _, node := range absgraph.GetNodes() {
+		if node.GetNodeType() == abstractgraph.NODE_SERVICE {
+			for _, edge := range absgraph.GetEdgesToNode(node) {
+				fmt.Printf("SERVICE CALL: %s\n", edge.String())
+				for i, arg := range edge.GetArguments() {
+					fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
+				}
+				fmt.Println("--")
+				for i, param := range edge.GetToNode().GetParams() {
+					fmt.Printf("PARAM %d (%s) w/ TAINTS:\n%s", i, param.String(), param.TaintLongString())
+				}
+				fmt.Println("--")
+				for i, ret := range edge.GetReturns() {
+					fmt.Printf("RET (EDGE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
+				}
+				fmt.Println("--")
+				for i, ret := range edge.GetToNode().GetReturns() {
+					fmt.Printf("RET (NODE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
+				}
+				fmt.Println()
+			}
+		}
+	}
+
 	fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
 	for _, node := range absgraph.GetNodes() {
 		if node.GetNodeType() == abstractgraph.NODE_DATABASE {
