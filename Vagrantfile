@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
 
     vm.vm.provision "shell", inline: <<-SHELL
         sudo apt-get update
-        sudo apt-get install -y git nano wget
+        sudo apt-get install -y git nano wget thrift-compiler build-essential gcc libc6-dev pkg-config
 
         wget https://go.dev/dl/go1.22.4.linux-arm64.tar.gz
         sudo tar -C /usr/local -xzf go1.22.4.linux-arm64.tar.gz

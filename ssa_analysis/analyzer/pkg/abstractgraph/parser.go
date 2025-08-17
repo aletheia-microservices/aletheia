@@ -80,6 +80,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	}
 
 	ssaGraph := funcGraphs[funcshortpath]
+	fmt.Printf("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
 
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)

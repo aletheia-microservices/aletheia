@@ -1,24 +1,24 @@
 digraph G {
 	rankdir=TD;
-	N_instr__946959603 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__946959603 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2730012 [label="return nil:*Charge, t9", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2730012 [label="return nil:*Charge, t9", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2730074 [label="return t0, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2730074 [label="return t0, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2729748 [label="*t1 = currency", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729748 [label="*t1 = currency", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729778 [label="*t2 = total", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729778 [label="*t2 = total", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729794 [label="*t3 = email", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729794 [label="*t3 = email", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729821 [label="*t4 = statement", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2729821 [label="*t4 = statement", style=bold, shape=ellipse, color="blue"];
-	N_nil_1175250747 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
-	N_nil_210483115 [label="nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge: nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge", style=bold, shape=ellipse, color="yellow"];
+	N_instr__436355486 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__436355486 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2722489 [label="return nil:*Charge, t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2722489 [label="return nil:*Charge, t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2722551 [label="return t0, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2722551 [label="return t0, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2722225 [label="*t1 = currency", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722225 [label="*t1 = currency", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722255 [label="*t2 = total", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722255 [label="*t2 = total", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722271 [label="*t3 = email", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722271 [label="*t3 = email", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722298 [label="*t4 = statement", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2722298 [label="*t4 = statement", style=bold, shape=ellipse, color="blue"];
+	N_nil_267690653 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_602022062 [label="nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge: nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge", style=bold, shape=ellipse, color="yellow"];
 	N_val__payments__string [label="\"payments\":string: \"payments\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__payments_db__string [label="\"payments_db\":string: \"payments_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2729736 [label="t0: new Charge (complit)
+	N_val_alloc_2722213 [label="t0: new Charge (complit)
 
 ==== tainted ====
 _obj
@@ -32,36 +32,36 @@ _obj.Email
 _obj.Statement
 [write] @ payments_db.payments.Statement
 ", style=bold, shape=box, color="orange"];
-	N_val_binary_2730001 [label="t10: t9 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2729960 [label="t7: invoke t6.GetCollection(ctx, \"payments_db\":string, \"payments\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2730058 [label="t13: invoke t8.InsertOne(ctx, t12)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_2722478 [label="t10: t9 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2722437 [label="t7: invoke t6.GetCollection(ctx, \"payments_db\":string, \"payments\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2722535 [label="t13: invoke t8.InsertOne(ctx, t12)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt8 [label="t8: extract t7 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt9 [label="t9: extract t7 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2729748 [label="t1: &t0.Currency [#5]
+	N_val_field_2722225 [label="t1: &t0.Currency [#5]
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.Currency
 ", style=bold, shape=box, color="green"];
-	N_val_field_2729778 [label="t2: &t0.ChargeAmount [#2]
+	N_val_field_2722255 [label="t2: &t0.ChargeAmount [#2]
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.ChargeAmount
 ", style=bold, shape=box, color="green"];
-	N_val_field_2729794 [label="t3: &t0.Email [#6]
+	N_val_field_2722271 [label="t3: &t0.Email [#6]
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.Email
 ", style=bold, shape=box, color="green"];
-	N_val_field_2729821 [label="t4: &t0.Statement [#1]
+	N_val_field_2722298 [label="t4: &t0.Statement [#1]
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.Statement
 ", style=bold, shape=box, color="green"];
-	N_val_field_2729944 [label="t5: &s.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2722421 [label="t5: &s.db [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet12 [label="t12: make interface{} <- Charge (t11)
 
 ==== tainted ====
@@ -76,37 +76,37 @@ _obj.Email
 _obj.Statement
 [write] @ payments_db.payments.Statement
 ", style=bold, shape=box, color="black"];
-	N_val_param_2729518 [label="s: parameter s : *PaymentServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2729551 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2729572 [label="currency: parameter currency : int32
+	N_val_param_2721995 [label="s: parameter s : *PaymentServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2722028 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2722049 [label="currency: parameter currency : int32
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.Currency
 ", style=bold, shape=box, color="black"];
-	N_val_param_2729588 [label="total: parameter total : uint64
+	N_val_param_2722065 [label="total: parameter total : uint64
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.ChargeAmount
 ", style=bold, shape=box, color="black"];
-	N_val_param_2729602 [label="card: parameter card : *Card", style=bold, shape=ellipse, color="black"];
-	N_val_param_2729614 [label="email: parameter email : string
+	N_val_param_2722079 [label="card: parameter card : *Card", style=bold, shape=ellipse, color="black"];
+	N_val_param_2722091 [label="email: parameter email : string
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.Email
 ", style=bold, shape=box, color="black"];
-	N_val_param_2729628 [label="statement: parameter statement : string
+	N_val_param_2722105 [label="statement: parameter statement : string
 
 ==== tainted ====
 _obj
 [write] @ payments_db.payments.Statement
 ", style=bold, shape=box, color="black"];
-	N_val_param_2729646 [label="paymentProviderId: parameter paymentProviderId : int32", style=bold, shape=ellipse, color="black"];
-	N_val_param_2729671 [label="metadata: parameter metadata : map[string]string", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2729944 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2730064 [label="t11: *t0
+	N_val_param_2722123 [label="paymentProviderId: parameter paymentProviderId : int32", style=bold, shape=ellipse, color="black"];
+	N_val_param_2722148 [label="metadata: parameter metadata : map[string]string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2722421 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2722541 [label="t11: *t0
 
 ==== tainted ====
 _obj
@@ -120,37 +120,37 @@ _obj.Email
 _obj.Statement
 [write] @ payments_db.payments.Statement
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2729736 -> N_val_field_2729748;
-	N_val_alloc_2729736 -> N_val_field_2729778;
-	N_val_alloc_2729736 -> N_val_field_2729794;
-	N_val_alloc_2729736 -> N_val_field_2729821;
-	N_val_field_2729748 -> N_instr_store_2729748;
-	N_val_param_2729572 -> N_instr_store_2729748;
-	N_val_field_2729778 -> N_instr_store_2729778;
-	N_val_param_2729588 -> N_instr_store_2729778;
-	N_val_field_2729794 -> N_instr_store_2729794;
-	N_val_param_2729614 -> N_instr_store_2729794;
-	N_val_field_2729821 -> N_instr_store_2729821;
-	N_val_param_2729628 -> N_instr_store_2729821;
-	N_val_param_2729518 -> N_val_field_2729944;
-	N_val_field_2729944 -> N_val_unary_2729944;
-	N_val_param_2729551 -> N_val_call_2729960;
-	N_val__payments_db__string -> N_val_call_2729960;
-	N_val__payments__string -> N_val_call_2729960;
-	N_val_call_2729960 -> N_val_extrt8;
-	N_val_call_2729960 -> N_val_extrt9;
-	N_val_extrt9 -> N_val_binary_2730001;
-	N_nil_1175250747 -> N_val_binary_2730001;
-	N_nil_210483115 -> N_instr_ret_2730012;
-	N_val_extrt9 -> N_instr_ret_2730012;
-	N_val_alloc_2729736 -> N_val_unary_2730064;
-	N_val_unary_2730064 -> N_val_ifacet12;
-	N_val_param_2729551 -> N_val_call_2730058;
-	N_val_ifacet12 -> N_val_call_2730058;
-	N_val_alloc_2729736 -> N_instr_ret_2730074;
-	N_val_call_2730058 -> N_instr_ret_2730074;
-	N_val_field_2729778 -> N_val_alloc_2729736 [label=".ChargeAmount", style=dashed, color=blue];
-	N_val_field_2729794 -> N_val_alloc_2729736 [label=".Email", style=dashed, color=blue];
-	N_val_field_2729748 -> N_val_alloc_2729736 [label=".Currency", style=dashed, color=blue];
-	N_val_field_2729821 -> N_val_alloc_2729736 [label=".Statement", style=dashed, color=blue];
+	N_val_alloc_2722213 -> N_val_field_2722225;
+	N_val_alloc_2722213 -> N_val_field_2722255;
+	N_val_alloc_2722213 -> N_val_field_2722271;
+	N_val_alloc_2722213 -> N_val_field_2722298;
+	N_val_field_2722225 -> N_instr_store_2722225;
+	N_val_param_2722049 -> N_instr_store_2722225;
+	N_val_field_2722255 -> N_instr_store_2722255;
+	N_val_param_2722065 -> N_instr_store_2722255;
+	N_val_field_2722271 -> N_instr_store_2722271;
+	N_val_param_2722091 -> N_instr_store_2722271;
+	N_val_field_2722298 -> N_instr_store_2722298;
+	N_val_param_2722105 -> N_instr_store_2722298;
+	N_val_param_2721995 -> N_val_field_2722421;
+	N_val_field_2722421 -> N_val_unary_2722421;
+	N_val_param_2722028 -> N_val_call_2722437;
+	N_val__payments_db__string -> N_val_call_2722437;
+	N_val__payments__string -> N_val_call_2722437;
+	N_val_call_2722437 -> N_val_extrt8;
+	N_val_call_2722437 -> N_val_extrt9;
+	N_val_extrt9 -> N_val_binary_2722478;
+	N_nil_267690653 -> N_val_binary_2722478;
+	N_nil_602022062 -> N_instr_ret_2722489;
+	N_val_extrt9 -> N_instr_ret_2722489;
+	N_val_alloc_2722213 -> N_val_unary_2722541;
+	N_val_unary_2722541 -> N_val_ifacet12;
+	N_val_param_2722028 -> N_val_call_2722535;
+	N_val_ifacet12 -> N_val_call_2722535;
+	N_val_alloc_2722213 -> N_instr_ret_2722551;
+	N_val_call_2722535 -> N_instr_ret_2722551;
+	N_val_field_2722225 -> N_val_alloc_2722213 [label=".Currency", style=dashed, color=blue];
+	N_val_field_2722255 -> N_val_alloc_2722213 [label=".ChargeAmount", style=dashed, color=blue];
+	N_val_field_2722298 -> N_val_alloc_2722213 [label=".Statement", style=dashed, color=blue];
+	N_val_field_2722271 -> N_val_alloc_2722213 [label=".Email", style=dashed, color=blue];
 }

@@ -1,0 +1,190 @@
+{
+  "name": "sockshop3",
+  "databases": [
+    "cart_db",
+    "catalogue_db",
+    "order_db",
+    "ship_db",
+    "ship_queue",
+    "user_db"
+  ],
+  "services": [
+    {
+      "name": "CartService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartService",
+      "pkg": "sockshop3",
+      "impl": "CartServiceImpl",
+      "fields": [
+        "db #0 (cart_db)"
+      ],
+      "methods": [
+        "GetCart",
+        "DeleteCart",
+        "MergeCarts",
+        "GetItem",
+        "AddItem",
+        "RemoveItem",
+        "UpdateItem"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "CatalogueService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueService",
+      "pkg": "sockshop3",
+      "impl": "CatalogueServiceImpl",
+      "fields": [
+        "catalogue_db #0 (catalogue_db)"
+      ],
+      "methods": [
+        "List",
+        "Count",
+        "Get",
+        "Tags",
+        "AddTags",
+        "AddSock",
+        "DeleteSock"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "Frontend",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Frontend",
+      "pkg": "sockshop3",
+      "impl": "FrontendImpl",
+      "fields": [
+        "user #0 (user_service)",
+        "catalogue #1 (catalogue_service)",
+        "cart #2 (cart_service)",
+        "order #3 (order_service)"
+      ],
+      "methods": [
+        "DeleteCart",
+        "RemoveItem",
+        "UpdateItem",
+        "ListItems",
+        "GetSock",
+        "ListTags",
+        "NewOrder",
+        "GetOrders",
+        "GetOrder",
+        "Login",
+        "Register",
+        "GetUser",
+        "GetAddress",
+        "PostAddress",
+        "GetCard",
+        "PostCard",
+        "AddItem",
+        "LoadCatalogue",
+        "DeleteSock"
+      ],
+      "services": [
+        "CartService",
+        "CatalogueService",
+        "OrderService",
+        "UserService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "OrderService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderService",
+      "pkg": "sockshop3",
+      "impl": "OrderServiceImpl",
+      "fields": [
+        "users #0 (user_service)",
+        "carts #1 (cart_service)",
+        "payments #2 (payment_service)",
+        "shipping #3 (shipping_service)",
+        "db #4 (order_db)"
+      ],
+      "methods": [
+        "NewOrder",
+        "GetOrders",
+        "GetOrder"
+      ],
+      "services": [
+        "CartService",
+        "PaymentService",
+        "ShippingService",
+        "UserService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "PaymentService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.PaymentService",
+      "pkg": "sockshop3",
+      "impl": "PaymentServiceImpl",
+      "fields": [
+        "declineOverAmount #0"
+      ],
+      "methods": [
+        "Authorise"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "QueueMaster",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.QueueMaster",
+      "pkg": "sockshop3",
+      "impl": "QueueMasterImpl",
+      "fields": [
+        "q #0 (ship_queue)",
+        "shipping #1 (shipping_service)",
+        "exitOnError #2",
+        "processed #3"
+      ],
+      "methods": [
+        "Run"
+      ],
+      "services": [
+        "ShippingService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "ShippingService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingService",
+      "pkg": "sockshop3",
+      "impl": "ShippingServiceImpl",
+      "fields": [
+        "q #0 (ship_queue)",
+        "db #1 (ship_db)"
+      ],
+      "methods": [
+        "PostShipping",
+        "GetShipment",
+        "UpdateStatus"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UserService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserService",
+      "pkg": "sockshop3",
+      "impl": "UserServiceImpl",
+      "fields": [
+        "db #0 (user_db)"
+      ],
+      "methods": [
+        "Login",
+        "Register",
+        "GetUsers",
+        "PostUser",
+        "GetAddresses",
+        "PostAddress",
+        "GetCards",
+        "PostCard",
+        "Delete"
+      ],
+      "services": [],
+      "databases": []
+    }
+  ]
+}

@@ -28,6 +28,10 @@ type SSAGraph struct {
 	returns  [][]*SSANode // can have multiple return tuples depending on controlflow
 }
 
+func (graph *SSAGraph) String() string {
+	return graph.fnShortPath
+}
+
 func NewGraph(app *app.App, pkg string, fn string, service string, method string) *SSAGraph {
 	return &SSAGraph{
 		app:         app,

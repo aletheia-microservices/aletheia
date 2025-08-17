@@ -30,6 +30,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- postnotification_simple blueprint/postnotification/notifyservice_run")
 		fmt.Fprintln(os.Stderr, "- dsb_media_sql blueprint/dsb_media_sql/api_readmovie")
 		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")
+		fmt.Fprintln(os.Stderr, "- sockshop3 blueprint/sockshop3/userservice_login")
 		os.Exit(1)
 	}
 
@@ -115,6 +116,10 @@ func main() {
 				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetValue(), prefix, node.GetValue().String())
 			}
 		}
+	}
+
+	for fn, ssagraph := range funcGraphs {
+		fmt.Printf("[MAIN] go ssa graph for (%s): %v\n", fn, ssagraph)
 	}
 
 	fmt.Print("\n\n ========== TAINTS ========== \n\n")
@@ -247,6 +252,8 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 			} else if pkg.Pkg.Path() == utils.APP_PATH_DIGOTA {
 				pkgs = append(pkgs, pkg)
 			} else if pkg.Pkg.Path() == utils.APP_PATH_DSB_MEDIA_SQL {
+				pkgs = append(pkgs, pkg)
+			} else if pkg.Pkg.Path() == utils.APP_PATH_SOCKSHOP3 {
 				pkgs = append(pkgs, pkg)
 			} else {
 				fmt.Printf("skipping... %s\n", pkg.Pkg.Path())

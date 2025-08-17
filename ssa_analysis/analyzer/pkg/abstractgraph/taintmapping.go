@@ -79,8 +79,18 @@ func (tm *TaintMapping) String() string {
 	return builder.String()
 }
 
+func extractUpperPath(objpath string) (string, string, bool) {
+	idx := strings.LastIndex(objpath, ".")
+	if idx == -1 {
+		return "", "", false
+	}
+	// containts . before e.g. (.ID)
+	subpath := objpath[idx:]
+	return objpath[:idx], subpath, true
+}
+
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool, traced bool) *TaintMapping {
-	fmt.Printf("[TAINTMAPPING] merging taints (primary = %t): %v\n", primary, otherTaintsMap)
+	fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
 	var taintMapping *TaintMapping
 
 	if !primary {
@@ -89,6 +99,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 
 	//TODO: deal with upper/lower paths
 	for objpath, otherTaints := range otherTaintsMap {
+		fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
 		existingTaints := obj.taints[objpath]
 
 		exists := func(t *AbstractTaint) (string, bool) {
@@ -96,6 +107,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 				if e.Equals(t) {
 					return objpath, true
 				}
+				fmt.Printf("[TAINTMAPPING] checking if upper path (%s) vs (%s)\n", e.dbpath, t.dbpath)
 				if ok, subpath := e.IsUpperPath(t); ok {
 					return objpath + subpath, false // must be false so that we create a new abstract taint
 				}
@@ -112,20 +124,51 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 					otherTaint.dbOpType,
 					primary, traced,
 				)
+				
+				// NOTE: does not explore any upper paths, just current one
+				fmt.Printf("\t[TAINTMAPPING] [DATABASE] adding new taint (%s, traced=%t) on obj path (%s): %v\n", common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
+				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
 
+				// NOTE: explores all upper paths
+				//
 				// trace info for arguments and (especially) returns
 				// can still lead to secondary taints that we still want to track
 				if !primary {
-					for _, existingTaint := range obj.taints[objpath] {
-						// filter by writes to reduce number of foreign keys for now
-						if existingTaint.IsPrimary() || traced /* && existingTaint.IsWrite() */ {
-							taintMapping.AddIfNotExists(*existingTaint, *newTaint)
+					fmt.Printf("\t[TAINTMAPPING] adding mapping for objpath = (%s)\n", objpath)
+					var ok = true
+					var subpath = ""
+					for ok {
+						fmt.Printf("\t\t[TAINTMAPPING] upper path = (%s)\n", objpath)
+						for _, existingTaint := range obj.taints[objpath] {
+							// filter by writes to reduce number of foreign keys for now
+							if existingTaint.IsPrimary() && !traced {
+								if subpath == "" {
+									taintMapping.AddIfNotExists(*existingTaint, *newTaint)
+								} else {
+									lowerTaint := *existingTaint
+									lowerTaint.dbpath = lowerTaint.dbpath + subpath
+									taintMapping.AddIfNotExists(lowerTaint, *newTaint)
+								}
+							} else if traced {
+								if subpath == "" {
+									taintMapping.AddIfNotExists(*newTaint, *existingTaint)
+								} else {
+									lowerTaint := *existingTaint
+									lowerTaint.dbpath = lowerTaint.dbpath + subpath
+									// [IMPROVE]
+									// for some reason it works better when we change the
+									// position between newTaint and lowerTaint in call args
+									// e.g., SockShop3: order_db.orders.ID REFERENCES ship_db.shipments.ID
+									//
+									// i think this is because of the order
+									// when tainting primary vs. traced
+									taintMapping.AddIfNotExists(*newTaint, lowerTaint)
+								}
+							}
 						}
+						objpath, subpath, ok = extractUpperPath(objpath)
 					}
 				}
-				
-				fmt.Printf("\t\t[TAINTMAPPING] [DATABASE] adding new taint (%s, traced=%t) on obj path (%s): %v\n", common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
-				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
 			}
 		}
 	}

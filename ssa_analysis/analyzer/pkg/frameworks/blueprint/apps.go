@@ -6,6 +6,7 @@ import (
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
 	specs_postnotification_simple "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring/specs"
+	specs_sockshop3 "github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring/specs"
 	/* specs_app_constraints_referential_integrity "github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring/specs"
 	specs_coupons_app "github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring/specs"
 	specs_coupons_app_cache "github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring/specs"
@@ -37,6 +38,7 @@ var APPS_INFO = map[string]AppInfo{
 	"postnotification_simple": {BLUEPRINT_PATH_EXAMPLES + "postnotification_simple/workflow/postnotification_simple", specs_postnotification_simple.Docker},
 	"digota":                  {BLUEPRINT_PATH_EXAMPLES + "digota/workflow/digota", specs_digota.Docker},
 	"dsb_media_sql":           {BLUEPRINT_PATH_EXAMPLES + "dsb_media_sql/workflow/mediamicroservices_sql", specs_dsb_media_sql.Docker},
+	"sockshop3":               {BLUEPRINT_PATH_EXAMPLES + "sockshop3/workflow/sockshop3", specs_sockshop3.Docker},
 	/* "postnotification":                      {BLUEPRINT_PATH_EXAMPLES + "postnotification/workflow/postnotification", specs_postnotification.Docker},
 	"app_constraints_referential_integrity": {BLUEPRINT_PATH_EXAMPLES + "app_constraints_referential_integrity/workflow/app_constraints_referential_integrity", specs_app_constraints_referential_integrity.Docker},
 	"employee_app":                          {BLUEPRINT_PATH_EXAMPLES + "employee_app/workflow/employee_app", specs_employee_app.Docker},

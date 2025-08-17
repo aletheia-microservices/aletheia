@@ -37,9 +37,11 @@ func (app *App) AddEntrypoint(service *services.Service, method string) {
 
 // e.g., postnotification.UploadService.UploadPost
 func (app *App) GetEntrypointsShortPaths() []string {
+	fmt.Printf("[APP] getting entrypoint short paths...\n")
 	var entrypoints []string
 	for service, serviceEntrypoints := range app.entrypoints {
 		for _, method := range serviceEntrypoints {
+			fmt.Printf("\t[APP] found (%s)\n", service.GetPackage()+"."+service.GetName()+"."+method)
 			entrypoints = append(entrypoints, service.GetPackage()+"."+service.GetName()+"."+method)
 		}
 	}

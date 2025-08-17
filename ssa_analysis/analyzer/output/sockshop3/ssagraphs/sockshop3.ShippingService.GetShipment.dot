@@ -1,0 +1,132 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1276413050 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1276413050 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2813990 [label="return struct{ID string; Name string; Status string}{}:Shipment, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2813990 [label="return struct{ID string; Name string; Status string}{}:Shipment, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2814068 [label="return t18, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2814068 [label="return t18, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2813959 [label="*t7 = \"id\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2813959 [label="*t7 = \"id\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2813965 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2813965 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_nil_1142166200 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1611581070 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__id__string [label="\"id\":string: \"id\":string
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments[*].Key
+", style=bold, shape=box, color="blue"];
+	N_val__ship_db__string [label="\"ship_db\":string: \"ship_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__shipments__string [label="\"shipments\":string: \"shipments\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2813957 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments
+_obj.Key[*]
+[read] @ ship_db.shipments[*].Key
+_obj.Value[*]
+[read] @ ship_db.shipments[*].Value
+_obj[*]
+[read] @ ship_db.shipments[*]
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_2814021 [label="t15: new Shipment (shipment)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_2813979 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2813881 [label="t2: invoke t1.GetCollection(ctx, \"ship_db\":string, \"shipments\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2813945 [label="t11: invoke t3.FindOne(ctx, t10, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2814050 [label="t17: invoke t12.One(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2813865 [label="t0: &s.db [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2813959 [label="t7: &t6.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments[*].Key
+", style=bold, shape=box, color="green"];
+	N_val_field_2813965 [label="t8: &t6.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments[*].Value
+", style=bold, shape=box, color="green"];
+	N_val_ifacet16 [label="t16: make interface{} <- *Shipment (t15)", style=bold, shape=ellipse, color="black"];
+	N_val_ifacet9 [label="t9: make interface{} <- string (id)
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments[*].Value
+", style=bold, shape=box, color="black"];
+	N_val_indext6 [label="t6: &t5[0:int]
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments[*]
+_obj.Key
+[read] @ ship_db.shipments[*].Key
+_obj.Value
+[read] @ ship_db.shipments[*].Value
+", style=bold, shape=box, color="green"];
+	N_val_param_2813757 [label="s: parameter s : *ShippingServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2813793 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2813814 [label="id: parameter id : string
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments[*].Value
+", style=bold, shape=box, color="black"];
+	N_val_slice_2813957 [label="t10: slice t5[:]
+
+==== tainted ====
+_obj
+[read] @ ship_db.shipments
+_obj.Key[*]
+[read] @ ship_db.shipments[*].Key
+_obj.Value[*]
+[read] @ ship_db.shipments[*].Value
+_obj[*]
+[read] @ ship_db.shipments[*]
+", style=bold, shape=box, color="black"];
+	N_val_struct_ID_string__Name_string__Status_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Shipment [label="struct{ID string; Name string; Status string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment: struct{ID string; Name string; Status string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment", style=bold, shape=ellipse, color="yellow"];
+	N_val_unary_2813865 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2814075 [label="t18: *t15", style=bold, shape=ellipse, color="red"];
+	N_val_param_2813757 -> N_val_field_2813865;
+	N_val_field_2813865 -> N_val_unary_2813865;
+	N_val_param_2813793 -> N_val_call_2813881;
+	N_val__ship_db__string -> N_val_call_2813881;
+	N_val__shipments__string -> N_val_call_2813881;
+	N_val_call_2813881 -> N_val_extrt3;
+	N_val_call_2813881 -> N_val_extrt4;
+	N_val_alloc_2813957 -> N_val_indext6;
+	N_val_indext6 -> N_val_field_2813959;
+	N_val_indext6 -> N_val_field_2813965;
+	N_val_field_2813959 -> N_instr_store_2813959;
+	N_val__id__string -> N_instr_store_2813959;
+	N_val_param_2813814 -> N_val_ifacet9;
+	N_val_field_2813965 -> N_instr_store_2813965;
+	N_val_ifacet9 -> N_instr_store_2813965;
+	N_val_alloc_2813957 -> N_val_slice_2813957;
+	N_val_param_2813793 -> N_val_call_2813945;
+	N_val_slice_2813957 -> N_val_call_2813945;
+	N_nil_1142166200 -> N_val_call_2813945;
+	N_val_call_2813945 -> N_val_extrt12;
+	N_val_call_2813945 -> N_val_extrt13;
+	N_val_extrt13 -> N_val_binary_2813979;
+	N_nil_1611581070 -> N_val_binary_2813979;
+	N_val_struct_ID_string__Name_string__Status_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Shipment -> N_instr_ret_2813990;
+	N_val_extrt13 -> N_instr_ret_2813990;
+	N_val_alloc_2814021 -> N_val_ifacet16;
+	N_val_param_2813793 -> N_val_call_2814050;
+	N_val_ifacet16 -> N_val_call_2814050;
+	N_val_alloc_2814021 -> N_val_unary_2814075;
+	N_val_unary_2814075 -> N_instr_ret_2814068;
+	N_nil_1611581070 -> N_instr_ret_2814068;
+	N_val_indext6 -> N_val_alloc_2813957 [label="[*]", style=dashed, color=blue];
+	N_val_field_2813959 -> N_val_alloc_2813957 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_2813957 -> N_val_alloc_2813957 [label="", style=dashed, color=blue];
+	N_val_field_2813965 -> N_val_alloc_2813957 [label="[*].Value", style=dashed, color=blue];
+}

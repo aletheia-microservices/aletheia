@@ -12,6 +12,7 @@ const (
 	APP_PATH_POSTNOTIFICATION = "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple"
 	APP_PATH_DIGOTA           = "github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota"
 	APP_PATH_DSB_MEDIA_SQL    = "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql"
+	APP_PATH_SOCKSHOP3        = "github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3"
 )
 
 var APPS_SQL_TABLES = map[string][]string{

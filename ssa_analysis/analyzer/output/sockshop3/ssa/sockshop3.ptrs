@@ -1,0 +1,1836 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).AddItem ###
+s (@AddItem): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@AddItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddItem): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@AddItem): (*ssa.UnOp) (*t0)
+
+t3 (@AddItem): (*ssa.Extract) (extract t2 #0)
+
+t4 (@AddItem): (*ssa.Extract) (extract t2 #1)
+
+t5 (@AddItem): (*ssa.Alloc) (local cart (cart))
+	 → t5 (@AddItem): (*ssa.Alloc)
+
+t6 (@AddItem): (*ssa.FieldAddr) (&t5.ID [#0])
+	 → t5 (@AddItem): (*ssa.Alloc)
+
+t7 (@AddItem): (*ssa.FieldAddr) (&t5.Items [#1])
+	 → t5 (@AddItem): (*ssa.Alloc)
+
+t8 (@AddItem): (*ssa.Alloc) (new [1]Item (slicelit))
+	 → t8 (@AddItem): (*ssa.Alloc)
+
+t9 (@AddItem): (*ssa.IndexAddr) (&t8[0:int])
+	 → t8 (@AddItem): (*ssa.Alloc)
+
+t10 (@AddItem): (*ssa.Slice) (slice t8[:])
+	 → t8 (@AddItem): (*ssa.Alloc)
+
+t12 (@AddItem): (*ssa.MakeInterface) (make interface{} <- cart (t11))
+	 → t12 (@AddItem): (*ssa.MakeInterface)
+
+t13 (@AddItem): (*ssa.Call) (invoke t3.InsertOne(ctx, t12))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).DeleteCart ###
+s (@DeleteCart): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@DeleteCart): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteCart): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@DeleteCart): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteCart): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteCart): (*ssa.Extract) (extract t2 #1)
+
+t5 (@DeleteCart): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@DeleteCart): (*ssa.Alloc)
+
+t6 (@DeleteCart): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@DeleteCart): (*ssa.Alloc)
+
+t7 (@DeleteCart): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@DeleteCart): (*ssa.Alloc)
+
+t8 (@DeleteCart): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@DeleteCart): (*ssa.Alloc)
+
+t9 (@DeleteCart): (*ssa.MakeInterface) (make interface{} <- string (customerID))
+	 → t9 (@DeleteCart): (*ssa.MakeInterface)
+
+t10 (@DeleteCart): (*ssa.Slice) (slice t5[:])
+	 → t5 (@DeleteCart): (*ssa.Alloc)
+
+t11 (@DeleteCart): (*ssa.Call) (invoke t3.DeleteMany(ctx, t10))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).GetCart ###
+s (@GetCart): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@GetCart): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetCart): (*ssa.Alloc) (new cart (complit))
+	 → t0 (@GetCart): (*ssa.Alloc)
+
+t1 (@GetCart): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@GetCart): (*ssa.Alloc)
+
+t2 (@GetCart): (*ssa.FieldAddr) (&t0.Items [#1])
+	 → t0 (@GetCart): (*ssa.Alloc)
+
+t3 (@GetCart): (*ssa.UnOp) (*t2)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).GetItem ###
+s (@GetItem): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@GetItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).MergeCarts ###
+s (@MergeCarts): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@MergeCarts): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@MergeCarts): (*ssa.Alloc) (new cart (complit))
+	 → t0 (@MergeCarts): (*ssa.Alloc)
+
+t1 (@MergeCarts): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@MergeCarts): (*ssa.Alloc)
+
+t2 (@MergeCarts): (*ssa.FieldAddr) (&s.db [#0])
+
+t3 (@MergeCarts): (*ssa.UnOp) (*t2)
+
+t5 (@MergeCarts): (*ssa.Extract) (extract t4 #0)
+
+t6 (@MergeCarts): (*ssa.Extract) (extract t4 #1)
+
+t7 (@MergeCarts): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@MergeCarts): (*ssa.Alloc)
+
+t8 (@MergeCarts): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@MergeCarts): (*ssa.Alloc)
+
+t9 (@MergeCarts): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@MergeCarts): (*ssa.Alloc)
+
+t10 (@MergeCarts): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@MergeCarts): (*ssa.Alloc)
+
+t11 (@MergeCarts): (*ssa.MakeInterface) (make interface{} <- string (customerID))
+	 → t11 (@MergeCarts): (*ssa.MakeInterface)
+
+t12 (@MergeCarts): (*ssa.Slice) (slice t7[:])
+	 → t7 (@MergeCarts): (*ssa.Alloc)
+
+t13 (@MergeCarts): (*ssa.MakeInterface) (make interface{} <- *cart (t0))
+	 → t13 (@MergeCarts): (*ssa.MakeInterface)
+
+t15 (@MergeCarts): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t15 (@MergeCarts): (*ssa.Alloc)
+
+t16 (@MergeCarts): (*ssa.IndexAddr) (&t15[0:int])
+	 → t15 (@MergeCarts): (*ssa.Alloc)
+
+t17 (@MergeCarts): (*ssa.FieldAddr) (&t16.Key [#0])
+	 → t15 (@MergeCarts): (*ssa.Alloc)
+
+t18 (@MergeCarts): (*ssa.FieldAddr) (&t16.Value [#1])
+	 → t15 (@MergeCarts): (*ssa.Alloc)
+
+t19 (@MergeCarts): (*ssa.MakeInterface) (make interface{} <- string (sessionID))
+	 → t19 (@MergeCarts): (*ssa.MakeInterface)
+
+t20 (@MergeCarts): (*ssa.Slice) (slice t15[:])
+	 → t15 (@MergeCarts): (*ssa.Alloc)
+
+t21 (@MergeCarts): (*ssa.Call) (invoke t5.DeleteOne(ctx, t20))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).RemoveItem ###
+s (@RemoveItem): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@RemoveItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@RemoveItem): (*ssa.Alloc) (new cart (complit))
+	 → t0 (@RemoveItem): (*ssa.Alloc)
+
+t1 (@RemoveItem): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@RemoveItem): (*ssa.Alloc)
+
+t2 (@RemoveItem): (*ssa.FieldAddr) (&s.db [#0])
+
+t3 (@RemoveItem): (*ssa.UnOp) (*t2)
+
+t5 (@RemoveItem): (*ssa.Extract) (extract t4 #0)
+
+t6 (@RemoveItem): (*ssa.Extract) (extract t4 #1)
+
+t7 (@RemoveItem): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@RemoveItem): (*ssa.Alloc)
+
+t8 (@RemoveItem): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@RemoveItem): (*ssa.Alloc)
+
+t9 (@RemoveItem): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@RemoveItem): (*ssa.Alloc)
+
+t10 (@RemoveItem): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@RemoveItem): (*ssa.Alloc)
+
+t11 (@RemoveItem): (*ssa.MakeInterface) (make interface{} <- string (customerID))
+	 → t11 (@RemoveItem): (*ssa.MakeInterface)
+
+t12 (@RemoveItem): (*ssa.Slice) (slice t7[:])
+	 → t7 (@RemoveItem): (*ssa.Alloc)
+
+t13 (@RemoveItem): (*ssa.MakeInterface) (make interface{} <- *cart (t0))
+	 → t13 (@RemoveItem): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl).UpdateItem ###
+s (@UpdateItem): (*ssa.Parameter) (parameter s : *CartServiceImpl)
+
+ctx (@UpdateItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdateItem): (*ssa.Alloc) (new cart (complit))
+	 → t0 (@UpdateItem): (*ssa.Alloc)
+
+t1 (@UpdateItem): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@UpdateItem): (*ssa.Alloc)
+
+t2 (@UpdateItem): (*ssa.FieldAddr) (&t0.Items [#1])
+	 → t0 (@UpdateItem): (*ssa.Alloc)
+
+t3 (@UpdateItem): (*ssa.Alloc) (new [1]Item (slicelit))
+	 → t3 (@UpdateItem): (*ssa.Alloc)
+
+t4 (@UpdateItem): (*ssa.IndexAddr) (&t3[0:int])
+	 → t3 (@UpdateItem): (*ssa.Alloc)
+
+t5 (@UpdateItem): (*ssa.Slice) (slice t3[:])
+	 → t3 (@UpdateItem): (*ssa.Alloc)
+
+t6 (@UpdateItem): (*ssa.FieldAddr) (&s.db [#0])
+
+t7 (@UpdateItem): (*ssa.UnOp) (*t6)
+
+t9 (@UpdateItem): (*ssa.Extract) (extract t8 #0)
+
+t10 (@UpdateItem): (*ssa.Extract) (extract t8 #1)
+
+t11 (@UpdateItem): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@UpdateItem): (*ssa.Alloc)
+
+t12 (@UpdateItem): (*ssa.IndexAddr) (&t11[0:int])
+	 → t11 (@UpdateItem): (*ssa.Alloc)
+
+t13 (@UpdateItem): (*ssa.FieldAddr) (&t12.Key [#0])
+	 → t11 (@UpdateItem): (*ssa.Alloc)
+
+t14 (@UpdateItem): (*ssa.FieldAddr) (&t12.Value [#1])
+	 → t11 (@UpdateItem): (*ssa.Alloc)
+
+t15 (@UpdateItem): (*ssa.MakeInterface) (make interface{} <- string (customerID))
+	 → t15 (@UpdateItem): (*ssa.MakeInterface)
+
+t16 (@UpdateItem): (*ssa.Slice) (slice t11[:])
+	 → t11 (@UpdateItem): (*ssa.Alloc)
+
+t17 (@UpdateItem): (*ssa.MakeInterface) (make interface{} <- *cart (t0))
+	 → t17 (@UpdateItem): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).AddSock ###
+s (@AddSock): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@AddSock): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddSock): (*ssa.Alloc) (local Sock (sock))
+	 → t0 (@AddSock): (*ssa.Alloc)
+
+t1 (@AddSock): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t2 (@AddSock): (*ssa.UnOp) (*t1)
+
+t4 (@AddSock): (*ssa.Extract) (extract t3 #0)
+
+t5 (@AddSock): (*ssa.Extract) (extract t3 #1)
+
+t7 (@AddSock): (*ssa.MakeInterface) (make interface{} <- Sock (t6))
+	 → t7 (@AddSock): (*ssa.MakeInterface)
+
+t8 (@AddSock): (*ssa.Call) (invoke t4.InsertOne(ctx, t7))
+
+t9 (@AddSock): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@AddSock): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).AddTags ###
+s (@AddTags): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@AddTags): (*ssa.Parameter) (parameter ctx : context.Context)
+
+tags (@AddTags): (*ssa.Parameter) (parameter tags : []string)
+
+t0 (@AddTags): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t1 (@AddTags): (*ssa.UnOp) (*t0)
+
+t3 (@AddTags): (*ssa.Extract) (extract t2 #0)
+
+t4 (@AddTags): (*ssa.Extract) (extract t2 #1)
+
+t5 (@AddTags): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@AddTags): (*ssa.Alloc)
+
+t6 (@AddTags): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@AddTags): (*ssa.Alloc)
+
+t7 (@AddTags): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@AddTags): (*ssa.Alloc)
+
+t8 (@AddTags): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@AddTags): (*ssa.Alloc)
+
+t9 (@AddTags): (*ssa.MakeInterface) (make interface{} <- []string (tags))
+	 → t9 (@AddTags): (*ssa.MakeInterface)
+
+t10 (@AddTags): (*ssa.Slice) (slice t5[:])
+	 → t5 (@AddTags): (*ssa.Alloc)
+
+t11 (@AddTags): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@AddTags): (*ssa.Alloc)
+
+t12 (@AddTags): (*ssa.Slice) (slice t11[:])
+	 → t11 (@AddTags): (*ssa.Alloc)
+
+t13 (@AddTags): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t10))
+	 → t13 (@AddTags): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).Count ###
+s (@Count): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@Count): (*ssa.Parameter) (parameter ctx : context.Context)
+
+tags (@Count): (*ssa.Parameter) (parameter tags : []string)
+
+t0 (@Count): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t1 (@Count): (*ssa.UnOp) (*t0)
+
+t3 (@Count): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Count): (*ssa.Extract) (extract t2 #1)
+
+t5 (@Count): (*ssa.Alloc) (new []Sock (socks))
+	 → t5 (@Count): (*ssa.Alloc)
+
+t6 (@Count): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Count): (*ssa.Alloc)
+
+t7 (@Count): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Count): (*ssa.Alloc)
+
+t9 (@Count): (*ssa.Extract) (extract t8 #0)
+
+t10 (@Count): (*ssa.Extract) (extract t8 #1)
+
+t11 (@Count): (*ssa.MakeInterface) (make interface{} <- *[]Sock (t5))
+	 → t11 (@Count): (*ssa.MakeInterface)
+
+t12 (@Count): (*ssa.Call) (invoke t9.All(ctx, t11))
+
+t13 (@Count): (*ssa.UnOp) (*t5)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).DeleteSock ###
+s (@DeleteSock): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@DeleteSock): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteSock): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t1 (@DeleteSock): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteSock): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteSock): (*ssa.Extract) (extract t2 #1)
+
+t5 (@DeleteSock): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@DeleteSock): (*ssa.Alloc)
+
+t6 (@DeleteSock): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@DeleteSock): (*ssa.Alloc)
+
+t7 (@DeleteSock): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@DeleteSock): (*ssa.Alloc)
+
+t8 (@DeleteSock): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@DeleteSock): (*ssa.Alloc)
+
+t9 (@DeleteSock): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t9 (@DeleteSock): (*ssa.MakeInterface)
+
+t10 (@DeleteSock): (*ssa.Slice) (slice t5[:])
+	 → t5 (@DeleteSock): (*ssa.Alloc)
+
+t11 (@DeleteSock): (*ssa.Call) (invoke t3.DeleteOne(ctx, t10))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).Get ###
+s (@Get): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@Get): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Get): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t1 (@Get): (*ssa.UnOp) (*t0)
+
+t3 (@Get): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Get): (*ssa.Extract) (extract t2 #1)
+
+t5 (@Get): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@Get): (*ssa.Alloc)
+
+t6 (@Get): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@Get): (*ssa.Alloc)
+
+t7 (@Get): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@Get): (*ssa.Alloc)
+
+t8 (@Get): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@Get): (*ssa.Alloc)
+
+t9 (@Get): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t9 (@Get): (*ssa.MakeInterface)
+
+t10 (@Get): (*ssa.Slice) (slice t5[:])
+	 → t5 (@Get): (*ssa.Alloc)
+
+t11 (@Get): (*ssa.Alloc) (new Sock (sock))
+	 → t11 (@Get): (*ssa.Alloc)
+
+t13 (@Get): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Get): (*ssa.Extract) (extract t12 #1)
+
+t15 (@Get): (*ssa.MakeInterface) (make interface{} <- *Sock (t11))
+	 → t15 (@Get): (*ssa.MakeInterface)
+
+t17 (@Get): (*ssa.Alloc) (new [2]string (slicelit))
+	 → t17 (@Get): (*ssa.Alloc)
+
+t18 (@Get): (*ssa.IndexAddr) (&t17[0:int])
+	 → t17 (@Get): (*ssa.Alloc)
+
+t19 (@Get): (*ssa.FieldAddr) (&t11.ImageURL_1 [#4])
+	 → t11 (@Get): (*ssa.Alloc)
+
+t21 (@Get): (*ssa.IndexAddr) (&t17[1:int])
+	 → t17 (@Get): (*ssa.Alloc)
+
+t22 (@Get): (*ssa.FieldAddr) (&t11.ImageURL_2 [#5])
+	 → t11 (@Get): (*ssa.Alloc)
+
+t24 (@Get): (*ssa.Slice) (slice t17[:])
+	 → t17 (@Get): (*ssa.Alloc)
+
+t25 (@Get): (*ssa.FieldAddr) (&t11.ImageURL [#3])
+	 → t11 (@Get): (*ssa.Alloc)
+
+t26 (@Get): (*ssa.FieldAddr) (&t11.TagString [#9])
+	 → t11 (@Get): (*ssa.Alloc)
+
+t28 (@Get): (*ssa.Call) (strings.Split(t27, ",":string))
+	 → t13 (@genSplit): (*ssa.MakeSlice)
+	 → t3 (@explode): (*ssa.MakeSlice)
+
+t29 (@Get): (*ssa.FieldAddr) (&t11.Tags [#8])
+	 → t11 (@Get): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).List ###
+s (@List): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@List): (*ssa.Parameter) (parameter ctx : context.Context)
+
+tags (@List): (*ssa.Parameter) (parameter tags : []string)
+
+t0 (@List): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t1 (@List): (*ssa.UnOp) (*t0)
+
+t3 (@List): (*ssa.Extract) (extract t2 #0)
+
+t4 (@List): (*ssa.Extract) (extract t2 #1)
+
+t5 (@List): (*ssa.Alloc) (new []Sock (allSocks))
+	 → t5 (@List): (*ssa.Alloc)
+
+t6 (@List): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@List): (*ssa.Alloc)
+
+t7 (@List): (*ssa.Slice) (slice t6[:])
+	 → t6 (@List): (*ssa.Alloc)
+
+t9 (@List): (*ssa.Extract) (extract t8 #0)
+
+t10 (@List): (*ssa.Extract) (extract t8 #1)
+
+t11 (@List): (*ssa.MakeInterface) (make interface{} <- *[]Sock (t5))
+	 → t11 (@List): (*ssa.MakeInterface)
+
+t12 (@List): (*ssa.Call) (invoke t9.All(ctx, t11))
+
+t13 (@List): (*ssa.Alloc) (local Sock (sock))
+	 → t13 (@List): (*ssa.Alloc)
+
+t14 (@List): (*ssa.UnOp) (*t5)
+
+t16 (@List): (*ssa.Phi) (phi [0: nil:[]Sock, 4: t16, 6: t35] #socks)
+	 → t35 (@List): (*ssa.Call)
+
+t20 (@List): (*ssa.IndexAddr) (&t14[t18])
+
+t26 (@List): (*ssa.IndexAddr) (&tags[t24])
+
+t28 (@List): (*ssa.FieldAddr) (&t13.Tags [#8])
+	 → t13 (@List): (*ssa.Alloc)
+
+t29 (@List): (*ssa.UnOp) (*t28)
+
+t32 (@List): (*ssa.Alloc) (new [1]Sock (varargs))
+	 → t32 (@List): (*ssa.Alloc)
+
+t33 (@List): (*ssa.IndexAddr) (&t32[0:int])
+	 → t32 (@List): (*ssa.Alloc)
+
+t34 (@List): (*ssa.Slice) (slice t32[:])
+	 → t32 (@List): (*ssa.Alloc)
+
+t35 (@List): (*ssa.Call) (append(t16, t34...))
+	 → t35 (@List): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl).Tags ###
+s (@Tags): (*ssa.Parameter) (parameter s : *CatalogueServiceImpl)
+
+ctx (@Tags): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Tags): (*ssa.FieldAddr) (&s.catalogue_db [#0])
+
+t1 (@Tags): (*ssa.UnOp) (*t0)
+
+t3 (@Tags): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Tags): (*ssa.Extract) (extract t2 #1)
+
+t5 (@Tags): (*ssa.Alloc) (new []Sock (socks))
+	 → t5 (@Tags): (*ssa.Alloc)
+
+t6 (@Tags): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Tags): (*ssa.Alloc)
+
+t7 (@Tags): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Tags): (*ssa.Alloc)
+
+t8 (@Tags): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Tags): (*ssa.Alloc)
+
+t9 (@Tags): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Tags): (*ssa.Alloc)
+
+t10 (@Tags): (*ssa.MakeInterface) (make interface{} <- bool (true:bool))
+	 → t10 (@Tags): (*ssa.MakeInterface)
+
+t11 (@Tags): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Tags): (*ssa.Alloc)
+
+t12 (@Tags): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@Tags): (*ssa.Alloc)
+
+t13 (@Tags): (*ssa.Slice) (slice t12[:])
+	 → t12 (@Tags): (*ssa.Alloc)
+
+t14 (@Tags): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
+	 → t14 (@Tags): (*ssa.Alloc)
+
+t15 (@Tags): (*ssa.IndexAddr) (&t14[0:int])
+	 → t14 (@Tags): (*ssa.Alloc)
+
+t16 (@Tags): (*ssa.Slice) (slice t14[:])
+	 → t14 (@Tags): (*ssa.Alloc)
+
+t18 (@Tags): (*ssa.Extract) (extract t17 #0)
+
+t19 (@Tags): (*ssa.Extract) (extract t17 #1)
+
+t20 (@Tags): (*ssa.MakeInterface) (make interface{} <- *[]Sock (t5))
+	 → t20 (@Tags): (*ssa.MakeInterface)
+
+t21 (@Tags): (*ssa.Call) (invoke t18.All(ctx, t20))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).AddItem ###
+f (@AddItem): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@AddItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t3 (@AddItem): (*ssa.Alloc) (local Sock (sock))
+	 → t3 (@AddItem): (*ssa.Alloc)
+
+t4 (@AddItem): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t5 (@AddItem): (*ssa.UnOp) (*t4)
+
+t8 (@AddItem): (*ssa.Extract) (extract t6 #1)
+
+t10 (@AddItem): (*ssa.FieldAddr) (&f.cart [#2])
+
+t11 (@AddItem): (*ssa.UnOp) (*t10)
+
+t12 (@AddItem): (*ssa.Alloc) (local Item (complit))
+	 → t12 (@AddItem): (*ssa.Alloc)
+
+t13 (@AddItem): (*ssa.FieldAddr) (&t12.ID [#0])
+	 → t12 (@AddItem): (*ssa.Alloc)
+
+t14 (@AddItem): (*ssa.FieldAddr) (&t12.Quantity [#1])
+	 → t12 (@AddItem): (*ssa.Alloc)
+
+t15 (@AddItem): (*ssa.FieldAddr) (&t12.UnitPrice [#2])
+	 → t12 (@AddItem): (*ssa.Alloc)
+
+t16 (@AddItem): (*ssa.FieldAddr) (&t3.Price [#6])
+	 → t3 (@AddItem): (*ssa.Alloc)
+
+t21 (@AddItem): (*ssa.Extract) (extract t19 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).DeleteCart ###
+f (@DeleteCart): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@DeleteCart): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@DeleteCart): (*ssa.FieldAddr) (&f.cart [#2])
+
+t2 (@DeleteCart): (*ssa.UnOp) (*t1)
+
+t3 (@DeleteCart): (*ssa.Call) (invoke t2.DeleteCart(ctx, sessionID))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).DeleteSock ###
+f (@DeleteSock): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@DeleteSock): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteSock): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t1 (@DeleteSock): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteSock): (*ssa.Call) (invoke t1.DeleteSock(ctx, id))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetAddress ###
+f (@GetAddress): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetAddress): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAddress): (*ssa.FieldAddr) (&f.user [#0])
+
+t1 (@GetAddress): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetCard ###
+f (@GetCard): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetCard): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetCard): (*ssa.FieldAddr) (&f.user [#0])
+
+t1 (@GetCard): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetCart ###
+f (@GetCart): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetCart): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@GetCart): (*ssa.FieldAddr) (&f.cart [#2])
+
+t2 (@GetCart): (*ssa.UnOp) (*t1)
+
+t4 (@GetCart): (*ssa.Extract) (extract t3 #0)
+
+t5 (@GetCart): (*ssa.Extract) (extract t3 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetOrder ###
+f (@GetOrder): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetOrder): (*ssa.FieldAddr) (&f.order [#3])
+
+t1 (@GetOrder): (*ssa.UnOp) (*t0)
+
+t4 (@GetOrder): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetOrders ###
+f (@GetOrders): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetOrders): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetOrders): (*ssa.FieldAddr) (&f.order [#3])
+
+t1 (@GetOrders): (*ssa.UnOp) (*t0)
+
+t3 (@GetOrders): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetOrders): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetSock ###
+f (@GetSock): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetSock): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetSock): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t1 (@GetSock): (*ssa.UnOp) (*t0)
+
+t4 (@GetSock): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).GetUser ###
+f (@GetUser): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@GetUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetUser): (*ssa.FieldAddr) (&f.user [#0])
+
+t1 (@GetUser): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).ListItems ###
+f (@ListItems): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@ListItems): (*ssa.Parameter) (parameter ctx : context.Context)
+
+tags (@ListItems): (*ssa.Parameter) (parameter tags : []string)
+
+t0 (@ListItems): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t1 (@ListItems): (*ssa.UnOp) (*t0)
+
+t3 (@ListItems): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ListItems): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).ListTags ###
+f (@ListTags): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@ListTags): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ListTags): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t1 (@ListTags): (*ssa.UnOp) (*t0)
+
+t3 (@ListTags): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ListTags): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).LoadCatalogue ###
+f (@LoadCatalogue): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@LoadCatalogue): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@LoadCatalogue): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t1 (@LoadCatalogue): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).Login ###
+f (@Login): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@Login): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Login): (*ssa.Alloc) (local User (u))
+	 → t0 (@Login): (*ssa.Alloc)
+
+t1 (@Login): (*ssa.FieldAddr) (&f.user [#0])
+
+t2 (@Login): (*ssa.UnOp) (*t1)
+
+t5 (@Login): (*ssa.Extract) (extract t3 #1)
+
+t8 (@Login): (*ssa.FieldAddr) (&f.cart [#2])
+
+t9 (@Login): (*ssa.UnOp) (*t8)
+
+t10 (@Login): (*ssa.FieldAddr) (&t0.UserID [#7])
+	 → t0 (@Login): (*ssa.Alloc)
+
+t12 (@Login): (*ssa.Call) (invoke t9.MergeCarts(ctx, t11, sessionID))
+
+t14 (@Login): (*ssa.FieldAddr) (&t0.UserID [#7])
+	 → t0 (@Login): (*ssa.Alloc)
+
+t17 (@Login): (*ssa.FieldAddr) (&t0.UserID [#7])
+	 → t0 (@Login): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).NewOrder ###
+f (@NewOrder): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@NewOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@NewOrder): (*ssa.FieldAddr) (&f.order [#3])
+
+t1 (@NewOrder): (*ssa.UnOp) (*t0)
+
+t4 (@NewOrder): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).PostAddress ###
+f (@PostAddress): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@PostAddress): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PostAddress): (*ssa.FieldAddr) (&f.user [#0])
+
+t1 (@PostAddress): (*ssa.UnOp) (*t0)
+
+t4 (@PostAddress): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).PostCard ###
+f (@PostCard): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@PostCard): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PostCard): (*ssa.FieldAddr) (&f.user [#0])
+
+t1 (@PostCard): (*ssa.UnOp) (*t0)
+
+t4 (@PostCard): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).Register ###
+f (@Register): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@Register): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Register): (*ssa.FieldAddr) (&f.user [#0])
+
+t1 (@Register): (*ssa.UnOp) (*t0)
+
+t4 (@Register): (*ssa.Extract) (extract t2 #1)
+
+t7 (@Register): (*ssa.FieldAddr) (&f.cart [#2])
+
+t8 (@Register): (*ssa.UnOp) (*t7)
+
+t9 (@Register): (*ssa.Call) (invoke t8.MergeCarts(ctx, t3, sessionID))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).RemoveItem ###
+f (@RemoveItem): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@RemoveItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@RemoveItem): (*ssa.FieldAddr) (&f.cart [#2])
+
+t2 (@RemoveItem): (*ssa.UnOp) (*t1)
+
+t3 (@RemoveItem): (*ssa.Call) (invoke t2.RemoveItem(ctx, sessionID, itemID))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl).UpdateItem ###
+f (@UpdateItem): (*ssa.Parameter) (parameter f : *FrontendImpl)
+
+ctx (@UpdateItem): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdateItem): (*ssa.Alloc) (local Sock (item))
+	 → t0 (@UpdateItem): (*ssa.Alloc)
+
+t1 (@UpdateItem): (*ssa.FieldAddr) (&f.catalogue [#1])
+
+t2 (@UpdateItem): (*ssa.UnOp) (*t1)
+
+t5 (@UpdateItem): (*ssa.Extract) (extract t3 #1)
+
+t7 (@UpdateItem): (*ssa.FieldAddr) (&f.cart [#2])
+
+t8 (@UpdateItem): (*ssa.UnOp) (*t7)
+
+t9 (@UpdateItem): (*ssa.Alloc) (local Item (complit))
+	 → t9 (@UpdateItem): (*ssa.Alloc)
+
+t10 (@UpdateItem): (*ssa.FieldAddr) (&t9.ID [#0])
+	 → t9 (@UpdateItem): (*ssa.Alloc)
+
+t11 (@UpdateItem): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@UpdateItem): (*ssa.Alloc)
+
+t13 (@UpdateItem): (*ssa.FieldAddr) (&t9.Quantity [#1])
+	 → t9 (@UpdateItem): (*ssa.Alloc)
+
+t14 (@UpdateItem): (*ssa.FieldAddr) (&t9.UnitPrice [#2])
+	 → t9 (@UpdateItem): (*ssa.Alloc)
+
+t15 (@UpdateItem): (*ssa.FieldAddr) (&t0.Price [#6])
+	 → t0 (@UpdateItem): (*ssa.Alloc)
+
+t18 (@UpdateItem): (*ssa.Call) (invoke t8.UpdateItem(ctx, sessionID, t17))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderServiceImpl).GetOrder ###
+s (@GetOrder): (*ssa.Parameter) (parameter s : *OrderServiceImpl)
+
+ctx (@GetOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetOrder): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t0 (@GetOrder): (*ssa.Alloc)
+
+t1 (@GetOrder): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@GetOrder): (*ssa.Alloc)
+
+t2 (@GetOrder): (*ssa.FieldAddr) (&t1.Key [#0])
+	 → t0 (@GetOrder): (*ssa.Alloc)
+
+t3 (@GetOrder): (*ssa.FieldAddr) (&t1.Value [#1])
+	 → t0 (@GetOrder): (*ssa.Alloc)
+
+t4 (@GetOrder): (*ssa.MakeInterface) (make interface{} <- string (orderID))
+	 → t4 (@GetOrder): (*ssa.MakeInterface)
+
+t5 (@GetOrder): (*ssa.Slice) (slice t0[:])
+	 → t0 (@GetOrder): (*ssa.Alloc)
+
+t6 (@GetOrder): (*ssa.FieldAddr) (&s.db [#4])
+
+t7 (@GetOrder): (*ssa.UnOp) (*t6)
+
+t9 (@GetOrder): (*ssa.Extract) (extract t8 #0)
+
+t10 (@GetOrder): (*ssa.Extract) (extract t8 #1)
+
+t12 (@GetOrder): (*ssa.Extract) (extract t11 #0)
+
+t13 (@GetOrder): (*ssa.Extract) (extract t11 #1)
+
+t15 (@GetOrder): (*ssa.Alloc) (new Order (order))
+	 → t15 (@GetOrder): (*ssa.Alloc)
+
+t16 (@GetOrder): (*ssa.MakeInterface) (make interface{} <- *Order (t15))
+	 → t16 (@GetOrder): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderServiceImpl).GetOrders ###
+s (@GetOrders): (*ssa.Parameter) (parameter s : *OrderServiceImpl)
+
+ctx (@GetOrders): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetOrders): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t0 (@GetOrders): (*ssa.Alloc)
+
+t1 (@GetOrders): (*ssa.IndexAddr) (&t0[0:int])
+	 → t0 (@GetOrders): (*ssa.Alloc)
+
+t2 (@GetOrders): (*ssa.FieldAddr) (&t1.Key [#0])
+	 → t0 (@GetOrders): (*ssa.Alloc)
+
+t3 (@GetOrders): (*ssa.FieldAddr) (&t1.Value [#1])
+	 → t0 (@GetOrders): (*ssa.Alloc)
+
+t4 (@GetOrders): (*ssa.MakeInterface) (make interface{} <- string (customerID))
+	 → t4 (@GetOrders): (*ssa.MakeInterface)
+
+t5 (@GetOrders): (*ssa.Slice) (slice t0[:])
+	 → t0 (@GetOrders): (*ssa.Alloc)
+
+t6 (@GetOrders): (*ssa.FieldAddr) (&s.db [#4])
+
+t7 (@GetOrders): (*ssa.UnOp) (*t6)
+
+t9 (@GetOrders): (*ssa.Extract) (extract t8 #0)
+
+t10 (@GetOrders): (*ssa.Extract) (extract t8 #1)
+
+t12 (@GetOrders): (*ssa.Extract) (extract t11 #0)
+
+t13 (@GetOrders): (*ssa.Extract) (extract t11 #1)
+
+t15 (@GetOrders): (*ssa.Alloc) (new []Order (orders))
+	 → t15 (@GetOrders): (*ssa.Alloc)
+
+t16 (@GetOrders): (*ssa.MakeInterface) (make interface{} <- *[]Order (t15))
+	 → t16 (@GetOrders): (*ssa.MakeInterface)
+
+t17 (@GetOrders): (*ssa.Call) (invoke t12.All(ctx, t16))
+
+t19 (@GetOrders): (*ssa.UnOp) (*t15)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderServiceImpl).NewOrder ###
+s (@NewOrder): (*ssa.Parameter) (parameter s : *OrderServiceImpl)
+
+t0 (@NewOrder): (*ssa.Alloc) (new *OrderServiceImpl (s))
+	 → t0 (@NewOrder): (*ssa.Alloc)
+
+ctx (@NewOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@NewOrder): (*ssa.Alloc) (new context.Context (ctx))
+	 → t1 (@NewOrder): (*ssa.Alloc)
+
+t2 (@NewOrder): (*ssa.Alloc) (new string (customerID))
+	 → t2 (@NewOrder): (*ssa.Alloc)
+
+t3 (@NewOrder): (*ssa.Alloc) (new string (addressID))
+	 → t3 (@NewOrder): (*ssa.Alloc)
+
+t4 (@NewOrder): (*ssa.Alloc) (new string (cardID))
+	 → t4 (@NewOrder): (*ssa.Alloc)
+
+t5 (@NewOrder): (*ssa.Alloc) (new string (cartID))
+	 → t5 (@NewOrder): (*ssa.Alloc)
+
+t6 (@NewOrder): (*ssa.Alloc) (new sync.WaitGroup (wg))
+	 → t6 (@NewOrder): (*ssa.Alloc)
+
+t8 (@NewOrder): (*ssa.Alloc) (new []Item (items))
+	 → t8 (@NewOrder): (*ssa.Alloc)
+
+t9 (@NewOrder): (*ssa.Alloc) (new []Address (addresses))
+	 → t9 (@NewOrder): (*ssa.Alloc)
+
+t10 (@NewOrder): (*ssa.Alloc) (new []Card (cards))
+	 → t10 (@NewOrder): (*ssa.Alloc)
+
+t11 (@NewOrder): (*ssa.MakeClosure) (make closure (*OrderServiceImpl).NewOrder$1 [t6, t8, t0, t1, t5])
+	 → NewOrder$1 (@NewOrder): (*ssa.Function)
+
+t12 (@NewOrder): (*ssa.MakeClosure) (make closure (*OrderServiceImpl).NewOrder$2 [t6, t0, t1, t2])
+	 → NewOrder$2 (@NewOrder): (*ssa.Function)
+
+t13 (@NewOrder): (*ssa.MakeClosure) (make closure (*OrderServiceImpl).NewOrder$3 [t6, t9, t0, t1, t3])
+	 → NewOrder$3 (@NewOrder): (*ssa.Function)
+
+t14 (@NewOrder): (*ssa.MakeClosure) (make closure (*OrderServiceImpl).NewOrder$4 [t6, t10, t0, t1, t4])
+	 → NewOrder$4 (@NewOrder): (*ssa.Function)
+
+t16 (@NewOrder): (*ssa.UnOp) (*t0)
+
+t17 (@NewOrder): (*ssa.FieldAddr) (&t16.payments [#2])
+
+t18 (@NewOrder): (*ssa.UnOp) (*t17)
+
+t19 (@NewOrder): (*ssa.UnOp) (*t1)
+
+t21 (@NewOrder): (*ssa.Alloc) (local Shipment (shipment))
+	 → t21 (@NewOrder): (*ssa.Alloc)
+
+t22 (@NewOrder): (*ssa.FieldAddr) (&t21.ID [#0])
+	 → t21 (@NewOrder): (*ssa.Alloc)
+
+t24 (@NewOrder): (*ssa.FieldAddr) (&t21.Name [#1])
+	 → t21 (@NewOrder): (*ssa.Alloc)
+
+t26 (@NewOrder): (*ssa.FieldAddr) (&t21.Status [#2])
+	 → t21 (@NewOrder): (*ssa.Alloc)
+
+t27 (@NewOrder): (*ssa.UnOp) (*t0)
+
+t28 (@NewOrder): (*ssa.FieldAddr) (&t27.shipping [#3])
+
+t29 (@NewOrder): (*ssa.UnOp) (*t28)
+
+t30 (@NewOrder): (*ssa.UnOp) (*t1)
+
+t34 (@NewOrder): (*ssa.Extract) (extract t32 #1)
+
+t36 (@NewOrder): (*ssa.Alloc) (local Order (order))
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t37 (@NewOrder): (*ssa.FieldAddr) (&t36.ID [#0])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t38 (@NewOrder): (*ssa.FieldAddr) (&t21.ID [#0])
+	 → t21 (@NewOrder): (*ssa.Alloc)
+
+t40 (@NewOrder): (*ssa.FieldAddr) (&t36.CustomerID [#1])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t42 (@NewOrder): (*ssa.FieldAddr) (&t36.Address [#3])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t43 (@NewOrder): (*ssa.UnOp) (*t9)
+
+t44 (@NewOrder): (*ssa.IndexAddr) (&t43[0:int])
+
+t46 (@NewOrder): (*ssa.FieldAddr) (&t36.Card [#4])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t47 (@NewOrder): (*ssa.UnOp) (*t10)
+
+t48 (@NewOrder): (*ssa.IndexAddr) (&t47[0:int])
+
+t50 (@NewOrder): (*ssa.FieldAddr) (&t36.Items [#5])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t51 (@NewOrder): (*ssa.UnOp) (*t8)
+
+t52 (@NewOrder): (*ssa.FieldAddr) (&t36.Shipment [#6])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t54 (@NewOrder): (*ssa.FieldAddr) (&t36.Date [#7])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t57 (@NewOrder): (*ssa.FieldAddr) (&t36.Total [#8])
+	 → t36 (@NewOrder): (*ssa.Alloc)
+
+t58 (@NewOrder): (*ssa.UnOp) (*t0)
+
+t59 (@NewOrder): (*ssa.FieldAddr) (&t58.db [#4])
+
+t60 (@NewOrder): (*ssa.UnOp) (*t59)
+
+t61 (@NewOrder): (*ssa.UnOp) (*t1)
+
+t63 (@NewOrder): (*ssa.Extract) (extract t62 #0)
+
+t64 (@NewOrder): (*ssa.Extract) (extract t62 #1)
+
+t65 (@NewOrder): (*ssa.UnOp) (*t1)
+
+t67 (@NewOrder): (*ssa.MakeInterface) (make interface{} <- Order (t66))
+	 → t67 (@NewOrder): (*ssa.MakeInterface)
+
+t68 (@NewOrder): (*ssa.Call) (invoke t63.InsertOne(t65, t67))
+
+t71 (@NewOrder): (*ssa.UnOp) (*t0)
+
+t72 (@NewOrder): (*ssa.FieldAddr) (&t71.carts [#1])
+
+t73 (@NewOrder): (*ssa.UnOp) (*t72)
+
+t74 (@NewOrder): (*ssa.UnOp) (*t1)
+
+t76 (@NewOrder): (*ssa.Call) (invoke t73.DeleteCart(t74, t75))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.PaymentServiceImpl).Authorise ###
+s (@Authorise): (*ssa.Parameter) (parameter s : *PaymentServiceImpl)
+
+ctx (@Authorise): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Authorise): (*ssa.Alloc) (local Authorisation (authorization))
+	 → t0 (@Authorise): (*ssa.Alloc)
+
+t1 (@Authorise): (*ssa.FieldAddr) (&t0.Authorised [#0])
+	 → t0 (@Authorise): (*ssa.Alloc)
+
+t2 (@Authorise): (*ssa.FieldAddr) (&t0.Message [#1])
+	 → t0 (@Authorise): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.QueueMasterImpl).Run ###
+q (@Run): (*ssa.Parameter) (parameter q : *QueueMasterImpl)
+
+ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Run): (*ssa.Call) (invoke ctx.Done())
+
+t4 (@Run): (*ssa.Alloc) (new Shipment (shipment))
+	 → t4 (@Run): (*ssa.Alloc)
+
+t5 (@Run): (*ssa.FieldAddr) (&q.q [#0])
+
+t6 (@Run): (*ssa.UnOp) (*t5)
+
+t7 (@Run): (*ssa.MakeInterface) (make interface{} <- *Shipment (t4))
+	 → t7 (@Run): (*ssa.MakeInterface)
+
+t9 (@Run): (*ssa.FieldAddr) (&q.shipping [#1])
+
+t10 (@Run): (*ssa.UnOp) (*t9)
+
+t11 (@Run): (*ssa.FieldAddr) (&t4.ID [#0])
+	 → t4 (@Run): (*ssa.Alloc)
+
+t13 (@Run): (*ssa.Call) (invoke t10.UpdateStatus(ctx, t12, "shipped":string))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingServiceImpl).GetShipment ###
+s (@GetShipment): (*ssa.Parameter) (parameter s : *ShippingServiceImpl)
+
+ctx (@GetShipment): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetShipment): (*ssa.FieldAddr) (&s.db [#1])
+
+t1 (@GetShipment): (*ssa.UnOp) (*t0)
+
+t3 (@GetShipment): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetShipment): (*ssa.Extract) (extract t2 #1)
+
+t5 (@GetShipment): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@GetShipment): (*ssa.Alloc)
+
+t6 (@GetShipment): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@GetShipment): (*ssa.Alloc)
+
+t7 (@GetShipment): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@GetShipment): (*ssa.Alloc)
+
+t8 (@GetShipment): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@GetShipment): (*ssa.Alloc)
+
+t9 (@GetShipment): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t9 (@GetShipment): (*ssa.MakeInterface)
+
+t10 (@GetShipment): (*ssa.Slice) (slice t5[:])
+	 → t5 (@GetShipment): (*ssa.Alloc)
+
+t12 (@GetShipment): (*ssa.Extract) (extract t11 #0)
+
+t13 (@GetShipment): (*ssa.Extract) (extract t11 #1)
+
+t15 (@GetShipment): (*ssa.Alloc) (new Shipment (shipment))
+	 → t15 (@GetShipment): (*ssa.Alloc)
+
+t16 (@GetShipment): (*ssa.MakeInterface) (make interface{} <- *Shipment (t15))
+	 → t16 (@GetShipment): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingServiceImpl).PostShipping ###
+service (@PostShipping): (*ssa.Parameter) (parameter service : *ShippingServiceImpl)
+
+ctx (@PostShipping): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PostShipping): (*ssa.FieldAddr) (&service.db [#1])
+
+t1 (@PostShipping): (*ssa.UnOp) (*t0)
+
+t3 (@PostShipping): (*ssa.Extract) (extract t2 #0)
+
+t4 (@PostShipping): (*ssa.Extract) (extract t2 #1)
+
+t5 (@PostShipping): (*ssa.FieldAddr) (&service.q [#0])
+
+t6 (@PostShipping): (*ssa.UnOp) (*t5)
+
+t7 (@PostShipping): (*ssa.MakeInterface) (make interface{} <- Shipment (shipment))
+	 → t7 (@PostShipping): (*ssa.MakeInterface)
+
+t9 (@PostShipping): (*ssa.MakeInterface) (make interface{} <- Shipment (shipment))
+	 → t9 (@PostShipping): (*ssa.MakeInterface)
+
+t10 (@PostShipping): (*ssa.Call) (invoke t3.InsertOne(ctx, t9))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingServiceImpl).UpdateStatus ###
+s (@UpdateStatus): (*ssa.Parameter) (parameter s : *ShippingServiceImpl)
+
+ctx (@UpdateStatus): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdateStatus): (*ssa.FieldAddr) (&s.db [#1])
+
+t1 (@UpdateStatus): (*ssa.UnOp) (*t0)
+
+t3 (@UpdateStatus): (*ssa.Extract) (extract t2 #0)
+
+t4 (@UpdateStatus): (*ssa.Extract) (extract t2 #1)
+
+t5 (@UpdateStatus): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@UpdateStatus): (*ssa.Alloc)
+
+t6 (@UpdateStatus): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@UpdateStatus): (*ssa.Alloc)
+
+t7 (@UpdateStatus): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@UpdateStatus): (*ssa.Alloc)
+
+t8 (@UpdateStatus): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@UpdateStatus): (*ssa.Alloc)
+
+t9 (@UpdateStatus): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t9 (@UpdateStatus): (*ssa.MakeInterface)
+
+t10 (@UpdateStatus): (*ssa.Slice) (slice t5[:])
+	 → t5 (@UpdateStatus): (*ssa.Alloc)
+
+t11 (@UpdateStatus): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@UpdateStatus): (*ssa.Alloc)
+
+t12 (@UpdateStatus): (*ssa.IndexAddr) (&t11[0:int])
+	 → t11 (@UpdateStatus): (*ssa.Alloc)
+
+t13 (@UpdateStatus): (*ssa.FieldAddr) (&t12.Key [#0])
+	 → t11 (@UpdateStatus): (*ssa.Alloc)
+
+t14 (@UpdateStatus): (*ssa.FieldAddr) (&t12.Value [#1])
+	 → t11 (@UpdateStatus): (*ssa.Alloc)
+
+t15 (@UpdateStatus): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t15 (@UpdateStatus): (*ssa.Alloc)
+
+t16 (@UpdateStatus): (*ssa.IndexAddr) (&t15[0:int])
+	 → t15 (@UpdateStatus): (*ssa.Alloc)
+
+t17 (@UpdateStatus): (*ssa.FieldAddr) (&t16.Key [#0])
+	 → t15 (@UpdateStatus): (*ssa.Alloc)
+
+t18 (@UpdateStatus): (*ssa.FieldAddr) (&t16.Value [#1])
+	 → t15 (@UpdateStatus): (*ssa.Alloc)
+
+t19 (@UpdateStatus): (*ssa.MakeInterface) (make interface{} <- string (status))
+	 → t19 (@UpdateStatus): (*ssa.MakeInterface)
+
+t20 (@UpdateStatus): (*ssa.Slice) (slice t15[:])
+	 → t15 (@UpdateStatus): (*ssa.Alloc)
+
+t21 (@UpdateStatus): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t20))
+	 → t21 (@UpdateStatus): (*ssa.MakeInterface)
+
+t22 (@UpdateStatus): (*ssa.Slice) (slice t11[:])
+	 → t11 (@UpdateStatus): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).Delete ###
+s (@Delete): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Delete): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@Delete): (*ssa.UnOp) (*t0)
+
+t3 (@Delete): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Delete): (*ssa.Extract) (extract t2 #1)
+
+t5 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@Delete): (*ssa.Alloc)
+
+t6 (@Delete): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@Delete): (*ssa.Alloc)
+
+t7 (@Delete): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@Delete): (*ssa.Alloc)
+
+t8 (@Delete): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@Delete): (*ssa.Alloc)
+
+t9 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t9 (@Delete): (*ssa.MakeInterface)
+
+t10 (@Delete): (*ssa.Slice) (slice t5[:])
+	 → t5 (@Delete): (*ssa.Alloc)
+
+t11 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t10))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).GetAddresses ###
+s (@GetAddresses): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@GetAddresses): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAddresses): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@GetAddresses): (*ssa.UnOp) (*t0)
+
+t3 (@GetAddresses): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAddresses): (*ssa.Extract) (extract t2 #1)
+
+t5 (@GetAddresses): (*ssa.Alloc) (new []Address (addresses))
+	 → t5 (@GetAddresses): (*ssa.Alloc)
+
+t6 (@GetAddresses): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetAddresses): (*ssa.Alloc)
+
+t7 (@GetAddresses): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetAddresses): (*ssa.Alloc)
+
+t8 (@GetAddresses): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetAddresses): (*ssa.Alloc)
+
+t9 (@GetAddresses): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetAddresses): (*ssa.Alloc)
+
+t10 (@GetAddresses): (*ssa.MakeInterface) (make interface{} <- string (addressid))
+	 → t10 (@GetAddresses): (*ssa.MakeInterface)
+
+t11 (@GetAddresses): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetAddresses): (*ssa.Alloc)
+
+t12 (@GetAddresses): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@GetAddresses): (*ssa.Alloc)
+
+t13 (@GetAddresses): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@GetAddresses): (*ssa.Alloc)
+
+t14 (@GetAddresses): (*ssa.FieldAddr) (&t13.Key [#0])
+	 → t12 (@GetAddresses): (*ssa.Alloc)
+
+t15 (@GetAddresses): (*ssa.FieldAddr) (&t13.Value [#1])
+	 → t12 (@GetAddresses): (*ssa.Alloc)
+
+t16 (@GetAddresses): (*ssa.MakeInterface) (make interface{} <- bool (true:bool))
+	 → t16 (@GetAddresses): (*ssa.MakeInterface)
+
+t17 (@GetAddresses): (*ssa.Slice) (slice t12[:])
+	 → t12 (@GetAddresses): (*ssa.Alloc)
+
+t18 (@GetAddresses): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
+	 → t18 (@GetAddresses): (*ssa.Alloc)
+
+t19 (@GetAddresses): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@GetAddresses): (*ssa.Alloc)
+
+t20 (@GetAddresses): (*ssa.Slice) (slice t18[:])
+	 → t18 (@GetAddresses): (*ssa.Alloc)
+
+t22 (@GetAddresses): (*ssa.Extract) (extract t21 #0)
+
+t23 (@GetAddresses): (*ssa.Extract) (extract t21 #1)
+
+t24 (@GetAddresses): (*ssa.MakeInterface) (make interface{} <- *[]Address (t5))
+	 → t24 (@GetAddresses): (*ssa.MakeInterface)
+
+t25 (@GetAddresses): (*ssa.Call) (invoke t22.All(ctx, t24))
+
+t26 (@GetAddresses): (*ssa.UnOp) (*t5)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).GetCards ###
+s (@GetCards): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@GetCards): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetCards): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@GetCards): (*ssa.UnOp) (*t0)
+
+t3 (@GetCards): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetCards): (*ssa.Extract) (extract t2 #1)
+
+t5 (@GetCards): (*ssa.Alloc) (new []Card (cards))
+	 → t5 (@GetCards): (*ssa.Alloc)
+
+t6 (@GetCards): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetCards): (*ssa.Alloc)
+
+t7 (@GetCards): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetCards): (*ssa.Alloc)
+
+t8 (@GetCards): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetCards): (*ssa.Alloc)
+
+t9 (@GetCards): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetCards): (*ssa.Alloc)
+
+t10 (@GetCards): (*ssa.MakeInterface) (make interface{} <- string (cardid))
+	 → t10 (@GetCards): (*ssa.MakeInterface)
+
+t11 (@GetCards): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetCards): (*ssa.Alloc)
+
+t12 (@GetCards): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@GetCards): (*ssa.Alloc)
+
+t13 (@GetCards): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@GetCards): (*ssa.Alloc)
+
+t14 (@GetCards): (*ssa.FieldAddr) (&t13.Key [#0])
+	 → t12 (@GetCards): (*ssa.Alloc)
+
+t15 (@GetCards): (*ssa.FieldAddr) (&t13.Value [#1])
+	 → t12 (@GetCards): (*ssa.Alloc)
+
+t16 (@GetCards): (*ssa.MakeInterface) (make interface{} <- bool (true:bool))
+	 → t16 (@GetCards): (*ssa.MakeInterface)
+
+t17 (@GetCards): (*ssa.Slice) (slice t12[:])
+	 → t12 (@GetCards): (*ssa.Alloc)
+
+t18 (@GetCards): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
+	 → t18 (@GetCards): (*ssa.Alloc)
+
+t19 (@GetCards): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@GetCards): (*ssa.Alloc)
+
+t20 (@GetCards): (*ssa.Slice) (slice t18[:])
+	 → t18 (@GetCards): (*ssa.Alloc)
+
+t22 (@GetCards): (*ssa.Extract) (extract t21 #0)
+
+t23 (@GetCards): (*ssa.Extract) (extract t21 #1)
+
+t24 (@GetCards): (*ssa.MakeInterface) (make interface{} <- *[]Card (t5))
+	 → t24 (@GetCards): (*ssa.MakeInterface)
+
+t25 (@GetCards): (*ssa.Call) (invoke t22.All(ctx, t24))
+
+t26 (@GetCards): (*ssa.UnOp) (*t5)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).GetUsers ###
+s (@GetUsers): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@GetUsers): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetUsers): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@GetUsers): (*ssa.UnOp) (*t0)
+
+t3 (@GetUsers): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetUsers): (*ssa.Extract) (extract t2 #1)
+
+t5 (@GetUsers): (*ssa.Alloc) (new []User (users))
+	 → t5 (@GetUsers): (*ssa.Alloc)
+
+t6 (@GetUsers): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetUsers): (*ssa.Alloc)
+
+t7 (@GetUsers): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetUsers): (*ssa.Alloc)
+
+t8 (@GetUsers): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetUsers): (*ssa.Alloc)
+
+t9 (@GetUsers): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetUsers): (*ssa.Alloc)
+
+t10 (@GetUsers): (*ssa.MakeInterface) (make interface{} <- string (userid))
+	 → t10 (@GetUsers): (*ssa.MakeInterface)
+
+t11 (@GetUsers): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetUsers): (*ssa.Alloc)
+
+t13 (@GetUsers): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetUsers): (*ssa.Extract) (extract t12 #1)
+
+t15 (@GetUsers): (*ssa.MakeInterface) (make interface{} <- *[]User (t5))
+	 → t15 (@GetUsers): (*ssa.MakeInterface)
+
+t16 (@GetUsers): (*ssa.Call) (invoke t13.All(ctx, t15))
+
+t17 (@GetUsers): (*ssa.UnOp) (*t5)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).Login ###
+s (@Login): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+
+ctx (@Login): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@Login): (*ssa.FieldAddr) (&s.db [#0])
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+
+t1 (@Login): (*ssa.UnOp) (*t0)
+
+t3 (@Login): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Login): (*ssa.Extract) (extract t2 #1)
+
+t5 (@Login): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@Login): (*ssa.Alloc)
+
+t6 (@Login): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@Login): (*ssa.Alloc)
+
+t7 (@Login): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@Login): (*ssa.Alloc)
+
+t8 (@Login): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@Login): (*ssa.Alloc)
+
+t9 (@Login): (*ssa.MakeInterface) (make interface{} <- string (username))
+	 → t9 (@Login): (*ssa.MakeInterface)
+
+t10 (@Login): (*ssa.Slice) (slice t5[:])
+	 → t5 (@Login): (*ssa.Alloc)
+
+t11 (@Login): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@Login): (*ssa.Alloc)
+
+t12 (@Login): (*ssa.IndexAddr) (&t11[0:int])
+	 → t11 (@Login): (*ssa.Alloc)
+
+t13 (@Login): (*ssa.FieldAddr) (&t12.Key [#0])
+	 → t11 (@Login): (*ssa.Alloc)
+
+t14 (@Login): (*ssa.FieldAddr) (&t12.Value [#1])
+	 → t11 (@Login): (*ssa.Alloc)
+
+t15 (@Login): (*ssa.MakeInterface) (make interface{} <- bool (true:bool))
+	 → t15 (@Login): (*ssa.MakeInterface)
+
+t16 (@Login): (*ssa.Slice) (slice t11[:])
+	 → t11 (@Login): (*ssa.Alloc)
+
+t17 (@Login): (*ssa.Alloc) (new User (user))
+	 → t17 (@Login): (*ssa.Alloc)
+
+t18 (@Login): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
+	 → t18 (@Login): (*ssa.Alloc)
+
+t19 (@Login): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@Login): (*ssa.Alloc)
+
+t20 (@Login): (*ssa.Slice) (slice t18[:])
+	 → t18 (@Login): (*ssa.Alloc)
+
+t22 (@Login): (*ssa.Extract) (extract t21 #0)
+
+t23 (@Login): (*ssa.Extract) (extract t21 #1)
+
+t24 (@Login): (*ssa.MakeInterface) (make interface{} <- *User (t17))
+	 → t24 (@Login): (*ssa.MakeInterface)
+
+t26 (@Login): (*ssa.FieldAddr) (&t17.Password [#4])
+	 → t17 (@Login): (*ssa.Alloc)
+
+t29 (@Login): (*ssa.Call) (errors.New("Unauthorized":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).PostAddress ###
+s (@PostAddress): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@PostAddress): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PostAddress): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@PostAddress): (*ssa.UnOp) (*t0)
+
+t3 (@PostAddress): (*ssa.Extract) (extract t2 #0)
+
+t4 (@PostAddress): (*ssa.Extract) (extract t2 #1)
+
+t5 (@PostAddress): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@PostAddress): (*ssa.Alloc)
+
+t6 (@PostAddress): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@PostAddress): (*ssa.Alloc)
+
+t7 (@PostAddress): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@PostAddress): (*ssa.Alloc)
+
+t8 (@PostAddress): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@PostAddress): (*ssa.Alloc)
+
+t9 (@PostAddress): (*ssa.MakeInterface) (make interface{} <- string (userid))
+	 → t9 (@PostAddress): (*ssa.MakeInterface)
+
+t10 (@PostAddress): (*ssa.Slice) (slice t5[:])
+	 → t5 (@PostAddress): (*ssa.Alloc)
+
+t11 (@PostAddress): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@PostAddress): (*ssa.Alloc)
+
+t12 (@PostAddress): (*ssa.IndexAddr) (&t11[0:int])
+	 → t11 (@PostAddress): (*ssa.Alloc)
+
+t13 (@PostAddress): (*ssa.FieldAddr) (&t12.Key [#0])
+	 → t11 (@PostAddress): (*ssa.Alloc)
+
+t14 (@PostAddress): (*ssa.FieldAddr) (&t12.Value [#1])
+	 → t11 (@PostAddress): (*ssa.Alloc)
+
+t15 (@PostAddress): (*ssa.MakeInterface) (make interface{} <- Address (address))
+	 → t15 (@PostAddress): (*ssa.MakeInterface)
+
+t16 (@PostAddress): (*ssa.Slice) (slice t11[:])
+	 → t11 (@PostAddress): (*ssa.Alloc)
+
+t17 (@PostAddress): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t16))
+	 → t17 (@PostAddress): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).PostCard ###
+s (@PostCard): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@PostCard): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PostCard): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@PostCard): (*ssa.UnOp) (*t0)
+
+t3 (@PostCard): (*ssa.Extract) (extract t2 #0)
+
+t4 (@PostCard): (*ssa.Extract) (extract t2 #1)
+
+t5 (@PostCard): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t5 (@PostCard): (*ssa.Alloc)
+
+t6 (@PostCard): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@PostCard): (*ssa.Alloc)
+
+t7 (@PostCard): (*ssa.FieldAddr) (&t6.Key [#0])
+	 → t5 (@PostCard): (*ssa.Alloc)
+
+t8 (@PostCard): (*ssa.FieldAddr) (&t6.Value [#1])
+	 → t5 (@PostCard): (*ssa.Alloc)
+
+t9 (@PostCard): (*ssa.MakeInterface) (make interface{} <- string (userid))
+	 → t9 (@PostCard): (*ssa.MakeInterface)
+
+t10 (@PostCard): (*ssa.Slice) (slice t5[:])
+	 → t5 (@PostCard): (*ssa.Alloc)
+
+t11 (@PostCard): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t11 (@PostCard): (*ssa.Alloc)
+
+t12 (@PostCard): (*ssa.IndexAddr) (&t11[0:int])
+	 → t11 (@PostCard): (*ssa.Alloc)
+
+t13 (@PostCard): (*ssa.FieldAddr) (&t12.Key [#0])
+	 → t11 (@PostCard): (*ssa.Alloc)
+
+t14 (@PostCard): (*ssa.FieldAddr) (&t12.Value [#1])
+	 → t11 (@PostCard): (*ssa.Alloc)
+
+t15 (@PostCard): (*ssa.MakeInterface) (make interface{} <- Card (card))
+	 → t15 (@PostCard): (*ssa.MakeInterface)
+
+t16 (@PostCard): (*ssa.Slice) (slice t11[:])
+	 → t11 (@PostCard): (*ssa.Alloc)
+
+t17 (@PostCard): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t16))
+	 → t17 (@PostCard): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).PostUser ###
+s (@PostUser): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@PostUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PostUser): (*ssa.Alloc) (local User (u))
+	 → t0 (@PostUser): (*ssa.Alloc)
+
+t1 (@PostUser): (*ssa.FieldAddr) (&s.db [#0])
+
+t2 (@PostUser): (*ssa.UnOp) (*t1)
+
+t4 (@PostUser): (*ssa.Extract) (extract t3 #0)
+
+t5 (@PostUser): (*ssa.Extract) (extract t3 #1)
+
+t7 (@PostUser): (*ssa.MakeInterface) (make interface{} <- User (t6))
+	 → t7 (@PostUser): (*ssa.MakeInterface)
+
+t8 (@PostUser): (*ssa.Call) (invoke t4.InsertOne(ctx, t7))
+
+t9 (@PostUser): (*ssa.FieldAddr) (&t0.UserID [#7])
+	 → t0 (@PostUser): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl).Register ###
+s (@Register): (*ssa.Parameter) (parameter s : *UserServiceImpl)
+
+ctx (@Register): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Register): (*ssa.Alloc) (local User (u))
+	 → t0 (@Register): (*ssa.Alloc)
+
+t1 (@Register): (*ssa.FieldAddr) (&t0.Username [#3])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t2 (@Register): (*ssa.FieldAddr) (&t0.Password [#4])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t3 (@Register): (*ssa.FieldAddr) (&t0.Email [#2])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t4 (@Register): (*ssa.FieldAddr) (&t0.FirstName [#0])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t5 (@Register): (*ssa.FieldAddr) (&t0.LastName [#1])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t6 (@Register): (*ssa.FieldAddr) (&t0.Addresses [#5])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t7 (@Register): (*ssa.FieldAddr) (&t0.Cards [#6])
+	 → t0 (@Register): (*ssa.Alloc)
+
+t8 (@Register): (*ssa.FieldAddr) (&s.db [#0])
+
+t9 (@Register): (*ssa.UnOp) (*t8)
+
+t11 (@Register): (*ssa.Extract) (extract t10 #0)
+
+t12 (@Register): (*ssa.Extract) (extract t10 #1)
+
+t14 (@Register): (*ssa.MakeInterface) (make interface{} <- User (t13))
+	 → t14 (@Register): (*ssa.MakeInterface)
+
+t15 (@Register): (*ssa.Call) (invoke t11.InsertOne(ctx, t14))
+
+t16 (@Register): (*ssa.FieldAddr) (&t0.UserID [#7])
+	 → t0 (@Register): (*ssa.Alloc)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.NewUserServiceImpl ###
+ctx (@NewUserServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+db (@NewUserServiceImpl): (*ssa.Parameter) (parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+
+t0 (@NewUserServiceImpl): (*ssa.Alloc) (new UserServiceImpl (complit))
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+
+t1 (@NewUserServiceImpl): (*ssa.FieldAddr) (&t0.db [#0])
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewUserServiceImpl): (*ssa.Alloc)
+
+t2 (@NewUserServiceImpl): (*ssa.MakeInterface) (make UserService <- *UserServiceImpl (t0))
+	 → t2 (@NewUserServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewUserServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewUserServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewUserServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+

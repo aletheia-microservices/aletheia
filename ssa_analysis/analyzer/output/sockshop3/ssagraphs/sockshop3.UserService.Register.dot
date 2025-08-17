@@ -1,0 +1,236 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2804966 [label="return t17, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2804966 [label="return t17, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2804701 [label="*t1 = username", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804701 [label="*t1 = username", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804724 [label="*t2 = password", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804724 [label="*t2 = password", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804747 [label="*t3 = email", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804747 [label="*t3 = email", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804764 [label="*t4 = first", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804764 [label="*t4 = first", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804785 [label="*t5 = last", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804785 [label="*t5 = last", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804804 [label="*t6 = struct{Street string; Number string; Country string; City string; PostCode string; ID string}{}:Address", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804804 [label="*t6 = struct{Street string; Number string; Country string; City string; PostCode string; ID string}{}:Address", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804829 [label="*t7 = struct{LongNum string; Expires string; CCV string; ID string}{}:Card", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804829 [label="*t7 = struct{LongNum string; Expires string; CCV string; ID string}{}:Card", style=bold, shape=ellipse, color="blue"];
+	N_nil_309667340 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val__user_db__string [label="\"user_db\":string: \"user_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__users__string [label="\"users\":string: \"users\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2804686 [label="t0: local User (u)
+
+==== tainted ====
+_obj
+[write] @ user_db.users
+_obj.Addresses
+[write] @ user_db.users.Addresses
+_obj.Cards
+[write] @ user_db.users.Cards
+_obj.Email
+[write] @ user_db.users.Email
+_obj.FirstName
+[write] @ user_db.users.FirstName
+_obj.LastName
+[write] @ user_db.users.LastName
+_obj.Password
+[write] @ user_db.users.Password
+_obj.UserID
+[write] @ user_db.users.UserID
+_obj.Username
+[write] @ user_db.users.Username
+", style=bold, shape=box, color="orange"];
+	N_val_call_2804909 [label="t10: invoke t9.GetCollection(ctx, \"user_db\":string, \"users\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2804956 [label="t15: invoke t11.InsertOne(ctx, t14)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt11 [label="t11: extract t10 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt12 [label="t12: extract t10 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2804701 [label="t1: &t0.Username [#3]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Username
+", style=bold, shape=box, color="green"];
+	N_val_field_2804724 [label="t2: &t0.Password [#4]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Password
+", style=bold, shape=box, color="green"];
+	N_val_field_2804747 [label="t3: &t0.Email [#2]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Email
+", style=bold, shape=box, color="green"];
+	N_val_field_2804764 [label="t4: &t0.FirstName [#0]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.FirstName
+", style=bold, shape=box, color="green"];
+	N_val_field_2804785 [label="t5: &t0.LastName [#1]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.LastName
+", style=bold, shape=box, color="green"];
+	N_val_field_2804804 [label="t6: &t0.Addresses [#5]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Addresses
+", style=bold, shape=box, color="green"];
+	N_val_field_2804829 [label="t7: &t0.Cards [#6]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Cards
+", style=bold, shape=box, color="green"];
+	N_val_field_2804893 [label="t8: &s.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2804975 [label="t16: &t0.UserID [#7]
+
+==== tainted ====
+_obj
+[write] @ user_db.users.UserID
+", style=bold, shape=box, color="green"];
+	N_val_ifacet14 [label="t14: make interface{} <- User (t13)
+
+==== tainted ====
+_obj
+[write] @ user_db.users
+_obj.Addresses
+[write] @ user_db.users.Addresses
+_obj.Cards
+[write] @ user_db.users.Cards
+_obj.Email
+[write] @ user_db.users.Email
+_obj.FirstName
+[write] @ user_db.users.FirstName
+_obj.LastName
+[write] @ user_db.users.LastName
+_obj.Password
+[write] @ user_db.users.Password
+_obj.UserID
+[write] @ user_db.users.UserID
+_obj.Username
+[write] @ user_db.users.Username
+", style=bold, shape=box, color="black"];
+	N_val_param_2804538 [label="s: parameter s : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2804567 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2804588 [label="username: parameter username : string
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Username
+", style=bold, shape=box, color="black"];
+	N_val_param_2804598 [label="password: parameter password : string
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Password
+", style=bold, shape=box, color="black"];
+	N_val_param_2804608 [label="email: parameter email : string
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Email
+", style=bold, shape=box, color="black"];
+	N_val_param_2804615 [label="first: parameter first : string
+
+==== tainted ====
+_obj
+[write] @ user_db.users.FirstName
+", style=bold, shape=box, color="black"];
+	N_val_param_2804622 [label="last: parameter last : string
+
+==== tainted ====
+_obj
+[write] @ user_db.users.LastName
+", style=bold, shape=box, color="black"];
+	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card [label="struct{LongNum string; Expires string; CCV string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card: struct{LongNum string; Expires string; CCV string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Cards
+", style=bold, shape=box, color="blue"];
+	N_val_struct_Street_string__Number_string__Country_string__City_string__PostCode_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address [label="struct{Street string; Number string; Country string; City string; PostCode string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address: struct{Street string; Number string; Country string; City string; PostCode string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address
+
+==== tainted ====
+_obj
+[write] @ user_db.users.Addresses
+", style=bold, shape=box, color="blue"];
+	N_val_unary_2804893 [label="t9: *t8", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2804962 [label="t13: *t0
+
+==== tainted ====
+_obj
+[write] @ user_db.users
+_obj.Addresses
+[write] @ user_db.users.Addresses
+_obj.Cards
+[write] @ user_db.users.Cards
+_obj.Email
+[write] @ user_db.users.Email
+_obj.FirstName
+[write] @ user_db.users.FirstName
+_obj.LastName
+[write] @ user_db.users.LastName
+_obj.Password
+[write] @ user_db.users.Password
+_obj.UserID
+[write] @ user_db.users.UserID
+_obj.Username
+[write] @ user_db.users.Username
+", style=bold, shape=box, color="red"];
+	N_val_unary_2804975 [label="t17: *t16
+
+==== tainted ====
+_obj
+[write] @ user_db.users.UserID
+", style=bold, shape=box, color="red"];
+	N_val_alloc_2804686 -> N_val_field_2804701;
+	N_val_field_2804701 -> N_instr_store_2804701;
+	N_val_param_2804588 -> N_instr_store_2804701;
+	N_val_alloc_2804686 -> N_val_field_2804724;
+	N_val_field_2804724 -> N_instr_store_2804724;
+	N_val_param_2804598 -> N_instr_store_2804724;
+	N_val_alloc_2804686 -> N_val_field_2804747;
+	N_val_field_2804747 -> N_instr_store_2804747;
+	N_val_param_2804608 -> N_instr_store_2804747;
+	N_val_alloc_2804686 -> N_val_field_2804764;
+	N_val_field_2804764 -> N_instr_store_2804764;
+	N_val_param_2804615 -> N_instr_store_2804764;
+	N_val_alloc_2804686 -> N_val_field_2804785;
+	N_val_field_2804785 -> N_instr_store_2804785;
+	N_val_param_2804622 -> N_instr_store_2804785;
+	N_val_alloc_2804686 -> N_val_field_2804804;
+	N_val_field_2804804 -> N_instr_store_2804804;
+	N_val_struct_Street_string__Number_string__Country_string__City_string__PostCode_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address -> N_instr_store_2804804;
+	N_val_alloc_2804686 -> N_val_field_2804829;
+	N_val_field_2804829 -> N_instr_store_2804829;
+	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card -> N_instr_store_2804829;
+	N_val_param_2804538 -> N_val_field_2804893;
+	N_val_field_2804893 -> N_val_unary_2804893;
+	N_val_param_2804567 -> N_val_call_2804909;
+	N_val__user_db__string -> N_val_call_2804909;
+	N_val__users__string -> N_val_call_2804909;
+	N_val_call_2804909 -> N_val_extrt11;
+	N_val_call_2804909 -> N_val_extrt12;
+	N_val_alloc_2804686 -> N_val_unary_2804962;
+	N_val_unary_2804962 -> N_val_ifacet14;
+	N_val_param_2804567 -> N_val_call_2804956;
+	N_val_ifacet14 -> N_val_call_2804956;
+	N_val_alloc_2804686 -> N_val_field_2804975;
+	N_val_field_2804975 -> N_val_unary_2804975;
+	N_val_unary_2804975 -> N_instr_ret_2804966;
+	N_nil_309667340 -> N_instr_ret_2804966;
+	N_val_field_2804785 -> N_val_alloc_2804686 [label=".LastName", style=dashed, color=blue];
+	N_val_field_2804829 -> N_val_alloc_2804686 [label=".Cards", style=dashed, color=blue];
+	N_val_field_2804804 -> N_val_alloc_2804686 [label=".Addresses", style=dashed, color=blue];
+	N_val_field_2804764 -> N_val_alloc_2804686 [label=".FirstName", style=dashed, color=blue];
+	N_val_field_2804701 -> N_val_alloc_2804686 [label=".Username", style=dashed, color=blue];
+	N_val_field_2804724 -> N_val_alloc_2804686 [label=".Password", style=dashed, color=blue];
+	N_val_field_2804975 -> N_val_alloc_2804686 [label=".UserID", style=dashed, color=blue];
+	N_val_field_2804747 -> N_val_alloc_2804686 [label=".Email", style=dashed, color=blue];
+}

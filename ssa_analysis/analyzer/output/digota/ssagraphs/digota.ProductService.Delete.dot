@@ -1,20 +1,20 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1434157272 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__1434157272 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__357650875 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__357650875 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2770354 [label="return t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2770354 [label="return t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2770471 [label="return t12", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2770471 [label="return t12", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2770524 [label="return t16", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2770524 [label="return t16", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2770391 [label="*t8 = \"id\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2770391 [label="*t8 = \"id\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2770404 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2770404 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
-	N_nil_2065278516 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_instr__1375599547 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1375599547 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__2118650648 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__2118650648 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2728415 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2728415 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2728532 [label="return t12", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2728532 [label="return t12", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2728585 [label="return t16", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2728585 [label="return t16", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2728452 [label="*t8 = \"id\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2728452 [label="*t8 = \"id\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2728465 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2728465 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_nil_207292640 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
 	N_val__id__string [label="\"id\":string: \"id\":string
 
 ==== tainted ====
@@ -23,7 +23,7 @@ _obj
 ", style=bold, shape=box, color="blue"];
 	N_val__products__string [label="\"products\":string: \"products\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__products_db__string [label="\"products_db\":string: \"products_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2770386 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+	N_val_alloc_2728447 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
 
 ==== tainted ====
 _obj
@@ -36,11 +36,11 @@ _obj.Value[*]
 _obj[*]
 [delete] @ products_db.products[*]
 ", style=bold, shape=box, color="orange"];
-	N_val_binary_2770343 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_binary_2770460 [label="t13: t12 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2770302 [label="t2: invoke t1.GetCollection(ctx, \"products_db\":string, \"products\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2770438 [label="t12: invoke t3.DeleteOne(ctx, t11)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2770512 [label="t16: invoke t15.Delete(ctx, id)
+	N_val_binary_2728404 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2728521 [label="t13: t12 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2728363 [label="t2: invoke t1.GetCollection(ctx, \"products_db\":string, \"products\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2728499 [label="t12: invoke t3.DeleteOne(ctx, t11)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2728573 [label="t16: invoke t15.Delete(ctx, id)
 
 ==== tainted ====
 _obj
@@ -48,21 +48,21 @@ _obj
 ", style=bold, shape=box, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2770286 [label="t0: &s.db [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2770391 [label="t8: &t7.Key [#0]
+	N_val_field_2728347 [label="t0: &s.db [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2728452 [label="t8: &t7.Key [#0]
 
 ==== tainted ====
 _obj
 [delete] @ products_db.products[*].Key
 ", style=bold, shape=box, color="green"];
-	N_val_field_2770404 [label="t9: &t7.Value [#1]
+	N_val_field_2728465 [label="t9: &t7.Value [#1]
 
 ==== tainted ====
 _obj
 [delete] @ products_db.products[*].Value
 [rpc] @ SkuService.Delete.id
 ", style=bold, shape=box, color="green"];
-	N_val_field_2770495 [label="t14: &s.skuService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2728556 [label="t14: &s.skuService [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet10 [label="t10: make interface{} <- string (id)
 
 ==== tainted ====
@@ -81,16 +81,16 @@ _obj.Value
 [delete] @ products_db.products[*].Value
 [rpc] @ SkuService.Delete.id
 ", style=bold, shape=box, color="green"];
-	N_val_param_2770194 [label="s: parameter s : *ProductServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2770224 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2770245 [label="id: parameter id : string
+	N_val_param_2728255 [label="s: parameter s : *ProductServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2728285 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2728306 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [delete] @ products_db.products[*].Value
 [rpc] @ SkuService.Delete.id
 ", style=bold, shape=box, color="black"];
-	N_val_slice_2770386 [label="t11: slice t6[:]
+	N_val_slice_2728447 [label="t11: slice t6[:]
 
 ==== tainted ====
 _obj
@@ -103,39 +103,39 @@ _obj.Value[*]
 _obj[*]
 [delete] @ products_db.products[*]
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2770286 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2770495 [label="t15: *t14", style=bold, shape=ellipse, color="red"];
-	N_val_param_2770194 -> N_val_field_2770286;
-	N_val_field_2770286 -> N_val_unary_2770286;
-	N_val_param_2770224 -> N_val_call_2770302;
-	N_val__products_db__string -> N_val_call_2770302;
-	N_val__products__string -> N_val_call_2770302;
-	N_val_call_2770302 -> N_val_extrt3;
-	N_val_call_2770302 -> N_val_extrt4;
-	N_val_extrt4 -> N_val_binary_2770343;
-	N_nil_2065278516 -> N_val_binary_2770343;
-	N_val_extrt4 -> N_instr_ret_2770354;
-	N_val_alloc_2770386 -> N_val_indext7;
-	N_val_indext7 -> N_val_field_2770391;
-	N_val_indext7 -> N_val_field_2770404;
-	N_val_field_2770391 -> N_instr_store_2770391;
-	N_val__id__string -> N_instr_store_2770391;
-	N_val_param_2770245 -> N_val_ifacet10;
-	N_val_field_2770404 -> N_instr_store_2770404;
-	N_val_ifacet10 -> N_instr_store_2770404;
-	N_val_alloc_2770386 -> N_val_slice_2770386;
-	N_val_param_2770224 -> N_val_call_2770438;
-	N_val_slice_2770386 -> N_val_call_2770438;
-	N_val_call_2770438 -> N_val_binary_2770460;
-	N_nil_2065278516 -> N_val_binary_2770460;
-	N_val_call_2770438 -> N_instr_ret_2770471;
-	N_val_param_2770194 -> N_val_field_2770495;
-	N_val_field_2770495 -> N_val_unary_2770495;
-	N_val_param_2770224 -> N_val_call_2770512;
-	N_val_param_2770245 -> N_val_call_2770512;
-	N_val_call_2770512 -> N_instr_ret_2770524;
-	N_val_field_2770404 -> N_val_alloc_2770386 [label="[*].Value", style=dashed, color=blue];
-	N_val_field_2770391 -> N_val_alloc_2770386 [label="[*].Key", style=dashed, color=blue];
-	N_val_slice_2770386 -> N_val_alloc_2770386 [label="", style=dashed, color=blue];
-	N_val_indext7 -> N_val_alloc_2770386 [label="[*]", style=dashed, color=blue];
+	N_val_unary_2728347 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2728556 [label="t15: *t14", style=bold, shape=ellipse, color="red"];
+	N_val_param_2728255 -> N_val_field_2728347;
+	N_val_field_2728347 -> N_val_unary_2728347;
+	N_val_param_2728285 -> N_val_call_2728363;
+	N_val__products_db__string -> N_val_call_2728363;
+	N_val__products__string -> N_val_call_2728363;
+	N_val_call_2728363 -> N_val_extrt3;
+	N_val_call_2728363 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_2728404;
+	N_nil_207292640 -> N_val_binary_2728404;
+	N_val_extrt4 -> N_instr_ret_2728415;
+	N_val_alloc_2728447 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_2728452;
+	N_val_indext7 -> N_val_field_2728465;
+	N_val_field_2728452 -> N_instr_store_2728452;
+	N_val__id__string -> N_instr_store_2728452;
+	N_val_param_2728306 -> N_val_ifacet10;
+	N_val_field_2728465 -> N_instr_store_2728465;
+	N_val_ifacet10 -> N_instr_store_2728465;
+	N_val_alloc_2728447 -> N_val_slice_2728447;
+	N_val_param_2728285 -> N_val_call_2728499;
+	N_val_slice_2728447 -> N_val_call_2728499;
+	N_val_call_2728499 -> N_val_binary_2728521;
+	N_nil_207292640 -> N_val_binary_2728521;
+	N_val_call_2728499 -> N_instr_ret_2728532;
+	N_val_param_2728255 -> N_val_field_2728556;
+	N_val_field_2728556 -> N_val_unary_2728556;
+	N_val_param_2728285 -> N_val_call_2728573;
+	N_val_param_2728306 -> N_val_call_2728573;
+	N_val_call_2728573 -> N_instr_ret_2728585;
+	N_val_indext7 -> N_val_alloc_2728447 [label="[*]", style=dashed, color=blue];
+	N_val_field_2728465 -> N_val_alloc_2728447 [label="[*].Value", style=dashed, color=blue];
+	N_val_field_2728452 -> N_val_alloc_2728447 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_2728447 -> N_val_alloc_2728447 [label="", style=dashed, color=blue];
 }

@@ -82,7 +82,7 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
 	methodName := utils.ExtractMethodNameFromShortFunctionPath(shortFuncPath)
 
-	fmt.Printf("[SSA] iterating function %s\n", shortFuncPath)
+	fmt.Printf("[SSA] iterating function (%s)\n", shortFuncPath)
 
 	graph := ssagraph.NewGraph(app, fn.Pkg.Pkg.Name(), shortFuncPath, serviceName, methodName)
 	if _, exists := funcGraphs[shortFuncPath]; exists {

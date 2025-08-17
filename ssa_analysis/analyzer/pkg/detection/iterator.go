@@ -288,8 +288,8 @@ func taintTracedObjects(obj *abstractgraph.AbstractObject, otherEdge *abstractgr
 				continue
 			}
 
-			fmt.Printf("[TRACE] [RET] expected arg name = %s\n", trace.GetArgumentName())
-			fmt.Printf("[TRACE] [RET] all available args2 = %v\n", otherEdge.GetArguments())
+			fmt.Printf("[TRACE] expected arg name = %s\n", trace.GetArgumentName())
+			fmt.Printf("[TRACE] all available args2 = %v\n", otherEdge.GetArguments())
 			otherArg := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName())
 			if otherArg != nil {
 				selectedTaints := make(map[string][]*abstractgraph.AbstractTaint)
@@ -302,9 +302,9 @@ func taintTracedObjects(obj *abstractgraph.AbstractObject, otherEdge *abstractgr
 						}
 					}
 				}
-				fmt.Printf("[TRACE] [RET] arg2 name = %s\n", otherArg.GetName())
+				fmt.Printf("[TRACE] arg2 name = %s\n", otherArg.GetName())
 				taintMappingTmp := abstractgraph.MergeTaints(otherArg, selectedTaints, false, true)
-				fmt.Printf("[TRACE] [RET] taint mapping tmp = %s\n", taintMappingTmp.String())
+				fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
 				taintMapping.Merge(taintMappingTmp)
 			}
 		}
