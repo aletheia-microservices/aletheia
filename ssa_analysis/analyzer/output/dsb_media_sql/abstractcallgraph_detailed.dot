@@ -8,41 +8,6 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
-
-==== param 1 (movieID) tainted ====
-_obj
-[write, primary] @ movieid_db.movieid.movieid
-
-
-==== param 2 (title) tainted ====
-_obj
-[write, primary] @ movieid_db.movieid.title
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
-_obj.MovieID
-[write, primary] @ movieid_db.movieid.movieid
-_obj.Title
-[write, primary] @ movieid_db.movieid.title
-
-
-==== ret 1 (string) tainted ====
-_obj
-[write, primary] @ movieid_db.movieid.movieid
-", style=bold, shape=box, color="blue"];
-		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
-
-==== param 1 (movieID) tainted ====
-_obj
-[read, primary] @ movieid_db.movieid.movieid
-", style=bold, shape=box, color="blue"];
-		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
-
-==== param 1 (movieID) tainted ====
-_obj
-[read, primary] @ movieinfo_db.movieinfo.movieid
-", style=bold, shape=box, color="blue"];
 		N_APIService_RegisterMovie [label="APIService.RegisterMovie
 
 ==== param 0 (reqID) tainted ====
@@ -113,6 +78,41 @@ _obj
 ==== ret 2 (error) tainted ====
 _obj
 [rpc] @ MovieIdService.ReadMovieId.t4
+", style=bold, shape=box, color="blue"];
+		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[read, primary] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="blue"];
+		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
+
+==== param 1 (movieID) tainted ====
+_obj
+[read, primary] @ movieinfo_db.movieinfo.movieid
+", style=bold, shape=box, color="blue"];
+		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+
+
+==== param 2 (title) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.title
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
+_obj.MovieID
+[write, primary] @ movieid_db.movieid.movieid
+_obj.Title
+[write, primary] @ movieid_db.movieid.title
+
+
+==== ret 1 (string) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {

@@ -155,7 +155,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 								} else {
 									lowerTaint := *existingTaint
 									lowerTaint.dbpath = lowerTaint.dbpath + subpath
-									// [IMPROVE]
+									// [TO BE IMPROVED]
 									// for some reason it works better when we change the
 									// position between newTaint and lowerTaint in call args
 									// e.g., SockShop3: order_db.orders.ID REFERENCES ship_db.shipments.ID

@@ -5,6 +5,7 @@ import (
 	"go/types"
 	"log"
 	"slices"
+	"strings"
 
 	"golang.org/x/tools/go/ssa"
 
@@ -20,6 +21,7 @@ var BLUEPRINT_BACKEND_QUEUE_CALLS = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_NOSQLDATABASE_CALLS = []string{"GetCollection"}
 var BLUEPRINT_BACKEND_NOSQLCOLLECTION_CALLS = []string{"InsertOne", "FindOne", "DeleteOne"}
 var BLUEPRINT_BACKEND_RELATIONALDB_CALLS = []string{"Exec", "Select"}
+var BLUEPRINT_BACKEND_CACHE_CALLS = []string{"Get", "Put"}
 
 type ValFieldPath struct {
 	val       ssa.Value
@@ -72,6 +74,8 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 				// return all args except context
 				// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
 				return queue, topic, call.Call.Method.Id(), opType, valFieldPathLst, true
+			} else if cache, namespace, opType, valFieldPathLst, ok := isBlueprintCacheCall(graph, call, unOp); ok {
+				return cache, namespace, call.Call.Method.Id(), opType, valFieldPathLst, true
 			} else if database, collection, opType, valFieldPathLst, ok := isBlueprintRelationalDBCall(graph, call, unOp); ok {
 				return database, collection, call.Call.Method.Id(), opType, valFieldPathLst, true
 			} else if ok := isBlueprintNoSQLDatabaseCall(graph, call, unOp); ok {
@@ -306,6 +310,62 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				valFieldPathLst[0] = ValFieldPath{val: docVal, fieldpath: database + "." + topic}
 
 				return database, topic, opType, valFieldPathLst, true
+			}
+		}
+
+	}
+	return "", "", -1, nil, false
+}
+
+func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) (string, string, common.DatabaseOperationType, []ValFieldPath, bool) {
+	var opType common.DatabaseOperationType
+	if typeNamed, ok := unOp.Type().(*types.Named); ok {
+		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".Cache" {
+			if !slices.Contains(BLUEPRINT_BACKEND_CACHE_CALLS, call.Call.Method.Name()) {
+				return "", "", -1, nil, false
+			}
+
+			switch call.Call.Method.Name() {
+			case "Get":
+				opType = common.OP_READ
+			case "Put":
+				opType = common.OP_WRITE
+			default:
+				log.Fatalf("[CALLS CACHE] unknown method name for queue call: %s\n", call.String())
+			}
+
+			// e.g., t10 = &u.notificationsQueue [#1]
+			if database, ok := extractDatabaseNameFromUnOp(graph, unOp); ok {
+				namespace := "*"
+				var valFieldPathLst []ValFieldPath
+				cacheKeyVal := call.Call.Args[1]
+				cacheValueVal := call.Call.Args[2]
+				fmt.Printf("[CALLS CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
+				fmt.Printf("[CALLS CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
+
+				// track cache key
+				if _, ok := utils.ExtractStringFromValue(cacheKeyVal); ok {
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheKeyVal, fieldpath: database + "." + namespace + ".Key"})
+				} else if binOp, ok := cacheKeyVal.(*ssa.BinOp); ok {
+					if suffix, ok := utils.ExtractStringFromValue(binOp.Y); ok {
+						namespace, _ = strings.CutPrefix(suffix, ":")
+						// real cache key
+						valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: binOp.X, fieldpath: database + "." + namespace + ".Key"})
+					}
+				} else if call, ok := cacheKeyVal.(*ssa.Call); ok {
+					for _, arg := range call.Call.Args {
+						valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: arg, fieldpath: database + "." + namespace + ".Key"})
+					}
+				}
+
+				if valFieldPathLst == nil {
+					log.Fatalf("[CALLS CACHE] could not save any cache key for call: %v\n", call)
+				}
+
+				// track cache value
+				valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheValueVal, fieldpath: database + "." + namespace + ".Value"})
+
+				return database, namespace, opType, valFieldPathLst, true
 			}
 		}
 

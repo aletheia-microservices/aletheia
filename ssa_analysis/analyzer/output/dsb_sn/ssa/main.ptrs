@@ -1,88 +1,53 @@
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.ComposePostServiceImpl).ComposePost ###
 c (@ComposePost): (*ssa.Parameter) (parameter c : *ComposePostServiceImpl)
 
-t0 (@ComposePost): (*ssa.Alloc) (new *ComposePostServiceImpl (c))
-	 → t0 (@ComposePost): (*ssa.Alloc)
-
 ctx (@ComposePost): (*ssa.Parameter) (parameter ctx : context.Context)
 
 mediaIDs (@ComposePost): (*ssa.Parameter) (parameter mediaIDs : []int64)
 
 mediaTypes (@ComposePost): (*ssa.Parameter) (parameter mediaTypes : []string)
 
-t1 (@ComposePost): (*ssa.Alloc) (new context.Context (ctx))
-	 → t1 (@ComposePost): (*ssa.Alloc)
+t3 (@ComposePost): (*ssa.FieldAddr) (&c.textService [#5])
 
-t2 (@ComposePost): (*ssa.Alloc) (new int64 (reqID))
-	 → t2 (@ComposePost): (*ssa.Alloc)
+t4 (@ComposePost): (*ssa.UnOp) (*t3)
 
-t3 (@ComposePost): (*ssa.Alloc) (new string (username))
-	 → t3 (@ComposePost): (*ssa.Alloc)
+t7 (@ComposePost): (*ssa.Extract) (extract t5 #1)
 
-t4 (@ComposePost): (*ssa.Alloc) (new int64 (userID))
-	 → t4 (@ComposePost): (*ssa.Alloc)
+t8 (@ComposePost): (*ssa.Extract) (extract t5 #2)
 
-t5 (@ComposePost): (*ssa.Alloc) (new string (text))
-	 → t5 (@ComposePost): (*ssa.Alloc)
+t9 (@ComposePost): (*ssa.Extract) (extract t5 #3)
 
-t6 (@ComposePost): (*ssa.Alloc) (new []int64 (mediaIDs))
-	 → t6 (@ComposePost): (*ssa.Alloc)
+t10 (@ComposePost): (*ssa.FieldAddr) (&c.mediaService [#4])
 
-t7 (@ComposePost): (*ssa.Alloc) (new []string (mediaTypes))
-	 → t7 (@ComposePost): (*ssa.Alloc)
+t11 (@ComposePost): (*ssa.UnOp) (*t10)
 
-t8 (@ComposePost): (*ssa.Alloc) (new int64 (postType))
-	 → t8 (@ComposePost): (*ssa.Alloc)
+t13 (@ComposePost): (*ssa.Extract) (extract t12 #0)
 
-t9 (@ComposePost): (*ssa.Alloc) (new int64 (timestamp))
-	 → t9 (@ComposePost): (*ssa.Alloc)
+t14 (@ComposePost): (*ssa.Extract) (extract t12 #1)
 
-t13 (@ComposePost): (*ssa.Alloc) (new error (err1))
-	 → t13 (@ComposePost): (*ssa.Alloc)
+t15 (@ComposePost): (*ssa.FieldAddr) (&c.uniqueIDService [#3])
 
-t14 (@ComposePost): (*ssa.Alloc) (new error (err2))
-	 → t14 (@ComposePost): (*ssa.Alloc)
+t16 (@ComposePost): (*ssa.UnOp) (*t15)
 
-t15 (@ComposePost): (*ssa.Alloc) (new error (err3))
-	 → t15 (@ComposePost): (*ssa.Alloc)
+t19 (@ComposePost): (*ssa.Extract) (extract t17 #1)
 
-t16 (@ComposePost): (*ssa.Alloc) (new error (err4))
-	 → t16 (@ComposePost): (*ssa.Alloc)
+t20 (@ComposePost): (*ssa.FieldAddr) (&c.userService [#2])
 
-t17 (@ComposePost): (*ssa.Alloc) (new int64 (uniqueID))
-	 → t17 (@ComposePost): (*ssa.Alloc)
+t21 (@ComposePost): (*ssa.UnOp) (*t20)
 
-t18 (@ComposePost): (*ssa.Alloc) (new Creator (creator))
-	 → t18 (@ComposePost): (*ssa.Alloc)
+t24 (@ComposePost): (*ssa.Extract) (extract t22 #1)
 
-t19 (@ComposePost): (*ssa.Alloc) (new string (up_text))
-	 → t19 (@ComposePost): (*ssa.Alloc)
+t26 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t26 (@ComposePost): (*ssa.Alloc)
 
-t20 (@ComposePost): (*ssa.Alloc) (new []Media (medias))
-	 → t20 (@ComposePost): (*ssa.Alloc)
+t27 (@ComposePost): (*ssa.Slice) (slice t26[:])
+	 → t26 (@ComposePost): (*ssa.Alloc)
 
-t21 (@ComposePost): (*ssa.Alloc) (new []URL (urls))
-	 → t21 (@ComposePost): (*ssa.Alloc)
+t29 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t29 (@ComposePost): (*ssa.Alloc)
 
-t22 (@ComposePost): (*ssa.Alloc) (new []UserMention (usermentions))
-	 → t22 (@ComposePost): (*ssa.Alloc)
-
-t23 (@ComposePost): (*ssa.Alloc) (new sync.WaitGroup (wg))
-	 → t23 (@ComposePost): (*ssa.Alloc)
-
-t25 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$1 [t23, t19, t22, t21, t13, t0, t1, t2, t5])
-	 → ComposePost$1 (@ComposePost): (*ssa.Function)
-
-t26 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$2 [t23, t20, t14, t0, t1, t2, t7, t6])
-	 → ComposePost$2 (@ComposePost): (*ssa.Function)
-
-t27 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$3 [t23, t17, t15, t0, t1, t2, t8])
-	 → ComposePost$3 (@ComposePost): (*ssa.Function)
-
-t28 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$4 [t23, t18, t16, t0, t1, t2, t4, t3])
-	 → ComposePost$4 (@ComposePost): (*ssa.Function)
-
-t30 (@ComposePost): (*ssa.UnOp) (*t13)
+t30 (@ComposePost): (*ssa.Slice) (slice t29[:])
+	 → t29 (@ComposePost): (*ssa.Alloc)
 
 t32 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
 	 → t32 (@ComposePost): (*ssa.Alloc)
@@ -90,129 +55,79 @@ t32 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
 t33 (@ComposePost): (*ssa.Slice) (slice t32[:])
 	 → t32 (@ComposePost): (*ssa.Alloc)
 
-t34 (@ComposePost): (*ssa.UnOp) (*t13)
+t35 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t35 (@ComposePost): (*ssa.Alloc)
 
-t35 (@ComposePost): (*ssa.UnOp) (*t14)
+t36 (@ComposePost): (*ssa.Slice) (slice t35[:])
+	 → t35 (@ComposePost): (*ssa.Alloc)
 
-t37 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+t37 (@ComposePost): (*ssa.Alloc) (local Post (post))
 	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t38 (@ComposePost): (*ssa.Slice) (slice t37[:])
+t38 (@ComposePost): (*ssa.FieldAddr) (&t37.PostID [#0])
 	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t39 (@ComposePost): (*ssa.UnOp) (*t14)
+t39 (@ComposePost): (*ssa.FieldAddr) (&t37.Creator [#1])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t40 (@ComposePost): (*ssa.UnOp) (*t15)
+t40 (@ComposePost): (*ssa.FieldAddr) (&t37.Medias [#5])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t42 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t42 (@ComposePost): (*ssa.Alloc)
+t41 (@ComposePost): (*ssa.FieldAddr) (&t37.Text [#3])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t43 (@ComposePost): (*ssa.Slice) (slice t42[:])
-	 → t42 (@ComposePost): (*ssa.Alloc)
+t42 (@ComposePost): (*ssa.FieldAddr) (&t37.Urls [#6])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t44 (@ComposePost): (*ssa.UnOp) (*t15)
+t43 (@ComposePost): (*ssa.FieldAddr) (&t37.UserMentions [#4])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t45 (@ComposePost): (*ssa.UnOp) (*t16)
+t44 (@ComposePost): (*ssa.FieldAddr) (&t37.ReqID [#2])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t47 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t47 (@ComposePost): (*ssa.Alloc)
+t45 (@ComposePost): (*ssa.FieldAddr) (&t37.PostType [#8])
+	 → t37 (@ComposePost): (*ssa.Alloc)
 
-t48 (@ComposePost): (*ssa.Slice) (slice t47[:])
-	 → t47 (@ComposePost): (*ssa.Alloc)
+t46 (@ComposePost): (*ssa.Alloc) (local UserMention (um))
+	 → t46 (@ComposePost): (*ssa.Alloc)
 
-t49 (@ComposePost): (*ssa.UnOp) (*t16)
+t48 (@ComposePost): (*ssa.Phi) (phi [8: nil:[]int64, 10: t59] #usermentionIds)
+	 → t59 (@ComposePost): (*ssa.Call)
 
-t50 (@ComposePost): (*ssa.Alloc) (new Post (post))
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t52 (@ComposePost): (*ssa.IndexAddr) (&t7[t50])
 
-t52 (@ComposePost): (*ssa.FieldAddr) (&t50.PostID [#0])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t54 (@ComposePost): (*ssa.FieldAddr) (&t46.UserID [#0])
+	 → t46 (@ComposePost): (*ssa.Alloc)
 
-t54 (@ComposePost): (*ssa.FieldAddr) (&t50.Creator [#1])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t56 (@ComposePost): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t56 (@ComposePost): (*ssa.Alloc)
 
-t55 (@ComposePost): (*ssa.UnOp) (*t20)
+t57 (@ComposePost): (*ssa.IndexAddr) (&t56[0:int])
+	 → t56 (@ComposePost): (*ssa.Alloc)
 
-t56 (@ComposePost): (*ssa.FieldAddr) (&t50.Medias [#5])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t58 (@ComposePost): (*ssa.Slice) (slice t56[:])
+	 → t56 (@ComposePost): (*ssa.Alloc)
 
-t58 (@ComposePost): (*ssa.FieldAddr) (&t50.Text [#3])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t59 (@ComposePost): (*ssa.Call) (append(t48, t58...))
+	 → t59 (@ComposePost): (*ssa.Call)
 
-t59 (@ComposePost): (*ssa.UnOp) (*t21)
+t60 (@ComposePost): (*ssa.FieldAddr) (&c.postStorageService [#0])
 
-t60 (@ComposePost): (*ssa.FieldAddr) (&t50.Urls [#6])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t61 (@ComposePost): (*ssa.UnOp) (*t60)
 
-t61 (@ComposePost): (*ssa.UnOp) (*t22)
+t63 (@ComposePost): (*ssa.Call) (invoke t61.StorePost(ctx, reqID, t62))
 
-t62 (@ComposePost): (*ssa.FieldAddr) (&t50.UserMentions [#4])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t64 (@ComposePost): (*ssa.FieldAddr) (&c.userTimelineService [#1])
 
-t64 (@ComposePost): (*ssa.FieldAddr) (&t50.ReqID [#2])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t65 (@ComposePost): (*ssa.UnOp) (*t64)
 
-t66 (@ComposePost): (*ssa.FieldAddr) (&t50.PostType [#8])
-	 → t50 (@ComposePost): (*ssa.Alloc)
+t66 (@ComposePost): (*ssa.Call) (invoke t65.WriteUserTimeline(ctx, reqID, t18, userID, t2))
 
-t67 (@ComposePost): (*ssa.Alloc) (new []int64 (usermentionIds))
-	 → t67 (@ComposePost): (*ssa.Alloc)
+t67 (@ComposePost): (*ssa.FieldAddr) (&c.homeTimelineService [#6])
 
-t68 (@ComposePost): (*ssa.Alloc) (local UserMention (um))
-	 → t68 (@ComposePost): (*ssa.Alloc)
+t68 (@ComposePost): (*ssa.UnOp) (*t67)
 
-t69 (@ComposePost): (*ssa.UnOp) (*t22)
-
-t74 (@ComposePost): (*ssa.IndexAddr) (&t69[t72])
-
-t76 (@ComposePost): (*ssa.UnOp) (*t67)
-	 → t82 (@ComposePost): (*ssa.Call)
-
-t77 (@ComposePost): (*ssa.FieldAddr) (&t68.UserID [#0])
-	 → t68 (@ComposePost): (*ssa.Alloc)
-
-t79 (@ComposePost): (*ssa.Alloc) (new [1]int64 (varargs))
-	 → t79 (@ComposePost): (*ssa.Alloc)
-
-t80 (@ComposePost): (*ssa.IndexAddr) (&t79[0:int])
-	 → t79 (@ComposePost): (*ssa.Alloc)
-
-t81 (@ComposePost): (*ssa.Slice) (slice t79[:])
-	 → t79 (@ComposePost): (*ssa.Alloc)
-
-t82 (@ComposePost): (*ssa.Call) (append(t76, t81...))
-	 → t82 (@ComposePost): (*ssa.Call)
-
-t83 (@ComposePost): (*ssa.Alloc) (new sync.WaitGroup (wg2))
-	 → t83 (@ComposePost): (*ssa.Alloc)
-
-t85 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$5 [t83, t13, t0, t1, t2, t50])
-	 → ComposePost$5 (@ComposePost): (*ssa.Function)
-
-t86 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$6 [t83, t14, t0, t1, t2, t17, t4, t9])
-	 → ComposePost$6 (@ComposePost): (*ssa.Function)
-
-t87 (@ComposePost): (*ssa.MakeClosure) (make closure (*ComposePostServiceImpl).ComposePost$7 [t83, t15, t0, t1, t2, t17, t4, t9, t67])
-	 → ComposePost$7 (@ComposePost): (*ssa.Function)
-
-t89 (@ComposePost): (*ssa.UnOp) (*t13)
-
-t92 (@ComposePost): (*ssa.UnOp) (*t67)
-	 → t82 (@ComposePost): (*ssa.Call)
-
-t93 (@ComposePost): (*ssa.UnOp) (*t13)
-
-t94 (@ComposePost): (*ssa.UnOp) (*t14)
-
-t97 (@ComposePost): (*ssa.UnOp) (*t67)
-	 → t82 (@ComposePost): (*ssa.Call)
-
-t98 (@ComposePost): (*ssa.UnOp) (*t14)
-
-t100 (@ComposePost): (*ssa.UnOp) (*t67)
-	 → t82 (@ComposePost): (*ssa.Call)
-
-t101 (@ComposePost): (*ssa.UnOp) (*t15)
+t69 (@ComposePost): (*ssa.Call) (invoke t68.WriteHomeTimeline(ctx, reqID, t18, userID, t2, t48))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.HomeTimelineServiceImpl).ReadHomeTimeline ###
@@ -1060,10 +975,10 @@ t16 (@InsertUser): (*ssa.Call) (invoke t3.InsertOne(ctx, t15))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl).Unfollow ###
+s (@Unfollow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
 t0 (@Unfollow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@Unfollow): (*ssa.Alloc)
-
-s (@Unfollow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@Unfollow): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1173,112 +1088,64 @@ t25 (@UnfollowWithUsername): (*ssa.Call) ((*SocialGraphServiceImpl).Unfollow(t20
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.TextServiceImpl).ComposeText ###
 t (@ComposeText): (*ssa.Parameter) (parameter t : *TextServiceImpl)
 
-t0 (@ComposeText): (*ssa.Alloc) (new *TextServiceImpl (t))
-	 → t0 (@ComposeText): (*ssa.Alloc)
-
 ctx (@ComposeText): (*ssa.Parameter) (parameter ctx : context.Context)
 
-t1 (@ComposeText): (*ssa.Alloc) (new context.Context (ctx))
-	 → t1 (@ComposeText): (*ssa.Alloc)
-
-t2 (@ComposeText): (*ssa.Alloc) (new int64 (reqID))
-	 → t2 (@ComposeText): (*ssa.Alloc)
-
-t3 (@ComposeText): (*ssa.Call) (regexp.MustCompile("@[a-zA-Z0-9-_]+":string))
+t0 (@ComposeText): (*ssa.Call) (regexp.MustCompile("@[a-zA-Z0-9-_]+":string))
 	 → t15 (@compile): (*ssa.Alloc)
 
-t4 (@ComposeText): (*ssa.Call) ((*regexp.Regexp).FindAllString(t3, text, -1:int))
+t1 (@ComposeText): (*ssa.Call) ((*regexp.Regexp).FindAllString(t0, text, -1:int))
 	 → t2 (@FindAllString$1): (*ssa.Alloc)
 	 → t14 (@FindAllString$1): (*ssa.Call)
 
-t5 (@ComposeText): (*ssa.Alloc) (new []string (usernames))
-	 → t5 (@ComposeText): (*ssa.Alloc)
+t3 (@ComposeText): (*ssa.Phi) (phi [0: nil:[]string, 2: t13] #usernames)
+	 → t13 (@ComposeText): (*ssa.Call)
 
-t10 (@ComposeText): (*ssa.IndexAddr) (&t4[t8])
+t7 (@ComposeText): (*ssa.IndexAddr) (&t1[t5])
 	 → t2 (@FindAllString$1): (*ssa.Alloc)
 	 → t14 (@FindAllString$1): (*ssa.Call)
 
-t12 (@ComposeText): (*ssa.UnOp) (*t5)
-	 → t17 (@ComposeText): (*ssa.Call)
+t10 (@ComposeText): (*ssa.Alloc) (new [1]string (varargs))
+	 → t10 (@ComposeText): (*ssa.Alloc)
 
-t14 (@ComposeText): (*ssa.Alloc) (new [1]string (varargs))
-	 → t14 (@ComposeText): (*ssa.Alloc)
+t11 (@ComposeText): (*ssa.IndexAddr) (&t10[0:int])
+	 → t10 (@ComposeText): (*ssa.Alloc)
 
-t15 (@ComposeText): (*ssa.IndexAddr) (&t14[0:int])
-	 → t14 (@ComposeText): (*ssa.Alloc)
+t12 (@ComposeText): (*ssa.Slice) (slice t10[:])
+	 → t10 (@ComposeText): (*ssa.Alloc)
 
-t16 (@ComposeText): (*ssa.Slice) (slice t14[:])
-	 → t14 (@ComposeText): (*ssa.Alloc)
+t13 (@ComposeText): (*ssa.Call) (append(t3, t12...))
+	 → t13 (@ComposeText): (*ssa.Call)
 
-t17 (@ComposeText): (*ssa.Call) (append(t12, t16...))
-	 → t17 (@ComposeText): (*ssa.Call)
-
-t18 (@ComposeText): (*ssa.Call) (regexp.MustCompile("(http://|https://...":string))
+t14 (@ComposeText): (*ssa.Call) (regexp.MustCompile("(http://|https://...":string))
 	 → t15 (@compile): (*ssa.Alloc)
 
-t19 (@ComposeText): (*ssa.Alloc) (new []string (url_strings))
-	 → t19 (@ComposeText): (*ssa.Alloc)
-
-t20 (@ComposeText): (*ssa.Call) ((*regexp.Regexp).FindAllString(t18, text, -1:int))
+t15 (@ComposeText): (*ssa.Call) ((*regexp.Regexp).FindAllString(t14, text, -1:int))
 	 → t2 (@FindAllString$1): (*ssa.Alloc)
 	 → t14 (@FindAllString$1): (*ssa.Call)
 
-t21 (@ComposeText): (*ssa.Alloc) (new error (err1))
-	 → t21 (@ComposeText): (*ssa.Alloc)
+t16 (@ComposeText): (*ssa.FieldAddr) (&t.urlShortenService [#0])
 
-t22 (@ComposeText): (*ssa.Alloc) (new error (err2))
-	 → t22 (@ComposeText): (*ssa.Alloc)
+t17 (@ComposeText): (*ssa.UnOp) (*t16)
 
-t23 (@ComposeText): (*ssa.Alloc) (new []URL (urls))
-	 → t23 (@ComposeText): (*ssa.Alloc)
+t19 (@ComposeText): (*ssa.Extract) (extract t18 #0)
 
-t24 (@ComposeText): (*ssa.Alloc) (new []UserMention (user_mentions))
-	 → t24 (@ComposeText): (*ssa.Alloc)
+t20 (@ComposeText): (*ssa.Extract) (extract t18 #1)
 
-t25 (@ComposeText): (*ssa.Alloc) (new sync.WaitGroup (wg))
-	 → t25 (@ComposeText): (*ssa.Alloc)
+t21 (@ComposeText): (*ssa.FieldAddr) (&t.userMentionService [#1])
 
-t27 (@ComposeText): (*ssa.MakeClosure) (make closure (*TextServiceImpl).ComposeText$1 [t25, t23, t21, t0, t1, t2, t19])
-	 → ComposeText$1 (@ComposeText): (*ssa.Function)
+t22 (@ComposeText): (*ssa.UnOp) (*t21)
 
-t28 (@ComposeText): (*ssa.MakeClosure) (make closure (*TextServiceImpl).ComposeText$2 [t25, t24, t22, t0, t1, t2, t5])
-	 → ComposeText$2 (@ComposeText): (*ssa.Function)
+t24 (@ComposeText): (*ssa.Extract) (extract t23 #0)
 
-t30 (@ComposeText): (*ssa.UnOp) (*t21)
+t25 (@ComposeText): (*ssa.Extract) (extract t23 #1)
 
-t32 (@ComposeText): (*ssa.UnOp) (*t24)
-
-t33 (@ComposeText): (*ssa.UnOp) (*t23)
-
-t34 (@ComposeText): (*ssa.UnOp) (*t21)
-
-t35 (@ComposeText): (*ssa.UnOp) (*t22)
-
-t37 (@ComposeText): (*ssa.UnOp) (*t24)
-
-t38 (@ComposeText): (*ssa.UnOp) (*t23)
-
-t39 (@ComposeText): (*ssa.UnOp) (*t22)
-
-t40 (@ComposeText): (*ssa.UnOp) (*t23)
-
-t43 (@ComposeText): (*ssa.UnOp) (*t19)
+t36 (@ComposeText): (*ssa.IndexAddr) (&t15[t34])
 	 → t2 (@FindAllString$1): (*ssa.Alloc)
 	 → t14 (@FindAllString$1): (*ssa.Call)
 
-t46 (@ComposeText): (*ssa.UnOp) (*t24)
+t38 (@ComposeText): (*ssa.IndexAddr) (&t19[t34])
 
-t47 (@ComposeText): (*ssa.UnOp) (*t23)
-
-t52 (@ComposeText): (*ssa.IndexAddr) (&t43[t50])
-	 → t2 (@FindAllString$1): (*ssa.Alloc)
-	 → t14 (@FindAllString$1): (*ssa.Call)
-
-t54 (@ComposeText): (*ssa.UnOp) (*t23)
-
-t55 (@ComposeText): (*ssa.IndexAddr) (&t54[t50])
-
-t56 (@ComposeText): (*ssa.FieldAddr) (&t55.ShortenedUrl [#0])
+t39 (@ComposeText): (*ssa.FieldAddr) (&t38.ShortenedUrl [#0])
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UniqueIdServiceImpl).ComposeUniqueId ###
@@ -2105,207 +1972,184 @@ t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
 
 t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
 	 → t5 (@Sum): (*ssa.Call)
-	 → t8 (@Sum): (*ssa.Call)
-	 → t10 (@Sum): (*ssa.Call)
 	 → t15 (@Sum): (*ssa.Call)
 	 → t17 (@Sum): (*ssa.Call)
 	 → t20 (@Sum): (*ssa.Call)
 	 → t23 (@Sum): (*ssa.Call)
+	 → t8 (@Sum): (*ssa.Call)
+	 → t10 (@Sum): (*ssa.Call)
 	 → t6 (@Sum): (*ssa.Call)
 	 → t31 (@sign): (*ssa.Alloc)
 	 → t58 (@sign): (*ssa.Alloc)
-	 → t34 (@verify): (*ssa.Alloc)
 	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice)
+	 → t34 (@verify): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineServiceImpl).ReadUserTimeline ###
 u (@ReadUserTimeline): (*ssa.Parameter) (parameter u : *UserTimelineServiceImpl)
 
-t0 (@ReadUserTimeline): (*ssa.Alloc) (new *UserTimelineServiceImpl (u))
-	 → t0 (@ReadUserTimeline): (*ssa.Alloc)
-
 ctx (@ReadUserTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
 
-t1 (@ReadUserTimeline): (*ssa.Alloc) (new context.Context (ctx))
-	 → t1 (@ReadUserTimeline): (*ssa.Alloc)
+t0 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.NumRequests [#5])
 
-t2 (@ReadUserTimeline): (*ssa.Alloc) (new int64 (reqID))
-	 → t2 (@ReadUserTimeline): (*ssa.Alloc)
+t3 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.NumRequests [#5])
 
-t3 (@ReadUserTimeline): (*ssa.UnOp) (*t0)
+t5 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t5 (@ReadUserTimeline): (*ssa.Alloc)
 
-t4 (@ReadUserTimeline): (*ssa.FieldAddr) (&t3.NumRequests [#5])
+t6 (@ReadUserTimeline): (*ssa.Slice) (slice t5[:])
+	 → t5 (@ReadUserTimeline): (*ssa.Alloc)
 
-t7 (@ReadUserTimeline): (*ssa.FieldAddr) (&t3.NumRequests [#5])
+t8 (@ReadUserTimeline): (*ssa.Alloc) (new []PostInfo (post_infos))
+	 → t8 (@ReadUserTimeline): (*ssa.Alloc)
 
-t9 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t9 (@ReadUserTimeline): (*ssa.Alloc)
+t9 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.userTimelineCache [#0])
 
-t10 (@ReadUserTimeline): (*ssa.Slice) (slice t9[:])
-	 → t9 (@ReadUserTimeline): (*ssa.Alloc)
+t10 (@ReadUserTimeline): (*ssa.UnOp) (*t9)
 
-t12 (@ReadUserTimeline): (*ssa.Alloc) (new []PostInfo (post_infos))
-	 → t12 (@ReadUserTimeline): (*ssa.Alloc)
+t11 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- *[]PostInfo (t8))
+	 → t11 (@ReadUserTimeline): (*ssa.MakeInterface)
 
-t13 (@ReadUserTimeline): (*ssa.UnOp) (*t0)
+t14 (@ReadUserTimeline): (*ssa.Extract) (extract t12 #1)
 
-t14 (@ReadUserTimeline): (*ssa.FieldAddr) (&t13.userTimelineCache [#0])
+t17 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t17 (@ReadUserTimeline): (*ssa.Alloc)
 
-t15 (@ReadUserTimeline): (*ssa.UnOp) (*t14)
+t18 (@ReadUserTimeline): (*ssa.Slice) (slice t17[:])
+	 → t17 (@ReadUserTimeline): (*ssa.Alloc)
 
-t16 (@ReadUserTimeline): (*ssa.UnOp) (*t1)
+t19 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheHits [#3])
 
-t17 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- *[]PostInfo (t12))
-	 → t17 (@ReadUserTimeline): (*ssa.MakeInterface)
+t22 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheHits [#3])
 
-t20 (@ReadUserTimeline): (*ssa.Extract) (extract t18 #1)
+t23 (@ReadUserTimeline): (*ssa.MakeMap) (make map[int64]bool )
+	 → t23 (@ReadUserTimeline): (*ssa.MakeMap)
 
-t23 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t23 (@ReadUserTimeline): (*ssa.Alloc)
+t24 (@ReadUserTimeline): (*ssa.Alloc) (local PostInfo (post_info))
+	 → t24 (@ReadUserTimeline): (*ssa.Alloc)
 
-t24 (@ReadUserTimeline): (*ssa.Slice) (slice t23[:])
-	 → t23 (@ReadUserTimeline): (*ssa.Alloc)
+t25 (@ReadUserTimeline): (*ssa.UnOp) (*t8)
 
-t25 (@ReadUserTimeline): (*ssa.UnOp) (*t0)
+t27 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheMiss [#4])
 
-t26 (@ReadUserTimeline): (*ssa.FieldAddr) (&t25.CacheHits [#3])
+t30 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheMiss [#4])
 
-t29 (@ReadUserTimeline): (*ssa.FieldAddr) (&t25.CacheHits [#3])
+t31 (@ReadUserTimeline): (*ssa.Phi) (phi [7: nil:[]int64, 10: t42] #post_ids)
+	 → t42 (@ReadUserTimeline): (*ssa.Call)
 
-t30 (@ReadUserTimeline): (*ssa.Alloc) (new []int64 (post_ids))
-	 → t30 (@ReadUserTimeline): (*ssa.Alloc)
+t35 (@ReadUserTimeline): (*ssa.IndexAddr) (&t25[t33])
 
-t31 (@ReadUserTimeline): (*ssa.MakeMap) (make map[int64]bool )
-	 → t31 (@ReadUserTimeline): (*ssa.MakeMap)
+t37 (@ReadUserTimeline): (*ssa.FieldAddr) (&t24.PostID [#0])
+	 → t24 (@ReadUserTimeline): (*ssa.Alloc)
 
-t32 (@ReadUserTimeline): (*ssa.Alloc) (local PostInfo (post_info))
-	 → t32 (@ReadUserTimeline): (*ssa.Alloc)
+t39 (@ReadUserTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t39 (@ReadUserTimeline): (*ssa.Alloc)
 
-t33 (@ReadUserTimeline): (*ssa.UnOp) (*t12)
+t40 (@ReadUserTimeline): (*ssa.IndexAddr) (&t39[0:int])
+	 → t39 (@ReadUserTimeline): (*ssa.Alloc)
 
-t35 (@ReadUserTimeline): (*ssa.UnOp) (*t0)
+t41 (@ReadUserTimeline): (*ssa.Slice) (slice t39[:])
+	 → t39 (@ReadUserTimeline): (*ssa.Alloc)
 
-t36 (@ReadUserTimeline): (*ssa.FieldAddr) (&t35.CacheMiss [#4])
+t42 (@ReadUserTimeline): (*ssa.Call) (append(t31, t41...))
+	 → t42 (@ReadUserTimeline): (*ssa.Call)
 
-t39 (@ReadUserTimeline): (*ssa.FieldAddr) (&t35.CacheMiss [#4])
+t43 (@ReadUserTimeline): (*ssa.FieldAddr) (&t24.PostID [#0])
+	 → t24 (@ReadUserTimeline): (*ssa.Alloc)
 
-t43 (@ReadUserTimeline): (*ssa.IndexAddr) (&t33[t41])
+t49 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.userTimelineDB [#1])
 
-t45 (@ReadUserTimeline): (*ssa.UnOp) (*t30)
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t50 (@ReadUserTimeline): (*ssa.UnOp) (*t49)
 
-t46 (@ReadUserTimeline): (*ssa.FieldAddr) (&t32.PostID [#0])
-	 → t32 (@ReadUserTimeline): (*ssa.Alloc)
+t52 (@ReadUserTimeline): (*ssa.Extract) (extract t51 #0)
 
-t48 (@ReadUserTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
-	 → t48 (@ReadUserTimeline): (*ssa.Alloc)
+t53 (@ReadUserTimeline): (*ssa.Extract) (extract t51 #1)
 
-t49 (@ReadUserTimeline): (*ssa.IndexAddr) (&t48[0:int])
-	 → t48 (@ReadUserTimeline): (*ssa.Alloc)
+t55 (@ReadUserTimeline): (*ssa.Phi) (phi [11: nil:[]int64, 26: t116] #new_post_ids)
+	 → t132 (@ReadUserTimeline): (*ssa.Call)
 
-t50 (@ReadUserTimeline): (*ssa.Slice) (slice t48[:])
-	 → t48 (@ReadUserTimeline): (*ssa.Alloc)
+t56 (@ReadUserTimeline): (*ssa.Call) (append(t55, t31...))
+	 → t56 (@ReadUserTimeline): (*ssa.Call)
+	 → t132 (@ReadUserTimeline): (*ssa.Call)
 
-t51 (@ReadUserTimeline): (*ssa.Call) (append(t45, t50...))
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t57 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
+	 → t57 (@ReadUserTimeline): (*ssa.Alloc)
 
-t52 (@ReadUserTimeline): (*ssa.FieldAddr) (&t32.PostID [#0])
-	 → t32 (@ReadUserTimeline): (*ssa.Alloc)
+t58 (@ReadUserTimeline): (*ssa.IndexAddr) (&t57[0:int])
+	 → t57 (@ReadUserTimeline): (*ssa.Alloc)
 
-t54 (@ReadUserTimeline): (*ssa.UnOp) (*t30)
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t59 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- []int64 (t56))
+	 → t59 (@ReadUserTimeline): (*ssa.MakeInterface)
 
-t59 (@ReadUserTimeline): (*ssa.UnOp) (*t0)
+t60 (@ReadUserTimeline): (*ssa.Slice) (slice t57[:])
+	 → t57 (@ReadUserTimeline): (*ssa.Alloc)
 
-t60 (@ReadUserTimeline): (*ssa.FieldAddr) (&t59.userTimelineDB [#1])
+t62 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.postStorageService [#2])
 
-t61 (@ReadUserTimeline): (*ssa.UnOp) (*t60)
+t63 (@ReadUserTimeline): (*ssa.UnOp) (*t62)
 
-t62 (@ReadUserTimeline): (*ssa.UnOp) (*t1)
+t65 (@ReadUserTimeline): (*ssa.Extract) (extract t64 #0)
 
-t64 (@ReadUserTimeline): (*ssa.Extract) (extract t63 #0)
+t66 (@ReadUserTimeline): (*ssa.Extract) (extract t64 #1)
 
-t65 (@ReadUserTimeline): (*ssa.Extract) (extract t63 #1)
+t68 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t68 (@ReadUserTimeline): (*ssa.Alloc)
 
-t67 (@ReadUserTimeline): (*ssa.Phi) (phi [11: nil:[]int64, 26: t133] #new_post_ids)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t69 (@ReadUserTimeline): (*ssa.Slice) (slice t68[:])
+	 → t68 (@ReadUserTimeline): (*ssa.Alloc)
 
-t68 (@ReadUserTimeline): (*ssa.UnOp) (*t30)
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t70 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
 
-t69 (@ReadUserTimeline): (*ssa.Call) (append(t67, t68...))
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t71 (@ReadUserTimeline): (*ssa.IndexAddr) (&t70[0:int])
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
 
-t70 (@ReadUserTimeline): (*ssa.UnOp) (*t30)
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t72 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- int64 (userID))
+	 → t72 (@ReadUserTimeline): (*ssa.MakeInterface)
 
-t71 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
-	 → t71 (@ReadUserTimeline): (*ssa.Alloc)
+t73 (@ReadUserTimeline): (*ssa.Slice) (slice t70[:])
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
 
-t72 (@ReadUserTimeline): (*ssa.IndexAddr) (&t71[0:int])
-	 → t71 (@ReadUserTimeline): (*ssa.Alloc)
+t75 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
+	 → t75 (@ReadUserTimeline): (*ssa.Alloc)
 
-t73 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- []int64 (t70))
-	 → t73 (@ReadUserTimeline): (*ssa.MakeInterface)
+t76 (@ReadUserTimeline): (*ssa.IndexAddr) (&t75[0:int])
+	 → t75 (@ReadUserTimeline): (*ssa.Alloc)
 
-t74 (@ReadUserTimeline): (*ssa.Slice) (slice t71[:])
-	 → t71 (@ReadUserTimeline): (*ssa.Alloc)
+t77 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- int64 (stop))
+	 → t77 (@ReadUserTimeline): (*ssa.MakeInterface)
 
-t76 (@ReadUserTimeline): (*ssa.Alloc) (new chan bool (post_channel))
-	 → t76 (@ReadUserTimeline): (*ssa.Alloc)
+t78 (@ReadUserTimeline): (*ssa.Slice) (slice t75[:])
+	 → t75 (@ReadUserTimeline): (*ssa.Alloc)
 
-t77 (@ReadUserTimeline): (*ssa.MakeChan) (make chan bool 0:int)
-	 → t77 (@ReadUserTimeline): (*ssa.MakeChan)
+t81 (@ReadUserTimeline): (*ssa.Extract) (extract t80 #0)
 
-t78 (@ReadUserTimeline): (*ssa.Alloc) (new chan error (err_post_channel))
-	 → t78 (@ReadUserTimeline): (*ssa.Alloc)
+t82 (@ReadUserTimeline): (*ssa.Extract) (extract t80 #1)
 
-t79 (@ReadUserTimeline): (*ssa.MakeChan) (make chan error 0:int)
-	 → t79 (@ReadUserTimeline): (*ssa.MakeChan)
+t84 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t84 (@ReadUserTimeline): (*ssa.Alloc)
 
-t80 (@ReadUserTimeline): (*ssa.MakeClosure) (make closure (*UserTimelineServiceImpl).ReadUserTimeline$1 [t0, t1, t2, t30, t78, t76])
-	 → ReadUserTimeline$1 (@ReadUserTimeline): (*ssa.Function)
+t85 (@ReadUserTimeline): (*ssa.Slice) (slice t84[:])
+	 → t84 (@ReadUserTimeline): (*ssa.Alloc)
 
-t83 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t83 (@ReadUserTimeline): (*ssa.Alloc)
+t87 (@ReadUserTimeline): (*ssa.Extract) (extract t86 #0)
 
-t84 (@ReadUserTimeline): (*ssa.Slice) (slice t83[:])
-	 → t83 (@ReadUserTimeline): (*ssa.Alloc)
+t88 (@ReadUserTimeline): (*ssa.Extract) (extract t86 #1)
 
-t85 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
-	 → t85 (@ReadUserTimeline): (*ssa.Alloc)
-
-t86 (@ReadUserTimeline): (*ssa.IndexAddr) (&t85[0:int])
-	 → t85 (@ReadUserTimeline): (*ssa.Alloc)
-
-t87 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- int64 (userID))
-	 → t87 (@ReadUserTimeline): (*ssa.MakeInterface)
-
-t88 (@ReadUserTimeline): (*ssa.Slice) (slice t85[:])
-	 → t85 (@ReadUserTimeline): (*ssa.Alloc)
-
-t90 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
+t90 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
 	 → t90 (@ReadUserTimeline): (*ssa.Alloc)
 
-t91 (@ReadUserTimeline): (*ssa.IndexAddr) (&t90[0:int])
+t91 (@ReadUserTimeline): (*ssa.Slice) (slice t90[:])
 	 → t90 (@ReadUserTimeline): (*ssa.Alloc)
 
-t92 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- int64 (stop))
-	 → t92 (@ReadUserTimeline): (*ssa.MakeInterface)
+t92 (@ReadUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
+	 → t92 (@ReadUserTimeline): (*ssa.Alloc)
 
-t93 (@ReadUserTimeline): (*ssa.Slice) (slice t90[:])
-	 → t90 (@ReadUserTimeline): (*ssa.Alloc)
+t93 (@ReadUserTimeline): (*ssa.IndexAddr) (&t92[0:int])
+	 → t92 (@ReadUserTimeline): (*ssa.Alloc)
+
+t94 (@ReadUserTimeline): (*ssa.Slice) (slice t92[:])
+	 → t92 (@ReadUserTimeline): (*ssa.Alloc)
 
 t96 (@ReadUserTimeline): (*ssa.Extract) (extract t95 #0)
 
@@ -2317,138 +2161,80 @@ t99 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
 t100 (@ReadUserTimeline): (*ssa.Slice) (slice t99[:])
 	 → t99 (@ReadUserTimeline): (*ssa.Alloc)
 
-t102 (@ReadUserTimeline): (*ssa.Extract) (extract t101 #0)
+t101 (@ReadUserTimeline): (*ssa.Alloc) (new UserPosts (user_posts))
+	 → t101 (@ReadUserTimeline): (*ssa.Alloc)
 
-t103 (@ReadUserTimeline): (*ssa.Extract) (extract t101 #1)
+t102 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- *UserPosts (t101))
+	 → t102 (@ReadUserTimeline): (*ssa.MakeInterface)
 
-t105 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t105 (@ReadUserTimeline): (*ssa.Alloc)
+t105 (@ReadUserTimeline): (*ssa.Extract) (extract t103 #1)
 
-t106 (@ReadUserTimeline): (*ssa.Slice) (slice t105[:])
-	 → t105 (@ReadUserTimeline): (*ssa.Alloc)
+t107 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t107 (@ReadUserTimeline): (*ssa.Alloc)
 
-t107 (@ReadUserTimeline): (*ssa.UnOp) (*t1)
+t108 (@ReadUserTimeline): (*ssa.Slice) (slice t107[:])
+	 → t107 (@ReadUserTimeline): (*ssa.Alloc)
 
-t108 (@ReadUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
-	 → t108 (@ReadUserTimeline): (*ssa.Alloc)
+t109 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t109 (@ReadUserTimeline): (*ssa.Alloc)
 
-t109 (@ReadUserTimeline): (*ssa.IndexAddr) (&t108[0:int])
-	 → t108 (@ReadUserTimeline): (*ssa.Alloc)
+t110 (@ReadUserTimeline): (*ssa.Slice) (slice t109[:])
+	 → t109 (@ReadUserTimeline): (*ssa.Alloc)
 
-t110 (@ReadUserTimeline): (*ssa.Slice) (slice t108[:])
-	 → t108 (@ReadUserTimeline): (*ssa.Alloc)
-
-t112 (@ReadUserTimeline): (*ssa.Extract) (extract t111 #0)
-
-t113 (@ReadUserTimeline): (*ssa.Extract) (extract t111 #1)
-
-t115 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t115 (@ReadUserTimeline): (*ssa.Alloc)
-
-t116 (@ReadUserTimeline): (*ssa.Slice) (slice t115[:])
-	 → t115 (@ReadUserTimeline): (*ssa.Alloc)
-
-t117 (@ReadUserTimeline): (*ssa.Alloc) (new UserPosts (user_posts))
-	 → t117 (@ReadUserTimeline): (*ssa.Alloc)
-
-t118 (@ReadUserTimeline): (*ssa.UnOp) (*t1)
-
-t119 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- *UserPosts (t117))
-	 → t119 (@ReadUserTimeline): (*ssa.MakeInterface)
-
-t122 (@ReadUserTimeline): (*ssa.Extract) (extract t120 #1)
-
-t124 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t124 (@ReadUserTimeline): (*ssa.Alloc)
-
-t125 (@ReadUserTimeline): (*ssa.Slice) (slice t124[:])
-	 → t124 (@ReadUserTimeline): (*ssa.Alloc)
-
-t126 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t126 (@ReadUserTimeline): (*ssa.Alloc)
-
-t127 (@ReadUserTimeline): (*ssa.Slice) (slice t126[:])
-	 → t126 (@ReadUserTimeline): (*ssa.Alloc)
-
-t128 (@ReadUserTimeline): (*ssa.Call) (errors.New("Failed to find po...":string))
+t111 (@ReadUserTimeline): (*ssa.Call) (errors.New("Failed to find po...":string))
 	 → t2 (@New): (*ssa.MakeInterface)
 
-t129 (@ReadUserTimeline): (*ssa.Alloc) (local PostInfo (post))
+t112 (@ReadUserTimeline): (*ssa.Alloc) (local PostInfo (post))
+	 → t112 (@ReadUserTimeline): (*ssa.Alloc)
+
+t113 (@ReadUserTimeline): (*ssa.FieldAddr) (&t101.Posts [#1])
+	 → t101 (@ReadUserTimeline): (*ssa.Alloc)
+
+t114 (@ReadUserTimeline): (*ssa.UnOp) (*t113)
+
+t116 (@ReadUserTimeline): (*ssa.Phi) (phi [25: nil:[]int64, 27: t116, 28: t132] #new_post_ids)
+	 → t132 (@ReadUserTimeline): (*ssa.Call)
+
+t120 (@ReadUserTimeline): (*ssa.IndexAddr) (&t114[t118])
+
+t122 (@ReadUserTimeline): (*ssa.FieldAddr) (&t112.PostID [#0])
+	 → t112 (@ReadUserTimeline): (*ssa.Alloc)
+
+t127 (@ReadUserTimeline): (*ssa.FieldAddr) (&t112.PostID [#0])
+	 → t112 (@ReadUserTimeline): (*ssa.Alloc)
+
+t129 (@ReadUserTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
 	 → t129 (@ReadUserTimeline): (*ssa.Alloc)
 
-t130 (@ReadUserTimeline): (*ssa.FieldAddr) (&t117.Posts [#1])
-	 → t117 (@ReadUserTimeline): (*ssa.Alloc)
-
-t131 (@ReadUserTimeline): (*ssa.UnOp) (*t130)
-
-t133 (@ReadUserTimeline): (*ssa.Phi) (phi [25: nil:[]int64, 27: t133, 28: t149] #new_post_ids)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
-
-t137 (@ReadUserTimeline): (*ssa.IndexAddr) (&t131[t135])
-
-t139 (@ReadUserTimeline): (*ssa.FieldAddr) (&t129.PostID [#0])
+t130 (@ReadUserTimeline): (*ssa.IndexAddr) (&t129[0:int])
 	 → t129 (@ReadUserTimeline): (*ssa.Alloc)
 
-t144 (@ReadUserTimeline): (*ssa.FieldAddr) (&t129.PostID [#0])
+t131 (@ReadUserTimeline): (*ssa.Slice) (slice t129[:])
 	 → t129 (@ReadUserTimeline): (*ssa.Alloc)
 
-t146 (@ReadUserTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
-	 → t146 (@ReadUserTimeline): (*ssa.Alloc)
+t132 (@ReadUserTimeline): (*ssa.Call) (append(t116, t131...))
+	 → t132 (@ReadUserTimeline): (*ssa.Call)
 
-t147 (@ReadUserTimeline): (*ssa.IndexAddr) (&t146[0:int])
-	 → t146 (@ReadUserTimeline): (*ssa.Alloc)
+t133 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t133 (@ReadUserTimeline): (*ssa.Alloc)
 
-t148 (@ReadUserTimeline): (*ssa.Slice) (slice t146[:])
-	 → t146 (@ReadUserTimeline): (*ssa.Alloc)
+t134 (@ReadUserTimeline): (*ssa.Slice) (slice t133[:])
+	 → t133 (@ReadUserTimeline): (*ssa.Alloc)
 
-t149 (@ReadUserTimeline): (*ssa.Call) (append(t133, t148...))
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
+t137 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.userTimelineCache [#0])
 
-t150 (@ReadUserTimeline): (*ssa.UnOp) (*t0)
+t138 (@ReadUserTimeline): (*ssa.UnOp) (*t137)
 
-t151 (@ReadUserTimeline): (*ssa.FieldAddr) (&t150.userTimelineCache [#0])
+t139 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- []int64 (t56))
+	 → t139 (@ReadUserTimeline): (*ssa.MakeInterface)
 
-t152 (@ReadUserTimeline): (*ssa.UnOp) (*t151)
+t140 (@ReadUserTimeline): (*ssa.Call) (invoke t138.Put(ctx, t7, t139))
 
-t153 (@ReadUserTimeline): (*ssa.UnOp) (*t1)
+t142 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t142 (@ReadUserTimeline): (*ssa.Alloc)
 
-t154 (@ReadUserTimeline): (*ssa.UnOp) (*t30)
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
-
-t155 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- []int64 (t154))
-	 → t155 (@ReadUserTimeline): (*ssa.MakeInterface)
-
-t156 (@ReadUserTimeline): (*ssa.Call) (invoke t152.Put(t153, t11, t155))
-
-t158 (@ReadUserTimeline): (*ssa.UnOp) (*t76)
-	 → t77 (@ReadUserTimeline): (*ssa.MakeChan)
-
-t159 (@ReadUserTimeline): (*ssa.UnOp) (*t78)
-	 → t79 (@ReadUserTimeline): (*ssa.MakeChan)
-
-t163 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t163 (@ReadUserTimeline): (*ssa.Alloc)
-
-t164 (@ReadUserTimeline): (*ssa.Slice) (slice t163[:])
-	 → t163 (@ReadUserTimeline): (*ssa.Alloc)
-
-t165 (@ReadUserTimeline): (*ssa.UnOp) (*t30)
-	 → t51 (@ReadUserTimeline): (*ssa.Call)
-	 → t69 (@ReadUserTimeline): (*ssa.Call)
-	 → t149 (@ReadUserTimeline): (*ssa.Call)
-
-t167 (@ReadUserTimeline): (*ssa.Extract) (extract t160 #3)
-
-t168 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
-	 → t168 (@ReadUserTimeline): (*ssa.Alloc)
-
-t169 (@ReadUserTimeline): (*ssa.Slice) (slice t168[:])
-	 → t168 (@ReadUserTimeline): (*ssa.Alloc)
-
-t170 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- string ("blocking select m...":string))
-	 → t170 (@ReadUserTimeline): (*ssa.MakeInterface)
+t143 (@ReadUserTimeline): (*ssa.Slice) (slice t142[:])
+	 → t142 (@ReadUserTimeline): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineServiceImpl).WriteUserTimeline ###

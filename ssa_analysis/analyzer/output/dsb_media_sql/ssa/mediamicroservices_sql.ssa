@@ -65,110 +65,6 @@ Block #3: mediamicroservices_sql.APIService.RegisterMovie.if.then
 Block #4: mediamicroservices_sql.APIService.RegisterMovie.if.done
 			00: t16 = *t0
 			01: return t16, t13, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			movieIdDB = parameter movieIdDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
-Function: mediamicroservices_sql.NewMovieIdServiceImpl
-Block #0: mediamicroservices_sql.NewMovieIdServiceImpl.entry
-			00: t0 = new MovieIdServiceImpl (complit)
-			01: t1 = &t0.movieIdDB [#0]
-			02: *t1 = movieIdDB
-			03: t2 = make MovieIdService <- *MovieIdServiceImpl (t0)
-			04: return t2, nil:error
-		Parameters:
-Function: mediamicroservices_sql.init
-Block #0: mediamicroservices_sql.init.entry
-			00: t0 = *init$guard
-			01: if t0 goto 2 else 1
-Block #1: mediamicroservices_sql.init.init.start
-			00: *init$guard = true:bool
-			01: t1 = context.init()
-			02: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
-			03: jump 2
-Block #2: mediamicroservices_sql.init.init.done
-			00: return
-		Parameters:
-Function: mediamicroservices_sql.main
-Block #0: mediamicroservices_sql.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewMovieIdServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = NewMovieInfoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
-			05: t5 = extract t4 #0
-			06: t6 = extract t4 #1
-			07: t7 = NewAPIServiceImpl(t0, t2, t5)
-			08: t8 = extract t7 #0
-			09: t9 = extract t7 #1
-			10: t10 = invoke t8.ReadMovie(t0, 0:int64, "":string)
-			11: return
-		Parameters:
-			ctx = parameter ctx : context.Context
-			movieIdService = parameter movieIdService : MovieIdService
-			movieInfoService = parameter movieInfoService : MovieInfoService
-Function: mediamicroservices_sql.NewAPIServiceImpl
-Block #0: mediamicroservices_sql.NewAPIServiceImpl.entry
-			00: t0 = new APIServiceImpl (complit)
-			01: t1 = &t0.movieIdService [#0]
-			02: t2 = &t0.movieInfoService [#1]
-			03: *t1 = movieIdService
-			04: *t2 = movieInfoService
-			05: t3 = make APIService <- *APIServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdService
-	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
-	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, string, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl
-	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
-		Parameters:
-			m = parameter m : *MovieIdServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			movieID = parameter movieID : string
-Function: mediamicroservices_sql.MovieIdService.ReadMovieId
-Block #0: mediamicroservices_sql.MovieIdService.ReadMovieId.entry
-			00: t0 = new MovieId (movieId)
-			01: t1 = &m.movieIdDB [#0]
-			02: t2 = *t1
-			03: t3 = make interface{} <- *MovieId (t0)
-			04: t4 = new [1]any (varargs)
-			05: t5 = &t4[0:int]
-			06: t6 = make any <- string (movieID)
-			07: *t5 = t6
-			08: t7 = slice t4[:]
-			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...)
-			10: t9 = *t0
-			11: return t9, t8
-	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, string, error)
-		Parameters:
-			m = parameter m : *MovieIdServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			movieID = parameter movieID : string
-			title = parameter title : string
-Function: mediamicroservices_sql.MovieIdService.RegisterMovieId
-Block #0: mediamicroservices_sql.MovieIdService.RegisterMovieId.entry
-			00: t0 = local MovieId (movieId)
-			01: t1 = &t0.MovieID [#0]
-			02: t2 = &t0.Title [#1]
-			03: *t1 = movieID
-			04: *t2 = title
-			05: t3 = &m.movieIdDB [#0]
-			06: t4 = *t3
-			07: t5 = new [2]any (varargs)
-			08: t6 = &t5[0:int]
-			09: t7 = make any <- string (movieID)
-			10: *t6 = t7
-			11: t8 = &t5[1:int]
-			12: t9 = make any <- string (title)
-			13: *t8 = t9
-			14: t10 = slice t5[:]
-			15: t11 = invoke t4.Exec(ctx, "INSERT INTO movie...":string, t10...)
-			16: t12 = extract t11 #0
-			17: t13 = extract t11 #1
-			18: t14 = *t0
-			19: return t14, movieID, t13
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoServiceImpl
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
 		Parameters:
@@ -227,6 +123,30 @@ Block #0: mediamicroservices_sql.MovieInfoService.WriteMovieInfo.entry
 			24: return t17, t16
 		Parameters:
 			ctx = parameter ctx : context.Context
+			movieIdService = parameter movieIdService : MovieIdService
+			movieInfoService = parameter movieInfoService : MovieInfoService
+Function: mediamicroservices_sql.NewAPIServiceImpl
+Block #0: mediamicroservices_sql.NewAPIServiceImpl.entry
+			00: t0 = new APIServiceImpl (complit)
+			01: t1 = &t0.movieIdService [#0]
+			02: t2 = &t0.movieInfoService [#1]
+			03: *t1 = movieIdService
+			04: *t2 = movieInfoService
+			05: t3 = make APIService <- *APIServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId
+		Parameters:
+			ctx = parameter ctx : context.Context
+			movieIdDB = parameter movieIdDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
+Function: mediamicroservices_sql.NewMovieIdServiceImpl
+Block #0: mediamicroservices_sql.NewMovieIdServiceImpl.entry
+			00: t0 = new MovieIdServiceImpl (complit)
+			01: t1 = &t0.movieIdDB [#0]
+			02: *t1 = movieIdDB
+			03: t2 = make MovieIdService <- *MovieIdServiceImpl (t0)
+			04: return t2, nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
 			movieInfoDB = parameter movieInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
 Function: mediamicroservices_sql.NewMovieInfoServiceImpl
 Block #0: mediamicroservices_sql.NewMovieInfoServiceImpl.entry
@@ -235,11 +155,91 @@ Block #0: mediamicroservices_sql.NewMovieInfoServiceImpl.entry
 			02: *t1 = movieInfoDB
 			03: t2 = make MovieInfoService <- *MovieInfoServiceImpl (t0)
 			04: return t2, nil:error
+		Parameters:
+Function: mediamicroservices_sql.init
+Block #0: mediamicroservices_sql.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: mediamicroservices_sql.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			03: jump 2
+Block #2: mediamicroservices_sql.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
+		Parameters:
+			m = parameter m : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+Function: mediamicroservices_sql.MovieIdService.ReadMovieId
+Block #0: mediamicroservices_sql.MovieIdService.ReadMovieId.entry
+			00: t0 = new MovieId (movieId)
+			01: t1 = &m.movieIdDB [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *MovieId (t0)
+			04: t4 = new [1]any (varargs)
+			05: t5 = &t4[0:int]
+			06: t6 = make any <- string (movieID)
+			07: *t5 = t6
+			08: t7 = slice t4[:]
+			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...)
+			10: t9 = *t0
+			11: return t9, t8
+	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, string, error)
+		Parameters:
+			m = parameter m : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			title = parameter title : string
+Function: mediamicroservices_sql.MovieIdService.RegisterMovieId
+Block #0: mediamicroservices_sql.MovieIdService.RegisterMovieId.entry
+			00: t0 = local MovieId (movieId)
+			01: t1 = &t0.MovieID [#0]
+			02: t2 = &t0.Title [#1]
+			03: *t1 = movieID
+			04: *t2 = title
+			05: t3 = &m.movieIdDB [#0]
+			06: t4 = *t3
+			07: t5 = new [2]any (varargs)
+			08: t6 = &t5[0:int]
+			09: t7 = make any <- string (movieID)
+			10: *t6 = t7
+			11: t8 = &t5[1:int]
+			12: t9 = make any <- string (title)
+			13: *t8 = t9
+			14: t10 = slice t5[:]
+			15: t11 = invoke t4.Exec(ctx, "INSERT INTO movie...":string, t10...)
+			16: t12 = extract t11 #0
+			17: t13 = extract t11 #1
+			18: t14 = *t0
+			19: return t14, movieID, t13
+	Global: init$guard, Type: *bool
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIService
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
 	Method: func(ctx context.Context, reqID int64, movieID string, title string, casts string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdService
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, string, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoService
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
 	Method: func(ctx context.Context, reqID int64, movieID string, title string, casts string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
-	Global: init$guard, Type: *bool
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId
+		Parameters:
+Function: mediamicroservices_sql.main
+Block #0: mediamicroservices_sql.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewMovieIdServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = NewMovieInfoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+			05: t5 = extract t4 #0
+			06: t6 = extract t4 #1
+			07: t7 = NewAPIServiceImpl(t0, t2, t5)
+			08: t8 = extract t7 #0
+			09: t9 = extract t7 #1
+			10: t10 = invoke t8.ReadMovie(t0, 0:int64, "":string)
+			11: return

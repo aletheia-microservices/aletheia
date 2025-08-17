@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2805018 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2805018 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2805041 [label="t2: invoke t1.List(ctx, tags, order, pageNum, pageSize)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2724259 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2724259 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2724282 [label="t2: invoke t1.List(ctx, tags, order, pageNum, pageSize)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,43 +15,43 @@ _obj
 _obj
 [rpc] @ CatalogueService.List.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_2805027 [label="t0: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2804895 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2804922 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2804943 [label="tags: parameter tags : []string
+	N_val_field_2724268 [label="t0: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2724136 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2724163 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2724184 [label="tags: parameter tags : []string
 
 ==== tainted ====
 _obj
 [rpc] @ CatalogueService.List.tags
 ", style=bold, shape=box, color="black"];
-	N_val_param_2804958 [label="order: parameter order : string
+	N_val_param_2724199 [label="order: parameter order : string
 
 ==== tainted ====
 _obj
 [rpc] @ CatalogueService.List.order
 ", style=bold, shape=box, color="black"];
-	N_val_param_2804972 [label="pageNum: parameter pageNum : int
+	N_val_param_2724213 [label="pageNum: parameter pageNum : int
 
 ==== tainted ====
 _obj
 [rpc] @ CatalogueService.List.pageNum
 ", style=bold, shape=box, color="black"];
-	N_val_param_2804985 [label="pageSize: parameter pageSize : int
+	N_val_param_2724226 [label="pageSize: parameter pageSize : int
 
 ==== tainted ====
 _obj
 [rpc] @ CatalogueService.List.pageSize
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2805027 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2804895 -> N_val_field_2805027;
-	N_val_field_2805027 -> N_val_unary_2805027;
-	N_val_param_2804922 -> N_val_call_2805041;
-	N_val_param_2804943 -> N_val_call_2805041;
-	N_val_param_2804958 -> N_val_call_2805041;
-	N_val_param_2804972 -> N_val_call_2805041;
-	N_val_param_2804985 -> N_val_call_2805041;
-	N_val_call_2805041 -> N_val_extrt3;
-	N_val_call_2805041 -> N_val_extrt4;
-	N_val_extrt3 -> N_instr_ret_2805018;
-	N_val_extrt4 -> N_instr_ret_2805018;
+	N_val_unary_2724268 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2724136 -> N_val_field_2724268;
+	N_val_field_2724268 -> N_val_unary_2724268;
+	N_val_param_2724163 -> N_val_call_2724282;
+	N_val_param_2724184 -> N_val_call_2724282;
+	N_val_param_2724199 -> N_val_call_2724282;
+	N_val_param_2724213 -> N_val_call_2724282;
+	N_val_param_2724226 -> N_val_call_2724282;
+	N_val_call_2724282 -> N_val_extrt3;
+	N_val_call_2724282 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_2724259;
+	N_val_extrt4 -> N_instr_ret_2724259;
 }

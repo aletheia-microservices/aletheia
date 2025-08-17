@@ -1,7 +1,16 @@
 {
   "hometimeline_cache": {
     "name": "hometimeline_cache",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "hometimeline_cache.*.Key",
+          "hometimeline_cache.*.Value"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "post_cache": {
     "name": "post_cache",
@@ -9,15 +18,48 @@
   },
   "post_db": {
     "name": "post_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "post",
+        "fields": [
+          "post_db.post",
+          "post_db.post.PostID"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "socialgraph_cache": {
     "name": "socialgraph_cache",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "followers",
+        "fields": [
+          "socialgraph_cache.followers.Key",
+          "socialgraph_cache.followers.Value",
+          "socialgraph_cache.followers.Value[*]",
+          "socialgraph_cache.followers.Value[*].FollowerID"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "socialgraph_db": {
     "name": "socialgraph_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "socialgraph",
+        "fields": [
+          "socialgraph_db.socialgraph",
+          "socialgraph_db.socialgraph.Followees",
+          "socialgraph_db.socialgraph.Followers",
+          "socialgraph_db.socialgraph.UserID"
+        ],
+        "constraints": [
+          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID"
+        ]
+      }
+    ]
   },
   "urlshorten_db": {
     "name": "urlshorten_db",
@@ -29,14 +71,58 @@
   },
   "user_db": {
     "name": "user_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "user",
+        "fields": [
+          "user_db.user",
+          "user_db.user.FirstName",
+          "user_db.user.LastName",
+          "user_db.user.PwdHashed",
+          "user_db.user.Salt",
+          "user_db.user.UserID",
+          "user_db.user.Username",
+          "user_db.user[*]",
+          "user_db.user[*].Key",
+          "user_db.user[*].Value"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "usertimeline_cache": {
     "name": "usertimeline_cache",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "usertimeline_cache.*.Key",
+          "usertimeline_cache.*.Value",
+          "usertimeline_cache.*.Value[*]",
+          "usertimeline_cache.*.Value[*].PostID"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "usertimeline_db": {
     "name": "usertimeline_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "usertimeline",
+        "fields": [
+          "usertimeline_db.usertimeline",
+          "usertimeline_db.usertimeline.Posts",
+          "usertimeline_db.usertimeline.Posts[*]",
+          "usertimeline_db.usertimeline.Posts[*].PostID",
+          "usertimeline_db.usertimeline.Posts[*].Timestamp",
+          "usertimeline_db.usertimeline.UserID"
+        ],
+        "constraints": [
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID",
+          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key"
+        ]
+      }
+    ]
   }
 }

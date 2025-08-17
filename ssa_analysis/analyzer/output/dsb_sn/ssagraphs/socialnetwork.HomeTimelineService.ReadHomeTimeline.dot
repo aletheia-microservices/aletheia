@@ -1,67 +1,92 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1809094877 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
-	N_instr__1809094877 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
-	N_instr__247679643 [label="if t12 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__247679643 [label="if t12 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__940966489 [label="if t0 goto 1 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__940966489 [label="if t0 goto 1 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2805809 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2805809 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806007 [label="return t14, t10", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806007 [label="return t14, t10", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806396 [label="return t15, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806396 [label="return t15, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1355243566 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr__1034139048 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__1034139048 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__1219161881 [label="if t12 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1219161881 [label="if t12 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__897130392 [label="if t0 goto 1 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__897130392 [label="if t0 goto 1 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3096377 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3096377 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3096575 [label="return t14, t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3096575 [label="return t14, t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3096964 [label="return t15, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3096964 [label="return t15, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_211047114 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val_0_int64 [label="0:int64: 0:int64", style=bold, shape=ellipse, color="black"];
-	N_val_10_int [label="10:int: 10:int", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2805823 [label="t1: new [0]int64 (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2805883 [label="t4: new []int64 (postIDs)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2806021 [label="t13: new [0]int64 (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_binary_2805783 [label="t0: stop <= start", style=bold, shape=ellipse, color="black"];
-	N_val_binary_2805801 [label="t12: start < 0:int64", style=bold, shape=ellipse, color="black"];
-	N_val_binary_2805996 [label="t11: t10 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2805865 [label="t3: strconv.FormatInt(userID, 10:int)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2805961 [label="t8: invoke t6.Get(ctx, t3, t7)", style=bold, shape=ellipse, color="yellow"];
+	N_val_10_int [label="10:int: 10:int
+
+==== tainted ====
+_obj
+[read] @ hometimeline_cache.*.Key
+", style=bold, shape=box, color="yellow"];
+	N_val_alloc_3096391 [label="t1: new [0]int64 (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_3096451 [label="t4: new []int64 (postIDs)
+
+==== tainted ====
+_obj
+[read] @ hometimeline_cache.*.Value
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3096589 [label="t13: new [0]int64 (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3096351 [label="t0: stop <= start", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3096369 [label="t12: start < 0:int64", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3096564 [label="t11: t10 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3096433 [label="t3: strconv.FormatInt(userID, 10:int)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3096529 [label="t8: invoke t6.Get(ctx, t3, t7)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt10 [label="t10: extract t8 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt9 [label="t9: extract t8 #0", style=bold, shape=ellipse, color="black"];
-	N_val_field_2805940 [label="t5: &h.homeTimelineCache [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_ifacet7 [label="t7: make interface{} <- *[]int64 (t4)", style=bold, shape=ellipse, color="black"];
-	N_val_param_2805637 [label="h: parameter h : *HomeTimelineServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2805682 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2805703 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2805716 [label="userID: parameter userID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2805730 [label="start: parameter start : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2805743 [label="stop: parameter stop : int64", style=bold, shape=ellipse, color="black"];
-	N_val_slice_2805823 [label="t2: slice t1[:]", style=bold, shape=ellipse, color="black"];
-	N_val_slice_2806021 [label="t14: slice t13[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2805940 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2806403 [label="t15: *t4", style=bold, shape=ellipse, color="red"];
-	N_val_param_2805743 -> N_val_binary_2805783;
-	N_val_param_2805730 -> N_val_binary_2805783;
-	N_val_alloc_2805823 -> N_val_slice_2805823;
-	N_val_slice_2805823 -> N_instr_ret_2805809;
-	N_nil_1355243566 -> N_instr_ret_2805809;
-	N_val_param_2805716 -> N_val_call_2805865;
-	N_val_10_int -> N_val_call_2805865;
-	N_val_param_2805637 -> N_val_field_2805940;
-	N_val_field_2805940 -> N_val_unary_2805940;
-	N_val_alloc_2805883 -> N_val_ifacet7;
-	N_val_param_2805682 -> N_val_call_2805961;
-	N_val_call_2805865 -> N_val_call_2805961;
-	N_val_ifacet7 -> N_val_call_2805961;
-	N_val_call_2805961 -> N_val_extrt9;
-	N_val_call_2805961 -> N_val_extrt10;
-	N_val_extrt10 -> N_val_binary_2805996;
-	N_nil_1355243566 -> N_val_binary_2805996;
-	N_val_param_2805730 -> N_val_binary_2805801;
-	N_val_0_int64 -> N_val_binary_2805801;
-	N_val_alloc_2806021 -> N_val_slice_2806021;
-	N_val_slice_2806021 -> N_instr_ret_2806007;
-	N_val_extrt10 -> N_instr_ret_2806007;
-	N_val_alloc_2805883 -> N_val_unary_2806403;
-	N_val_unary_2806403 -> N_instr_ret_2806396;
-	N_nil_1355243566 -> N_instr_ret_2806396;
-	N_val_slice_2805823 -> N_val_alloc_2805823 [label="", style=dashed, color=blue];
-	N_val_slice_2806021 -> N_val_alloc_2806021 [label="", style=dashed, color=blue];
+	N_val_field_3096508 [label="t5: &h.homeTimelineCache [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet7 [label="t7: make interface{} <- *[]int64 (t4)
+
+==== tainted ====
+_obj
+[read] @ hometimeline_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_param_3096205 [label="h: parameter h : *HomeTimelineServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3096250 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3096271 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_3096284 [label="userID: parameter userID : int64
+
+==== tainted ====
+_obj
+[read] @ hometimeline_cache.*.Key
+", style=bold, shape=box, color="black"];
+	N_val_param_3096298 [label="start: parameter start : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_3096311 [label="stop: parameter stop : int64", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3096391 [label="t2: slice t1[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3096589 [label="t14: slice t13[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3096508 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3096971 [label="t15: *t4
+
+==== tainted ====
+_obj
+[read] @ hometimeline_cache.*.Value
+", style=bold, shape=box, color="red"];
+	N_val_param_3096311 -> N_val_binary_3096351;
+	N_val_param_3096298 -> N_val_binary_3096351;
+	N_val_alloc_3096391 -> N_val_slice_3096391;
+	N_val_slice_3096391 -> N_instr_ret_3096377;
+	N_nil_211047114 -> N_instr_ret_3096377;
+	N_val_param_3096284 -> N_val_call_3096433;
+	N_val_10_int -> N_val_call_3096433;
+	N_val_param_3096205 -> N_val_field_3096508;
+	N_val_field_3096508 -> N_val_unary_3096508;
+	N_val_alloc_3096451 -> N_val_ifacet7;
+	N_val_param_3096250 -> N_val_call_3096529;
+	N_val_call_3096433 -> N_val_call_3096529;
+	N_val_ifacet7 -> N_val_call_3096529;
+	N_val_call_3096529 -> N_val_extrt9;
+	N_val_call_3096529 -> N_val_extrt10;
+	N_val_extrt10 -> N_val_binary_3096564;
+	N_nil_211047114 -> N_val_binary_3096564;
+	N_val_param_3096298 -> N_val_binary_3096369;
+	N_val_0_int64 -> N_val_binary_3096369;
+	N_val_alloc_3096589 -> N_val_slice_3096589;
+	N_val_slice_3096589 -> N_instr_ret_3096575;
+	N_val_extrt10 -> N_instr_ret_3096575;
+	N_val_alloc_3096451 -> N_val_unary_3096971;
+	N_val_unary_3096971 -> N_instr_ret_3096964;
+	N_nil_211047114 -> N_instr_ret_3096964;
+	N_val_slice_3096391 -> N_val_alloc_3096391 [label="", style=dashed, color=blue];
+	N_val_slice_3096589 -> N_val_alloc_3096589 [label="", style=dashed, color=blue];
 }
