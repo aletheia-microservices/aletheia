@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2801400 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2801400 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2801441 [label="*t1 = urlShortenService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2801441 [label="*t1 = urlShortenService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2801480 [label="*t2 = userMentionService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2801480 [label="*t2 = userMentionService", style=bold, shape=ellipse, color="blue"];
+	N_nil_2013114982 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2801423 [label="t0: new TextServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2801441 [label="t1: &t0.urlShortenService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2801480 [label="t2: &t0.userMentionService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make TextService <- *TextServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2801279 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2801300 [label="urlShortenService: parameter urlShortenService : UrlShortenService", style=bold, shape=ellipse, color="black"];
+	N_val_param_2801337 [label="userMentionService: parameter userMentionService : UserMentionService", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2801423 -> N_val_field_2801441;
+	N_val_alloc_2801423 -> N_val_field_2801480;
+	N_val_field_2801441 -> N_instr_store_2801441;
+	N_val_param_2801300 -> N_instr_store_2801441;
+	N_val_field_2801480 -> N_instr_store_2801480;
+	N_val_param_2801337 -> N_instr_store_2801480;
+	N_val_alloc_2801423 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_2801400;
+	N_nil_2013114982 -> N_instr_ret_2801400;
+}

@@ -47,7 +47,7 @@ func (service *Service) GetWiringNameAt(idx int) string {
 	if idx < len(service.wiringNames) {
 		return service.wiringNames[idx]
 	}
-	log.Fatalf("index (%d) out of bounds for constructor args: %v", idx, service.wiringNames)
+	log.Panicf("[SERVICE] index (%d) out of bounds for constructor args: %v", idx, service.wiringNames)
 	return ""
 }
 
@@ -59,7 +59,7 @@ func (service *Service) GetFieldAt(idx int) *Field {
 	if idx < len(service.fields) {
 		return service.fields[idx]
 	}
-	log.Fatalf("index (%d) out of bounds for service fields: %v", idx, service.fields)
+	log.Panicf("[SERVICE] index (%d) out of bounds for service fields: %v", idx, service.fields)
 	return nil
 }
 

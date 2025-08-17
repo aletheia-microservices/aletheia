@@ -1,13 +1,13 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
+entry request: Frontend.Login
+	delete #0: (CartService.MergeCarts) --> (cart_db.carts).DeleteOne(...)
+
 entry request: Frontend.Register
 	delete #0: (CartService.MergeCarts) --> (cart_db.carts).DeleteOne(...)
 
 entry request: Frontend.DeleteSock
 	delete #0: (CatalogueService.DeleteSock) --> (catalogue_db.catalogue).DeleteOne(...)
 		MISSING DELETE on field: cart_db.carts.Items[*].ID
-
-entry request: Frontend.Login
-	delete #0: (CartService.MergeCarts) --> (cart_db.carts).DeleteOne(...)
 

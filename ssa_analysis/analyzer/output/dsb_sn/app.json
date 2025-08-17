@@ -1,0 +1,273 @@
+{
+  "name": "dsb_sn",
+  "databases": [
+    "hometimeline_cache",
+    "post_cache",
+    "post_db",
+    "socialgraph_cache",
+    "socialgraph_db",
+    "urlshorten_db",
+    "user_cache",
+    "user_db",
+    "usertimeline_cache",
+    "usertimeline_db"
+  ],
+  "services": [
+    {
+      "name": "ComposePostService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.ComposePostService",
+      "pkg": "socialnetwork",
+      "impl": "ComposePostServiceImpl",
+      "fields": [
+        "postStorageService #0 (post_storage_service)",
+        "userTimelineService #1 (usertimeline_service)",
+        "userService #2 (user_service)",
+        "uniqueIDService #3 (uniqueid_service)",
+        "mediaService #4 (media_service)",
+        "textService #5 (text_service)",
+        "homeTimelineService #6 (hometimeline_service)"
+      ],
+      "methods": [
+        "ComposePost"
+      ],
+      "services": [
+        "HomeTimelineService",
+        "MediaService",
+        "PostStorageService",
+        "TextService",
+        "UniqueIdService",
+        "UserService",
+        "UserTimelineService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "HomeTimelineService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.HomeTimelineService",
+      "pkg": "socialnetwork",
+      "impl": "HomeTimelineServiceImpl",
+      "fields": [
+        "homeTimelineCache #0 (hometimeline_cache)",
+        "postStorageService #1 (post_storage_service)",
+        "socialGraphService #2 (socialgraph_service)"
+      ],
+      "methods": [
+        "ReadHomeTimeline",
+        "WriteHomeTimeline"
+      ],
+      "services": [
+        "PostStorageService",
+        "SocialGraphService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "MediaService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.MediaService",
+      "pkg": "socialnetwork",
+      "impl": "MediaServiceImpl",
+      "fields": [],
+      "methods": [
+        "ComposeMedia"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "PostStorageService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostStorageService",
+      "pkg": "socialnetwork",
+      "impl": "PostStorageServiceImpl",
+      "fields": [
+        "postStorageCache #0 (post_cache)",
+        "postStorageDB #1 (post_db)",
+        "CacheHits #2",
+        "NumReqs #3",
+        "CacheMiss #4"
+      ],
+      "methods": [
+        "StorePost",
+        "ReadPost",
+        "ReadPosts"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "SocialGraphService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphService",
+      "pkg": "socialnetwork",
+      "impl": "SocialGraphServiceImpl",
+      "fields": [
+        "socialGraphCache #0 (socialgraph_cache)",
+        "socialGraphDB #1 (socialgraph_db)",
+        "userIDService #2 (userid_service)"
+      ],
+      "methods": [
+        "GetFollowers",
+        "GetFollowees",
+        "Follow",
+        "Unfollow",
+        "FollowWithUsername",
+        "UnfollowWithUsername",
+        "InsertUser"
+      ],
+      "services": [
+        "UserIDService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "TextService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.TextService",
+      "pkg": "socialnetwork",
+      "impl": "TextServiceImpl",
+      "fields": [
+        "urlShortenService #0 (urlshorten_service)",
+        "userMentionService #1 (usermention_service)"
+      ],
+      "methods": [
+        "ComposeText"
+      ],
+      "services": [
+        "UrlShortenService",
+        "UserMentionService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "UniqueIdService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UniqueIdService",
+      "pkg": "socialnetwork",
+      "impl": "UniqueIdServiceImpl",
+      "fields": [
+        "counter #0",
+        "current_timestamp #1",
+        "machine_id #2"
+      ],
+      "methods": [
+        "ComposeUniqueId"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UrlShortenService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UrlShortenService",
+      "pkg": "socialnetwork",
+      "impl": "UrlShortenServiceImpl",
+      "fields": [
+        "urlShortenDB #0 (urlshorten_db)",
+        "hostname #1"
+      ],
+      "methods": [
+        "ComposeUrls",
+        "GetExtendedUrls"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UserIDService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserIDService",
+      "pkg": "socialnetwork",
+      "impl": "UserIDServiceImpl",
+      "fields": [
+        "userCache #0 (user_cache)",
+        "userDB #1 (user_db)"
+      ],
+      "methods": [
+        "GetUserId"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UserMentionService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMentionService",
+      "pkg": "socialnetwork",
+      "impl": "UserMentionServiceImpl",
+      "fields": [
+        "userCache #0 (user_cache)",
+        "userDB #1 (user_db)"
+      ],
+      "methods": [
+        "ComposeUserMentions"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UserService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserService",
+      "pkg": "socialnetwork",
+      "impl": "UserServiceImpl",
+      "fields": [
+        "machine_id #0",
+        "counter #1",
+        "current_timestamp #2",
+        "secret #3 (\"secret\")",
+        "userCache #4 (user_cache)",
+        "userDB #5 (user_db)",
+        "socialGraphService #6 (socialgraph_service)"
+      ],
+      "methods": [
+        "Login",
+        "RegisterUserWithId",
+        "RegisterUser",
+        "ComposeCreatorWithUserId",
+        "ComposeCreatorWithUsername"
+      ],
+      "services": [
+        "SocialGraphService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "UserTimelineService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineService",
+      "pkg": "socialnetwork",
+      "impl": "UserTimelineServiceImpl",
+      "fields": [
+        "userTimelineCache #0 (usertimeline_cache)",
+        "userTimelineDB #1 (usertimeline_db)",
+        "postStorageService #2 (post_storage_service)",
+        "CacheHits #3",
+        "CacheMiss #4",
+        "NumRequests #5"
+      ],
+      "methods": [
+        "ReadUserTimeline",
+        "WriteUserTimeline"
+      ],
+      "services": [
+        "PostStorageService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "Wrk2APIService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Wrk2APIService",
+      "pkg": "socialnetwork",
+      "impl": "Wrk2APIServiceImpl",
+      "fields": [
+        "userService #0 (user_service)",
+        "composePostService #1 (composepost_service)",
+        "userTimelineService #2 (usertimeline_service)",
+        "homeTimelineService #3 (hometimeline_service)",
+        "socialGraphService #4 (socialgraph_service)"
+      ],
+      "methods": [
+        "ReadHomeTimeline"
+      ],
+      "services": [
+        "ComposePostService",
+        "HomeTimelineService",
+        "SocialGraphService",
+        "UserService",
+        "UserTimelineService"
+      ],
+      "databases": []
+    }
+  ]
+}

@@ -31,6 +31,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- dsb_media_sql blueprint/dsb_media_sql/api_readmovie")
 		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")
 		fmt.Fprintln(os.Stderr, "- sockshop3 blueprint/sockshop3/userservice_login")
+		fmt.Fprintln(os.Stderr, "- dsb_sn blueprint/dsb_sn/poststorageservice_storepost")
 		os.Exit(1)
 	}
 
@@ -247,13 +248,7 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 
 	for _, pkg := range prog.AllPackages() {
 		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
-			if pkg.Pkg.Path() == utils.APP_PATH_POSTNOTIFICATION {
-				pkgs = append(pkgs, pkg)
-			} else if pkg.Pkg.Path() == utils.APP_PATH_DIGOTA {
-				pkgs = append(pkgs, pkg)
-			} else if pkg.Pkg.Path() == utils.APP_PATH_DSB_MEDIA_SQL {
-				pkgs = append(pkgs, pkg)
-			} else if pkg.Pkg.Path() == utils.APP_PATH_SOCKSHOP3 {
+			if utils.IsAppPackagePath(pkg.Pkg.Path()) {
 				pkgs = append(pkgs, pkg)
 			} else {
 				fmt.Printf("skipping... %s\n", pkg.Pkg.Path())

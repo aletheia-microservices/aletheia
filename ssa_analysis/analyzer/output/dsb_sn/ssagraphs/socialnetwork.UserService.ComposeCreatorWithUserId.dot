@@ -1,0 +1,30 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2820941 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2820941 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2820962 [label="*t1 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2820962 [label="*t1 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2820980 [label="*t2 = username", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2820980 [label="*t2 = username", style=bold, shape=ellipse, color="blue"];
+	N_nil_1890637905 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2820955 [label="t0: local Creator (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2820962 [label="t1: &t0.UserID [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2820980 [label="t2: &t0.Username [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2820811 [label="u: parameter u : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2820856 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2820877 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2820890 [label="userID: parameter userID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2820904 [label="username: parameter username : string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2820955 [label="t3: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_2820955 -> N_val_field_2820962;
+	N_val_alloc_2820955 -> N_val_field_2820980;
+	N_val_field_2820962 -> N_instr_store_2820962;
+	N_val_param_2820890 -> N_instr_store_2820962;
+	N_val_field_2820980 -> N_instr_store_2820980;
+	N_val_param_2820904 -> N_instr_store_2820980;
+	N_val_alloc_2820955 -> N_val_unary_2820955;
+	N_val_unary_2820955 -> N_instr_ret_2820941;
+	N_nil_1890637905 -> N_instr_ret_2820941;
+	N_val_field_2820980 -> N_val_alloc_2820955 [label=".Username", style=dashed, color=blue];
+	N_val_field_2820962 -> N_val_alloc_2820955 [label=".UserID", style=dashed, color=blue];
+}

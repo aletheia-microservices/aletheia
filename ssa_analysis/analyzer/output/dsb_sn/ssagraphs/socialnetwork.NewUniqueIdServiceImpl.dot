@@ -1,0 +1,33 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2808138 [label="return t5, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2808138 [label="return t5, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2808173 [label="*t1 = 0:int64", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2808173 [label="*t1 = 0:int64", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2808195 [label="*t2 = -1:int64", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2808195 [label="*t2 = -1:int64", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2808211 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2808211 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
+	N_nil_1864170386 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val__1_int64 [label="-1:int64: -1:int64", style=bold, shape=ellipse, color="blue"];
+	N_val_0_int64 [label="0:int64: 0:int64", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_2808165 [label="t0: new UniqueIdServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2808225 [label="t4: GetMachineID()", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2808173 [label="t1: &t0.counter [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2808195 [label="t2: &t0.current_timestamp [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2808211 [label="t3: &t0.machine_id [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet5 [label="t5: make UniqueIdService <- *UniqueIdServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2808089 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2808165 -> N_val_field_2808173;
+	N_val_alloc_2808165 -> N_val_field_2808195;
+	N_val_alloc_2808165 -> N_val_field_2808211;
+	N_val_field_2808173 -> N_instr_store_2808173;
+	N_val_0_int64 -> N_instr_store_2808173;
+	N_val_field_2808195 -> N_instr_store_2808195;
+	N_val__1_int64 -> N_instr_store_2808195;
+	N_val_field_2808211 -> N_instr_store_2808211;
+	N_val_call_2808225 -> N_instr_store_2808211;
+	N_val_alloc_2808165 -> N_val_ifacet5;
+	N_val_ifacet5 -> N_instr_ret_2808138;
+	N_nil_1864170386 -> N_instr_ret_2808138;
+}

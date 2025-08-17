@@ -8,12 +8,72 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_ProductService_Delete [label="ProductService.Delete
+		N_ProductService_Update [label="ProductService.Update
 
 ==== param 0 (id) tainted ====
 _obj
-[delete, primary] @ products_db.products[*].Value
-[rpc] @ SkuService.Delete.id
+[read, primary] @ products_db.products[*].Value
+
+
+==== param 1 (name) tainted ====
+_obj
+[write, primary] @ products_db.products.Name
+
+
+==== param 2 (active) tainted ====
+_obj
+[write, primary] @ products_db.products.Active
+
+
+==== param 3 (attributes) tainted ====
+_obj
+[write, primary] @ products_db.products.Attributes
+
+
+==== param 4 (description) tainted ====
+_obj
+[write, primary] @ products_db.products.Description
+
+
+==== param 5 (images) tainted ====
+_obj
+[write, primary] @ products_db.products.Images
+
+
+==== param 6 (metadata) tainted ====
+_obj
+[write, primary] @ products_db.products.Metadata
+
+
+==== param 7 (shippable) tainted ====
+_obj
+[write, primary] @ products_db.products.Shippable
+
+
+==== param 8 (url) tainted ====
+_obj
+[write, primary] @ products_db.products.Url
+
+
+==== ret 0 (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product) tainted ====
+_obj
+[write, primary] @ products_db.products
+_obj.Active
+[write, primary] @ products_db.products.Active
+_obj.Attributes
+[write, primary] @ products_db.products.Attributes
+_obj.Description
+[write, primary] @ products_db.products.Description
+_obj.Images
+[write, primary] @ products_db.products.Images
+_obj.Metadata
+[write, primary] @ products_db.products.Metadata
+_obj.Name
+[write, primary] @ products_db.products.Name
+_obj.Shippable
+[write, primary] @ products_db.products.Shippable
+_obj.Url
+[write, primary] @ products_db.products.Url
 ", style=bold, shape=box, color="blue"];
 		N_SkuService_Delete [label="SkuService.Delete
 
@@ -21,6 +81,70 @@ _obj
 _obj
 [delete, primary] @ skus_db.skus[*].Value
 ", style=bold, shape=box, color="blue"];
+		N_ProductService_New [label="ProductService.New
+
+==== param 0 (name) tainted ====
+_obj
+[write, primary] @ products_db.products.Name
+[rpc] @ SkuService.New.name
+
+
+==== param 1 (active) tainted ====
+_obj
+[write, primary] @ products_db.products.Active
+
+
+==== param 2 (attributes) tainted ====
+_obj
+[write, primary] @ products_db.products.Attributes
+
+
+==== param 3 (description) tainted ====
+_obj
+[write, primary] @ products_db.products.Description
+
+
+==== param 4 (images) tainted ====
+_obj
+[write, primary] @ products_db.products.Images
+
+
+==== param 5 (metadata) tainted ====
+_obj
+[write, primary] @ products_db.products.Metadata
+
+
+==== param 6 (shippable) tainted ====
+_obj
+[write, primary] @ products_db.products.Shippable
+
+
+==== param 7 (url) tainted ====
+_obj
+[write, primary] @ products_db.products.Url
+
+
+==== ret 0 (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product) tainted ====
+_obj
+[write, primary] @ products_db.products
+_obj.Active
+[write, primary] @ products_db.products.Active
+_obj.Attributes
+[write, primary] @ products_db.products.Attributes
+_obj.Description
+[write, primary] @ products_db.products.Description
+_obj.Images
+[write, primary] @ products_db.products.Images
+_obj.Metadata
+[write, primary] @ products_db.products.Metadata
+_obj.Name
+[write, primary] @ products_db.products.Name
+_obj.Shippable
+[write, primary] @ products_db.products.Shippable
+_obj.Url
+[write, primary] @ products_db.products.Url
+", style=bold, shape=box, color="blue"];
+		N_ProductService_List [label="ProductService.List", style=bold, shape=box, color="blue"];
 		N_OrderService_New [label="OrderService.New
 
 ==== param 0 (currency) tainted ====
@@ -84,11 +208,25 @@ _obj.Shipping
 _obj[*].Items
 [write, primary] @ orders_db.orders.Items[*]
 ", style=bold, shape=box, color="blue"];
+		N_OrderService_Run [label="OrderService.Run", style=bold, shape=box, color="blue"];
 		N_SkuService_Get [label="SkuService.Get
 
 ==== param 0 (id) tainted ====
 _obj
 [read, primary] @ skus_db.skus[*].Value
+", style=bold, shape=box, color="blue"];
+		N_ProductService_Get [label="ProductService.Get
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ products_db.products[*].Value
+", style=bold, shape=box, color="blue"];
+		N_ProductService_Delete [label="ProductService.Delete
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ products_db.products[*].Value
+[rpc] @ SkuService.Delete.id
 ", style=bold, shape=box, color="blue"];
 		N_SkuService_New [label="SkuService.New
 
@@ -158,144 +296,6 @@ _obj.Parent
 [write, primary] @ skus_db.skus.Parent
 _obj.Price
 [write, primary] @ skus_db.skus.Price
-", style=bold, shape=box, color="blue"];
-		N_ProductService_List [label="ProductService.List", style=bold, shape=box, color="blue"];
-		N_OrderService_Run [label="OrderService.Run", style=bold, shape=box, color="blue"];
-		N_ProductService_New [label="ProductService.New
-
-==== param 0 (name) tainted ====
-_obj
-[write, primary] @ products_db.products.Name
-[rpc] @ SkuService.New.name
-
-
-==== param 1 (active) tainted ====
-_obj
-[write, primary] @ products_db.products.Active
-
-
-==== param 2 (attributes) tainted ====
-_obj
-[write, primary] @ products_db.products.Attributes
-
-
-==== param 3 (description) tainted ====
-_obj
-[write, primary] @ products_db.products.Description
-
-
-==== param 4 (images) tainted ====
-_obj
-[write, primary] @ products_db.products.Images
-
-
-==== param 5 (metadata) tainted ====
-_obj
-[write, primary] @ products_db.products.Metadata
-
-
-==== param 6 (shippable) tainted ====
-_obj
-[write, primary] @ products_db.products.Shippable
-
-
-==== param 7 (url) tainted ====
-_obj
-[write, primary] @ products_db.products.Url
-
-
-==== ret 0 (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product) tainted ====
-_obj
-[write, primary] @ products_db.products
-_obj.Active
-[write, primary] @ products_db.products.Active
-_obj.Attributes
-[write, primary] @ products_db.products.Attributes
-_obj.Description
-[write, primary] @ products_db.products.Description
-_obj.Images
-[write, primary] @ products_db.products.Images
-_obj.Metadata
-[write, primary] @ products_db.products.Metadata
-_obj.Name
-[write, primary] @ products_db.products.Name
-_obj.Shippable
-[write, primary] @ products_db.products.Shippable
-_obj.Url
-[write, primary] @ products_db.products.Url
-", style=bold, shape=box, color="blue"];
-		N_ProductService_Get [label="ProductService.Get
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ products_db.products[*].Value
-", style=bold, shape=box, color="blue"];
-		N_ProductService_Update [label="ProductService.Update
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ products_db.products[*].Value
-
-
-==== param 1 (name) tainted ====
-_obj
-[write, primary] @ products_db.products.Name
-
-
-==== param 2 (active) tainted ====
-_obj
-[write, primary] @ products_db.products.Active
-
-
-==== param 3 (attributes) tainted ====
-_obj
-[write, primary] @ products_db.products.Attributes
-
-
-==== param 4 (description) tainted ====
-_obj
-[write, primary] @ products_db.products.Description
-
-
-==== param 5 (images) tainted ====
-_obj
-[write, primary] @ products_db.products.Images
-
-
-==== param 6 (metadata) tainted ====
-_obj
-[write, primary] @ products_db.products.Metadata
-
-
-==== param 7 (shippable) tainted ====
-_obj
-[write, primary] @ products_db.products.Shippable
-
-
-==== param 8 (url) tainted ====
-_obj
-[write, primary] @ products_db.products.Url
-
-
-==== ret 0 (*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Product) tainted ====
-_obj
-[write, primary] @ products_db.products
-_obj.Active
-[write, primary] @ products_db.products.Active
-_obj.Attributes
-[write, primary] @ products_db.products.Attributes
-_obj.Description
-[write, primary] @ products_db.products.Description
-_obj.Images
-[write, primary] @ products_db.products.Images
-_obj.Metadata
-[write, primary] @ products_db.products.Metadata
-_obj.Name
-[write, primary] @ products_db.products.Name
-_obj.Shippable
-[write, primary] @ products_db.products.Shippable
-_obj.Url
-[write, primary] @ products_db.products.Url
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {

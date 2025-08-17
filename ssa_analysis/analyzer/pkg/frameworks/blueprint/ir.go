@@ -24,7 +24,7 @@ import (
 	"github.com/blueprint-uservices/blueprint/plugins/workflow/workflowspec"
 )
 
-func BuildAndInspectIR(name string, spec cmdbuilder.SpecOption) (map[*workflowspec.Service][]golang.Service, map[string]ir.IRNode, []string) {
+func BuildAndInspectIR(name string, spec cmdbuilder.SpecOption) (map[*workflowspec.Service][]golang.Service, map[string]ir.IRNode, map[*workflowspec.Service][]ir.IRNode, []string) {
 	builder := buildIR(name, spec)
 	return inspectIR(builder)
 }
@@ -58,9 +58,10 @@ func buildIR(name string, spec cmdbuilder.SpecOption) *cmdbuilder.CmdBuilder {
 	return builder
 }
 
-func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]golang.Service, map[string]ir.IRNode, []string) {
+func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]golang.Service, map[string]ir.IRNode, map[*workflowspec.Service][]ir.IRNode, []string) {
 	services := make(map[*workflowspec.Service][]golang.Service)
 	databases := make(map[string]ir.IRNode)
+	args := make(map[*workflowspec.Service][]ir.IRNode)
 	var frontends []string
 	fmt.Printf("[IR] inspecting ir %v\n", builder.IR)
 	fmt.Println()
@@ -86,11 +87,7 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 								fmt.Printf("[IR EDGE] got edge %s with type %s\n", child.Name(), t)
 							}
 							for _, child := range nnnn.Nodes {
-								if redisClient, ok := child.(*redis.RedisGoClient); ok {
-									fmt.Printf("[IR NODE] [redis.RedisGoClient] got node %s\n", redisClient.Name())
-								} else if rabbitClient, ok := child.(*rabbitmq.RabbitmqGoClient); ok {
-									fmt.Printf("[IR NODE] [rabbitmq.RabbitmqGoClient] got node %s\n", rabbitClient.Name())
-								} else if workflowHandler, ok := child.(*workflow.WorkflowHandler); ok {
+								if workflowHandler, ok := child.(*workflow.WorkflowHandler); ok {
 									fmt.Printf("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
 
 									if workflowHandler.ServiceType == "Runnable" {
@@ -99,31 +96,20 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 
 									// make sure that services that do not have any other dependencies are also included
 									services[workflowHandler.ServiceInfo] = nil
+
 									for _, arg := range workflowHandler.Args {
-										if redisClient, ok := arg.(*redis.RedisGoClient); ok {
-											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], redisClient)
-											databases[redisClient.Name()] = redisClient
-											fmt.Printf("[IR HANDLER ARG] [redis.RedisGoClient] got node %s\n", redisClient.Name())
-										} else if memcachedClient, ok := arg.(*memcached.MemcachedGoClient); ok {
-											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], memcachedClient)
-											databases[memcachedClient.Name()] = memcachedClient
-											fmt.Printf("[IR HANDLER ARG] [memcached.MemcachedGoClient] got node %s\n", memcachedClient.Name())
-										} else if rabbitClient, ok := arg.(*rabbitmq.RabbitmqGoClient); ok {
-											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], rabbitClient)
-											databases[rabbitClient.Name()] = rabbitClient
-											fmt.Printf("[IR HANDLER ARG] [rabbitmq.RabbitmqGoClient] got node %s\n", rabbitClient.Name())
-										} else if mongoDbClient, ok := arg.(*mongodb.MongoDBGoClient); ok {
-											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], mongoDbClient)
-											databases[mongoDbClient.Name()] = mongoDbClient
-											fmt.Printf("[IR HANDLER ARG] [mongodb.MongoDBGoClient] got node %s\n", mongoDbClient.Name())
-										} else if mysqlClient, ok := arg.(*mysql.MySQLDBGoClient); ok {
-											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], mysqlClient)
-											databases[mysqlClient.Name()] = mysqlClient
-											fmt.Printf("[IR HANDLER ARG] [mongodb.MongoDBGoClient] got node %s\n", mysqlClient.Name())
-										} else if workflowClient, ok := arg.(*workflow.WorkflowClient); ok {
-											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], workflowClient)
-											fmt.Printf("[IR HANDLER ARG] [workflow.WorkflowClient] got node %s (service_type = %v)\n", workflowClient.Name(), workflowClient.ServiceType)
+										fmt.Printf("[IR HANDLER ARG] [%T] got node: %s\n", arg, arg)
+										switch t := arg.(type) {
+										case *redis.RedisGoClient, *memcached.MemcachedGoClient, *rabbitmq.RabbitmqGoClient, *mongodb.MongoDBGoClient, *mysql.MySQLDBGoClient:
+											databases[arg.Name()] = arg
+										case *workflow.WorkflowClient:
+											services[workflowHandler.ServiceInfo] = append(services[workflowHandler.ServiceInfo], t)
+										case *ir.IRValue:
+											// nothing to do
+										default:
+											log.Fatalf("[IR HANDLER ARG] unknown arg type [%T]: %v\n", arg, arg)
 										}
+										args[workflowHandler.ServiceInfo] = append(args[workflowHandler.ServiceInfo], arg)
 									}
 								}
 							}
@@ -146,30 +132,5 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 			fmt.Printf("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s\n", mysqlContainer.Name(), mysqlContainer.Iface)
 		}
 	}
-
-	fmt.Println()
-	for key, value := range services {
-		fmt.Printf("[IR SERVICE] inspecting service %s\n", key.Iface.Name)
-		for _, arg := range value {
-			if workflowClient, ok := arg.(*workflow.WorkflowClient); ok {
-				fmt.Printf("[IR SERVICE] \t\t[workflow] %s\n", workflowClient.ServiceType)
-			}
-		}
-	}
-	fmt.Println()
-	fmt.Printf("[IR DATASTORE] inspecting databases\n")
-	for _, value := range databases {
-		if rabbitClient, ok := value.(*rabbitmq.RabbitmqGoClient); ok {
-			fmt.Printf("[IR DATASTORE] \t\t[rabbitmq] %s\n", rabbitClient.Name())
-		} else if redisClient, ok := value.(*redis.RedisGoClient); ok {
-			fmt.Printf("[IR DATASTORE] \t\t[redis] %s\n", redisClient.Name())
-		} else if memcachedClient, ok := value.(*memcached.MemcachedGoClient); ok {
-			fmt.Printf("[IR DATASTORE] \t\t[memcached] %s\n", memcachedClient.Name())
-		} else if mongodbClient, ok := value.(*mongodb.MongoDBGoClient); ok {
-			fmt.Printf("[IR DATASTORE] \t\t[mongodb] %s\n", mongodbClient.Name())
-		} else if mysqlClient, ok := value.(*mysql.MySQLDBGoClient); ok {
-			fmt.Printf("[IR DATASTORE] \t\t[mysqlClient] %s\n", mysqlClient.Name())
-		}
-	}
-	return services, databases, frontends
+	return services, databases, args, frontends
 }

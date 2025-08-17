@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2812508 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2812508 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2812543 [label="*t1 = userCache", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2812543 [label="*t1 = userCache", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2812562 [label="*t2 = userDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2812562 [label="*t2 = userDB", style=bold, shape=ellipse, color="blue"];
+	N_nil_1668910801 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2812533 [label="t0: new UserIDServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2812543 [label="t1: &t0.userCache [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2812562 [label="t2: &t0.userDB [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make UserIDService <- *UserIDServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2812406 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2812427 [label="userCache: parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache", style=bold, shape=ellipse, color="black"];
+	N_val_param_2812452 [label="userDB: parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2812533 -> N_val_field_2812543;
+	N_val_alloc_2812533 -> N_val_field_2812562;
+	N_val_field_2812543 -> N_instr_store_2812543;
+	N_val_param_2812427 -> N_instr_store_2812543;
+	N_val_field_2812562 -> N_instr_store_2812562;
+	N_val_param_2812452 -> N_instr_store_2812562;
+	N_val_alloc_2812533 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_2812508;
+	N_nil_1668910801 -> N_instr_ret_2812508;
+}

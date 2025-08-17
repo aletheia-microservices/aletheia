@@ -1,0 +1,33 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2804569 [label="return t4, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2804569 [label="return t4, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2804618 [label="*t1 = homeTimelineCache", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804618 [label="*t1 = homeTimelineCache", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804657 [label="*t2 = postStorageService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804657 [label="*t2 = postStorageService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804697 [label="*t3 = socialGraphService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2804697 [label="*t3 = socialGraphService", style=bold, shape=ellipse, color="blue"];
+	N_nil_1350393129 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2804600 [label="t0: new HomeTimelineServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2804618 [label="t1: &t0.homeTimelineCache [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2804657 [label="t2: &t0.postStorageService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2804697 [label="t3: &t0.socialGraphService [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet4 [label="t4: make HomeTimelineService <- *HomeTimelineServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2804405 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2804426 [label="homeTimelineCache: parameter homeTimelineCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache", style=bold, shape=ellipse, color="black"];
+	N_val_param_2804459 [label="postStorageService: parameter postStorageService : PostStorageService", style=bold, shape=ellipse, color="black"];
+	N_val_param_2804498 [label="socialGraphService: parameter socialGraphService : SocialGraphService", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2804600 -> N_val_field_2804618;
+	N_val_alloc_2804600 -> N_val_field_2804657;
+	N_val_alloc_2804600 -> N_val_field_2804697;
+	N_val_field_2804618 -> N_instr_store_2804618;
+	N_val_param_2804426 -> N_instr_store_2804618;
+	N_val_field_2804657 -> N_instr_store_2804657;
+	N_val_param_2804459 -> N_instr_store_2804657;
+	N_val_field_2804697 -> N_instr_store_2804697;
+	N_val_param_2804498 -> N_instr_store_2804697;
+	N_val_alloc_2804600 -> N_val_ifacet4;
+	N_val_ifacet4 -> N_instr_ret_2804569;
+	N_nil_1350393129 -> N_instr_ret_2804569;
+}

@@ -1,0 +1,143 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1953521931 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1953521931 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2835370 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2835370 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2835477 [label="return t16", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2835477 [label="return t16", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2835408 [label="*t7 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2835408 [label="*t7 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2835443 [label="*t8 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2835443 [label="*t8 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2835472 [label="*t11 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2835472 [label="*t11 = t13", style=bold, shape=ellipse, color="blue"];
+	N_nil_1971577353 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__socialgraph__string [label="\"socialgraph\":string: \"socialgraph\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__socialgraph_db__string [label="\"socialgraph_db\":string: \"socialgraph_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2835385 [label="t6: local UserInfo (user)
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph
+_obj.Followees
+[write] @ socialgraph_db.socialgraph.Followees
+_obj.Followers
+[write] @ socialgraph_db.socialgraph.Followers
+_obj.UserID
+[write] @ socialgraph_db.socialgraph.UserID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_2835443 [label="t9: new [0]FollowerInfo (slicelit)
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.Followers
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_2835472 [label="t12: new [0]FolloweeInfo (slicelit)
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.Followees
+", style=bold, shape=box, color="orange"];
+	N_val_binary_2835359 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2835312 [label="t2: invoke t1.GetCollection(ctx, \"socialgraph_db\":string, \"socialgraph\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2835504 [label="t16: invoke t3.InsertOne(ctx, t15)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2835285 [label="t0: &s.socialGraphDB [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2835408 [label="t7: &t6.UserID [#0]
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.UserID
+", style=bold, shape=box, color="green"];
+	N_val_field_2835427 [label="t8: &t6.Followers [#1]
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.Followers
+", style=bold, shape=box, color="green"];
+	N_val_field_2835456 [label="t11: &t6.Followees [#2]
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.Followees
+", style=bold, shape=box, color="green"];
+	N_val_ifacet15 [label="t15: make interface{} <- UserInfo (t14)
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph
+_obj.Followees
+[write] @ socialgraph_db.socialgraph.Followees
+_obj.Followers
+[write] @ socialgraph_db.socialgraph.Followers
+_obj.UserID
+[write] @ socialgraph_db.socialgraph.UserID
+", style=bold, shape=box, color="black"];
+	N_val_param_2835169 [label="s: parameter s : *SocialGraphServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2835207 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2835228 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2835241 [label="userID: parameter userID : int64
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.UserID
+", style=bold, shape=box, color="black"];
+	N_val_slice_2835443 [label="t10: slice t9[:]
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.Followers
+", style=bold, shape=box, color="black"];
+	N_val_slice_2835472 [label="t13: slice t12[:]
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph.Followees
+", style=bold, shape=box, color="black"];
+	N_val_unary_2835285 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2835510 [label="t14: *t6
+
+==== tainted ====
+_obj
+[write] @ socialgraph_db.socialgraph
+_obj.Followees
+[write] @ socialgraph_db.socialgraph.Followees
+_obj.Followers
+[write] @ socialgraph_db.socialgraph.Followers
+_obj.UserID
+[write] @ socialgraph_db.socialgraph.UserID
+", style=bold, shape=box, color="red"];
+	N_val_param_2835169 -> N_val_field_2835285;
+	N_val_field_2835285 -> N_val_unary_2835285;
+	N_val_param_2835207 -> N_val_call_2835312;
+	N_val__socialgraph_db__string -> N_val_call_2835312;
+	N_val__socialgraph__string -> N_val_call_2835312;
+	N_val_call_2835312 -> N_val_extrt3;
+	N_val_call_2835312 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_2835359;
+	N_nil_1971577353 -> N_val_binary_2835359;
+	N_val_extrt4 -> N_instr_ret_2835370;
+	N_val_alloc_2835385 -> N_val_field_2835408;
+	N_val_alloc_2835385 -> N_val_field_2835427;
+	N_val_alloc_2835443 -> N_val_slice_2835443;
+	N_val_alloc_2835385 -> N_val_field_2835456;
+	N_val_alloc_2835472 -> N_val_slice_2835472;
+	N_val_field_2835408 -> N_instr_store_2835408;
+	N_val_param_2835241 -> N_instr_store_2835408;
+	N_val_field_2835427 -> N_instr_store_2835443;
+	N_val_slice_2835443 -> N_instr_store_2835443;
+	N_val_field_2835456 -> N_instr_store_2835472;
+	N_val_slice_2835472 -> N_instr_store_2835472;
+	N_val_alloc_2835385 -> N_val_unary_2835510;
+	N_val_unary_2835510 -> N_val_ifacet15;
+	N_val_param_2835207 -> N_val_call_2835504;
+	N_val_ifacet15 -> N_val_call_2835504;
+	N_val_call_2835504 -> N_instr_ret_2835477;
+	N_val_slice_2835443 -> N_val_alloc_2835443 [label="", style=dashed, color=blue];
+	N_val_field_2835456 -> N_val_alloc_2835385 [label=".Followees", style=dashed, color=blue];
+	N_val_slice_2835472 -> N_val_alloc_2835472 [label="", style=dashed, color=blue];
+	N_val_field_2835427 -> N_val_alloc_2835385 [label=".Followers", style=dashed, color=blue];
+	N_val_field_2835408 -> N_val_alloc_2835385 [label=".UserID", style=dashed, color=blue];
+}

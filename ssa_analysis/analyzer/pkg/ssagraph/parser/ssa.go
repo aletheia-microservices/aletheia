@@ -39,6 +39,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 	defer outfile2.Close()
 
 	for _, member := range pkg.Members {
+		fmt.Printf("[SSA] [%T] member: %v\n", member, member)
 		switch m := member.(type) {
 		case *ssa.Function:
 			iterateFunc(app, outfile2, m, nil, funcGraphs)
@@ -54,9 +55,28 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 			// file: print.go
 			// function: func (p *Package) WriteTo(w io.Writer) (int64, error)
 			for _, sel := range typeutil.IntuitiveMethodSet(m.Type(), &prog.MethodSets) {
+				fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
 				method := prog.MethodValue(sel)
-				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				if method != nil {
+					fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
+					fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: %v\n", method, method)
+					if len(sel.Index()) != 1 {
+						// when a structure has an embedded field its methods are promoted and
+						// will appear for the current structure
+						//
+						// e.g. in dsb socialnetwork:
+						// type claimsT struct {
+						//		Username  string
+						//		UserID    string
+						//		Timestamp int64
+						//		jwt.StandardClaims
+						// }
+						// where jwt.StandardClaims has methods Valid(), VerifyAudience(), etc.
+						//
+						// WORKAROUND: just ignore them for now
+						fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: skipping...\n", method)
+						continue
+					}
 					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
 				}
 			}
@@ -64,9 +84,16 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 			methods := prog.MethodSets.MethodSet(m.Type().Underlying())
 			for i := 0; i < methods.Len(); i++ {
 				sel := methods.At(i)
+				fmt.Printf("\t[SSA] [METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
 				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				method := prog.MethodValue(sel)
 				if method != nil {
+					fmt.Printf("\t[SSA] [METHOD SET] [%T]: %v\n", method, method)
+					if len(sel.Index()) != 1 {
+						// same reason as above when iterating IntuitiveMethodSet
+						fmt.Printf("\t[SSA] [METHOD SET] [%T]: skipping...\n", method)
+						continue
+					}
 					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
 				}
 			}

@@ -37,6 +37,11 @@ func (app *App) Init() {
 		service.SetMethods(methods...)
 		app.AddService(service)
 	}
+
+	for _, svcInfo := range servicesInfo {
+		log.Printf("service = %s, args = %v\n", svcInfo.Name, svcInfo.ServiceArgs)
+	}
+
 	for _, svcInfo := range servicesInfo {
 		service := app.GetServiceByName(svcInfo.Name)
 		for _, dep := range svcInfo.Edges {

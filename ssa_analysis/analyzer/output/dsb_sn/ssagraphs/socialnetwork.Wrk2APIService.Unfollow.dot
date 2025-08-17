@@ -1,0 +1,98 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1901297809 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1901297809 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__795378254 [label="if t1 goto 3 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__795378254 [label="if t1 goto 3 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__840306690 [label="if t5 goto 6 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__840306690 [label="if t5 goto 6 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__996956590 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__996956590 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2845308 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2845308 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2845429 [label="return t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2845429 [label="return t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2845518 [label="return t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2845518 [label="return t10", style=bold, shape=ellipse, color="yellow"];
+	N_val____string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val__Invalid_Arguments__string [label="\"Invalid Arguments\":string: \"Invalid Arguments\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_0_int64 [label="0:int64: 0:int64", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2845280 [label="t1: userId != 0:int64", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2845299 [label="t6: followeeID != 0:int64", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2845397 [label="t5: username != \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2845419 [label="t11: followeeName != \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_call_2845266 [label="t0: math/rand.Int63()
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.Unfollow.t0
+[rpc] @ SocialGraphService.UnfollowWithUsername.t0
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2845344 [label="t4: invoke t3.Unfollow(ctx, t0, userId, followeeID)
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.Unfollow.t4
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2845477 [label="t9: invoke t8.UnfollowWithUsername(ctx, t0, username, followeeName)
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.UnfollowWithUsername.t9
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2845535 [label="t10: errors.New(\"Invalid Arguments\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2845317 [label="t2: &w.socialGraphService [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2845438 [label="t7: &w.socialGraphService [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2845115 [label="w: parameter w : *Wrk2APIServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2845147 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2845168 [label="username: parameter username : string
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.UnfollowWithUsername.username
+", style=bold, shape=box, color="black"];
+	N_val_param_2845185 [label="followeeName: parameter followeeName : string
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.UnfollowWithUsername.followeeName
+", style=bold, shape=box, color="black"];
+	N_val_param_2845206 [label="userId: parameter userId : int64
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.Unfollow.userId
+", style=bold, shape=box, color="black"];
+	N_val_param_2845220 [label="followeeID: parameter followeeID : int64
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.Unfollow.followeeID
+", style=bold, shape=box, color="black"];
+	N_val_unary_2845317 [label="t3: *t2", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2845438 [label="t8: *t7", style=bold, shape=ellipse, color="red"];
+	N_val_param_2845206 -> N_val_binary_2845280;
+	N_val_0_int64 -> N_val_binary_2845280;
+	N_val_param_2845115 -> N_val_field_2845317;
+	N_val_field_2845317 -> N_val_unary_2845317;
+	N_val_param_2845147 -> N_val_call_2845344;
+	N_val_call_2845266 -> N_val_call_2845344;
+	N_val_param_2845206 -> N_val_call_2845344;
+	N_val_param_2845220 -> N_val_call_2845344;
+	N_val_call_2845344 -> N_instr_ret_2845308;
+	N_val_param_2845168 -> N_val_binary_2845397;
+	N_val____string -> N_val_binary_2845397;
+	N_val_param_2845220 -> N_val_binary_2845299;
+	N_val_0_int64 -> N_val_binary_2845299;
+	N_val_param_2845115 -> N_val_field_2845438;
+	N_val_field_2845438 -> N_val_unary_2845438;
+	N_val_param_2845147 -> N_val_call_2845477;
+	N_val_call_2845266 -> N_val_call_2845477;
+	N_val_param_2845168 -> N_val_call_2845477;
+	N_val_param_2845185 -> N_val_call_2845477;
+	N_val_call_2845477 -> N_instr_ret_2845429;
+	N_val__Invalid_Arguments__string -> N_val_call_2845535;
+	N_val_call_2845535 -> N_instr_ret_2845518;
+	N_val_param_2845185 -> N_val_binary_2845419;
+	N_val____string -> N_val_binary_2845419;
+}

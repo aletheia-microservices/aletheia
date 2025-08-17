@@ -1,6 +1,7 @@
 package blueprint
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -19,8 +20,8 @@ import (
 
 func LoadWiring(appName string) ([]*components.ServiceInfo, []*components.DatastoreInfo, []string) {
 	spec := loadAppSpec(appName)
-	servicesSpec, databasesNodes, frontends := BuildAndInspectIR(appName, spec)
-	servicesInfo := buildBlueprintServicesInfo(servicesSpec)
+	servicesSpec, databasesNodes, servicesArgs, frontends := BuildAndInspectIR(appName, spec)
+	servicesInfo := buildBlueprintServicesInfo(servicesSpec, servicesArgs)
 	databasesInfo := buildDatabasesInstances(databasesNodes)
 	return servicesInfo, databasesInfo, frontends
 }
@@ -34,24 +35,29 @@ func getUniqueName(name string) string {
 	return ""
 }
 
-func buildBlueprintServicesInfo(appSpecs map[*workflowspec.Service][]golang.Service) []*components.ServiceInfo {
+func buildBlueprintServicesInfo(appSpecs map[*workflowspec.Service][]golang.Service, servicesArgs map[*workflowspec.Service][]ir.IRNode) []*components.ServiceInfo {
 	var services []*components.ServiceInfo
-	for spec, serviceArgs := range appSpecs {
+	for serviceSpec, otherServicesLst := range appSpecs {
 		serviceInfo := &components.ServiceInfo{
-			Name:            spec.Iface.Name,
-			Package:         spec.Iface.File.Package.ShortName,
-			PackagePath:     spec.Iface.File.Package.Name,
-			Filepath:        spec.Iface.File.Name,
-			ConstructorName: spec.Constructor.Name,
+			Name:            serviceSpec.Iface.Name,
+			Package:         serviceSpec.Iface.File.Package.ShortName,
+			PackagePath:     serviceSpec.Iface.File.Package.Name,
+			Filepath:        serviceSpec.Iface.File.Name,
+			ConstructorName: serviceSpec.Constructor.Name,
 			ServiceArgs:     []string{"context"}, // args in spec do not count with the context at index 0 so we insert a dummy value now
 		}
-		for _, method := range spec.Iface.Ast.Methods.List {
+		for _, method := range serviceSpec.Iface.Ast.Methods.List {
 			serviceInfo.Methods = append(serviceInfo.Methods, method.Names[0].Name)
 		}
-		for _, arg := range serviceArgs {
-			if workflowClient, ok := arg.(*workflow.WorkflowClient); ok {
+		for i, otherService := range otherServicesLst {
+			fmt.Printf("[SPEC] [%s] (index=%d) other service: %v\n", serviceInfo.Name, i, getUniqueName(otherService.Name()))
+			if workflowClient, ok := otherService.(*workflow.WorkflowClient); ok {
 				serviceInfo.Edges = append(serviceInfo.Edges, getUniqueName(workflowClient.ServiceType))
 			}
+		}
+		
+		for i, arg := range servicesArgs[serviceSpec] {
+			fmt.Printf("[SPEC] [%s] (index=%d) arg: %v\n", serviceInfo.Name, i, getUniqueName(arg.Name()))
 			serviceInfo.ServiceArgs = append(serviceInfo.ServiceArgs, getUniqueName(arg.Name()))
 		}
 		services = append(services, serviceInfo)

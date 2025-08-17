@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"fmt"
 	"go/types"
 
 	"golang.org/x/tools/go/ssa"
@@ -26,6 +27,7 @@ func registerFieldsFromAlloc(app *app.App, graph *ssagraph.SSAGraph, service *se
 								valNode := storeEdge.GetFromNode()
 								if _, ok := valNode.GetValue().(*ssa.Parameter); ok {
 									paramIdx := graph.GetIndexOfParameter(valNode)
+									fmt.Printf("[REGISTRY] [%s] val node (index=%d): %v\n", service.GetName(), paramIdx, valNode.String())
 									wiringName := service.GetWiringNameAt(paramIdx)
 									field := service.GetFieldAt(fieldIdx)
 									field.SetWiringName(wiringName)

@@ -1,0 +1,74 @@
+digraph G {
+	rankdir=TD;
+	ranksep=1.5;
+	nodesep=1;
+	subgraph cluster_clients {
+		style=invis;
+		N_client [label="client", style=bold, shape=invhouse, color="orange"];
+	}
+	subgraph cluster_services {
+		style=invis;
+		N_HomeTimelineService_ReadHomeTimeline [label="HomeTimelineService.ReadHomeTimeline", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_ReadHomeTimeline [label="Wrk2APIService.ReadHomeTimeline
+
+==== param 0 (userId) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.userId
+
+
+==== param 1 (start) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.start
+
+
+==== param 2 (stop) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.stop
+
+
+==== ret 0 ([]int64) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.t4
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.t5
+", style=bold, shape=box, color="blue"];
+	}
+	subgraph cluster_databases {
+		style=invis;
+	}
+	N_client -> N_Wrk2APIService_ReadHomeTimeline [label="ReadHomeTimeline()", color=orange];
+	N_Wrk2APIService_ReadHomeTimeline -> N_HomeTimelineService_ReadHomeTimeline [label="ReadHomeTimeline()
+
+==== arg 0 (t0) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.t0
+
+
+==== arg 1 (userId) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.userId
+
+
+==== arg 2 (start) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.start
+
+
+==== arg 3 (stop) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.stop
+
+
+==== ret 0 (t4) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.t4
+
+
+==== ret 1 (t5) tainted ====
+_obj
+[rpc] @ HomeTimelineService.ReadHomeTimeline.t5
+", color=blue];
+}
