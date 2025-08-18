@@ -12,6 +12,11 @@ const (
 	EDGE_PHI_ON
 	EDGE_BINOP_X
 	EDGE_BINOP_Y
+	EDGE_MAP_TARGET
+	EDGE_MAP_KEY
+	EDGE_MAP_VALUE
+	EDGE_LOOKUP_TARGET
+	EDGE_LOOKUP_INDEX
 	EDGE_LOAD
 	EDGE_FIELD
 	EDGE_INDEX
@@ -88,6 +93,16 @@ func (edge *SSAEdge) GetTypeString() string {
 		return "PARAMETER"
 	case EDGE_POINTS_TO:
 		return "POINTS_TO"
+	case EDGE_MAP_TARGET:
+		return "EDGE_MAP_TARGET"
+	case EDGE_MAP_KEY:
+		return "EDGE_MAP_KEY"
+	case EDGE_MAP_VALUE:
+		return "EDGE_MAP_VALUE"
+	case EDGE_LOOKUP_TARGET:
+		return "EDGE_LOOKUP_TARGET"
+	case EDGE_LOOKUP_INDEX:
+		return "EDGE_LOOKUP_INDEX"
 	default:
 		return "UNKNOWN"
 	}

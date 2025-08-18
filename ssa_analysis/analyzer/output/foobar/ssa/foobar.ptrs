@@ -1,0 +1,181 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.BarServiceImpl).WriteBar ###
+s (@WriteBar): (*ssa.Parameter) (parameter s : *BarServiceImpl)
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+
+ctx (@WriteBar): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@WriteBar): (*ssa.Alloc) (local Bar (bar))
+	 → t0 (@WriteBar): (*ssa.Alloc)
+
+t1 (@WriteBar): (*ssa.FieldAddr) (&t0.BarID [#0])
+	 → t0 (@WriteBar): (*ssa.Alloc)
+
+t2 (@WriteBar): (*ssa.FieldAddr) (&t0.Text [#1])
+	 → t0 (@WriteBar): (*ssa.Alloc)
+
+t3 (@WriteBar): (*ssa.FieldAddr) (&s.barDb [#0])
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+
+t4 (@WriteBar): (*ssa.UnOp) (*t3)
+
+t6 (@WriteBar): (*ssa.Extract) (extract t5 #0)
+
+t7 (@WriteBar): (*ssa.Extract) (extract t5 #1)
+
+t10 (@WriteBar): (*ssa.MakeInterface) (make interface{} <- Bar (t9))
+	 → t10 (@WriteBar): (*ssa.MakeInterface)
+
+t11 (@WriteBar): (*ssa.Call) (invoke t6.InsertOne(ctx, t10))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo).GetID ###
+f (@GetID): (*ssa.Parameter) (parameter f : *Foo)
+
+t0 (@GetID): (*ssa.FieldAddr) (&f.FooID [#0])
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo).GetOtherFoo ###
+f (@GetOtherFoo): (*ssa.Parameter) (parameter f : *Foo)
+	 → t7 (@WriteFoo): (*ssa.Alloc)
+
+t0 (@GetOtherFoo): (*ssa.FieldAddr) (&f.OtherFoo [#2])
+	 → t7 (@WriteFoo): (*ssa.Alloc)
+
+t1 (@GetOtherFoo): (*ssa.UnOp) (*t0)
+	 → t6 (@WriteFoo): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo).SetOtherFoo ###
+f (@SetOtherFoo): (*ssa.Parameter) (parameter f : *Foo)
+	 → t7 (@WriteFoo): (*ssa.Alloc)
+
+other (@SetOtherFoo): (*ssa.Parameter) (parameter other : *Foo)
+	 → t6 (@WriteFoo): (*ssa.Alloc)
+
+t0 (@SetOtherFoo): (*ssa.FieldAddr) (&f.OtherFoo [#2])
+	 → t7 (@WriteFoo): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooServiceImpl).WriteFoo ###
+s (@WriteFoo): (*ssa.Parameter) (parameter s : *FooServiceImpl)
+
+ctx (@WriteFoo): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@WriteFoo): (*ssa.FieldAddr) (&s.fooDb [#0])
+
+t1 (@WriteFoo): (*ssa.UnOp) (*t0)
+
+t3 (@WriteFoo): (*ssa.Extract) (extract t2 #0)
+
+t4 (@WriteFoo): (*ssa.Extract) (extract t2 #1)
+
+t6 (@WriteFoo): (*ssa.Alloc) (new Foo (complit))
+	 → t6 (@WriteFoo): (*ssa.Alloc)
+
+t7 (@WriteFoo): (*ssa.Alloc) (new Foo (complit))
+	 → t7 (@WriteFoo): (*ssa.Alloc)
+
+t9 (@WriteFoo): (*ssa.FieldAddr) (&t6.FooID [#0])
+	 → t6 (@WriteFoo): (*ssa.Alloc)
+
+t10 (@WriteFoo): (*ssa.Call) ((*Foo).GetOtherFoo(t7))
+	 → t6 (@WriteFoo): (*ssa.Alloc)
+
+t11 (@WriteFoo): (*ssa.MakeInterface) (make interface{} <- *Foo (t10))
+	 → t11 (@WriteFoo): (*ssa.MakeInterface)
+
+t12 (@WriteFoo): (*ssa.Call) (invoke t3.InsertOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FrontendImpl).Frontend ###
+d (@Frontend): (*ssa.Parameter) (parameter d : *FrontendImpl)
+
+ctx (@Frontend): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Frontend): (*ssa.Alloc) (local Foo (foo))
+	 → t0 (@Frontend): (*ssa.Alloc)
+
+t1 (@Frontend): (*ssa.FieldAddr) (&d.fooService [#1])
+
+t2 (@Frontend): (*ssa.UnOp) (*t1)
+
+t5 (@Frontend): (*ssa.Extract) (extract t3 #1)
+
+t6 (@Frontend): (*ssa.Alloc) (local Bar (bar))
+	 → t6 (@Frontend): (*ssa.Alloc)
+
+t7 (@Frontend): (*ssa.FieldAddr) (&d.barService [#0])
+
+t8 (@Frontend): (*ssa.UnOp) (*t7)
+
+t11 (@Frontend): (*ssa.Extract) (extract t9 #1)
+
+t14 (@Frontend): (*ssa.FieldAddr) (&t0.Text [#1])
+	 → t0 (@Frontend): (*ssa.Alloc)
+
+t16 (@Frontend): (*ssa.FieldAddr) (&t6.Text [#1])
+	 → t6 (@Frontend): (*ssa.Alloc)
+
+t18 (@Frontend): (*ssa.Alloc) (new [2]any (varargs))
+	 → t18 (@Frontend): (*ssa.Alloc)
+
+t19 (@Frontend): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@Frontend): (*ssa.Alloc)
+
+t20 (@Frontend): (*ssa.MakeInterface) (make any <- string (t15))
+	 → t20 (@Frontend): (*ssa.MakeInterface)
+
+t21 (@Frontend): (*ssa.IndexAddr) (&t18[1:int])
+	 → t18 (@Frontend): (*ssa.Alloc)
+
+t22 (@Frontend): (*ssa.MakeInterface) (make any <- string (t17))
+	 → t22 (@Frontend): (*ssa.MakeInterface)
+
+t23 (@Frontend): (*ssa.Slice) (slice t18[:])
+	 → t18 (@Frontend): (*ssa.Alloc)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.NewBarServiceImpl ###
+ctx (@NewBarServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+barDb (@NewBarServiceImpl): (*ssa.Parameter) (parameter barDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+
+t0 (@NewBarServiceImpl): (*ssa.Alloc) (new BarServiceImpl (complit))
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+
+t1 (@NewBarServiceImpl): (*ssa.FieldAddr) (&t0.barDb [#0])
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewBarServiceImpl): (*ssa.Alloc)
+
+t2 (@NewBarServiceImpl): (*ssa.MakeInterface) (make BarService <- *BarServiceImpl (t0))
+	 → t2 (@NewBarServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewBarServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewBarServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewBarServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+

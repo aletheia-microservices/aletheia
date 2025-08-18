@@ -9,13 +9,22 @@ import (
 	"strings"
 )
 
+const (
+	APP_PATH_POSTNOTIFICATION_SIMPLE = "postnotification_simple/workflow/postnotification_simple"
+	APP_PATH_DIGOTA                  = "digota/workflow/digota"
+	APP_PATH_DSB_MEDIA_SQL           = "dsb_media_sql/workflow/mediamicroservices_sql"
+	APP_PATH_SOCKSHOP3               = "sockshop3/workflow/sockshop3"
+	APP_PATH_DSB_SN                  = "dsb_sn/workflow/socialnetwork"
+	APP_PATH_FOO_BAR                 = "foobar/workflow/foobar"
+)
 
-var APPS_PACKAGE_PATHS = []string {
-	"github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple",
-	"github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota",
-	"github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql",
-	"github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3",
-	"github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork",
+var APPS_PACKAGE_PATHS = []string{
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_POSTNOTIFICATION_SIMPLE,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DIGOTA,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIA_SQL,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP3,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SN,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 }
 
 var APPS_SQL_TABLES = map[string][]string{

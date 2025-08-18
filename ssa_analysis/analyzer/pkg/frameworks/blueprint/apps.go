@@ -6,15 +6,15 @@ import (
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
 	specs_dsb_sn "github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring/specs"
+	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
 	specs_postnotification_simple "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring/specs"
 	specs_sockshop3 "github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring/specs"
 	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
+
+	"analyzer/pkg/utils"
 )
 
-const (
-	BLUEPRINT_PATH_EXAMPLES     string = "github.com/blueprint-uservices/blueprint/examples/"
-	BLUEPRINT_PATH_CORE_BACKEND string = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
-)
+const BLUEPRINT_PATH_CORE_BACKEND string = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
 
 type AppInfo struct {
 	PackagePath   string
@@ -22,11 +22,12 @@ type AppInfo struct {
 }
 
 var APPS_INFO = map[string]AppInfo{
-	"postnotification_simple": {BLUEPRINT_PATH_EXAMPLES + "postnotification_simple/workflow/postnotification_simple", specs_postnotification_simple.Docker},
-	"digota":                  {BLUEPRINT_PATH_EXAMPLES + "digota/workflow/digota", specs_digota.Docker},
-	"dsb_media_sql":           {BLUEPRINT_PATH_EXAMPLES + "dsb_media_sql/workflow/mediamicroservices_sql", specs_dsb_media_sql.Docker},
-	"sockshop3":               {BLUEPRINT_PATH_EXAMPLES + "sockshop3/workflow/sockshop3", specs_sockshop3.Docker},
-	"dsb_sn":                  {BLUEPRINT_PATH_EXAMPLES + "dsb_sn/workflow/socialnetwork", specs_dsb_sn.Docker},
+	"postnotification_simple": {utils.APP_PATH_POSTNOTIFICATION_SIMPLE, specs_postnotification_simple.Docker},
+	"digota":                  {utils.APP_PATH_DIGOTA, specs_digota.Docker},
+	"dsb_media_sql":           {utils.APP_PATH_DSB_MEDIA_SQL, specs_dsb_media_sql.Docker},
+	"sockshop3":               {utils.APP_PATH_SOCKSHOP3, specs_sockshop3.Docker},
+	"dsb_sn":                  {utils.APP_PATH_DSB_SN, specs_dsb_sn.Docker},
+	"foobar":                  {utils.APP_PATH_FOO_BAR, specs_foobar.Docker},
 }
 
 func loadAppSpec(app string) cmdbuilder.SpecOption {

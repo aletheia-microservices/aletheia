@@ -130,6 +130,9 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 			} else {
 				propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 			}
+		case ssagraph.EDGE_MAP_TARGET, ssagraph.EDGE_MAP_KEY, ssagraph.EDGE_MAP_VALUE:
+			// [TO BE IMPROVED]
+			// skip because toNode is instr and not value
 		default:
 			propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 		}

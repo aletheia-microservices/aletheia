@@ -1,0 +1,132 @@
+digraph G {
+	rankdir=TD;
+	ranksep=1.5;
+	nodesep=1;
+	subgraph cluster_clients {
+		style=invis;
+		N_client [label="client", style=bold, shape=invhouse, color="orange"];
+	}
+	subgraph cluster_services {
+		style=invis;
+		N_FooService_WriteFoo [label="FooService.WriteFoo", style=bold, shape=box, color="blue"];
+		N_BarService_WriteBar [label="BarService.WriteBar
+
+==== param 0 (id) tainted ====
+_obj
+[write, primary] @ bar_db.bar.BarID
+
+
+==== param 1 (text) tainted ====
+_obj
+[write, primary] @ bar_db.bar.Text
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar) tainted ====
+_obj
+[write, primary] @ bar_db.bar
+_obj.BarID
+[write, primary] @ bar_db.bar.BarID
+_obj.Text
+[write, primary] @ bar_db.bar.Text
+", style=bold, shape=box, color="blue"];
+		N_Frontend_Frontend [label="Frontend.Frontend
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ FooService.WriteFoo.id
+[rpc] @ BarService.WriteBar.id
+
+
+==== param 1 (fooText) tainted ====
+_obj
+[rpc] @ FooService.WriteFoo.fooText
+
+
+==== param 2 (barText) tainted ====
+_obj
+[rpc] @ BarService.WriteBar.barText
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ FooService.WriteFoo.t5
+", style=bold, shape=box, color="blue"];
+	}
+	subgraph cluster_databases {
+		style=invis;
+		N_bar_db_bar [label="bar_db.bar", style=bold, shape=cylinder, color="green"];
+		N_foo_db_foo [label="foo_db.foo", style=bold, shape=cylinder, color="green"];
+	}
+	N_client -> N_Frontend_Frontend [label="Frontend()", color=orange];
+	N_Frontend_Frontend -> N_FooService_WriteFoo [label="WriteFoo()
+
+==== arg 0 (id) tainted ====
+_obj
+[write, traced] @ bar_db.bar.BarID
+[rpc] @ FooService.WriteFoo.id
+[rpc] @ BarService.WriteBar.id
+
+
+==== arg 1 (fooText) tainted ====
+_obj
+[rpc] @ FooService.WriteFoo.fooText
+
+
+==== ret 0 (t4) tainted ====
+_obj
+[rpc] @ FooService.WriteFoo.t4
+_obj.Text
+[rpc] @ FooService.WriteFoo.t4.Text
+
+
+==== ret 1 (t5) tainted ====
+_obj
+[rpc] @ FooService.WriteFoo.t5
+", color=blue];
+	N_Frontend_Frontend -> N_BarService_WriteBar [label="WriteBar()
+
+==== arg 0 (id) tainted ====
+_obj
+[write, secondary] @ bar_db.bar.BarID
+[rpc] @ FooService.WriteFoo.id
+[rpc] @ BarService.WriteBar.id
+
+
+==== arg 1 (barText) tainted ====
+_obj
+[write, secondary] @ bar_db.bar.Text
+[rpc] @ BarService.WriteBar.barText
+
+
+==== ret 0 (t10) tainted ====
+_obj
+[write, secondary] @ bar_db.bar
+[rpc] @ BarService.WriteBar.t10
+_obj.BarID
+[write, secondary] @ bar_db.bar.BarID
+_obj.Text
+[write, secondary] @ bar_db.bar.Text
+[rpc] @ BarService.WriteBar.t10.Text
+
+
+==== ret 1 (t11) tainted ====
+_obj
+[rpc] @ BarService.WriteBar.t11
+", color=blue];
+	N_FooService_WriteFoo -> N_foo_db_foo [label="InsertOne()
+
+==== arg 0 (t11) tainted ====
+_obj
+[write, primary] @ foo_db.foo
+", color=green];
+	N_BarService_WriteBar -> N_bar_db_bar [label="InsertOne()
+
+==== arg 0 (t10) tainted ====
+_obj
+[write, primary] @ bar_db.bar
+_obj.BarID
+[write, primary] @ bar_db.bar.BarID
+_obj.Text
+[write, primary] @ bar_db.bar.Text
+", color=green];
+}

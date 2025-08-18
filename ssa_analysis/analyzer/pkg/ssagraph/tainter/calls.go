@@ -144,7 +144,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					// sanity check
 					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("database (%s) not found for app: %s", database, graph.GetApp().String())
+						log.Fatalf("database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
 					}
 
 					valFieldPathLst := make([]ValFieldPath, 1)
@@ -391,7 +391,7 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 					// sanity check
 					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("database (%s) not found for app: %s", database, graph.GetApp().String())
+						log.Fatalf("database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
 					}
 
 					return database, true

@@ -1,0 +1,55 @@
+{
+  "name": "foobar",
+  "databases": [
+    "bar_db",
+    "foo_db"
+  ],
+  "services": [
+    {
+      "name": "BarService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.BarService",
+      "pkg": "foobar",
+      "impl": "BarServiceImpl",
+      "fields": [
+        "barDb #0 (bar_db)"
+      ],
+      "methods": [
+        "WriteBar"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "FooService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooService",
+      "pkg": "foobar",
+      "impl": "FooServiceImpl",
+      "fields": [
+        "fooDb #0 (foo_db)"
+      ],
+      "methods": [
+        "WriteFoo"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "Frontend",
+      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Frontend",
+      "pkg": "foobar",
+      "impl": "FrontendImpl",
+      "fields": [
+        "barService #0 (bar_service)",
+        "fooService #1 (foo_service)"
+      ],
+      "methods": [
+        "Frontend"
+      ],
+      "services": [
+        "BarService",
+        "FooService"
+      ],
+      "databases": []
+    }
+  ]
+}

@@ -144,11 +144,11 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 }
 
 func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	fmt.Printf("[SSA] [A] %02d [%T] %v\n", instrIdx, instr, instr.String())
+	fmt.Printf("[SSA PARSE INSTR] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	id := computeInstructionID(instr)
 	if id == "" { // e.graph., conditions or jumps (instructions and not values)
-		fmt.Printf("[SSA] skipping instruction with invalid id: %v\n", instr)
+		fmt.Printf("[SSA PARSE INSTR] skipping instruction with invalid id: %v\n", instr)
 		return nil
 	}
 
@@ -170,15 +170,33 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 			resNode := parseValue(graph, instr, instrIdx, res, visited)
 			graph.CreateAndAddNewEdge(resNode, node, ssagraph.EDGE_RETURN_ON, 0, "")
 		}
+	case *ssa.MapUpdate:
+		mapNode := parseValue(graph, instr, instrIdx, t.Map, visited)
+		keyNode := parseValue(graph, instr, instrIdx, t.Key, visited)
+		valueNode := parseValue(graph, instr, instrIdx, t.Value, visited)
+
+		index := "[*]"
+		if val, ok := utils.ExtractStringFromValue(keyNode.GetValue()); ok {
+			index = val
+		}
+
+		graph.CreateAndAddNewEdge(mapNode, node, ssagraph.EDGE_MAP_TARGET, 0, index)
+		graph.CreateAndAddNewEdge(keyNode, node, ssagraph.EDGE_MAP_KEY, 0, index)
+		graph.CreateAndAddNewEdge(valueNode, node, ssagraph.EDGE_MAP_VALUE, 0, index)
+
+	case *ssa.If, *ssa.Jump:
+		// nothing to do
+
+
 	default:
-		fmt.Printf("[SSA] [1] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
+		log.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 	}
 
 	return node
 }
 
 func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	fmt.Printf("[SSA] [B] %02d [%T] %v\n", instrIdx, val, val.String())
+	fmt.Printf("[SSA PARSE VALUE] %02d [%T] %v\n", instrIdx, val, val.String())
 
 	if visited[val] {
 		return graph.GetNodeByName(val.Name())
@@ -187,7 +205,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 	id := computeValueID(val)
 	if id == "" { // sanity check
-		log.Fatalf("unexpected invalid id for value: %v\n", val)
+		log.Fatalf("[SSA PARSE VALUE] unexpected invalid id for value: %v\n", val)
 		return nil
 	}
 
@@ -201,13 +219,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		for _, arg := range t.Call.Args {
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == arg.Name() {
-					fmt.Printf("[SSA] skipping arg edge for %s\n", t.Name())
+					fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == arg.Name() {
-					fmt.Printf("[SSA] skipping arg edge for %s\n", t.Name())
+					fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -224,6 +242,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		// 00 [field] t27 = &t0.Items [#3]
 		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
 		param := utils.FieldIndexToName(t)
+
 		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_FIELD, 0, param)
 	case *ssa.IndexAddr:
 		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
@@ -251,6 +270,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		graph.AddParameter(node)
 		// nothing to do
 
+	case *ssa.Const:
+		// nothing to do
+
+	case *ssa.MakeMap:
+		fmt.Printf("[SSA PARSE VALUE] MAKE MAP! %v\n", t)
+		// nothing to do
+
 	case *ssa.Global:
 		// nothing to do
 
@@ -258,13 +284,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		for _, phiEdge := range t.Edges {
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == phiEdge.Name() {
-					fmt.Printf("[SSA] skipping phi edge for %s\n", t.Name())
+					fmt.Printf("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == phiEdge.Name() {
-					fmt.Printf("[SSA] skipping phi edge for %s\n", t.Name())
+					fmt.Printf("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -282,8 +308,20 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_BINOP_X, 0, "")
 		graph.CreateAndAddNewEdge(yNode, node, ssagraph.EDGE_BINOP_Y, 0, "")
 
+	case *ssa.Lookup:
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		idxNode := parseValue(graph, instr, instrIdx, t.Index, visited)
+
+		index := "[*]"
+		if val, ok := utils.ExtractStringFromValue(idxNode.GetValue()); ok {
+			index = val
+		}
+
+		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
+		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
+
 	default:
-		fmt.Printf("[SSA] [2] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		log.Fatalf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 	}
 	return node
 }
