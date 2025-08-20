@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3326294 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3326294 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3326328 [label="t2: invoke t1.DeletePost(ctx, postID)
+
+==== tainted ====
+_obj
+[rpc] @ StorageService.DeletePost.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_3326303 [label="t0: &u.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3326217 [label="u: parameter u : *UploadServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3326250 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3326271 [label="postID: parameter postID : int64
+
+==== tainted ====
+_obj
+[rpc] @ StorageService.DeletePost.postID
+", style=bold, shape=box, color="black"];
+	N_val_unary_3326303 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_3326217 -> N_val_field_3326303;
+	N_val_field_3326303 -> N_val_unary_3326303;
+	N_val_param_3326250 -> N_val_call_3326328;
+	N_val_param_3326271 -> N_val_call_3326328;
+	N_val_call_3326328 -> N_instr_ret_3326294;
+}

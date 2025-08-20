@@ -8,27 +8,6 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_FooService_WriteFoo [label="FooService.WriteFoo", style=bold, shape=box, color="blue"];
-		N_BarService_WriteBar [label="BarService.WriteBar
-
-==== param 0 (id) tainted ====
-_obj
-[write, primary] @ bar_db.bar.BarID
-
-
-==== param 1 (text) tainted ====
-_obj
-[write, primary] @ bar_db.bar.Text
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar) tainted ====
-_obj
-[write, primary] @ bar_db.bar
-_obj.BarID
-[write, primary] @ bar_db.bar.BarID
-_obj.Text
-[write, primary] @ bar_db.bar.Text
-", style=bold, shape=box, color="blue"];
 		N_Frontend_Frontend [label="Frontend.Frontend
 
 ==== param 0 (id) tainted ====
@@ -51,11 +30,32 @@ _obj
 _obj
 [rpc] @ FooService.WriteFoo.t5
 ", style=bold, shape=box, color="blue"];
+		N_FooService_WriteFoo [label="FooService.WriteFoo", style=bold, shape=box, color="blue"];
+		N_BarService_WriteBar [label="BarService.WriteBar
+
+==== param 0 (id) tainted ====
+_obj
+[write, primary] @ bar_db.bar.BarID
+
+
+==== param 1 (text) tainted ====
+_obj
+[write, primary] @ bar_db.bar.Text
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar) tainted ====
+_obj
+[write, primary] @ bar_db.bar
+_obj.BarID
+[write, primary] @ bar_db.bar.BarID
+_obj.Text
+[write, primary] @ bar_db.bar.Text
+", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_bar_db_bar [label="bar_db.bar", style=bold, shape=cylinder, color="green"];
 		N_foo_db_foo [label="foo_db.foo", style=bold, shape=cylinder, color="green"];
+		N_bar_db_bar [label="bar_db.bar", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Frontend_Frontend [label="Frontend()", color=orange];
 	N_Frontend_Frontend -> N_FooService_WriteFoo [label="WriteFoo()

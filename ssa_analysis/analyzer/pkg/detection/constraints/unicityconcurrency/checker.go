@@ -2,9 +2,7 @@ package unicityconcurrency
 
 import (
 	"fmt"
-	"log"
 	"slices"
-	"strings"
 
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
@@ -42,31 +40,7 @@ func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, req
 			// in the future, we may just associate the taint with the call ID
 			// and then just check if the IDs match
 			if dbname == utils.ExtractDatabaseNameFromFieldPath(fieldpath) {
-				schema := db.GetSchemaByNameIfExists(utils.ExtractSchemaNameFromFieldPath(fieldpath))
-				if schema == nil {
-					schemaName := utils.ExtractSchemaNameFromFieldPath(fieldpath)
-					if strings.HasSuffix(schemaName, "[*]") {
-						// [TO BE IMPROVED]
-						// sometimes we get schema name "schema[*]" from fieldpaths "schema[*].Value"
-						// because mongodb read filter fields are not being yet parsed for reads taints
-						// for now we hardcode to remove the [*] in "schema[*]"
-						schemaName = schemaName[:len(schemaName)-3]
-						schema = db.GetSchemaByNameIfExists(schemaName)
-					} else {
-						log.Panicf("[UNICITY CHECKER] nil schema (%s) for fieldpath (%s)\n", utils.ExtractSchemaNameFromFieldPath(fieldpath), fieldpath)
-					}
-				}
-				fmt.Printf("[UNICITY CHECKER] get field for (%s) in schema (%s)\n", fieldpath, schema.GetName())
-				field := schema.GetFieldByPath(fieldpath)
-
-				// [TO BE IMPROVED]
-				// in the future, the ssa parser should be the one to infer 
-				// all schema fields (from AST structure) beforehand
-				if field == nil {
-					field = backends.NewField(fieldpath, db, schema)
-					schema.AddField(field)
-				}
-
+				field := app.ComputeDatabaseFieldsFromPath(db, fieldpath)
 				if field.HasContraintUnicity() && !slices.Contains(constrainedFields, field) {
 					constrainedFields = append(constrainedFields, field)
 				}

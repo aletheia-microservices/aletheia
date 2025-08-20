@@ -56,7 +56,7 @@
           "socialgraph_db.socialgraph.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID"
+          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID [MANDATORY]"
         ]
       }
     ]
@@ -119,8 +119,8 @@
           "usertimeline_db.usertimeline.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID",
-          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key"
+          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key",
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]"
         ]
       }
     ]

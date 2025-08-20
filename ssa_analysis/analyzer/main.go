@@ -14,6 +14,7 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
 	"analyzer/pkg/detection/constraints/foreignkeycascade"
+	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
 	"analyzer/pkg/detection/constraints/foreignkeycoordination"
 	"analyzer/pkg/detection/constraints/unicityconcurrency"
 	"analyzer/pkg/ssagraph"
@@ -151,8 +152,9 @@ func main() {
 
 	detector1 := foreignkeycoordination.NewDetector("foreign-key")
 	detector2 := foreignkeycascade.NewDetector()
-	detector3 := unicityconcurrency.NewDetector()
-	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3)
+	detector3 := foreignkeyconcurrency.NewDetector()
+	detector4 := unicityconcurrency.NewDetector()
+	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4)
 	iterator.Run()
 
 	absgraph.WriteToDOTFile(appname, true)
@@ -201,17 +203,11 @@ func main() {
 	fmt.Print("\n\n ========== APP ========== \n\n")
 	fmt.Println(app.String())
 
-	detector1.ComputeResults()
-	res1 := detection.SaveResults(app, detector1)
-	fmt.Println(res1)
-
-	detector2.ComputeResults()
-	res2 := detection.SaveResults(app, detector2)
-	fmt.Println(res2)
-
-	detector3.ComputeResults()
-	res3 := detection.SaveResults(app, detector3)
-	fmt.Println(res3)
+	detection.ComputeResults(detector1, detector2, detector3, detector4)
+	results := detection.SaveResults(app, detector1, detector2, detector3, detector4)
+	for _, result := range results {
+		fmt.Println(result)
+	}
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {

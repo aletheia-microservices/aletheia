@@ -10,7 +10,7 @@
           "notifications_queue.notification.ReqID"
         ],
         "constraints": [
-          "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID",
+          "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID [MANDATORY]",
           "FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post[*].Value"
         ]
       }
@@ -36,7 +36,7 @@
           "posts_db.post[*].Value"
         ],
         "constraints": [
-          "FOREIGN_KEY posts_db.post.ReqID REFERENCES notifications_queue.notification.ReqID"
+          "FOREIGN_KEY posts_db.post.ReqID REFERENCES notifications_queue.notification.ReqID [MANDATORY]"
         ]
       }
     ]

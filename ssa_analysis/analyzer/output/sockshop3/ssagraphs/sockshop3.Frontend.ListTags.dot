@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2724434 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2724434 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2724457 [label="t2: invoke t1.Tags(ctx)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2765969 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2765969 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2765992 [label="t2: invoke t1.Tags(ctx)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,15 +15,15 @@ _obj
 _obj
 [rpc] @ CatalogueService.Tags.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_2724443 [label="t0: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2724366 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2724392 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2724443 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2724366 -> N_val_field_2724443;
-	N_val_field_2724443 -> N_val_unary_2724443;
-	N_val_param_2724392 -> N_val_call_2724457;
-	N_val_call_2724457 -> N_val_extrt3;
-	N_val_call_2724457 -> N_val_extrt4;
-	N_val_extrt3 -> N_instr_ret_2724434;
-	N_val_extrt4 -> N_instr_ret_2724434;
+	N_val_field_2765978 [label="t0: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2765901 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2765927 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2765978 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2765901 -> N_val_field_2765978;
+	N_val_field_2765978 -> N_val_unary_2765978;
+	N_val_param_2765927 -> N_val_call_2765992;
+	N_val_call_2765992 -> N_val_extrt3;
+	N_val_call_2765992 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_2765969;
+	N_val_extrt4 -> N_instr_ret_2765969;
 }

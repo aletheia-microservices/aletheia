@@ -10,7 +10,7 @@ import (
 
 type ForeignKeyCoordinationDetector struct {
 	detection.Detector
-	keyType      string // 'primary_key' or 'foreign_key'
+	keyType      string // 'primary-key' or 'foreign-key'
 	requests     []*Request
 	results      string
 	foreignReads map[*Request][]*ForeignRead
@@ -60,7 +60,7 @@ func (detector *ForeignKeyCoordinationDetector) OnEndRun(app *app.App) {
 func (detector *ForeignKeyCoordinationDetector) OnNewRequest(node *abstractgraph.AbstractNode) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	fmt.Printf("[DETECTOR - FOREIGN KEY COORDINATION] on new request\n")
+	fmt.Printf("[FOREIGN KEY COORDINATION | DETECTOR] on new request\n")
 }
 
 func (detector *ForeignKeyCoordinationDetector) OnEndRequest(app *app.App) {
@@ -82,7 +82,7 @@ func (detector *ForeignKeyCoordinationDetector) OnRead(app *app.App, edge *abstr
 	// must check inconsistency before adding read to request
 	detector.checkInconsistency(request, read)
 	request.AddOperation(read)
-	fmt.Printf("[DETECTOR - FOREIGN KEY COORDINATION] added new read: %v\n", read)
+	fmt.Printf("[FOREIGN KEY COORDINATION | DETECTOR] added new read: %v\n", read)
 }
 
 func (detector *ForeignKeyCoordinationDetector) OnWrite(app *app.App, edge *abstractgraph.AbstractEdge) {

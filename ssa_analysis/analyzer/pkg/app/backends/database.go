@@ -28,6 +28,10 @@ func (database *Database) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (database *Database) GetAllSchemas() []*Schema {
+	return database.schemas
+}
+
 func (database *Database) GetName() string {
 	return database.name
 }

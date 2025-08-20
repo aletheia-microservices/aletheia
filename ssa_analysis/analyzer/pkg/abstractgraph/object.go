@@ -147,6 +147,20 @@ func (obj *AbstractObject) GetWriteTaints() map[string][]*AbstractTaint {
 	return obj.taints
 }
 
+func (obj *AbstractObject) GetAffectedDatabaseFieldsForCall(callID string) []string {
+	var fieldpaths []string
+	for _, taintLst := range obj.GetPrimaryTaints() {
+		for _, taint := range taintLst {
+			if taint.GetDatabaseCallID() == callID {
+				if !slices.Contains(fieldpaths, taint.dbpath) {
+					fieldpaths = append(fieldpaths, taint.dbpath)
+				}
+			}
+		}
+	}
+	return fieldpaths
+}
+
 func (obj *AbstractObject) GetPrimaryTaints() map[string][]*AbstractTaint {
 	primaryTaints := make(map[string][]*AbstractTaint, 0)
 	for objpath, taints := range obj.taints {

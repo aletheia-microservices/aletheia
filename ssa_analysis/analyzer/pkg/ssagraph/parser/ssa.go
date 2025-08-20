@@ -187,6 +187,9 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.If, *ssa.Jump:
 		// nothing to do
 
+	case *ssa.Go:
+		// TODO
+		fmt.Printf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	default:
 		log.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
@@ -319,6 +322,10 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
 		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
+	
+	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.Range, *ssa.Next, *ssa.ChangeInterface:
+		// TODO
+		fmt.Printf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 
 	default:
 		log.Fatalf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())

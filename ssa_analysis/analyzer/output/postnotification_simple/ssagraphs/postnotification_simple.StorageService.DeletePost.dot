@@ -1,0 +1,115 @@
+digraph G {
+	rankdir=TD;
+	N_instr__684762838 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__684762838 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3324957 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3324957 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3325022 [label="return t12", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3325022 [label="return t12", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3324993 [label="*t8 = \"postid\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3324993 [label="*t8 = \"postid\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3325010 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3325010 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_nil_1459532429 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__post__string [label="\"post\":string: \"post\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__postid__string [label="\"postid\":string: \"postid\":string
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post[*].Key
+", style=bold, shape=box, color="blue"];
+	N_val__posts_db__string [label="\"posts_db\":string: \"posts_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3324988 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post
+_obj.Key[*]
+[delete] @ posts_db.post[*].Key
+_obj.Value[*]
+[delete] @ posts_db.post[*].Value
+_obj[*]
+[delete] @ posts_db.post[*]
+", style=bold, shape=box, color="orange"];
+	N_val_binary_3324946 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3324912 [label="t2: invoke t1.GetCollection(ctx, \"posts_db\":string, \"post\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3325049 [label="t12: invoke t3.DeleteOne(ctx, t11)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3324891 [label="t0: &s.postsDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3324993 [label="t8: &t7.Key [#0]
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post[*].Key
+", style=bold, shape=box, color="green"];
+	N_val_field_3325010 [label="t9: &t7.Value [#1]
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post[*].Value
+", style=bold, shape=box, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- int64 (postID)
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post[*].Value
+", style=bold, shape=box, color="black"];
+	N_val_indext7 [label="t7: &t6[0:int]
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post[*]
+_obj.Key
+[delete] @ posts_db.post[*].Key
+_obj.Value
+[delete] @ posts_db.post[*].Value
+", style=bold, shape=box, color="green"];
+	N_val_param_3324792 [label="s: parameter s : *StorageServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3324826 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3324847 [label="postID: parameter postID : int64
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post[*].Value
+", style=bold, shape=box, color="black"];
+	N_val_slice_3324988 [label="t11: slice t6[:]
+
+==== tainted ====
+_obj
+[delete] @ posts_db.post
+_obj.Key[*]
+[delete] @ posts_db.post[*].Key
+_obj.Value[*]
+[delete] @ posts_db.post[*].Value
+_obj[*]
+[delete] @ posts_db.post[*]
+", style=bold, shape=box, color="black"];
+	N_val_unary_3324891 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_3324792 -> N_val_field_3324891;
+	N_val_field_3324891 -> N_val_unary_3324891;
+	N_val_param_3324826 -> N_val_call_3324912;
+	N_val__posts_db__string -> N_val_call_3324912;
+	N_val__post__string -> N_val_call_3324912;
+	N_val_call_3324912 -> N_val_extrt3;
+	N_val_call_3324912 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_3324946;
+	N_nil_1459532429 -> N_val_binary_3324946;
+	N_val_extrt4 -> N_instr_ret_3324957;
+	N_val_alloc_3324988 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_3324993;
+	N_val_indext7 -> N_val_field_3325010;
+	N_val_field_3324993 -> N_instr_store_3324993;
+	N_val__postid__string -> N_instr_store_3324993;
+	N_val_param_3324847 -> N_val_ifacet10;
+	N_val_field_3325010 -> N_instr_store_3325010;
+	N_val_ifacet10 -> N_instr_store_3325010;
+	N_val_alloc_3324988 -> N_val_slice_3324988;
+	N_val_param_3324826 -> N_val_call_3325049;
+	N_val_slice_3324988 -> N_val_call_3325049;
+	N_val_call_3325049 -> N_instr_ret_3325022;
+	N_val_field_3324993 -> N_val_alloc_3324988 [label="[*].Key", style=dashed, color=blue];
+	N_val_field_3325010 -> N_val_alloc_3324988 [label="[*].Value", style=dashed, color=blue];
+	N_val_slice_3324988 -> N_val_alloc_3324988 [label="", style=dashed, color=blue];
+	N_val_indext7 -> N_val_alloc_3324988 [label="[*]", style=dashed, color=blue];
+}

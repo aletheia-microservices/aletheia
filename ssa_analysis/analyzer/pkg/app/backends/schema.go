@@ -19,6 +19,16 @@ func NewSchema(name string) *Schema {
 	}
 }
 
+func (schema *Schema) GetAllFieldsLst() []*Field {
+	fieldsLst := make([]*Field, len(schema.fields))
+	i := 0
+	for _, field := range schema.fields {
+		fieldsLst[i] = field
+		i++
+	}
+	return fieldsLst
+}
+
 func (schema *Schema) GetName() string {
 	return schema.name
 }

@@ -1,0 +1,8 @@
+---------------------------------------------------------------------
+----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
+---------------------------------------------------------------------
+entry request: Frontend.DeleteSock
+	DELETE: (CatalogueService.DeleteSock) --> (catalogue_db.catalogue).DeleteOne(...)
+		CONCURRENT WRITE: (CartService.AddItem) --> (cart_db.carts).InsertOne(...)
+		- written field: cart_db.carts.Items[*].ID
+			- constraint #0: FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.catalogue[*].Value

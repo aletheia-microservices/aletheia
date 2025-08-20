@@ -8,9 +8,9 @@ import (
 )
 
 type CascadeDelete struct {
-	op              *DeleteOperation
-	cascadingOps    []*DeleteOperation
-	pendingDBFields []*backends.Field
+	op            *DeleteOperation
+	cascadingOps  []*DeleteOperation
+	pendingFields []*backends.Field
 }
 
 func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.App, currOp *DeleteOperation) *CascadeDelete {
@@ -35,8 +35,8 @@ func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.
 							continue
 						}
 
-						if !slices.Contains(cascadeDelete.pendingDBFields, otherField) {
-							cascadeDelete.pendingDBFields = append(cascadeDelete.pendingDBFields, otherField)
+						if !slices.Contains(cascadeDelete.pendingFields, otherField) {
+							cascadeDelete.pendingFields = append(cascadeDelete.pendingFields, otherField)
 						}
 					}
 				}
@@ -59,7 +59,7 @@ func (detector *ForeignKeyCascadeDetector) markCascadingDelete(app *app.App, req
 		dbsWithCascade := make(map[*backends.Database]bool)
 		prevOp := prevCascadeDelete.op
 
-		for _, somePendingField := range prevCascadeDelete.pendingDBFields {
+		for _, somePendingField := range prevCascadeDelete.pendingFields {
 			if currDB == somePendingField.GetDatabase() {
 				// current operation is potential cascading delete of prevCascadeDelete
 				// to make sure, we need to check if the current operation has a secondary taint resulting from the prev operation
@@ -81,11 +81,11 @@ func (detector *ForeignKeyCascadeDetector) markCascadingDelete(app *app.App, req
 
 		// remove any pending fields whose cascading delete was found in their database
 		var pendingFieldsToKeep []*backends.Field
-		for _, field := range prevCascadeDelete.pendingDBFields {
+		for _, field := range prevCascadeDelete.pendingFields {
 			if _, exists := dbsWithCascade[field.GetDatabase()]; !exists {
 				pendingFieldsToKeep = append(pendingFieldsToKeep, field)
 			}
 		}
-		prevCascadeDelete.pendingDBFields = pendingFieldsToKeep
+		prevCascadeDelete.pendingFields = pendingFieldsToKeep
 	}
 }

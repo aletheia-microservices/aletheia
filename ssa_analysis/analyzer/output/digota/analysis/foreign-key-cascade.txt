@@ -2,7 +2,8 @@
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
 entry request: ProductService.Delete
-	delete #0: (ProductService.Delete) --> (products_db.products).DeleteOne(...)
-	delete #1: (SkuService.Delete) --> (skus_db.skus).DeleteOne(...)
+	DELETE: (ProductService.Delete) --> (products_db.products).DeleteOne(...)
+	DELETE: (SkuService.Delete) --> (skus_db.skus).DeleteOne(...)
 		MISSING DELETE on field: orders_db.orders.Items[*].Parent
+			 constraint #0: FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus[*].Value
 

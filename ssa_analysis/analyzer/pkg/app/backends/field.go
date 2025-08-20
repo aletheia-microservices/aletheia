@@ -21,6 +21,10 @@ func (field *Field) GetPath() string {
 	return field.path
 }
 
+func (field *Field) GetConstraints() []*Constraint {
+	return field.constraints
+}
+
 // extract <name> from <db>.<schema>.<name
 func (field *Field) GetName() string {
 	if idx := strings.LastIndex(field.path, "."); idx != -1 {
@@ -39,6 +43,33 @@ func (field *Field) GetDatabase() *Database {
 
 func (field *Field) AddConstraint(constraint *Constraint) {
 	field.constraints = append(field.constraints, constraint)
+}
+
+func (field *Field) HasConstraintForeignKeyNonMandatoryToField(other *Field) bool {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_FOREIGN_KEY && !constraint.IsMandatory() && constraint.fields[1] == other {
+			return true
+		}
+	}
+	return false
+}
+
+func (field *Field) HasConstraintForeignKeyNonMandatory() bool {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_FOREIGN_KEY && !constraint.IsMandatory() {
+			return true
+		}
+	}
+	return false
+}
+
+func (field *Field) GetConstraintForeignKeyToField(otherField *Field) *Constraint {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_FOREIGN_KEY && constraint.fields[1] == otherField {
+			return constraint
+		}
+	}
+	return nil
 }
 
 func (field *Field) HasConstraintForeignKeyToField(otherField *Field) bool {

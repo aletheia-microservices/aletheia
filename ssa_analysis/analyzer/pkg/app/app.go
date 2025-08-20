@@ -6,9 +6,11 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strings"
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/app/services"
+	"analyzer/pkg/utils"
 )
 
 type App struct {
@@ -25,6 +27,63 @@ func NewApp(name string) *App {
 		services:    make(map[string]*services.Service),
 		entrypoints: make(map[*services.Service][]string),
 	}
+}
+
+func (app *App) GetAllFieldsReferencingCurrent(field *backends.Field) []*backends.Field {
+	var fields []*backends.Field
+	for _, database := range app.GetAllDatabases() {
+		for _, schema := range database.GetAllSchemas() {
+			for _, field := range schema.GetFields() {
+				if field.HasConstraintForeignKeyToField(field) {
+					fields = append(fields, field)
+				}
+			}
+		}
+	}
+	return fields
+}
+
+// used by detectors
+func (app *App) ComputeDatabaseFieldsFromPath(database *backends.Database, fieldpath string) *backends.Field {
+	schema := database.GetSchemaByNameIfExists(utils.ExtractSchemaNameFromFieldPath(fieldpath))
+	if schema == nil {
+		schemaName := utils.ExtractSchemaNameFromFieldPath(fieldpath)
+		if strings.HasSuffix(schemaName, "[*]") {
+			// [TO BE IMPROVED]
+			// sometimes we get schema name "schema[*]" from fieldpaths "schema[*].Value"
+			// because mongodb read filter fields are not being yet parsed for reads taints
+			// for now we hardcode to remove the [*] in "schema[*]"
+			schemaName = schemaName[:len(schemaName)-3]
+			schema = database.GetSchemaByNameIfExists(schemaName)
+		} else {
+			log.Panicf("[APP] nil schema (%s) for fieldpath (%s)\n", utils.ExtractSchemaNameFromFieldPath(fieldpath), fieldpath)
+		}
+	}
+	fmt.Printf("[APP] get field for (%s) in schema (%s)\n", fieldpath, schema.GetName())
+	field := schema.GetFieldByPath(fieldpath)
+
+	// [TO BE IMPROVED]
+	// in the future, the ssa parser should be the one to infer
+	// all schema fields (from AST structure) beforehand
+	if field == nil {
+		field = backends.NewField(fieldpath, database, schema)
+		schema.AddField(field)
+	}
+	return field
+}
+
+func (app *App) GetAllDatabaseFieldsWithPrefixPath(field *backends.Field, include bool) []*backends.Field {
+	var matchingFields []*backends.Field
+	schema := field.GetSchema()
+	for _, otherField := range schema.GetAllFieldsLst() {
+		if otherField == field && !include {
+			continue
+		}
+		if strings.HasPrefix(otherField.GetPath(), field.GetPath()) {
+			matchingFields = append(matchingFields, otherField)
+		}
+	}
+	return matchingFields
 }
 
 func (app *App) GetName() string {
@@ -179,8 +238,8 @@ func (app *App) MarshalJSON() ([]byte, error) {
 	})
 
 	return json.Marshal(&struct {
-		Name      string                       `json:"name"`
-		Databases []string                     `json:"databases"`
+		Name      string              `json:"name"`
+		Databases []string            `json:"databases"`
 		Services  []*services.Service `json:"services"`
 	}{
 		Name:      app.name,

@@ -44,11 +44,12 @@ func (iterator *Iterator) Run() {
 		}
 
 		iterator.transverse(toNode)
-		iterator.clean(toNode)
 
 		for _, detector := range iterator.detectors {
 			detector.OnEndRequest(iterator.app)
 		}
+
+		iterator.clean(toNode)
 	}
 
 	for _, detector := range iterator.detectors {

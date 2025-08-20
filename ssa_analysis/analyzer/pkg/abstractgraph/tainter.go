@@ -23,26 +23,40 @@ func PropagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *Taint
 			}
 			otherField := otherDb.GetLastSchema().GetOrCreateField(otherDb, otherTaint.GetDatabasePath())
 
-			if currTaint.IsWrite() && otherTaint.IsWrite() || currTaint.IsWrite() && otherTaint.IsRead() {
+			if currTaint.IsWrite() && otherTaint.IsWrite() {
 				if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
+					// 2nd condition is for sanity check
+					// may happen when iterating queue.Push() --> queue.Pop()
+					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
+					constraint.EnableMandatory()
+					currField.AddConstraint(constraint)
+					currDb.GetLastSchema().AddConstraint(constraint)
+					fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
+				}
+			} else if currTaint.IsWrite() && otherTaint.IsRead() {
+				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil && constraint.IsMandatory() {
+					constraint.DisableMandatory()
+				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
 					// 2nd condition is for sanity check
 					// may happen when iterating queue.Push() --> queue.Pop()
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 					currField.AddConstraint(constraint)
 					currDb.GetLastSchema().AddConstraint(constraint)
-					fmt.Printf("\t\t[ITERATOR] [WRITE] added new constraint: %s\n", constraint)
+					fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 				}
 			} else if currTaint.IsRead() && otherTaint.IsWrite() {
 				// NOTE: verify this
-				// not sure if we shoud leave the following conditions ahead to
-				// also capture foreign keys for other combinations of operatiions
-				if !otherField.HasConstraintForeignKeyToField(currField) && !currField.HasConstraintForeignKeyToField(otherField) {
+				// not sure if we shoud leave the following conditions ahead with "nothing to do"
+				// to also capture foreign keys for other combinations of operatiions
+				if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil && constraint.IsMandatory() {
+					constraint.DisableMandatory()
+				} else if !otherField.HasConstraintForeignKeyToField(currField) && !currField.HasConstraintForeignKeyToField(otherField) {
 					// 2nd condition is for sanity check
 					// may happen when iterating queue.Push() --> queue.Pop()
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
 					otherField.AddConstraint(constraint)
 					otherDb.GetLastSchema().AddConstraint(constraint)
-					fmt.Printf("\t\t[ITERATOR] [READ] added new constraint: %s\n", constraint)
+					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 				}
 			} else if currTaint.IsRead() && otherTaint.IsRead() {
 				// nothing to do

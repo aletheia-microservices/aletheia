@@ -47,6 +47,40 @@ t17 (@Run): (*ssa.FieldAddr) (&t8.PostID [#1])
 	 → t8 (@Run): (*ssa.Alloc)
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).DeletePost ###
+s (@DeletePost): (*ssa.Parameter) (parameter s : *StorageServiceImpl)
+
+ctx (@DeletePost): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeletePost): (*ssa.FieldAddr) (&s.postsDb [#0])
+
+t1 (@DeletePost): (*ssa.UnOp) (*t0)
+
+t3 (@DeletePost): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeletePost): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeletePost): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeletePost): (*ssa.Alloc)
+
+t7 (@DeletePost): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeletePost): (*ssa.Alloc)
+
+t8 (@DeletePost): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeletePost): (*ssa.Alloc)
+
+t9 (@DeletePost): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeletePost): (*ssa.Alloc)
+
+t10 (@DeletePost): (*ssa.MakeInterface) (make interface{} <- int64 (postID))
+	 → t10 (@DeletePost): (*ssa.MakeInterface)
+
+t11 (@DeletePost): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeletePost): (*ssa.Alloc)
+
+t12 (@DeletePost): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).ReadPost ###
 s (@ReadPost): (*ssa.Parameter) (parameter s : *StorageServiceImpl)
 	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
@@ -171,6 +205,18 @@ t34 (@StorePost): (*ssa.Call) (invoke t30.InsertOne(ctx, t33))
 
 t36 (@StorePost): (*ssa.FieldAddr) (&t6.PostID [#1])
 	 → t6 (@StorePost): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl).DeletePost ###
+u (@DeletePost): (*ssa.Parameter) (parameter u : *UploadServiceImpl)
+
+ctx (@DeletePost): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeletePost): (*ssa.FieldAddr) (&u.storageService [#0])
+
+t1 (@DeletePost): (*ssa.UnOp) (*t0)
+
+t2 (@DeletePost): (*ssa.Call) (invoke t1.DeletePost(ctx, postID))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl).UploadPost ###
