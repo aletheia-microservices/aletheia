@@ -62,6 +62,8 @@ func PropagateNewTaintsToDatabases(graph *AbstractCallGraph, taintMapping *Taint
 				// nothing to do
 			} else if (currTaint.IsRead() || currTaint.IsWrite() || currTaint.IsDelete()) && otherTaint.IsDelete() {
 				// nothing to do
+			} else if currTaint.IsDelete() && (currTaint.IsRead() || currTaint.IsWrite() || currTaint.IsDelete()) {
+				// nothing to do
 			} else {
 				log.Fatalf("\t\t[ABSTRACTGRAPH] unexpected taint mapping:\nCURR TAINT: %s\nOTHER TAINT:%s", currTaint.LongString(), otherTaint.LongString())
 			}

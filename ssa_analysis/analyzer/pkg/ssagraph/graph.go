@@ -141,6 +141,26 @@ func (graph *SSAGraph) GetDatabaseCalls() []*DatabaseCall {
 	return graph.dbCalls
 }
 
+func (graph *SSAGraph) GetEdgesTypedTo(node *SSANode, t EdgeType) []*SSAEdge {
+	var edges []*SSAEdge
+	for _, edge := range graph.edges {
+		if edge.GetType() == t && edge.to == node {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
+}
+
+func (graph *SSAGraph) GetEdgesTypedFrom(node *SSANode, t EdgeType) []*SSAEdge {
+	var edges []*SSAEdge
+	for _, edge := range graph.edges {
+		if edge.GetType() == t && edge.from == node {
+			edges = append(edges, edge)
+		}
+	}
+	return edges
+}
+
 func (graph *SSAGraph) GetEdgesFromNodeExceptPointerTo(node *SSANode) []*SSAEdge {
 	var edges []*SSAEdge
 	for _, edge := range graph.edges {

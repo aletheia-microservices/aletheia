@@ -9,13 +9,10 @@
           "cart_db.carts.ID",
           "cart_db.carts.Items",
           "cart_db.carts.Items[*]",
-          "cart_db.carts.Items[*].ID",
-          "cart_db.carts[*]",
-          "cart_db.carts[*].Key",
-          "cart_db.carts[*].Value"
+          "cart_db.carts.Items[*].ID"
         ],
         "constraints": [
-          "FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.catalogue[*].Value"
+          "FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.catalogue.ID"
         ]
       }
     ]
@@ -27,10 +24,7 @@
         "name": "catalogue",
         "fields": [
           "catalogue_db.catalogue",
-          "catalogue_db.catalogue.ID",
-          "catalogue_db.catalogue[*]",
-          "catalogue_db.catalogue[*].Key",
-          "catalogue_db.catalogue[*].Value"
+          "catalogue_db.catalogue.ID"
         ],
         "constraints": []
       }
@@ -52,12 +46,10 @@
           "order_db.orders.Shipment",
           "order_db.orders.Shipment.ID",
           "order_db.orders.Shipment.Status",
-          "order_db.orders.Total",
-          "order_db.orders[*]",
-          "order_db.orders[*].Key",
-          "order_db.orders[*].Value"
+          "order_db.orders.Total"
         ],
         "constraints": [
+          "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_queue.notification",
           "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_db.shipments [MANDATORY]"
         ]
       }
@@ -75,10 +67,10 @@
           "ship_db.shipments.Status"
         ],
         "constraints": [
-          "FOREIGN_KEY ship_db.shipments.ID REFERENCES order_db.orders.ID [MANDATORY]",
-          "FOREIGN_KEY ship_db.shipments.ID REFERENCES order_db.orders.Shipment.ID [MANDATORY]",
           "FOREIGN_KEY ship_db.shipments.Name REFERENCES order_db.orders.CustomerID [MANDATORY]",
           "FOREIGN_KEY ship_db.shipments.Status REFERENCES order_db.orders.Shipment.Status [MANDATORY]",
+          "FOREIGN_KEY ship_db.shipments.ID REFERENCES order_db.orders.ID [MANDATORY]",
+          "FOREIGN_KEY ship_db.shipments.ID REFERENCES order_db.orders.Shipment.ID [MANDATORY]",
           "FOREIGN_KEY ship_db.shipments REFERENCES ship_queue.notification"
         ]
       }
@@ -96,11 +88,10 @@
           "ship_queue.notification.Status"
         ],
         "constraints": [
-          "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.ID [MANDATORY]",
-          "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.Shipment.ID [MANDATORY]",
           "FOREIGN_KEY ship_queue.notification.Name REFERENCES order_db.orders.CustomerID [MANDATORY]",
           "FOREIGN_KEY ship_queue.notification.Status REFERENCES order_db.orders.Shipment.Status [MANDATORY]",
-          "FOREIGN_KEY ship_queue.notification REFERENCES order_db.orders.Shipment [MANDATORY]"
+          "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.ID [MANDATORY]",
+          "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.Shipment.ID [MANDATORY]"
         ]
       }
     ]
@@ -120,9 +111,7 @@
           "user_db.users.Password",
           "user_db.users.UserID",
           "user_db.users.Username",
-          "user_db.users[*]",
-          "user_db.users[*].Key",
-          "user_db.users[*].Value"
+          "user_db.users.username"
         ],
         "constraints": []
       }

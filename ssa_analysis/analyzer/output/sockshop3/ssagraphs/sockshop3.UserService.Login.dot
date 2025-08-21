@@ -1,22 +1,22 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1740447240 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__1740447240 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2817218 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2817218 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2817264 [label="return t30, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2817264 [label="return t30, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2816978 [label="*t7 = \"username\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2816978 [label="*t7 = \"username\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2816997 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2816997 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2817036 [label="*t13 = \"password\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2817036 [label="*t13 = \"password\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2817055 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2817055 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2817124 [label="*t19 = t16", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2817124 [label="*t19 = t16", style=bold, shape=ellipse, color="blue"];
-	N_nil_909195425 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr__824160231 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__824160231 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2795341 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2795341 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2795387 [label="return t30, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2795387 [label="return t30, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2795101 [label="*t7 = \"username\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795101 [label="*t7 = \"username\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795120 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795120 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795159 [label="*t13 = \"password\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795159 [label="*t13 = \"password\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795178 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795178 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795247 [label="*t19 = t16", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2795247 [label="*t19 = t16", style=bold, shape=ellipse, color="blue"];
+	N_nil_2032402114 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val__Unauthorized__string [label="\"Unauthorized\":string: \"Unauthorized\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__password__string [label="\"password\":string: \"password\":string", style=bold, shape=ellipse, color="blue"];
 	N_val__user_db__string [label="\"user_db\":string: \"user_db\":string", style=bold, shape=ellipse, color="yellow"];
@@ -24,56 +24,50 @@ digraph G {
 
 ==== tainted ====
 _obj
-[read] @ user_db.users[*].Key
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="blue"];
 	N_val__users__string [label="\"users\":string: \"users\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2816973 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+	N_val_alloc_2795096 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
 
 ==== tainted ====
 _obj
-[read] @ user_db.users
-_obj.Key[*]
-[read] @ user_db.users[*].Key
-_obj.Value[*]
-[read] @ user_db.users[*].Value
-_obj[*]
-[read] @ user_db.users[*]
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="orange"];
-	N_val_alloc_2817031 [label="t11: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2817069 [label="t17: new User (user)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2817134 [label="t18: new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)", style=bold, shape=ellipse, color="orange"];
-	N_val_binary_2817202 [label="t28: t27 != password", style=bold, shape=ellipse, color="black"];
-	N_val_call_2816931 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"users\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2817111 [label="t21: invoke t3.FindOne(ctx, t10, t20...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2817147 [label="t25: invoke t22.One(ctx, t24)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2817243 [label="t29: errors.New(\"Unauthorized\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2795154 [label="t11: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2795192 [label="t17: new User (user)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2795257 [label="t18: new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_2795325 [label="t28: t27 != password", style=bold, shape=ellipse, color="black"];
+	N_val_call_2795054 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"users\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2795234 [label="t21: invoke t3.FindOne(ctx, t10, t20...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2795270 [label="t25: invoke t22.One(ctx, t24)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2795366 [label="t29: errors.New(\"Unauthorized\":string)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt22 [label="t22: extract t21 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt23 [label="t23: extract t21 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2816915 [label="t0: &s.db [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2816978 [label="t7: &t6.Key [#0]
+	N_val_field_2795038 [label="t0: &s.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2795101 [label="t7: &t6.Key [#0]
 
 ==== tainted ====
 _obj
-[read] @ user_db.users[*].Key
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="green"];
-	N_val_field_2816997 [label="t8: &t6.Value [#1]
+	N_val_field_2795120 [label="t8: &t6.Value [#1]
 
 ==== tainted ====
 _obj
-[read] @ user_db.users[*].Value
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="green"];
-	N_val_field_2817036 [label="t13: &t12.Key [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2817055 [label="t14: &t12.Value [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2817193 [label="t26: &t17.Password [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2795159 [label="t13: &t12.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2795178 [label="t14: &t12.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2795316 [label="t26: &t17.Password [#4]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet15 [label="t15: make interface{} <- bool (true:bool)", style=bold, shape=ellipse, color="black"];
 	N_val_ifacet24 [label="t24: make interface{} <- *User (t17)", style=bold, shape=ellipse, color="black"];
 	N_val_ifacet9 [label="t9: make interface{} <- string (username)
 
 ==== tainted ====
 _obj
-[read] @ user_db.users[*].Value
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="black"];
 	N_val_indext12 [label="t12: &t11[0:int]", style=bold, shape=ellipse, color="green"];
 	N_val_indext19 [label="t19: &t18[0:int]", style=bold, shape=ellipse, color="green"];
@@ -81,96 +75,86 @@ _obj
 
 ==== tainted ====
 _obj
-[read] @ user_db.users[*]
-_obj.Key
-[read] @ user_db.users[*].Key
-_obj.Value
-[read] @ user_db.users[*].Value
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="green"];
-	N_val_param_2816805 [label="s: parameter s : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2816831 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2816852 [label="username: parameter username : string
+	N_val_param_2794928 [label="s: parameter s : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2794954 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2794975 [label="username: parameter username : string
 
 ==== tainted ====
 _obj
-[read] @ user_db.users[*].Value
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="black"];
-	N_val_param_2816862 [label="password: parameter password : string", style=bold, shape=ellipse, color="black"];
-	N_val_slice_2816973 [label="t10: slice t5[:]
+	N_val_param_2794985 [label="password: parameter password : string", style=bold, shape=ellipse, color="black"];
+	N_val_slice_2795096 [label="t10: slice t5[:]
 
 ==== tainted ====
 _obj
-[read] @ user_db.users
-_obj.Key[*]
-[read] @ user_db.users[*].Key
-_obj.Value[*]
-[read] @ user_db.users[*].Value
-_obj[*]
-[read] @ user_db.users[*]
+[read] @ user_db.users.username
 ", style=bold, shape=box, color="black"];
-	N_val_slice_2817031 [label="t16: slice t11[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_2795154 [label="t16: slice t11[:]", style=bold, shape=ellipse, color="black"];
 	N_val_slicet20 [label="t20: slice t18[:]", style=bold, shape=ellipse, color="black"];
 	N_val_struct_FirstName_string__LastName_string__Email_string__Username_string__Password_string__Addresses_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Cards_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__UserID_string__Salt_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User [label="struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address; Cards github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card; UserID string; Salt string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User: struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address; Cards github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card; UserID string; Salt string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User", style=bold, shape=ellipse, color="yellow"];
 	N_val_true_bool [label="true:bool: true:bool", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2816915 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2817193 [label="t27: *t26", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2817271 [label="t30: *t17", style=bold, shape=ellipse, color="red"];
-	N_val_param_2816805 -> N_val_field_2816915;
-	N_val_field_2816915 -> N_val_unary_2816915;
-	N_val_param_2816831 -> N_val_call_2816931;
-	N_val__user_db__string -> N_val_call_2816931;
-	N_val__users__string -> N_val_call_2816931;
-	N_val_call_2816931 -> N_val_extrt3;
-	N_val_call_2816931 -> N_val_extrt4;
-	N_val_alloc_2816973 -> N_val_indext6;
-	N_val_indext6 -> N_val_field_2816978;
-	N_val_indext6 -> N_val_field_2816997;
-	N_val_field_2816978 -> N_instr_store_2816978;
-	N_val__username__string -> N_instr_store_2816978;
-	N_val_param_2816852 -> N_val_ifacet9;
-	N_val_field_2816997 -> N_instr_store_2816997;
-	N_val_ifacet9 -> N_instr_store_2816997;
-	N_val_alloc_2816973 -> N_val_slice_2816973;
-	N_val_alloc_2817031 -> N_val_indext12;
-	N_val_indext12 -> N_val_field_2817036;
-	N_val_indext12 -> N_val_field_2817055;
-	N_val_field_2817036 -> N_instr_store_2817036;
-	N_val__password__string -> N_instr_store_2817036;
+	N_val_unary_2795038 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2795316 [label="t27: *t26", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2795394 [label="t30: *t17", style=bold, shape=ellipse, color="red"];
+	N_val_param_2794928 -> N_val_field_2795038;
+	N_val_field_2795038 -> N_val_unary_2795038;
+	N_val_param_2794954 -> N_val_call_2795054;
+	N_val__user_db__string -> N_val_call_2795054;
+	N_val__users__string -> N_val_call_2795054;
+	N_val_call_2795054 -> N_val_extrt3;
+	N_val_call_2795054 -> N_val_extrt4;
+	N_val_alloc_2795096 -> N_val_indext6;
+	N_val_indext6 -> N_val_field_2795101;
+	N_val_indext6 -> N_val_field_2795120;
+	N_val_field_2795101 -> N_instr_store_2795101;
+	N_val__username__string -> N_instr_store_2795101;
+	N_val_param_2794975 -> N_val_ifacet9;
+	N_val_field_2795120 -> N_instr_store_2795120;
+	N_val_ifacet9 -> N_instr_store_2795120;
+	N_val_alloc_2795096 -> N_val_slice_2795096;
+	N_val_alloc_2795154 -> N_val_indext12;
+	N_val_indext12 -> N_val_field_2795159;
+	N_val_indext12 -> N_val_field_2795178;
+	N_val_field_2795159 -> N_instr_store_2795159;
+	N_val__password__string -> N_instr_store_2795159;
 	N_val_true_bool -> N_val_ifacet15;
-	N_val_field_2817055 -> N_instr_store_2817055;
-	N_val_ifacet15 -> N_instr_store_2817055;
-	N_val_alloc_2817031 -> N_val_slice_2817031;
-	N_val_alloc_2817134 -> N_val_indext19;
-	N_val_indext19 -> N_instr_store_2817124;
-	N_val_slice_2817031 -> N_instr_store_2817124;
-	N_val_alloc_2817134 -> N_val_slicet20;
-	N_val_param_2816831 -> N_val_call_2817111;
-	N_val_slice_2816973 -> N_val_call_2817111;
-	N_val_slicet20 -> N_val_call_2817111;
-	N_val_call_2817111 -> N_val_extrt22;
-	N_val_call_2817111 -> N_val_extrt23;
-	N_val_alloc_2817069 -> N_val_ifacet24;
-	N_val_param_2816831 -> N_val_call_2817147;
-	N_val_ifacet24 -> N_val_call_2817147;
-	N_val_alloc_2817069 -> N_val_field_2817193;
-	N_val_field_2817193 -> N_val_unary_2817193;
-	N_val_unary_2817193 -> N_val_binary_2817202;
-	N_val_param_2816862 -> N_val_binary_2817202;
-	N_val__Unauthorized__string -> N_val_call_2817243;
-	N_val_struct_FirstName_string__LastName_string__Email_string__Username_string__Password_string__Addresses_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Cards_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__UserID_string__Salt_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User -> N_instr_ret_2817218;
-	N_val_call_2817243 -> N_instr_ret_2817218;
-	N_val_alloc_2817069 -> N_val_unary_2817271;
-	N_val_unary_2817271 -> N_instr_ret_2817264;
-	N_nil_909195425 -> N_instr_ret_2817264;
-	N_val_indext12 -> N_val_alloc_2817031 [label="[*]", style=dashed, color=blue];
-	N_val_field_2816978 -> N_val_alloc_2816973 [label="[*].Key", style=dashed, color=blue];
-	N_val_field_2817036 -> N_val_alloc_2817031 [label="[*].Key", style=dashed, color=blue];
-	N_val_indext6 -> N_val_alloc_2816973 [label="[*]", style=dashed, color=blue];
-	N_val_field_2817055 -> N_val_alloc_2817031 [label="[*].Value", style=dashed, color=blue];
-	N_val_field_2817193 -> N_val_alloc_2817069 [label=".Password", style=dashed, color=blue];
-	N_val_slicet20 -> N_val_alloc_2817134 [label="", style=dashed, color=blue];
-	N_val_field_2816997 -> N_val_alloc_2816973 [label="[*].Value", style=dashed, color=blue];
-	N_val_slice_2816973 -> N_val_alloc_2816973 [label="", style=dashed, color=blue];
-	N_val_slice_2817031 -> N_val_alloc_2817031 [label="", style=dashed, color=blue];
-	N_val_indext19 -> N_val_alloc_2817134 [label="[*]", style=dashed, color=blue];
+	N_val_field_2795178 -> N_instr_store_2795178;
+	N_val_ifacet15 -> N_instr_store_2795178;
+	N_val_alloc_2795154 -> N_val_slice_2795154;
+	N_val_alloc_2795257 -> N_val_indext19;
+	N_val_indext19 -> N_instr_store_2795247;
+	N_val_slice_2795154 -> N_instr_store_2795247;
+	N_val_alloc_2795257 -> N_val_slicet20;
+	N_val_param_2794954 -> N_val_call_2795234;
+	N_val_slice_2795096 -> N_val_call_2795234;
+	N_val_slicet20 -> N_val_call_2795234;
+	N_val_call_2795234 -> N_val_extrt22;
+	N_val_call_2795234 -> N_val_extrt23;
+	N_val_alloc_2795192 -> N_val_ifacet24;
+	N_val_param_2794954 -> N_val_call_2795270;
+	N_val_ifacet24 -> N_val_call_2795270;
+	N_val_alloc_2795192 -> N_val_field_2795316;
+	N_val_field_2795316 -> N_val_unary_2795316;
+	N_val_unary_2795316 -> N_val_binary_2795325;
+	N_val_param_2794985 -> N_val_binary_2795325;
+	N_val__Unauthorized__string -> N_val_call_2795366;
+	N_val_struct_FirstName_string__LastName_string__Email_string__Username_string__Password_string__Addresses_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Cards_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__UserID_string__Salt_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User -> N_instr_ret_2795341;
+	N_val_call_2795366 -> N_instr_ret_2795341;
+	N_val_alloc_2795192 -> N_val_unary_2795394;
+	N_val_unary_2795394 -> N_instr_ret_2795387;
+	N_nil_2032402114 -> N_instr_ret_2795387;
+	N_val_field_2795316 -> N_val_alloc_2795192 [label=".Password", style=dashed, color=blue];
+	N_val_slicet20 -> N_val_alloc_2795257 [label="", style=dashed, color=blue];
+	N_val_slice_2795096 -> N_val_alloc_2795096 [label="", style=dashed, color=blue];
+	N_val_field_2795101 -> N_val_alloc_2795096 [label="[*].Key", style=dashed, color=blue];
+	N_val_indext12 -> N_val_alloc_2795154 [label="[*]", style=dashed, color=blue];
+	N_val_field_2795159 -> N_val_alloc_2795154 [label="[*].Key", style=dashed, color=blue];
+	N_val_field_2795120 -> N_val_alloc_2795096 [label="[*].Value", style=dashed, color=blue];
+	N_val_field_2795178 -> N_val_alloc_2795154 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext6 -> N_val_alloc_2795096 [label="[*]", style=dashed, color=blue];
+	N_val_indext19 -> N_val_alloc_2795257 [label="[*]", style=dashed, color=blue];
+	N_val_slice_2795154 -> N_val_alloc_2795154 [label="", style=dashed, color=blue];
 }

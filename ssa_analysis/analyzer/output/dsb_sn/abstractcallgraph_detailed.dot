@@ -8,34 +8,15 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_Wrk2APIService_Unfollow [label="Wrk2APIService.Unfollow
-
-==== param 0 (username) tainted ====
-_obj
-[rpc] @ SocialGraphService.UnfollowWithUsername.username
-
-
-==== param 1 (followeeName) tainted ====
-_obj
-[rpc] @ SocialGraphService.UnfollowWithUsername.followeeName
-
-
-==== param 2 (userId) tainted ====
-_obj
-[rpc] @ SocialGraphService.Unfollow.userId
-
-
-==== param 3 (followeeID) tainted ====
-_obj
-[rpc] @ SocialGraphService.Unfollow.followeeID
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ SocialGraphService.Unfollow.t4
-", style=bold, shape=box, color="blue"];
-		N_UniqueIdService_ComposeUniqueId [label="UniqueIdService.ComposeUniqueId", style=bold, shape=box, color="blue"];
 		N_SocialGraphService_Follow [label="SocialGraphService.Follow", style=bold, shape=box, color="blue"];
+		N_SocialGraphService_UnfollowWithUsername [label="SocialGraphService.UnfollowWithUsername", style=bold, shape=box, color="blue"];
+		N_SocialGraphService_GetFollowers [label="SocialGraphService.GetFollowers", style=bold, shape=box, color="blue"];
+		N_SocialGraphService_InsertUser [label="SocialGraphService.InsertUser
+
+==== param 1 (userID) tainted ====
+_obj
+[write, primary] @ socialgraph_db.socialgraph.UserID
+", style=bold, shape=box, color="blue"];
 		N_ComposePostService_ComposePost [label="ComposePostService.ComposePost
 
 ==== param 0 (reqID) tainted ====
@@ -87,55 +68,120 @@ _obj
 _obj
 [rpc] @ TextService.ComposeText.t9
 ", style=bold, shape=box, color="blue"];
-		N_UserTimelineService_WriteUserTimeline [label="UserTimelineService.WriteUserTimeline
-
-==== param 1 (postID) tainted ====
-_obj
-[write, primary] @ usertimeline_db.usertimeline.Posts[*].PostID
-
-
-==== param 2 (userID) tainted ====
-_obj
-[write, primary] @ usertimeline_db.usertimeline.UserID
-[read, primary] @ usertimeline_cache.*.Key
-
-
-==== param 3 (timestamp) tainted ====
-_obj
-[write, primary] @ usertimeline_db.usertimeline.Posts[*].Timestamp
-", style=bold, shape=box, color="blue"];
-		N_Wrk2APIService_Follow [label="Wrk2APIService.Follow
+		N_MediaService_ComposeMedia [label="MediaService.ComposeMedia", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_Unfollow [label="Wrk2APIService.Unfollow
 
 ==== param 0 (username) tainted ====
 _obj
-[rpc] @ SocialGraphService.FollowWithUsername.username
+[rpc] @ SocialGraphService.UnfollowWithUsername.username
 
 
 ==== param 1 (followeeName) tainted ====
 _obj
-[rpc] @ SocialGraphService.FollowWithUsername.followeeName
+[rpc] @ SocialGraphService.UnfollowWithUsername.followeeName
 
 
 ==== param 2 (userId) tainted ====
 _obj
-[rpc] @ SocialGraphService.Follow.userId
+[rpc] @ SocialGraphService.Unfollow.userId
 
 
 ==== param 3 (followeeID) tainted ====
 _obj
-[rpc] @ SocialGraphService.Follow.followeeID
+[rpc] @ SocialGraphService.Unfollow.followeeID
 
 
 ==== ret 0 (error) tainted ====
 _obj
-[rpc] @ SocialGraphService.Follow.t4
+[rpc] @ SocialGraphService.Unfollow.t4
 ", style=bold, shape=box, color="blue"];
-		N_UserService_ComposeCreatorWithUserId [label="UserService.ComposeCreatorWithUserId", style=bold, shape=box, color="blue"];
-		N_SocialGraphService_InsertUser [label="SocialGraphService.InsertUser
+		N_PostStorageService_ReadPosts [label="PostStorageService.ReadPosts", style=bold, shape=box, color="blue"];
+		N_UserService_RegisterUserWithId [label="UserService.RegisterUserWithId
+
+==== param 0 (reqID) tainted ====
+_obj
+[rpc] @ SocialGraphService.InsertUser.reqID
+
+
+==== param 1 (firstName) tainted ====
+_obj
+[write, primary] @ user_db.user.FirstName
+
+
+==== param 2 (lastName) tainted ====
+_obj
+[write, primary] @ user_db.user.LastName
+
+
+==== param 3 (username) tainted ====
+_obj
+[read, primary] @ user_db.user.username
+[write, primary] @ user_db.user.Username
+
+
+==== param 4 (password) tainted ====
+_obj
+[write, primary] @ user_db.user.Salt
+
+
+==== param 5 (userID) tainted ====
+_obj
+[write, primary] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+", style=bold, shape=box, color="blue"];
+		N_HomeTimelineService_ReadHomeTimeline [label="HomeTimelineService.ReadHomeTimeline
 
 ==== param 1 (userID) tainted ====
 _obj
-[write, primary] @ socialgraph_db.socialgraph.UserID
+[read, primary] @ hometimeline_cache.*.Key
+
+
+==== ret 0 ([]int64) tainted ====
+_obj
+[read, primary] @ hometimeline_cache.*.Value
+", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_ReadUserTimeline [label="Wrk2APIService.ReadUserTimeline
+
+==== param 0 (userId) tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.userId
+
+
+==== param 1 (start) tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.start
+
+
+==== param 2 (stop) tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.stop
+
+
+==== ret 0 ([]int64) tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.t4
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.t5
+", style=bold, shape=box, color="blue"];
+		N_SocialGraphService_Unfollow [label="SocialGraphService.Unfollow", style=bold, shape=box, color="blue"];
+		N_HomeTimelineService_WriteHomeTimeline [label="HomeTimelineService.WriteHomeTimeline
+
+==== param 0 (reqID) tainted ====
+_obj
+[rpc] @ SocialGraphService.GetFollowers.reqID
+
+
+==== param 2 (userID) tainted ====
+_obj
+[rpc] @ SocialGraphService.GetFollowers.userID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ SocialGraphService.GetFollowers.t4
 ", style=bold, shape=box, color="blue"];
 		N_Wrk2APIService_ReadHomeTimeline [label="Wrk2APIService.ReadHomeTimeline
 
@@ -162,6 +208,23 @@ _obj
 ==== ret 1 (error) tainted ====
 _obj
 [rpc] @ HomeTimelineService.ReadHomeTimeline.t5
+", style=bold, shape=box, color="blue"];
+		N_UserTimelineService_WriteUserTimeline [label="UserTimelineService.WriteUserTimeline
+
+==== param 1 (postID) tainted ====
+_obj
+[write, primary] @ usertimeline_db.usertimeline.Posts[*].PostID
+
+
+==== param 2 (userID) tainted ====
+_obj
+[write, primary] @ usertimeline_db.usertimeline.UserID
+[read, primary] @ usertimeline_cache.*.Key
+
+
+==== param 3 (timestamp) tainted ====
+_obj
+[write, primary] @ usertimeline_db.usertimeline.Posts[*].Timestamp
 ", style=bold, shape=box, color="blue"];
 		N_Wrk2APIService_ComposePost [label="Wrk2APIService.ComposePost
 
@@ -194,58 +257,7 @@ _obj
 _obj
 [rpc] @ ComposePostService.ComposePost.media_ids
 ", style=bold, shape=box, color="blue"];
-		N_TextService_ComposeText [label="TextService.ComposeText
-
-==== param 0 (reqID) tainted ====
-_obj
-[rpc] @ UrlShortenService.ComposeUrls.reqID
-[rpc] @ UserMentionService.ComposeUserMentions.reqID
-
-
-==== ret 1 ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention) tainted ====
-_obj
-[rpc] @ UserMentionService.ComposeUserMentions.t24
-
-
-==== ret 2 ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL) tainted ====
-_obj
-[rpc] @ UrlShortenService.ComposeUrls.t19
-_obj.ShortenedUrl[*]
-[rpc] @ UrlShortenService.ComposeUrls.t19[*].ShortenedUrl
-_obj[*]
-[rpc] @ UrlShortenService.ComposeUrls.t19[*]
-
-
-==== ret 3 (error) tainted ====
-_obj
-[rpc] @ UrlShortenService.ComposeUrls.t20
-", style=bold, shape=box, color="blue"];
-		N_Wrk2APIService_ReadUserTimeline [label="Wrk2APIService.ReadUserTimeline
-
-==== param 0 (userId) tainted ====
-_obj
-[rpc] @ UserTimelineService.ReadUserTimeline.userId
-
-
-==== param 1 (start) tainted ====
-_obj
-[rpc] @ UserTimelineService.ReadUserTimeline.start
-
-
-==== param 2 (stop) tainted ====
-_obj
-[rpc] @ UserTimelineService.ReadUserTimeline.stop
-
-
-==== ret 0 ([]int64) tainted ====
-_obj
-[rpc] @ UserTimelineService.ReadUserTimeline.t4
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ UserTimelineService.ReadUserTimeline.t5
-", style=bold, shape=box, color="blue"];
+		N_SocialGraphService_FollowWithUsername [label="SocialGraphService.FollowWithUsername", style=bold, shape=box, color="blue"];
 		N_Wrk2APIService_Register [label="Wrk2APIService.Register
 
 ==== param 0 (firstName) tainted ====
@@ -272,74 +284,36 @@ _obj
 _obj
 [rpc] @ UserService.RegisterUserWithId.userId
 ", style=bold, shape=box, color="blue"];
-		N_UserService_RegisterUserWithId [label="UserService.RegisterUserWithId
+		N_UrlShortenService_ComposeUrls [label="UrlShortenService.ComposeUrls", style=bold, shape=box, color="blue"];
+		N_UserMentionService_ComposeUserMentions [label="UserMentionService.ComposeUserMentions", style=bold, shape=box, color="blue"];
+		N_TextService_ComposeText [label="TextService.ComposeText
 
 ==== param 0 (reqID) tainted ====
 _obj
-[rpc] @ SocialGraphService.InsertUser.reqID
+[rpc] @ UrlShortenService.ComposeUrls.reqID
+[rpc] @ UserMentionService.ComposeUserMentions.reqID
 
 
-==== param 1 (firstName) tainted ====
+==== ret 1 ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention) tainted ====
 _obj
-[write, primary] @ user_db.user.FirstName
+[rpc] @ UserMentionService.ComposeUserMentions.t24
 
 
-==== param 2 (lastName) tainted ====
+==== ret 2 ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL) tainted ====
 _obj
-[write, primary] @ user_db.user.LastName
+[rpc] @ UrlShortenService.ComposeUrls.t19
+_obj.ShortenedUrl[*]
+[rpc] @ UrlShortenService.ComposeUrls.t19[*].ShortenedUrl
+_obj[*]
+[rpc] @ UrlShortenService.ComposeUrls.t19[*]
 
 
-==== param 3 (username) tainted ====
+==== ret 3 (error) tainted ====
 _obj
-[read, primary] @ user_db.user[*].Value
-[write, primary] @ user_db.user.Username
-
-
-==== param 4 (password) tainted ====
-_obj
-[write, primary] @ user_db.user.Salt
-
-
-==== param 5 (userID) tainted ====
-_obj
-[write, primary] @ user_db.user.UserID
-[rpc] @ SocialGraphService.InsertUser.userID
+[rpc] @ UrlShortenService.ComposeUrls.t20
 ", style=bold, shape=box, color="blue"];
-		N_MediaService_ComposeMedia [label="MediaService.ComposeMedia", style=bold, shape=box, color="blue"];
-		N_PostStorageService_StorePost [label="PostStorageService.StorePost
-
-==== param 1 (post) tainted ====
-_obj
-[write, primary] @ post_db.post
-", style=bold, shape=box, color="blue"];
-		N_HomeTimelineService_WriteHomeTimeline [label="HomeTimelineService.WriteHomeTimeline
-
-==== param 0 (reqID) tainted ====
-_obj
-[rpc] @ SocialGraphService.GetFollowers.reqID
-
-
-==== param 2 (userID) tainted ====
-_obj
-[rpc] @ SocialGraphService.GetFollowers.userID
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ SocialGraphService.GetFollowers.t4
-", style=bold, shape=box, color="blue"];
-		N_PostStorageService_ReadPosts [label="PostStorageService.ReadPosts", style=bold, shape=box, color="blue"];
-		N_HomeTimelineService_ReadHomeTimeline [label="HomeTimelineService.ReadHomeTimeline
-
-==== param 1 (userID) tainted ====
-_obj
-[read, primary] @ hometimeline_cache.*.Key
-
-
-==== ret 0 ([]int64) tainted ====
-_obj
-[read, primary] @ hometimeline_cache.*.Value
-", style=bold, shape=box, color="blue"];
+		N_UniqueIdService_ComposeUniqueId [label="UniqueIdService.ComposeUniqueId", style=bold, shape=box, color="blue"];
+		N_UserService_ComposeCreatorWithUserId [label="UserService.ComposeCreatorWithUserId", style=bold, shape=box, color="blue"];
 		N_UserTimelineService_ReadUserTimeline [label="UserTimelineService.ReadUserTimeline
 
 ==== param 0 (reqID) tainted ====
@@ -356,22 +330,48 @@ _obj
 _obj
 [write, primary] @ usertimeline_cache.*.Value
 ", style=bold, shape=box, color="blue"];
-		N_UrlShortenService_ComposeUrls [label="UrlShortenService.ComposeUrls", style=bold, shape=box, color="blue"];
-		N_UserMentionService_ComposeUserMentions [label="UserMentionService.ComposeUserMentions", style=bold, shape=box, color="blue"];
-		N_SocialGraphService_Unfollow [label="SocialGraphService.Unfollow", style=bold, shape=box, color="blue"];
-		N_SocialGraphService_UnfollowWithUsername [label="SocialGraphService.UnfollowWithUsername", style=bold, shape=box, color="blue"];
-		N_SocialGraphService_GetFollowers [label="SocialGraphService.GetFollowers", style=bold, shape=box, color="blue"];
-		N_SocialGraphService_FollowWithUsername [label="SocialGraphService.FollowWithUsername", style=bold, shape=box, color="blue"];
+		N_PostStorageService_StorePost [label="PostStorageService.StorePost
+
+==== param 1 (post) tainted ====
+_obj
+[write, primary] @ post_db.post
+", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_Follow [label="Wrk2APIService.Follow
+
+==== param 0 (username) tainted ====
+_obj
+[rpc] @ SocialGraphService.FollowWithUsername.username
+
+
+==== param 1 (followeeName) tainted ====
+_obj
+[rpc] @ SocialGraphService.FollowWithUsername.followeeName
+
+
+==== param 2 (userId) tainted ====
+_obj
+[rpc] @ SocialGraphService.Follow.userId
+
+
+==== param 3 (followeeID) tainted ====
+_obj
+[rpc] @ SocialGraphService.Follow.followeeID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ SocialGraphService.Follow.t4
+", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
 		N_socialgraph_db_socialgraph [label="socialgraph_db.socialgraph", style=bold, shape=cylinder, color="green"];
-		N_post_db_post [label="post_db.post", style=bold, shape=cylinder, color="green"];
-		N_usertimeline_cache_* [label="usertimeline_cache.*", style=bold, shape=cylinder, color="green"];
-		N_usertimeline_db_usertimeline [label="usertimeline_db.usertimeline", style=bold, shape=cylinder, color="green"];
 		N_user_db_user [label="user_db.user", style=bold, shape=cylinder, color="green"];
-		N_socialgraph_cache_followers [label="socialgraph_cache.followers", style=bold, shape=cylinder, color="green"];
 		N_hometimeline_cache_* [label="hometimeline_cache.*", style=bold, shape=cylinder, color="green"];
+		N_usertimeline_cache_* [label="usertimeline_cache.*", style=bold, shape=cylinder, color="green"];
+		N_socialgraph_cache_followers [label="socialgraph_cache.followers", style=bold, shape=cylinder, color="green"];
+		N_post_db_post [label="post_db.post", style=bold, shape=cylinder, color="green"];
+		N_usertimeline_db_usertimeline [label="usertimeline_db.usertimeline", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Wrk2APIService_ReadHomeTimeline [label="ReadHomeTimeline()", color=orange];
 	N_Wrk2APIService_ReadHomeTimeline -> N_HomeTimelineService_ReadHomeTimeline [label="ReadHomeTimeline()
@@ -499,12 +499,7 @@ _obj
 _obj
 [rpc] @ PostStorageService.ReadPosts.t66
 ", color=blue];
-	N_UserTimelineService_ReadUserTimeline -> N_usertimeline_db_usertimeline [label="FindOne()
-
-==== arg 0 (t81) tainted ====
-_obj
-[read, primary] @ usertimeline_db.usertimeline
-", color=green];
+	N_UserTimelineService_ReadUserTimeline -> N_usertimeline_db_usertimeline [label="FindOne()", color=green];
 	N_UserTimelineService_ReadUserTimeline -> N_usertimeline_cache_* [label="Put()
 
 ==== arg 0 (userID) tainted ====
@@ -634,7 +629,7 @@ _obj
 
 ==== arg 3 (username) tainted ====
 _obj
-[read, secondary] @ user_db.user[*].Value
+[read, secondary] @ user_db.user.username
 [write, secondary] @ user_db.user.Username
 [rpc] @ UserService.RegisterUserWithId.username
 
@@ -657,16 +652,34 @@ _obj
 ", color=blue];
 	N_UserService_RegisterUserWithId -> N_user_db_user [label="FindOne()
 
-==== arg 0 (t11) tainted ====
+==== arg 0 (t6) tainted ====
 _obj
-[read, primary] @ user_db.user
-_obj.Key[*]
-[read, primary] @ user_db.user[*].Key
-_obj.Value[*]
-[read, primary] @ user_db.user[*].Value
+[read, primary] @ user_db.user.username
 [write, primary] @ user_db.user.Username
-_obj[*]
-[read, primary] @ user_db.user[*]
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[read, primary] @ user_db.user.username
+[write, primary] @ user_db.user.Username
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ user_db.user.username
+[write, primary] @ user_db.user.Username
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ user_db.user.username
+[write, primary] @ user_db.user.Username
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ user_db.user.username
+[write, primary] @ user_db.user.Username
 ", color=green];
 	N_UserService_RegisterUserWithId -> N_user_db_user [label="InsertOne()
 
@@ -685,7 +698,7 @@ _obj.UserID
 [write, primary] @ user_db.user.UserID
 [rpc] @ SocialGraphService.InsertUser.userID
 _obj.Username
-[read, primary] @ user_db.user[*].Value
+[read, primary] @ user_db.user.username
 [write, primary] @ user_db.user.Username
 ", color=green];
 	N_UserService_RegisterUserWithId -> N_SocialGraphService_InsertUser [label="InsertUser()
@@ -1147,6 +1160,8 @@ _obj.PostID[*].Posts
 [write, primary] @ usertimeline_db.usertimeline.Posts[*].PostID
 _obj.Posts
 [write, primary] @ usertimeline_db.usertimeline.Posts
+_obj.Posts[*].PostID
+[write, secondary] @ post_db.post.PostID
 _obj.Timestamp[*].Posts
 [write, primary] @ usertimeline_db.usertimeline.Posts[*].Timestamp
 _obj.UserID
@@ -1154,8 +1169,6 @@ _obj.UserID
 [read, primary] @ usertimeline_cache.*.Key
 _obj[*].Posts
 [write, primary] @ usertimeline_db.usertimeline.Posts[*]
-_obj[*].Posts.PostID
-[write, secondary] @ post_db.post.PostID
 ", color=green];
 	N_UserTimelineService_WriteUserTimeline -> N_usertimeline_cache_* [label="Get()
 
@@ -1263,12 +1276,7 @@ _obj.FollowerID[*]
 _obj[*]
 [read, primary] @ socialgraph_cache.followers.Value[*]
 ", color=green];
-	N_SocialGraphService_GetFollowers -> N_socialgraph_db_socialgraph [label="FindOne()
-
-==== arg 0 (t23) tainted ====
-_obj
-[read, primary] @ socialgraph_db.socialgraph
-", color=green];
+	N_SocialGraphService_GetFollowers -> N_socialgraph_db_socialgraph [label="FindOne()", color=green];
 	N_SocialGraphService_GetFollowers -> N_socialgraph_cache_followers [label="Put()
 
 ==== arg 0 (t1) tainted ====

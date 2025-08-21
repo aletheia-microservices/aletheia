@@ -8,6 +8,42 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
+		N_StorageService_ReadPost [label="StorageService.ReadPost
+
+==== param 0 (reqID) tainted ====
+_obj
+[read, secondary] @ notifications_queue.notification.ReqID
+[write, secondary] @ notifications_queue.notification.ReqID
+
+
+==== param 1 (postID) tainted ====
+_obj
+[read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+", style=bold, shape=box, color="blue"];
+		N_StorageService_StorePost [label="StorageService.StorePost
+
+==== param 0 (reqID) tainted ====
+_obj
+[write, primary] @ posts_db.post.ReqID
+
+
+==== param 1 (text) tainted ====
+_obj
+[write, primary] @ posts_db.post.Text
+
+
+==== ret 0 (int64) tainted ====
+_obj
+[write, primary] @ posts_db.post.PostID
+", style=bold, shape=box, color="blue"];
+		N_StorageService_DeletePost [label="StorageService.DeletePost
+
+==== param 0 (postID) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
+", style=bold, shape=box, color="blue"];
 		N_UploadService_DeletePost [label="UploadService.DeletePost
 
 ==== param 0 (postID) tainted ====
@@ -31,47 +67,11 @@ _obj
 _obj
 [write, primary] @ notifications_queue.notification.PostID
 ", style=bold, shape=box, color="blue"];
-		N_StorageService_DeletePost [label="StorageService.DeletePost
-
-==== param 0 (postID) tainted ====
-_obj
-[delete, primary] @ posts_db.post[*].Value
-", style=bold, shape=box, color="blue"];
-		N_StorageService_ReadPost [label="StorageService.ReadPost
-
-==== param 0 (reqID) tainted ====
-_obj
-[read, secondary] @ notifications_queue.notification.ReqID
-[write, secondary] @ notifications_queue.notification.ReqID
-
-
-==== param 1 (postID) tainted ====
-_obj
-[read, primary] @ posts_db.post[*].Value
-[read, secondary] @ notifications_queue.notification.PostID
-[write, secondary] @ notifications_queue.notification.PostID
-", style=bold, shape=box, color="blue"];
-		N_StorageService_StorePost [label="StorageService.StorePost
-
-==== param 0 (reqID) tainted ====
-_obj
-[write, primary] @ posts_db.post.ReqID
-
-
-==== param 1 (text) tainted ====
-_obj
-[write, primary] @ posts_db.post.Text
-
-
-==== ret 0 (int64) tainted ====
-_obj
-[write, primary] @ posts_db.post.PostID
-", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
+		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()
@@ -140,7 +140,7 @@ _obj[*].Mentions
 
 ==== arg 0 (postID) tainted ====
 _obj
-[delete, secondary] @ posts_db.post[*].Value
+[delete, secondary] @ posts_db.post.PostID
 [rpc] @ StorageService.DeletePost.postID
 
 
@@ -150,15 +150,29 @@ _obj
 ", color=blue];
 	N_StorageService_DeletePost -> N_posts_db_post [label="DeleteOne()
 
-==== arg 0 (t11) tainted ====
+==== arg 0 (t6) tainted ====
 _obj
-[delete, primary] @ posts_db.post
-_obj.Key[*]
-[delete, primary] @ posts_db.post[*].Key
-_obj.Value[*]
-[delete, primary] @ posts_db.post[*].Value
-_obj[*]
-[delete, primary] @ posts_db.post[*]
+[delete, primary] @ posts_db.post.PostID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
+
+
+==== arg 4 (t11) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
 ", color=green];
 	N_client -> N_NotifyService_Run [label="Run()", color=orange];
 	N_NotifyService_Run -> N_notifications_queue_notification [label="Pop()
@@ -189,21 +203,42 @@ _obj
 _obj
 [read, primary] @ notifications_queue.notification.PostID
 [write, secondary] @ notifications_queue.notification.PostID
-[read, secondary] @ posts_db.post[*].Value
+[read, secondary] @ posts_db.post.PostID
 [rpc] @ StorageService.ReadPost.t18
 ", color=blue];
 	N_StorageService_ReadPost -> N_posts_db_post [label="FindOne()
 
-==== arg 0 (t13) tainted ====
+==== arg 0 (t8) tainted ====
 _obj
-[read, primary] @ posts_db.post
-_obj.Key[*]
-[read, primary] @ posts_db.post[*].Key
-_obj.Value[*]
-[read, primary] @ posts_db.post[*].Value
-_obj[*]
-[read, primary] @ posts_db.post[*]
-_obj[*].Value
+[read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+
+
+==== arg 1 (t13) tainted ====
+_obj
+[read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+
+
+==== arg 3 (t11) tainted ====
+_obj
+[read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
+[write, secondary] @ notifications_queue.notification.PostID
+
+
+==== arg 4 (t10) tainted ====
+_obj
+[read, primary] @ posts_db.post.PostID
 [read, secondary] @ notifications_queue.notification.PostID
 [write, secondary] @ notifications_queue.notification.PostID
 ", color=green];

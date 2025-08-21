@@ -331,10 +331,10 @@ t34 (@ReadPost): (*ssa.Call) (errors.New("Post doesn't exis...":string))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostStorageServiceImpl).ReadPosts ###
-p (@ReadPosts): (*ssa.Parameter) (parameter p : *PostStorageServiceImpl)
-
 t0 (@ReadPosts): (*ssa.Alloc) (new *PostStorageServiceImpl (p))
 	 → t0 (@ReadPosts): (*ssa.Alloc)
+
+p (@ReadPosts): (*ssa.Parameter) (parameter p : *PostStorageServiceImpl)
 
 ctx (@ReadPosts): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -583,10 +583,10 @@ t7 (@StorePost): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl).Follow ###
-s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
-
 t0 (@Follow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@Follow): (*ssa.Alloc)
+
+s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1973,12 +1973,12 @@ t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
 t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
 	 → t8 (@Sum): (*ssa.Call)
 	 → t10 (@Sum): (*ssa.Call)
+	 → t6 (@Sum): (*ssa.Call)
+	 → t5 (@Sum): (*ssa.Call)
 	 → t15 (@Sum): (*ssa.Call)
 	 → t17 (@Sum): (*ssa.Call)
 	 → t20 (@Sum): (*ssa.Call)
 	 → t23 (@Sum): (*ssa.Call)
-	 → t6 (@Sum): (*ssa.Call)
-	 → t5 (@Sum): (*ssa.Call)
 	 → t31 (@sign): (*ssa.Alloc)
 	 → t58 (@sign): (*ssa.Alloc)
 	 → t34 (@verify): (*ssa.Alloc)

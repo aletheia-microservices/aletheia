@@ -1,13 +1,13 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2757733 [label="return t10, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2757733 [label="return t10, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_18093104 [label="*t0 = sock", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_18093104 [label="*t0 = sock", style=bold, shape=ellipse, color="blue"];
-	N_nil_2134905940 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712160 [label="return t10, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712160 [label="return t10, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_178047366 [label="*t0 = sock", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_178047366 [label="*t0 = sock", style=bold, shape=ellipse, color="blue"];
+	N_nil_738684452 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val__catalogue__string [label="\"catalogue\":string: \"catalogue\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__catalogue_db__string [label="\"catalogue_db\":string: \"catalogue_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2757589 [label="t0: local Sock (sock)
+	N_val_alloc_2712016 [label="t0: local Sock (sock)
 
 ==== tainted ====
 _obj
@@ -15,12 +15,12 @@ _obj
 _obj.ID
 [write] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="orange"];
-	N_val_call_2757664 [label="t3: invoke t2.GetCollection(ctx, \"catalogue_db\":string, \"catalogue\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2757720 [label="t8: invoke t4.InsertOne(ctx, t7)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2712091 [label="t3: invoke t2.GetCollection(ctx, \"catalogue_db\":string, \"catalogue\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2712147 [label="t8: invoke t4.InsertOne(ctx, t7)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt4 [label="t4: extract t3 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt5 [label="t5: extract t3 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2757638 [label="t1: &s.catalogue_db [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2757745 [label="t9: &t0.ID [#0]
+	N_val_field_2712065 [label="t1: &s.catalogue_db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2712172 [label="t9: &t0.ID [#0]
 
 ==== tainted ====
 _obj
@@ -34,9 +34,9 @@ _obj
 _obj.ID
 [write] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="black"];
-	N_val_param_2757535 [label="s: parameter s : *CatalogueServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2757568 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2757589 [label="sock: parameter sock : Sock
+	N_val_param_2711962 [label="s: parameter s : *CatalogueServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2711995 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2712016 [label="sock: parameter sock : Sock
 
 ==== tainted ====
 _obj
@@ -44,8 +44,8 @@ _obj
 _obj.ID
 [write] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2757638 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2757726 [label="t6: *t0
+	N_val_unary_2712065 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2712153 [label="t6: *t0
 
 ==== tainted ====
 _obj
@@ -53,28 +53,28 @@ _obj
 _obj.ID
 [write] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="red"];
-	N_val_unary_2757745 [label="t10: *t9
+	N_val_unary_2712172 [label="t10: *t9
 
 ==== tainted ====
 _obj
 [write] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2757589 -> N_instr_store_18093104;
-	N_val_param_2757589 -> N_instr_store_18093104;
-	N_val_param_2757535 -> N_val_field_2757638;
-	N_val_field_2757638 -> N_val_unary_2757638;
-	N_val_param_2757568 -> N_val_call_2757664;
-	N_val__catalogue_db__string -> N_val_call_2757664;
-	N_val__catalogue__string -> N_val_call_2757664;
-	N_val_call_2757664 -> N_val_extrt4;
-	N_val_call_2757664 -> N_val_extrt5;
-	N_val_alloc_2757589 -> N_val_unary_2757726;
-	N_val_unary_2757726 -> N_val_ifacet7;
-	N_val_param_2757568 -> N_val_call_2757720;
-	N_val_ifacet7 -> N_val_call_2757720;
-	N_val_alloc_2757589 -> N_val_field_2757745;
-	N_val_field_2757745 -> N_val_unary_2757745;
-	N_val_unary_2757745 -> N_instr_ret_2757733;
-	N_nil_2134905940 -> N_instr_ret_2757733;
-	N_val_field_2757745 -> N_val_alloc_2757589 [label=".ID", style=dashed, color=blue];
+	N_val_alloc_2712016 -> N_instr_store_178047366;
+	N_val_param_2712016 -> N_instr_store_178047366;
+	N_val_param_2711962 -> N_val_field_2712065;
+	N_val_field_2712065 -> N_val_unary_2712065;
+	N_val_param_2711995 -> N_val_call_2712091;
+	N_val__catalogue_db__string -> N_val_call_2712091;
+	N_val__catalogue__string -> N_val_call_2712091;
+	N_val_call_2712091 -> N_val_extrt4;
+	N_val_call_2712091 -> N_val_extrt5;
+	N_val_alloc_2712016 -> N_val_unary_2712153;
+	N_val_unary_2712153 -> N_val_ifacet7;
+	N_val_param_2711995 -> N_val_call_2712147;
+	N_val_ifacet7 -> N_val_call_2712147;
+	N_val_alloc_2712016 -> N_val_field_2712172;
+	N_val_field_2712172 -> N_val_unary_2712172;
+	N_val_unary_2712172 -> N_instr_ret_2712160;
+	N_nil_738684452 -> N_instr_ret_2712160;
+	N_val_field_2712172 -> N_val_alloc_2712016 [label=".ID", style=dashed, color=blue];
 }

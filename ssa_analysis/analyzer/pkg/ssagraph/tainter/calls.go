@@ -26,6 +26,39 @@ var BLUEPRINT_BACKEND_CACHE_CALLS = []string{"Get", "Put"}
 type ValFieldPath struct {
 	val       ssa.Value
 	fieldpath string
+}			
+
+func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) bool {
+	if alloc, ok := val.(*ssa.Alloc); ok {
+		if ptr, ok := alloc.Type().(*types.Pointer); ok {
+			if array, ok := ptr.Elem().Underlying().(*types.Array); ok {
+				if named, ok := array.Elem().(*types.Named); ok {
+					// this is the real type
+					// go.mongodb.org/mongo-driver/bson/primitive.E
+					if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "E" {
+						return true
+					}
+				}
+			}
+		}
+	} else if slice, ok := val.(*ssa.Slice); ok {
+		if named, ok := slice.Type().(*types.Named); ok {
+			// this is the alias type
+			// go.mongodb.org/mongo-driver/bson/primitive.D
+			if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "D" {
+				return true
+			}
+		}
+		// should lead to the same result but just do it because why not
+		return ssaValueIsUsedInMongoBsonFilter(graph, slice.X)
+	} else {
+		for _, edge := range graph.GetEdgesTypedFrom(graph.GetNodeByName(val.Name()), ssagraph.EDGE_POINTS_TO) {
+			if ssaValueIsUsedInMongoBsonFilter(graph, edge.GetToNode().GetValue()) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
@@ -147,9 +180,57 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 						log.Fatalf("database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
 					}
 
-					valFieldPathLst := make([]ValFieldPath, 1)
-					docVal := call.Call.Args[1]
-					valFieldPathLst[0] = ValFieldPath{val: docVal, fieldpath: database + "." + collection}
+					var valFieldPathLst []ValFieldPath
+
+					if opType == common.OP_WRITE {
+						docVal := call.Call.Args[1]
+						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+							val: docVal, 
+							fieldpath: database + "." + collection,
+						})
+					} else { 
+						//e.g., Digota: SkuService.Get()
+						filterVal := call.Call.Args[1]
+						filterKeyToValues := make(map[string][]ssa.Value, 1)
+
+						if slice, ok := filterVal.(*ssa.Slice); ok && ssaValueIsUsedInMongoBsonFilter(graph, slice) {
+							var vals []ssa.Value
+							var filterKey string
+
+							targetNode := graph.GetNodeByName(slice.X.Name())
+							vals = append(vals, targetNode.GetValue())
+
+							for _, edge := range graph.GetEdgesTypedTo(targetNode, ssagraph.EDGE_POINTS_TO) {
+								vals = append(vals, edge.GetFromNode().GetValue())
+								
+								if edge.GetPath() == "[*].Key" {
+									keyFieldNode := edge.GetFromNode()
+									for _, edge := range graph.GetEdgesTypedFrom(keyFieldNode, ssagraph.EDGE_STORE_ADDRESS) {
+										storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
+										filterKey, _ = utils.ExtractStringFromValue(storeInstr.Val)
+									}
+								}
+							}
+							filterKeyToValues[filterKey] = vals
+						}
+
+						for filter, vals := range filterKeyToValues {
+							for _, val := range vals {
+								fieldpath := database + "." + collection + "." + filter
+								valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+									val: val, 
+									fieldpath: fieldpath,
+								})
+								/* fmt.Printf("FIELDPATH = (%s) // VAL = (%s)\n", fieldpath, val.String()) */
+							}
+						}
+	
+						/* if database == "skus_db" && opType == common.OP_READ {
+							log.Fatal("EXIT!")
+						} */
+					}
+
+
 					return database, collection, opType, valFieldPathLst, true
 				}
 			}

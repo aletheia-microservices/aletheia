@@ -85,7 +85,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 
 	node := graph.GetNodeByName(val.Name())
 	doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
-
+	
 	fmt.Printf("[TAINT NEARBY] current node: %v\n", node)
 	for _, edge := range graph.GetEdgesFromNode(node) {
 		toNode := edge.GetToNode()
@@ -96,14 +96,22 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 			if upwards {
 				break
 			}
-			taintInfoTmp := taintInfo.updateCallPathSuffix("." + edge.GetParam())
-			propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, toNode.GetValue()) {
+				propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+			} else {
+				taintInfoTmp := taintInfo.updateCallPathSuffix("." + edge.GetParam())
+				propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+			}
 		case ssagraph.EDGE_INDEX:
 			if upwards {
 				break
 			}
-			taintInfoTmp := taintInfo.updateCallPathSuffix("[" + edge.GetParam() + "]")
-			propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, toNode.GetValue()) {
+				propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+			} else {
+				taintInfoTmp := taintInfo.updateCallPathSuffix("[" + edge.GetParam() + "]")
+				propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+			}
 		case ssagraph.EDGE_STORE_ADDRESS:
 			val := toNode.GetInstruction().(*ssa.Store).Val
 			valNode := graph.GetNodeByName(val.Name())
@@ -144,13 +152,21 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 		fmt.Printf("\t[TAINT NEARBY] edge (%s) from node: %v\n", edge.GetTypeString(), fromNode)
 		switch edge.GetType() {
 		case ssagraph.EDGE_FIELD:
-			visitedTmp := make(map[ssa.Value]bool)
-			taintInfoTmp := taintInfo.updateObjectPathSuffix("." + edge.GetParam())
-			propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
+			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
+				propagateTaintNearby(graph, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+			} else {
+				visitedTmp := make(map[ssa.Value]bool)
+				taintInfoTmp := taintInfo.updateObjectPathSuffix("." + edge.GetParam())
+				propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
+			}
 		case ssagraph.EDGE_INDEX:
-			visitedTmp := make(map[ssa.Value]bool)
-			taintInfoTmp := taintInfo.updateObjectPathSuffix("[" + edge.GetParam() + "]")
-			propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
+			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
+				propagateTaintNearby(graph, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+			} else {
+				visitedTmp := make(map[ssa.Value]bool)
+				taintInfoTmp := taintInfo.updateObjectPathSuffix("[" + edge.GetParam() + "]")
+				propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
+			}
 		case ssagraph.EDGE_STORE_ADDRESS:
 			val := fromNode.GetInstruction().(*ssa.Store).Val
 			valNode := graph.GetNodeByName(val.Name())

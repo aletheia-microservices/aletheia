@@ -13,12 +13,21 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults() {
 
 	var results string
 	for request, cascadeDeletes := range detector.cascadeDeletes {
+		var found bool
+		for _, cascadeDelete := range cascadeDeletes {
+			if len(cascadeDelete.pendingFields) != 0 {
+				found = true
+			}
+		}
+		if !found {
+			continue
+		}
 		results += fmt.Sprintf("entry request: %s\n", request.entry.String())
 		for _, cascadeDelete := range cascadeDeletes {
+			if len(cascadeDelete.pendingFields) == 0 {
+				continue
+			}
 			results += fmt.Sprintf("\tDELETE: %s\n", cascadeDelete.op.call.String())
-			/* for _, op := range cascadeDelete.cascadingOps {
-				results += fmt.Sprintf("\t\tcascading delete: %s\n", op.call.String())
-			} */
 			for _, pendingField := range cascadeDelete.pendingFields {
 				results += fmt.Sprintf("\t\tMISSING DELETE on field: %s\n", pendingField.GetPath())
 				for i, constraint := range pendingField.GetConstraints() {
