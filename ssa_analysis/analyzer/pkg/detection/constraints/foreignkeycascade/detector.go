@@ -47,7 +47,7 @@ func (detector *ForeignKeyCascadeDetector) OnNewRun(app *app.App) {
 }
 
 func (detector *ForeignKeyCascadeDetector) OnEndRun(app *app.App) {
-	// nothing to do
+	detector.checkInconsistencies(app)
 }
 
 func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode) {
@@ -83,11 +83,6 @@ func (detector *ForeignKeyCascadeDetector) OnUpdate(app *app.App, edge *abstract
 func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, edge *abstractgraph.AbstractEdge) {
 	op := NewDeleteOperation(edge, edge.GetArguments())
 	request := detector.getCurrentRequest()
-
-	cascadingDelete := detector.registerFutureCascadeDelete(app, op)
-	detector.markCascadingDelete(app, request, op)
-	
-	detector.addCascadeDelete(request, cascadingDelete)
 	request.AddOperation(op)
 	fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op)
 }

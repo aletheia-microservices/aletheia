@@ -8,21 +8,16 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_StorageService_StorePost [label="StorageService.StorePost
-
-==== param 0 (reqID) tainted ====
-_obj
-[write, primary] @ posts_db.post.ReqID
-
+		N_UploadService_UploadPost [label="UploadService.UploadPost
 
 ==== param 1 (text) tainted ====
 _obj
-[write, primary] @ posts_db.post.Text
+[rpc] @ StorageService.StorePost.text
 
 
 ==== ret 0 (int64) tainted ====
 _obj
-[write, primary] @ posts_db.post.PostID
+[write, primary] @ notifications_queue.notification.PostID
 ", style=bold, shape=box, color="blue"];
 		N_UploadService_DeletePost [label="UploadService.DeletePost
 
@@ -41,18 +36,23 @@ _obj
 _obj
 [delete, primary] @ posts_db.post.PostID
 ", style=bold, shape=box, color="blue"];
-		N_UploadService_UploadPost [label="UploadService.UploadPost
+		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
+		N_StorageService_StorePost [label="StorageService.StorePost
+
+==== param 0 (reqID) tainted ====
+_obj
+[write, primary] @ posts_db.post.ReqID
+
 
 ==== param 1 (text) tainted ====
 _obj
-[rpc] @ StorageService.StorePost.text
+[write, primary] @ posts_db.post.Text
 
 
 ==== ret 0 (int64) tainted ====
 _obj
-[write, primary] @ notifications_queue.notification.PostID
+[write, primary] @ posts_db.post.PostID
 ", style=bold, shape=box, color="blue"];
-		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 		N_StorageService_ReadPost [label="StorageService.ReadPost
 
 ==== param 0 (reqID) tainted ====
@@ -70,8 +70,8 @@ _obj
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
+		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()
@@ -155,12 +155,12 @@ _obj
 [delete, primary] @ posts_db.post.PostID
 
 
-==== arg 1 (t7) tainted ====
+==== arg 1 (t11) tainted ====
 _obj
 [delete, primary] @ posts_db.post.PostID
 
 
-==== arg 2 (t9) tainted ====
+==== arg 2 (t7) tainted ====
 _obj
 [delete, primary] @ posts_db.post.PostID
 
@@ -170,7 +170,7 @@ _obj
 [delete, primary] @ posts_db.post.PostID
 
 
-==== arg 4 (t11) tainted ====
+==== arg 4 (t9) tainted ====
 _obj
 [delete, primary] @ posts_db.post.PostID
 ", color=green];
@@ -222,14 +222,14 @@ _obj
 [write, secondary] @ notifications_queue.notification.PostID
 
 
-==== arg 2 (t10) tainted ====
+==== arg 2 (t9) tainted ====
 _obj
 [read, primary] @ posts_db.post.PostID
 [read, secondary] @ notifications_queue.notification.PostID
 [write, secondary] @ notifications_queue.notification.PostID
 
 
-==== arg 3 (t9) tainted ====
+==== arg 3 (t10) tainted ====
 _obj
 [read, primary] @ posts_db.post.PostID
 [read, secondary] @ notifications_queue.notification.PostID
