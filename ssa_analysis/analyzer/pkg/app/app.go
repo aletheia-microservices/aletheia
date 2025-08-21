@@ -60,7 +60,8 @@ func (app *App) ComputeDatabaseFieldFromPath(database *backends.Database, fieldp
 		}
 	}
 	fmt.Printf("[APP] get field for (%s) in schema (%s)\n", fieldpath, schema.GetName())
-	field := schema.GetFieldByPath(fieldpath)
+	// [TO BE IMPROVED]
+	field := schema.GetFieldByPathIfExists(fieldpath)
 
 	// [TO BE IMPROVED]
 	// in the future, the ssa parser should be the one to infer
@@ -121,6 +122,9 @@ func (app *App) GetServiceWithImplPath(implpath string) *services.Service {
 		if service.GetPackagePath()+"."+service.GetImpl() == implpath {
 			return service
 		}
+	}
+	for _, service := range app.services {
+		fmt.Printf("pkg path = (%s) // impl = (%s)\n", service.GetPackagePath(), service.GetImpl())
 	}
 	log.Fatalf("could not find service for impl path (%s)", implpath)
 	return nil

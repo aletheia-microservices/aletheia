@@ -1,0 +1,110 @@
+{
+  "geo_db": {
+    "name": "geo_db",
+    "schemas": null
+  },
+  "profile_cache": {
+    "name": "profile_cache",
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "profile_cache.*.Key",
+          "profile_cache.*.Value"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "profile_db": {
+    "name": "profile_db",
+    "schemas": [
+      {
+        "name": "hotels",
+        "fields": [
+          "profile_db.hotels.ID"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "rate_cache": {
+    "name": "rate_cache",
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "rate_cache.*.Key",
+          "rate_cache.*.Value"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "rate_db": {
+    "name": "rate_db",
+    "schemas": null
+  },
+  "recommendations_db": {
+    "name": "recommendations_db",
+    "schemas": null
+  },
+  "reserv_cache": {
+    "name": "reserv_cache",
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "reserv_cache.*.Key",
+          "reserv_cache.*.Value",
+          "reserv_cache._cap.Key",
+          "reserv_cache._cap.Value"
+        ],
+        "constraints": []
+      },
+      {
+        "name": "_cap",
+        "fields": [
+          "reserv_cache._cap.Key",
+          "reserv_cache._cap.Value"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "reservation_db": {
+    "name": "reservation_db",
+    "schemas": [
+      {
+        "name": "number",
+        "fields": [
+          "reservation_db.number.HotelID",
+          "reservation_db.number.hotelid",
+          "reservation_db.reservation",
+          "reservation_db.reservation.CustomerName",
+          "reservation_db.reservation.HotelId",
+          "reservation_db.reservation.InDate",
+          "reservation_db.reservation.Number",
+          "reservation_db.reservation.OutDate"
+        ],
+        "constraints": []
+      },
+      {
+        "name": "reservation",
+        "fields": [
+          "reservation_db.reservation",
+          "reservation_db.reservation.CustomerName",
+          "reservation_db.reservation.HotelId",
+          "reservation_db.reservation.InDate",
+          "reservation_db.reservation.Number",
+          "reservation_db.reservation.OutDate"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "user_db": {
+    "name": "user_db",
+    "schemas": null
+  }
+}

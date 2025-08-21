@@ -1,0 +1,1617 @@
+digraph G {
+	rankdir=TD;
+	ranksep=1.5;
+	nodesep=1;
+	subgraph cluster_clients {
+		style=invis;
+		N_client [label="client", style=bold, shape=invhouse, color="orange"];
+	}
+	subgraph cluster_services {
+		style=invis;
+		N_PriceService_UpdatePriceConfig [label="PriceService.UpdatePriceConfig", style=bold, shape=box, color="blue"];
+		N_RouteService_GetAllRoutes [label="RouteService.GetAllRoutes", style=bold, shape=box, color="blue"];
+		N_PaymentService_InitPayment [label="PaymentService.InitPayment
+
+==== param 0 (payment) tainted ====
+_obj
+[write, primary] @ payment_db.payment
+_obj.ID
+[read, primary] @ payment_db.payment.ID
+", style=bold, shape=box, color="blue"];
+		N_StationService_DeleteStation [label="StationService.DeleteStation
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+", style=bold, shape=box, color="blue"];
+		N_TrainService_Retrieve [label="TrainService.Retrieve
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ train_db.train.ID
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_Create [label="ConfigService.Create
+
+==== param 0 (conf) tainted ====
+_obj
+[write, primary] @ config_db.config
+_obj.Name
+[read, primary] @ config_db.config.Name
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_Update [label="ConfigService.Update", style=bold, shape=box, color="blue"];
+		N_ConfigService_FindAll [label="ConfigService.FindAll", style=bold, shape=box, color="blue"];
+		N_RouteService_DeleteRoute [label="RouteService.DeleteRoute
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+", style=bold, shape=box, color="blue"];
+		N_StationService_FindIDs [label="StationService.FindIDs", style=bold, shape=box, color="blue"];
+		N_TrainFoodService_ListTrainFoodByTripID [label="TrainFoodService.ListTrainFoodByTripID
+
+==== param 0 (tripid) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+", style=bold, shape=box, color="blue"];
+		N_StationFoodService_GetFoodStoreByID [label="StationFoodService.GetFoodStoreByID
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+", style=bold, shape=box, color="blue"];
+		N_StationFoodService_GetFoodStoresByStationNames [label="StationFoodService.GetFoodStoresByStationNames", style=bold, shape=box, color="blue"];
+		N_UserService_SaveUser [label="UserService.SaveUser
+
+==== param 0 (user) tainted ====
+_obj
+[write, primary] @ user_db.user
+", style=bold, shape=box, color="blue"];
+		N_UserService_UpdateUser [label="UserService.UpdateUser", style=bold, shape=box, color="blue"];
+		N_AssuranceService_FindAssuranceById [label="AssuranceService.FindAssuranceById
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.ID
+", style=bold, shape=box, color="blue"];
+		N_AssuranceService_Create [label="AssuranceService.Create
+
+==== param 1 (orderid) tainted ====
+_obj
+[write, primary] @ assurance_db.assurance.OrderID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
+_obj
+[write, primary] @ assurance_db.assurance
+_obj.AT
+[write, primary] @ assurance_db.assurance.AT
+_obj.ID
+[write, primary] @ assurance_db.assurance.ID
+_obj.OrderID
+[write, primary] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_Delete [label="ConfigService.Delete
+
+==== param 0 (name) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+", style=bold, shape=box, color="blue"];
+		N_RouteService_GetRouteByIds [label="RouteService.GetRouteByIds", style=bold, shape=box, color="blue"];
+		N_StationService_UpdateStation [label="StationService.UpdateStation", style=bold, shape=box, color="blue"];
+		N_TrainFoodService_Cleanup [label="TrainFoodService.Cleanup", style=bold, shape=box, color="blue"];
+		N_PriceService_DeletePriceConfig [label="PriceService.DeletePriceConfig
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_FindContactsByAccountId [label="ContactsService.FindContactsByAccountId", style=bold, shape=box, color="blue"];
+		N_ContactsService_GetAllContacts [label="ContactsService.GetAllContacts", style=bold, shape=box, color="blue"];
+		N_AssuranceService_FindAssuranceByOrderId [label="AssuranceService.FindAssuranceByOrderId
+
+==== param 0 (order_id) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="blue"];
+		N_AssuranceService_DeleteByOrderId [label="AssuranceService.DeleteByOrderId
+
+==== param 0 (order_id) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="blue"];
+		N_UserService_DeleteUser [label="UserService.DeleteUser
+
+==== param 0 (userID) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+", style=bold, shape=box, color="blue"];
+		N_PriceService_FindByID [label="PriceService.FindByID
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.ID
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_Delete [label="ContactsService.Delete
+
+==== param 0 (contact) tainted ====
+_obj.ID
+[delete, primary] @ contacts_db.contacts.ID
+", style=bold, shape=box, color="blue"];
+		N_StationService_FindID [label="StationService.FindID
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+", style=bold, shape=box, color="blue"];
+		N_NewsService_Hello [label="NewsService.Hello", style=bold, shape=box, color="blue"];
+		N_PriceService_CreateNewPriceConfig [label="PriceService.CreateNewPriceConfig
+
+==== param 0 (pc) tainted ====
+_obj
+[write, primary] @ price_db.priceConfig
+_obj.ID
+[write, primary] @ price_db.priceConfig.ID
+", style=bold, shape=box, color="blue"];
+		N_ConsignPriceService_GetPriceByWeightAndRegion [label="ConsignPriceService.GetPriceByWeightAndRegion", style=bold, shape=box, color="blue"];
+		N_PaymentService_Pay [label="PaymentService.Pay", style=bold, shape=box, color="blue"];
+		N_StationService_FindByIDs [label="StationService.FindByIDs", style=bold, shape=box, color="blue"];
+		N_TrainService_Delete [label="TrainService.Delete
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+", style=bold, shape=box, color="blue"];
+		N_StationFoodService_CreateFoodStore [label="StationFoodService.CreateFoodStore
+
+==== param 0 (store) tainted ====
+_obj
+[write, primary] @ stationfood_db.stationfood
+_obj.ID
+[read, primary] @ stationfood_db.stationfood.ID
+", style=bold, shape=box, color="blue"];
+		N_UserService_FindByUserID [label="UserService.FindByUserID
+
+==== param 0 (userID) tainted ====
+_obj
+[read, primary] @ user_db.user.UserID
+", style=bold, shape=box, color="blue"];
+		N_DeliveryService_Run [label="DeliveryService.Run", style=bold, shape=box, color="blue"];
+		N_PaymentService_Cleanup [label="PaymentService.Cleanup", style=bold, shape=box, color="blue"];
+		N_TrainFoodService_CreateTrainFood [label="TrainFoodService.CreateTrainFood
+
+==== param 0 (tf) tainted ====
+_obj
+[write, primary] @ trainfood_db.trainfood
+_obj.TripID
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainFood) tainted ====
+_obj
+[write, primary] @ trainfood_db.trainfood
+_obj.TripID
+[read, primary] @ trainfood_db.trainfood.TripID
+", style=bold, shape=box, color="blue"];
+		N_TrainService_RetrieveByNames [label="TrainService.RetrieveByNames", style=bold, shape=box, color="blue"];
+		N_RouteService_GetRouteById [label="RouteService.GetRouteById
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+", style=bold, shape=box, color="blue"];
+		N_TrainService_Update [label="TrainService.Update", style=bold, shape=box, color="blue"];
+		N_PriceService_FindByRouteIDsAndTrainTypes [label="PriceService.FindByRouteIDsAndTrainTypes", style=bold, shape=box, color="blue"];
+		N_AssuranceService_GetAllAssurances [label="AssuranceService.GetAllAssurances", style=bold, shape=box, color="blue"];
+		N_StationService_CreateStation [label="StationService.CreateStation
+
+==== param 0 (station) tainted ====
+_obj
+[write, primary] @ station_db.station
+_obj.ID
+[read, primary] @ station_db.station.ID
+", style=bold, shape=box, color="blue"];
+		N_StationService_Exists [label="StationService.Exists
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+", style=bold, shape=box, color="blue"];
+		N_StationFoodService_ListFoodStoresByStationName [label="StationFoodService.ListFoodStoresByStationName", style=bold, shape=box, color="blue"];
+		N_UserService_GetAllUsers [label="UserService.GetAllUsers", style=bold, shape=box, color="blue"];
+		N_AssuranceService_Modify [label="AssuranceService.Modify", style=bold, shape=box, color="blue"];
+		N_ConsignPriceService_GetPriceInfo [label="ConsignPriceService.GetPriceInfo", style=bold, shape=box, color="blue"];
+		N_RouteService_CreateAndModify [label="RouteService.CreateAndModify
+
+==== param 0 (info) tainted ====
+_obj.EndStation
+[write, primary] @ route_db.route.EndStation
+_obj.ID
+[read, primary] @ route_db.route.ID
+_obj.StartStation
+[write, primary] @ route_db.route.StartStation
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
+_obj
+[write, primary] @ route_db.route
+_obj.Distances
+[write, primary] @ route_db.route.Distances
+_obj.EndStation
+[write, primary] @ route_db.route.EndStation
+_obj.ID
+[write, primary] @ route_db.route.ID
+_obj.StartStation
+[write, primary] @ route_db.route.StartStation
+_obj.Stations
+[write, primary] @ route_db.route.Stations
+", style=bold, shape=box, color="blue"];
+		N_StationFoodService_ListFoodStores [label="StationFoodService.ListFoodStores", style=bold, shape=box, color="blue"];
+		N_StationFoodService_Cleanup [label="StationFoodService.Cleanup", style=bold, shape=box, color="blue"];
+		N_PriceService_FindByRouteIDAndTrainType [label="PriceService.FindByRouteIDAndTrainType
+
+==== param 0 (routeID) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and[*]
+
+
+==== param 1 (trainType) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and[*]
+", style=bold, shape=box, color="blue"];
+		N_ConsignPriceService_GetPriceConfig [label="ConsignPriceService.GetPriceConfig", style=bold, shape=box, color="blue"];
+		N_AssuranceService_DeleteById [label="AssuranceService.DeleteById
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.ID
+", style=bold, shape=box, color="blue"];
+		N_AssuranceService_GetAllAssuranceTypes [label="AssuranceService.GetAllAssuranceTypes", style=bold, shape=box, color="blue"];
+		N_ContactsService_FindContactsById [label="ContactsService.FindContactsById
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.id
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_CreateContacts [label="ContactsService.CreateContacts
+
+==== param 0 (contact) tainted ====
+_obj
+[write, primary] @ contacts_db.contacts
+_obj.AccountID
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+_obj.DocumentType
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== param 1 (userID) tainted ====
+_obj
+[write, primary] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="blue"];
+		N_TrainService_RetrieveByName [label="TrainService.RetrieveByName
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+", style=bold, shape=box, color="blue"];
+		N_TrainService_AllTrains [label="TrainService.AllTrains", style=bold, shape=box, color="blue"];
+		N_ConsignPriceService_CreateAndModifyPriceConfig [label="ConsignPriceService.CreateAndModifyPriceConfig
+
+==== param 0 (priceConfig) tainted ====
+_obj
+[write, primary] @ consignprice_db.consign
+_obj.Index
+[write, primary] @ consignprice_db.consign.Index
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignPrice) tainted ====
+_obj
+[write, primary] @ consignprice_db.consign
+_obj.Index
+[write, primary] @ consignprice_db.consign.Index
+", style=bold, shape=box, color="blue"];
+		N_PaymentService_AddMoney [label="PaymentService.AddMoney
+
+==== param 0 (payment) tainted ====
+_obj.Price
+[write, primary] @ payment_db.money.Price
+_obj.UserID
+[write, primary] @ payment_db.money.UserID
+", style=bold, shape=box, color="blue"];
+		N_TrainFoodService_ListTrainFood [label="TrainFoodService.ListTrainFood", style=bold, shape=box, color="blue"];
+		N_ConfigService_Find [label="ConfigService.Find
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+", style=bold, shape=box, color="blue"];
+		N_RouteService_GetRouteByStartAndEnd [label="RouteService.GetRouteByStartAndEnd
+
+==== param 0 (start) tainted ====
+_obj
+[read, primary] @ route_db.route.$and[*]
+
+
+==== param 1 (end) tainted ====
+_obj
+[read, primary] @ route_db.route.$and[*]
+", style=bold, shape=box, color="blue"];
+		N_PaymentService_Query [label="PaymentService.Query", style=bold, shape=box, color="blue"];
+		N_StationService_FindByID [label="StationService.FindByID
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+", style=bold, shape=box, color="blue"];
+		N_UserService_FindByUsername [label="UserService.FindByUsername
+
+==== param 0 (username) tainted ====
+_obj
+[read, primary] @ user_db.user.Username
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_Modify [label="ContactsService.Modify", style=bold, shape=box, color="blue"];
+		N_TrainService_Create [label="TrainService.Create
+
+==== param 0 (tt) tainted ====
+_obj
+[write, primary] @ train_db.train
+_obj.Name
+[read, primary] @ train_db.train.Name
+", style=bold, shape=box, color="blue"];
+		N_PriceService_GetAllPriceConfig [label="PriceService.GetAllPriceConfig", style=bold, shape=box, color="blue"];
+	}
+	subgraph cluster_databases {
+		style=invis;
+		N_delivery_db_delivery [label="delivery_db.delivery", style=bold, shape=cylinder, color="green"];
+		N_price_db_priceConfig [label="price_db.priceConfig", style=bold, shape=cylinder, color="green"];
+		N_contacts_db_contacts [label="contacts_db.contacts", style=bold, shape=cylinder, color="green"];
+		N_station_db_station [label="station_db.station", style=bold, shape=cylinder, color="green"];
+		N_config_db_config [label="config_db.config", style=bold, shape=cylinder, color="green"];
+		N_assurance_db_assurance [label="assurance_db.assurance", style=bold, shape=cylinder, color="green"];
+		N_trainfood_db_trainfood [label="trainfood_db.trainfood", style=bold, shape=cylinder, color="green"];
+		N_user_db_user [label="user_db.user", style=bold, shape=cylinder, color="green"];
+		N_payment_db_money [label="payment_db.money", style=bold, shape=cylinder, color="green"];
+		N_payment_db_payment [label="payment_db.payment", style=bold, shape=cylinder, color="green"];
+		N_delivery_q_notification [label="delivery_q.notification", style=bold, shape=cylinder, color="green"];
+		N_consignprice_db_consign [label="consignprice_db.consign", style=bold, shape=cylinder, color="green"];
+		N_stationfood_db_stationfood [label="stationfood_db.stationfood", style=bold, shape=cylinder, color="green"];
+		N_route_db_route [label="route_db.route", style=bold, shape=cylinder, color="green"];
+		N_train_db_train [label="train_db.train", style=bold, shape=cylinder, color="green"];
+	}
+	N_client -> N_PaymentService_Pay [label="Pay()", color=orange];
+	N_client -> N_PaymentService_AddMoney [label="AddMoney()", color=orange];
+	N_PaymentService_AddMoney -> N_payment_db_money [label="InsertOne()
+
+==== arg 0 (t18) tainted ====
+_obj
+[write, primary] @ payment_db.money
+_obj.ID
+[write, primary] @ payment_db.money.ID
+_obj.Price
+[write, primary] @ payment_db.money.Price
+_obj.UserID
+[write, primary] @ payment_db.money.UserID
+", color=green];
+	N_client -> N_PaymentService_Query [label="Query()", color=orange];
+	N_client -> N_PaymentService_InitPayment [label="InitPayment()", color=orange];
+	N_PaymentService_InitPayment -> N_payment_db_payment [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ payment_db.payment.ID
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ payment_db.payment.ID
+
+
+==== arg 2 (t14) tainted ====
+_obj
+[read, primary] @ payment_db.payment.ID
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ payment_db.payment.ID
+
+
+==== arg 4 (t10) tainted ====
+_obj
+[read, primary] @ payment_db.payment.ID
+", color=green];
+	N_PaymentService_InitPayment -> N_payment_db_payment [label="InsertOne()
+
+==== arg 0 (t26) tainted ====
+_obj
+[write, primary] @ payment_db.payment
+_obj.ID
+[read, primary] @ payment_db.payment.ID
+", color=green];
+	N_client -> N_PaymentService_Cleanup [label="Cleanup()", color=orange];
+	N_client -> N_AssuranceService_FindAssuranceById [label="FindAssuranceById()", color=orange];
+	N_AssuranceService_FindAssuranceById -> N_assurance_db_assurance [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.ID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.ID
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.ID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.ID
+
+
+==== arg 4 (t11) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.ID
+", color=green];
+	N_client -> N_AssuranceService_FindAssuranceByOrderId [label="FindAssuranceByOrderId()", color=orange];
+	N_AssuranceService_FindAssuranceByOrderId -> N_assurance_db_assurance [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+", color=green];
+	N_client -> N_AssuranceService_Create [label="Create()", color=orange];
+	N_AssuranceService_Create -> N_assurance_db_assurance [label="InsertOne()
+
+==== arg 0 (t18) tainted ====
+_obj
+[write, primary] @ assurance_db.assurance
+_obj.AT
+[write, primary] @ assurance_db.assurance.AT
+_obj.ID
+[write, primary] @ assurance_db.assurance.ID
+_obj.OrderID
+[write, primary] @ assurance_db.assurance.OrderID
+", color=green];
+	N_client -> N_AssuranceService_DeleteById [label="DeleteById()", color=orange];
+	N_AssuranceService_DeleteById -> N_assurance_db_assurance [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.ID
+
+
+==== arg 1 (t7) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.ID
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.ID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.ID
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.ID
+", color=green];
+	N_client -> N_AssuranceService_DeleteByOrderId [label="DeleteByOrderId()", color=orange];
+	N_AssuranceService_DeleteByOrderId -> N_assurance_db_assurance [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.OrderID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[delete, primary] @ assurance_db.assurance.OrderID
+", color=green];
+	N_client -> N_AssuranceService_Modify [label="Modify()", color=orange];
+	N_client -> N_AssuranceService_GetAllAssurances [label="GetAllAssurances()", color=orange];
+	N_client -> N_AssuranceService_GetAllAssuranceTypes [label="GetAllAssuranceTypes()", color=orange];
+	N_client -> N_StationService_CreateStation [label="CreateStation()", color=orange];
+	N_StationService_CreateStation -> N_station_db_station [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 1 (t14) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 2 (t10) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+", color=green];
+	N_StationService_CreateStation -> N_station_db_station [label="InsertOne()
+
+==== arg 0 (t31) tainted ====
+_obj
+[write, primary] @ station_db.station
+_obj.ID
+[read, primary] @ station_db.station.ID
+", color=green];
+	N_client -> N_StationService_Exists [label="Exists()", color=orange];
+	N_StationService_Exists -> N_station_db_station [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 3 (t7) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+", color=green];
+	N_client -> N_StationService_UpdateStation [label="UpdateStation()", color=orange];
+	N_client -> N_StationService_DeleteStation [label="DeleteStation()", color=orange];
+	N_StationService_DeleteStation -> N_station_db_station [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+", color=green];
+	N_client -> N_StationService_FindByID [label="FindByID()", color=orange];
+	N_StationService_FindByID -> N_station_db_station [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ station_db.station.ID
+", color=green];
+	N_client -> N_StationService_FindByIDs [label="FindByIDs()", color=orange];
+	N_client -> N_StationService_FindID [label="FindID()", color=orange];
+	N_StationService_FindID -> N_station_db_station [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 3 (t11) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+", color=green];
+	N_client -> N_StationService_FindIDs [label="FindIDs()", color=orange];
+	N_client -> N_NewsService_Hello [label="Hello()", color=orange];
+	N_client -> N_TrainFoodService_CreateTrainFood [label="CreateTrainFood()", color=orange];
+	N_TrainFoodService_CreateTrainFood -> N_trainfood_db_trainfood [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 2 (t14) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 3 (t10) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+", color=green];
+	N_TrainFoodService_CreateTrainFood -> N_trainfood_db_trainfood [label="InsertOne()
+
+==== arg 0 (t27) tainted ====
+_obj
+[write, primary] @ trainfood_db.trainfood
+_obj.TripID
+[read, primary] @ trainfood_db.trainfood.TripID
+", color=green];
+	N_client -> N_TrainFoodService_ListTrainFood [label="ListTrainFood()", color=orange];
+	N_client -> N_TrainFoodService_ListTrainFoodByTripID [label="ListTrainFoodByTripID()", color=orange];
+	N_TrainFoodService_ListTrainFoodByTripID -> N_trainfood_db_trainfood [label="FindOne()
+
+==== arg 0 (t8) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 3 (t13) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+
+
+==== arg 4 (t10) tainted ====
+_obj
+[read, primary] @ trainfood_db.trainfood.TripID
+", color=green];
+	N_client -> N_TrainFoodService_Cleanup [label="Cleanup()", color=orange];
+	N_client -> N_TrainService_Create [label="Create()", color=orange];
+	N_TrainService_Create -> N_train_db_train [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 2 (t14) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 3 (t10) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+", color=green];
+	N_TrainService_Create -> N_train_db_train [label="InsertOne()
+
+==== arg 0 (t27) tainted ====
+_obj
+[write, primary] @ train_db.train
+_obj.Name
+[read, primary] @ train_db.train.Name
+", color=green];
+	N_client -> N_TrainService_Retrieve [label="Retrieve()", color=orange];
+	N_TrainService_Retrieve -> N_train_db_train [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ train_db.train.ID
+
+
+==== arg 1 (t7) tainted ====
+_obj
+[read, primary] @ train_db.train.ID
+
+
+==== arg 2 (t8) tainted ====
+_obj
+[read, primary] @ train_db.train.ID
+
+
+==== arg 3 (t11) tainted ====
+_obj
+[read, primary] @ train_db.train.ID
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[read, primary] @ train_db.train.ID
+", color=green];
+	N_client -> N_TrainService_RetrieveByName [label="RetrieveByName()", color=orange];
+	N_TrainService_RetrieveByName -> N_train_db_train [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+", color=green];
+	N_client -> N_TrainService_RetrieveByNames [label="RetrieveByNames()", color=orange];
+	N_client -> N_TrainService_Update [label="Update()", color=orange];
+	N_client -> N_TrainService_Delete [label="Delete()", color=orange];
+	N_TrainService_Delete -> N_train_db_train [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+", color=green];
+	N_client -> N_TrainService_AllTrains [label="AllTrains()", color=orange];
+	N_client -> N_StationFoodService_CreateFoodStore [label="CreateFoodStore()", color=orange];
+	N_StationFoodService_CreateFoodStore -> N_stationfood_db_stationfood [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 2 (t10) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 3 (t14) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+", color=green];
+	N_StationFoodService_CreateFoodStore -> N_stationfood_db_stationfood [label="InsertOne()
+
+==== arg 0 (t30) tainted ====
+_obj
+[write, primary] @ stationfood_db.stationfood
+_obj.ID
+[read, primary] @ stationfood_db.stationfood.ID
+", color=green];
+	N_client -> N_StationFoodService_ListFoodStores [label="ListFoodStores()", color=orange];
+	N_client -> N_StationFoodService_ListFoodStoresByStationName [label="ListFoodStoresByStationName()", color=orange];
+	N_client -> N_StationFoodService_GetFoodStoresByStationNames [label="GetFoodStoresByStationNames()", color=orange];
+	N_client -> N_StationFoodService_GetFoodStoreByID [label="GetFoodStoreByID()", color=orange];
+	N_StationFoodService_GetFoodStoreByID -> N_stationfood_db_stationfood [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ stationfood_db.stationfood.ID
+", color=green];
+	N_client -> N_StationFoodService_Cleanup [label="Cleanup()", color=orange];
+	N_client -> N_UserService_FindByUsername [label="FindByUsername()", color=orange];
+	N_UserService_FindByUsername -> N_user_db_user [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ user_db.user.Username
+
+
+==== arg 1 (t7) tainted ====
+_obj
+[read, primary] @ user_db.user.Username
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ user_db.user.Username
+
+
+==== arg 3 (t11) tainted ====
+_obj
+[read, primary] @ user_db.user.Username
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ user_db.user.Username
+", color=green];
+	N_client -> N_UserService_FindByUserID [label="FindByUserID()", color=orange];
+	N_UserService_FindByUserID -> N_user_db_user [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ user_db.user.UserID
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[read, primary] @ user_db.user.UserID
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[read, primary] @ user_db.user.UserID
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[read, primary] @ user_db.user.UserID
+
+
+==== arg 4 (t11) tainted ====
+_obj
+[read, primary] @ user_db.user.UserID
+", color=green];
+	N_client -> N_UserService_DeleteUser [label="DeleteUser()", color=orange];
+	N_UserService_DeleteUser -> N_user_db_user [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+", color=green];
+	N_client -> N_UserService_GetAllUsers [label="GetAllUsers()", color=orange];
+	N_client -> N_UserService_SaveUser [label="SaveUser()", color=orange];
+	N_UserService_SaveUser -> N_user_db_user [label="InsertOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[write, primary] @ user_db.user
+", color=green];
+	N_client -> N_UserService_UpdateUser [label="UpdateUser()", color=orange];
+	N_client -> N_PriceService_FindByID [label="FindByID()", color=orange];
+	N_PriceService_FindByID -> N_price_db_priceConfig [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.ID
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.ID
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.ID
+
+
+==== arg 3 (t7) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.ID
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.ID
+", color=green];
+	N_client -> N_PriceService_CreateNewPriceConfig [label="CreateNewPriceConfig()", color=orange];
+	N_PriceService_CreateNewPriceConfig -> N_price_db_priceConfig [label="InsertOne()
+
+==== arg 0 (t14) tainted ====
+_obj
+[write, primary] @ price_db.priceConfig
+_obj.ID
+[write, primary] @ price_db.priceConfig.ID
+", color=green];
+	N_client -> N_PriceService_FindByRouteIDAndTrainType [label="FindByRouteIDAndTrainType()", color=orange];
+	N_PriceService_FindByRouteIDAndTrainType -> N_price_db_priceConfig [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and
+_obj[*]
+[read, primary] @ price_db.priceConfig.$and[*]
+
+
+==== arg 1 (t7) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and
+_obj[*]
+[read, primary] @ price_db.priceConfig.$and[*]
+
+
+==== arg 2 (t8) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and
+
+
+==== arg 3 (t29) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and
+_obj[*]
+[read, primary] @ price_db.priceConfig.$and[*]
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.$and
+_obj[*]
+[read, primary] @ price_db.priceConfig.$and[*]
+", color=green];
+	N_client -> N_PriceService_FindByRouteIDsAndTrainTypes [label="FindByRouteIDsAndTrainTypes()", color=orange];
+	N_client -> N_PriceService_GetAllPriceConfig [label="GetAllPriceConfig()", color=orange];
+	N_client -> N_PriceService_DeletePriceConfig [label="DeletePriceConfig()", color=orange];
+	N_PriceService_DeletePriceConfig -> N_price_db_priceConfig [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+
+
+==== arg 2 (t8) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+
+
+==== arg 3 (t7) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+", color=green];
+	N_client -> N_PriceService_UpdatePriceConfig [label="UpdatePriceConfig()", color=orange];
+	N_client -> N_ConfigService_Create [label="Create()", color=orange];
+	N_ConfigService_Create -> N_config_db_config [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 3 (t14) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 4 (t10) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+", color=green];
+	N_ConfigService_Create -> N_config_db_config [label="InsertOne()
+
+==== arg 0 (t31) tainted ====
+_obj
+[write, primary] @ config_db.config
+_obj.Name
+[read, primary] @ config_db.config.Name
+", color=green];
+	N_client -> N_ConfigService_Update [label="Update()", color=orange];
+	N_client -> N_ConfigService_Find [label="Find()", color=orange];
+	N_ConfigService_Find -> N_config_db_config [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+", color=green];
+	N_client -> N_ConfigService_Delete [label="Delete()", color=orange];
+	N_ConfigService_Delete -> N_config_db_config [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+
+
+==== arg 1 (t8) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+
+
+==== arg 3 (t9) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+
+
+==== arg 4 (t11) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+", color=green];
+	N_client -> N_ConfigService_FindAll [label="FindAll()", color=orange];
+	N_client -> N_ConsignPriceService_GetPriceByWeightAndRegion [label="GetPriceByWeightAndRegion()", color=orange];
+	N_client -> N_ConsignPriceService_GetPriceInfo [label="GetPriceInfo()", color=orange];
+	N_ConsignPriceService_GetPriceInfo -> N_consignprice_db_consign [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 1 (t11) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 3 (t7) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+", color=green];
+	N_client -> N_ConsignPriceService_GetPriceConfig [label="GetPriceConfig()", color=orange];
+	N_ConsignPriceService_GetPriceConfig -> N_consignprice_db_consign [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 3 (t11) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+", color=green];
+	N_client -> N_ConsignPriceService_CreateAndModifyPriceConfig [label="CreateAndModifyPriceConfig()", color=orange];
+	N_ConsignPriceService_CreateAndModifyPriceConfig -> N_consignprice_db_consign [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 1 (t12) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+
+
+==== arg 4 (t10) tainted ====
+_obj
+[read, primary] @ consignprice_db.consign.Index
+", color=green];
+	N_ConsignPriceService_CreateAndModifyPriceConfig -> N_consignprice_db_consign [label="InsertOne()
+
+==== arg 0 (t38) tainted ====
+_obj
+[write, primary] @ consignprice_db.consign
+_obj.Index
+[write, primary] @ consignprice_db.consign.Index
+", color=green];
+	N_client -> N_ContactsService_FindContactsById [label="FindContactsById()", color=orange];
+	N_ContactsService_FindContactsById -> N_contacts_db_contacts [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.id
+
+
+==== arg 1 (t7) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.id
+
+
+==== arg 2 (t11) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.id
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.id
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.id
+", color=green];
+	N_client -> N_ContactsService_FindContactsByAccountId [label="FindContactsByAccountId()", color=orange];
+	N_client -> N_ContactsService_CreateContacts [label="CreateContacts()", color=orange];
+	N_ContactsService_CreateContacts -> N_contacts_db_contacts [label="FindOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 3 (t22) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 4 (t14) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 5 (t21) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 6 (t15) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 7 (t10) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 8 (t20) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 9 (t8) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+
+
+==== arg 10 (t26) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+", color=green];
+	N_ContactsService_CreateContacts -> N_contacts_db_contacts [label="InsertOne()
+
+==== arg 0 (t39) tainted ====
+_obj
+[write, primary] @ contacts_db.contacts
+_obj.AccountID
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+_obj.DocumentType
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.AccountID
+", color=green];
+	N_client -> N_ContactsService_Delete [label="Delete()", color=orange];
+	N_ContactsService_Delete -> N_contacts_db_contacts [label="DeleteOne()
+
+==== arg 0 (t7) tainted ====
+_obj
+[delete, primary] @ contacts_db.contacts.ID
+
+
+==== arg 1 (t14) tainted ====
+_obj
+[delete, primary] @ contacts_db.contacts.ID
+
+
+==== arg 2 (t9) tainted ====
+_obj
+[delete, primary] @ contacts_db.contacts.ID
+
+
+==== arg 3 (t10) tainted ====
+_obj
+[delete, primary] @ contacts_db.contacts.ID
+
+
+==== arg 4 (t8) tainted ====
+_obj
+[delete, primary] @ contacts_db.contacts.ID
+", color=green];
+	N_client -> N_ContactsService_GetAllContacts [label="GetAllContacts()", color=orange];
+	N_client -> N_ContactsService_Modify [label="Modify()", color=orange];
+	N_client -> N_DeliveryService_Run [label="Run()", color=orange];
+	N_DeliveryService_Run -> N_delivery_q_notification [label="Pop()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ delivery_q.notification
+[write, primary] @ delivery_db.delivery
+", color=green];
+	N_DeliveryService_Run -> N_delivery_db_delivery [label="InsertOne()
+
+==== arg 0 (t31) tainted ====
+_obj
+[read, primary] @ delivery_q.notification
+[write, primary] @ delivery_db.delivery
+", color=green];
+	N_client -> N_RouteService_GetRouteByStartAndEnd [label="GetRouteByStartAndEnd()", color=orange];
+	N_RouteService_GetRouteByStartAndEnd -> N_route_db_route [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ route_db.route.$and
+_obj[*]
+[read, primary] @ route_db.route.$and[*]
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ route_db.route.$and
+_obj[*]
+[read, primary] @ route_db.route.$and[*]
+
+
+==== arg 2 (t8) tainted ====
+_obj
+[read, primary] @ route_db.route.$and
+
+
+==== arg 3 (t29) tainted ====
+_obj
+[read, primary] @ route_db.route.$and
+_obj[*]
+[read, primary] @ route_db.route.$and[*]
+
+
+==== arg 4 (t7) tainted ====
+_obj
+[read, primary] @ route_db.route.$and
+_obj[*]
+[read, primary] @ route_db.route.$and[*]
+", color=green];
+	N_client -> N_RouteService_GetAllRoutes [label="GetAllRoutes()", color=orange];
+	N_client -> N_RouteService_GetRouteById [label="GetRouteById()", color=orange];
+	N_RouteService_GetRouteById -> N_route_db_route [label="FindOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 2 (t7) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 3 (t8) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 4 (t11) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+", color=green];
+	N_client -> N_RouteService_GetRouteByIds [label="GetRouteByIds()", color=orange];
+	N_client -> N_RouteService_DeleteRoute [label="DeleteRoute()", color=orange];
+	N_RouteService_DeleteRoute -> N_route_db_route [label="DeleteOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+
+
+==== arg 1 (t7) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+
+
+==== arg 2 (t8) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+
+
+==== arg 3 (t11) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+
+
+==== arg 4 (t9) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+", color=green];
+	N_client -> N_RouteService_CreateAndModify [label="CreateAndModify()", color=orange];
+	N_RouteService_CreateAndModify -> N_route_db_route [label="FindOne()
+
+==== arg 0 (t30) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 1 (t33) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 2 (t31) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 3 (t37) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== arg 4 (t32) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+", color=green];
+	N_RouteService_CreateAndModify -> N_route_db_route [label="InsertOne()
+
+==== arg 0 (t76) tainted ====
+_obj
+[write, primary] @ route_db.route
+_obj.Distances
+[write, primary] @ route_db.route.Distances
+_obj.EndStation
+[write, primary] @ route_db.route.EndStation
+_obj.ID
+[write, primary] @ route_db.route.ID
+_obj.StartStation
+[write, primary] @ route_db.route.StartStation
+_obj.Stations
+[write, primary] @ route_db.route.Stations
+", color=green];
+}

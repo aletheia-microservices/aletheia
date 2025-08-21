@@ -137,6 +137,13 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 		//fmt.Printf("points to set of [%T] %v @ %v:\n", value, value, value.Parent())
 		for _, lbl := range pts.PointsTo().Labels() {
 			lblFn := lbl.Value().Parent()
+			if lblFn == nil {
+				// [TO BE IMPROVED]
+				// e.g., train_ticket2.TRAFFIC_ACCIDENT
+				fmt.Printf("nill lblFn as parent of value: %v\n", lbl.Value())
+				continue
+			}
+
 			lblFnLongName := utils.GetShortFunctionPath(lblFn.String())
 			fmt.Printf("\t\t- [%s] got label: [%T] %s\n", lblFnLongName, lbl.Value(), lbl.Value())
 			desc += fmt.Sprintf("\t → %s\n", valueDescShort(lbl.Value().Parent(), lbl.Value()))

@@ -1,0 +1,3614 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).Create ###
+a (@Create): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@Create): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t2 (@Create): (*ssa.Extract) (extract t0 #1)
+
+t6 (@Create): (*ssa.Alloc) (local Assurance (assurance))
+	 → t6 (@Create): (*ssa.Alloc)
+
+t7 (@Create): (*ssa.FieldAddr) (&t6.ID [#0])
+	 → t6 (@Create): (*ssa.Alloc)
+
+t8 (@Create): (*ssa.FieldAddr) (&t6.OrderID [#1])
+	 → t6 (@Create): (*ssa.Alloc)
+
+t9 (@Create): (*ssa.FieldAddr) (&t6.AT [#2])
+	 → t6 (@Create): (*ssa.Alloc)
+
+t10 (@Create): (*ssa.FieldAddr) (&a.db [#0])
+
+t11 (@Create): (*ssa.UnOp) (*t10)
+
+t13 (@Create): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Create): (*ssa.Extract) (extract t12 #1)
+
+t18 (@Create): (*ssa.MakeInterface) (make interface{} <- Assurance (t17))
+	 → t18 (@Create): (*ssa.MakeInterface)
+
+t19 (@Create): (*ssa.Call) (invoke t13.InsertOne(ctx, t18))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).DeleteById ###
+a (@DeleteById): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+
+ctx (@DeleteById): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@DeleteById): (*ssa.FieldAddr) (&a.db [#0])
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+
+t1 (@DeleteById): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteById): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteById): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeleteById): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeleteById): (*ssa.Alloc)
+
+t7 (@DeleteById): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeleteById): (*ssa.Alloc)
+
+t8 (@DeleteById): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeleteById): (*ssa.Alloc)
+
+t9 (@DeleteById): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeleteById): (*ssa.Alloc)
+
+t10 (@DeleteById): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@DeleteById): (*ssa.MakeInterface)
+
+t11 (@DeleteById): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeleteById): (*ssa.Alloc)
+
+t12 (@DeleteById): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).DeleteByOrderId ###
+a (@DeleteByOrderId): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@DeleteByOrderId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteByOrderId): (*ssa.FieldAddr) (&a.db [#0])
+
+t1 (@DeleteByOrderId): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteByOrderId): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteByOrderId): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeleteByOrderId): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeleteByOrderId): (*ssa.Alloc)
+
+t7 (@DeleteByOrderId): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeleteByOrderId): (*ssa.Alloc)
+
+t8 (@DeleteByOrderId): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeleteByOrderId): (*ssa.Alloc)
+
+t9 (@DeleteByOrderId): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeleteByOrderId): (*ssa.Alloc)
+
+t10 (@DeleteByOrderId): (*ssa.MakeInterface) (make interface{} <- string (order_id))
+	 → t10 (@DeleteByOrderId): (*ssa.MakeInterface)
+
+t11 (@DeleteByOrderId): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeleteByOrderId): (*ssa.Alloc)
+
+t12 (@DeleteByOrderId): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).FindAssuranceById ###
+a (@FindAssuranceById): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@FindAssuranceById): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindAssuranceById): (*ssa.FieldAddr) (&a.db [#0])
+
+t1 (@FindAssuranceById): (*ssa.UnOp) (*t0)
+
+t3 (@FindAssuranceById): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindAssuranceById): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindAssuranceById): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindAssuranceById): (*ssa.Alloc)
+
+t7 (@FindAssuranceById): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindAssuranceById): (*ssa.Alloc)
+
+t8 (@FindAssuranceById): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindAssuranceById): (*ssa.Alloc)
+
+t9 (@FindAssuranceById): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindAssuranceById): (*ssa.Alloc)
+
+t10 (@FindAssuranceById): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@FindAssuranceById): (*ssa.MakeInterface)
+
+t11 (@FindAssuranceById): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindAssuranceById): (*ssa.Alloc)
+
+t13 (@FindAssuranceById): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindAssuranceById): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindAssuranceById): (*ssa.Alloc) (new Assurance (ass))
+	 → t16 (@FindAssuranceById): (*ssa.Alloc)
+
+t17 (@FindAssuranceById): (*ssa.MakeInterface) (make interface{} <- *Assurance (t16))
+	 → t17 (@FindAssuranceById): (*ssa.MakeInterface)
+
+t20 (@FindAssuranceById): (*ssa.Extract) (extract t18 #1)
+
+t26 (@FindAssuranceById): (*ssa.Call) (errors.New(t25))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).FindAssuranceByOrderId ###
+a (@FindAssuranceByOrderId): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@FindAssuranceByOrderId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindAssuranceByOrderId): (*ssa.FieldAddr) (&a.db [#0])
+
+t1 (@FindAssuranceByOrderId): (*ssa.UnOp) (*t0)
+
+t3 (@FindAssuranceByOrderId): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindAssuranceByOrderId): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindAssuranceByOrderId): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindAssuranceByOrderId): (*ssa.Alloc)
+
+t7 (@FindAssuranceByOrderId): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindAssuranceByOrderId): (*ssa.Alloc)
+
+t8 (@FindAssuranceByOrderId): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindAssuranceByOrderId): (*ssa.Alloc)
+
+t9 (@FindAssuranceByOrderId): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindAssuranceByOrderId): (*ssa.Alloc)
+
+t10 (@FindAssuranceByOrderId): (*ssa.MakeInterface) (make interface{} <- string (order_id))
+	 → t10 (@FindAssuranceByOrderId): (*ssa.MakeInterface)
+
+t11 (@FindAssuranceByOrderId): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindAssuranceByOrderId): (*ssa.Alloc)
+
+t13 (@FindAssuranceByOrderId): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindAssuranceByOrderId): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindAssuranceByOrderId): (*ssa.Alloc) (new Assurance (ass))
+	 → t16 (@FindAssuranceByOrderId): (*ssa.Alloc)
+
+t17 (@FindAssuranceByOrderId): (*ssa.MakeInterface) (make interface{} <- *Assurance (t16))
+	 → t17 (@FindAssuranceByOrderId): (*ssa.MakeInterface)
+
+t20 (@FindAssuranceByOrderId): (*ssa.Extract) (extract t18 #1)
+
+t26 (@FindAssuranceByOrderId): (*ssa.Call) (errors.New(t25))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).GetAllAssuranceTypes ###
+a (@GetAllAssuranceTypes): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@GetAllAssuranceTypes): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllAssuranceTypes): (*ssa.UnOp) (*ALL_ASSURANCES)
+	 → t13 (@init): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).GetAllAssurances ###
+a (@GetAllAssurances): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@GetAllAssurances): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllAssurances): (*ssa.FieldAddr) (&a.db [#0])
+
+t1 (@GetAllAssurances): (*ssa.UnOp) (*t0)
+
+t3 (@GetAllAssurances): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAllAssurances): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetAllAssurances): (*ssa.Alloc) (new [0]Assurance (slicelit))
+	 → t6 (@GetAllAssurances): (*ssa.Alloc)
+
+t7 (@GetAllAssurances): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetAllAssurances): (*ssa.Alloc)
+
+t8 (@GetAllAssurances): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@GetAllAssurances): (*ssa.Alloc)
+
+t9 (@GetAllAssurances): (*ssa.Slice) (slice t8[:])
+	 → t8 (@GetAllAssurances): (*ssa.Alloc)
+
+t11 (@GetAllAssurances): (*ssa.Extract) (extract t10 #0)
+
+t12 (@GetAllAssurances): (*ssa.Extract) (extract t10 #1)
+
+t14 (@GetAllAssurances): (*ssa.Alloc) (new [0]Assurance (slicelit))
+	 → t14 (@GetAllAssurances): (*ssa.Alloc)
+
+t15 (@GetAllAssurances): (*ssa.Slice) (slice t14[:])
+	 → t14 (@GetAllAssurances): (*ssa.Alloc)
+
+t16 (@GetAllAssurances): (*ssa.Alloc) (new []Assurance (assurances))
+	 → t16 (@GetAllAssurances): (*ssa.Alloc)
+
+t17 (@GetAllAssurances): (*ssa.MakeInterface) (make interface{} <- *[]Assurance (t16))
+	 → t17 (@GetAllAssurances): (*ssa.MakeInterface)
+
+t18 (@GetAllAssurances): (*ssa.Call) (invoke t11.All(ctx, t17))
+
+t19 (@GetAllAssurances): (*ssa.UnOp) (*t16)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).Modify ###
+a (@Modify): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
+
+ctx (@Modify): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Modify): (*ssa.Alloc) (local Assurance (assurance))
+	 → t0 (@Modify): (*ssa.Alloc)
+
+t1 (@Modify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Modify): (*ssa.Alloc)
+
+t5 (@Modify): (*ssa.Extract) (extract t3 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t8 (@Modify): (*ssa.FieldAddr) (&a.db [#0])
+
+t9 (@Modify): (*ssa.UnOp) (*t8)
+
+t11 (@Modify): (*ssa.Extract) (extract t10 #0)
+
+t12 (@Modify): (*ssa.Extract) (extract t10 #1)
+
+t15 (@Modify): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t15 (@Modify): (*ssa.Alloc)
+
+t16 (@Modify): (*ssa.IndexAddr) (&t15[0:int])
+	 → t15 (@Modify): (*ssa.Alloc)
+
+t17 (@Modify): (*ssa.FieldAddr) (&t16.Key [#0])
+	 → t15 (@Modify): (*ssa.Alloc)
+
+t18 (@Modify): (*ssa.FieldAddr) (&t16.Value [#1])
+	 → t15 (@Modify): (*ssa.Alloc)
+
+t19 (@Modify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Modify): (*ssa.Alloc)
+
+t21 (@Modify): (*ssa.MakeInterface) (make interface{} <- string (t20))
+	 → t21 (@Modify): (*ssa.MakeInterface)
+
+t22 (@Modify): (*ssa.Slice) (slice t15[:])
+	 → t15 (@Modify): (*ssa.Alloc)
+
+t24 (@Modify): (*ssa.MakeInterface) (make interface{} <- Assurance (t23))
+	 → t24 (@Modify): (*ssa.MakeInterface)
+
+t27 (@Modify): (*ssa.Extract) (extract t25 #1)
+
+t31 (@Modify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Modify): (*ssa.Alloc)
+
+t34 (@Modify): (*ssa.Call) (errors.New(t33))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).Create ###
+c (@Create): (*ssa.Parameter) (parameter c : *ConfigServiceImpl)
+
+ctx (@Create): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Create): (*ssa.Alloc) (local Config (conf))
+	 → t0 (@Create): (*ssa.Alloc)
+
+t1 (@Create): (*ssa.FieldAddr) (&c.db [#0])
+
+t2 (@Create): (*ssa.UnOp) (*t1)
+
+t4 (@Create): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Create): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Create): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Create): (*ssa.Alloc)
+
+t8 (@Create): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t9 (@Create): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t10 (@Create): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t11 (@Create): (*ssa.FieldAddr) (&t0.Name [#0])
+	 → t0 (@Create): (*ssa.Alloc)
+
+t13 (@Create): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Create): (*ssa.MakeInterface)
+
+t14 (@Create): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t16 (@Create): (*ssa.Extract) (extract t15 #0)
+
+t17 (@Create): (*ssa.Extract) (extract t15 #1)
+
+t19 (@Create): (*ssa.Alloc) (new Config (saved_conf))
+	 → t19 (@Create): (*ssa.Alloc)
+
+t20 (@Create): (*ssa.MakeInterface) (make interface{} <- *Config (t19))
+	 → t20 (@Create): (*ssa.MakeInterface)
+
+t23 (@Create): (*ssa.Extract) (extract t21 #1)
+
+t25 (@Create): (*ssa.FieldAddr) (&t0.Name [#0])
+	 → t0 (@Create): (*ssa.Alloc)
+
+t29 (@Create): (*ssa.Call) (errors.New(t28))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t31 (@Create): (*ssa.MakeInterface) (make interface{} <- Config (t30))
+	 → t31 (@Create): (*ssa.MakeInterface)
+
+t32 (@Create): (*ssa.Call) (invoke t4.InsertOne(ctx, t31))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).Delete ###
+c (@Delete): (*ssa.Parameter) (parameter c : *ConfigServiceImpl)
+
+ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Delete): (*ssa.FieldAddr) (&c.db [#0])
+
+t1 (@Delete): (*ssa.UnOp) (*t0)
+
+t3 (@Delete): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Delete): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t7 (@Delete): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t8 (@Delete): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t9 (@Delete): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t10 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (name))
+	 → t10 (@Delete): (*ssa.MakeInterface)
+
+t11 (@Delete): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).Find ###
+c (@Find): (*ssa.Parameter) (parameter c : *ConfigServiceImpl)
+
+ctx (@Find): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Find): (*ssa.FieldAddr) (&c.db [#0])
+
+t1 (@Find): (*ssa.UnOp) (*t0)
+
+t3 (@Find): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Find): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Find): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Find): (*ssa.Alloc)
+
+t7 (@Find): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t8 (@Find): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t9 (@Find): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t10 (@Find): (*ssa.MakeInterface) (make interface{} <- string (name))
+	 → t10 (@Find): (*ssa.MakeInterface)
+
+t11 (@Find): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t13 (@Find): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Find): (*ssa.Extract) (extract t12 #1)
+
+t16 (@Find): (*ssa.Alloc) (new Config (conf))
+	 → t16 (@Find): (*ssa.Alloc)
+
+t17 (@Find): (*ssa.MakeInterface) (make interface{} <- *Config (t16))
+	 → t17 (@Find): (*ssa.MakeInterface)
+
+t20 (@Find): (*ssa.Extract) (extract t18 #1)
+
+t24 (@Find): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).FindAll ###
+c (@FindAll): (*ssa.Parameter) (parameter c : *ConfigServiceImpl)
+
+ctx (@FindAll): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindAll): (*ssa.FieldAddr) (&c.db [#0])
+
+t1 (@FindAll): (*ssa.UnOp) (*t0)
+
+t3 (@FindAll): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindAll): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindAll): (*ssa.Alloc) (new [0]Config (slicelit))
+	 → t6 (@FindAll): (*ssa.Alloc)
+
+t7 (@FindAll): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindAll): (*ssa.Alloc)
+
+t8 (@FindAll): (*ssa.Alloc) (new []Config (configs))
+	 → t8 (@FindAll): (*ssa.Alloc)
+
+t9 (@FindAll): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t9 (@FindAll): (*ssa.Alloc)
+
+t10 (@FindAll): (*ssa.Slice) (slice t9[:])
+	 → t9 (@FindAll): (*ssa.Alloc)
+
+t12 (@FindAll): (*ssa.Extract) (extract t11 #0)
+
+t13 (@FindAll): (*ssa.Extract) (extract t11 #1)
+
+t15 (@FindAll): (*ssa.UnOp) (*t8)
+
+t16 (@FindAll): (*ssa.MakeInterface) (make interface{} <- *[]Config (t8))
+	 → t16 (@FindAll): (*ssa.MakeInterface)
+
+t17 (@FindAll): (*ssa.Call) (invoke t12.All(ctx, t16))
+
+t19 (@FindAll): (*ssa.UnOp) (*t8)
+
+t20 (@FindAll): (*ssa.UnOp) (*t8)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).Update ###
+c (@Update): (*ssa.Parameter) (parameter c : *ConfigServiceImpl)
+
+ctx (@Update): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Update): (*ssa.Alloc) (local Config (conf))
+	 → t0 (@Update): (*ssa.Alloc)
+
+t1 (@Update): (*ssa.FieldAddr) (&c.db [#0])
+
+t2 (@Update): (*ssa.UnOp) (*t1)
+
+t4 (@Update): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Update): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Update): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Update): (*ssa.Alloc)
+
+t8 (@Update): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t9 (@Update): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t10 (@Update): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t11 (@Update): (*ssa.FieldAddr) (&t0.Name [#0])
+	 → t0 (@Update): (*ssa.Alloc)
+
+t13 (@Update): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Update): (*ssa.MakeInterface)
+
+t14 (@Update): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t16 (@Update): (*ssa.MakeInterface) (make interface{} <- Config (t15))
+	 → t16 (@Update): (*ssa.MakeInterface)
+
+t19 (@Update): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignPriceServiceImpl).CreateAndModifyPriceConfig ###
+c (@CreateAndModifyPriceConfig): (*ssa.Parameter) (parameter c : *ConsignPriceServiceImpl)
+
+ctx (@CreateAndModifyPriceConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateAndModifyPriceConfig): (*ssa.Alloc) (local ConsignPrice (priceConfig))
+	 → t0 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t1 (@CreateAndModifyPriceConfig): (*ssa.FieldAddr) (&c.db [#0])
+
+t2 (@CreateAndModifyPriceConfig): (*ssa.UnOp) (*t1)
+
+t4 (@CreateAndModifyPriceConfig): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateAndModifyPriceConfig): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateAndModifyPriceConfig): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t8 (@CreateAndModifyPriceConfig): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t9 (@CreateAndModifyPriceConfig): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t10 (@CreateAndModifyPriceConfig): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t11 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface) (make interface{} <- int (0:int))
+	 → t11 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface)
+
+t12 (@CreateAndModifyPriceConfig): (*ssa.Slice) (slice t7[:])
+	 → t7 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t14 (@CreateAndModifyPriceConfig): (*ssa.Extract) (extract t13 #0)
+
+t15 (@CreateAndModifyPriceConfig): (*ssa.Extract) (extract t13 #1)
+
+t17 (@CreateAndModifyPriceConfig): (*ssa.Alloc) (new ConsignPrice (cp))
+	 → t17 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t18 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface) (make interface{} <- *ConsignPrice (t17))
+	 → t18 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface)
+
+t21 (@CreateAndModifyPriceConfig): (*ssa.Extract) (extract t19 #1)
+
+t23 (@CreateAndModifyPriceConfig): (*ssa.FieldAddr) (&t0.Index [#1])
+	 → t0 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t24 (@CreateAndModifyPriceConfig): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t24 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t25 (@CreateAndModifyPriceConfig): (*ssa.IndexAddr) (&t24[0:int])
+	 → t24 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t26 (@CreateAndModifyPriceConfig): (*ssa.FieldAddr) (&t25.Key [#0])
+	 → t24 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t27 (@CreateAndModifyPriceConfig): (*ssa.FieldAddr) (&t25.Value [#1])
+	 → t24 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t28 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface) (make interface{} <- int (0:int))
+	 → t28 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface)
+
+t29 (@CreateAndModifyPriceConfig): (*ssa.Slice) (slice t24[:])
+	 → t24 (@CreateAndModifyPriceConfig): (*ssa.Alloc)
+
+t31 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface) (make interface{} <- ConsignPrice (t30))
+	 → t31 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface)
+
+t34 (@CreateAndModifyPriceConfig): (*ssa.Extract) (extract t32 #1)
+
+t38 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface) (make interface{} <- ConsignPrice (t37))
+	 → t38 (@CreateAndModifyPriceConfig): (*ssa.MakeInterface)
+
+t39 (@CreateAndModifyPriceConfig): (*ssa.Call) (invoke t4.InsertOne(ctx, t38))
+
+t42 (@CreateAndModifyPriceConfig): (*ssa.Call) (errors.New("Failed to update ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignPriceServiceImpl).GetPriceByWeightAndRegion ###
+c (@GetPriceByWeightAndRegion): (*ssa.Parameter) (parameter c : *ConsignPriceServiceImpl)
+
+ctx (@GetPriceByWeightAndRegion): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc) (local ConsignPrice (cp))
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t3 (@GetPriceByWeightAndRegion): (*ssa.Extract) (extract t1 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.InitialWeight [#2])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t8 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.InitialPrice [#3])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t10 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.InitialPrice [#3])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t12 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.InitialWeight [#2])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t15 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.WithinPrice [#4])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t20 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.InitialWeight [#2])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+t23 (@GetPriceByWeightAndRegion): (*ssa.FieldAddr) (&t0.BeyondPrice [#5])
+	 → t0 (@GetPriceByWeightAndRegion): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignPriceServiceImpl).GetPriceConfig ###
+c (@GetPriceConfig): (*ssa.Parameter) (parameter c : *ConsignPriceServiceImpl)
+
+ctx (@GetPriceConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetPriceConfig): (*ssa.FieldAddr) (&c.db [#0])
+
+t1 (@GetPriceConfig): (*ssa.UnOp) (*t0)
+
+t3 (@GetPriceConfig): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetPriceConfig): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetPriceConfig): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetPriceConfig): (*ssa.Alloc)
+
+t7 (@GetPriceConfig): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetPriceConfig): (*ssa.Alloc)
+
+t8 (@GetPriceConfig): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetPriceConfig): (*ssa.Alloc)
+
+t9 (@GetPriceConfig): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetPriceConfig): (*ssa.Alloc)
+
+t10 (@GetPriceConfig): (*ssa.MakeInterface) (make interface{} <- int (0:int))
+	 → t10 (@GetPriceConfig): (*ssa.MakeInterface)
+
+t11 (@GetPriceConfig): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetPriceConfig): (*ssa.Alloc)
+
+t13 (@GetPriceConfig): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetPriceConfig): (*ssa.Extract) (extract t12 #1)
+
+t16 (@GetPriceConfig): (*ssa.Alloc) (new ConsignPrice (cp))
+	 → t16 (@GetPriceConfig): (*ssa.Alloc)
+
+t17 (@GetPriceConfig): (*ssa.MakeInterface) (make interface{} <- *ConsignPrice (t16))
+	 → t17 (@GetPriceConfig): (*ssa.MakeInterface)
+
+t20 (@GetPriceConfig): (*ssa.Extract) (extract t18 #1)
+
+t22 (@GetPriceConfig): (*ssa.Call) (errors.New("Consign Price Con...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignPriceServiceImpl).GetPriceInfo ###
+c (@GetPriceInfo): (*ssa.Parameter) (parameter c : *ConsignPriceServiceImpl)
+
+ctx (@GetPriceInfo): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetPriceInfo): (*ssa.FieldAddr) (&c.db [#0])
+
+t1 (@GetPriceInfo): (*ssa.UnOp) (*t0)
+
+t3 (@GetPriceInfo): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetPriceInfo): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetPriceInfo): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetPriceInfo): (*ssa.Alloc)
+
+t7 (@GetPriceInfo): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetPriceInfo): (*ssa.Alloc)
+
+t8 (@GetPriceInfo): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetPriceInfo): (*ssa.Alloc)
+
+t9 (@GetPriceInfo): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetPriceInfo): (*ssa.Alloc)
+
+t10 (@GetPriceInfo): (*ssa.MakeInterface) (make interface{} <- int (0:int))
+	 → t10 (@GetPriceInfo): (*ssa.MakeInterface)
+
+t11 (@GetPriceInfo): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetPriceInfo): (*ssa.Alloc)
+
+t13 (@GetPriceInfo): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetPriceInfo): (*ssa.Extract) (extract t12 #1)
+
+t16 (@GetPriceInfo): (*ssa.Alloc) (new ConsignPrice (cp))
+	 → t16 (@GetPriceInfo): (*ssa.Alloc)
+
+t17 (@GetPriceInfo): (*ssa.MakeInterface) (make interface{} <- *ConsignPrice (t16))
+	 → t17 (@GetPriceInfo): (*ssa.MakeInterface)
+
+t20 (@GetPriceInfo): (*ssa.Extract) (extract t18 #1)
+
+t22 (@GetPriceInfo): (*ssa.Call) (errors.New("Consign Price Con...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t23 (@GetPriceInfo): (*ssa.FieldAddr) (&t16.InitialWeight [#2])
+	 → t16 (@GetPriceInfo): (*ssa.Alloc)
+
+t25 (@GetPriceInfo): (*ssa.FieldAddr) (&t16.InitialPrice [#3])
+	 → t16 (@GetPriceInfo): (*ssa.Alloc)
+
+t27 (@GetPriceInfo): (*ssa.FieldAddr) (&t16.WithinPrice [#4])
+	 → t16 (@GetPriceInfo): (*ssa.Alloc)
+
+t29 (@GetPriceInfo): (*ssa.FieldAddr) (&t16.BeyondPrice [#5])
+	 → t16 (@GetPriceInfo): (*ssa.Alloc)
+
+t31 (@GetPriceInfo): (*ssa.Alloc) (new [4]any (varargs))
+	 → t31 (@GetPriceInfo): (*ssa.Alloc)
+
+t32 (@GetPriceInfo): (*ssa.IndexAddr) (&t31[0:int])
+	 → t31 (@GetPriceInfo): (*ssa.Alloc)
+
+t33 (@GetPriceInfo): (*ssa.MakeInterface) (make any <- float64 (t24))
+	 → t33 (@GetPriceInfo): (*ssa.MakeInterface)
+
+t34 (@GetPriceInfo): (*ssa.IndexAddr) (&t31[1:int])
+	 → t31 (@GetPriceInfo): (*ssa.Alloc)
+
+t35 (@GetPriceInfo): (*ssa.MakeInterface) (make any <- float64 (t26))
+	 → t35 (@GetPriceInfo): (*ssa.MakeInterface)
+
+t36 (@GetPriceInfo): (*ssa.IndexAddr) (&t31[2:int])
+	 → t31 (@GetPriceInfo): (*ssa.Alloc)
+
+t37 (@GetPriceInfo): (*ssa.MakeInterface) (make any <- float64 (t28))
+	 → t37 (@GetPriceInfo): (*ssa.MakeInterface)
+
+t38 (@GetPriceInfo): (*ssa.IndexAddr) (&t31[3:int])
+	 → t31 (@GetPriceInfo): (*ssa.Alloc)
+
+t39 (@GetPriceInfo): (*ssa.MakeInterface) (make any <- float64 (t30))
+	 → t39 (@GetPriceInfo): (*ssa.MakeInterface)
+
+t40 (@GetPriceInfo): (*ssa.Slice) (slice t31[:])
+	 → t31 (@GetPriceInfo): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).CreateContacts ###
+c (@CreateContacts): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
+
+ctx (@CreateContacts): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateContacts): (*ssa.Alloc) (local Contact (contact))
+	 → t0 (@CreateContacts): (*ssa.Alloc)
+
+t1 (@CreateContacts): (*ssa.FieldAddr) (&c.contactsDB [#0])
+
+t2 (@CreateContacts): (*ssa.UnOp) (*t1)
+
+t4 (@CreateContacts): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateContacts): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateContacts): (*ssa.Alloc) (new [3]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t8 (@CreateContacts): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t9 (@CreateContacts): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t10 (@CreateContacts): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t11 (@CreateContacts): (*ssa.FieldAddr) (&t0.AccountID [#1])
+	 → t0 (@CreateContacts): (*ssa.Alloc)
+
+t13 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@CreateContacts): (*ssa.MakeInterface)
+
+t14 (@CreateContacts): (*ssa.IndexAddr) (&t7[1:int])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t15 (@CreateContacts): (*ssa.FieldAddr) (&t14.Key [#0])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t16 (@CreateContacts): (*ssa.FieldAddr) (&t14.Value [#1])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t17 (@CreateContacts): (*ssa.FieldAddr) (&t0.DocumentNumber [#4])
+	 → t0 (@CreateContacts): (*ssa.Alloc)
+
+t19 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- string (t18))
+	 → t19 (@CreateContacts): (*ssa.MakeInterface)
+
+t20 (@CreateContacts): (*ssa.IndexAddr) (&t7[2:int])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t21 (@CreateContacts): (*ssa.FieldAddr) (&t20.Key [#0])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t22 (@CreateContacts): (*ssa.FieldAddr) (&t20.Value [#1])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t23 (@CreateContacts): (*ssa.FieldAddr) (&t0.DocumentType [#3])
+	 → t0 (@CreateContacts): (*ssa.Alloc)
+
+t25 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- int (t24))
+	 → t25 (@CreateContacts): (*ssa.MakeInterface)
+
+t26 (@CreateContacts): (*ssa.Slice) (slice t7[:])
+	 → t7 (@CreateContacts): (*ssa.Alloc)
+
+t28 (@CreateContacts): (*ssa.Extract) (extract t27 #0)
+
+t29 (@CreateContacts): (*ssa.Extract) (extract t27 #1)
+
+t31 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- Contact (struct{ID string; AccountID string; Name string; DocumentType int; DocumentNumber string; PhoneNumber string}{}:Contact))
+	 → t31 (@CreateContacts): (*ssa.MakeInterface)
+
+t34 (@CreateContacts): (*ssa.Extract) (extract t32 #1)
+
+t35 (@CreateContacts): (*ssa.Call) (errors.New("Contact already e...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t37 (@CreateContacts): (*ssa.FieldAddr) (&t0.AccountID [#1])
+	 → t0 (@CreateContacts): (*ssa.Alloc)
+
+t39 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- Contact (t38))
+	 → t39 (@CreateContacts): (*ssa.MakeInterface)
+
+t40 (@CreateContacts): (*ssa.Call) (invoke t4.InsertOne(ctx, t39))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).Delete ###
+c (@Delete): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
+
+ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Delete): (*ssa.Alloc) (local Contact (contact))
+	 → t0 (@Delete): (*ssa.Alloc)
+
+t1 (@Delete): (*ssa.FieldAddr) (&c.contactsDB [#0])
+
+t2 (@Delete): (*ssa.UnOp) (*t1)
+
+t4 (@Delete): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Delete): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Delete): (*ssa.Alloc)
+
+t8 (@Delete): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Delete): (*ssa.Alloc)
+
+t9 (@Delete): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Delete): (*ssa.Alloc)
+
+t10 (@Delete): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Delete): (*ssa.Alloc)
+
+t11 (@Delete): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Delete): (*ssa.Alloc)
+
+t13 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Delete): (*ssa.MakeInterface)
+
+t14 (@Delete): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Delete): (*ssa.Alloc)
+
+t15 (@Delete): (*ssa.Call) (invoke t4.DeleteOne(ctx, t14))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).FindContactsByAccountId ###
+c (@FindContactsByAccountId): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
+
+ctx (@FindContactsByAccountId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindContactsByAccountId): (*ssa.Alloc) (new []Contact (account_contacts))
+	 → t0 (@FindContactsByAccountId): (*ssa.Alloc)
+
+t1 (@FindContactsByAccountId): (*ssa.FieldAddr) (&c.contactsDB [#0])
+
+t2 (@FindContactsByAccountId): (*ssa.UnOp) (*t1)
+
+t4 (@FindContactsByAccountId): (*ssa.Extract) (extract t3 #0)
+
+t5 (@FindContactsByAccountId): (*ssa.Extract) (extract t3 #1)
+
+t7 (@FindContactsByAccountId): (*ssa.UnOp) (*t0)
+
+t8 (@FindContactsByAccountId): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@FindContactsByAccountId): (*ssa.Alloc)
+
+t9 (@FindContactsByAccountId): (*ssa.IndexAddr) (&t8[0:int])
+	 → t8 (@FindContactsByAccountId): (*ssa.Alloc)
+
+t10 (@FindContactsByAccountId): (*ssa.FieldAddr) (&t9.Key [#0])
+	 → t8 (@FindContactsByAccountId): (*ssa.Alloc)
+
+t11 (@FindContactsByAccountId): (*ssa.FieldAddr) (&t9.Value [#1])
+	 → t8 (@FindContactsByAccountId): (*ssa.Alloc)
+
+t12 (@FindContactsByAccountId): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t12 (@FindContactsByAccountId): (*ssa.MakeInterface)
+
+t13 (@FindContactsByAccountId): (*ssa.Slice) (slice t8[:])
+	 → t8 (@FindContactsByAccountId): (*ssa.Alloc)
+
+t15 (@FindContactsByAccountId): (*ssa.Extract) (extract t14 #0)
+
+t16 (@FindContactsByAccountId): (*ssa.Extract) (extract t14 #1)
+
+t18 (@FindContactsByAccountId): (*ssa.UnOp) (*t0)
+
+t19 (@FindContactsByAccountId): (*ssa.MakeInterface) (make interface{} <- *[]Contact (t0))
+	 → t19 (@FindContactsByAccountId): (*ssa.MakeInterface)
+
+t20 (@FindContactsByAccountId): (*ssa.Call) (invoke t15.All(ctx, t19))
+
+t22 (@FindContactsByAccountId): (*ssa.UnOp) (*t0)
+
+t23 (@FindContactsByAccountId): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).FindContactsById ###
+c (@FindContactsById): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
+
+ctx (@FindContactsById): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindContactsById): (*ssa.FieldAddr) (&c.contactsDB [#0])
+
+t1 (@FindContactsById): (*ssa.UnOp) (*t0)
+
+t3 (@FindContactsById): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindContactsById): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindContactsById): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindContactsById): (*ssa.Alloc)
+
+t7 (@FindContactsById): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindContactsById): (*ssa.Alloc)
+
+t8 (@FindContactsById): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindContactsById): (*ssa.Alloc)
+
+t9 (@FindContactsById): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindContactsById): (*ssa.Alloc)
+
+t10 (@FindContactsById): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@FindContactsById): (*ssa.MakeInterface)
+
+t11 (@FindContactsById): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindContactsById): (*ssa.Alloc)
+
+t13 (@FindContactsById): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindContactsById): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindContactsById): (*ssa.Alloc) (new Contact (contact))
+	 → t16 (@FindContactsById): (*ssa.Alloc)
+
+t17 (@FindContactsById): (*ssa.MakeInterface) (make interface{} <- *Contact (t16))
+	 → t17 (@FindContactsById): (*ssa.MakeInterface)
+
+t20 (@FindContactsById): (*ssa.Extract) (extract t18 #1)
+
+t24 (@FindContactsById): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).GetAllContacts ###
+c (@GetAllContacts): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
+
+ctx (@GetAllContacts): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllContacts): (*ssa.Alloc) (new []Contact (all_contacts))
+	 → t0 (@GetAllContacts): (*ssa.Alloc)
+
+t1 (@GetAllContacts): (*ssa.FieldAddr) (&c.contactsDB [#0])
+
+t2 (@GetAllContacts): (*ssa.UnOp) (*t1)
+
+t4 (@GetAllContacts): (*ssa.Extract) (extract t3 #0)
+
+t5 (@GetAllContacts): (*ssa.Extract) (extract t3 #1)
+
+t7 (@GetAllContacts): (*ssa.UnOp) (*t0)
+
+t8 (@GetAllContacts): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@GetAllContacts): (*ssa.Alloc)
+
+t9 (@GetAllContacts): (*ssa.Slice) (slice t8[:])
+	 → t8 (@GetAllContacts): (*ssa.Alloc)
+
+t11 (@GetAllContacts): (*ssa.Extract) (extract t10 #0)
+
+t12 (@GetAllContacts): (*ssa.Extract) (extract t10 #1)
+
+t14 (@GetAllContacts): (*ssa.UnOp) (*t0)
+
+t15 (@GetAllContacts): (*ssa.MakeInterface) (make interface{} <- *[]Contact (t0))
+	 → t15 (@GetAllContacts): (*ssa.MakeInterface)
+
+t16 (@GetAllContacts): (*ssa.Call) (invoke t11.All(ctx, t15))
+
+t18 (@GetAllContacts): (*ssa.UnOp) (*t0)
+
+t19 (@GetAllContacts): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).Modify ###
+c (@Modify): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
+
+ctx (@Modify): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Modify): (*ssa.Alloc) (local Contact (contact))
+	 → t0 (@Modify): (*ssa.Alloc)
+
+t1 (@Modify): (*ssa.FieldAddr) (&c.contactsDB [#0])
+
+t2 (@Modify): (*ssa.UnOp) (*t1)
+
+t4 (@Modify): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Modify): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Modify): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Modify): (*ssa.Alloc)
+
+t8 (@Modify): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Modify): (*ssa.Alloc)
+
+t9 (@Modify): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Modify): (*ssa.Alloc)
+
+t10 (@Modify): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Modify): (*ssa.Alloc)
+
+t11 (@Modify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Modify): (*ssa.Alloc)
+
+t13 (@Modify): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Modify): (*ssa.MakeInterface)
+
+t14 (@Modify): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Modify): (*ssa.Alloc)
+
+t16 (@Modify): (*ssa.MakeInterface) (make interface{} <- Contact (t15))
+	 → t16 (@Modify): (*ssa.MakeInterface)
+
+t19 (@Modify): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DeliveryServiceImpl).Run ###
+d (@Run): (*ssa.Parameter) (parameter d : *DeliveryServiceImpl)
+
+ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Run): (*ssa.Call) (invoke ctx.Done())
+
+t4 (@Run): (*ssa.Alloc) (new Delivery (delivery))
+	 → t4 (@Run): (*ssa.Alloc)
+
+t5 (@Run): (*ssa.FieldAddr) (&d.delQ [#1])
+
+t6 (@Run): (*ssa.UnOp) (*t5)
+
+t7 (@Run): (*ssa.MakeInterface) (make interface{} <- *Delivery (t4))
+	 → t7 (@Run): (*ssa.MakeInterface)
+
+t10 (@Run): (*ssa.Extract) (extract t8 #1)
+
+t12 (@Run): (*ssa.Alloc) (new [1]any (varargs))
+	 → t12 (@Run): (*ssa.Alloc)
+
+t13 (@Run): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@Run): (*ssa.Alloc)
+
+t14 (@Run): (*ssa.ChangeInterface) (change interface any <- error (t10))
+
+t15 (@Run): (*ssa.Slice) (slice t12[:])
+	 → t12 (@Run): (*ssa.Alloc)
+
+t18 (@Run): (*ssa.FieldAddr) (&d.db [#0])
+
+t19 (@Run): (*ssa.UnOp) (*t18)
+
+t21 (@Run): (*ssa.Extract) (extract t20 #0)
+
+t22 (@Run): (*ssa.Extract) (extract t20 #1)
+
+t24 (@Run): (*ssa.Alloc) (new [1]any (varargs))
+	 → t24 (@Run): (*ssa.Alloc)
+
+t25 (@Run): (*ssa.IndexAddr) (&t24[0:int])
+	 → t24 (@Run): (*ssa.Alloc)
+
+t26 (@Run): (*ssa.ChangeInterface) (change interface any <- error (t22))
+
+t27 (@Run): (*ssa.Slice) (slice t24[:])
+	 → t24 (@Run): (*ssa.Alloc)
+
+t31 (@Run): (*ssa.MakeInterface) (make interface{} <- Delivery (t30))
+	 → t31 (@Run): (*ssa.MakeInterface)
+
+t32 (@Run): (*ssa.Call) (invoke t21.InsertOne(ctx, t31))
+
+t34 (@Run): (*ssa.Alloc) (new [1]any (varargs))
+	 → t34 (@Run): (*ssa.Alloc)
+
+t35 (@Run): (*ssa.IndexAddr) (&t34[0:int])
+	 → t34 (@Run): (*ssa.Alloc)
+
+t36 (@Run): (*ssa.ChangeInterface) (change interface any <- error (t32))
+
+t37 (@Run): (*ssa.Slice) (slice t34[:])
+	 → t34 (@Run): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.NewsServiceImpl).Hello ###
+n (@Hello): (*ssa.Parameter) (parameter n : *NewsServiceImpl)
+
+ctx (@Hello): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Hello): (*ssa.Convert) (convert []byte <- string ("[\n               ...":string))
+	 → t0 (@Hello): (*ssa.Convert)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentServiceImpl).AddMoney ###
+p (@AddMoney): (*ssa.Parameter) (parameter p : *PaymentServiceImpl)
+
+ctx (@AddMoney): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddMoney): (*ssa.Alloc) (local Payment (payment))
+	 → t0 (@AddMoney): (*ssa.Alloc)
+
+t1 (@AddMoney): (*ssa.Alloc) (local Money (m))
+	 → t1 (@AddMoney): (*ssa.Alloc)
+
+t2 (@AddMoney): (*ssa.FieldAddr) (&t0.UserID [#2])
+	 → t0 (@AddMoney): (*ssa.Alloc)
+
+t4 (@AddMoney): (*ssa.FieldAddr) (&t1.UserID [#1])
+	 → t1 (@AddMoney): (*ssa.Alloc)
+
+t5 (@AddMoney): (*ssa.FieldAddr) (&t0.Price [#3])
+	 → t0 (@AddMoney): (*ssa.Alloc)
+
+t7 (@AddMoney): (*ssa.FieldAddr) (&t1.Price [#2])
+	 → t1 (@AddMoney): (*ssa.Alloc)
+
+t10 (@AddMoney): (*ssa.FieldAddr) (&t1.ID [#0])
+	 → t1 (@AddMoney): (*ssa.Alloc)
+
+t11 (@AddMoney): (*ssa.FieldAddr) (&p.moneyDB [#1])
+
+t12 (@AddMoney): (*ssa.UnOp) (*t11)
+
+t14 (@AddMoney): (*ssa.Extract) (extract t13 #0)
+
+t15 (@AddMoney): (*ssa.Extract) (extract t13 #1)
+
+t18 (@AddMoney): (*ssa.MakeInterface) (make interface{} <- Money (t17))
+	 → t18 (@AddMoney): (*ssa.MakeInterface)
+
+t19 (@AddMoney): (*ssa.Call) (invoke t14.InsertOne(ctx, t18))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentServiceImpl).Cleanup ###
+p (@Cleanup): (*ssa.Parameter) (parameter p : *PaymentServiceImpl)
+
+ctx (@Cleanup): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Cleanup): (*ssa.FieldAddr) (&p.moneyDB [#1])
+
+t1 (@Cleanup): (*ssa.UnOp) (*t0)
+
+t3 (@Cleanup): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Cleanup): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Cleanup): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Cleanup): (*ssa.Alloc)
+
+t7 (@Cleanup): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Cleanup): (*ssa.Alloc)
+
+t8 (@Cleanup): (*ssa.Call) (invoke t3.DeleteMany(ctx, t7))
+
+t10 (@Cleanup): (*ssa.FieldAddr) (&p.moneyDB [#1])
+
+t11 (@Cleanup): (*ssa.UnOp) (*t10)
+
+t13 (@Cleanup): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Cleanup): (*ssa.Extract) (extract t12 #1)
+
+t16 (@Cleanup): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t16 (@Cleanup): (*ssa.Alloc)
+
+t17 (@Cleanup): (*ssa.Slice) (slice t16[:])
+	 → t16 (@Cleanup): (*ssa.Alloc)
+
+t18 (@Cleanup): (*ssa.Call) (invoke t13.DeleteMany(ctx, t17))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentServiceImpl).InitPayment ###
+p (@InitPayment): (*ssa.Parameter) (parameter p : *PaymentServiceImpl)
+
+ctx (@InitPayment): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@InitPayment): (*ssa.Alloc) (local Payment (payment))
+	 → t0 (@InitPayment): (*ssa.Alloc)
+
+t1 (@InitPayment): (*ssa.FieldAddr) (&p.paymentDB [#0])
+
+t2 (@InitPayment): (*ssa.UnOp) (*t1)
+
+t4 (@InitPayment): (*ssa.Extract) (extract t3 #0)
+
+t5 (@InitPayment): (*ssa.Extract) (extract t3 #1)
+
+t7 (@InitPayment): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@InitPayment): (*ssa.Alloc)
+
+t8 (@InitPayment): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@InitPayment): (*ssa.Alloc)
+
+t9 (@InitPayment): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@InitPayment): (*ssa.Alloc)
+
+t10 (@InitPayment): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@InitPayment): (*ssa.Alloc)
+
+t11 (@InitPayment): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@InitPayment): (*ssa.Alloc)
+
+t13 (@InitPayment): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@InitPayment): (*ssa.MakeInterface)
+
+t14 (@InitPayment): (*ssa.Slice) (slice t7[:])
+	 → t7 (@InitPayment): (*ssa.Alloc)
+
+t16 (@InitPayment): (*ssa.Extract) (extract t15 #0)
+
+t17 (@InitPayment): (*ssa.Extract) (extract t15 #1)
+
+t19 (@InitPayment): (*ssa.Alloc) (new Payment (stored))
+	 → t19 (@InitPayment): (*ssa.Alloc)
+
+t20 (@InitPayment): (*ssa.MakeInterface) (make interface{} <- *Payment (t19))
+	 → t20 (@InitPayment): (*ssa.MakeInterface)
+
+t23 (@InitPayment): (*ssa.Extract) (extract t21 #1)
+
+t26 (@InitPayment): (*ssa.MakeInterface) (make interface{} <- Payment (t25))
+	 → t26 (@InitPayment): (*ssa.MakeInterface)
+
+t27 (@InitPayment): (*ssa.Call) (invoke t4.InsertOne(ctx, t26))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentServiceImpl).Pay ###
+p (@Pay): (*ssa.Parameter) (parameter p : *PaymentServiceImpl)
+
+ctx (@Pay): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Pay): (*ssa.Alloc) (local Payment (payment))
+	 → t0 (@Pay): (*ssa.Alloc)
+
+t1 (@Pay): (*ssa.FieldAddr) (&p.paymentDB [#0])
+
+t2 (@Pay): (*ssa.UnOp) (*t1)
+
+t4 (@Pay): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Pay): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Pay): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Pay): (*ssa.Alloc)
+
+t8 (@Pay): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Pay): (*ssa.Alloc)
+
+t9 (@Pay): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Pay): (*ssa.Alloc)
+
+t10 (@Pay): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Pay): (*ssa.Alloc)
+
+t11 (@Pay): (*ssa.FieldAddr) (&t0.OrderID [#1])
+	 → t0 (@Pay): (*ssa.Alloc)
+
+t13 (@Pay): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Pay): (*ssa.MakeInterface)
+
+t14 (@Pay): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Pay): (*ssa.Alloc)
+
+t16 (@Pay): (*ssa.MakeInterface) (make interface{} <- Payment (t15))
+	 → t16 (@Pay): (*ssa.MakeInterface)
+
+t19 (@Pay): (*ssa.Extract) (extract t17 #1)
+
+t21 (@Pay): (*ssa.FieldAddr) (&t0.OrderID [#1])
+	 → t0 (@Pay): (*ssa.Alloc)
+
+t25 (@Pay): (*ssa.Call) (errors.New(t24))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentServiceImpl).Query ###
+p (@Query): (*ssa.Parameter) (parameter p : *PaymentServiceImpl)
+
+ctx (@Query): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Query): (*ssa.Alloc) (new []Payment (payments))
+	 → t0 (@Query): (*ssa.Alloc)
+
+t1 (@Query): (*ssa.FieldAddr) (&p.paymentDB [#0])
+
+t2 (@Query): (*ssa.UnOp) (*t1)
+
+t4 (@Query): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Query): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Query): (*ssa.UnOp) (*t0)
+
+t8 (@Query): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@Query): (*ssa.Alloc)
+
+t9 (@Query): (*ssa.Slice) (slice t8[:])
+	 → t8 (@Query): (*ssa.Alloc)
+
+t11 (@Query): (*ssa.Extract) (extract t10 #0)
+
+t12 (@Query): (*ssa.Extract) (extract t10 #1)
+
+t14 (@Query): (*ssa.UnOp) (*t0)
+
+t15 (@Query): (*ssa.MakeInterface) (make interface{} <- *[]Payment (t0))
+	 → t15 (@Query): (*ssa.MakeInterface)
+
+t16 (@Query): (*ssa.Call) (invoke t11.All(ctx, t15))
+
+t17 (@Query): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).CreateNewPriceConfig ###
+p (@CreateNewPriceConfig): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@CreateNewPriceConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateNewPriceConfig): (*ssa.Alloc) (local PriceConfig (pc))
+	 → t0 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t1 (@CreateNewPriceConfig): (*ssa.FieldAddr) (&p.priceDB [#0])
+
+t2 (@CreateNewPriceConfig): (*ssa.UnOp) (*t1)
+
+t4 (@CreateNewPriceConfig): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateNewPriceConfig): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateNewPriceConfig): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t11 (@CreateNewPriceConfig): (*ssa.Extract) (extract t9 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t14 (@CreateNewPriceConfig): (*ssa.MakeInterface) (make interface{} <- PriceConfig (t13))
+	 → t14 (@CreateNewPriceConfig): (*ssa.MakeInterface)
+
+t15 (@CreateNewPriceConfig): (*ssa.Call) (invoke t4.InsertOne(ctx, t14))
+
+t16 (@CreateNewPriceConfig): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t16 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t17 (@CreateNewPriceConfig): (*ssa.IndexAddr) (&t16[0:int])
+	 → t16 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t18 (@CreateNewPriceConfig): (*ssa.FieldAddr) (&t17.Key [#0])
+	 → t16 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t19 (@CreateNewPriceConfig): (*ssa.FieldAddr) (&t17.Value [#1])
+	 → t16 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t20 (@CreateNewPriceConfig): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t22 (@CreateNewPriceConfig): (*ssa.MakeInterface) (make interface{} <- string (t21))
+	 → t22 (@CreateNewPriceConfig): (*ssa.MakeInterface)
+
+t23 (@CreateNewPriceConfig): (*ssa.Slice) (slice t16[:])
+	 → t16 (@CreateNewPriceConfig): (*ssa.Alloc)
+
+t25 (@CreateNewPriceConfig): (*ssa.MakeInterface) (make interface{} <- PriceConfig (t24))
+	 → t25 (@CreateNewPriceConfig): (*ssa.MakeInterface)
+
+t28 (@CreateNewPriceConfig): (*ssa.Extract) (extract t26 #1)
+
+t30 (@CreateNewPriceConfig): (*ssa.Call) (errors.New("Failed to update ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).DeletePriceConfig ###
+p (@DeletePriceConfig): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@DeletePriceConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeletePriceConfig): (*ssa.FieldAddr) (&p.priceDB [#0])
+
+t1 (@DeletePriceConfig): (*ssa.UnOp) (*t0)
+
+t3 (@DeletePriceConfig): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeletePriceConfig): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeletePriceConfig): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeletePriceConfig): (*ssa.Alloc)
+
+t7 (@DeletePriceConfig): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeletePriceConfig): (*ssa.Alloc)
+
+t8 (@DeletePriceConfig): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeletePriceConfig): (*ssa.Alloc)
+
+t9 (@DeletePriceConfig): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeletePriceConfig): (*ssa.Alloc)
+
+t10 (@DeletePriceConfig): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@DeletePriceConfig): (*ssa.MakeInterface)
+
+t11 (@DeletePriceConfig): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeletePriceConfig): (*ssa.Alloc)
+
+t12 (@DeletePriceConfig): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).FindByID ###
+p (@FindByID): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@FindByID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindByID): (*ssa.FieldAddr) (&p.priceDB [#0])
+
+t1 (@FindByID): (*ssa.UnOp) (*t0)
+
+t3 (@FindByID): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindByID): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindByID): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t7 (@FindByID): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t8 (@FindByID): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t9 (@FindByID): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t10 (@FindByID): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@FindByID): (*ssa.MakeInterface)
+
+t11 (@FindByID): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t13 (@FindByID): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindByID): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindByID): (*ssa.Alloc) (new PriceConfig (pc))
+	 → t16 (@FindByID): (*ssa.Alloc)
+
+t17 (@FindByID): (*ssa.MakeInterface) (make interface{} <- *PriceConfig (t16))
+	 → t17 (@FindByID): (*ssa.MakeInterface)
+
+t20 (@FindByID): (*ssa.Extract) (extract t18 #1)
+
+t24 (@FindByID): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).FindByRouteIDAndTrainType ###
+p (@FindByRouteIDAndTrainType): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@FindByRouteIDAndTrainType): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&p.priceDB [#0])
+
+t1 (@FindByRouteIDAndTrainType): (*ssa.UnOp) (*t0)
+
+t3 (@FindByRouteIDAndTrainType): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindByRouteIDAndTrainType): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindByRouteIDAndTrainType): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t7 (@FindByRouteIDAndTrainType): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t8 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t9 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t10 (@FindByRouteIDAndTrainType): (*ssa.Alloc) (new [2]interface{} (slicelit))
+	 → t10 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t11 (@FindByRouteIDAndTrainType): (*ssa.IndexAddr) (&t10[0:int])
+	 → t10 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t12 (@FindByRouteIDAndTrainType): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t13 (@FindByRouteIDAndTrainType): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t14 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&t13.Key [#0])
+	 → t12 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t15 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&t13.Value [#1])
+	 → t12 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t16 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface) (make interface{} <- string (routeID))
+	 → t16 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface)
+
+t17 (@FindByRouteIDAndTrainType): (*ssa.Slice) (slice t12[:])
+	 → t12 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t18 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t17))
+	 → t18 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface)
+
+t19 (@FindByRouteIDAndTrainType): (*ssa.IndexAddr) (&t10[1:int])
+	 → t10 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t20 (@FindByRouteIDAndTrainType): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t20 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t21 (@FindByRouteIDAndTrainType): (*ssa.IndexAddr) (&t20[0:int])
+	 → t20 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t22 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&t21.Key [#0])
+	 → t20 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t23 (@FindByRouteIDAndTrainType): (*ssa.FieldAddr) (&t21.Value [#1])
+	 → t20 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t24 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface) (make interface{} <- string (trainType))
+	 → t24 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface)
+
+t25 (@FindByRouteIDAndTrainType): (*ssa.Slice) (slice t20[:])
+	 → t20 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t26 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t25))
+	 → t26 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface)
+
+t27 (@FindByRouteIDAndTrainType): (*ssa.Slice) (slice t10[:])
+	 → t10 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t28 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.A (t27))
+	 → t28 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface)
+
+t29 (@FindByRouteIDAndTrainType): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t31 (@FindByRouteIDAndTrainType): (*ssa.Extract) (extract t30 #0)
+
+t32 (@FindByRouteIDAndTrainType): (*ssa.Extract) (extract t30 #1)
+
+t34 (@FindByRouteIDAndTrainType): (*ssa.Alloc) (new PriceConfig (pc))
+	 → t34 (@FindByRouteIDAndTrainType): (*ssa.Alloc)
+
+t35 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface) (make interface{} <- *PriceConfig (t34))
+	 → t35 (@FindByRouteIDAndTrainType): (*ssa.MakeInterface)
+
+t38 (@FindByRouteIDAndTrainType): (*ssa.Extract) (extract t36 #1)
+
+t44 (@FindByRouteIDAndTrainType): (*ssa.Call) (errors.New(t43))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).FindByRouteIDsAndTrainTypes ###
+p (@FindByRouteIDsAndTrainTypes): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@FindByRouteIDsAndTrainTypes): (*ssa.Parameter) (parameter ctx : context.Context)
+
+rtsAndTypes (@FindByRouteIDsAndTrainTypes): (*ssa.Parameter) (parameter rtsAndTypes : []string)
+
+t0 (@FindByRouteIDsAndTrainTypes): (*ssa.MakeMap) (make map[string]PriceConfig )
+	 → t0 (@FindByRouteIDsAndTrainTypes): (*ssa.MakeMap)
+
+t1 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&rtsAndTypes[0:int])
+
+t3 (@FindByRouteIDsAndTrainTypes): (*ssa.Call) (strings.Split(t2, ":":string))
+	 → t13 (@genSplit): (*ssa.MakeSlice)
+	 → t3 (@explode): (*ssa.MakeSlice)
+
+t4 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&t3[0:int])
+	 → t13 (@genSplit): (*ssa.MakeSlice)
+	 → t3 (@explode): (*ssa.MakeSlice)
+
+t6 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&t3[1:int])
+	 → t13 (@genSplit): (*ssa.MakeSlice)
+	 → t3 (@explode): (*ssa.MakeSlice)
+
+t10 (@FindByRouteIDsAndTrainTypes): (*ssa.Extract) (extract t8 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).GetAllPriceConfig ###
+p (@GetAllPriceConfig): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@GetAllPriceConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllPriceConfig): (*ssa.FieldAddr) (&p.priceDB [#0])
+
+t1 (@GetAllPriceConfig): (*ssa.UnOp) (*t0)
+
+t3 (@GetAllPriceConfig): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAllPriceConfig): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetAllPriceConfig): (*ssa.Alloc) (new [0]PriceConfig (slicelit))
+	 → t6 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t7 (@GetAllPriceConfig): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t8 (@GetAllPriceConfig): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t9 (@GetAllPriceConfig): (*ssa.Slice) (slice t8[:])
+	 → t8 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t11 (@GetAllPriceConfig): (*ssa.Extract) (extract t10 #0)
+
+t12 (@GetAllPriceConfig): (*ssa.Extract) (extract t10 #1)
+
+t14 (@GetAllPriceConfig): (*ssa.Alloc) (new [0]PriceConfig (slicelit))
+	 → t14 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t15 (@GetAllPriceConfig): (*ssa.Slice) (slice t14[:])
+	 → t14 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t16 (@GetAllPriceConfig): (*ssa.Alloc) (new []PriceConfig (pcs))
+	 → t16 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t17 (@GetAllPriceConfig): (*ssa.MakeInterface) (make interface{} <- *[]PriceConfig (t16))
+	 → t17 (@GetAllPriceConfig): (*ssa.MakeInterface)
+
+t18 (@GetAllPriceConfig): (*ssa.Call) (invoke t11.All(ctx, t17))
+
+t20 (@GetAllPriceConfig): (*ssa.Alloc) (new [0]PriceConfig (slicelit))
+	 → t20 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t21 (@GetAllPriceConfig): (*ssa.Slice) (slice t20[:])
+	 → t20 (@GetAllPriceConfig): (*ssa.Alloc)
+
+t22 (@GetAllPriceConfig): (*ssa.UnOp) (*t16)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).UpdatePriceConfig ###
+p (@UpdatePriceConfig): (*ssa.Parameter) (parameter p : *PriceServiceImpl)
+
+ctx (@UpdatePriceConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdatePriceConfig): (*ssa.Alloc) (local PriceConfig (pc))
+	 → t0 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t1 (@UpdatePriceConfig): (*ssa.FieldAddr) (&p.priceDB [#0])
+
+t2 (@UpdatePriceConfig): (*ssa.UnOp) (*t1)
+
+t4 (@UpdatePriceConfig): (*ssa.Extract) (extract t3 #0)
+
+t5 (@UpdatePriceConfig): (*ssa.Extract) (extract t3 #1)
+
+t7 (@UpdatePriceConfig): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t8 (@UpdatePriceConfig): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t9 (@UpdatePriceConfig): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t10 (@UpdatePriceConfig): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t11 (@UpdatePriceConfig): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t13 (@UpdatePriceConfig): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@UpdatePriceConfig): (*ssa.MakeInterface)
+
+t14 (@UpdatePriceConfig): (*ssa.Slice) (slice t7[:])
+	 → t7 (@UpdatePriceConfig): (*ssa.Alloc)
+
+t16 (@UpdatePriceConfig): (*ssa.MakeInterface) (make interface{} <- PriceConfig (t15))
+	 → t16 (@UpdatePriceConfig): (*ssa.MakeInterface)
+
+t19 (@UpdatePriceConfig): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteServiceImpl).CreateAndModify ###
+r (@CreateAndModify): (*ssa.Parameter) (parameter r : *RouteServiceImpl)
+
+ctx (@CreateAndModify): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateAndModify): (*ssa.Alloc) (local RouteInfo (info))
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t1 (@CreateAndModify): (*ssa.FieldAddr) (&r.db [#0])
+
+t2 (@CreateAndModify): (*ssa.UnOp) (*t1)
+
+t4 (@CreateAndModify): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateAndModify): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateAndModify): (*ssa.FieldAddr) (&t0.StationList [#3])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t9 (@CreateAndModify): (*ssa.Call) (strings.Split(t8, ",":string))
+	 → t13 (@genSplit): (*ssa.MakeSlice)
+	 → t3 (@explode): (*ssa.MakeSlice)
+
+t13 (@CreateAndModify): (*ssa.Call) (errors.New("Length of station...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t14 (@CreateAndModify): (*ssa.Alloc) (local Route (route))
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t15 (@CreateAndModify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t20 (@CreateAndModify): (*ssa.FieldAddr) (&t14.ID [#0])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t22 (@CreateAndModify): (*ssa.FieldAddr) (&t14.Stations [#1])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t23 (@CreateAndModify): (*ssa.FieldAddr) (&t14.Distances [#2])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t24 (@CreateAndModify): (*ssa.FieldAddr) (&t0.StartStation [#1])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t26 (@CreateAndModify): (*ssa.FieldAddr) (&t14.StartStation [#3])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t27 (@CreateAndModify): (*ssa.FieldAddr) (&t0.EndStation [#2])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t29 (@CreateAndModify): (*ssa.FieldAddr) (&t14.EndStation [#4])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t30 (@CreateAndModify): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t30 (@CreateAndModify): (*ssa.Alloc)
+
+t31 (@CreateAndModify): (*ssa.IndexAddr) (&t30[0:int])
+	 → t30 (@CreateAndModify): (*ssa.Alloc)
+
+t32 (@CreateAndModify): (*ssa.FieldAddr) (&t31.Key [#0])
+	 → t30 (@CreateAndModify): (*ssa.Alloc)
+
+t33 (@CreateAndModify): (*ssa.FieldAddr) (&t31.Value [#1])
+	 → t30 (@CreateAndModify): (*ssa.Alloc)
+
+t34 (@CreateAndModify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t36 (@CreateAndModify): (*ssa.MakeInterface) (make interface{} <- string (t35))
+	 → t36 (@CreateAndModify): (*ssa.MakeInterface)
+
+t37 (@CreateAndModify): (*ssa.Slice) (slice t30[:])
+	 → t30 (@CreateAndModify): (*ssa.Alloc)
+
+t39 (@CreateAndModify): (*ssa.Extract) (extract t38 #0)
+
+t40 (@CreateAndModify): (*ssa.Extract) (extract t38 #1)
+
+t42 (@CreateAndModify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t47 (@CreateAndModify): (*ssa.Alloc) (new Route (old_route))
+	 → t47 (@CreateAndModify): (*ssa.Alloc)
+
+t48 (@CreateAndModify): (*ssa.MakeInterface) (make interface{} <- *Route (t47))
+	 → t48 (@CreateAndModify): (*ssa.MakeInterface)
+
+t51 (@CreateAndModify): (*ssa.Extract) (extract t49 #1)
+
+t54 (@CreateAndModify): (*ssa.FieldAddr) (&t47.ID [#0])
+	 → t47 (@CreateAndModify): (*ssa.Alloc)
+
+t56 (@CreateAndModify): (*ssa.FieldAddr) (&t14.ID [#0])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t57 (@CreateAndModify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t59 (@CreateAndModify): (*ssa.FieldAddr) (&t14.ID [#0])
+	 → t14 (@CreateAndModify): (*ssa.Alloc)
+
+t60 (@CreateAndModify): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t60 (@CreateAndModify): (*ssa.Alloc)
+
+t61 (@CreateAndModify): (*ssa.IndexAddr) (&t60[0:int])
+	 → t60 (@CreateAndModify): (*ssa.Alloc)
+
+t62 (@CreateAndModify): (*ssa.FieldAddr) (&t61.Key [#0])
+	 → t60 (@CreateAndModify): (*ssa.Alloc)
+
+t63 (@CreateAndModify): (*ssa.FieldAddr) (&t61.Value [#1])
+	 → t60 (@CreateAndModify): (*ssa.Alloc)
+
+t64 (@CreateAndModify): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateAndModify): (*ssa.Alloc)
+
+t66 (@CreateAndModify): (*ssa.MakeInterface) (make interface{} <- string (t65))
+	 → t66 (@CreateAndModify): (*ssa.MakeInterface)
+
+t67 (@CreateAndModify): (*ssa.Slice) (slice t60[:])
+	 → t60 (@CreateAndModify): (*ssa.Alloc)
+
+t69 (@CreateAndModify): (*ssa.MakeInterface) (make interface{} <- Route (t68))
+	 → t69 (@CreateAndModify): (*ssa.MakeInterface)
+
+t72 (@CreateAndModify): (*ssa.Extract) (extract t70 #1)
+
+t76 (@CreateAndModify): (*ssa.MakeInterface) (make interface{} <- Route (t75))
+	 → t76 (@CreateAndModify): (*ssa.MakeInterface)
+
+t77 (@CreateAndModify): (*ssa.Call) (invoke t4.InsertOne(ctx, t76))
+
+t80 (@CreateAndModify): (*ssa.Call) (errors.New("Failed to update ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteServiceImpl).DeleteRoute ###
+r (@DeleteRoute): (*ssa.Parameter) (parameter r : *RouteServiceImpl)
+
+ctx (@DeleteRoute): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteRoute): (*ssa.FieldAddr) (&r.db [#0])
+
+t1 (@DeleteRoute): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteRoute): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteRoute): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeleteRoute): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeleteRoute): (*ssa.Alloc)
+
+t7 (@DeleteRoute): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeleteRoute): (*ssa.Alloc)
+
+t8 (@DeleteRoute): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeleteRoute): (*ssa.Alloc)
+
+t9 (@DeleteRoute): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeleteRoute): (*ssa.Alloc)
+
+t10 (@DeleteRoute): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@DeleteRoute): (*ssa.MakeInterface)
+
+t11 (@DeleteRoute): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeleteRoute): (*ssa.Alloc)
+
+t12 (@DeleteRoute): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteServiceImpl).GetAllRoutes ###
+r (@GetAllRoutes): (*ssa.Parameter) (parameter r : *RouteServiceImpl)
+
+ctx (@GetAllRoutes): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllRoutes): (*ssa.Alloc) (new []Route (routes))
+	 → t0 (@GetAllRoutes): (*ssa.Alloc)
+
+t1 (@GetAllRoutes): (*ssa.FieldAddr) (&r.db [#0])
+
+t2 (@GetAllRoutes): (*ssa.UnOp) (*t1)
+
+t4 (@GetAllRoutes): (*ssa.Extract) (extract t3 #0)
+
+t5 (@GetAllRoutes): (*ssa.Extract) (extract t3 #1)
+
+t7 (@GetAllRoutes): (*ssa.UnOp) (*t0)
+
+t8 (@GetAllRoutes): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@GetAllRoutes): (*ssa.Alloc)
+
+t9 (@GetAllRoutes): (*ssa.Slice) (slice t8[:])
+	 → t8 (@GetAllRoutes): (*ssa.Alloc)
+
+t11 (@GetAllRoutes): (*ssa.Extract) (extract t10 #0)
+
+t12 (@GetAllRoutes): (*ssa.Extract) (extract t10 #1)
+
+t14 (@GetAllRoutes): (*ssa.UnOp) (*t0)
+
+t15 (@GetAllRoutes): (*ssa.MakeInterface) (make interface{} <- *[]Route (t0))
+	 → t15 (@GetAllRoutes): (*ssa.MakeInterface)
+
+t16 (@GetAllRoutes): (*ssa.Call) (invoke t11.All(ctx, t15))
+
+t17 (@GetAllRoutes): (*ssa.UnOp) (*t0)
+
+t20 (@GetAllRoutes): (*ssa.UnOp) (*t0)
+
+t21 (@GetAllRoutes): (*ssa.Call) (errors.New("No content found":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t22 (@GetAllRoutes): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteServiceImpl).GetRouteById ###
+r (@GetRouteById): (*ssa.Parameter) (parameter r : *RouteServiceImpl)
+
+ctx (@GetRouteById): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetRouteById): (*ssa.FieldAddr) (&r.db [#0])
+
+t1 (@GetRouteById): (*ssa.UnOp) (*t0)
+
+t3 (@GetRouteById): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetRouteById): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetRouteById): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetRouteById): (*ssa.Alloc)
+
+t7 (@GetRouteById): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetRouteById): (*ssa.Alloc)
+
+t8 (@GetRouteById): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetRouteById): (*ssa.Alloc)
+
+t9 (@GetRouteById): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetRouteById): (*ssa.Alloc)
+
+t10 (@GetRouteById): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@GetRouteById): (*ssa.MakeInterface)
+
+t11 (@GetRouteById): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetRouteById): (*ssa.Alloc)
+
+t13 (@GetRouteById): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetRouteById): (*ssa.Extract) (extract t12 #1)
+
+t16 (@GetRouteById): (*ssa.Alloc) (new Route (route))
+	 → t16 (@GetRouteById): (*ssa.Alloc)
+
+t17 (@GetRouteById): (*ssa.MakeInterface) (make interface{} <- *Route (t16))
+	 → t17 (@GetRouteById): (*ssa.MakeInterface)
+
+t20 (@GetRouteById): (*ssa.Extract) (extract t18 #1)
+
+t24 (@GetRouteById): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteServiceImpl).GetRouteByIds ###
+r (@GetRouteByIds): (*ssa.Parameter) (parameter r : *RouteServiceImpl)
+
+ctx (@GetRouteByIds): (*ssa.Parameter) (parameter ctx : context.Context)
+
+ids (@GetRouteByIds): (*ssa.Parameter) (parameter ids : []string)
+
+t0 (@GetRouteByIds): (*ssa.IndexAddr) (&ids[0:int])
+
+t4 (@GetRouteByIds): (*ssa.Extract) (extract t2 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@GetRouteByIds): (*ssa.Alloc) (new [1]Route (varargs))
+	 → t5 (@GetRouteByIds): (*ssa.Alloc)
+
+t6 (@GetRouteByIds): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@GetRouteByIds): (*ssa.Alloc)
+
+t7 (@GetRouteByIds): (*ssa.Slice) (slice t5[:])
+	 → t5 (@GetRouteByIds): (*ssa.Alloc)
+
+t8 (@GetRouteByIds): (*ssa.Call) (append(nil:[]Route, t7...))
+	 → t8 (@GetRouteByIds): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteServiceImpl).GetRouteByStartAndEnd ###
+r (@GetRouteByStartAndEnd): (*ssa.Parameter) (parameter r : *RouteServiceImpl)
+
+ctx (@GetRouteByStartAndEnd): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&r.db [#0])
+
+t1 (@GetRouteByStartAndEnd): (*ssa.UnOp) (*t0)
+
+t3 (@GetRouteByStartAndEnd): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetRouteByStartAndEnd): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetRouteByStartAndEnd): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t7 (@GetRouteByStartAndEnd): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t8 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t9 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t10 (@GetRouteByStartAndEnd): (*ssa.Alloc) (new [2]interface{} (slicelit))
+	 → t10 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t11 (@GetRouteByStartAndEnd): (*ssa.IndexAddr) (&t10[0:int])
+	 → t10 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t12 (@GetRouteByStartAndEnd): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t13 (@GetRouteByStartAndEnd): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t14 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&t13.Key [#0])
+	 → t12 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t15 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&t13.Value [#1])
+	 → t12 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t16 (@GetRouteByStartAndEnd): (*ssa.MakeInterface) (make interface{} <- string (start))
+	 → t16 (@GetRouteByStartAndEnd): (*ssa.MakeInterface)
+
+t17 (@GetRouteByStartAndEnd): (*ssa.Slice) (slice t12[:])
+	 → t12 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t18 (@GetRouteByStartAndEnd): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t17))
+	 → t18 (@GetRouteByStartAndEnd): (*ssa.MakeInterface)
+
+t19 (@GetRouteByStartAndEnd): (*ssa.IndexAddr) (&t10[1:int])
+	 → t10 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t20 (@GetRouteByStartAndEnd): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t20 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t21 (@GetRouteByStartAndEnd): (*ssa.IndexAddr) (&t20[0:int])
+	 → t20 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t22 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&t21.Key [#0])
+	 → t20 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t23 (@GetRouteByStartAndEnd): (*ssa.FieldAddr) (&t21.Value [#1])
+	 → t20 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t24 (@GetRouteByStartAndEnd): (*ssa.MakeInterface) (make interface{} <- string (end))
+	 → t24 (@GetRouteByStartAndEnd): (*ssa.MakeInterface)
+
+t25 (@GetRouteByStartAndEnd): (*ssa.Slice) (slice t20[:])
+	 → t20 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t26 (@GetRouteByStartAndEnd): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t25))
+	 → t26 (@GetRouteByStartAndEnd): (*ssa.MakeInterface)
+
+t27 (@GetRouteByStartAndEnd): (*ssa.Slice) (slice t10[:])
+	 → t10 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t28 (@GetRouteByStartAndEnd): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.A (t27))
+	 → t28 (@GetRouteByStartAndEnd): (*ssa.MakeInterface)
+
+t29 (@GetRouteByStartAndEnd): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t31 (@GetRouteByStartAndEnd): (*ssa.Extract) (extract t30 #0)
+
+t32 (@GetRouteByStartAndEnd): (*ssa.Extract) (extract t30 #1)
+
+t34 (@GetRouteByStartAndEnd): (*ssa.Alloc) (new Route (route))
+	 → t34 (@GetRouteByStartAndEnd): (*ssa.Alloc)
+
+t35 (@GetRouteByStartAndEnd): (*ssa.MakeInterface) (make interface{} <- *Route (t34))
+	 → t35 (@GetRouteByStartAndEnd): (*ssa.MakeInterface)
+
+t38 (@GetRouteByStartAndEnd): (*ssa.Extract) (extract t36 #1)
+
+t46 (@GetRouteByStartAndEnd): (*ssa.Call) (errors.New(t45))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).Cleanup ###
+s (@Cleanup): (*ssa.Parameter) (parameter s : *StationFoodServiceImpl)
+
+ctx (@Cleanup): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Cleanup): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@Cleanup): (*ssa.UnOp) (*t0)
+
+t3 (@Cleanup): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Cleanup): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Cleanup): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Cleanup): (*ssa.Alloc)
+
+t7 (@Cleanup): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Cleanup): (*ssa.Alloc)
+
+t8 (@Cleanup): (*ssa.Call) (invoke t3.DeleteMany(ctx, t7))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).CreateFoodStore ###
+s (@CreateFoodStore): (*ssa.Parameter) (parameter s : *StationFoodServiceImpl)
+
+ctx (@CreateFoodStore): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateFoodStore): (*ssa.Alloc) (local StationFoodStore (store))
+	 → t0 (@CreateFoodStore): (*ssa.Alloc)
+
+t1 (@CreateFoodStore): (*ssa.FieldAddr) (&s.db [#0])
+
+t2 (@CreateFoodStore): (*ssa.UnOp) (*t1)
+
+t4 (@CreateFoodStore): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateFoodStore): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateFoodStore): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@CreateFoodStore): (*ssa.Alloc)
+
+t8 (@CreateFoodStore): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@CreateFoodStore): (*ssa.Alloc)
+
+t9 (@CreateFoodStore): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@CreateFoodStore): (*ssa.Alloc)
+
+t10 (@CreateFoodStore): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@CreateFoodStore): (*ssa.Alloc)
+
+t11 (@CreateFoodStore): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateFoodStore): (*ssa.Alloc)
+
+t13 (@CreateFoodStore): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@CreateFoodStore): (*ssa.MakeInterface)
+
+t14 (@CreateFoodStore): (*ssa.Slice) (slice t7[:])
+	 → t7 (@CreateFoodStore): (*ssa.Alloc)
+
+t16 (@CreateFoodStore): (*ssa.Extract) (extract t15 #0)
+
+t17 (@CreateFoodStore): (*ssa.Extract) (extract t15 #1)
+
+t19 (@CreateFoodStore): (*ssa.Alloc) (new StationFoodStore (st))
+	 → t19 (@CreateFoodStore): (*ssa.Alloc)
+
+t20 (@CreateFoodStore): (*ssa.MakeInterface) (make interface{} <- *StationFoodStore (t19))
+	 → t20 (@CreateFoodStore): (*ssa.MakeInterface)
+
+t23 (@CreateFoodStore): (*ssa.Extract) (extract t21 #1)
+
+t24 (@CreateFoodStore): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateFoodStore): (*ssa.Alloc)
+
+t28 (@CreateFoodStore): (*ssa.Call) (errors.New(t27))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t30 (@CreateFoodStore): (*ssa.MakeInterface) (make interface{} <- StationFoodStore (t29))
+	 → t30 (@CreateFoodStore): (*ssa.MakeInterface)
+
+t31 (@CreateFoodStore): (*ssa.Call) (invoke t4.InsertOne(ctx, t30))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).GetFoodStoreByID ###
+s (@GetFoodStoreByID): (*ssa.Parameter) (parameter s : *StationFoodServiceImpl)
+
+ctx (@GetFoodStoreByID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetFoodStoreByID): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@GetFoodStoreByID): (*ssa.UnOp) (*t0)
+
+t3 (@GetFoodStoreByID): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetFoodStoreByID): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetFoodStoreByID): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@GetFoodStoreByID): (*ssa.Alloc)
+
+t7 (@GetFoodStoreByID): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@GetFoodStoreByID): (*ssa.Alloc)
+
+t8 (@GetFoodStoreByID): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@GetFoodStoreByID): (*ssa.Alloc)
+
+t9 (@GetFoodStoreByID): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@GetFoodStoreByID): (*ssa.Alloc)
+
+t10 (@GetFoodStoreByID): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@GetFoodStoreByID): (*ssa.MakeInterface)
+
+t11 (@GetFoodStoreByID): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetFoodStoreByID): (*ssa.Alloc)
+
+t13 (@GetFoodStoreByID): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetFoodStoreByID): (*ssa.Extract) (extract t12 #1)
+
+t16 (@GetFoodStoreByID): (*ssa.Alloc) (new StationFoodStore (store))
+	 → t16 (@GetFoodStoreByID): (*ssa.Alloc)
+
+t17 (@GetFoodStoreByID): (*ssa.MakeInterface) (make interface{} <- *StationFoodStore (t16))
+	 → t17 (@GetFoodStoreByID): (*ssa.MakeInterface)
+
+t20 (@GetFoodStoreByID): (*ssa.Extract) (extract t18 #1)
+
+t24 (@GetFoodStoreByID): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).GetFoodStoresByStationNames ###
+s (@GetFoodStoresByStationNames): (*ssa.Parameter) (parameter s : *StationFoodServiceImpl)
+
+ctx (@GetFoodStoresByStationNames): (*ssa.Parameter) (parameter ctx : context.Context)
+
+stations (@GetFoodStoresByStationNames): (*ssa.Parameter) (parameter stations : []string)
+
+t0 (@GetFoodStoresByStationNames): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@GetFoodStoresByStationNames): (*ssa.UnOp) (*t0)
+
+t3 (@GetFoodStoresByStationNames): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetFoodStoresByStationNames): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t6 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t7 (@GetFoodStoresByStationNames): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t8 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new [0]interface{} (slicelit))
+	 → t8 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t9 (@GetFoodStoresByStationNames): (*ssa.Slice) (slice t8[:])
+	 → t8 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t10 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t10 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t11 (@GetFoodStoresByStationNames): (*ssa.IndexAddr) (&t10[0:int])
+	 → t10 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t12 (@GetFoodStoresByStationNames): (*ssa.FieldAddr) (&t11.Key [#0])
+	 → t10 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t13 (@GetFoodStoresByStationNames): (*ssa.FieldAddr) (&t11.Value [#1])
+	 → t10 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t14 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t14 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t15 (@GetFoodStoresByStationNames): (*ssa.IndexAddr) (&t14[0:int])
+	 → t14 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t16 (@GetFoodStoresByStationNames): (*ssa.FieldAddr) (&t15.Key [#0])
+	 → t14 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t17 (@GetFoodStoresByStationNames): (*ssa.FieldAddr) (&t15.Value [#1])
+	 → t14 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t18 (@GetFoodStoresByStationNames): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.A (t9))
+	 → t18 (@GetFoodStoresByStationNames): (*ssa.MakeInterface)
+
+t19 (@GetFoodStoresByStationNames): (*ssa.Slice) (slice t14[:])
+	 → t14 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t20 (@GetFoodStoresByStationNames): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t19))
+	 → t20 (@GetFoodStoresByStationNames): (*ssa.MakeInterface)
+
+t21 (@GetFoodStoresByStationNames): (*ssa.Slice) (slice t10[:])
+	 → t10 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t23 (@GetFoodStoresByStationNames): (*ssa.Extract) (extract t22 #0)
+
+t24 (@GetFoodStoresByStationNames): (*ssa.Extract) (extract t22 #1)
+
+t26 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t26 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t27 (@GetFoodStoresByStationNames): (*ssa.Slice) (slice t26[:])
+	 → t26 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t28 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new []StationFoodStore (stores))
+	 → t28 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t29 (@GetFoodStoresByStationNames): (*ssa.MakeInterface) (make interface{} <- *[]StationFoodStore (t28))
+	 → t29 (@GetFoodStoresByStationNames): (*ssa.MakeInterface)
+
+t30 (@GetFoodStoresByStationNames): (*ssa.Call) (invoke t23.All(ctx, t29))
+
+t32 (@GetFoodStoresByStationNames): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t32 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t33 (@GetFoodStoresByStationNames): (*ssa.Slice) (slice t32[:])
+	 → t32 (@GetFoodStoresByStationNames): (*ssa.Alloc)
+
+t34 (@GetFoodStoresByStationNames): (*ssa.UnOp) (*t28)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).ListFoodStores ###
+s (@ListFoodStores): (*ssa.Parameter) (parameter s : *StationFoodServiceImpl)
+
+ctx (@ListFoodStores): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ListFoodStores): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@ListFoodStores): (*ssa.UnOp) (*t0)
+
+t3 (@ListFoodStores): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ListFoodStores): (*ssa.Extract) (extract t2 #1)
+
+t6 (@ListFoodStores): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t6 (@ListFoodStores): (*ssa.Alloc)
+
+t7 (@ListFoodStores): (*ssa.Slice) (slice t6[:])
+	 → t6 (@ListFoodStores): (*ssa.Alloc)
+
+t8 (@ListFoodStores): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@ListFoodStores): (*ssa.Alloc)
+
+t9 (@ListFoodStores): (*ssa.Slice) (slice t8[:])
+	 → t8 (@ListFoodStores): (*ssa.Alloc)
+
+t11 (@ListFoodStores): (*ssa.Extract) (extract t10 #0)
+
+t12 (@ListFoodStores): (*ssa.Extract) (extract t10 #1)
+
+t14 (@ListFoodStores): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t14 (@ListFoodStores): (*ssa.Alloc)
+
+t15 (@ListFoodStores): (*ssa.Slice) (slice t14[:])
+	 → t14 (@ListFoodStores): (*ssa.Alloc)
+
+t16 (@ListFoodStores): (*ssa.Alloc) (new []StationFoodStore (stores))
+	 → t16 (@ListFoodStores): (*ssa.Alloc)
+
+t17 (@ListFoodStores): (*ssa.MakeInterface) (make interface{} <- *[]StationFoodStore (t16))
+	 → t17 (@ListFoodStores): (*ssa.MakeInterface)
+
+t18 (@ListFoodStores): (*ssa.Call) (invoke t11.All(ctx, t17))
+
+t20 (@ListFoodStores): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t20 (@ListFoodStores): (*ssa.Alloc)
+
+t21 (@ListFoodStores): (*ssa.Slice) (slice t20[:])
+	 → t20 (@ListFoodStores): (*ssa.Alloc)
+
+t22 (@ListFoodStores): (*ssa.UnOp) (*t16)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).ListFoodStoresByStationName ###
+s (@ListFoodStoresByStationName): (*ssa.Parameter) (parameter s : *StationFoodServiceImpl)
+
+ctx (@ListFoodStoresByStationName): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ListFoodStoresByStationName): (*ssa.FieldAddr) (&s.db [#0])
+
+t1 (@ListFoodStoresByStationName): (*ssa.UnOp) (*t0)
+
+t3 (@ListFoodStoresByStationName): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ListFoodStoresByStationName): (*ssa.Extract) (extract t2 #1)
+
+t6 (@ListFoodStoresByStationName): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t6 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t7 (@ListFoodStoresByStationName): (*ssa.Slice) (slice t6[:])
+	 → t6 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t8 (@ListFoodStoresByStationName): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t9 (@ListFoodStoresByStationName): (*ssa.IndexAddr) (&t8[0:int])
+	 → t8 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t10 (@ListFoodStoresByStationName): (*ssa.FieldAddr) (&t9.Key [#0])
+	 → t8 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t11 (@ListFoodStoresByStationName): (*ssa.FieldAddr) (&t9.Value [#1])
+	 → t8 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t12 (@ListFoodStoresByStationName): (*ssa.MakeInterface) (make interface{} <- string (station))
+	 → t12 (@ListFoodStoresByStationName): (*ssa.MakeInterface)
+
+t13 (@ListFoodStoresByStationName): (*ssa.Slice) (slice t8[:])
+	 → t8 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t15 (@ListFoodStoresByStationName): (*ssa.Extract) (extract t14 #0)
+
+t16 (@ListFoodStoresByStationName): (*ssa.Extract) (extract t14 #1)
+
+t18 (@ListFoodStoresByStationName): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t18 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t19 (@ListFoodStoresByStationName): (*ssa.Slice) (slice t18[:])
+	 → t18 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t20 (@ListFoodStoresByStationName): (*ssa.Alloc) (new []StationFoodStore (stores))
+	 → t20 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t21 (@ListFoodStoresByStationName): (*ssa.MakeInterface) (make interface{} <- *[]StationFoodStore (t20))
+	 → t21 (@ListFoodStoresByStationName): (*ssa.MakeInterface)
+
+t22 (@ListFoodStoresByStationName): (*ssa.Call) (invoke t15.All(ctx, t21))
+
+t24 (@ListFoodStoresByStationName): (*ssa.Alloc) (new [0]StationFoodStore (slicelit))
+	 → t24 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t25 (@ListFoodStoresByStationName): (*ssa.Slice) (slice t24[:])
+	 → t24 (@ListFoodStoresByStationName): (*ssa.Alloc)
+
+t26 (@ListFoodStoresByStationName): (*ssa.UnOp) (*t20)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).CreateStation ###
+s (@CreateStation): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@CreateStation): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateStation): (*ssa.Alloc) (local Station (station))
+	 → t0 (@CreateStation): (*ssa.Alloc)
+
+t1 (@CreateStation): (*ssa.FieldAddr) (&s.stationDB [#0])
+
+t2 (@CreateStation): (*ssa.UnOp) (*t1)
+
+t4 (@CreateStation): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateStation): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateStation): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@CreateStation): (*ssa.Alloc)
+
+t8 (@CreateStation): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@CreateStation): (*ssa.Alloc)
+
+t9 (@CreateStation): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@CreateStation): (*ssa.Alloc)
+
+t10 (@CreateStation): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@CreateStation): (*ssa.Alloc)
+
+t11 (@CreateStation): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateStation): (*ssa.Alloc)
+
+t13 (@CreateStation): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@CreateStation): (*ssa.MakeInterface)
+
+t14 (@CreateStation): (*ssa.Slice) (slice t7[:])
+	 → t7 (@CreateStation): (*ssa.Alloc)
+
+t16 (@CreateStation): (*ssa.Extract) (extract t15 #0)
+
+t17 (@CreateStation): (*ssa.Extract) (extract t15 #1)
+
+t19 (@CreateStation): (*ssa.Alloc) (new Station (st))
+	 → t19 (@CreateStation): (*ssa.Alloc)
+
+t20 (@CreateStation): (*ssa.MakeInterface) (make interface{} <- *Station (t19))
+	 → t20 (@CreateStation): (*ssa.MakeInterface)
+
+t23 (@CreateStation): (*ssa.Extract) (extract t21 #1)
+
+t25 (@CreateStation): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CreateStation): (*ssa.Alloc)
+
+t29 (@CreateStation): (*ssa.Call) (errors.New(t28))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t31 (@CreateStation): (*ssa.MakeInterface) (make interface{} <- Station (t30))
+	 → t31 (@CreateStation): (*ssa.MakeInterface)
+
+t32 (@CreateStation): (*ssa.Call) (invoke t4.InsertOne(ctx, t31))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).DeleteStation ###
+s (@DeleteStation): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@DeleteStation): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteStation): (*ssa.FieldAddr) (&s.stationDB [#0])
+
+t1 (@DeleteStation): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteStation): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteStation): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeleteStation): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeleteStation): (*ssa.Alloc)
+
+t7 (@DeleteStation): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeleteStation): (*ssa.Alloc)
+
+t8 (@DeleteStation): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeleteStation): (*ssa.Alloc)
+
+t9 (@DeleteStation): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeleteStation): (*ssa.Alloc)
+
+t10 (@DeleteStation): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@DeleteStation): (*ssa.MakeInterface)
+
+t11 (@DeleteStation): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeleteStation): (*ssa.Alloc)
+
+t12 (@DeleteStation): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).Exists ###
+s (@Exists): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@Exists): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Exists): (*ssa.FieldAddr) (&s.stationDB [#0])
+
+t1 (@Exists): (*ssa.UnOp) (*t0)
+
+t3 (@Exists): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Exists): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Exists): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Exists): (*ssa.Alloc)
+
+t7 (@Exists): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Exists): (*ssa.Alloc)
+
+t8 (@Exists): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Exists): (*ssa.Alloc)
+
+t9 (@Exists): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Exists): (*ssa.Alloc)
+
+t10 (@Exists): (*ssa.MakeInterface) (make interface{} <- string (name))
+	 → t10 (@Exists): (*ssa.MakeInterface)
+
+t11 (@Exists): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Exists): (*ssa.Alloc)
+
+t13 (@Exists): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Exists): (*ssa.Extract) (extract t12 #1)
+
+t16 (@Exists): (*ssa.Alloc) (new Station (st))
+	 → t16 (@Exists): (*ssa.Alloc)
+
+t17 (@Exists): (*ssa.MakeInterface) (make interface{} <- *Station (t16))
+	 → t17 (@Exists): (*ssa.MakeInterface)
+
+t20 (@Exists): (*ssa.Extract) (extract t18 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).FindByID ###
+s (@FindByID): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@FindByID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindByID): (*ssa.FieldAddr) (&s.stationDB [#0])
+
+t1 (@FindByID): (*ssa.UnOp) (*t0)
+
+t3 (@FindByID): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindByID): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindByID): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t7 (@FindByID): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t8 (@FindByID): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t9 (@FindByID): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t10 (@FindByID): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@FindByID): (*ssa.MakeInterface)
+
+t11 (@FindByID): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindByID): (*ssa.Alloc)
+
+t13 (@FindByID): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindByID): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindByID): (*ssa.Alloc) (new Station (st))
+	 → t16 (@FindByID): (*ssa.Alloc)
+
+t17 (@FindByID): (*ssa.MakeInterface) (make interface{} <- *Station (t16))
+	 → t17 (@FindByID): (*ssa.MakeInterface)
+
+t20 (@FindByID): (*ssa.Extract) (extract t18 #1)
+
+t24 (@FindByID): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).FindByIDs ###
+s (@FindByIDs): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@FindByIDs): (*ssa.Parameter) (parameter ctx : context.Context)
+
+ids (@FindByIDs): (*ssa.Parameter) (parameter ids : []string)
+
+t0 (@FindByIDs): (*ssa.IndexAddr) (&ids[0:int])
+
+t4 (@FindByIDs): (*ssa.Extract) (extract t2 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@FindByIDs): (*ssa.Alloc) (new [1]Station (varargs))
+	 → t5 (@FindByIDs): (*ssa.Alloc)
+
+t6 (@FindByIDs): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@FindByIDs): (*ssa.Alloc)
+
+t7 (@FindByIDs): (*ssa.Slice) (slice t5[:])
+	 → t5 (@FindByIDs): (*ssa.Alloc)
+
+t8 (@FindByIDs): (*ssa.Call) (append(nil:[]Station, t7...))
+	 → t8 (@FindByIDs): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).FindID ###
+s (@FindID): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@FindID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindID): (*ssa.FieldAddr) (&s.stationDB [#0])
+
+t1 (@FindID): (*ssa.UnOp) (*t0)
+
+t3 (@FindID): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindID): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindID): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindID): (*ssa.Alloc)
+
+t7 (@FindID): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindID): (*ssa.Alloc)
+
+t8 (@FindID): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindID): (*ssa.Alloc)
+
+t9 (@FindID): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindID): (*ssa.Alloc)
+
+t10 (@FindID): (*ssa.MakeInterface) (make interface{} <- string (name))
+	 → t10 (@FindID): (*ssa.MakeInterface)
+
+t11 (@FindID): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindID): (*ssa.Alloc)
+
+t13 (@FindID): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindID): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindID): (*ssa.Alloc) (new Station (st))
+	 → t16 (@FindID): (*ssa.Alloc)
+
+t17 (@FindID): (*ssa.MakeInterface) (make interface{} <- *Station (t16))
+	 → t17 (@FindID): (*ssa.MakeInterface)
+
+t20 (@FindID): (*ssa.Extract) (extract t18 #1)
+
+t24 (@FindID): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t25 (@FindID): (*ssa.FieldAddr) (&t16.ID [#0])
+	 → t16 (@FindID): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).FindIDs ###
+s (@FindIDs): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@FindIDs): (*ssa.Parameter) (parameter ctx : context.Context)
+
+names (@FindIDs): (*ssa.Parameter) (parameter names : []string)
+
+t0 (@FindIDs): (*ssa.IndexAddr) (&names[0:int])
+
+t4 (@FindIDs): (*ssa.Extract) (extract t2 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@FindIDs): (*ssa.Alloc) (new [1]string (varargs))
+	 → t5 (@FindIDs): (*ssa.Alloc)
+
+t6 (@FindIDs): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@FindIDs): (*ssa.Alloc)
+
+t7 (@FindIDs): (*ssa.Slice) (slice t5[:])
+	 → t5 (@FindIDs): (*ssa.Alloc)
+
+t8 (@FindIDs): (*ssa.Call) (append(nil:[]string, t7...))
+	 → t8 (@FindIDs): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationServiceImpl).UpdateStation ###
+s (@UpdateStation): (*ssa.Parameter) (parameter s : *StationServiceImpl)
+
+ctx (@UpdateStation): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdateStation): (*ssa.Alloc) (local Station (station))
+	 → t0 (@UpdateStation): (*ssa.Alloc)
+
+t1 (@UpdateStation): (*ssa.FieldAddr) (&s.stationDB [#0])
+
+t2 (@UpdateStation): (*ssa.UnOp) (*t1)
+
+t4 (@UpdateStation): (*ssa.Extract) (extract t3 #0)
+
+t5 (@UpdateStation): (*ssa.Extract) (extract t3 #1)
+
+t7 (@UpdateStation): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@UpdateStation): (*ssa.Alloc)
+
+t8 (@UpdateStation): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@UpdateStation): (*ssa.Alloc)
+
+t9 (@UpdateStation): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@UpdateStation): (*ssa.Alloc)
+
+t10 (@UpdateStation): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@UpdateStation): (*ssa.Alloc)
+
+t11 (@UpdateStation): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@UpdateStation): (*ssa.Alloc)
+
+t13 (@UpdateStation): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@UpdateStation): (*ssa.MakeInterface)
+
+t14 (@UpdateStation): (*ssa.Slice) (slice t7[:])
+	 → t7 (@UpdateStation): (*ssa.Alloc)
+
+t16 (@UpdateStation): (*ssa.MakeInterface) (make interface{} <- Station (t15))
+	 → t16 (@UpdateStation): (*ssa.MakeInterface)
+
+t19 (@UpdateStation): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainFoodServiceImpl).Cleanup ###
+t (@Cleanup): (*ssa.Parameter) (parameter t : *TrainFoodServiceImpl)
+
+ctx (@Cleanup): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Cleanup): (*ssa.FieldAddr) (&t.db [#0])
+
+t1 (@Cleanup): (*ssa.UnOp) (*t0)
+
+t3 (@Cleanup): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Cleanup): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Cleanup): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Cleanup): (*ssa.Alloc)
+
+t7 (@Cleanup): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Cleanup): (*ssa.Alloc)
+
+t8 (@Cleanup): (*ssa.Call) (invoke t3.DeleteMany(ctx, t7))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainFoodServiceImpl).CreateTrainFood ###
+t (@CreateTrainFood): (*ssa.Parameter) (parameter t : *TrainFoodServiceImpl)
+
+ctx (@CreateTrainFood): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateTrainFood): (*ssa.Alloc) (local TrainFood (tf))
+	 → t0 (@CreateTrainFood): (*ssa.Alloc)
+
+t1 (@CreateTrainFood): (*ssa.FieldAddr) (&t.db [#0])
+
+t2 (@CreateTrainFood): (*ssa.UnOp) (*t1)
+
+t4 (@CreateTrainFood): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateTrainFood): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateTrainFood): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@CreateTrainFood): (*ssa.Alloc)
+
+t8 (@CreateTrainFood): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@CreateTrainFood): (*ssa.Alloc)
+
+t9 (@CreateTrainFood): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@CreateTrainFood): (*ssa.Alloc)
+
+t10 (@CreateTrainFood): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@CreateTrainFood): (*ssa.Alloc)
+
+t11 (@CreateTrainFood): (*ssa.FieldAddr) (&t0.TripID [#1])
+	 → t0 (@CreateTrainFood): (*ssa.Alloc)
+
+t13 (@CreateTrainFood): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@CreateTrainFood): (*ssa.MakeInterface)
+
+t14 (@CreateTrainFood): (*ssa.Slice) (slice t7[:])
+	 → t7 (@CreateTrainFood): (*ssa.Alloc)
+
+t16 (@CreateTrainFood): (*ssa.Extract) (extract t15 #0)
+
+t17 (@CreateTrainFood): (*ssa.Extract) (extract t15 #1)
+
+t19 (@CreateTrainFood): (*ssa.Alloc) (new TrainFood (stored_tf))
+	 → t19 (@CreateTrainFood): (*ssa.Alloc)
+
+t20 (@CreateTrainFood): (*ssa.MakeInterface) (make interface{} <- *TrainFood (t19))
+	 → t20 (@CreateTrainFood): (*ssa.MakeInterface)
+
+t23 (@CreateTrainFood): (*ssa.Extract) (extract t21 #1)
+
+t27 (@CreateTrainFood): (*ssa.MakeInterface) (make interface{} <- TrainFood (t26))
+	 → t27 (@CreateTrainFood): (*ssa.MakeInterface)
+
+t28 (@CreateTrainFood): (*ssa.Call) (invoke t4.InsertOne(ctx, t27))
+
+t30 (@CreateTrainFood): (*ssa.MakeInterface) (make interface{} <- TrainFood (t29))
+	 → t30 (@CreateTrainFood): (*ssa.MakeInterface)
+
+t33 (@CreateTrainFood): (*ssa.Extract) (extract t31 #1)
+
+t35 (@CreateTrainFood): (*ssa.Call) (errors.New("Failed to set the...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainFoodServiceImpl).ListTrainFood ###
+t (@ListTrainFood): (*ssa.Parameter) (parameter t : *TrainFoodServiceImpl)
+
+ctx (@ListTrainFood): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ListTrainFood): (*ssa.FieldAddr) (&t.db [#0])
+
+t1 (@ListTrainFood): (*ssa.UnOp) (*t0)
+
+t3 (@ListTrainFood): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ListTrainFood): (*ssa.Extract) (extract t2 #1)
+
+t6 (@ListTrainFood): (*ssa.Alloc) (new [0]TrainFood (slicelit))
+	 → t6 (@ListTrainFood): (*ssa.Alloc)
+
+t7 (@ListTrainFood): (*ssa.Slice) (slice t6[:])
+	 → t6 (@ListTrainFood): (*ssa.Alloc)
+
+t8 (@ListTrainFood): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@ListTrainFood): (*ssa.Alloc)
+
+t9 (@ListTrainFood): (*ssa.Slice) (slice t8[:])
+	 → t8 (@ListTrainFood): (*ssa.Alloc)
+
+t11 (@ListTrainFood): (*ssa.Extract) (extract t10 #0)
+
+t12 (@ListTrainFood): (*ssa.Extract) (extract t10 #1)
+
+t14 (@ListTrainFood): (*ssa.Alloc) (new [0]TrainFood (slicelit))
+	 → t14 (@ListTrainFood): (*ssa.Alloc)
+
+t15 (@ListTrainFood): (*ssa.Slice) (slice t14[:])
+	 → t14 (@ListTrainFood): (*ssa.Alloc)
+
+t16 (@ListTrainFood): (*ssa.Alloc) (new []TrainFood (all_foods))
+	 → t16 (@ListTrainFood): (*ssa.Alloc)
+
+t17 (@ListTrainFood): (*ssa.MakeInterface) (make interface{} <- *[]TrainFood (t16))
+	 → t17 (@ListTrainFood): (*ssa.MakeInterface)
+
+t18 (@ListTrainFood): (*ssa.Call) (invoke t11.All(ctx, t17))
+
+t20 (@ListTrainFood): (*ssa.Alloc) (new [0]TrainFood (slicelit))
+	 → t20 (@ListTrainFood): (*ssa.Alloc)
+
+t21 (@ListTrainFood): (*ssa.Slice) (slice t20[:])
+	 → t20 (@ListTrainFood): (*ssa.Alloc)
+
+t22 (@ListTrainFood): (*ssa.UnOp) (*t16)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainFoodServiceImpl).ListTrainFoodByTripID ###
+t (@ListTrainFoodByTripID): (*ssa.Parameter) (parameter t : *TrainFoodServiceImpl)
+
+ctx (@ListTrainFoodByTripID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ListTrainFoodByTripID): (*ssa.FieldAddr) (&t.db [#0])
+
+t1 (@ListTrainFoodByTripID): (*ssa.UnOp) (*t0)
+
+t3 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t2 #1)
+
+t6 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+	 → t6 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t7 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t6[:])
+	 → t6 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t8 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t9 (@ListTrainFoodByTripID): (*ssa.IndexAddr) (&t8[0:int])
+	 → t8 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t10 (@ListTrainFoodByTripID): (*ssa.FieldAddr) (&t9.Key [#0])
+	 → t8 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t11 (@ListTrainFoodByTripID): (*ssa.FieldAddr) (&t9.Value [#1])
+	 → t8 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t12 (@ListTrainFoodByTripID): (*ssa.MakeInterface) (make interface{} <- string (tripid))
+	 → t12 (@ListTrainFoodByTripID): (*ssa.MakeInterface)
+
+t13 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t8[:])
+	 → t8 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t15 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t14 #0)
+
+t16 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t14 #1)
+
+t18 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+	 → t18 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t19 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t18[:])
+	 → t18 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t20 (@ListTrainFoodByTripID): (*ssa.Alloc) (new TrainFood (tf))
+	 → t20 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t21 (@ListTrainFoodByTripID): (*ssa.MakeInterface) (make interface{} <- *TrainFood (t20))
+	 → t21 (@ListTrainFoodByTripID): (*ssa.MakeInterface)
+
+t24 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t22 #1)
+
+t26 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+	 → t26 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t27 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t26[:])
+	 → t26 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t28 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+	 → t28 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t29 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t28[:])
+	 → t28 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t32 (@ListTrainFoodByTripID): (*ssa.Call) (errors.New(t31))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t33 (@ListTrainFoodByTripID): (*ssa.FieldAddr) (&t20.Foods [#2])
+	 → t20 (@ListTrainFoodByTripID): (*ssa.Alloc)
+
+t34 (@ListTrainFoodByTripID): (*ssa.UnOp) (*t33)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).AllTrains ###
+ts (@AllTrains): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@AllTrains): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AllTrains): (*ssa.Alloc) (new []TrainType (trains))
+	 → t0 (@AllTrains): (*ssa.Alloc)
+
+t1 (@AllTrains): (*ssa.FieldAddr) (&ts.db [#0])
+
+t2 (@AllTrains): (*ssa.UnOp) (*t1)
+
+t4 (@AllTrains): (*ssa.Extract) (extract t3 #0)
+
+t5 (@AllTrains): (*ssa.Extract) (extract t3 #1)
+
+t7 (@AllTrains): (*ssa.UnOp) (*t0)
+
+t8 (@AllTrains): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@AllTrains): (*ssa.Alloc)
+
+t9 (@AllTrains): (*ssa.Slice) (slice t8[:])
+	 → t8 (@AllTrains): (*ssa.Alloc)
+
+t11 (@AllTrains): (*ssa.Extract) (extract t10 #0)
+
+t12 (@AllTrains): (*ssa.Extract) (extract t10 #1)
+
+t14 (@AllTrains): (*ssa.UnOp) (*t0)
+
+t15 (@AllTrains): (*ssa.MakeInterface) (make interface{} <- *[]TrainType (t0))
+	 → t15 (@AllTrains): (*ssa.MakeInterface)
+
+t16 (@AllTrains): (*ssa.Call) (invoke t11.All(ctx, t15))
+
+t17 (@AllTrains): (*ssa.UnOp) (*t0)
+
+t20 (@AllTrains): (*ssa.UnOp) (*t0)
+
+t21 (@AllTrains): (*ssa.Call) (errors.New("No trains found":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t22 (@AllTrains): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).Create ###
+ts (@Create): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@Create): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Create): (*ssa.Alloc) (local TrainType (tt))
+	 → t0 (@Create): (*ssa.Alloc)
+
+t1 (@Create): (*ssa.FieldAddr) (&ts.db [#0])
+
+t2 (@Create): (*ssa.UnOp) (*t1)
+
+t4 (@Create): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Create): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Create): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Create): (*ssa.Alloc)
+
+t8 (@Create): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t9 (@Create): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t10 (@Create): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t11 (@Create): (*ssa.FieldAddr) (&t0.Name [#1])
+	 → t0 (@Create): (*ssa.Alloc)
+
+t13 (@Create): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Create): (*ssa.MakeInterface)
+
+t14 (@Create): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t16 (@Create): (*ssa.Extract) (extract t15 #0)
+
+t17 (@Create): (*ssa.Extract) (extract t15 #1)
+
+t19 (@Create): (*ssa.Alloc) (new TrainType (saved_tt))
+	 → t19 (@Create): (*ssa.Alloc)
+
+t20 (@Create): (*ssa.MakeInterface) (make interface{} <- *TrainType (t19))
+	 → t20 (@Create): (*ssa.MakeInterface)
+
+t23 (@Create): (*ssa.Extract) (extract t21 #1)
+
+t25 (@Create): (*ssa.Call) (errors.New("TrainType already...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t27 (@Create): (*ssa.MakeInterface) (make interface{} <- TrainType (t26))
+	 → t27 (@Create): (*ssa.MakeInterface)
+
+t28 (@Create): (*ssa.Call) (invoke t4.InsertOne(ctx, t27))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).Delete ###
+ts (@Delete): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Delete): (*ssa.FieldAddr) (&ts.db [#0])
+
+t1 (@Delete): (*ssa.UnOp) (*t0)
+
+t3 (@Delete): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Delete): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t7 (@Delete): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t8 (@Delete): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t9 (@Delete): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t10 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@Delete): (*ssa.MakeInterface)
+
+t11 (@Delete): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).Retrieve ###
+ts (@Retrieve): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@Retrieve): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Retrieve): (*ssa.FieldAddr) (&ts.db [#0])
+
+t1 (@Retrieve): (*ssa.UnOp) (*t0)
+
+t3 (@Retrieve): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Retrieve): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Retrieve): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Retrieve): (*ssa.Alloc)
+
+t7 (@Retrieve): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Retrieve): (*ssa.Alloc)
+
+t8 (@Retrieve): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Retrieve): (*ssa.Alloc)
+
+t9 (@Retrieve): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Retrieve): (*ssa.Alloc)
+
+t10 (@Retrieve): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@Retrieve): (*ssa.MakeInterface)
+
+t11 (@Retrieve): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Retrieve): (*ssa.Alloc)
+
+t13 (@Retrieve): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Retrieve): (*ssa.Extract) (extract t12 #1)
+
+t16 (@Retrieve): (*ssa.Alloc) (new TrainType (tt))
+	 → t16 (@Retrieve): (*ssa.Alloc)
+
+t17 (@Retrieve): (*ssa.MakeInterface) (make interface{} <- *TrainType (t16))
+	 → t17 (@Retrieve): (*ssa.MakeInterface)
+
+t20 (@Retrieve): (*ssa.Extract) (extract t18 #1)
+
+t24 (@Retrieve): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).RetrieveByName ###
+ts (@RetrieveByName): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@RetrieveByName): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@RetrieveByName): (*ssa.FieldAddr) (&ts.db [#0])
+
+t1 (@RetrieveByName): (*ssa.UnOp) (*t0)
+
+t3 (@RetrieveByName): (*ssa.Extract) (extract t2 #0)
+
+t4 (@RetrieveByName): (*ssa.Extract) (extract t2 #1)
+
+t6 (@RetrieveByName): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@RetrieveByName): (*ssa.Alloc)
+
+t7 (@RetrieveByName): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@RetrieveByName): (*ssa.Alloc)
+
+t8 (@RetrieveByName): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@RetrieveByName): (*ssa.Alloc)
+
+t9 (@RetrieveByName): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@RetrieveByName): (*ssa.Alloc)
+
+t10 (@RetrieveByName): (*ssa.MakeInterface) (make interface{} <- string (name))
+	 → t10 (@RetrieveByName): (*ssa.MakeInterface)
+
+t11 (@RetrieveByName): (*ssa.Slice) (slice t6[:])
+	 → t6 (@RetrieveByName): (*ssa.Alloc)
+
+t13 (@RetrieveByName): (*ssa.Extract) (extract t12 #0)
+
+t14 (@RetrieveByName): (*ssa.Extract) (extract t12 #1)
+
+t16 (@RetrieveByName): (*ssa.Alloc) (new TrainType (tt))
+	 → t16 (@RetrieveByName): (*ssa.Alloc)
+
+t17 (@RetrieveByName): (*ssa.MakeInterface) (make interface{} <- *TrainType (t16))
+	 → t17 (@RetrieveByName): (*ssa.MakeInterface)
+
+t20 (@RetrieveByName): (*ssa.Extract) (extract t18 #1)
+
+t24 (@RetrieveByName): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).RetrieveByNames ###
+ts (@RetrieveByNames): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@RetrieveByNames): (*ssa.Parameter) (parameter ctx : context.Context)
+
+names (@RetrieveByNames): (*ssa.Parameter) (parameter names : []string)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainServiceImpl).Update ###
+ts (@Update): (*ssa.Parameter) (parameter ts : *TrainServiceImpl)
+
+ctx (@Update): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Update): (*ssa.Alloc) (local TrainType (ttype))
+	 → t0 (@Update): (*ssa.Alloc)
+
+t1 (@Update): (*ssa.FieldAddr) (&ts.db [#0])
+
+t2 (@Update): (*ssa.UnOp) (*t1)
+
+t4 (@Update): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Update): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Update): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Update): (*ssa.Alloc)
+
+t8 (@Update): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t9 (@Update): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t10 (@Update): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t11 (@Update): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Update): (*ssa.Alloc)
+
+t13 (@Update): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Update): (*ssa.MakeInterface)
+
+t14 (@Update): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Update): (*ssa.Alloc)
+
+t16 (@Update): (*ssa.MakeInterface) (make interface{} <- TrainType (t15))
+	 → t16 (@Update): (*ssa.MakeInterface)
+
+t19 (@Update): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).DeleteUser ###
+u (@DeleteUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@DeleteUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteUser): (*ssa.FieldAddr) (&u.userDB [#0])
+
+t1 (@DeleteUser): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteUser): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteUser): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeleteUser): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeleteUser): (*ssa.Alloc)
+
+t7 (@DeleteUser): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeleteUser): (*ssa.Alloc)
+
+t8 (@DeleteUser): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeleteUser): (*ssa.Alloc)
+
+t9 (@DeleteUser): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeleteUser): (*ssa.Alloc)
+
+t10 (@DeleteUser): (*ssa.MakeInterface) (make interface{} <- string (userID))
+	 → t10 (@DeleteUser): (*ssa.MakeInterface)
+
+t11 (@DeleteUser): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeleteUser): (*ssa.Alloc)
+
+t12 (@DeleteUser): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).FindByUserID ###
+u (@FindByUserID): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@FindByUserID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindByUserID): (*ssa.FieldAddr) (&u.userDB [#0])
+
+t1 (@FindByUserID): (*ssa.UnOp) (*t0)
+
+t3 (@FindByUserID): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindByUserID): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindByUserID): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindByUserID): (*ssa.Alloc)
+
+t7 (@FindByUserID): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindByUserID): (*ssa.Alloc)
+
+t8 (@FindByUserID): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindByUserID): (*ssa.Alloc)
+
+t9 (@FindByUserID): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindByUserID): (*ssa.Alloc)
+
+t10 (@FindByUserID): (*ssa.MakeInterface) (make interface{} <- string (userID))
+	 → t10 (@FindByUserID): (*ssa.MakeInterface)
+
+t11 (@FindByUserID): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindByUserID): (*ssa.Alloc)
+
+t13 (@FindByUserID): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindByUserID): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindByUserID): (*ssa.Alloc) (new User (user))
+	 → t16 (@FindByUserID): (*ssa.Alloc)
+
+t17 (@FindByUserID): (*ssa.MakeInterface) (make interface{} <- *User (t16))
+	 → t17 (@FindByUserID): (*ssa.MakeInterface)
+
+t20 (@FindByUserID): (*ssa.Extract) (extract t18 #1)
+
+t24 (@FindByUserID): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).FindByUsername ###
+u (@FindByUsername): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@FindByUsername): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindByUsername): (*ssa.FieldAddr) (&u.userDB [#0])
+
+t1 (@FindByUsername): (*ssa.UnOp) (*t0)
+
+t3 (@FindByUsername): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindByUsername): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindByUsername): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindByUsername): (*ssa.Alloc)
+
+t7 (@FindByUsername): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@FindByUsername): (*ssa.Alloc)
+
+t8 (@FindByUsername): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@FindByUsername): (*ssa.Alloc)
+
+t9 (@FindByUsername): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@FindByUsername): (*ssa.Alloc)
+
+t10 (@FindByUsername): (*ssa.MakeInterface) (make interface{} <- string (username))
+	 → t10 (@FindByUsername): (*ssa.MakeInterface)
+
+t11 (@FindByUsername): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindByUsername): (*ssa.Alloc)
+
+t13 (@FindByUsername): (*ssa.Extract) (extract t12 #0)
+
+t14 (@FindByUsername): (*ssa.Extract) (extract t12 #1)
+
+t16 (@FindByUsername): (*ssa.Alloc) (new User (user))
+	 → t16 (@FindByUsername): (*ssa.Alloc)
+
+t17 (@FindByUsername): (*ssa.MakeInterface) (make interface{} <- *User (t16))
+	 → t17 (@FindByUsername): (*ssa.MakeInterface)
+
+t20 (@FindByUsername): (*ssa.Extract) (extract t18 #1)
+
+t24 (@FindByUsername): (*ssa.Call) (errors.New(t23))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).GetAllUsers ###
+u (@GetAllUsers): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@GetAllUsers): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllUsers): (*ssa.FieldAddr) (&u.userDB [#0])
+
+t1 (@GetAllUsers): (*ssa.UnOp) (*t0)
+
+t3 (@GetAllUsers): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAllUsers): (*ssa.Extract) (extract t2 #1)
+
+t6 (@GetAllUsers): (*ssa.Alloc) (new [0]User (slicelit))
+	 → t6 (@GetAllUsers): (*ssa.Alloc)
+
+t7 (@GetAllUsers): (*ssa.Slice) (slice t6[:])
+	 → t6 (@GetAllUsers): (*ssa.Alloc)
+
+t8 (@GetAllUsers): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t8 (@GetAllUsers): (*ssa.Alloc)
+
+t9 (@GetAllUsers): (*ssa.Slice) (slice t8[:])
+	 → t8 (@GetAllUsers): (*ssa.Alloc)
+
+t11 (@GetAllUsers): (*ssa.Extract) (extract t10 #0)
+
+t12 (@GetAllUsers): (*ssa.Extract) (extract t10 #1)
+
+t14 (@GetAllUsers): (*ssa.Alloc) (new [0]User (slicelit))
+	 → t14 (@GetAllUsers): (*ssa.Alloc)
+
+t15 (@GetAllUsers): (*ssa.Slice) (slice t14[:])
+	 → t14 (@GetAllUsers): (*ssa.Alloc)
+
+t16 (@GetAllUsers): (*ssa.Alloc) (new []User (users))
+	 → t16 (@GetAllUsers): (*ssa.Alloc)
+
+t17 (@GetAllUsers): (*ssa.MakeInterface) (make interface{} <- *[]User (t16))
+	 → t17 (@GetAllUsers): (*ssa.MakeInterface)
+
+t18 (@GetAllUsers): (*ssa.Call) (invoke t11.All(ctx, t17))
+
+t20 (@GetAllUsers): (*ssa.Alloc) (new [0]User (slicelit))
+	 → t20 (@GetAllUsers): (*ssa.Alloc)
+
+t21 (@GetAllUsers): (*ssa.Slice) (slice t20[:])
+	 → t20 (@GetAllUsers): (*ssa.Alloc)
+
+t22 (@GetAllUsers): (*ssa.UnOp) (*t16)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).SaveUser ###
+u (@SaveUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@SaveUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@SaveUser): (*ssa.FieldAddr) (&u.userDB [#0])
+
+t1 (@SaveUser): (*ssa.UnOp) (*t0)
+
+t3 (@SaveUser): (*ssa.Extract) (extract t2 #0)
+
+t4 (@SaveUser): (*ssa.Extract) (extract t2 #1)
+
+t6 (@SaveUser): (*ssa.MakeInterface) (make interface{} <- User (user))
+	 → t6 (@SaveUser): (*ssa.MakeInterface)
+
+t7 (@SaveUser): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).UpdateUser ###
+u (@UpdateUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@UpdateUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdateUser): (*ssa.Alloc) (local User (user))
+	 → t0 (@UpdateUser): (*ssa.Alloc)
+
+t1 (@UpdateUser): (*ssa.FieldAddr) (&u.userDB [#0])
+
+t2 (@UpdateUser): (*ssa.UnOp) (*t1)
+
+t4 (@UpdateUser): (*ssa.Extract) (extract t3 #0)
+
+t5 (@UpdateUser): (*ssa.Extract) (extract t3 #1)
+
+t7 (@UpdateUser): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@UpdateUser): (*ssa.Alloc)
+
+t8 (@UpdateUser): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@UpdateUser): (*ssa.Alloc)
+
+t9 (@UpdateUser): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@UpdateUser): (*ssa.Alloc)
+
+t10 (@UpdateUser): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@UpdateUser): (*ssa.Alloc)
+
+t11 (@UpdateUser): (*ssa.FieldAddr) (&t0.UserID [#0])
+	 → t0 (@UpdateUser): (*ssa.Alloc)
+
+t13 (@UpdateUser): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@UpdateUser): (*ssa.MakeInterface)
+
+t14 (@UpdateUser): (*ssa.Slice) (slice t7[:])
+	 → t7 (@UpdateUser): (*ssa.Alloc)
+
+t16 (@UpdateUser): (*ssa.MakeInterface) (make interface{} <- User (t15))
+	 → t16 (@UpdateUser): (*ssa.MakeInterface)
+
+t19 (@UpdateUser): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.NewAssuranceServiceImpl ###
+ctx (@NewAssuranceServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+db (@NewAssuranceServiceImpl): (*ssa.Parameter) (parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+
+t0 (@NewAssuranceServiceImpl): (*ssa.Alloc) (new AssuranceServiceImpl (complit))
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+
+t1 (@NewAssuranceServiceImpl): (*ssa.FieldAddr) (&t0.db [#0])
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewAssuranceServiceImpl): (*ssa.Alloc)
+
+t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface) (make AssuranceService <- *AssuranceServiceImpl (t0))
+	 → t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.getAssuranceType ###
+ctx (@getAssuranceType): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@getAssuranceType): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Index [#0])
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.init ###
+t10 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Index [#0])
+
+t11 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Name [#1])
+
+t12 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Price [#2])
+
+t13 (@init): (*ssa.Alloc) (new [1]AssuranceType (slicelit))
+	 → t13 (@init): (*ssa.Alloc)
+
+t14 (@init): (*ssa.IndexAddr) (&t13[0:int])
+	 → t13 (@init): (*ssa.Alloc)
+
+t16 (@init): (*ssa.Slice) (slice t13[:])
+	 → t13 (@init): (*ssa.Alloc)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+t4 (@main): (*ssa.Call) (invoke t2.DeleteById(t0, "":string))
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+t4 (@main): (*ssa.Call) (invoke t2.DeleteById(t0, "":string))
+
+

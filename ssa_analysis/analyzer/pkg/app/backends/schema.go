@@ -99,7 +99,7 @@ func (schema *Schema) GetFields() map[string]*Field {
 func (schema *Schema) GetFieldByPath(path string) *Field {
 	field, ok := schema.fields[path]
 	if !ok {
-		log.Fatalf("field with path (%s) not found for schema: %s\n", path, schema.String())
+		log.Panicf("field with path (%s) not found for schema: %s\n", path, schema.String())
 	}
 	return field
 }

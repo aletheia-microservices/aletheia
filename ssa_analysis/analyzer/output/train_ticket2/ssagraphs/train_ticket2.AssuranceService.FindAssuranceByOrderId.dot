@@ -1,0 +1,178 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1185542904 [label="if t19 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1185542904 [label="if t19 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1542575542 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1542575542 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1833604283 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1833604283 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__423028690 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__423028690 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3330101 [label="return struct{ID string; OrderID string; AT AssuranceType}{}:Assurance, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330101 [label="return struct{ID string; OrderID string; AT AssuranceType}{}:Assurance, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330237 [label="return struct{ID string; OrderID string; AT AssuranceType}{}:Assurance, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330237 [label="return struct{ID string; OrderID string; AT AssuranceType}{}:Assurance, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330337 [label="return t22, t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330337 [label="return t22, t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330372 [label="return t23, t26", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330372 [label="return t23, t26", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330458 [label="return t27, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3330458 [label="return t27, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3330149 [label="*t8 = \"OrderID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3330149 [label="*t8 = \"OrderID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3330167 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3330167 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_nil_1365374837 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_1446368921 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_val___does_not_exist__string [label="\" does not exist\":string: \" does not exist\":string
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val__Assurance_with_or_____string [label="\"Assurance with or...\":string: \"Assurance with or...\":string
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val__OrderID__string [label="\"OrderID\":string: \"OrderID\":string
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="blue"];
+	N_val__assurance__string [label="\"assurance\":string: \"assurance\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__assurance_db__string [label="\"assurance_db\":string: \"assurance_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3330144 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3330269 [label="t16: new Assurance (ass)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3330090 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3330226 [label="t15: t14 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3330326 [label="t21: t20 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3330422 [label="t24: \"Assurance with or...\":string + order_id
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val_binary_3330433 [label="t25: t24 + \" does not exist\":string
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val_call_3330047 [label="t2: invoke t1.GetCollection(ctx, \"assurance_db\":string, \"assurance\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3330205 [label="t12: invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3330306 [label="t18: invoke t13.One(ctx, t17)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3330394 [label="t26: errors.New(t25)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt13 [label="t13: extract t12 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt14 [label="t14: extract t12 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t18 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt20 [label="t20: extract t18 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3330031 [label="t0: &a.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3330149 [label="t8: &t7.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="green"];
+	N_val_field_3330167 [label="t9: &t7.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- string (order_id)
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet17 [label="t17: make interface{} <- *Assurance (t16)", style=bold, shape=ellipse, color="black"];
+	N_val_indext7 [label="t7: &t6[0:int]
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="green"];
+	N_val_param_3329908 [label="a: parameter a : *AssuranceServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3329956 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3329977 [label="order_id: parameter order_id : string
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val_slice_3330144 [label="t11: slice t6[:]
+
+==== tainted ====
+_obj
+[read] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="black"];
+	N_val_struct_ID_string__OrderID_string__AT_github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_AssuranceType____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Assurance [label="struct{ID string; OrderID string; AT github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceType}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance: struct{ID string; OrderID string; AT github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceType}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance", style=bold, shape=ellipse, color="yellow"];
+	N_val_unary_3330031 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3330344 [label="t22: *t16", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3330379 [label="t23: *t16", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3330465 [label="t27: *t16", style=bold, shape=ellipse, color="red"];
+	N_val_param_3329908 -> N_val_field_3330031;
+	N_val_field_3330031 -> N_val_unary_3330031;
+	N_val_param_3329956 -> N_val_call_3330047;
+	N_val__assurance_db__string -> N_val_call_3330047;
+	N_val__assurance__string -> N_val_call_3330047;
+	N_val_call_3330047 -> N_val_extrt3;
+	N_val_call_3330047 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_3330090;
+	N_nil_1365374837 -> N_val_binary_3330090;
+	N_val_struct_ID_string__OrderID_string__AT_github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_AssuranceType____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Assurance -> N_instr_ret_3330101;
+	N_val_extrt4 -> N_instr_ret_3330101;
+	N_val_alloc_3330144 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_3330149;
+	N_val_indext7 -> N_val_field_3330167;
+	N_val_field_3330149 -> N_instr_store_3330149;
+	N_val__OrderID__string -> N_instr_store_3330149;
+	N_val_param_3329977 -> N_val_ifacet10;
+	N_val_field_3330167 -> N_instr_store_3330167;
+	N_val_ifacet10 -> N_instr_store_3330167;
+	N_val_alloc_3330144 -> N_val_slice_3330144;
+	N_val_param_3329956 -> N_val_call_3330205;
+	N_val_slice_3330144 -> N_val_call_3330205;
+	N_nil_1446368921 -> N_val_call_3330205;
+	N_val_call_3330205 -> N_val_extrt13;
+	N_val_call_3330205 -> N_val_extrt14;
+	N_val_extrt14 -> N_val_binary_3330226;
+	N_nil_1365374837 -> N_val_binary_3330226;
+	N_val_struct_ID_string__OrderID_string__AT_github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_AssuranceType____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Assurance -> N_instr_ret_3330237;
+	N_val_extrt14 -> N_instr_ret_3330237;
+	N_val_alloc_3330269 -> N_val_ifacet17;
+	N_val_param_3329956 -> N_val_call_3330306;
+	N_val_ifacet17 -> N_val_call_3330306;
+	N_val_call_3330306 -> N_val_extrt19;
+	N_val_call_3330306 -> N_val_extrt20;
+	N_val_extrt20 -> N_val_binary_3330326;
+	N_nil_1365374837 -> N_val_binary_3330326;
+	N_val_alloc_3330269 -> N_val_unary_3330344;
+	N_val_unary_3330344 -> N_instr_ret_3330337;
+	N_val_extrt20 -> N_instr_ret_3330337;
+	N_val_alloc_3330269 -> N_val_unary_3330379;
+	N_val__Assurance_with_or_____string -> N_val_binary_3330422;
+	N_val_param_3329977 -> N_val_binary_3330422;
+	N_val_binary_3330422 -> N_val_binary_3330433;
+	N_val___does_not_exist__string -> N_val_binary_3330433;
+	N_val_binary_3330433 -> N_val_call_3330394;
+	N_val_unary_3330379 -> N_instr_ret_3330372;
+	N_val_call_3330394 -> N_instr_ret_3330372;
+	N_val_alloc_3330269 -> N_val_unary_3330465;
+	N_val_unary_3330465 -> N_instr_ret_3330458;
+	N_nil_1365374837 -> N_instr_ret_3330458;
+	N_val_field_3330149 -> N_val_alloc_3330144 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_3330144 -> N_val_alloc_3330144 [label="", style=dashed, color=blue];
+	N_val_field_3330167 -> N_val_alloc_3330144 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext7 -> N_val_alloc_3330144 [label="[*]", style=dashed, color=blue];
+}

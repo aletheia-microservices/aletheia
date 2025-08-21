@@ -1,0 +1,205 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1217941210 [label="if t29 goto 9 else 10", style=bold, shape=ellipse, color="black"];
+	N_instr__1217941210 [label="if t29 goto 9 else 10", style=bold, shape=ellipse, color="black"];
+	N_instr__1349531324 [label="if t22 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__1349531324 [label="if t22 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__576333162 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__576333162 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__892532193 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__892532193 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__910929333 [label="if t24 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__910929333 [label="if t24 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3542942 [label="return false:bool, t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3542942 [label="return false:bool, t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543068 [label="return false:bool, t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543068 [label="return false:bool, t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543172 [label="return false:bool, t23", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543172 [label="return false:bool, t23", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543208 [label="return false:bool, t25", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543208 [label="return false:bool, t25", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543315 [label="return false:bool, t28", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543315 [label="return false:bool, t28", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543337 [label="return true:bool, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3543337 [label="return true:bool, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1502197071 [label="*t0 = tt", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1502197071 [label="*t0 = tt", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3542984 [label="*t9 = \"Name\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3542984 [label="*t9 = \"Name\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3542999 [label="*t10 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3542999 [label="*t10 = t13", style=bold, shape=ellipse, color="blue"];
+	N_nil_1609817028 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_251372190 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__Name__string [label="\"Name\":string: \"Name\":string
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="blue"];
+	N_val__TrainType_already_____string [label="\"TrainType already...\":string: \"TrainType already...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__train__string [label="\"train\":string: \"train\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__train_db__string [label="\"train_db\":string: \"train_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3542833 [label="t0: local TrainType (tt)
+
+==== tainted ====
+_obj
+[write] @ train_db.train
+_obj.Name
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3542979 [label="t7: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3543094 [label="t19: new TrainType (saved_tt)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3542931 [label="t6: t5 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3543057 [label="t18: t17 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3543161 [label="t24: t23 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3543304 [label="t29: t28 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3542896 [label="t3: invoke t2.GetCollection(ctx, \"train_db\":string, \"train\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3543036 [label="t15: invoke t4.FindOne(ctx, t14, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3543136 [label="t21: invoke t16.One(ctx, t20)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3543232 [label="t25: errors.New(\"TrainType already...\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3543286 [label="t28: invoke t4.InsertOne(ctx, t27)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt16 [label="t16: extract t15 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt17 [label="t17: extract t15 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt22 [label="t22: extract t21 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt23 [label="t23: extract t21 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t3 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt5 [label="t5: extract t3 #1", style=bold, shape=ellipse, color="black"];
+	N_val_false_bool [label="false:bool: false:bool", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_3542880 [label="t1: &ts.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3542984 [label="t9: &t8.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_field_3542999 [label="t10: &t8.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_field_3543004 [label="t11: &t0.Name [#1]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_ifacet13 [label="t13: make interface{} <- string (t12)
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_ifacet20 [label="t20: make interface{} <- *TrainType (t19)", style=bold, shape=ellipse, color="black"];
+	N_val_ifacet27 [label="t27: make interface{} <- TrainType (t26)
+
+==== tainted ====
+_obj
+[write] @ train_db.train
+_obj.Name
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_indext8 [label="t8: &t7[0:int]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_param_3542783 [label="ts: parameter ts : *TrainServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3542812 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3542833 [label="tt: parameter tt : TrainType
+
+==== tainted ====
+_obj
+[write] @ train_db.train
+_obj.Name
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_slice_3542979 [label="t14: slice t7[:]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_true_bool [label="true:bool: true:bool", style=bold, shape=ellipse, color="yellow"];
+	N_val_unary_3542880 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3543004 [label="t12: *t11
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="red"];
+	N_val_unary_3543292 [label="t26: *t0
+
+==== tainted ====
+_obj
+[write] @ train_db.train
+_obj.Name
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="red"];
+	N_val_alloc_3542833 -> N_instr_store_1502197071;
+	N_val_param_3542833 -> N_instr_store_1502197071;
+	N_val_param_3542783 -> N_val_field_3542880;
+	N_val_field_3542880 -> N_val_unary_3542880;
+	N_val_param_3542812 -> N_val_call_3542896;
+	N_val__train_db__string -> N_val_call_3542896;
+	N_val__train__string -> N_val_call_3542896;
+	N_val_call_3542896 -> N_val_extrt4;
+	N_val_call_3542896 -> N_val_extrt5;
+	N_val_extrt5 -> N_val_binary_3542931;
+	N_nil_251372190 -> N_val_binary_3542931;
+	N_val_false_bool -> N_instr_ret_3542942;
+	N_val_extrt5 -> N_instr_ret_3542942;
+	N_val_alloc_3542979 -> N_val_indext8;
+	N_val_indext8 -> N_val_field_3542984;
+	N_val_indext8 -> N_val_field_3542999;
+	N_val_alloc_3542833 -> N_val_field_3543004;
+	N_val_field_3543004 -> N_val_unary_3543004;
+	N_val_field_3542984 -> N_instr_store_3542984;
+	N_val__Name__string -> N_instr_store_3542984;
+	N_val_unary_3543004 -> N_val_ifacet13;
+	N_val_field_3542999 -> N_instr_store_3542999;
+	N_val_ifacet13 -> N_instr_store_3542999;
+	N_val_alloc_3542979 -> N_val_slice_3542979;
+	N_val_param_3542812 -> N_val_call_3543036;
+	N_val_slice_3542979 -> N_val_call_3543036;
+	N_nil_1609817028 -> N_val_call_3543036;
+	N_val_call_3543036 -> N_val_extrt16;
+	N_val_call_3543036 -> N_val_extrt17;
+	N_val_extrt17 -> N_val_binary_3543057;
+	N_nil_251372190 -> N_val_binary_3543057;
+	N_val_false_bool -> N_instr_ret_3543068;
+	N_val_extrt17 -> N_instr_ret_3543068;
+	N_val_alloc_3543094 -> N_val_ifacet20;
+	N_val_param_3542812 -> N_val_call_3543136;
+	N_val_ifacet20 -> N_val_call_3543136;
+	N_val_call_3543136 -> N_val_extrt22;
+	N_val_call_3543136 -> N_val_extrt23;
+	N_val_extrt23 -> N_val_binary_3543161;
+	N_nil_251372190 -> N_val_binary_3543161;
+	N_val_false_bool -> N_instr_ret_3543172;
+	N_val_extrt23 -> N_instr_ret_3543172;
+	N_val__TrainType_already_____string -> N_val_call_3543232;
+	N_val_false_bool -> N_instr_ret_3543208;
+	N_val_call_3543232 -> N_instr_ret_3543208;
+	N_val_alloc_3542833 -> N_val_unary_3543292;
+	N_val_unary_3543292 -> N_val_ifacet27;
+	N_val_param_3542812 -> N_val_call_3543286;
+	N_val_ifacet27 -> N_val_call_3543286;
+	N_val_call_3543286 -> N_val_binary_3543304;
+	N_nil_251372190 -> N_val_binary_3543304;
+	N_val_false_bool -> N_instr_ret_3543315;
+	N_val_call_3543286 -> N_instr_ret_3543315;
+	N_val_true_bool -> N_instr_ret_3543337;
+	N_nil_251372190 -> N_instr_ret_3543337;
+	N_val_field_3542984 -> N_val_alloc_3542979 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_3542979 -> N_val_alloc_3542979 [label="", style=dashed, color=blue];
+	N_val_field_3543004 -> N_val_alloc_3542833 [label=".Name", style=dashed, color=blue];
+	N_val_field_3542999 -> N_val_alloc_3542979 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext8 -> N_val_alloc_3542979 [label="[*]", style=dashed, color=blue];
+}

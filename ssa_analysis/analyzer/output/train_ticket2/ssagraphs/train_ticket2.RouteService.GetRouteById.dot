@@ -1,0 +1,174 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1018208302 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1018208302 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1262729999 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1262729999 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1714298446 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1714298446 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1845814288 [label="if t19 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1845814288 [label="if t19 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3428972 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3428972 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429077 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429077 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429173 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429173 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429212 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t24", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429212 [label="return struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:Route, t24", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429286 [label="return t25, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3429286 [label="return t25, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3429037 [label="*t8 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3429037 [label="*t8 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3429050 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3429050 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_nil_131230463 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_708694972 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_val___does_not_exist__string [label="\" does not exist\":string: \" does not exist\":string
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val__ID__string [label="\"ID\":string: \"ID\":string
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="blue"];
+	N_val__Route_with_ID___string [label="\"Route with ID \":string: \"Route with ID \":string
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val__route__string [label="\"route\":string: \"route\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__route_db__string [label="\"route_db\":string: \"route_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3429032 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3429105 [label="t16: new Route (route)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3428961 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3429066 [label="t15: t14 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3429162 [label="t21: t20 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3429256 [label="t22: \"Route with ID \":string + id
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val_binary_3429261 [label="t23: t22 + \" does not exist\":string
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val_call_3428926 [label="t2: invoke t1.GetCollection(ctx, \"route_db\":string, \"route\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3429020 [label="t12: invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3429140 [label="t18: invoke t13.One(ctx, t17)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3429238 [label="t24: errors.New(t23)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt13 [label="t13: extract t12 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt14 [label="t14: extract t12 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t18 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt20 [label="t20: extract t18 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3428910 [label="t0: &r.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3429037 [label="t8: &t7.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="green"];
+	N_val_field_3429050 [label="t9: &t7.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- string (id)
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet17 [label="t17: make interface{} <- *Route (t16)", style=bold, shape=ellipse, color="black"];
+	N_val_indext7 [label="t7: &t6[0:int]
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="green"];
+	N_val_param_3428811 [label="r: parameter r : *RouteServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3428845 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3428866 [label="id: parameter id : string
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val_slice_3429032 [label="t11: slice t6[:]
+
+==== tainted ====
+_obj
+[read] @ route_db.route.ID
+", style=bold, shape=box, color="black"];
+	N_val_struct_ID_string__Stations___string__Distances___int64__StartStation_string__EndStation_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Route [label="struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route: struct{ID string; Stations []string; Distances []int64; StartStation string; EndStation string}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route", style=bold, shape=ellipse, color="yellow"];
+	N_val_unary_3428910 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3429293 [label="t25: *t16", style=bold, shape=ellipse, color="red"];
+	N_val_param_3428811 -> N_val_field_3428910;
+	N_val_field_3428910 -> N_val_unary_3428910;
+	N_val_param_3428845 -> N_val_call_3428926;
+	N_val__route_db__string -> N_val_call_3428926;
+	N_val__route__string -> N_val_call_3428926;
+	N_val_call_3428926 -> N_val_extrt3;
+	N_val_call_3428926 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_3428961;
+	N_nil_131230463 -> N_val_binary_3428961;
+	N_val_struct_ID_string__Stations___string__Distances___int64__StartStation_string__EndStation_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Route -> N_instr_ret_3428972;
+	N_val_extrt4 -> N_instr_ret_3428972;
+	N_val_alloc_3429032 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_3429037;
+	N_val_indext7 -> N_val_field_3429050;
+	N_val_field_3429037 -> N_instr_store_3429037;
+	N_val__ID__string -> N_instr_store_3429037;
+	N_val_param_3428866 -> N_val_ifacet10;
+	N_val_field_3429050 -> N_instr_store_3429050;
+	N_val_ifacet10 -> N_instr_store_3429050;
+	N_val_alloc_3429032 -> N_val_slice_3429032;
+	N_val_param_3428845 -> N_val_call_3429020;
+	N_val_slice_3429032 -> N_val_call_3429020;
+	N_nil_708694972 -> N_val_call_3429020;
+	N_val_call_3429020 -> N_val_extrt13;
+	N_val_call_3429020 -> N_val_extrt14;
+	N_val_extrt14 -> N_val_binary_3429066;
+	N_nil_131230463 -> N_val_binary_3429066;
+	N_val_struct_ID_string__Stations___string__Distances___int64__StartStation_string__EndStation_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Route -> N_instr_ret_3429077;
+	N_val_extrt14 -> N_instr_ret_3429077;
+	N_val_alloc_3429105 -> N_val_ifacet17;
+	N_val_param_3428845 -> N_val_call_3429140;
+	N_val_ifacet17 -> N_val_call_3429140;
+	N_val_call_3429140 -> N_val_extrt19;
+	N_val_call_3429140 -> N_val_extrt20;
+	N_val_extrt20 -> N_val_binary_3429162;
+	N_nil_131230463 -> N_val_binary_3429162;
+	N_val_struct_ID_string__Stations___string__Distances___int64__StartStation_string__EndStation_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Route -> N_instr_ret_3429173;
+	N_val_extrt20 -> N_instr_ret_3429173;
+	N_val__Route_with_ID___string -> N_val_binary_3429256;
+	N_val_param_3428866 -> N_val_binary_3429256;
+	N_val_binary_3429256 -> N_val_binary_3429261;
+	N_val___does_not_exist__string -> N_val_binary_3429261;
+	N_val_binary_3429261 -> N_val_call_3429238;
+	N_val_struct_ID_string__Stations___string__Distances___int64__StartStation_string__EndStation_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Route -> N_instr_ret_3429212;
+	N_val_call_3429238 -> N_instr_ret_3429212;
+	N_val_alloc_3429105 -> N_val_unary_3429293;
+	N_val_unary_3429293 -> N_instr_ret_3429286;
+	N_nil_131230463 -> N_instr_ret_3429286;
+	N_val_field_3429050 -> N_val_alloc_3429032 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext7 -> N_val_alloc_3429032 [label="[*]", style=dashed, color=blue];
+	N_val_field_3429037 -> N_val_alloc_3429032 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_3429032 -> N_val_alloc_3429032 [label="", style=dashed, color=blue];
+}

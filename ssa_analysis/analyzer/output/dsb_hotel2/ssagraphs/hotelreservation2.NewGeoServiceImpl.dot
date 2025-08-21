@@ -1,0 +1,23 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3938099 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3938099 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3938063 [label="*t1 = geoDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3938063 [label="*t1 = geoDB", style=bold, shape=ellipse, color="blue"];
+	N_nil_727542458 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3938057 [label="t0: new GeoServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_3938092 [label="t2: (*GeoServiceImpl).newGeoIndex(t0, ctx)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_3938063 [label="t1: &t0.geoDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make GeoService <- *GeoServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_3937884 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3937905 [label="geoDB: parameter geoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3938057 -> N_val_field_3938063;
+	N_val_field_3938063 -> N_instr_store_3938063;
+	N_val_param_3937905 -> N_instr_store_3938063;
+	N_val_alloc_3938057 -> N_val_call_3938092;
+	N_val_param_3937884 -> N_val_call_3938092;
+	N_val_alloc_3938057 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_3938099;
+	N_nil_727542458 -> N_instr_ret_3938099;
+	N_val_field_3938063 -> N_val_alloc_3938057 [label=".geoDB", style=dashed, color=blue];
+}

@@ -48,14 +48,21 @@ func RegisterFields(app *app.App, graphs []*ssagraph.SSAGraph) {
 			continue
 		}
 		lastNode := graph.GetNodes()[0]
+		fmt.Printf("lastNode instr: [%T] %s\n", lastNode.GetInstruction(), lastNode.GetInstruction())
 		if _, ok := lastNode.GetInstruction().(*ssa.Return); ok {
 			for _, edge := range graph.GetEdgesToNode(lastNode) {
 				fromNode := edge.GetFromNode()
+				fmt.Printf("fromNode instr: [%T] %s\n", fromNode.GetInstruction(), fromNode.GetInstruction())
 				if iface, ok := fromNode.GetInstruction().(*ssa.MakeInterface); ok {
+					fmt.Printf("iface: %s\n", iface)
+					fmt.Printf("iface X: [%T] %s\n", iface.X, iface.X)
 					if alloc, ok := iface.X.(*ssa.Alloc); ok {
+						fmt.Printf("alloc: %s\n", alloc)
+						fmt.Printf("alloc type: [%T] %s\n", alloc.Type(), alloc.Type())
 						if typesPointer, ok := alloc.Type().(*types.Pointer); ok {
 							if typesNamed, ok := typesPointer.Elem().(*types.Named); ok {
 								returnedService := app.GetServiceWithImplPathIfExists(typesNamed.String())
+								fmt.Printf("returned service: %s\n", returnedService)
 								if returnedService == service {
 									allocNode := graph.GetNodeByName(alloc.Name())
 									registerFieldsFromAlloc(app, graph, service, allocNode)
@@ -67,5 +74,8 @@ func RegisterFields(app *app.App, graphs []*ssagraph.SSAGraph) {
 				}
 			}
 		}
+		/* if service.GetName() == "DeliveryService" {
+			log.Fatalf("HERE 1!")
+		} */
 	}
 }

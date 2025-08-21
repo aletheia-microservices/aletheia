@@ -16,6 +16,8 @@ const (
 	APP_PATH_SOCKSHOP3               = "sockshop3/workflow/sockshop3"
 	APP_PATH_DSB_SN                  = "dsb_sn/workflow/socialnetwork"
 	APP_PATH_FOO_BAR                 = "foobar/workflow/foobar"
+	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
+	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
 )
 
 var APPS_PACKAGE_PATHS = []string{
@@ -25,6 +27,8 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP3,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SN,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
 }
 
 var APPS_SQL_TABLES = map[string][]string{

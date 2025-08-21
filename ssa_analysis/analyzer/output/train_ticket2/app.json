@@ -1,0 +1,278 @@
+{
+  "name": "train_ticket2",
+  "databases": [
+    "assurance_db",
+    "config_db",
+    "consignprice_db",
+    "contacts_db",
+    "delivery_db",
+    "delivery_q",
+    "money_db",
+    "payment_db",
+    "price_db",
+    "route_db",
+    "station_db",
+    "stationfood_db",
+    "train_db",
+    "trainfood_db",
+    "user_db"
+  ],
+  "services": [
+    {
+      "name": "AssuranceService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceService",
+      "pkg": "train_ticket2",
+      "impl": "AssuranceServiceImpl",
+      "fields": [
+        "db #0 (assurance_db)"
+      ],
+      "methods": [
+        "FindAssuranceById",
+        "FindAssuranceByOrderId",
+        "Create",
+        "DeleteById",
+        "DeleteByOrderId",
+        "Modify",
+        "GetAllAssurances",
+        "GetAllAssuranceTypes"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ConfigService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigService",
+      "pkg": "train_ticket2",
+      "impl": "ConfigServiceImpl",
+      "fields": [
+        "db #0 (config_db)"
+      ],
+      "methods": [
+        "Create",
+        "Update",
+        "Find",
+        "Delete",
+        "FindAll"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ConsignPriceService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignPriceService",
+      "pkg": "train_ticket2",
+      "impl": "ConsignPriceServiceImpl",
+      "fields": [
+        "db #0 (consignprice_db)"
+      ],
+      "methods": [
+        "GetPriceByWeightAndRegion",
+        "GetPriceInfo",
+        "GetPriceConfig",
+        "CreateAndModifyPriceConfig"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ContactsService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsService",
+      "pkg": "train_ticket2",
+      "impl": "ContactsServiceImpl",
+      "fields": [
+        "contactsDB #0 (contacts_db)"
+      ],
+      "methods": [
+        "FindContactsById",
+        "FindContactsByAccountId",
+        "CreateContacts",
+        "Delete",
+        "GetAllContacts",
+        "Modify"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "DeliveryService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DeliveryService",
+      "pkg": "train_ticket2",
+      "impl": "DeliveryServiceImpl",
+      "fields": [
+        "db #0 (delivery_db)",
+        "delQ #1 (delivery_q)"
+      ],
+      "methods": [
+        "Run"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "NewsService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.NewsService",
+      "pkg": "train_ticket2",
+      "impl": "NewsServiceImpl",
+      "fields": [],
+      "methods": [
+        "Hello"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "PaymentService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentService",
+      "pkg": "train_ticket2",
+      "impl": "PaymentServiceImpl",
+      "fields": [
+        "paymentDB #0 (payment_db)",
+        "moneyDB #1 (money_db)"
+      ],
+      "methods": [
+        "Pay",
+        "AddMoney",
+        "Query",
+        "InitPayment",
+        "Cleanup"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "PriceService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceService",
+      "pkg": "train_ticket2",
+      "impl": "PriceServiceImpl",
+      "fields": [
+        "priceDB #0 (price_db)"
+      ],
+      "methods": [
+        "FindByID",
+        "CreateNewPriceConfig",
+        "FindByRouteIDAndTrainType",
+        "FindByRouteIDsAndTrainTypes",
+        "GetAllPriceConfig",
+        "DeletePriceConfig",
+        "UpdatePriceConfig"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "RouteService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RouteService",
+      "pkg": "train_ticket2",
+      "impl": "RouteServiceImpl",
+      "fields": [
+        "db #0 (route_db)"
+      ],
+      "methods": [
+        "GetRouteByStartAndEnd",
+        "GetAllRoutes",
+        "GetRouteById",
+        "GetRouteByIds",
+        "DeleteRoute",
+        "CreateAndModify"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "StationFoodService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodService",
+      "pkg": "train_ticket2",
+      "impl": "StationFoodServiceImpl",
+      "fields": [
+        "db #0 (stationfood_db)"
+      ],
+      "methods": [
+        "CreateFoodStore",
+        "ListFoodStores",
+        "ListFoodStoresByStationName",
+        "GetFoodStoresByStationNames",
+        "GetFoodStoreByID",
+        "Cleanup"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "StationService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationService",
+      "pkg": "train_ticket2",
+      "impl": "StationServiceImpl",
+      "fields": [
+        "stationDB #0 (station_db)"
+      ],
+      "methods": [
+        "CreateStation",
+        "Exists",
+        "UpdateStation",
+        "DeleteStation",
+        "FindByID",
+        "FindByIDs",
+        "FindID",
+        "FindIDs"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "TrainFoodService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainFoodService",
+      "pkg": "train_ticket2",
+      "impl": "TrainFoodServiceImpl",
+      "fields": [
+        "db #0 (trainfood_db)"
+      ],
+      "methods": [
+        "CreateTrainFood",
+        "ListTrainFood",
+        "ListTrainFoodByTripID",
+        "Cleanup"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "TrainService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainService",
+      "pkg": "train_ticket2",
+      "impl": "TrainServiceImpl",
+      "fields": [
+        "db #0 (train_db)"
+      ],
+      "methods": [
+        "Create",
+        "Retrieve",
+        "RetrieveByName",
+        "RetrieveByNames",
+        "Update",
+        "Delete",
+        "AllTrains"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "UserService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserService",
+      "pkg": "train_ticket2",
+      "impl": "UserServiceImpl",
+      "fields": [
+        "userDB #0 (user_db)"
+      ],
+      "methods": [
+        "FindByUsername",
+        "FindByUserID",
+        "DeleteUser",
+        "GetAllUsers",
+        "SaveUser",
+        "UpdateUser"
+      ],
+      "services": [],
+      "databases": []
+    }
+  ]
+}

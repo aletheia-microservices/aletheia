@@ -1,0 +1,23 @@
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: main.init
+Block #0: main.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: main.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.init()
+			04: jump 2
+Block #2: main.init.init.done
+			00: return
+		Parameters:
+Function: main.main
+Block #0: main.main.entry
+			00: t0 = context.Background()
+			01: t1 = github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.NewGeoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.Nearby(t0, 0:float64, 0:float64)
+			05: return

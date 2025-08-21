@@ -55,6 +55,10 @@ func (service *Service) AddField(field *Field) {
 	service.fields = append(service.fields, field)
 }
 
+func (service *Service) GetAllFields() []*Field {
+	return service.fields
+}
+
 func (service *Service) GetFieldAt(idx int) *Field {
 	if idx < len(service.fields) {
 		return service.fields[idx]

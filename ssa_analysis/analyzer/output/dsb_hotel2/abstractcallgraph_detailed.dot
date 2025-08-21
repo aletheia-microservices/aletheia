@@ -1,0 +1,793 @@
+digraph G {
+	rankdir=TD;
+	ranksep=1.5;
+	nodesep=1;
+	subgraph cluster_clients {
+		style=invis;
+		N_client [label="client", style=bold, shape=invhouse, color="orange"];
+	}
+	subgraph cluster_services {
+		style=invis;
+		N_FrontEndService_SearchHandler [label="FrontEndService.SearchHandler
+
+==== param 1 (inDate) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.inDate
+[rpc] @ ReservationService.CheckAvailability.inDate
+
+
+==== param 2 (outDate) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.outDate
+[rpc] @ ReservationService.CheckAvailability.outDate
+
+
+==== param 3 (lat) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.lat
+
+
+==== param 4 (lon) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.lon
+
+
+==== param 5 (locale) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t9
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.t4
+", style=bold, shape=box, color="blue"];
+		N_ReservationService_MakeReservation [label="ReservationService.MakeReservation
+
+==== param 0 (customerName) tainted ====
+_obj
+[write, primary] @ reservation_db.reservation.CustomerName
+
+
+==== param 1 (hotelIds) tainted ====
+_obj[*]
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== param 4 (roomNumber) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Value
+[write, primary] @ reservation_db.reservation.Number
+
+
+==== ret 0 ([]string) tainted ====
+_obj[*]
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+", style=bold, shape=box, color="blue"];
+		N_GeoService_Nearby [label="GeoService.Nearby", style=bold, shape=box, color="blue"];
+		N_RateService_GetRates [label="RateService.GetRates
+
+==== param 0 (hotelIDs) tainted ====
+_obj[*]
+[read, primary] @ rate_cache.*.Key
+", style=bold, shape=box, color="blue"];
+		N_FrontEndService_RecommendHandler [label="FrontEndService.RecommendHandler
+
+==== param 0 (lat) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.lat
+
+
+==== param 1 (lon) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.lon
+
+
+==== param 2 (require) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.require
+
+
+==== param 3 (locale) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t16
+", style=bold, shape=box, color="blue"];
+		N_FrontEndService_UserHandler [label="FrontEndService.UserHandler
+
+==== param 0 (username) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.username
+
+
+==== param 1 (password) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.password
+", style=bold, shape=box, color="blue"];
+		N_SearchService_Nearby [label="SearchService.Nearby
+
+==== param 0 (lat) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.lat
+
+
+==== param 1 (lon) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.lon
+
+
+==== param 2 (inDate) tainted ====
+_obj
+[rpc] @ RateService.GetRates.inDate
+
+
+==== param 3 (outDate) tainted ====
+_obj
+[rpc] @ RateService.GetRates.outDate
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.t4
+", style=bold, shape=box, color="blue"];
+		N_UserService_CheckUser [label="UserService.CheckUser", style=bold, shape=box, color="blue"];
+		N_FrontEndService_ReservationHandler [label="FrontEndService.ReservationHandler
+
+==== param 0 (inDate) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.inDate
+
+
+==== param 1 (outDate) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.outDate
+
+
+==== param 2 (hotelId) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.t24[*]
+
+
+==== param 3 (customerName) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.customerName
+
+
+==== param 4 (username) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.username
+
+
+==== param 5 (password) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.password
+
+
+==== param 6 (roomNumber) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.roomNumber
+", style=bold, shape=box, color="blue"];
+		N_ReservationService_CheckAvailability [label="ReservationService.CheckAvailability
+
+==== param 1 (hotelIds) tainted ====
+_obj[*]
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== param 4 (roomNumber) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Value
+", style=bold, shape=box, color="blue"];
+		N_ProfileService_GetProfiles [label="ProfileService.GetProfiles
+
+==== param 0 (hotelIds) tainted ====
+_obj[*]
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+", style=bold, shape=box, color="blue"];
+		N_RecommendationService_GetRecommendations [label="RecommendationService.GetRecommendations", style=bold, shape=box, color="blue"];
+	}
+	subgraph cluster_databases {
+		style=invis;
+		N_reservation_db_number [label="reservation_db.number", style=bold, shape=cylinder, color="green"];
+		N_profile_cache_* [label="profile_cache.*", style=bold, shape=cylinder, color="green"];
+		N_profile_db_hotels [label="profile_db.hotels", style=bold, shape=cylinder, color="green"];
+		N_reservation_db_reservation [label="reservation_db.reservation", style=bold, shape=cylinder, color="green"];
+		N_reserv_cache_* [label="reserv_cache.*", style=bold, shape=cylinder, color="green"];
+		N_reserv_cache__cap [label="reserv_cache._cap", style=bold, shape=cylinder, color="green"];
+		N_rate_cache_* [label="rate_cache.*", style=bold, shape=cylinder, color="green"];
+	}
+	N_client -> N_FrontEndService_SearchHandler [label="SearchHandler()", color=orange];
+	N_FrontEndService_SearchHandler -> N_SearchService_Nearby [label="Nearby()
+
+==== arg 0 (lat) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.lat
+
+
+==== arg 1 (lon) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.lon
+
+
+==== arg 2 (inDate) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.inDate
+[rpc] @ ReservationService.CheckAvailability.inDate
+
+
+==== arg 3 (outDate) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.outDate
+[rpc] @ ReservationService.CheckAvailability.outDate
+
+
+==== ret 0 (t3) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.t3
+[rpc] @ ReservationService.CheckAvailability.t3
+
+
+==== ret 1 (t4) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.t4
+", color=blue];
+	N_FrontEndService_SearchHandler -> N_ReservationService_CheckAvailability [label="CheckAvailability()
+
+==== arg 0 (\"\":string) tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.\"\":string
+
+
+==== arg 1 (t3) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.t3
+[rpc] @ ReservationService.CheckAvailability.t3
+_obj[*]
+[read, secondary] @ reserv_cache.*.Key
+[read, secondary] @ reserv_cache._cap.Key
+[read, secondary] @ reservation_db.number.hotelid
+
+
+==== arg 2 (inDate) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.inDate
+[rpc] @ ReservationService.CheckAvailability.inDate
+
+
+==== arg 3 (outDate) tainted ====
+_obj
+[rpc] @ SearchService.Nearby.outDate
+[rpc] @ ReservationService.CheckAvailability.outDate
+
+
+==== arg 4 (1:int64) tainted ====
+_obj
+[read, secondary] @ reserv_cache.*.Value
+[rpc] @ ReservationService.CheckAvailability.1:int64
+
+
+==== ret 0 (t13) tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.t13
+[rpc] @ ProfileService.GetProfiles.t13
+
+
+==== ret 1 (t14) tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.t14
+", color=blue];
+	N_FrontEndService_SearchHandler -> N_ProfileService_GetProfiles [label="GetProfiles()
+
+==== arg 0 (t13) tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.t13
+[rpc] @ ProfileService.GetProfiles.t13
+_obj[*]
+[read, secondary] @ profile_cache.*.Key
+[read, secondary] @ profile_db.hotels.ID
+
+
+==== arg 1 (t9) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t9
+
+
+==== ret 0 (t21) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t21
+
+
+==== ret 1 (t22) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t22
+", color=blue];
+	N_SearchService_Nearby -> N_GeoService_Nearby [label="Nearby()
+
+==== arg 0 (lat) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.lat
+
+
+==== arg 1 (lon) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.lon
+
+
+==== ret 0 (t3) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.t3
+[rpc] @ RateService.GetRates.t3
+
+
+==== ret 1 (t4) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.t4
+", color=blue];
+	N_SearchService_Nearby -> N_RateService_GetRates [label="GetRates()
+
+==== arg 0 (t3) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.t3
+[rpc] @ RateService.GetRates.t3
+_obj[*]
+[read, secondary] @ rate_cache.*.Key
+
+
+==== arg 1 (inDate) tainted ====
+_obj
+[rpc] @ RateService.GetRates.inDate
+
+
+==== arg 2 (outDate) tainted ====
+_obj
+[rpc] @ RateService.GetRates.outDate
+
+
+==== ret 0 (t9) tainted ====
+_obj
+[rpc] @ RateService.GetRates.t9
+_obj.HotelID[*]
+[rpc] @ RateService.GetRates.t9[*].HotelID
+_obj[*]
+[rpc] @ RateService.GetRates.t9[*]
+
+
+==== ret 1 (t10) tainted ====
+_obj
+[rpc] @ RateService.GetRates.t10
+", color=blue];
+	N_RateService_GetRates -> N_rate_cache_* [label="Get()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ rate_cache.*.Key
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ rate_cache.*.Value
+", color=green];
+	N_RateService_GetRates -> N_rate_cache_* [label="Put()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ rate_cache.*.Key
+
+
+==== arg 1 (t40) tainted ====
+_obj
+[read, primary] @ rate_cache.*.Value
+", color=green];
+	N_ReservationService_CheckAvailability -> N_reserv_cache_* [label="Get()
+
+==== arg 0 (t41) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 1 (t49) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Value
+", color=green];
+	N_ReservationService_CheckAvailability -> N_reserv_cache__cap [label="Get()
+
+==== arg 0 (t22) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 1 (t83) tainted ====
+_obj
+[read, primary] @ reserv_cache._cap.Value
+", color=green];
+	N_ReservationService_CheckAvailability -> N_reserv_cache_* [label="Put()
+
+==== arg 0 (t41) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 1 (t115) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Value
+", color=green];
+	N_ReservationService_CheckAvailability -> N_reservation_db_number [label="FindOne()
+
+==== arg 0 (t122) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 1 (t125) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 2 (t127) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 3 (t124) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 4 (t123) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+", color=green];
+	N_ReservationService_CheckAvailability -> N_reserv_cache__cap [label="Put()
+
+==== arg 0 (t22) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.hotelid
+
+
+==== arg 1 (t149) tainted ====
+_obj
+[read, primary] @ reserv_cache._cap.Value
+", color=green];
+	N_ProfileService_GetProfiles -> N_profile_cache_* [label="Get()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Value
+", color=green];
+	N_ProfileService_GetProfiles -> N_profile_db_hotels [label="FindOne()
+
+==== arg 0 (t28) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+
+
+==== arg 1 (t30) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+
+
+==== arg 2 (t31) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+
+
+==== arg 3 (t29) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+
+
+==== arg 4 (t33) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+", color=green];
+	N_ProfileService_GetProfiles -> N_profile_cache_* [label="Put()
+
+==== arg 0 (t6) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+
+
+==== arg 1 (t43) tainted ====
+_obj
+[read, primary] @ profile_cache.*.Value
+", color=green];
+	N_client -> N_FrontEndService_RecommendHandler [label="RecommendHandler()", color=orange];
+	N_FrontEndService_RecommendHandler -> N_RecommendationService_GetRecommendations [label="GetRecommendations()
+
+==== arg 0 (require) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.require
+
+
+==== arg 1 (lat) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.lat
+
+
+==== arg 2 (lon) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.lon
+
+
+==== ret 0 (t8) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.t8
+[rpc] @ ProfileService.GetProfiles.t8
+
+
+==== ret 1 (t9) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.t9
+", color=blue];
+	N_FrontEndService_RecommendHandler -> N_ProfileService_GetProfiles [label="GetProfiles()
+
+==== arg 0 (t8) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.t8
+[rpc] @ ProfileService.GetProfiles.t8
+_obj[*]
+[read, secondary] @ profile_cache.*.Key
+[read, secondary] @ profile_db.hotels.ID
+
+
+==== arg 1 (t16) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t16
+
+
+==== ret 0 (t20) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t20
+
+
+==== ret 1 (t21) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t21
+", color=blue];
+	N_client -> N_FrontEndService_UserHandler [label="UserHandler()", color=orange];
+	N_FrontEndService_UserHandler -> N_UserService_CheckUser [label="CheckUser()
+
+==== arg 0 (username) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.username
+
+
+==== arg 1 (password) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.password
+
+
+==== ret 0 (t5) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.t5
+
+
+==== ret 1 (t6) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.t6
+", color=blue];
+	N_client -> N_FrontEndService_ReservationHandler [label="ReservationHandler()", color=orange];
+	N_FrontEndService_ReservationHandler -> N_UserService_CheckUser [label="CheckUser()
+
+==== arg 0 (username) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.username
+
+
+==== arg 1 (password) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.password
+
+
+==== ret 0 (t15) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.t15
+
+
+==== ret 1 (t16) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.t16
+", color=blue];
+	N_FrontEndService_ReservationHandler -> N_ReservationService_MakeReservation [label="MakeReservation()
+
+==== arg 0 (customerName) tainted ====
+_obj
+[write, secondary] @ reservation_db.reservation.CustomerName
+[rpc] @ ReservationService.MakeReservation.customerName
+
+
+==== arg 1 (t24) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.t24
+_obj[*]
+[read, secondary] @ reserv_cache.*.Key
+[read, secondary] @ reserv_cache._cap.Key
+[read, secondary] @ reservation_db.number.HotelID
+[write, secondary] @ reservation_db.reservation.HotelId
+[rpc] @ ReservationService.MakeReservation.t24[*]
+
+
+==== arg 2 (inDate) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.inDate
+
+
+==== arg 3 (outDate) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.outDate
+
+
+==== arg 4 (roomNumber) tainted ====
+_obj
+[read, secondary] @ reserv_cache.*.Value
+[write, secondary] @ reservation_db.reservation.Number
+[rpc] @ ReservationService.MakeReservation.roomNumber
+
+
+==== ret 0 (t26) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.t26
+_obj[*]
+[read, secondary] @ reserv_cache.*.Key
+[read, secondary] @ reserv_cache._cap.Key
+[read, secondary] @ reservation_db.number.HotelID
+[write, secondary] @ reservation_db.reservation.HotelId
+
+
+==== ret 1 (t27) tainted ====
+_obj
+[rpc] @ ReservationService.MakeReservation.t27
+", color=blue];
+	N_ReservationService_MakeReservation -> N_reserv_cache_* [label="Get()
+
+==== arg 0 (t37) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 1 (t41) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Value
+[write, primary] @ reservation_db.reservation.Number
+", color=green];
+	N_ReservationService_MakeReservation -> N_reserv_cache__cap [label="Get()
+
+==== arg 0 (t25) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 1 (t83) tainted ====
+_obj
+[read, primary] @ reserv_cache._cap.Value
+", color=green];
+	N_ReservationService_MakeReservation -> N_reservation_db_number [label="FindOne()
+
+==== arg 0 (t106) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 1 (t109) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 2 (t108) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 3 (t107) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 4 (t111) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+", color=green];
+	N_ReservationService_MakeReservation -> N_reserv_cache__cap [label="Put()
+
+==== arg 0 (t25) tainted ====
+_obj
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 1 (t129) tainted ====
+_obj
+[read, primary] @ reserv_cache._cap.Value
+", color=green];
+	N_ReservationService_MakeReservation -> N_reservation_db_reservation [label="InsertOne()
+
+==== arg 0 (t146) tainted ====
+_obj
+[write, primary] @ reservation_db.reservation
+_obj.CustomerName
+[write, primary] @ reservation_db.reservation.CustomerName
+_obj.HotelId
+[read, primary] @ reserv_cache.*.Key
+[read, primary] @ reserv_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelID
+[write, primary] @ reservation_db.reservation.HotelId
+_obj.InDate
+[write, primary] @ reservation_db.reservation.InDate
+_obj.Number
+[read, primary] @ reserv_cache.*.Value
+[write, primary] @ reservation_db.reservation.Number
+_obj.OutDate
+[write, primary] @ reservation_db.reservation.OutDate
+", color=green];
+	N_ReservationService_MakeReservation -> N_reserv_cache_* [label="Put()
+
+==== arg 0 (t156) tainted ====
+_obj
+[write, primary] @ reserv_cache.*.Key
+
+
+==== arg 1 (t160) tainted ====
+_obj
+[write, primary] @ reserv_cache.*.Value
+", color=green];
+}

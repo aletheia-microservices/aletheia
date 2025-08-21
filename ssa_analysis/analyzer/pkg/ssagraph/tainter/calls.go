@@ -177,7 +177,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					// sanity check
 					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
+						log.Fatalf("database (%s) extracted from value (%s) not found for app with databases: %v", database, databaseVal.String(), graph.GetApp().GetAllDatabases())
 					}
 
 					var valFieldPathLst []ValFieldPath
@@ -440,7 +440,9 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				}
 
 				if valFieldPathLst == nil {
-					log.Fatalf("[CALLS CACHE] could not save any cache key for call: %v\n", call)
+					// [TO BE IMPROVED]
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheKeyVal, fieldpath: database + "." + namespace + ".Key"})
+					fmt.Printf("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
 				}
 
 				// track cache value
@@ -458,6 +460,7 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 // it cannot be used for NoSQLDatabase calls because the collection is extracted beforehand
 func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (string, bool) {
 	if ssaFieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
+		fmt.Printf("[TAINT - QUEUE] ssa field addr (field=%d): %s\n", ssaFieldAddr.Field, ssaFieldAddr.String())
 		if ssaParam, ok := ssaFieldAddr.X.(*ssa.Parameter); ok {
 			fmt.Printf("[TAINT - QUEUE] queue loaded from parameter (%d)\n", ssaFieldAddr.Field)
 			if typesPointer, ok := ssaParam.Type().(*types.Pointer); ok {
@@ -465,14 +468,20 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 					// e.g., github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
 					serviceImplPath := typeNamed.String()
 					service := graph.GetApp().GetServiceWithImplPath(serviceImplPath)
+					fmt.Printf("[TAINT - QUEUE] service fields: %v\n", service.GetAllFields())
 					field := service.GetFieldAt(ssaFieldAddr.Field)
+					fmt.Printf("[TAINT - QUEUE] field: %s\n", field.String())
 
 					database := field.GetWiringName()
+
+					if database == "" {
+						log.Fatalf("[TAINT - QUEUE] empty database name!\n")
+					}
 
 					// sanity check
 					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
+						log.Fatalf("[TAINT - QUEUE] database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
 					}
 
 					return database, true

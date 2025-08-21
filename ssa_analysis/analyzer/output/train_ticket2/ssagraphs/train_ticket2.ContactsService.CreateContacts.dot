@@ -1,0 +1,378 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1213794553 [label="if t30 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1213794553 [label="if t30 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1221985708 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1221985708 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__2010295074 [label="if t33 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__2010295074 [label="if t33 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__245369910 [label="if t36 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__245369910 [label="if t36 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3342137 [label="return t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342137 [label="return t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342379 [label="return t29", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342379 [label="return t29", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342469 [label="return t35", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342469 [label="return t35", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342535 [label="return t34", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342535 [label="return t34", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342578 [label="return t40", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3342578 [label="return t40", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2045226488 [label="*t0 = contact", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2045226488 [label="*t0 = contact", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342172 [label="*t9 = \"AccountID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342172 [label="*t9 = \"AccountID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342192 [label="*t10 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342192 [label="*t10 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342218 [label="*t15 = \"DocumentNumber\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342218 [label="*t15 = \"DocumentNumber\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342243 [label="*t16 = t19", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342243 [label="*t16 = t19", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342274 [label="*t21 = \"DocumentType\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342274 [label="*t21 = \"DocumentType\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342297 [label="*t22 = t25", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342297 [label="*t22 = t25", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342558 [label="*t37 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3342558 [label="*t37 = userID", style=bold, shape=ellipse, color="blue"];
+	N_nil_1200826915 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1590502203 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__AccountID__string [label="\"AccountID\":string: \"AccountID\":string
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="blue"];
+	N_val__Contact_already_e_____string [label="\"Contact already e...\":string: \"Contact already e...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__DocumentNumber__string [label="\"DocumentNumber\":string: \"DocumentNumber\":string
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="blue"];
+	N_val__DocumentType__string [label="\"DocumentType\":string: \"DocumentType\":string
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="blue"];
+	N_val__contacts__string [label="\"contacts\":string: \"contacts\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__contacts_db__string [label="\"contacts_db\":string: \"contacts_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3342005 [label="t0: local Contact (contact)
+
+==== tainted ====
+_obj
+[write] @ contacts_db.contacts
+_obj.AccountID
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentType
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3342167 [label="t7: new [3]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="orange"];
+	N_val_binary_3342126 [label="t6: t5 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3342368 [label="t30: t29 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3342524 [label="t36: t34 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3342085 [label="t3: invoke t2.GetCollection(ctx, \"contacts_db\":string, \"contacts\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3342347 [label="t27: invoke t4.FindOne(ctx, t26, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3342438 [label="t32: invoke t28.One(ctx, t31)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3342486 [label="t35: errors.New(\"Contact already e...\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3342599 [label="t40: invoke t4.InsertOne(ctx, t39)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt28 [label="t28: extract t27 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt29 [label="t29: extract t27 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt33 [label="t33: extract t32 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt34 [label="t34: extract t32 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t3 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt5 [label="t5: extract t3 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3342061 [label="t1: &c.contactsDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3342172 [label="t9: &t8.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342192 [label="t10: &t8.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342202 [label="t11: &t0.AccountID [#1]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342218 [label="t15: &t14.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342243 [label="t16: &t14.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342253 [label="t17: &t0.DocumentNumber [#4]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342274 [label="t21: &t20.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342297 [label="t22: &t20.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342307 [label="t23: &t0.DocumentType [#3]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_field_3342558 [label="t37: &t0.AccountID [#1]
+
+==== tainted ====
+_obj
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_ifacet13 [label="t13: make interface{} <- string (t12)
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet19 [label="t19: make interface{} <- string (t18)
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet25 [label="t25: make interface{} <- int (t24)
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet31 [label="t31: make interface{} <- Contact (struct{ID string; AccountID string; Name string; DocumentType int; DocumentNumber string; PhoneNumber string}{}:Contact)", style=bold, shape=ellipse, color="black"];
+	N_val_ifacet39 [label="t39: make interface{} <- Contact (t38)
+
+==== tainted ====
+_obj
+[write] @ contacts_db.contacts
+_obj.AccountID
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentType
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_indext14 [label="t14: &t7[1:int]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_indext20 [label="t20: &t7[2:int]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_indext8 [label="t8: &t7[0:int]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="green"];
+	N_val_param_3341945 [label="c: parameter c : *ContactsServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3341984 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3342005 [label="contact: parameter contact : Contact
+
+==== tainted ====
+_obj
+[write] @ contacts_db.contacts
+_obj.AccountID
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentType
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_param_3342022 [label="userID: parameter userID : string
+
+==== tainted ====
+_obj
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_slice_3342167 [label="t26: slice t7[:]
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="black"];
+	N_val_struct_ID_string__AccountID_string__Name_string__DocumentType_int__DocumentNumber_string__PhoneNumber_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Contact [label="struct{ID string; AccountID string; Name string; DocumentType int; DocumentNumber string; PhoneNumber string}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact: struct{ID string; AccountID string; Name string; DocumentType int; DocumentNumber string; PhoneNumber string}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3342061 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3342202 [label="t12: *t11
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="red"];
+	N_val_unary_3342253 [label="t18: *t17
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="red"];
+	N_val_unary_3342307 [label="t24: *t23
+
+==== tainted ====
+_obj
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="red"];
+	N_val_unary_3342605 [label="t38: *t0
+
+==== tainted ====
+_obj
+[write] @ contacts_db.contacts
+_obj.AccountID
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+_obj.DocumentType
+[read] @ contacts_db.contacts.DocumentNumber
+[write] @ contacts_db.contacts.AccountID
+", style=bold, shape=box, color="red"];
+	N_val_alloc_3342005 -> N_instr_store_2045226488;
+	N_val_param_3342005 -> N_instr_store_2045226488;
+	N_val_param_3341945 -> N_val_field_3342061;
+	N_val_field_3342061 -> N_val_unary_3342061;
+	N_val_param_3341984 -> N_val_call_3342085;
+	N_val__contacts_db__string -> N_val_call_3342085;
+	N_val__contacts__string -> N_val_call_3342085;
+	N_val_call_3342085 -> N_val_extrt4;
+	N_val_call_3342085 -> N_val_extrt5;
+	N_val_extrt5 -> N_val_binary_3342126;
+	N_nil_1590502203 -> N_val_binary_3342126;
+	N_val_extrt5 -> N_instr_ret_3342137;
+	N_val_alloc_3342167 -> N_val_indext8;
+	N_val_indext8 -> N_val_field_3342172;
+	N_val_indext8 -> N_val_field_3342192;
+	N_val_alloc_3342005 -> N_val_field_3342202;
+	N_val_field_3342202 -> N_val_unary_3342202;
+	N_val_field_3342172 -> N_instr_store_3342172;
+	N_val__AccountID__string -> N_instr_store_3342172;
+	N_val_unary_3342202 -> N_val_ifacet13;
+	N_val_field_3342192 -> N_instr_store_3342192;
+	N_val_ifacet13 -> N_instr_store_3342192;
+	N_val_alloc_3342167 -> N_val_indext14;
+	N_val_indext14 -> N_val_field_3342218;
+	N_val_indext14 -> N_val_field_3342243;
+	N_val_alloc_3342005 -> N_val_field_3342253;
+	N_val_field_3342253 -> N_val_unary_3342253;
+	N_val_field_3342218 -> N_instr_store_3342218;
+	N_val__DocumentNumber__string -> N_instr_store_3342218;
+	N_val_unary_3342253 -> N_val_ifacet19;
+	N_val_field_3342243 -> N_instr_store_3342243;
+	N_val_ifacet19 -> N_instr_store_3342243;
+	N_val_alloc_3342167 -> N_val_indext20;
+	N_val_indext20 -> N_val_field_3342274;
+	N_val_indext20 -> N_val_field_3342297;
+	N_val_alloc_3342005 -> N_val_field_3342307;
+	N_val_field_3342307 -> N_val_unary_3342307;
+	N_val_field_3342274 -> N_instr_store_3342274;
+	N_val__DocumentType__string -> N_instr_store_3342274;
+	N_val_unary_3342307 -> N_val_ifacet25;
+	N_val_field_3342297 -> N_instr_store_3342297;
+	N_val_ifacet25 -> N_instr_store_3342297;
+	N_val_alloc_3342167 -> N_val_slice_3342167;
+	N_val_param_3341984 -> N_val_call_3342347;
+	N_val_slice_3342167 -> N_val_call_3342347;
+	N_nil_1200826915 -> N_val_call_3342347;
+	N_val_call_3342347 -> N_val_extrt28;
+	N_val_call_3342347 -> N_val_extrt29;
+	N_val_extrt29 -> N_val_binary_3342368;
+	N_nil_1590502203 -> N_val_binary_3342368;
+	N_val_extrt29 -> N_instr_ret_3342379;
+	N_val_struct_ID_string__AccountID_string__Name_string__DocumentType_int__DocumentNumber_string__PhoneNumber_string____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_Contact -> N_val_ifacet31;
+	N_val_param_3341984 -> N_val_call_3342438;
+	N_val_ifacet31 -> N_val_call_3342438;
+	N_val_call_3342438 -> N_val_extrt33;
+	N_val_call_3342438 -> N_val_extrt34;
+	N_val__Contact_already_e_____string -> N_val_call_3342486;
+	N_val_call_3342486 -> N_instr_ret_3342469;
+	N_val_extrt34 -> N_val_binary_3342524;
+	N_nil_1590502203 -> N_val_binary_3342524;
+	N_val_extrt34 -> N_instr_ret_3342535;
+	N_val_alloc_3342005 -> N_val_field_3342558;
+	N_val_field_3342558 -> N_instr_store_3342558;
+	N_val_param_3342022 -> N_instr_store_3342558;
+	N_val_alloc_3342005 -> N_val_unary_3342605;
+	N_val_unary_3342605 -> N_val_ifacet39;
+	N_val_param_3341984 -> N_val_call_3342599;
+	N_val_ifacet39 -> N_val_call_3342599;
+	N_val_call_3342599 -> N_instr_ret_3342578;
+	N_val_field_3342172 -> N_val_alloc_3342167 [label="[*].Key", style=dashed, color=blue];
+	N_val_field_3342243 -> N_val_alloc_3342167 [label="[*].Value", style=dashed, color=blue];
+	N_val_field_3342297 -> N_val_alloc_3342167 [label="[*].Value", style=dashed, color=blue];
+	N_val_field_3342558 -> N_val_alloc_3342005 [label=".AccountID", style=dashed, color=blue];
+	N_val_field_3342202 -> N_val_alloc_3342005 [label=".AccountID", style=dashed, color=blue];
+	N_val_indext14 -> N_val_alloc_3342167 [label="[*]", style=dashed, color=blue];
+	N_val_field_3342307 -> N_val_alloc_3342005 [label=".DocumentType", style=dashed, color=blue];
+	N_val_field_3342274 -> N_val_alloc_3342167 [label="[*].Key", style=dashed, color=blue];
+	N_val_field_3342253 -> N_val_alloc_3342005 [label=".DocumentNumber", style=dashed, color=blue];
+	N_val_field_3342218 -> N_val_alloc_3342167 [label="[*].Key", style=dashed, color=blue];
+	N_val_field_3342192 -> N_val_alloc_3342167 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext20 -> N_val_alloc_3342167 [label="[*]", style=dashed, color=blue];
+	N_val_indext8 -> N_val_alloc_3342167 [label="[*]", style=dashed, color=blue];
+	N_val_slice_3342167 -> N_val_alloc_3342167 [label="", style=dashed, color=blue];
+}

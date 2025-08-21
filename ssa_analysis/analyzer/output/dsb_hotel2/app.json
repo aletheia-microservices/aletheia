@@ -1,0 +1,153 @@
+{
+  "name": "dsb_hotel2",
+  "databases": [
+    "geo_db",
+    "profile_cache",
+    "profile_db",
+    "rate_cache",
+    "rate_db",
+    "recommendations_db",
+    "reserv_cache",
+    "reservation_db",
+    "user_db"
+  ],
+  "services": [
+    {
+      "name": "FrontEndService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndService",
+      "pkg": "hotelreservation2",
+      "impl": "FrontEndServiceImpl",
+      "fields": [
+        "searchService #0 (search_service)",
+        "profileService #1 (profile_service)",
+        "recommendationService #2 (recommendation_service)",
+        "userService #3 (user_service)",
+        "reservationService #4 (reservation_service)"
+      ],
+      "methods": [
+        "SearchHandler",
+        "RecommendHandler",
+        "UserHandler",
+        "ReservationHandler"
+      ],
+      "services": [
+        "ProfileService",
+        "RecommendationService",
+        "ReservationService",
+        "SearchService",
+        "UserService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "GeoService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoService",
+      "pkg": "hotelreservation2",
+      "impl": "GeoServiceImpl",
+      "fields": [
+        "geoDB #0 (geo_db)"
+      ],
+      "methods": [
+        "Nearby"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ProfileService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileService",
+      "pkg": "hotelreservation2",
+      "impl": "ProfileServiceImpl",
+      "fields": [
+        "profileCache #0 (profile_cache)",
+        "profileDB #1 (profile_db)"
+      ],
+      "methods": [
+        "GetProfiles"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "RateService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RateService",
+      "pkg": "hotelreservation2",
+      "impl": "RateServiceImpl",
+      "fields": [
+        "rateCache #0 (rate_cache)",
+        "rateDB #1 (rate_db)"
+      ],
+      "methods": [
+        "GetRates"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "RecommendationService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationService",
+      "pkg": "hotelreservation2",
+      "impl": "RecommendationServiceImpl",
+      "fields": [
+        "recommendDB #0",
+        "hotels #1"
+      ],
+      "methods": [
+        "GetRecommendations"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ReservationService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationService",
+      "pkg": "hotelreservation2",
+      "impl": "ReservationServiceImpl",
+      "fields": [
+        "reserveCache #0 (reserv_cache)",
+        "reserveDB #1 (reservation_db)",
+        "CacheHits #2",
+        "NumRequests #3"
+      ],
+      "methods": [
+        "MakeReservation",
+        "CheckAvailability"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "SearchService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.SearchService",
+      "pkg": "hotelreservation2",
+      "impl": "SearchServiceImpl",
+      "fields": [
+        "geoService #0 (geo_service)",
+        "rateService #1 (rate_service)"
+      ],
+      "methods": [
+        "Nearby"
+      ],
+      "services": [
+        "GeoService",
+        "RateService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "UserService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserService",
+      "pkg": "hotelreservation2",
+      "impl": "UserServiceImpl",
+      "fields": [
+        "users #0",
+        "userDB #1"
+      ],
+      "methods": [
+        "CheckUser"
+      ],
+      "services": [],
+      "databases": []
+    }
+  ]
+}

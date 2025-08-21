@@ -1,0 +1,188 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1168265345 [label="if t8 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1168265345 [label="if t8 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1470854389 [label="if t23 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__1470854389 [label="if t23 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__1736913714 [label="if t15 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1736913714 [label="if t15 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__369411716 [label="jump 4", style=bold, shape=ellipse, color="black"];
+	N_instr__369411716 [label="jump 4", style=bold, shape=ellipse, color="black"];
+	N_instr__404962968 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__404962968 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3933315 [label="return t7, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933315 [label="return t7, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933513 [label="return t17, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933513 [label="return t17, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933642 [label="return t25, t22", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933642 [label="return t25, t22", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933675 [label="return t21, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3933675 [label="return t21, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1127640818 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val____string [label="\"\":string: \"\":string
+
+==== tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability."":string
+", style=bold, shape=box, color="black"];
+	N_val__en__string [label="\"en\":string: \"en\":string
+
+==== tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t9
+", style=bold, shape=box, color="black"];
+	N_val_1_int64 [label="1:int64: 1:int64
+
+==== tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.1:int64
+", style=bold, shape=box, color="yellow"];
+	N_val_alloc_3933336 [label="t6: new [0]HotelProfile (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_3933534 [label="t16: new [0]HotelProfile (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_3933663 [label="t24: new [0]HotelProfile (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3933304 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3933358 [label="t8: locale == \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3933502 [label="t15: t14 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3933631 [label="t23: t22 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3933263 [label="t2: invoke t1.Nearby(ctx, lat, lon, inDate, outDate)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3933449 [label="t12: invoke t11.CheckAvailability(ctx, \"\":string, t3, inDate, outDate, 1:int64)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3933591 [label="t20: invoke t19.GetProfiles(ctx, t13, t9)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt13 [label="t13: extract t12 #0
+
+==== tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.t13
+[rpc] @ ProfileService.GetProfiles.t13
+", style=bold, shape=box, color="black"];
+	N_val_extrt14 [label="t14: extract t12 #1
+
+==== tainted ====
+_obj
+[rpc] @ ReservationService.CheckAvailability.t14
+", style=bold, shape=box, color="black"];
+	N_val_extrt21 [label="t21: extract t20 #0
+
+==== tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t21
+", style=bold, shape=box, color="black"];
+	N_val_extrt22 [label="t22: extract t20 #1
+
+==== tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t22
+", style=bold, shape=box, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ SearchService.Nearby.t3
+[rpc] @ ReservationService.CheckAvailability.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
+
+==== tainted ====
+_obj
+[rpc] @ SearchService.Nearby.t4
+", style=bold, shape=box, color="black"];
+	N_val_field_3933243 [label="t0: &f.searchService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3933413 [label="t10: &f.reservationService [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3933565 [label="t18: &f.profileService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3933040 [label="f: parameter f : *FrontEndServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3933078 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3933099 [label="customerName: parameter customerName : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_3933120 [label="inDate: parameter inDate : string
+
+==== tainted ====
+_obj
+[rpc] @ SearchService.Nearby.inDate
+[rpc] @ ReservationService.CheckAvailability.inDate
+", style=bold, shape=box, color="black"];
+	N_val_param_3933135 [label="outDate: parameter outDate : string
+
+==== tainted ====
+_obj
+[rpc] @ SearchService.Nearby.outDate
+[rpc] @ ReservationService.CheckAvailability.outDate
+", style=bold, shape=box, color="black"];
+	N_val_param_3933151 [label="lat: parameter lat : float64
+
+==== tainted ====
+_obj
+[rpc] @ SearchService.Nearby.lat
+", style=bold, shape=box, color="black"];
+	N_val_param_3933164 [label="lon: parameter lon : float64
+
+==== tainted ====
+_obj
+[rpc] @ SearchService.Nearby.lon
+", style=bold, shape=box, color="black"];
+	N_val_param_3933177 [label="locale: parameter locale : string
+
+==== tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t9
+", style=bold, shape=box, color="black"];
+	N_val_phi_3933177 [label="t9: phi [2: locale, 3: \"en\":string] #locale
+
+==== tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t9
+", style=bold, shape=box, color="black"];
+	N_val_slice_3933336 [label="t7: slice t6[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3933534 [label="t17: slice t16[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3933663 [label="t25: slice t24[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3933243 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3933413 [label="t11: *t10", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3933565 [label="t19: *t18", style=bold, shape=ellipse, color="red"];
+	N_val_param_3933040 -> N_val_field_3933243;
+	N_val_field_3933243 -> N_val_unary_3933243;
+	N_val_param_3933078 -> N_val_call_3933263;
+	N_val_param_3933151 -> N_val_call_3933263;
+	N_val_param_3933164 -> N_val_call_3933263;
+	N_val_param_3933120 -> N_val_call_3933263;
+	N_val_param_3933135 -> N_val_call_3933263;
+	N_val_call_3933263 -> N_val_extrt3;
+	N_val_call_3933263 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_3933304;
+	N_nil_1127640818 -> N_val_binary_3933304;
+	N_val_alloc_3933336 -> N_val_slice_3933336;
+	N_val_slice_3933336 -> N_instr_ret_3933315;
+	N_val_extrt4 -> N_instr_ret_3933315;
+	N_val_param_3933177 -> N_val_binary_3933358;
+	N_val____string -> N_val_binary_3933358;
+	N_val_param_3933177 -> N_val_phi_3933177;
+	N_val__en__string -> N_val_phi_3933177;
+	N_val_param_3933040 -> N_val_field_3933413;
+	N_val_field_3933413 -> N_val_unary_3933413;
+	N_val_param_3933078 -> N_val_call_3933449;
+	N_val____string -> N_val_call_3933449;
+	N_val_extrt3 -> N_val_call_3933449;
+	N_val_param_3933120 -> N_val_call_3933449;
+	N_val_param_3933135 -> N_val_call_3933449;
+	N_val_1_int64 -> N_val_call_3933449;
+	N_val_call_3933449 -> N_val_extrt13;
+	N_val_call_3933449 -> N_val_extrt14;
+	N_val_extrt14 -> N_val_binary_3933502;
+	N_nil_1127640818 -> N_val_binary_3933502;
+	N_val_alloc_3933534 -> N_val_slice_3933534;
+	N_val_slice_3933534 -> N_instr_ret_3933513;
+	N_nil_1127640818 -> N_instr_ret_3933513;
+	N_val_param_3933040 -> N_val_field_3933565;
+	N_val_field_3933565 -> N_val_unary_3933565;
+	N_val_param_3933078 -> N_val_call_3933591;
+	N_val_extrt13 -> N_val_call_3933591;
+	N_val_phi_3933177 -> N_val_call_3933591;
+	N_val_call_3933591 -> N_val_extrt21;
+	N_val_call_3933591 -> N_val_extrt22;
+	N_val_extrt22 -> N_val_binary_3933631;
+	N_nil_1127640818 -> N_val_binary_3933631;
+	N_val_alloc_3933663 -> N_val_slice_3933663;
+	N_val_slice_3933663 -> N_instr_ret_3933642;
+	N_val_extrt22 -> N_instr_ret_3933642;
+	N_val_extrt21 -> N_instr_ret_3933675;
+	N_nil_1127640818 -> N_instr_ret_3933675;
+	N_val_slice_3933534 -> N_val_alloc_3933534 [label="", style=dashed, color=blue];
+	N_val_slice_3933336 -> N_val_alloc_3933336 [label="", style=dashed, color=blue];
+	N_val_slice_3933663 -> N_val_alloc_3933663 [label="", style=dashed, color=blue];
+}

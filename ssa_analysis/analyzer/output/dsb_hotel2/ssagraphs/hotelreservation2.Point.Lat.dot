@@ -1,0 +1,17 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3939438 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3939438 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1555234042 [label="*t0 = p", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1555234042 [label="*t0 = p", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_3939413 [label="t0: local Point (p)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_3939447 [label="t1: &t0.Plat [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3939413 [label="p: parameter p : Point", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3939447 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_3939413 -> N_instr_store_1555234042;
+	N_val_param_3939413 -> N_instr_store_1555234042;
+	N_val_alloc_3939413 -> N_val_field_3939447;
+	N_val_field_3939447 -> N_val_unary_3939447;
+	N_val_unary_3939447 -> N_instr_ret_3939438;
+	N_val_field_3939447 -> N_val_alloc_3939413 [label=".Plat", style=dashed, color=blue];
+}

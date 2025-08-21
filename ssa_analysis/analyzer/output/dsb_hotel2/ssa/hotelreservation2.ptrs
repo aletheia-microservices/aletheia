@@ -1,0 +1,1114 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndServiceImpl).RecommendHandler ###
+f (@RecommendHandler): (*ssa.Parameter) (parameter f : *FrontEndServiceImpl)
+
+ctx (@RecommendHandler): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@RecommendHandler): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t1 (@RecommendHandler): (*ssa.Alloc)
+
+t2 (@RecommendHandler): (*ssa.Slice) (slice t1[:])
+	 → t1 (@RecommendHandler): (*ssa.Alloc)
+
+t4 (@RecommendHandler): (*ssa.Call) (errors.New(t3))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@RecommendHandler): (*ssa.FieldAddr) (&f.recommendationService [#2])
+
+t6 (@RecommendHandler): (*ssa.UnOp) (*t5)
+
+t8 (@RecommendHandler): (*ssa.Extract) (extract t7 #0)
+
+t9 (@RecommendHandler): (*ssa.Extract) (extract t7 #1)
+
+t13 (@RecommendHandler): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t13 (@RecommendHandler): (*ssa.Alloc)
+
+t14 (@RecommendHandler): (*ssa.Slice) (slice t13[:])
+	 → t13 (@RecommendHandler): (*ssa.Alloc)
+
+t17 (@RecommendHandler): (*ssa.FieldAddr) (&f.profileService [#1])
+
+t18 (@RecommendHandler): (*ssa.UnOp) (*t17)
+
+t20 (@RecommendHandler): (*ssa.Extract) (extract t19 #0)
+
+t21 (@RecommendHandler): (*ssa.Extract) (extract t19 #1)
+
+t23 (@RecommendHandler): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t23 (@RecommendHandler): (*ssa.Alloc)
+
+t24 (@RecommendHandler): (*ssa.Slice) (slice t23[:])
+	 → t23 (@RecommendHandler): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndServiceImpl).ReservationHandler ###
+f (@ReservationHandler): (*ssa.Parameter) (parameter f : *FrontEndServiceImpl)
+
+ctx (@ReservationHandler): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@ReservationHandler): (*ssa.Call) (errors.New("Please specify in...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t4 (@ReservationHandler): (*ssa.Call) (errors.New("Please check inDa...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t7 (@ReservationHandler): (*ssa.Call) (errors.New("Please specify ho...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t9 (@ReservationHandler): (*ssa.Call) (errors.New("Please specify cu...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t11 (@ReservationHandler): (*ssa.Call) (errors.New("Please specify us...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t12 (@ReservationHandler): (*ssa.FieldAddr) (&f.userService [#3])
+
+t13 (@ReservationHandler): (*ssa.UnOp) (*t12)
+
+t16 (@ReservationHandler): (*ssa.Extract) (extract t14 #1)
+
+t19 (@ReservationHandler): (*ssa.Call) (errors.New("Invalid credentials":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t20 (@ReservationHandler): (*ssa.FieldAddr) (&f.reservationService [#4])
+
+t21 (@ReservationHandler): (*ssa.UnOp) (*t20)
+
+t22 (@ReservationHandler): (*ssa.Alloc) (new [1]string (slicelit))
+	 → t22 (@ReservationHandler): (*ssa.Alloc)
+
+t23 (@ReservationHandler): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@ReservationHandler): (*ssa.Alloc)
+
+t24 (@ReservationHandler): (*ssa.Slice) (slice t22[:])
+	 → t22 (@ReservationHandler): (*ssa.Alloc)
+
+t26 (@ReservationHandler): (*ssa.Extract) (extract t25 #0)
+
+t27 (@ReservationHandler): (*ssa.Extract) (extract t25 #1)
+
+t31 (@ReservationHandler): (*ssa.Call) (errors.New("Failed to make re...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndServiceImpl).SearchHandler ###
+f (@SearchHandler): (*ssa.Parameter) (parameter f : *FrontEndServiceImpl)
+
+ctx (@SearchHandler): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@SearchHandler): (*ssa.FieldAddr) (&f.searchService [#0])
+
+t1 (@SearchHandler): (*ssa.UnOp) (*t0)
+
+t3 (@SearchHandler): (*ssa.Extract) (extract t2 #0)
+
+t4 (@SearchHandler): (*ssa.Extract) (extract t2 #1)
+
+t6 (@SearchHandler): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t6 (@SearchHandler): (*ssa.Alloc)
+
+t7 (@SearchHandler): (*ssa.Slice) (slice t6[:])
+	 → t6 (@SearchHandler): (*ssa.Alloc)
+
+t10 (@SearchHandler): (*ssa.FieldAddr) (&f.reservationService [#4])
+
+t11 (@SearchHandler): (*ssa.UnOp) (*t10)
+
+t13 (@SearchHandler): (*ssa.Extract) (extract t12 #0)
+
+t14 (@SearchHandler): (*ssa.Extract) (extract t12 #1)
+
+t16 (@SearchHandler): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t16 (@SearchHandler): (*ssa.Alloc)
+
+t17 (@SearchHandler): (*ssa.Slice) (slice t16[:])
+	 → t16 (@SearchHandler): (*ssa.Alloc)
+
+t18 (@SearchHandler): (*ssa.FieldAddr) (&f.profileService [#1])
+
+t19 (@SearchHandler): (*ssa.UnOp) (*t18)
+
+t21 (@SearchHandler): (*ssa.Extract) (extract t20 #0)
+
+t22 (@SearchHandler): (*ssa.Extract) (extract t20 #1)
+
+t24 (@SearchHandler): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t24 (@SearchHandler): (*ssa.Alloc)
+
+t25 (@SearchHandler): (*ssa.Slice) (slice t24[:])
+	 → t24 (@SearchHandler): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndServiceImpl).UserHandler ###
+f (@UserHandler): (*ssa.Parameter) (parameter f : *FrontEndServiceImpl)
+
+ctx (@UserHandler): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@UserHandler): (*ssa.Call) (errors.New("Please specify us...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t2 (@UserHandler): (*ssa.FieldAddr) (&f.userService [#3])
+
+t3 (@UserHandler): (*ssa.UnOp) (*t2)
+
+t6 (@UserHandler): (*ssa.Extract) (extract t4 #1)
+
+t9 (@UserHandler): (*ssa.Call) (errors.New("Invalid Credentials":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoServiceImpl).Nearby ###
+g (@Nearby): (*ssa.Parameter) (parameter g : *GeoServiceImpl)
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+ctx (@Nearby): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoServiceImpl).newGeoIndex ###
+g (@newGeoIndex): (*ssa.Parameter) (parameter g : *GeoServiceImpl)
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+ctx (@newGeoIndex): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@newGeoIndex): (*ssa.FieldAddr) (&g.geoDB [#0])
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+t1 (@newGeoIndex): (*ssa.UnOp) (*t0)
+
+t3 (@newGeoIndex): (*ssa.Extract) (extract t2 #0)
+
+t4 (@newGeoIndex): (*ssa.Extract) (extract t2 #1)
+
+t6 (@newGeoIndex): (*ssa.Alloc) (new []Point (points))
+	 → t6 (@newGeoIndex): (*ssa.Alloc)
+
+t7 (@newGeoIndex): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@newGeoIndex): (*ssa.Alloc)
+
+t8 (@newGeoIndex): (*ssa.Slice) (slice t7[:])
+	 → t7 (@newGeoIndex): (*ssa.Alloc)
+
+t10 (@newGeoIndex): (*ssa.Extract) (extract t9 #0)
+
+t11 (@newGeoIndex): (*ssa.Extract) (extract t9 #1)
+
+t13 (@newGeoIndex): (*ssa.MakeInterface) (make interface{} <- *[]Point (t6))
+	 → t13 (@newGeoIndex): (*ssa.MakeInterface)
+
+t14 (@newGeoIndex): (*ssa.Call) (invoke t10.All(ctx, t13))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileServiceImpl).GetProfiles ###
+p (@GetProfiles): (*ssa.Parameter) (parameter p : *ProfileServiceImpl)
+
+ctx (@GetProfiles): (*ssa.Parameter) (parameter ctx : context.Context)
+
+hotelIds (@GetProfiles): (*ssa.Parameter) (parameter hotelIds : []string)
+
+t1 (@GetProfiles): (*ssa.Phi) (phi [0: nil:[]HotelProfile, 7: t25] #profiles)
+	 → t25 (@GetProfiles): (*ssa.Call)
+
+t5 (@GetProfiles): (*ssa.IndexAddr) (&hotelIds[t3])
+
+t7 (@GetProfiles): (*ssa.Alloc) (new HotelProfile (profile))
+	 → t7 (@GetProfiles): (*ssa.Alloc)
+
+t8 (@GetProfiles): (*ssa.FieldAddr) (&p.profileCache [#0])
+
+t9 (@GetProfiles): (*ssa.UnOp) (*t8)
+
+t10 (@GetProfiles): (*ssa.MakeInterface) (make interface{} <- *HotelProfile (t7))
+	 → t10 (@GetProfiles): (*ssa.MakeInterface)
+
+t13 (@GetProfiles): (*ssa.Extract) (extract t11 #1)
+
+t15 (@GetProfiles): (*ssa.FieldAddr) (&p.profileDB [#1])
+
+t16 (@GetProfiles): (*ssa.UnOp) (*t15)
+
+t18 (@GetProfiles): (*ssa.Extract) (extract t17 #0)
+
+t19 (@GetProfiles): (*ssa.Extract) (extract t17 #1)
+
+t22 (@GetProfiles): (*ssa.Alloc) (new [1]HotelProfile (varargs))
+	 → t22 (@GetProfiles): (*ssa.Alloc)
+
+t23 (@GetProfiles): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@GetProfiles): (*ssa.Alloc)
+
+t24 (@GetProfiles): (*ssa.Slice) (slice t22[:])
+	 → t22 (@GetProfiles): (*ssa.Alloc)
+
+t25 (@GetProfiles): (*ssa.Call) (append(t1, t24...))
+	 → t25 (@GetProfiles): (*ssa.Call)
+
+t26 (@GetProfiles): (*ssa.Alloc) (new [0]HotelProfile (slicelit))
+	 → t26 (@GetProfiles): (*ssa.Alloc)
+
+t27 (@GetProfiles): (*ssa.Slice) (slice t26[:])
+	 → t26 (@GetProfiles): (*ssa.Alloc)
+
+t28 (@GetProfiles): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t28 (@GetProfiles): (*ssa.Alloc)
+
+t29 (@GetProfiles): (*ssa.IndexAddr) (&t28[0:int])
+	 → t28 (@GetProfiles): (*ssa.Alloc)
+
+t30 (@GetProfiles): (*ssa.FieldAddr) (&t29.Key [#0])
+	 → t28 (@GetProfiles): (*ssa.Alloc)
+
+t31 (@GetProfiles): (*ssa.FieldAddr) (&t29.Value [#1])
+	 → t28 (@GetProfiles): (*ssa.Alloc)
+
+t32 (@GetProfiles): (*ssa.MakeInterface) (make interface{} <- string (t6))
+	 → t32 (@GetProfiles): (*ssa.MakeInterface)
+
+t33 (@GetProfiles): (*ssa.Slice) (slice t28[:])
+	 → t28 (@GetProfiles): (*ssa.Alloc)
+
+t35 (@GetProfiles): (*ssa.Extract) (extract t34 #0)
+
+t36 (@GetProfiles): (*ssa.Extract) (extract t34 #1)
+
+t38 (@GetProfiles): (*ssa.MakeInterface) (make interface{} <- *HotelProfile (t7))
+	 → t38 (@GetProfiles): (*ssa.MakeInterface)
+
+t40 (@GetProfiles): (*ssa.FieldAddr) (&p.profileCache [#0])
+
+t41 (@GetProfiles): (*ssa.UnOp) (*t40)
+
+t43 (@GetProfiles): (*ssa.MakeInterface) (make interface{} <- HotelProfile (t42))
+	 → t43 (@GetProfiles): (*ssa.MakeInterface)
+
+t44 (@GetProfiles): (*ssa.Call) (invoke t41.Put(ctx, t6, t43))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RateServiceImpl).GetRates ###
+r (@GetRates): (*ssa.Parameter) (parameter r : *RateServiceImpl)
+
+ctx (@GetRates): (*ssa.Parameter) (parameter ctx : context.Context)
+
+hotelIDs (@GetRates): (*ssa.Parameter) (parameter hotelIDs : []string)
+
+t1 (@GetRates): (*ssa.Phi) (phi [0: nil:[]RatePlan, 7: t22] #rate_plans)
+	 → t22 (@GetRates): (*ssa.Call)
+
+t5 (@GetRates): (*ssa.IndexAddr) (&hotelIDs[t3])
+
+t7 (@GetRates): (*ssa.Alloc) (new []RatePlan (hotel_rate_plans))
+	 → t7 (@GetRates): (*ssa.Alloc)
+
+t8 (@GetRates): (*ssa.FieldAddr) (&r.rateCache [#0])
+
+t9 (@GetRates): (*ssa.UnOp) (*t8)
+
+t10 (@GetRates): (*ssa.MakeInterface) (make interface{} <- *[]RatePlan (t7))
+	 → t10 (@GetRates): (*ssa.MakeInterface)
+
+t13 (@GetRates): (*ssa.Extract) (extract t11 #1)
+
+t15 (@GetRates): (*ssa.FieldAddr) (&r.rateDB [#1])
+
+t16 (@GetRates): (*ssa.UnOp) (*t15)
+
+t18 (@GetRates): (*ssa.Extract) (extract t17 #0)
+
+t19 (@GetRates): (*ssa.Extract) (extract t17 #1)
+
+t21 (@GetRates): (*ssa.UnOp) (*t7)
+
+t22 (@GetRates): (*ssa.Call) (append(t1, t21...))
+	 → t22 (@GetRates): (*ssa.Call)
+
+t23 (@GetRates): (*ssa.Alloc) (new [0]RatePlan (slicelit))
+	 → t23 (@GetRates): (*ssa.Alloc)
+
+t24 (@GetRates): (*ssa.Slice) (slice t23[:])
+	 → t23 (@GetRates): (*ssa.Alloc)
+
+t25 (@GetRates): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t25 (@GetRates): (*ssa.Alloc)
+
+t26 (@GetRates): (*ssa.IndexAddr) (&t25[0:int])
+	 → t25 (@GetRates): (*ssa.Alloc)
+
+t27 (@GetRates): (*ssa.FieldAddr) (&t26.Key [#0])
+	 → t25 (@GetRates): (*ssa.Alloc)
+
+t28 (@GetRates): (*ssa.FieldAddr) (&t26.Value [#1])
+	 → t25 (@GetRates): (*ssa.Alloc)
+
+t29 (@GetRates): (*ssa.MakeInterface) (make interface{} <- string (t6))
+	 → t29 (@GetRates): (*ssa.MakeInterface)
+
+t30 (@GetRates): (*ssa.Slice) (slice t25[:])
+	 → t25 (@GetRates): (*ssa.Alloc)
+
+t32 (@GetRates): (*ssa.Extract) (extract t31 #0)
+
+t33 (@GetRates): (*ssa.Extract) (extract t31 #1)
+
+t35 (@GetRates): (*ssa.MakeInterface) (make interface{} <- *[]RatePlan (t7))
+	 → t35 (@GetRates): (*ssa.MakeInterface)
+
+t36 (@GetRates): (*ssa.Call) (invoke t32.All(ctx, t35))
+
+t37 (@GetRates): (*ssa.FieldAddr) (&r.rateCache [#0])
+
+t38 (@GetRates): (*ssa.UnOp) (*t37)
+
+t39 (@GetRates): (*ssa.UnOp) (*t7)
+
+t40 (@GetRates): (*ssa.MakeInterface) (make interface{} <- []RatePlan (t39))
+	 → t40 (@GetRates): (*ssa.MakeInterface)
+
+t41 (@GetRates): (*ssa.Call) (invoke t38.Put(ctx, t6, t40))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationServiceImpl).GetRecommendations ###
+r (@GetRecommendations): (*ssa.Parameter) (parameter r : *RecommendationServiceImpl)
+
+ctx (@GetRecommendations): (*ssa.Parameter) (parameter ctx : context.Context)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationServiceImpl).LoadRecommendations ###
+r (@LoadRecommendations): (*ssa.Parameter) (parameter r : *RecommendationServiceImpl)
+
+ctx (@LoadRecommendations): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@LoadRecommendations): (*ssa.FieldAddr) (&r.recommendDB [#0])
+
+t1 (@LoadRecommendations): (*ssa.UnOp) (*t0)
+
+t3 (@LoadRecommendations): (*ssa.Extract) (extract t2 #0)
+
+t4 (@LoadRecommendations): (*ssa.Extract) (extract t2 #1)
+
+t6 (@LoadRecommendations): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@LoadRecommendations): (*ssa.Alloc)
+
+t7 (@LoadRecommendations): (*ssa.Slice) (slice t6[:])
+	 → t6 (@LoadRecommendations): (*ssa.Alloc)
+
+t9 (@LoadRecommendations): (*ssa.Extract) (extract t8 #0)
+
+t10 (@LoadRecommendations): (*ssa.Extract) (extract t8 #1)
+
+t12 (@LoadRecommendations): (*ssa.Alloc) (new []Hotel (hotels))
+	 → t12 (@LoadRecommendations): (*ssa.Alloc)
+
+t13 (@LoadRecommendations): (*ssa.MakeInterface) (make interface{} <- *[]Hotel (t12))
+	 → t13 (@LoadRecommendations): (*ssa.MakeInterface)
+
+t14 (@LoadRecommendations): (*ssa.Call) (invoke t9.All(ctx, t13))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationServiceImpl).CheckAvailability ###
+r (@CheckAvailability): (*ssa.Parameter) (parameter r : *ReservationServiceImpl)
+
+ctx (@CheckAvailability): (*ssa.Parameter) (parameter ctx : context.Context)
+
+hotelIds (@CheckAvailability): (*ssa.Parameter) (parameter hotelIds : []string)
+
+t0 (@CheckAvailability): (*ssa.FieldAddr) (&r.reserveDB [#1])
+
+t1 (@CheckAvailability): (*ssa.UnOp) (*t0)
+
+t3 (@CheckAvailability): (*ssa.Extract) (extract t2 #0)
+
+t4 (@CheckAvailability): (*ssa.Extract) (extract t2 #1)
+
+t6 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t6 (@CheckAvailability): (*ssa.Alloc)
+
+t7 (@CheckAvailability): (*ssa.Slice) (slice t6[:])
+	 → t6 (@CheckAvailability): (*ssa.Alloc)
+
+t8 (@CheckAvailability): (*ssa.FieldAddr) (&r.reserveDB [#1])
+
+t9 (@CheckAvailability): (*ssa.UnOp) (*t8)
+
+t11 (@CheckAvailability): (*ssa.Extract) (extract t10 #0)
+
+t12 (@CheckAvailability): (*ssa.Extract) (extract t10 #1)
+
+t14 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t14 (@CheckAvailability): (*ssa.Alloc)
+
+t15 (@CheckAvailability): (*ssa.Slice) (slice t14[:])
+	 → t14 (@CheckAvailability): (*ssa.Alloc)
+
+t17 (@CheckAvailability): (*ssa.Phi) (phi [4: nil:[]string, 9: t54, 24: t54] #available_hotels)
+	 → t158 (@CheckAvailability): (*ssa.Call)
+
+t21 (@CheckAvailability): (*ssa.IndexAddr) (&hotelIds[t19])
+
+t26 (@CheckAvailability): (*ssa.Extract) (extract t24 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t30 (@CheckAvailability): (*ssa.Extract) (extract t28 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t42 (@CheckAvailability): (*ssa.FieldAddr) (&r.NumRequests [#3])
+
+t45 (@CheckAvailability): (*ssa.FieldAddr) (&r.NumRequests [#3])
+
+t46 (@CheckAvailability): (*ssa.Alloc) (new int64 (count))
+	 → t46 (@CheckAvailability): (*ssa.Alloc)
+
+t47 (@CheckAvailability): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t48 (@CheckAvailability): (*ssa.UnOp) (*t47)
+
+t49 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- *int64 (t46))
+	 → t49 (@CheckAvailability): (*ssa.MakeInterface)
+
+t52 (@CheckAvailability): (*ssa.Extract) (extract t50 #1)
+
+t54 (@CheckAvailability): (*ssa.Phi) (phi [6: t17, 29: t54, 30: t158] #available_hotels)
+	 → t158 (@CheckAvailability): (*ssa.Call)
+
+t57 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t57 (@CheckAvailability): (*ssa.Alloc)
+
+t58 (@CheckAvailability): (*ssa.Slice) (slice t57[:])
+	 → t57 (@CheckAvailability): (*ssa.Alloc)
+
+t59 (@CheckAvailability): (*ssa.Alloc) (new []Reservation (reservations))
+	 → t59 (@CheckAvailability): (*ssa.Alloc)
+
+t60 (@CheckAvailability): (*ssa.Alloc) (new [3]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t61 (@CheckAvailability): (*ssa.IndexAddr) (&t60[0:int])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t62 (@CheckAvailability): (*ssa.FieldAddr) (&t61.Key [#0])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t63 (@CheckAvailability): (*ssa.FieldAddr) (&t61.Value [#1])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t64 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- string (t22))
+	 → t64 (@CheckAvailability): (*ssa.MakeInterface)
+
+t65 (@CheckAvailability): (*ssa.IndexAddr) (&t60[1:int])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t66 (@CheckAvailability): (*ssa.FieldAddr) (&t65.Key [#0])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t67 (@CheckAvailability): (*ssa.FieldAddr) (&t65.Value [#1])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t68 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- string (t32))
+	 → t68 (@CheckAvailability): (*ssa.MakeInterface)
+
+t69 (@CheckAvailability): (*ssa.IndexAddr) (&t60[2:int])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t70 (@CheckAvailability): (*ssa.FieldAddr) (&t69.Key [#0])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t71 (@CheckAvailability): (*ssa.FieldAddr) (&t69.Value [#1])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t72 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- string (t35))
+	 → t72 (@CheckAvailability): (*ssa.MakeInterface)
+
+t73 (@CheckAvailability): (*ssa.Slice) (slice t60[:])
+	 → t60 (@CheckAvailability): (*ssa.Alloc)
+
+t75 (@CheckAvailability): (*ssa.Extract) (extract t74 #0)
+
+t76 (@CheckAvailability): (*ssa.Extract) (extract t74 #1)
+
+t79 (@CheckAvailability): (*ssa.Alloc) (new int64 (capacity))
+	 → t79 (@CheckAvailability): (*ssa.Alloc)
+
+t80 (@CheckAvailability): (*ssa.Alloc) (new HotelNumber (hotelNumber))
+	 → t80 (@CheckAvailability): (*ssa.Alloc)
+
+t81 (@CheckAvailability): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t82 (@CheckAvailability): (*ssa.UnOp) (*t81)
+
+t83 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- *int64 (t79))
+	 → t83 (@CheckAvailability): (*ssa.MakeInterface)
+
+t86 (@CheckAvailability): (*ssa.Extract) (extract t84 #1)
+
+t87 (@CheckAvailability): (*ssa.FieldAddr) (&r.NumRequests [#3])
+
+t90 (@CheckAvailability): (*ssa.FieldAddr) (&r.NumRequests [#3])
+
+t92 (@CheckAvailability): (*ssa.FieldAddr) (&r.CacheHits [#2])
+
+t95 (@CheckAvailability): (*ssa.FieldAddr) (&r.CacheHits [#2])
+
+t96 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t96 (@CheckAvailability): (*ssa.Alloc)
+
+t97 (@CheckAvailability): (*ssa.Slice) (slice t96[:])
+	 → t96 (@CheckAvailability): (*ssa.Alloc)
+
+t98 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- *[]Reservation (t59))
+	 → t98 (@CheckAvailability): (*ssa.MakeInterface)
+
+t99 (@CheckAvailability): (*ssa.Call) (invoke t75.All(ctx, t98))
+
+t100 (@CheckAvailability): (*ssa.Alloc) (local Reservation (reservation))
+	 → t100 (@CheckAvailability): (*ssa.Alloc)
+
+t101 (@CheckAvailability): (*ssa.UnOp) (*t59)
+
+t106 (@CheckAvailability): (*ssa.IndexAddr) (&t101[t104])
+
+t108 (@CheckAvailability): (*ssa.FieldAddr) (&t100.Number [#4])
+	 → t100 (@CheckAvailability): (*ssa.Alloc)
+
+t112 (@CheckAvailability): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t113 (@CheckAvailability): (*ssa.UnOp) (*t112)
+
+t115 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- int64 (t114))
+	 → t115 (@CheckAvailability): (*ssa.MakeInterface)
+
+t116 (@CheckAvailability): (*ssa.Call) (invoke t113.Put(ctx, t41, t115))
+
+t118 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t118 (@CheckAvailability): (*ssa.Alloc)
+
+t119 (@CheckAvailability): (*ssa.Slice) (slice t118[:])
+	 → t118 (@CheckAvailability): (*ssa.Alloc)
+
+t120 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t120 (@CheckAvailability): (*ssa.Alloc)
+
+t121 (@CheckAvailability): (*ssa.Slice) (slice t120[:])
+	 → t120 (@CheckAvailability): (*ssa.Alloc)
+
+t122 (@CheckAvailability): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t122 (@CheckAvailability): (*ssa.Alloc)
+
+t123 (@CheckAvailability): (*ssa.IndexAddr) (&t122[0:int])
+	 → t122 (@CheckAvailability): (*ssa.Alloc)
+
+t124 (@CheckAvailability): (*ssa.FieldAddr) (&t123.Key [#0])
+	 → t122 (@CheckAvailability): (*ssa.Alloc)
+
+t125 (@CheckAvailability): (*ssa.FieldAddr) (&t123.Value [#1])
+	 → t122 (@CheckAvailability): (*ssa.Alloc)
+
+t126 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- string (t22))
+	 → t126 (@CheckAvailability): (*ssa.MakeInterface)
+
+t127 (@CheckAvailability): (*ssa.Slice) (slice t122[:])
+	 → t122 (@CheckAvailability): (*ssa.Alloc)
+
+t129 (@CheckAvailability): (*ssa.Extract) (extract t128 #0)
+
+t130 (@CheckAvailability): (*ssa.Extract) (extract t128 #1)
+
+t136 (@CheckAvailability): (*ssa.FieldAddr) (&r.CacheHits [#2])
+
+t139 (@CheckAvailability): (*ssa.FieldAddr) (&r.CacheHits [#2])
+
+t140 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t140 (@CheckAvailability): (*ssa.Alloc)
+
+t141 (@CheckAvailability): (*ssa.Slice) (slice t140[:])
+	 → t140 (@CheckAvailability): (*ssa.Alloc)
+
+t142 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- *HotelNumber (t80))
+	 → t142 (@CheckAvailability): (*ssa.MakeInterface)
+
+t144 (@CheckAvailability): (*ssa.FieldAddr) (&t80.Number [#1])
+	 → t80 (@CheckAvailability): (*ssa.Alloc)
+
+t146 (@CheckAvailability): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t147 (@CheckAvailability): (*ssa.UnOp) (*t146)
+
+t149 (@CheckAvailability): (*ssa.MakeInterface) (make interface{} <- int64 (t148))
+	 → t149 (@CheckAvailability): (*ssa.MakeInterface)
+
+t150 (@CheckAvailability): (*ssa.Call) (invoke t147.Put(ctx, t78, t149))
+
+t152 (@CheckAvailability): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t152 (@CheckAvailability): (*ssa.Alloc)
+
+t153 (@CheckAvailability): (*ssa.Slice) (slice t152[:])
+	 → t152 (@CheckAvailability): (*ssa.Alloc)
+
+t155 (@CheckAvailability): (*ssa.Alloc) (new [1]string (varargs))
+	 → t155 (@CheckAvailability): (*ssa.Alloc)
+
+t156 (@CheckAvailability): (*ssa.IndexAddr) (&t155[0:int])
+	 → t155 (@CheckAvailability): (*ssa.Alloc)
+
+t157 (@CheckAvailability): (*ssa.Slice) (slice t155[:])
+	 → t155 (@CheckAvailability): (*ssa.Alloc)
+
+t158 (@CheckAvailability): (*ssa.Call) (append(t54, t157...))
+	 → t158 (@CheckAvailability): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationServiceImpl).MakeReservation ###
+r (@MakeReservation): (*ssa.Parameter) (parameter r : *ReservationServiceImpl)
+
+ctx (@MakeReservation): (*ssa.Parameter) (parameter ctx : context.Context)
+
+hotelIds (@MakeReservation): (*ssa.Parameter) (parameter hotelIds : []string)
+
+t0 (@MakeReservation): (*ssa.FieldAddr) (&r.reserveDB [#1])
+
+t1 (@MakeReservation): (*ssa.UnOp) (*t0)
+
+t3 (@MakeReservation): (*ssa.Extract) (extract t2 #0)
+
+t4 (@MakeReservation): (*ssa.Extract) (extract t2 #1)
+
+t6 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t6 (@MakeReservation): (*ssa.Alloc)
+
+t7 (@MakeReservation): (*ssa.Slice) (slice t6[:])
+	 → t6 (@MakeReservation): (*ssa.Alloc)
+
+t8 (@MakeReservation): (*ssa.FieldAddr) (&r.reserveDB [#1])
+
+t9 (@MakeReservation): (*ssa.UnOp) (*t8)
+
+t11 (@MakeReservation): (*ssa.Extract) (extract t10 #0)
+
+t12 (@MakeReservation): (*ssa.Extract) (extract t10 #1)
+
+t14 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t14 (@MakeReservation): (*ssa.Alloc)
+
+t15 (@MakeReservation): (*ssa.Slice) (slice t14[:])
+	 → t14 (@MakeReservation): (*ssa.Alloc)
+
+t19 (@MakeReservation): (*ssa.Extract) (extract t17 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t23 (@MakeReservation): (*ssa.Extract) (extract t21 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t24 (@MakeReservation): (*ssa.IndexAddr) (&hotelIds[0:int])
+
+t28 (@MakeReservation): (*ssa.MakeMap) (make map[string]int64 )
+	 → t28 (@MakeReservation): (*ssa.MakeMap)
+
+t38 (@MakeReservation): (*ssa.Alloc) (new int64 (room_number))
+	 → t38 (@MakeReservation): (*ssa.Alloc)
+
+t39 (@MakeReservation): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t40 (@MakeReservation): (*ssa.UnOp) (*t39)
+
+t41 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- *int64 (t38))
+	 → t41 (@MakeReservation): (*ssa.MakeInterface)
+
+t44 (@MakeReservation): (*ssa.Extract) (extract t42 #1)
+
+t49 (@MakeReservation): (*ssa.Extract) (extract t47 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t55 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t55 (@MakeReservation): (*ssa.Alloc)
+
+t56 (@MakeReservation): (*ssa.Slice) (slice t55[:])
+	 → t55 (@MakeReservation): (*ssa.Alloc)
+
+t57 (@MakeReservation): (*ssa.Alloc) (new []Reservation (reservations))
+	 → t57 (@MakeReservation): (*ssa.Alloc)
+
+t58 (@MakeReservation): (*ssa.Alloc) (new [3]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t59 (@MakeReservation): (*ssa.IndexAddr) (&t58[0:int])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t60 (@MakeReservation): (*ssa.FieldAddr) (&t59.Key [#0])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t61 (@MakeReservation): (*ssa.FieldAddr) (&t59.Value [#1])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t62 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- string (t25))
+	 → t62 (@MakeReservation): (*ssa.MakeInterface)
+
+t63 (@MakeReservation): (*ssa.IndexAddr) (&t58[1:int])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t64 (@MakeReservation): (*ssa.FieldAddr) (&t63.Key [#0])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t65 (@MakeReservation): (*ssa.FieldAddr) (&t63.Value [#1])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t66 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- string (t53))
+	 → t66 (@MakeReservation): (*ssa.MakeInterface)
+
+t67 (@MakeReservation): (*ssa.IndexAddr) (&t58[2:int])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t68 (@MakeReservation): (*ssa.FieldAddr) (&t67.Key [#0])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t69 (@MakeReservation): (*ssa.FieldAddr) (&t67.Value [#1])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t70 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- string (t31))
+	 → t70 (@MakeReservation): (*ssa.MakeInterface)
+
+t71 (@MakeReservation): (*ssa.Slice) (slice t58[:])
+	 → t58 (@MakeReservation): (*ssa.Alloc)
+
+t73 (@MakeReservation): (*ssa.Extract) (extract t72 #0)
+
+t74 (@MakeReservation): (*ssa.Extract) (extract t72 #1)
+
+t79 (@MakeReservation): (*ssa.Alloc) (new HotelNumber (hotelNumber))
+	 → t79 (@MakeReservation): (*ssa.Alloc)
+
+t80 (@MakeReservation): (*ssa.Alloc) (new int64 (capacity))
+	 → t80 (@MakeReservation): (*ssa.Alloc)
+
+t81 (@MakeReservation): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t82 (@MakeReservation): (*ssa.UnOp) (*t81)
+
+t83 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- *int64 (t80))
+	 → t83 (@MakeReservation): (*ssa.MakeInterface)
+
+t86 (@MakeReservation): (*ssa.Extract) (extract t84 #1)
+
+t88 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t88 (@MakeReservation): (*ssa.Alloc)
+
+t89 (@MakeReservation): (*ssa.Slice) (slice t88[:])
+	 → t88 (@MakeReservation): (*ssa.Alloc)
+
+t90 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- *[]Reservation (t57))
+	 → t90 (@MakeReservation): (*ssa.MakeInterface)
+
+t91 (@MakeReservation): (*ssa.Call) (invoke t73.All(ctx, t90))
+
+t92 (@MakeReservation): (*ssa.Alloc) (local Reservation (reservation))
+	 → t92 (@MakeReservation): (*ssa.Alloc)
+
+t93 (@MakeReservation): (*ssa.UnOp) (*t57)
+
+t98 (@MakeReservation): (*ssa.IndexAddr) (&t93[t96])
+
+t100 (@MakeReservation): (*ssa.FieldAddr) (&t92.Number [#4])
+	 → t92 (@MakeReservation): (*ssa.Alloc)
+
+t104 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t104 (@MakeReservation): (*ssa.Alloc)
+
+t105 (@MakeReservation): (*ssa.Slice) (slice t104[:])
+	 → t104 (@MakeReservation): (*ssa.Alloc)
+
+t106 (@MakeReservation): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t106 (@MakeReservation): (*ssa.Alloc)
+
+t107 (@MakeReservation): (*ssa.IndexAddr) (&t106[0:int])
+	 → t106 (@MakeReservation): (*ssa.Alloc)
+
+t108 (@MakeReservation): (*ssa.FieldAddr) (&t107.Key [#0])
+	 → t106 (@MakeReservation): (*ssa.Alloc)
+
+t109 (@MakeReservation): (*ssa.FieldAddr) (&t107.Value [#1])
+	 → t106 (@MakeReservation): (*ssa.Alloc)
+
+t110 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- string (t25))
+	 → t110 (@MakeReservation): (*ssa.MakeInterface)
+
+t111 (@MakeReservation): (*ssa.Slice) (slice t106[:])
+	 → t106 (@MakeReservation): (*ssa.Alloc)
+
+t113 (@MakeReservation): (*ssa.Extract) (extract t112 #0)
+
+t114 (@MakeReservation): (*ssa.Extract) (extract t112 #1)
+
+t120 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t120 (@MakeReservation): (*ssa.Alloc)
+
+t121 (@MakeReservation): (*ssa.Slice) (slice t120[:])
+	 → t120 (@MakeReservation): (*ssa.Alloc)
+
+t122 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- *HotelNumber (t79))
+	 → t122 (@MakeReservation): (*ssa.MakeInterface)
+
+t124 (@MakeReservation): (*ssa.FieldAddr) (&t79.Number [#1])
+	 → t79 (@MakeReservation): (*ssa.Alloc)
+
+t126 (@MakeReservation): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t127 (@MakeReservation): (*ssa.UnOp) (*t126)
+
+t129 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- int64 (t128))
+	 → t129 (@MakeReservation): (*ssa.MakeInterface)
+
+t130 (@MakeReservation): (*ssa.Call) (invoke t127.Put(ctx, t78, t129))
+
+t132 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t132 (@MakeReservation): (*ssa.Alloc)
+
+t133 (@MakeReservation): (*ssa.Slice) (slice t132[:])
+	 → t132 (@MakeReservation): (*ssa.Alloc)
+
+t134 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t134 (@MakeReservation): (*ssa.Alloc)
+
+t135 (@MakeReservation): (*ssa.Slice) (slice t134[:])
+	 → t134 (@MakeReservation): (*ssa.Alloc)
+
+t139 (@MakeReservation): (*ssa.Alloc) (local Reservation (reservation))
+	 → t139 (@MakeReservation): (*ssa.Alloc)
+
+t140 (@MakeReservation): (*ssa.FieldAddr) (&t139.HotelId [#0])
+	 → t139 (@MakeReservation): (*ssa.Alloc)
+
+t141 (@MakeReservation): (*ssa.FieldAddr) (&t139.CustomerName [#1])
+	 → t139 (@MakeReservation): (*ssa.Alloc)
+
+t142 (@MakeReservation): (*ssa.FieldAddr) (&t139.InDate [#2])
+	 → t139 (@MakeReservation): (*ssa.Alloc)
+
+t143 (@MakeReservation): (*ssa.FieldAddr) (&t139.OutDate [#3])
+	 → t139 (@MakeReservation): (*ssa.Alloc)
+
+t144 (@MakeReservation): (*ssa.FieldAddr) (&t139.Number [#4])
+	 → t139 (@MakeReservation): (*ssa.Alloc)
+
+t146 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- Reservation (t145))
+	 → t146 (@MakeReservation): (*ssa.MakeInterface)
+
+t147 (@MakeReservation): (*ssa.Call) (invoke t3.InsertOne(ctx, t146))
+
+t152 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t152 (@MakeReservation): (*ssa.Alloc)
+
+t153 (@MakeReservation): (*ssa.Slice) (slice t152[:])
+	 → t152 (@MakeReservation): (*ssa.Alloc)
+
+t158 (@MakeReservation): (*ssa.FieldAddr) (&r.reserveCache [#0])
+
+t159 (@MakeReservation): (*ssa.UnOp) (*t158)
+
+t160 (@MakeReservation): (*ssa.MakeInterface) (make interface{} <- int64 (t157))
+	 → t160 (@MakeReservation): (*ssa.MakeInterface)
+
+t161 (@MakeReservation): (*ssa.Call) (invoke t159.Put(ctx, t156, t160))
+
+t163 (@MakeReservation): (*ssa.Alloc) (new [1]string (slicelit))
+	 → t163 (@MakeReservation): (*ssa.Alloc)
+
+t164 (@MakeReservation): (*ssa.IndexAddr) (&t163[0:int])
+	 → t163 (@MakeReservation): (*ssa.Alloc)
+
+t165 (@MakeReservation): (*ssa.Slice) (slice t163[:])
+	 → t163 (@MakeReservation): (*ssa.Alloc)
+
+t166 (@MakeReservation): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t166 (@MakeReservation): (*ssa.Alloc)
+
+t167 (@MakeReservation): (*ssa.Slice) (slice t166[:])
+	 → t166 (@MakeReservation): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.SearchServiceImpl).Nearby ###
+s (@Nearby): (*ssa.Parameter) (parameter s : *SearchServiceImpl)
+
+ctx (@Nearby): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Nearby): (*ssa.FieldAddr) (&s.geoService [#0])
+
+t1 (@Nearby): (*ssa.UnOp) (*t0)
+
+t3 (@Nearby): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Nearby): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Nearby): (*ssa.FieldAddr) (&s.rateService [#1])
+
+t7 (@Nearby): (*ssa.UnOp) (*t6)
+
+t9 (@Nearby): (*ssa.Extract) (extract t8 #0)
+
+t10 (@Nearby): (*ssa.Extract) (extract t8 #1)
+
+t12 (@Nearby): (*ssa.Alloc) (local RatePlan (rate))
+	 → t12 (@Nearby): (*ssa.Alloc)
+
+t14 (@Nearby): (*ssa.Phi) (phi [4: nil:[]string, 6: t25] #nearby_hotels)
+	 → t25 (@Nearby): (*ssa.Call)
+
+t18 (@Nearby): (*ssa.IndexAddr) (&t9[t16])
+
+t20 (@Nearby): (*ssa.FieldAddr) (&t12.HotelID [#0])
+	 → t12 (@Nearby): (*ssa.Alloc)
+
+t22 (@Nearby): (*ssa.Alloc) (new [1]string (varargs))
+	 → t22 (@Nearby): (*ssa.Alloc)
+
+t23 (@Nearby): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@Nearby): (*ssa.Alloc)
+
+t24 (@Nearby): (*ssa.Slice) (slice t22[:])
+	 → t22 (@Nearby): (*ssa.Alloc)
+
+t25 (@Nearby): (*ssa.Call) (append(t14, t24...))
+	 → t25 (@Nearby): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserServiceImpl).CheckUser ###
+u (@CheckUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@CheckUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserServiceImpl).LoadUsers ###
+u (@LoadUsers): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@LoadUsers): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@LoadUsers): (*ssa.FieldAddr) (&u.userDB [#1])
+
+t1 (@LoadUsers): (*ssa.UnOp) (*t0)
+
+t3 (@LoadUsers): (*ssa.Extract) (extract t2 #0)
+
+t4 (@LoadUsers): (*ssa.Extract) (extract t2 #1)
+
+t6 (@LoadUsers): (*ssa.Alloc) (new []User (users))
+	 → t6 (@LoadUsers): (*ssa.Alloc)
+
+t7 (@LoadUsers): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@LoadUsers): (*ssa.Alloc)
+
+t8 (@LoadUsers): (*ssa.Slice) (slice t7[:])
+	 → t7 (@LoadUsers): (*ssa.Alloc)
+
+t10 (@LoadUsers): (*ssa.Extract) (extract t9 #0)
+
+t11 (@LoadUsers): (*ssa.Extract) (extract t9 #1)
+
+t13 (@LoadUsers): (*ssa.MakeInterface) (make interface{} <- *[]User (t6))
+	 → t13 (@LoadUsers): (*ssa.MakeInterface)
+
+t14 (@LoadUsers): (*ssa.Call) (invoke t10.All(ctx, t13))
+
+
+### Function: (github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Point).Id ###
+t0 (@Id): (*ssa.Alloc) (local Point (p))
+	 → t0 (@Id): (*ssa.Alloc)
+	 → t0 (@Id): (*ssa.Alloc)
+
+t1 (@Id): (*ssa.FieldAddr) (&t0.Pid [#0])
+	 → t0 (@Id): (*ssa.Alloc)
+	 → t0 (@Id): (*ssa.Alloc)
+
+
+### Function: (github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Point).Lat ###
+t0 (@Lat): (*ssa.Alloc) (local Point (p))
+	 → t0 (@Lat): (*ssa.Alloc)
+	 → t0 (@Lat): (*ssa.Alloc)
+
+t1 (@Lat): (*ssa.FieldAddr) (&t0.Plat [#1])
+	 → t0 (@Lat): (*ssa.Alloc)
+	 → t0 (@Lat): (*ssa.Alloc)
+
+
+### Function: (github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Point).Lon ###
+t0 (@Lon): (*ssa.Alloc) (local Point (p))
+	 → t0 (@Lon): (*ssa.Alloc)
+	 → t0 (@Lon): (*ssa.Alloc)
+
+t1 (@Lon): (*ssa.FieldAddr) (&t0.Plon [#2])
+	 → t0 (@Lon): (*ssa.Alloc)
+	 → t0 (@Lon): (*ssa.Alloc)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.NewGeoServiceImpl ###
+ctx (@NewGeoServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+geoDB (@NewGeoServiceImpl): (*ssa.Parameter) (parameter geoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+
+t0 (@NewGeoServiceImpl): (*ssa.Alloc) (new GeoServiceImpl (complit))
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+t1 (@NewGeoServiceImpl): (*ssa.FieldAddr) (&t0.geoDB [#0])
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+t2 (@NewGeoServiceImpl): (*ssa.Call) ((*GeoServiceImpl).newGeoIndex(t0, ctx))
+
+t3 (@NewGeoServiceImpl): (*ssa.MakeInterface) (make GeoService <- *GeoServiceImpl (t0))
+	 → t3 (@NewGeoServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t3 (@NewGeoServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t3 (@NewGeoServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+

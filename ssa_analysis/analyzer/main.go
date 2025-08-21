@@ -33,6 +33,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")
 		fmt.Fprintln(os.Stderr, "- sockshop3 blueprint/sockshop3/userservice_login")
 		fmt.Fprintln(os.Stderr, "- dsb_sn blueprint/dsb_sn/poststorageservice_storepost")
+		fmt.Fprintln(os.Stderr, "- dsb_hotel2 blueprint/dsb_hotel2/geoservice_nearby")
+		fmt.Fprintln(os.Stderr, "- train_ticket2 blueprint/train_ticket2/assuranceservice_deletebyid")
 		fmt.Fprintln(os.Stderr, "- foobar blueprint/foobar/fooservice_writefoo")
 		os.Exit(1)
 	}

@@ -1,0 +1,174 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1500336941 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1500336941 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1544506797 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1544506797 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1789469511 [label="if t19 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1789469511 [label="if t19 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__965717547 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__965717547 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3544068 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544068 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544197 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544197 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544295 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544295 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544338 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t24", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544338 [label="return struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:TrainType, t24", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544423 [label="return t25, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3544423 [label="return t25, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3544116 [label="*t8 = \"Name\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3544116 [label="*t8 = \"Name\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3544131 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3544131 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_nil_1418964477 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_506908628 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_val__Name__string [label="\"Name\":string: \"Name\":string
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="blue"];
+	N_val__TrainType_with_name___string [label="\"TrainType with name \":string: \"TrainType with name \":string
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val__does_not_exist__string [label="\"does not exist\":string: \"does not exist\":string
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val__train__string [label="\"train\":string: \"train\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__train_db__string [label="\"train_db\":string: \"train_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3544111 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3544229 [label="t16: new TrainType (tt)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3544057 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3544186 [label="t15: t14 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3544284 [label="t21: t20 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3544392 [label="t22: \"TrainType with name \":string + name
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_binary_3544399 [label="t23: t22 + \"does not exist\":string
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_call_3544022 [label="t2: invoke t1.GetCollection(ctx, \"train_db\":string, \"train\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3544165 [label="t12: invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3544265 [label="t18: invoke t13.One(ctx, t17)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3544368 [label="t24: errors.New(t23)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt13 [label="t13: extract t12 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt14 [label="t14: extract t12 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t18 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt20 [label="t20: extract t18 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3544006 [label="t0: &ts.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3544116 [label="t8: &t7.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_field_3544131 [label="t9: &t7.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- string (name)
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_ifacet17 [label="t17: make interface{} <- *TrainType (t16)", style=bold, shape=ellipse, color="black"];
+	N_val_indext7 [label="t7: &t6[0:int]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="green"];
+	N_val_param_3543897 [label="ts: parameter ts : *TrainServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3543934 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3543955 [label="name: parameter name : string
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_slice_3544111 [label="t11: slice t6[:]
+
+==== tainted ====
+_obj
+[read] @ train_db.train.Name
+", style=bold, shape=box, color="black"];
+	N_val_struct_ID_string__Name_string__EconomyClass_int64__ComfortClass_int64__AvgSpeed_int64____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_TrainType [label="struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainType: struct{ID string; Name string; EconomyClass int64; ComfortClass int64; AvgSpeed int64}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainType", style=bold, shape=ellipse, color="yellow"];
+	N_val_unary_3544006 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3544430 [label="t25: *t16", style=bold, shape=ellipse, color="red"];
+	N_val_param_3543897 -> N_val_field_3544006;
+	N_val_field_3544006 -> N_val_unary_3544006;
+	N_val_param_3543934 -> N_val_call_3544022;
+	N_val__train_db__string -> N_val_call_3544022;
+	N_val__train__string -> N_val_call_3544022;
+	N_val_call_3544022 -> N_val_extrt3;
+	N_val_call_3544022 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_3544057;
+	N_nil_1418964477 -> N_val_binary_3544057;
+	N_val_struct_ID_string__Name_string__EconomyClass_int64__ComfortClass_int64__AvgSpeed_int64____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_TrainType -> N_instr_ret_3544068;
+	N_val_extrt4 -> N_instr_ret_3544068;
+	N_val_alloc_3544111 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_3544116;
+	N_val_indext7 -> N_val_field_3544131;
+	N_val_field_3544116 -> N_instr_store_3544116;
+	N_val__Name__string -> N_instr_store_3544116;
+	N_val_param_3543955 -> N_val_ifacet10;
+	N_val_field_3544131 -> N_instr_store_3544131;
+	N_val_ifacet10 -> N_instr_store_3544131;
+	N_val_alloc_3544111 -> N_val_slice_3544111;
+	N_val_param_3543934 -> N_val_call_3544165;
+	N_val_slice_3544111 -> N_val_call_3544165;
+	N_nil_506908628 -> N_val_call_3544165;
+	N_val_call_3544165 -> N_val_extrt13;
+	N_val_call_3544165 -> N_val_extrt14;
+	N_val_extrt14 -> N_val_binary_3544186;
+	N_nil_1418964477 -> N_val_binary_3544186;
+	N_val_struct_ID_string__Name_string__EconomyClass_int64__ComfortClass_int64__AvgSpeed_int64____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_TrainType -> N_instr_ret_3544197;
+	N_val_extrt14 -> N_instr_ret_3544197;
+	N_val_alloc_3544229 -> N_val_ifacet17;
+	N_val_param_3543934 -> N_val_call_3544265;
+	N_val_ifacet17 -> N_val_call_3544265;
+	N_val_call_3544265 -> N_val_extrt19;
+	N_val_call_3544265 -> N_val_extrt20;
+	N_val_extrt20 -> N_val_binary_3544284;
+	N_nil_1418964477 -> N_val_binary_3544284;
+	N_val_struct_ID_string__Name_string__EconomyClass_int64__ComfortClass_int64__AvgSpeed_int64____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_TrainType -> N_instr_ret_3544295;
+	N_val_extrt20 -> N_instr_ret_3544295;
+	N_val__TrainType_with_name___string -> N_val_binary_3544392;
+	N_val_param_3543955 -> N_val_binary_3544392;
+	N_val_binary_3544392 -> N_val_binary_3544399;
+	N_val__does_not_exist__string -> N_val_binary_3544399;
+	N_val_binary_3544399 -> N_val_call_3544368;
+	N_val_struct_ID_string__Name_string__EconomyClass_int64__ComfortClass_int64__AvgSpeed_int64____github_com_blueprint_uservices_blueprint_examples_train_ticket2_workflow_train_ticket2_TrainType -> N_instr_ret_3544338;
+	N_val_call_3544368 -> N_instr_ret_3544338;
+	N_val_alloc_3544229 -> N_val_unary_3544430;
+	N_val_unary_3544430 -> N_instr_ret_3544423;
+	N_nil_1418964477 -> N_instr_ret_3544423;
+	N_val_field_3544131 -> N_val_alloc_3544111 [label="[*].Value", style=dashed, color=blue];
+	N_val_slice_3544111 -> N_val_alloc_3544111 [label="", style=dashed, color=blue];
+	N_val_field_3544116 -> N_val_alloc_3544111 [label="[*].Key", style=dashed, color=blue];
+	N_val_indext7 -> N_val_alloc_3544111 [label="[*]", style=dashed, color=blue];
+}

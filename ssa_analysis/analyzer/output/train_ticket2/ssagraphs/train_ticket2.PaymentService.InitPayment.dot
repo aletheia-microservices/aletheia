@@ -1,0 +1,186 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1221178102 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1221178102 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__53368084 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__53368084 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__700563821 [label="if t24 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__700563821 [label="if t24 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__769682881 [label="if t22 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__769682881 [label="if t22 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3916412 [label="return t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916412 [label="return t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916516 [label="return t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916516 [label="return t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916607 [label="return t23", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916607 [label="return t23", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916636 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916636 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916651 [label="return t27", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3916651 [label="return t27", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3916468 [label="*t9 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3916468 [label="*t9 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3916481 [label="*t10 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3916481 [label="*t10 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_939238639 [label="*t0 = payment", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_939238639 [label="*t0 = payment", style=bold, shape=ellipse, color="blue"];
+	N_nil_1942236422 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_534455252 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__ID__string [label="\"ID\":string: \"ID\":string
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="blue"];
+	N_val__payment__string [label="\"payment\":string: \"payment\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__payment_db__string [label="\"payment_db\":string: \"payment_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3916298 [label="t0: local Payment (payment)
+
+==== tainted ====
+_obj
+[write] @ payment_db.payment
+_obj.ID
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3916463 [label="t7: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3916535 [label="t19: new Payment (stored)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3916401 [label="t6: t5 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3916505 [label="t18: t17 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3916596 [label="t24: t23 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3916362 [label="t3: invoke t2.GetCollection(ctx, \"payment_db\":string, \"payment\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3916451 [label="t15: invoke t4.FindOne(ctx, t14, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3916573 [label="t21: invoke t16.One(ctx, t20)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3916672 [label="t27: invoke t4.InsertOne(ctx, t26)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt16 [label="t16: extract t15 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt17 [label="t17: extract t15 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt22 [label="t22: extract t21 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt23 [label="t23: extract t21 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t3 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt5 [label="t5: extract t3 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3916339 [label="t1: &p.paymentDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3916468 [label="t9: &t8.Key [#0]
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="green"];
+	N_val_field_3916481 [label="t10: &t8.Value [#1]
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="green"];
+	N_val_field_3916491 [label="t11: &t0.ID [#0]
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="green"];
+	N_val_ifacet13 [label="t13: make interface{} <- string (t12)
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="black"];
+	N_val_ifacet20 [label="t20: make interface{} <- *Payment (t19)", style=bold, shape=ellipse, color="black"];
+	N_val_ifacet26 [label="t26: make interface{} <- Payment (t25)
+
+==== tainted ====
+_obj
+[write] @ payment_db.payment
+_obj.ID
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="black"];
+	N_val_indext8 [label="t8: &t7[0:int]
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="green"];
+	N_val_param_3916242 [label="p: parameter p : *PaymentServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3916277 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3916298 [label="payment: parameter payment : Payment
+
+==== tainted ====
+_obj
+[write] @ payment_db.payment
+_obj.ID
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="black"];
+	N_val_slice_3916463 [label="t14: slice t7[:]
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="black"];
+	N_val_unary_3916339 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3916491 [label="t12: *t11
+
+==== tainted ====
+_obj
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="red"];
+	N_val_unary_3916678 [label="t25: *t0
+
+==== tainted ====
+_obj
+[write] @ payment_db.payment
+_obj.ID
+[read] @ payment_db.payment.ID
+", style=bold, shape=box, color="red"];
+	N_val_alloc_3916298 -> N_instr_store_939238639;
+	N_val_param_3916298 -> N_instr_store_939238639;
+	N_val_param_3916242 -> N_val_field_3916339;
+	N_val_field_3916339 -> N_val_unary_3916339;
+	N_val_param_3916277 -> N_val_call_3916362;
+	N_val__payment_db__string -> N_val_call_3916362;
+	N_val__payment__string -> N_val_call_3916362;
+	N_val_call_3916362 -> N_val_extrt4;
+	N_val_call_3916362 -> N_val_extrt5;
+	N_val_extrt5 -> N_val_binary_3916401;
+	N_nil_534455252 -> N_val_binary_3916401;
+	N_val_extrt5 -> N_instr_ret_3916412;
+	N_val_alloc_3916463 -> N_val_indext8;
+	N_val_indext8 -> N_val_field_3916468;
+	N_val_indext8 -> N_val_field_3916481;
+	N_val_alloc_3916298 -> N_val_field_3916491;
+	N_val_field_3916491 -> N_val_unary_3916491;
+	N_val_field_3916468 -> N_instr_store_3916468;
+	N_val__ID__string -> N_instr_store_3916468;
+	N_val_unary_3916491 -> N_val_ifacet13;
+	N_val_field_3916481 -> N_instr_store_3916481;
+	N_val_ifacet13 -> N_instr_store_3916481;
+	N_val_alloc_3916463 -> N_val_slice_3916463;
+	N_val_param_3916277 -> N_val_call_3916451;
+	N_val_slice_3916463 -> N_val_call_3916451;
+	N_nil_1942236422 -> N_val_call_3916451;
+	N_val_call_3916451 -> N_val_extrt16;
+	N_val_call_3916451 -> N_val_extrt17;
+	N_val_extrt17 -> N_val_binary_3916505;
+	N_nil_534455252 -> N_val_binary_3916505;
+	N_val_extrt17 -> N_instr_ret_3916516;
+	N_val_alloc_3916535 -> N_val_ifacet20;
+	N_val_param_3916277 -> N_val_call_3916573;
+	N_val_ifacet20 -> N_val_call_3916573;
+	N_val_call_3916573 -> N_val_extrt22;
+	N_val_call_3916573 -> N_val_extrt23;
+	N_val_extrt23 -> N_val_binary_3916596;
+	N_nil_534455252 -> N_val_binary_3916596;
+	N_val_extrt23 -> N_instr_ret_3916607;
+	N_nil_534455252 -> N_instr_ret_3916636;
+	N_val_alloc_3916298 -> N_val_unary_3916678;
+	N_val_unary_3916678 -> N_val_ifacet26;
+	N_val_param_3916277 -> N_val_call_3916672;
+	N_val_ifacet26 -> N_val_call_3916672;
+	N_val_call_3916672 -> N_instr_ret_3916651;
+	N_val_field_3916468 -> N_val_alloc_3916463 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_3916463 -> N_val_alloc_3916463 [label="", style=dashed, color=blue];
+	N_val_indext8 -> N_val_alloc_3916463 [label="[*]", style=dashed, color=blue];
+	N_val_field_3916491 -> N_val_alloc_3916298 [label=".ID", style=dashed, color=blue];
+	N_val_field_3916481 -> N_val_alloc_3916463 [label="[*].Value", style=dashed, color=blue];
+}

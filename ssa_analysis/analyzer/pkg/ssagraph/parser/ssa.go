@@ -323,7 +323,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
 		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
 	
-	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.Range, *ssa.Next, *ssa.ChangeInterface:
+	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.Range, *ssa.Next, *ssa.ChangeInterface, *ssa.Index:
 		// TODO
 		fmt.Printf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 

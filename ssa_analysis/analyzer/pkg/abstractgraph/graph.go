@@ -44,7 +44,7 @@ func (graph *AbstractCallGraph) GetNodeByName(name string) *AbstractNode {
 	if node, ok := graph.nodes[name]; ok {
 		return node
 	}
-	log.Fatalf("node with name (%s) not found in graph: %v", name, graph)
+	log.Panicf("node with name (%s) not found in graph: %v", name, graph)
 	return nil
 }
 
