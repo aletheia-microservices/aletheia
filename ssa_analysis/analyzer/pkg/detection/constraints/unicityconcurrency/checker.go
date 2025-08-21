@@ -40,7 +40,7 @@ func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, req
 			// in the future, we may just associate the taint with the call ID
 			// and then just check if the IDs match
 			if dbname == utils.ExtractDatabaseNameFromFieldPath(fieldpath) {
-				field := app.ComputeDatabaseFieldsFromPath(db, fieldpath)
+				field := app.ComputeDatabaseFieldFromPath(db, fieldpath)
 				if field.HasContraintUnicity() && !slices.Contains(constrainedFields, field) {
 					constrainedFields = append(constrainedFields, field)
 				}

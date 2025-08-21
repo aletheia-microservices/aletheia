@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"analyzer/pkg/common"
+	"analyzer/pkg/utils"
 )
 
 // TaintMapping is a mapping between primary taint (key) that already existed
@@ -77,16 +78,6 @@ func (tm *TaintMapping) String() string {
 
 	builder.WriteString("}")
 	return builder.String()
-}
-
-func extractUpperPath(objpath string) (string, string, bool) {
-	idx := strings.LastIndex(objpath, ".")
-	if idx == -1 {
-		return "", "", false
-	}
-	// containts . before e.g. (.ID)
-	subpath := objpath[idx:]
-	return objpath[:idx], subpath, true
 }
 
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool, traced bool) *TaintMapping {
@@ -166,7 +157,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 								}
 							}
 						}
-						objpath, subpath, ok = extractUpperPath(objpath)
+						objpath, subpath, ok = utils.ExtractUpperPath(objpath)
 					}
 				}
 			}

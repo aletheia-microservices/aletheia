@@ -101,7 +101,7 @@ func (detector *ForeignKeyConcurrencyDetector) FinalizeOperationsFields(app *app
 		var fields []*backends.Field
 		for _, arg := range write.call.GetArguments() {
 			for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(write.call.GetID()) {
-				writtenField := app.ComputeDatabaseFieldsFromPath(write.database, fieldpath)
+				writtenField := app.ComputeDatabaseFieldFromPath(write.database, fieldpath)
 				for _, field := range app.GetAllDatabaseFieldsWithPrefixPath(writtenField, true) {
 					fmt.Printf("\t[FOREIGN KEY CONCURRENCY | DETECTOR] field = %s\n", field.String())
 					if field.HasConstraintForeignKeyNonMandatory() && !slices.Contains(fields, field) {
@@ -123,7 +123,7 @@ func (detector *ForeignKeyConcurrencyDetector) FinalizeOperationsFields(app *app
 			for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(delete.call.GetID()) {
 				// [TO BE IMPROVED]
 				// just associated the schema to the call when parsing it...
-				field := app.ComputeDatabaseFieldsFromPath(delete.database, fieldpath)
+				field := app.ComputeDatabaseFieldFromPath(delete.database, fieldpath)
 				schema := field.GetSchema()
 				delete.setSchema(schema)
 				break

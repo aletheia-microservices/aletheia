@@ -1,12 +1,16 @@
 package unicityconcurrency
 
-import "fmt"
+import (
+	"fmt"
+
+	"analyzer/pkg/app"
+)
 
 func (detector *UnicityConcurrencyDetector) GetResults() string {
 	return detector.summary
 }
 
-func (detector *UnicityConcurrencyDetector) ComputeResults() {
+func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 	header := "---------------------------------------------------------------------\n"
 	header += "------------------- ANALYSIS: UNICITY CONCURRENCY -------------------\n"
 	header += "---------------------------------------------------------------------\n"

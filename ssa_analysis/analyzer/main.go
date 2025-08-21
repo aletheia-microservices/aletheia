@@ -15,7 +15,7 @@ import (
 	"analyzer/pkg/detection"
 	"analyzer/pkg/detection/constraints/foreignkeycascade"
 	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
-	"analyzer/pkg/detection/constraints/foreignkeycoordination"
+	"analyzer/pkg/detection/constraints/keycoordination"
 	"analyzer/pkg/detection/constraints/unicityconcurrency"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
@@ -150,11 +150,12 @@ func main() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
-	detector1 := foreignkeycoordination.NewDetector("foreign-key")
-	detector2 := foreignkeycascade.NewDetector()
-	detector3 := foreignkeyconcurrency.NewDetector()
-	detector4 := unicityconcurrency.NewDetector()
-	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4)
+	detector1 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_PRIMARY_KEY)
+	detector2 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_FOREIGN_KEY)
+	detector3 := foreignkeycascade.NewDetector()
+	detector4 := foreignkeyconcurrency.NewDetector()
+	detector5 := unicityconcurrency.NewDetector()
+	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 	iterator.Run()
 
 	absgraph.WriteToDOTFile(appname, true)
@@ -203,8 +204,7 @@ func main() {
 	fmt.Print("\n\n ========== APP ========== \n\n")
 	fmt.Println(app.String())
 
-	detection.ComputeResults(detector1, detector2, detector3, detector4)
-	results := detection.SaveResults(app, detector1, detector2, detector3, detector4)
+	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
 	}

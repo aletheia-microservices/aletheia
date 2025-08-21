@@ -1,4 +1,4 @@
-package foreignkeycoordination
+package keycoordination
 
 import (
 	"analyzer/pkg/abstractgraph"

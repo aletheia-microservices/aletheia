@@ -29,12 +29,12 @@ func NewApp(name string) *App {
 	}
 }
 
-func (app *App) GetAllFieldsReferencingCurrent(field *backends.Field) []*backends.Field {
+func (app *App) GetAllFieldsReferencingCurrent(target *backends.Field) []*backends.Field {
 	var fields []*backends.Field
 	for _, database := range app.GetAllDatabases() {
 		for _, schema := range database.GetAllSchemas() {
 			for _, field := range schema.GetFields() {
-				if field.HasConstraintForeignKeyToField(field) {
+				if field.HasConstraintForeignKeyToField(target) {
 					fields = append(fields, field)
 				}
 			}
@@ -44,7 +44,7 @@ func (app *App) GetAllFieldsReferencingCurrent(field *backends.Field) []*backend
 }
 
 // used by detectors
-func (app *App) ComputeDatabaseFieldsFromPath(database *backends.Database, fieldpath string) *backends.Field {
+func (app *App) ComputeDatabaseFieldFromPath(database *backends.Database, fieldpath string) *backends.Field {
 	schema := database.GetSchemaByNameIfExists(utils.ExtractSchemaNameFromFieldPath(fieldpath))
 	if schema == nil {
 		schemaName := utils.ExtractSchemaNameFromFieldPath(fieldpath)

@@ -14,7 +14,7 @@ type Detector interface {
 	GetResults() string
 	GetSummary() string
 	SetSummary(summary string)
-	ComputeResults()
+	ComputeResults(app *app.App)
 	GetTypeString() string
 
 	OnNewRun(app *app.App)
@@ -37,16 +37,10 @@ const TEXT_RESET_COLOR = "\033[0m"
 const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;68m"
 const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 
-func ComputeResults(detectors ...Detector) {
-	for _, detector := range detectors {
-		detector.ComputeResults()
-	}
-}
-
 func SaveResults(app *app.App, detectors ...Detector) []string {
 	detectorsResults := make([]string, len(detectors))
 	for i, detector := range detectors {
-		detector.ComputeResults()
+		detector.ComputeResults(app)
 		results := detector.GetResults()
 	
 		// ensure the path for the results file exists

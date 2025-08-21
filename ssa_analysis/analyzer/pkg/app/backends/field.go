@@ -63,6 +63,26 @@ func (field *Field) HasConstraintForeignKeyNonMandatory() bool {
 	return false
 }
 
+// checks if it is single primary key (not composed)
+func (field *Field) IsPrimaryKey() bool {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_PRIMARY && len(constraint.fields) == 1 {
+			return true
+		}
+	}
+	return false
+}
+
+func (field *Field) GetConstraintForeignKey() []*Constraint {
+	var constraints []*Constraint
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_FOREIGN_KEY {
+			constraints = append(constraints, constraint)
+		}
+	}
+	return constraints
+}
+
 func (field *Field) GetConstraintForeignKeyToField(otherField *Field) *Constraint {
 	for _, constraint := range field.constraints {
 		if constraint.t == CONSTRAINT_FOREIGN_KEY && constraint.fields[1] == otherField {

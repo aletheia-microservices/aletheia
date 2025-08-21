@@ -1,12 +1,16 @@
 package foreignkeyconcurrency
 
-import "fmt"
+import (
+	"fmt"
+
+	"analyzer/pkg/app"
+)
 
 func (detector *ForeignKeyConcurrencyDetector) GetResults() string {
 	return detector.results
 }
 
-func (detector *ForeignKeyConcurrencyDetector) ComputeResults() {
+func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 	header := "---------------------------------------------------------------------\n"
 	header += "----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------\n"
 	header += "---------------------------------------------------------------------\n"

@@ -1,12 +1,16 @@
 package foreignkeycascade
 
-import "fmt"
+import (
+	"fmt"
+
+	"analyzer/pkg/app"
+)
 
 func (detector *ForeignKeyCascadeDetector) GetResults() string {
 	return detector.summary
 }
 
-func (detector *ForeignKeyCascadeDetector) ComputeResults() {
+func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 	header := "---------------------------------------------------------------------\n"
 	header += "------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------\n"
 	header += "---------------------------------------------------------------------\n"
