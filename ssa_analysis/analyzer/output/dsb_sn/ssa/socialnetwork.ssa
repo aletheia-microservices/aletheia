@@ -1,11 +1,40 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.LoginObj
+		Parameters:
+Function: socialnetwork.GetMachineID
+Block #0: socialnetwork.GetMachineID.entry
+			00: return "0":string
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.User
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Media
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.HomeTimelineService
+	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
+	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64, userMentionIDs []int64) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.FollowerInfo
 		Parameters:
 			ctx = parameter ctx : context.Context
-Function: socialnetwork.NewMediaServiceImpl
-Block #0: socialnetwork.NewMediaServiceImpl.entry
-			00: t0 = new MediaServiceImpl (complit)
-			01: t1 = make MediaService <- *MediaServiceImpl (t0)
-			02: return t1, nil:error
+			userCache = parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: socialnetwork.NewUserIDServiceImpl
+Block #0: socialnetwork.NewUserIDServiceImpl.entry
+			00: t0 = new UserIDServiceImpl (complit)
+			01: t1 = &t0.userCache [#0]
+			02: t2 = &t0.userDB [#1]
+			03: *t1 = userCache
+			04: *t2 = userDB
+			05: t3 = make UserIDService <- *UserIDServiceImpl (t0)
+			06: return t3, nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			postStorageCache = parameter postStorageCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			postStorageDB = parameter postStorageDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: socialnetwork.NewPostStorageServiceImpl
+Block #0: socialnetwork.NewPostStorageServiceImpl.entry
+			00: t0 = new PostStorageServiceImpl (complit)
+			01: t1 = &t0.postStorageCache [#0]
+			02: t2 = &t0.postStorageDB [#1]
+			03: *t1 = postStorageCache
+			04: *t2 = postStorageDB
+			05: t3 = make PostStorageService <- *PostStorageServiceImpl (t0)
+			06: return t3, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UniqueIdServiceImpl
 	Method: func(ctx context.Context, reqID int64, postType int64) (int64, error)
 		Parameters:
@@ -110,376 +139,97 @@ Block #2: socialnetwork.UniqueIdService.getCounter.if.else
 			02: t10 = &u.counter [#0]
 			03: *t10 = 1:int64
 			04: return 0:int64
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UrlShortenService
-	Method: func(ctx context.Context, reqID int64, urls []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
-	Method: func(ctx context.Context, reqID int64, shortenedUrls []string) ([]string, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.claimsT
-	Method: func() error
-	Method: func(cmp string, req bool) bool
-	Method: func(cmp int64, req bool) bool
-	Method: func(cmp int64, req bool) bool
-	Method: func(cmp string, req bool) bool
-	Method: func(cmp int64, req bool) bool
-	Method: func() error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMentionService
+	Method: func(ctx context.Context, reqID int64, usernames []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, error)
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserPosts
 		Parameters:
-			jsonQuery = parameter jsonQuery : string
-Function: socialnetwork.handleFormats
-Block #0: socialnetwork.handleFormats.entry
-			00: return nil:go.mongodb.org/mongo-driver/bson/primitive.D, nil:error
-		Parameters:
-Function: socialnetwork.init
-Block #0: socialnetwork.init.entry
-			00: t0 = *init$guard
-			01: if t0 goto 2 else 1
-Block #1: socialnetwork.init.init.start
-			00: *init$guard = true:bool
-			01: t1 = context.init()
-			02: t2 = time.init()
-			03: t3 = strconv.init()
-			04: t4 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
-			05: t5 = errors.init()
-			06: t6 = fmt.init()
-			07: t7 = log.init()
-			08: t8 = strings.init()
-			09: t9 = sync.init()
-			10: t10 = go.mongodb.org/mongo-driver/bson.init()
-			11: t11 = regexp.init()
-			12: t12 = math/rand.init()
-			13: t13 = crypto/sha1.init()
-			14: t14 = encoding/base64.init()
-			15: t15 = github.com/dgrijalva/jwt-go.init()
-			16: t16 = convert []rune <- string ("abcdefghijklmnopq...":string)
-			17: *letterRunes = t16
-			18: jump 2
-Block #2: socialnetwork.init.init.done
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostStorageService
-	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post, error)
-	Method: func(ctx context.Context, reqID int64, postIDs []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post, error)
-	Method: func(ctx context.Context, reqID int64, post github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post) error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.FolloweeInfo
-		Parameters:
 			ctx = parameter ctx : context.Context
-			userCache = parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: socialnetwork.NewUserIDServiceImpl
-Block #0: socialnetwork.NewUserIDServiceImpl.entry
-			00: t0 = new UserIDServiceImpl (complit)
-			01: t1 = &t0.userCache [#0]
-			02: t2 = &t0.userDB [#1]
-			03: *t1 = userCache
-			04: *t2 = userDB
-			05: t3 = make UserIDService <- *UserIDServiceImpl (t0)
-			06: return t3, nil:error
+			postStorageService = parameter postStorageService : PostStorageService
+			userTimelineService = parameter userTimelineService : UserTimelineService
+			userService = parameter userService : UserService
+			uniqueIDService = parameter uniqueIDService : UniqueIdService
+			mediaService = parameter mediaService : MediaService
+			textService = parameter textService : TextService
+			homeTimelineService = parameter homeTimelineService : HomeTimelineService
+Function: socialnetwork.NewComposePostServiceImpl
+Block #0: socialnetwork.NewComposePostServiceImpl.entry
+			00: t0 = new ComposePostServiceImpl (complit)
+			01: t1 = &t0.postStorageService [#0]
+			02: t2 = &t0.userTimelineService [#1]
+			03: t3 = &t0.userService [#2]
+			04: t4 = &t0.uniqueIDService [#3]
+			05: t5 = &t0.mediaService [#4]
+			06: t6 = &t0.textService [#5]
+			07: t7 = &t0.homeTimelineService [#6]
+			08: *t1 = postStorageService
+			09: *t2 = userTimelineService
+			10: *t3 = userService
+			11: *t4 = uniqueIDService
+			12: *t5 = mediaService
+			13: *t6 = textService
+			14: *t7 = homeTimelineService
+			15: t8 = make ComposePostService <- *ComposePostServiceImpl (t0)
+			16: return t8, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.MediaServiceImpl
+	Method: func(ctx context.Context, reqID int64, mediaTypes []string, mediaIds []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Media, error)
 		Parameters:
-Function: socialnetwork.main
-Block #0: socialnetwork.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewPostStorageServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = invoke t2.StorePost(t0, 0:int64, struct{PostID int64; Creator Creator; ReqID int64; Text string; UserMentions []UserMention; Medias []Media; Urls []URL; Timestamp int64; PostType int64}{}:Post)
-			05: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.User
-		Parameters:
-			ctx = parameter ctx : context.Context
-			socialGraphCache = parameter socialGraphCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			socialGraphDB = parameter socialGraphDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-			userIDService = parameter userIDService : UserIDService
-Function: socialnetwork.NewSocialGraphServiceImpl
-Block #0: socialnetwork.NewSocialGraphServiceImpl.entry
-			00: t0 = new SocialGraphServiceImpl (complit)
-			01: t1 = &t0.socialGraphCache [#0]
-			02: t2 = &t0.socialGraphDB [#1]
-			03: t3 = &t0.userIDService [#2]
-			04: *t1 = socialGraphCache
-			05: *t2 = socialGraphDB
-			06: *t3 = userIDService
-			07: t4 = make SocialGraphService <- *SocialGraphServiceImpl (t0)
-			08: return t4, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserIDServiceImpl
-	Method: func(ctx context.Context, reqID int64, username string) (int64, error)
-		Parameters:
-			u = parameter u : *UserIDServiceImpl
+			m = parameter m : *MediaServiceImpl
 			ctx = parameter ctx : context.Context
 			reqID = parameter reqID : int64
-			username = parameter username : string
-Function: socialnetwork.UserIDService.GetUserId
-Block #0: socialnetwork.UserIDService.GetUserId.entry
-			00: t0 = new int64 (user_id)
-			01: *t0 = -1:int64
-			02: t1 = &u.userCache [#0]
-			03: t2 = *t1
-			04: t3 = username + ":UserID":string
-			05: t4 = make interface{} <- *int64 (t0)
-			06: t5 = invoke t2.Get(ctx, t3, t4)
-			07: t6 = extract t5 #0
-			08: t7 = extract t5 #1
-			09: t8 = t7 != nil:error
-			10: if t8 goto 1 else 2
-Block #1: socialnetwork.UserIDService.GetUserId.if.then
-			00: t9 = *t0
-			01: return t9, t7
-Block #2: socialnetwork.UserIDService.GetUserId.if.done
-			00: if t6 goto 4 else 3
-Block #3: socialnetwork.UserIDService.GetUserId.if.then
-			00: t10 = new User (user)
-			01: t11 = &u.userDB [#1]
-			02: t12 = *t11
-			03: t13 = invoke t12.GetCollection(ctx, "user_db":string, "user":string)
-			04: t14 = extract t13 #0
-			05: t15 = extract t13 #1
-			06: t16 = t15 != nil:error
-			07: if t16 goto 5 else 6
-Block #4: socialnetwork.UserIDService.GetUserId.if.done
-			00: t17 = *t0
-			01: return t17, nil:error
-Block #5: socialnetwork.UserIDService.GetUserId.if.then
-			00: return -1:int64, t15
-Block #6: socialnetwork.UserIDService.GetUserId.if.done
-			00: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t19 = &t18[0:int]
-			02: t20 = &t19.Key [#0]
-			03: t21 = &t19.Value [#1]
-			04: *t20 = "username":string
-			05: t22 = make interface{} <- string (username)
-			06: *t21 = t22
-			07: t23 = slice t18[:]
-			08: t24 = invoke t14.FindOne(ctx, t23, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t25 = extract t24 #0
-			10: t26 = extract t24 #1
-			11: t27 = t26 != nil:error
-			12: if t27 goto 7 else 8
-Block #7: socialnetwork.UserIDService.GetUserId.if.then
-			00: return -1:int64, t26
-Block #8: socialnetwork.UserIDService.GetUserId.if.done
-			00: t28 = make interface{} <- *User (t10)
-			01: t29 = invoke t25.One(ctx, t28)
-			02: t30 = extract t29 #0
-			03: t31 = extract t29 #1
-			04: t32 = t31 != nil:error
-			05: if t32 goto 9 else 10
-Block #9: socialnetwork.UserIDService.GetUserId.if.then
-			00: return -1:int64, t31
-Block #10: socialnetwork.UserIDService.GetUserId.if.done
-			00: if t30 goto 12 else 11
-Block #11: socialnetwork.UserIDService.GetUserId.if.then
-			00: t33 = "Username ":string + username
-			01: t34 = t33 + " not found":string
-			02: t35 = errors.New(t34)
-			03: return -1:int64, t35
-Block #12: socialnetwork.UserIDService.GetUserId.if.done
-			00: t36 = &t10.UserID [#0]
-			01: t37 = *t36
-			02: *t0 = t37
-			03: t38 = &u.userCache [#0]
-			04: t39 = *t38
-			05: t40 = username + ":UserID":string
-			06: t41 = *t0
-			07: t42 = make interface{} <- int64 (t41)
-			08: t43 = invoke t39.Put(ctx, t40, t42)
-			09: t44 = t43 != nil:error
-			10: if t44 goto 13 else 4
-Block #13: socialnetwork.UserIDService.GetUserId.if.then
-			00: return -1:int64, t43
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post
+			mediaTypes = parameter mediaTypes : []string
+			mediaIds = parameter mediaIds : []int64
+Function: socialnetwork.MediaService.ComposeMedia
+Block #0: socialnetwork.MediaService.ComposeMedia.entry
+			00: t0 = len(mediaTypes)
+			01: t1 = len(mediaIds)
+			02: t2 = t0 != t1
+			03: if t2 goto 1 else 2
+Block #1: socialnetwork.MediaService.ComposeMedia.if.then
+			00: t3 = errors.New("The lengths of me...":string)
+			01: return nil:[]Media, t3
+Block #2: socialnetwork.MediaService.ComposeMedia.if.done
+			00: t4 = len(mediaIds)
+			01: jump 3
+Block #3: socialnetwork.MediaService.ComposeMedia.rangeindex.loop
+			00: t5 = phi [2: nil:[]Media, 4: t20] #medias
+			01: t6 = phi [2: -1:int, 4: t7]
+			02: t7 = t6 + 1:int
+			03: t8 = t7 < t4
+			04: if t8 goto 4 else 5
+Block #4: socialnetwork.MediaService.ComposeMedia.rangeindex.body
+			00: t9 = &mediaIds[t7]
+			01: t10 = *t9
+			02: t11 = local Media (media)
+			03: t12 = &t11.MediaID [#0]
+			04: t13 = &t11.MediaType [#1]
+			05: t14 = &mediaTypes[t7]
+			06: t15 = *t14
+			07: *t12 = t10
+			08: *t13 = t15
+			09: t16 = *t11
+			10: t17 = new [1]Media (varargs)
+			11: t18 = &t17[0:int]
+			12: *t18 = t16
+			13: t19 = slice t17[:]
+			14: t20 = append(t5, t19...)
+			15: jump 3
+Block #5: socialnetwork.MediaService.ComposeMedia.rangeindex.done
+			00: return t5, nil:error
 		Parameters:
 			ctx = parameter ctx : context.Context
-			postStorageCache = parameter postStorageCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			postStorageDB = parameter postStorageDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: socialnetwork.NewPostStorageServiceImpl
-Block #0: socialnetwork.NewPostStorageServiceImpl.entry
-			00: t0 = new PostStorageServiceImpl (complit)
-			01: t1 = &t0.postStorageCache [#0]
-			02: t2 = &t0.postStorageDB [#1]
-			03: *t1 = postStorageCache
-			04: *t2 = postStorageDB
-			05: t3 = make PostStorageService <- *PostStorageServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.FollowerInfo
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineService
-	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
-	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64) error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			userService = parameter userService : UserService
-			composePostService = parameter composePostService : ComposePostService
-			userTimelineService = parameter userTimelineService : UserTimelineService
-			homeTimelineService = parameter homeTimelineService : HomeTimelineService
-			socialGraphService = parameter socialGraphService : SocialGraphService
-Function: socialnetwork.NewWrk2APIServiceImpl
-Block #0: socialnetwork.NewWrk2APIServiceImpl.entry
+			urlShortenDB = parameter urlShortenDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: socialnetwork.NewUrlShortenServiceImpl
+Block #0: socialnetwork.NewUrlShortenServiceImpl.entry
 			00: t0 = time.Now()
 			01: t1 = (time.Time).UnixNano(t0)
 			02: t2 = math/rand.Seed(t1)
-			03: t3 = new Wrk2APIServiceImpl (complit)
-			04: t4 = &t3.userService [#0]
-			05: t5 = &t3.composePostService [#1]
-			06: t6 = &t3.userTimelineService [#2]
-			07: t7 = &t3.homeTimelineService [#3]
-			08: t8 = &t3.socialGraphService [#4]
-			09: *t4 = userService
-			10: *t5 = composePostService
-			11: *t6 = userTimelineService
-			12: *t7 = homeTimelineService
-			13: *t8 = socialGraphService
-			14: t9 = make Wrk2APIService <- *Wrk2APIServiceImpl (t3)
-			15: return t9, nil:error
-	Unknown member type: *ssa.NamedConst
-		Parameters:
-			ctx = parameter ctx : context.Context
-			userCache = parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: socialnetwork.NewUserMentionServiceImpl
-Block #0: socialnetwork.NewUserMentionServiceImpl.entry
-			00: t0 = new UserMentionServiceImpl (complit)
-			01: t1 = &t0.userCache [#0]
-			02: t2 = &t0.userDB [#1]
-			03: *t1 = userCache
-			04: *t2 = userDB
-			05: t3 = make UserMentionService <- *UserMentionServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostInfo
-	Global: letterRunes, Type: *[]rune
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UrlShortenServiceImpl
-	Method: func(ctx context.Context, reqID int64, urls []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
-		Parameters:
-			u = parameter u : *UrlShortenServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			urls = parameter urls : []string
-Function: socialnetwork.UrlShortenService.ComposeUrls
-Block #0: socialnetwork.UrlShortenService.ComposeUrls.entry
-			00: t0 = len(urls)
-			01: jump 1
-Block #1: socialnetwork.UrlShortenService.ComposeUrls.rangeindex.loop
-			00: t1 = phi [0: nil:[]URL, 2: t19] #target_urls
-			01: t2 = phi [0: nil:[]interface{}, 2: t25] #target_url_docs
-			02: t3 = phi [0: -1:int, 2: t4]
-			03: t4 = t3 + 1:int
-			04: t5 = t4 < t0
-			05: if t5 goto 2 else 3
-Block #2: socialnetwork.UrlShortenService.ComposeUrls.rangeindex.body
-			00: t6 = &urls[t4]
-			01: t7 = *t6
-			02: t8 = &u.hostname [#1]
-			03: t9 = *t8
-			04: t10 = (*UrlShortenServiceImpl).genRandomStr(u, 10:int)
-			05: t11 = t9 + t10
-			06: t12 = local URL (target_url)
-			07: t13 = &t12.ShortenedUrl [#0]
-			08: t14 = &t12.ExpandedUrl [#1]
-			09: *t13 = t11
-			10: *t14 = t7
-			11: t15 = *t12
-			12: t16 = new [1]URL (varargs)
-			13: t17 = &t16[0:int]
-			14: *t17 = t15
-			15: t18 = slice t16[:]
-			16: t19 = append(t1, t18...)
-			17: t20 = *t12
-			18: t21 = new [1]interface{} (varargs)
-			19: t22 = &t21[0:int]
-			20: t23 = make interface{} <- URL (t20)
-			21: *t22 = t23
-			22: t24 = slice t21[:]
-			23: t25 = append(t2, t24...)
-			24: jump 1
-Block #3: socialnetwork.UrlShortenService.ComposeUrls.rangeindex.done
-			00: t26 = len(t1)
-			01: t27 = t26 > 0:int
-			02: if t27 goto 4 else 5
-Block #4: socialnetwork.UrlShortenService.ComposeUrls.if.then
-			00: t28 = &u.urlShortenDB [#0]
-			01: t29 = *t28
-			02: t30 = invoke t29.GetCollection(ctx, "urlshorten_db":string, "urlshorten":string)
-			03: t31 = extract t30 #0
-			04: t32 = extract t30 #1
-			05: t33 = t32 != nil:error
-			06: if t33 goto 6 else 7
-Block #5: socialnetwork.UrlShortenService.ComposeUrls.if.done
-			00: return t1, nil:error
-Block #6: socialnetwork.UrlShortenService.ComposeUrls.if.then
-			00: t34 = new [0]URL (slicelit)
-			01: t35 = slice t34[:]
-			02: return t35, t32
-Block #7: socialnetwork.UrlShortenService.ComposeUrls.if.done
-			00: t36 = invoke t31.InsertMany(ctx, t2)
-			01: t37 = t36 != nil:error
-			02: if t37 goto 8 else 5
-Block #8: socialnetwork.UrlShortenService.ComposeUrls.if.then
-			00: t38 = new [0]URL (slicelit)
-			01: t39 = slice t38[:]
-			02: return t39, t36
-	Method: func(ctx context.Context, reqID int64, shortenedUrls []string) ([]string, error)
-		Parameters:
-			u = parameter u : *UrlShortenServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			shortenedUrls = parameter shortenedUrls : []string
-Function: socialnetwork.UrlShortenService.GetExtendedUrls
-Block #0: socialnetwork.UrlShortenService.GetExtendedUrls.entry
-			00: t0 = new [0]string (slicelit)
-			01: t1 = slice t0[:]
-			02: return t1, nil:error
-	Method: func(length int) string
-		Parameters:
-			u = parameter u : *UrlShortenServiceImpl
-			length = parameter length : int
-Function: socialnetwork.UrlShortenService.genRandomStr
-Block #0: socialnetwork.UrlShortenService.genRandomStr.entry
-			00: t0 = make []rune length length
-			01: t1 = len(t0)
-			02: jump 1
-Block #1: socialnetwork.UrlShortenService.genRandomStr.rangeindex.loop
-			00: t2 = phi [0: -1:int, 2: t3]
-			01: t3 = t2 + 1:int
-			02: t4 = t3 < t1
-			03: if t4 goto 2 else 3
-Block #2: socialnetwork.UrlShortenService.genRandomStr.rangeindex.body
-			00: t5 = *letterRunes
-			01: t6 = *letterRunes
-			02: t7 = len(t6)
-			03: t8 = math/rand.Intn(t7)
-			04: t9 = &t5[t8]
-			05: t10 = *t9
-			06: t11 = &t0[t3]
-			07: *t11 = t10
-			08: jump 1
-Block #3: socialnetwork.UrlShortenService.genRandomStr.rangeindex.done
-			00: t12 = convert string <- []rune (t0)
-			01: return t12
-		Parameters:
-			ctx = parameter ctx : context.Context
-			userTimelineCache = parameter userTimelineCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			userTimelineDB = parameter userTimelineDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-			postStorageService = parameter postStorageService : PostStorageService
-Function: socialnetwork.NewUserTimelineServiceImpl
-Block #0: socialnetwork.NewUserTimelineServiceImpl.entry
-			00: t0 = new UserTimelineServiceImpl (complit)
-			01: t1 = &t0.userTimelineCache [#0]
-			02: t2 = &t0.userTimelineDB [#1]
-			03: t3 = &t0.postStorageService [#2]
-			04: *t1 = userTimelineCache
-			05: *t2 = userTimelineDB
-			06: *t3 = postStorageService
-			07: t4 = make UserTimelineService <- *UserTimelineServiceImpl (t0)
-			08: return t4, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.MediaService
-	Method: func(ctx context.Context, reqID int64, mediaTypes []string, mediaIds []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Media, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.TextService
-	Method: func(ctx context.Context, reqID int64, text string) (string, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
-		Parameters:
-			query = parameter query : string
-Function: socialnetwork.parseNoSQLDBQuery
-Block #0: socialnetwork.parseNoSQLDBQuery.entry
-			00: return nil:go.mongodb.org/mongo-driver/bson/primitive.D, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator
-	Unknown member type: *ssa.NamedConst
-	Unknown member type: *ssa.NamedConst
+			03: t3 = new UrlShortenServiceImpl (complit)
+			04: t4 = &t3.urlShortenDB [#0]
+			05: t5 = &t3.hostname [#1]
+			06: *t4 = urlShortenDB
+			07: *t5 = "http://short-url/":string
+			08: t6 = make UrlShortenService <- *UrlShortenServiceImpl (t3)
+			09: return t6, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMentionServiceImpl
 	Method: func(ctx context.Context, reqID int64, usernames []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, error)
 		Parameters:
@@ -651,1048 +401,209 @@ Block #23: socialnetwork.UserMentionService.ComposeUserMentions.if.done
 			00: t103 = *t99
 			01: t104 = append(t32, t103...)
 			02: jump 12
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineServiceImpl
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Wrk2APIService
+	Method: func(ctx context.Context, userId int64, username string, post_type int64, text string, media_types []string, media_ids []int64) (int64, []int64, error)
+	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
+	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
+	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
+	Method: func(ctx context.Context, firstName string, lastName string, username string, password string, userId int64) error
+	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostStorageService
+	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post, error)
+	Method: func(ctx context.Context, reqID int64, postIDs []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post, error)
+	Method: func(ctx context.Context, reqID int64, post github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UniqueIdService
+	Method: func(ctx context.Context, reqID int64, postType int64) (int64, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			userCache = parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			socialGraphService = parameter socialGraphService : SocialGraphService
+			secret = parameter secret : string
+Function: socialnetwork.NewUserServiceImpl
+Block #0: socialnetwork.NewUserServiceImpl.entry
+			00: t0 = new UserServiceImpl (complit)
+			01: t1 = &t0.counter [#1]
+			02: t2 = &t0.current_timestamp [#2]
+			03: t3 = &t0.machine_id [#0]
+			04: t4 = GetMachineID()
+			05: t5 = &t0.userCache [#4]
+			06: t6 = &t0.userDB [#5]
+			07: t7 = &t0.socialGraphService [#6]
+			08: t8 = &t0.secret [#3]
+			09: *t1 = 0:int64
+			10: *t2 = -1:int64
+			11: *t3 = t4
+			12: *t5 = userCache
+			13: *t6 = userDB
+			14: *t7 = socialGraphService
+			15: *t8 = secret
+			16: t9 = make UserService <- *UserServiceImpl (t0)
+			17: return t9, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineService
+	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
+	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64) error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			homeTimelineCache = parameter homeTimelineCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			postStorageService = parameter postStorageService : PostStorageService
+			socialGraphService = parameter socialGraphService : SocialGraphService
+Function: socialnetwork.NewHomeTimelineServiceImpl
+Block #0: socialnetwork.NewHomeTimelineServiceImpl.entry
+			00: t0 = new HomeTimelineServiceImpl (complit)
+			01: t1 = &t0.homeTimelineCache [#0]
+			02: t2 = &t0.postStorageService [#1]
+			03: t3 = &t0.socialGraphService [#2]
+			04: *t1 = homeTimelineCache
+			05: *t2 = postStorageService
+			06: *t3 = socialGraphService
+			07: t4 = make HomeTimelineService <- *HomeTimelineServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserIDService
+	Method: func(ctx context.Context, reqID int64, username string) (int64, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.claimsT
+	Method: func() error
+	Method: func(cmp string, req bool) bool
+	Method: func(cmp int64, req bool) bool
+	Method: func(cmp int64, req bool) bool
+	Method: func(cmp string, req bool) bool
+	Method: func(cmp int64, req bool) bool
+	Method: func() error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.HomeTimelineServiceImpl
 	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
 		Parameters:
-			u = parameter u : *UserTimelineServiceImpl
+			h = parameter h : *HomeTimelineServiceImpl
 			ctx = parameter ctx : context.Context
 			reqID = parameter reqID : int64
 			userID = parameter userID : int64
 			start = parameter start : int64
 			stop = parameter stop : int64
-Function: socialnetwork.UserTimelineService.ReadUserTimeline
-Block #0: socialnetwork.UserTimelineService.ReadUserTimeline.entry
-			00: t0 = &u.NumRequests [#5]
-			01: t1 = *t0
-			02: t2 = t1 + 1:int64
-			03: t3 = &u.NumRequests [#5]
-			04: *t3 = t2
-			05: t4 = stop <= start
-			06: if t4 goto 1 else 3
-Block #1: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t5 = new [0]int64 (slicelit)
-			01: t6 = slice t5[:]
-			02: return t6, nil:error
-Block #2: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t7 = strconv.FormatInt(userID, 10:int)
-			01: t8 = new []PostInfo (post_infos)
-			02: t9 = &u.userTimelineCache [#0]
-			03: t10 = *t9
-			04: t11 = make interface{} <- *[]PostInfo (t8)
-			05: t12 = invoke t10.Get(ctx, t7, t11)
-			06: t13 = extract t12 #0
-			07: t14 = extract t12 #1
-			08: t15 = t14 != nil:error
-			09: if t15 goto 4 else 5
-Block #3: socialnetwork.UserTimelineService.ReadUserTimeline.cond.false
-			00: t16 = start < 0:int64
-			01: if t16 goto 1 else 2
-Block #4: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t17 = new [0]int64 (slicelit)
-			01: t18 = slice t17[:]
-			02: return t18, t14
-Block #5: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: if t13 goto 6 else 8
-Block #6: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t19 = &u.CacheHits [#3]
-			01: t20 = *t19
-			02: t21 = t20 + 1:int64
-			03: t22 = &u.CacheHits [#3]
-			04: *t22 = t21
-			05: jump 7
-Block #7: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t23 = make map[int64]bool 
-			01: t24 = local PostInfo (post_info)
-			02: t25 = *t8
-			03: t26 = len(t25)
-			04: jump 9
-Block #8: socialnetwork.UserTimelineService.ReadUserTimeline.if.else
-			00: t27 = &u.CacheMiss [#4]
-			01: t28 = *t27
-			02: t29 = t28 + 1:int64
-			03: t30 = &u.CacheMiss [#4]
-			04: *t30 = t29
-			05: jump 7
-Block #9: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.loop
-			00: t31 = phi [7: nil:[]int64, 10: t42] #post_ids
-			01: t32 = phi [7: -1:int, 10: t33]
-			02: t33 = t32 + 1:int
-			03: t34 = t33 < t26
-			04: if t34 goto 10 else 11
-Block #10: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.body
-			00: t35 = &t25[t33]
-			01: t36 = *t35
-			02: *t24 = t36
-			03: t37 = &t24.PostID [#0]
-			04: t38 = *t37
-			05: t39 = new [1]int64 (varargs)
-			06: t40 = &t39[0:int]
-			07: *t40 = t38
-			08: t41 = slice t39[:]
-			09: t42 = append(t31, t41...)
-			10: t43 = &t24.PostID [#0]
-			11: t44 = *t43
-			12: t23[t44] = true:bool
-			13: jump 9
-Block #11: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.done
-			00: t45 = len(t31)
-			01: t46 = convert int64 <- int (t45)
-			02: t47 = start + t46
-			03: t48 = t47 < stop
-			04: if t48 goto 12 else 13
-Block #12: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t49 = &u.userTimelineDB [#1]
-			01: t50 = *t49
-			02: t51 = invoke t50.GetCollection(ctx, "usertimeline_db":string, "usertimeline":string)
-			03: t52 = extract t51 #0
-			04: t53 = extract t51 #1
-			05: t54 = t53 != nil:error
-			06: if t54 goto 14 else 15
-Block #13: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t55 = phi [11: nil:[]int64, 26: t116] #new_post_ids
-			01: t56 = append(t55, t31...)
-			02: t57 = new [1]any (varargs)
-			03: t58 = &t57[0:int]
-			04: t59 = make any <- []int64 (t56)
-			05: *t58 = t59
-			06: t60 = slice t57[:]
-			07: t61 = fmt.Println(t60...)
-			08: t62 = &u.postStorageService [#2]
-			09: t63 = *t62
-			10: t64 = invoke t63.ReadPosts(ctx, reqID, t56)
-			11: t65 = extract t64 #0
-			12: t66 = extract t64 #1
-			13: t67 = t66 != nil:error
-			14: if t67 goto 29 else 30
-Block #14: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t68 = new [0]int64 (slicelit)
-			01: t69 = slice t68[:]
-			02: return t69, t53
-Block #15: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t70 = new [1]any (varargs)
-			01: t71 = &t70[0:int]
-			02: t72 = make any <- int64 (userID)
-			03: *t71 = t72
-			04: t73 = slice t70[:]
-			05: t74 = fmt.Sprintf("{\"UserID\": %[1]d}":string, t73...)
-			06: t75 = new [1]any (varargs)
-			07: t76 = &t75[0:int]
-			08: t77 = make any <- int64 (stop)
-			09: *t76 = t77
-			10: t78 = slice t75[:]
-			11: t79 = fmt.Sprintf("{\"posts\": {\"$slic...":string, t78...)
-			12: t80 = parseNoSQLDBQuery(t74)
-			13: t81 = extract t80 #0
-			14: t82 = extract t80 #1
-			15: t83 = t82 != nil:error
-			16: if t83 goto 16 else 17
-Block #16: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t84 = new [0]int64 (slicelit)
-			01: t85 = slice t84[:]
-			02: return t85, t82
-Block #17: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t86 = parseNoSQLDBQuery(t79)
-			01: t87 = extract t86 #0
-			02: t88 = extract t86 #1
-			03: t89 = t88 != nil:error
-			04: if t89 goto 18 else 19
-Block #18: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t90 = new [0]int64 (slicelit)
-			01: t91 = slice t90[:]
-			02: return t91, t88
-Block #19: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t92 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
-			01: t93 = &t92[0:int]
-			02: *t93 = t87
-			03: t94 = slice t92[:]
-			04: t95 = invoke t52.FindOne(ctx, t81, t94...)
-			05: t96 = extract t95 #0
-			06: t97 = extract t95 #1
-			07: t98 = t97 != nil:error
-			08: if t98 goto 20 else 21
-Block #20: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t99 = new [0]int64 (slicelit)
-			01: t100 = slice t99[:]
-			02: return t100, t97
-Block #21: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t101 = new UserPosts (user_posts)
-			01: t102 = make interface{} <- *UserPosts (t101)
-			02: t103 = invoke t96.One(ctx, t102)
-			03: t104 = extract t103 #0
-			04: t105 = extract t103 #1
-			05: t106 = t105 != nil:error
-			06: if t106 goto 22 else 23
-Block #22: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t107 = new [0]int64 (slicelit)
-			01: t108 = slice t107[:]
-			02: return t108, t105
-Block #23: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: if t104 goto 25 else 24
-Block #24: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t109 = new [0]int64 (slicelit)
-			01: t110 = slice t109[:]
-			02: t111 = errors.New("Failed to find po...":string)
-			03: return t110, t111
-Block #25: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t112 = local PostInfo (post)
-			01: t113 = &t101.Posts [#1]
-			02: t114 = *t113
-			03: t115 = len(t114)
-			04: jump 26
-Block #26: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.loop
-			00: t116 = phi [25: nil:[]int64, 27: t116, 28: t132] #new_post_ids
-			01: t117 = phi [25: -1:int, 27: t118, 28: t118]
-			02: t118 = t117 + 1:int
-			03: t119 = t118 < t115
-			04: if t119 goto 27 else 13
-Block #27: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.body
-			00: t120 = &t114[t118]
-			01: t121 = *t120
-			02: *t112 = t121
-			03: t122 = &t112.PostID [#0]
-			04: t123 = *t122
-			05: t124 = t23[t123],ok
-			06: t125 = extract t124 #0
-			07: t126 = extract t124 #1
-			08: if t126 goto 26 else 28
-Block #28: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t127 = &t112.PostID [#0]
-			01: t128 = *t127
-			02: t129 = new [1]int64 (varargs)
-			03: t130 = &t129[0:int]
-			04: *t130 = t128
-			05: t131 = slice t129[:]
-			06: t132 = append(t116, t131...)
-			07: jump 26
-Block #29: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t133 = new [0]int64 (slicelit)
-			01: t134 = slice t133[:]
-			02: return t134, t66
-Block #30: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: t135 = len(t55)
-			01: t136 = t135 > 0:int
-			02: if t136 goto 31 else 32
-Block #31: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t137 = &u.userTimelineCache [#0]
-			01: t138 = *t137
-			02: t139 = make interface{} <- []int64 (t56)
-			03: t140 = invoke t138.Put(ctx, t7, t139)
-			04: t141 = t140 != nil:error
-			05: if t141 goto 33 else 32
-Block #32: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
-			00: return t56, nil:error
-Block #33: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
-			00: t142 = new [0]int64 (slicelit)
-			01: t143 = slice t142[:]
-			02: return t143, t140
-	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64) error
+Function: socialnetwork.HomeTimelineService.ReadHomeTimeline
+Block #0: socialnetwork.HomeTimelineService.ReadHomeTimeline.entry
+			00: t0 = stop <= start
+			01: if t0 goto 1 else 3
+Block #1: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.then
+			00: t1 = new [0]int64 (slicelit)
+			01: t2 = slice t1[:]
+			02: return t2, nil:error
+Block #2: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.done
+			00: t3 = strconv.FormatInt(userID, 10:int)
+			01: t4 = new []int64 (postIDs)
+			02: t5 = &h.homeTimelineCache [#0]
+			03: t6 = *t5
+			04: t7 = make interface{} <- *[]int64 (t4)
+			05: t8 = invoke t6.Get(ctx, t3, t7)
+			06: t9 = extract t8 #0
+			07: t10 = extract t8 #1
+			08: t11 = t10 != nil:error
+			09: if t11 goto 4 else 5
+Block #3: socialnetwork.HomeTimelineService.ReadHomeTimeline.cond.false
+			00: t12 = start < 0:int64
+			01: if t12 goto 1 else 2
+Block #4: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.then
+			00: t13 = new [0]int64 (slicelit)
+			01: t14 = slice t13[:]
+			02: return t14, t10
+Block #5: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.done
+			00: t15 = *t4
+			01: return t15, nil:error
+	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64, userMentionIDs []int64) error
 		Parameters:
-			u = parameter u : *UserTimelineServiceImpl
+			h = parameter h : *HomeTimelineServiceImpl
 			ctx = parameter ctx : context.Context
 			reqID = parameter reqID : int64
 			postID = parameter postID : int64
 			userID = parameter userID : int64
 			timestamp = parameter timestamp : int64
-Function: socialnetwork.UserTimelineService.WriteUserTimeline
-Block #0: socialnetwork.UserTimelineService.WriteUserTimeline.entry
-			00: t0 = &u.userTimelineDB [#1]
+			userMentionIDs = parameter userMentionIDs : []int64
+Function: socialnetwork.HomeTimelineService.WriteHomeTimeline
+Block #0: socialnetwork.HomeTimelineService.WriteHomeTimeline.entry
+			00: t0 = &h.socialGraphService [#2]
 			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "usertimeline_db":string, "usertimeline":string)
+			02: t2 = invoke t1.GetFollowers(ctx, reqID, userID)
 			03: t3 = extract t2 #0
 			04: t4 = extract t2 #1
 			05: t5 = t4 != nil:error
 			06: if t5 goto 1 else 2
-Block #1: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+Block #1: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.then
 			00: return t4
-Block #2: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
-			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t7 = &t6[0:int]
-			02: t8 = &t7.Key [#0]
-			03: t9 = &t7.Value [#1]
-			04: *t8 = "userid":string
-			05: t10 = make interface{} <- int64 (userID)
-			06: *t9 = t10
-			07: t11 = slice t6[:]
-			08: t12 = invoke t3.FindMany(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t13 = extract t12 #0
-			10: t14 = extract t12 #1
-			11: t15 = new []UserPosts (userPosts)
-			12: t16 = t14 != nil:error
-			13: if t16 goto 3 else 4
-Block #3: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
-			00: return t14
-Block #4: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
-			00: t17 = make interface{} <- *[]UserPosts (t15)
-			01: t18 = invoke t13.All(ctx, t17)
-			02: t19 = *t15
-			03: t20 = len(t19)
-			04: t21 = t20 == 0:int
-			05: if t21 goto 5 else 7
-Block #5: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
-			00: t22 = new [2]any (varargs)
-			01: t23 = &t22[0:int]
-			02: t24 = make any <- string ("Inserting new ent...":string)
-			03: *t23 = t24
-			04: t25 = &t22[1:int]
-			05: t26 = make any <- int64 (userID)
-			06: *t25 = t26
-			07: t27 = slice t22[:]
-			08: t28 = fmt.Println(t27...)
-			09: t29 = local UserPosts (userPosts)
-			10: t30 = &t29.UserID [#0]
-			11: t31 = &t29.Posts [#1]
-			12: t32 = new [1]PostInfo (slicelit)
-			13: t33 = &t32[0:int]
-			14: t34 = &t33.PostID [#0]
-			15: t35 = &t33.Timestamp [#1]
-			16: *t34 = postID
-			17: *t35 = timestamp
-			18: t36 = slice t32[:]
-			19: *t30 = userID
-			20: *t31 = t36
-			21: t37 = *t29
-			22: t38 = make interface{} <- UserPosts (t37)
-			23: t39 = invoke t3.InsertOne(ctx, t38)
-			24: t40 = t39 != nil:error
-			25: if t40 goto 8 else 6
-Block #6: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
-			00: t41 = new []PostInfo (postInfo)
-			01: t42 = strconv.FormatInt(userID, 10:int)
-			02: t43 = &u.userTimelineCache [#0]
-			03: t44 = *t43
-			04: t45 = make interface{} <- *[]PostInfo (t41)
-			05: t46 = invoke t44.Get(ctx, t42, t45)
-			06: t47 = extract t46 #0
-			07: t48 = extract t46 #1
-			08: t49 = t48 != nil:error
-			09: if t49 goto 12 else 13
-Block #7: socialnetwork.UserTimelineService.WriteUserTimeline.if.else
-			00: t50 = new [2]any (varargs)
-			01: t51 = &t50[0:int]
-			02: t52 = make any <- string ("Adding a new post...":string)
-			03: *t51 = t52
-			04: t53 = &t50[1:int]
-			05: t54 = make any <- int64 (userID)
-			06: *t53 = t54
-			07: t55 = slice t50[:]
-			08: t56 = fmt.Println(t55...)
-			09: t57 = strconv.FormatInt(postID, 10:int)
-			10: t58 = strconv.FormatInt(timestamp, 10:int)
-			11: t59 = new [2]any (varargs)
-			12: t60 = &t59[0:int]
-			13: t61 = make any <- string (t57)
-			14: *t60 = t61
-			15: t62 = &t59[1:int]
-			16: t63 = make any <- string (t58)
-			17: *t62 = t63
-			18: t64 = slice t59[:]
-			19: t65 = fmt.Sprintf("{\"$push\": {\"Posts...":string, t64...)
-			20: t66 = parseNoSQLDBQuery(t65)
-			21: t67 = extract t66 #0
-			22: t68 = extract t66 #1
-			23: t69 = t68 != nil:error
-			24: if t69 goto 9 else 10
-Block #8: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
-			00: t70 = errors.New("Failed to insert ...":string)
-			01: return t70
-Block #9: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
-			00: return t68
-Block #10: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
-			00: t71 = invoke t3.UpdateMany(ctx, t11, t67)
-			01: t72 = extract t71 #0
-			02: t73 = extract t71 #1
-			03: t74 = t73 != nil:error
-			04: if t74 goto 11 else 6
-Block #11: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
-			00: t75 = errors.New("Failed to insert ...":string)
-			01: return t75
-Block #12: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
-			00: return t48
-Block #13: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
-			00: t76 = *t41
-			01: t77 = local PostInfo (complit)
-			02: t78 = &t77.PostID [#0]
-			03: t79 = &t77.Timestamp [#1]
-			04: *t78 = postID
-			05: *t79 = timestamp
-			06: t80 = *t77
-			07: t81 = new [1]PostInfo (varargs)
-			08: t82 = &t81[0:int]
-			09: *t82 = t80
-			10: t83 = slice t81[:]
-			11: t84 = append(t76, t83...)
-			12: *t41 = t84
-			13: t85 = &u.userTimelineCache [#0]
-			14: t86 = *t85
-			15: t87 = *t41
-			16: t88 = make interface{} <- []PostInfo (t87)
-			17: t89 = invoke t86.Put(ctx, t42, t88)
-			18: return t89
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Wrk2APIServiceImpl
-	Method: func(ctx context.Context, userId int64, username string, post_type int64, text string, media_types []string, media_ids []int64) (int64, []int64, error)
-		Parameters:
-			w = parameter w : *Wrk2APIServiceImpl
-			ctx = parameter ctx : context.Context
-			userId = parameter userId : int64
-			username = parameter username : string
-			post_type = parameter post_type : int64
-			text = parameter text : string
-			media_types = parameter media_types : []string
-			media_ids = parameter media_ids : []int64
-Function: socialnetwork.Wrk2APIService.ComposePost
-Block #0: socialnetwork.Wrk2APIService.ComposePost.entry
-			00: t0 = userId == 0:int64
-			01: if t0 goto 1 else 4
-Block #1: socialnetwork.Wrk2APIService.ComposePost.if.then
-			00: t1 = new [0]int64 (slicelit)
-			01: t2 = slice t1[:]
-			02: t3 = errors.New("Incomplete Arguments":string)
-			03: return -1:int64, t2, t3
-Block #2: socialnetwork.Wrk2APIService.ComposePost.if.done
-			00: t4 = math/rand.Int63()
-			01: t5 = &w.composePostService [#1]
-			02: t6 = *t5
-			03: t7 = invoke t6.ComposePost(ctx, t4, username, userId, text, media_ids, media_types, post_type)
-			04: t8 = extract t7 #0
-			05: t9 = extract t7 #1
-			06: t10 = extract t7 #2
-			07: return t8, t9, t10
-Block #3: socialnetwork.Wrk2APIService.ComposePost.cond.false
-			00: t11 = text == "":string
-			01: if t11 goto 1 else 2
-Block #4: socialnetwork.Wrk2APIService.ComposePost.cond.false
-			00: t12 = username == "":string
-			01: if t12 goto 1 else 3
-	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
-		Parameters:
-			w = parameter w : *Wrk2APIServiceImpl
-			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			followeeName = parameter followeeName : string
-			userId = parameter userId : int64
-			followeeID = parameter followeeID : int64
-Function: socialnetwork.Wrk2APIService.Follow
-Block #0: socialnetwork.Wrk2APIService.Follow.entry
-			00: t0 = math/rand.Int63()
-			01: t1 = userId != 0:int64
-			02: if t1 goto 3 else 2
-Block #1: socialnetwork.Wrk2APIService.Follow.if.then
-			00: t2 = &w.socialGraphService [#4]
-			01: t3 = *t2
-			02: t4 = invoke t3.Follow(ctx, t0, userId, followeeID)
-			03: return t4
-Block #2: socialnetwork.Wrk2APIService.Follow.if.else
-			00: t5 = username != "":string
-			01: if t5 goto 6 else 5
-Block #3: socialnetwork.Wrk2APIService.Follow.cond.true
-			00: t6 = followeeID != 0:int64
-			01: if t6 goto 1 else 2
-Block #4: socialnetwork.Wrk2APIService.Follow.if.then
-			00: t7 = &w.socialGraphService [#4]
-			01: t8 = *t7
-			02: t9 = invoke t8.FollowWithUsername(ctx, t0, username, followeeName)
-			03: return t9
-Block #5: socialnetwork.Wrk2APIService.Follow.if.done
-			00: t10 = errors.New("Invalid Arguments":string)
-			01: return t10
-Block #6: socialnetwork.Wrk2APIService.Follow.cond.true
-			00: t11 = followeeName != "":string
-			01: if t11 goto 4 else 5
-	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
-		Parameters:
-			w = parameter w : *Wrk2APIServiceImpl
-			ctx = parameter ctx : context.Context
-			userId = parameter userId : int64
-			start = parameter start : int64
-			stop = parameter stop : int64
-Function: socialnetwork.Wrk2APIService.ReadHomeTimeline
-Block #0: socialnetwork.Wrk2APIService.ReadHomeTimeline.entry
-			00: t0 = math/rand.Int63()
-			01: t1 = &w.homeTimelineService [#3]
-			02: t2 = *t1
-			03: t3 = invoke t2.ReadHomeTimeline(ctx, t0, userId, start, stop)
-			04: t4 = extract t3 #0
-			05: t5 = extract t3 #1
-			06: return t4, t5
-	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
-		Parameters:
-			w = parameter w : *Wrk2APIServiceImpl
-			ctx = parameter ctx : context.Context
-			userId = parameter userId : int64
-			start = parameter start : int64
-			stop = parameter stop : int64
-Function: socialnetwork.Wrk2APIService.ReadUserTimeline
-Block #0: socialnetwork.Wrk2APIService.ReadUserTimeline.entry
-			00: t0 = math/rand.Int63()
-			01: t1 = &w.userTimelineService [#2]
-			02: t2 = *t1
-			03: t3 = invoke t2.ReadUserTimeline(ctx, t0, userId, start, stop)
-			04: t4 = extract t3 #0
-			05: t5 = extract t3 #1
-			06: return t4, t5
-	Method: func(ctx context.Context, firstName string, lastName string, username string, password string, userId int64) error
-		Parameters:
-			w = parameter w : *Wrk2APIServiceImpl
-			ctx = parameter ctx : context.Context
-			firstName = parameter firstName : string
-			lastName = parameter lastName : string
-			username = parameter username : string
-			password = parameter password : string
-			userId = parameter userId : int64
-Function: socialnetwork.Wrk2APIService.Register
-Block #0: socialnetwork.Wrk2APIService.Register.entry
-			00: t0 = firstName == "":string
-			01: if t0 goto 1 else 5
-Block #1: socialnetwork.Wrk2APIService.Register.if.then
-			00: t1 = errors.New("Incomplete Arguments":string)
-			01: return t1
-Block #2: socialnetwork.Wrk2APIService.Register.if.done
-			00: t2 = math/rand.Int63()
-			01: t3 = &w.userService [#0]
-			02: t4 = *t3
-			03: t5 = invoke t4.RegisterUserWithId(ctx, t2, firstName, lastName, username, password, userId)
-			04: return t5
-Block #3: socialnetwork.Wrk2APIService.Register.cond.false
-			00: t6 = password == "":string
-			01: if t6 goto 1 else 2
-Block #4: socialnetwork.Wrk2APIService.Register.cond.false
-			00: t7 = username == "":string
-			01: if t7 goto 1 else 3
-Block #5: socialnetwork.Wrk2APIService.Register.cond.false
-			00: t8 = lastName == "":string
-			01: if t8 goto 1 else 4
-	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
-		Parameters:
-			w = parameter w : *Wrk2APIServiceImpl
-			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			followeeName = parameter followeeName : string
-			userId = parameter userId : int64
-			followeeID = parameter followeeID : int64
-Function: socialnetwork.Wrk2APIService.Unfollow
-Block #0: socialnetwork.Wrk2APIService.Unfollow.entry
-			00: t0 = math/rand.Int63()
-			01: t1 = userId != 0:int64
-			02: if t1 goto 3 else 2
-Block #1: socialnetwork.Wrk2APIService.Unfollow.if.then
-			00: t2 = &w.socialGraphService [#4]
-			01: t3 = *t2
-			02: t4 = invoke t3.Unfollow(ctx, t0, userId, followeeID)
-			03: return t4
-Block #2: socialnetwork.Wrk2APIService.Unfollow.if.else
-			00: t5 = username != "":string
-			01: if t5 goto 6 else 5
-Block #3: socialnetwork.Wrk2APIService.Unfollow.cond.true
-			00: t6 = followeeID != 0:int64
-			01: if t6 goto 1 else 2
-Block #4: socialnetwork.Wrk2APIService.Unfollow.if.then
-			00: t7 = &w.socialGraphService [#4]
-			01: t8 = *t7
-			02: t9 = invoke t8.UnfollowWithUsername(ctx, t0, username, followeeName)
-			03: return t9
-Block #5: socialnetwork.Wrk2APIService.Unfollow.if.done
-			00: t10 = errors.New("Invalid Arguments":string)
-			01: return t10
-Block #6: socialnetwork.Wrk2APIService.Unfollow.cond.true
-			00: t11 = followeeName != "":string
-			01: if t11 goto 4 else 5
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UniqueIdService
-	Method: func(ctx context.Context, reqID int64, postType int64) (int64, error)
-		Parameters:
-			ctx = parameter ctx : context.Context
-Function: socialnetwork.NewUniqueIdServiceImpl
-Block #0: socialnetwork.NewUniqueIdServiceImpl.entry
-			00: t0 = new UniqueIdServiceImpl (complit)
-			01: t1 = &t0.counter [#0]
-			02: t2 = &t0.current_timestamp [#1]
-			03: t3 = &t0.machine_id [#2]
-			04: t4 = GetMachineID()
-			05: *t1 = 0:int64
-			06: *t2 = -1:int64
-			07: *t3 = t4
-			08: t5 = make UniqueIdService <- *UniqueIdServiceImpl (t0)
-			09: return t5, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserIDService
-	Method: func(ctx context.Context, reqID int64, username string) (int64, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserService
-	Method: func(ctx context.Context, reqID int64, userID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
-	Method: func(ctx context.Context, reqID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
-	Method: func(ctx context.Context, reqID int64, username string, password string) (string, error)
-	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string) error
-	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string, userID int64) error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserServiceImpl
-	Method: func(ctx context.Context, reqID int64, userID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			userID = parameter userID : int64
-			username = parameter username : string
-Function: socialnetwork.UserService.ComposeCreatorWithUserId
-Block #0: socialnetwork.UserService.ComposeCreatorWithUserId.entry
-			00: t0 = local Creator (complit)
-			01: t1 = &t0.UserID [#0]
-			02: t2 = &t0.Username [#1]
-			03: *t1 = userID
-			04: *t2 = username
-			05: t3 = *t0
-			06: return t3, nil:error
-	Method: func(ctx context.Context, reqID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			username = parameter username : string
-Function: socialnetwork.UserService.ComposeCreatorWithUsername
-Block #0: socialnetwork.UserService.ComposeCreatorWithUsername.entry
-			00: t0 = new int64 (user_id)
-			01: *t0 = -1:int64
-			02: t1 = &u.userCache [#4]
-			03: t2 = *t1
-			04: t3 = username + ":UserID":string
-			05: t4 = make interface{} <- *int64 (t0)
-			06: t5 = invoke t2.Get(ctx, t3, t4)
-			07: t6 = *t0
-			08: t7 = t6 == -1:int64
-			09: if t7 goto 1 else 2
-Block #1: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
-			00: t8 = new User (user)
-			01: t9 = &u.userDB [#5]
-			02: t10 = *t9
-			03: t11 = invoke t10.GetCollection(ctx, "user_db":string, "user":string)
-			04: t12 = extract t11 #0
-			05: t13 = extract t11 #1
-			06: t14 = t13 != nil:error
-			07: if t14 goto 3 else 4
-Block #2: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
-			00: t15 = local Creator (complit)
-			01: t16 = &t15.UserID [#0]
-			02: t17 = *t0
-			03: t18 = &t15.Username [#1]
-			04: *t16 = t17
-			05: *t18 = username
-			06: t19 = *t15
-			07: return t19, nil:error
-Block #3: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
-			00: return struct{UserID int64; Username string}{}:Creator, t13
-Block #4: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
-			00: t20 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t21 = &t20[0:int]
-			02: t22 = &t21.Key [#0]
-			03: t23 = &t21.Value [#1]
-			04: *t22 = "username":string
-			05: t24 = make interface{} <- string (username)
-			06: *t23 = t24
-			07: t25 = slice t20[:]
-			08: t26 = invoke t12.FindOne(ctx, t25, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t27 = extract t26 #0
-			10: t28 = extract t26 #1
-			11: t29 = t28 != nil:error
-			12: if t29 goto 5 else 6
-Block #5: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
-			00: return struct{UserID int64; Username string}{}:Creator, t28
-Block #6: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
-			00: t30 = make interface{} <- *User (t8)
-			01: t31 = invoke t27.One(ctx, t30)
-			02: t32 = extract t31 #0
-			03: t33 = extract t31 #1
-			04: t34 = t33 != nil:error
-			05: if t34 goto 7 else 8
-Block #7: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
-			00: return struct{UserID int64; Username string}{}:Creator, t33
-Block #8: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
-			00: if t32 goto 10 else 9
-Block #9: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
-			00: t35 = errors.New("User doesn't exist":string)
-			01: return struct{UserID int64; Username string}{}:Creator, t35
-Block #10: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
-			00: t36 = &t8.UserID [#0]
-			01: t37 = *t36
-			02: *t0 = t37
-			03: t38 = &u.userCache [#4]
-			04: t39 = *t38
-			05: t40 = username + ":UserID":string
-			06: t41 = *t0
-			07: t42 = make interface{} <- int64 (t41)
-			08: t43 = invoke t39.Put(ctx, t40, t42)
-			09: t44 = t43 != nil:error
-			10: if t44 goto 11 else 2
-Block #11: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
-			00: return struct{UserID int64; Username string}{}:Creator, t43
-	Method: func(ctx context.Context, reqID int64, username string, password string) (string, error)
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			username = parameter username : string
-			password = parameter password : string
-Function: socialnetwork.UserService.Login
-Block #0: socialnetwork.UserService.Login.entry
-			00: t0 = time.Now()
-			01: t1 = (time.Time).UnixNano(t0)
-			02: t2 = t1 / 1000000:int64
-			03: t3 = new LoginObj (login)
-			04: t4 = &t3.UserID [#0]
-			05: *t4 = -1:int64
-			06: t5 = &u.userCache [#4]
-			07: t6 = *t5
-			08: t7 = username + ":Login":string
-			09: t8 = make interface{} <- *LoginObj (t3)
-			10: t9 = invoke t6.Get(ctx, t7, t8)
-			11: t10 = &t3.UserID [#0]
-			12: t11 = *t10
-			13: t12 = t11 == -1:int64
-			14: if t12 goto 1 else 2
-Block #1: socialnetwork.UserService.Login.if.then
-			00: t13 = new User (user)
-			01: t14 = &u.userDB [#5]
-			02: t15 = *t14
-			03: t16 = invoke t15.GetCollection(ctx, "user_db":string, "user":string)
-			04: t17 = extract t16 #0
-			05: t18 = extract t16 #1
-			06: t19 = t18 != nil:error
-			07: if t19 goto 3 else 4
-Block #2: socialnetwork.UserService.Login.if.done
-			00: t20 = &t3.Salt [#2]
-			01: t21 = *t20
-			02: t22 = password + t21
-			03: t23 = convert []byte <- string (t22)
-			04: t24 = (*UserServiceImpl).hashPwd(u, t23)
-			05: t25 = &t3.Password [#1]
-			06: t26 = *t25
-			07: t27 = t24 != t26
-			08: if t27 goto 7 else 8
-Block #3: socialnetwork.UserService.Login.if.then
-			00: return "":string, t18
-Block #4: socialnetwork.UserService.Login.if.done
-			00: t28 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t29 = &t28[0:int]
-			02: t30 = &t29.Key [#0]
-			03: t31 = &t29.Value [#1]
-			04: *t30 = "username":string
-			05: t32 = make interface{} <- string (username)
-			06: *t31 = t32
-			07: t33 = slice t28[:]
-			08: t34 = invoke t17.FindOne(ctx, t33, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t35 = extract t34 #0
-			10: t36 = extract t34 #1
-			11: t37 = t36 != nil:error
-			12: if t37 goto 5 else 6
-Block #5: socialnetwork.UserService.Login.if.then
-			00: return "":string, t36
-Block #6: socialnetwork.UserService.Login.if.done
-			00: t38 = make interface{} <- *User (t13)
-			01: t39 = invoke t35.One(ctx, t38)
-			02: t40 = &t13.PwdHashed [#4]
-			03: t41 = *t40
-			04: t42 = &t3.Password [#1]
-			05: *t42 = t41
-			06: t43 = &t13.Salt [#5]
-			07: t44 = *t43
-			08: t45 = &t3.Salt [#2]
-			09: *t45 = t44
-			10: t46 = &t13.UserID [#0]
-			11: t47 = *t46
-			12: t48 = &t3.UserID [#0]
-			13: *t48 = t47
-			14: jump 2
-Block #7: socialnetwork.UserService.Login.if.then
-			00: t49 = errors.New("Invalid credentials":string)
-			01: return "":string, t49
-Block #8: socialnetwork.UserService.Login.if.else
-			00: t50 = time.Now()
-			01: t51 = (time.Time).Add(t50, 360000000000:time.Duration)
-			02: t52 = new claimsT (complit)
-			03: t53 = &t52.Username [#0]
-			04: t54 = &t52.UserID [#1]
-			05: t55 = &t3.UserID [#0]
-			06: t56 = *t55
-			07: t57 = strconv.FormatInt(t56, 10:int)
-			08: t58 = &t52.Timestamp [#2]
-			09: t59 = &t52.StandardClaims [#3]
-			10: t60 = &t59.ExpiresAt [#1]
-			11: t61 = (time.Time).Unix(t51)
-			12: *t53 = username
-			13: *t54 = t57
-			14: *t58 = t2
-			15: *t60 = t61
-			16: t62 = *github.com/dgrijalva/jwt-go.SigningMethodHS256
-			17: t63 = make github.com/dgrijalva/jwt-go.SigningMethod <- *github.com/dgrijalva/jwt-go.SigningMethodHMAC (t62)
-			18: t64 = make github.com/dgrijalva/jwt-go.Claims <- *claimsT (t52)
-			19: t65 = github.com/dgrijalva/jwt-go.NewWithClaims(t63, t64)
-			20: t66 = &u.secret [#3]
-			21: t67 = *t66
-			22: t68 = convert []byte <- string (t67)
-			23: t69 = make interface{} <- []byte (t68)
-			24: t70 = (*github.com/dgrijalva/jwt-go.Token).SignedString(t65, t69)
-			25: t71 = extract t70 #0
-			26: t72 = extract t70 #1
-			27: t73 = t72 != nil:error
-			28: if t73 goto 9 else 10
-Block #9: socialnetwork.UserService.Login.if.then
-			00: t74 = errors.New("Failed to create ...":string)
-			01: return "":string, t74
-Block #10: socialnetwork.UserService.Login.if.done
-			00: t75 = &u.userCache [#4]
-			01: t76 = *t75
-			02: t77 = username + ":Login":string
-			03: t78 = *t3
-			04: t79 = make interface{} <- LoginObj (t78)
-			05: t80 = invoke t76.Put(ctx, t77, t79)
-			06: t81 = t80 != nil:error
-			07: if t81 goto 11 else 12
-Block #11: socialnetwork.UserService.Login.if.then
-			00: return "":string, t80
-Block #12: socialnetwork.UserService.Login.if.done
-			00: return t71, nil:error
-	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string) error
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			firstName = parameter firstName : string
-			lastName = parameter lastName : string
-			username = parameter username : string
-			password = parameter password : string
-Function: socialnetwork.UserService.RegisterUser
-Block #0: socialnetwork.UserService.RegisterUser.entry
-			00: t0 = time.Now()
-			01: t1 = (time.Time).UnixNano(t0)
-			02: t2 = t1 / 1000000:int64
-			03: t3 = (*UserServiceImpl).getCounter(u, t2)
-			04: t4 = strconv.FormatInt(t2, 16:int)
-			05: t5 = len(t4)
-			06: t6 = t5 > 10:int
-			07: if t6 goto 1 else 3
-Block #1: socialnetwork.UserService.RegisterUser.if.then
-			00: t7 = slice t4[:10:int]
-			01: jump 2
-Block #2: socialnetwork.UserService.RegisterUser.if.done
-			00: t8 = phi [1: t7, 3: t4, 4: t17] #timestamp_hex
-			01: t9 = strconv.FormatInt(t3, 16:int)
-			02: t10 = len(t9)
-			03: t11 = t10 > 1:int
-			04: if t11 goto 5 else 7
-Block #3: socialnetwork.UserService.RegisterUser.if.else
-			00: t12 = len(t4)
-			01: t13 = t12 < 10:int
-			02: if t13 goto 4 else 2
-Block #4: socialnetwork.UserService.RegisterUser.if.then
-			00: t14 = len(t4)
-			01: t15 = 10:int - t14
-			02: t16 = strings.Repeat("0":string, t15)
-			03: t17 = t16 + t4
-			04: jump 2
-Block #5: socialnetwork.UserService.RegisterUser.if.then
-			00: t18 = slice t9[:1:int]
+Block #2: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.done
+			00: t6 = make map[int64]bool 
+			01: t7 = len(t3)
+			02: jump 3
+Block #3: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.loop
+			00: t8 = phi [2: -1:int, 4: t9]
+			01: t9 = t8 + 1:int
+			02: t10 = t9 < t7
+			03: if t10 goto 4 else 5
+Block #4: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.body
+			00: t11 = &t3[t9]
+			01: t12 = *t11
+			02: t6[t12] = true:bool
+			03: jump 3
+Block #5: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.done
+			00: t13 = len(userMentionIDs)
 			01: jump 6
-Block #6: socialnetwork.UserService.RegisterUser.if.done
-			00: t19 = phi [5: t18, 7: t9, 8: t33] #counter_hex
-			01: t20 = &u.machine_id [#0]
-			02: t21 = *t20
-			03: t22 = t21 + t8
-			04: t23 = t22 + t19
-			05: t24 = strconv.ParseInt(t23, 16:int, 64:int)
-			06: t25 = extract t24 #0
-			07: t26 = extract t24 #1
-			08: t27 = t26 != nil:error
-			09: if t27 goto 9 else 10
-Block #7: socialnetwork.UserService.RegisterUser.if.else
-			00: t28 = len(t9)
-			01: t29 = t28 < 1:int
-			02: if t29 goto 8 else 6
-Block #8: socialnetwork.UserService.RegisterUser.if.then
-			00: t30 = len(t9)
-			01: t31 = 1:int - t30
-			02: t32 = strings.Repeat("0":string, t31)
-			03: t33 = t32 + t9
-			04: jump 6
-Block #9: socialnetwork.UserService.RegisterUser.if.then
-			00: return t26
-Block #10: socialnetwork.UserService.RegisterUser.if.done
-			00: t34 = t25 & 9223372036854775807:int64
-			01: t35 = (*UserServiceImpl).RegisterUserWithId(u, ctx, reqID, firstName, lastName, username, password, t34)
-			02: return t35
-	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string, userID int64) error
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			firstName = parameter firstName : string
-			lastName = parameter lastName : string
-			username = parameter username : string
-			password = parameter password : string
-			userID = parameter userID : int64
-Function: socialnetwork.UserService.RegisterUserWithId
-Block #0: socialnetwork.UserService.RegisterUserWithId.entry
-			00: t0 = &u.userDB [#5]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: socialnetwork.UserService.RegisterUserWithId.if.then
-			00: return t4
-Block #2: socialnetwork.UserService.RegisterUserWithId.if.done
-			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t7 = &t6[0:int]
-			02: t8 = &t7.Key [#0]
-			03: t9 = &t7.Value [#1]
-			04: *t8 = "username":string
-			05: t10 = make interface{} <- string (username)
-			06: *t9 = t10
-			07: t11 = slice t6[:]
-			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t13 = extract t12 #0
-			10: t14 = extract t12 #1
-			11: t15 = t14 != nil:error
-			12: if t15 goto 3 else 4
-Block #3: socialnetwork.UserService.RegisterUserWithId.if.then
-			00: return t14
-Block #4: socialnetwork.UserService.RegisterUserWithId.if.done
-			00: t16 = new User (user)
-			01: t17 = make interface{} <- *User (t16)
-			02: t18 = invoke t13.One(ctx, t17)
-			03: t19 = extract t18 #0
-			04: t20 = extract t18 #1
-			05: t21 = t20 != nil:error
-			06: if t21 goto 5 else 6
-Block #5: socialnetwork.UserService.RegisterUserWithId.if.then
-			00: return t20
-Block #6: socialnetwork.UserService.RegisterUserWithId.if.done
-			00: if t19 goto 7 else 8
-Block #7: socialnetwork.UserService.RegisterUserWithId.if.then
-			00: t22 = errors.New("Username already ...":string)
-			01: return t22
-Block #8: socialnetwork.UserService.RegisterUserWithId.if.done
-			00: t23 = (*UserServiceImpl).genRandomStr(u, 32:int)
-			01: t24 = password + t23
-			02: t25 = convert []byte <- string (t24)
-			03: t26 = (*UserServiceImpl).hashPwd(u, t25)
-			04: t27 = &t16.UserID [#0]
-			05: t28 = &t16.FirstName [#1]
-			06: t29 = &t16.LastName [#2]
-			07: t30 = &t16.PwdHashed [#4]
-			08: t31 = &t16.Salt [#5]
-			09: t32 = &t16.Username [#3]
-			10: *t27 = userID
-			11: *t28 = firstName
-			12: *t29 = lastName
-			13: *t30 = t26
-			14: *t31 = t23
-			15: *t32 = username
-			16: t33 = *t16
-			17: t34 = make interface{} <- User (t33)
-			18: t35 = invoke t3.InsertOne(ctx, t34)
-			19: t36 = t35 != nil:error
-			20: if t36 goto 9 else 10
-Block #9: socialnetwork.UserService.RegisterUserWithId.if.then
-			00: return t35
-Block #10: socialnetwork.UserService.RegisterUserWithId.if.done
-			00: t37 = &u.socialGraphService [#6]
-			01: t38 = *t37
-			02: t39 = invoke t38.InsertUser(ctx, reqID, userID)
-			03: return t39
-	Method: func(length int) string
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			length = parameter length : int
-Function: socialnetwork.UserService.genRandomStr
-Block #0: socialnetwork.UserService.genRandomStr.entry
-			00: t0 = make []rune length length
-			01: t1 = len(t0)
-			02: jump 1
-Block #1: socialnetwork.UserService.genRandomStr.rangeindex.loop
-			00: t2 = phi [0: -1:int, 2: t3]
-			01: t3 = t2 + 1:int
-			02: t4 = t3 < t1
-			03: if t4 goto 2 else 3
-Block #2: socialnetwork.UserService.genRandomStr.rangeindex.body
-			00: t5 = *letterRunes
-			01: t6 = *letterRunes
-			02: t7 = len(t6)
-			03: t8 = math/rand.Intn(t7)
-			04: t9 = &t5[t8]
-			05: t10 = *t9
-			06: t11 = &t0[t3]
-			07: *t11 = t10
-			08: jump 1
-Block #3: socialnetwork.UserService.genRandomStr.rangeindex.done
-			00: t12 = convert string <- []rune (t0)
-			01: return t12
-	Method: func(timestamp int64) int64
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			timestamp = parameter timestamp : int64
-Function: socialnetwork.UserService.getCounter
-Block #0: socialnetwork.UserService.getCounter.entry
-			00: t0 = &u.current_timestamp [#2]
-			01: t1 = *t0
-			02: t2 = t1 == timestamp
-			03: if t2 goto 1 else 2
-Block #1: socialnetwork.UserService.getCounter.if.then
-			00: t3 = &u.counter [#1]
-			01: t4 = *t3
-			02: t5 = &u.counter [#1]
-			03: t6 = *t5
-			04: t7 = t6 + 1:int64
-			05: t8 = &u.counter [#1]
-			06: *t8 = t7
-			07: return t4
-Block #2: socialnetwork.UserService.getCounter.if.else
-			00: t9 = &u.current_timestamp [#2]
-			01: *t9 = timestamp
-			02: t10 = &u.counter [#1]
-			03: *t10 = 1:int64
-			04: return 0:int64
-	Method: func(pwd []byte) string
-		Parameters:
-			u = parameter u : *UserServiceImpl
-			pwd = parameter pwd : []byte
-Function: socialnetwork.UserService.hashPwd
-Block #0: socialnetwork.UserService.hashPwd.entry
-			00: t0 = crypto/sha1.New()
-			01: t1 = invoke t0.Write(pwd)
-			02: t2 = *encoding/base64.URLEncoding
-			03: t3 = invoke t0.Sum(nil:[]byte)
-			04: t4 = (*encoding/base64.Encoding).EncodeToString(t2, t3)
-			05: return t4
-		Parameters:
-Function: socialnetwork.GetMachineID
-Block #0: socialnetwork.GetMachineID.entry
-			00: return "0":string
-	Global: init$guard, Type: *bool
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.ComposePostService
-	Method: func(ctx context.Context, reqID int64, username string, userID int64, text string, mediaIDs []int64, mediaTypes []string, postType int64) (int64, []int64, error)
-		Parameters:
-			ctx = parameter ctx : context.Context
-			postStorageService = parameter postStorageService : PostStorageService
-			userTimelineService = parameter userTimelineService : UserTimelineService
-			userService = parameter userService : UserService
-			uniqueIDService = parameter uniqueIDService : UniqueIdService
-			mediaService = parameter mediaService : MediaService
-			textService = parameter textService : TextService
-			homeTimelineService = parameter homeTimelineService : HomeTimelineService
-Function: socialnetwork.NewComposePostServiceImpl
-Block #0: socialnetwork.NewComposePostServiceImpl.entry
-			00: t0 = new ComposePostServiceImpl (complit)
-			01: t1 = &t0.postStorageService [#0]
-			02: t2 = &t0.userTimelineService [#1]
-			03: t3 = &t0.userService [#2]
-			04: t4 = &t0.uniqueIDService [#3]
-			05: t5 = &t0.mediaService [#4]
-			06: t6 = &t0.textService [#5]
-			07: t7 = &t0.homeTimelineService [#6]
-			08: *t1 = postStorageService
-			09: *t2 = userTimelineService
-			10: *t3 = userService
-			11: *t4 = uniqueIDService
-			12: *t5 = mediaService
-			13: *t6 = textService
-			14: *t7 = homeTimelineService
-			15: t8 = make ComposePostService <- *ComposePostServiceImpl (t0)
-			16: return t8, nil:error
+Block #6: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.loop
+			00: t14 = phi [5: -1:int, 7: t15]
+			01: t15 = t14 + 1:int
+			02: t16 = t15 < t13
+			03: if t16 goto 7 else 8
+Block #7: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.body
+			00: t17 = &userMentionIDs[t15]
+			01: t18 = *t17
+			02: t6[t18] = true:bool
+			03: jump 6
+Block #8: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.done
+			00: t19 = range t6
+			01: jump 9
+Block #9: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeiter.loop
+			00: t20 = next t19
+			01: t21 = extract t20 #0
+			02: if t21 goto 10 else 11
+Block #10: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeiter.body
+			00: t22 = extract t20 #1
+			01: t23 = strconv.FormatInt(t22, 10:int)
+			02: t24 = new []PostInfo (posts)
+			03: t25 = &h.homeTimelineCache [#0]
+			04: t26 = *t25
+			05: t27 = make interface{} <- *[]PostInfo (t24)
+			06: t28 = invoke t26.Get(ctx, t23, t27)
+			07: t29 = extract t28 #0
+			08: t30 = extract t28 #1
+			09: t31 = t30 != nil:error
+			10: if t31 goto 12 else 13
+Block #11: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeiter.done
+			00: return nil:error
+Block #12: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.then
+			00: return t30
+Block #13: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.done
+			00: t32 = *t24
+			01: t33 = local PostInfo (complit)
+			02: t34 = &t33.PostID [#0]
+			03: t35 = &t33.Timestamp [#1]
+			04: *t34 = postID
+			05: *t35 = timestamp
+			06: t36 = *t33
+			07: t37 = new [1]PostInfo (varargs)
+			08: t38 = &t37[0:int]
+			09: *t38 = t36
+			10: t39 = slice t37[:]
+			11: t40 = append(t32, t39...)
+			12: *t24 = t40
+			13: t41 = &h.homeTimelineCache [#0]
+			14: t42 = *t41
+			15: t43 = *t24
+			16: t44 = make interface{} <- []PostInfo (t43)
+			17: t45 = invoke t42.Put(ctx, t23, t44)
+			18: t46 = t45 != nil:error
+			19: if t46 goto 14 else 9
+Block #14: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.then
+			00: return t45
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.MediaService
+	Method: func(ctx context.Context, reqID int64, mediaTypes []string, mediaIds []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Media, error)
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl
 	Method: func(ctx context.Context, reqID int64, userID int64, followeeID int64) error
 		Parameters:
@@ -2192,81 +1103,1339 @@ Block #4: socialnetwork.SocialGraphService.UnfollowWithUsername.if.done
 			04: t24 = *t6
 			05: t25 = (*SocialGraphServiceImpl).Unfollow(t20, t21, t22, t23, t24)
 			06: return t25
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.TextServiceImpl
-	Method: func(ctx context.Context, reqID int64, text string) (string, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
+	Unknown member type: *ssa.NamedConst
 		Parameters:
-			t = parameter t : *TextServiceImpl
+			ctx = parameter ctx : context.Context
+			socialGraphCache = parameter socialGraphCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			socialGraphDB = parameter socialGraphDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			userIDService = parameter userIDService : UserIDService
+Function: socialnetwork.NewSocialGraphServiceImpl
+Block #0: socialnetwork.NewSocialGraphServiceImpl.entry
+			00: t0 = new SocialGraphServiceImpl (complit)
+			01: t1 = &t0.socialGraphCache [#0]
+			02: t2 = &t0.socialGraphDB [#1]
+			03: t3 = &t0.userIDService [#2]
+			04: *t1 = socialGraphCache
+			05: *t2 = socialGraphDB
+			06: *t3 = userIDService
+			07: t4 = make SocialGraphService <- *SocialGraphServiceImpl (t0)
+			08: return t4, nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			userService = parameter userService : UserService
+			composePostService = parameter composePostService : ComposePostService
+			userTimelineService = parameter userTimelineService : UserTimelineService
+			homeTimelineService = parameter homeTimelineService : HomeTimelineService
+			socialGraphService = parameter socialGraphService : SocialGraphService
+Function: socialnetwork.NewWrk2APIServiceImpl
+Block #0: socialnetwork.NewWrk2APIServiceImpl.entry
+			00: t0 = time.Now()
+			01: t1 = (time.Time).UnixNano(t0)
+			02: t2 = math/rand.Seed(t1)
+			03: t3 = new Wrk2APIServiceImpl (complit)
+			04: t4 = &t3.userService [#0]
+			05: t5 = &t3.composePostService [#1]
+			06: t6 = &t3.userTimelineService [#2]
+			07: t7 = &t3.homeTimelineService [#3]
+			08: t8 = &t3.socialGraphService [#4]
+			09: *t4 = userService
+			10: *t5 = composePostService
+			11: *t6 = userTimelineService
+			12: *t7 = homeTimelineService
+			13: *t8 = socialGraphService
+			14: t9 = make Wrk2APIService <- *Wrk2APIServiceImpl (t3)
+			15: return t9, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.ComposePostService
+	Method: func(ctx context.Context, reqID int64, username string, userID int64, text string, mediaIDs []int64, mediaTypes []string, postType int64) (int64, []int64, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+Function: socialnetwork.NewMediaServiceImpl
+Block #0: socialnetwork.NewMediaServiceImpl.entry
+			00: t0 = new MediaServiceImpl (complit)
+			01: t1 = make MediaService <- *MediaServiceImpl (t0)
+			02: return t1, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserInfo
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.TextService
+	Method: func(ctx context.Context, reqID int64, text string) (string, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostInfo
+		Parameters:
+			ctx = parameter ctx : context.Context
+			urlShortenService = parameter urlShortenService : UrlShortenService
+			userMentionService = parameter userMentionService : UserMentionService
+Function: socialnetwork.NewTextServiceImpl
+Block #0: socialnetwork.NewTextServiceImpl.entry
+			00: t0 = new TextServiceImpl (complit)
+			01: t1 = &t0.urlShortenService [#0]
+			02: t2 = &t0.userMentionService [#1]
+			03: *t1 = urlShortenService
+			04: *t2 = userMentionService
+			05: t3 = make TextService <- *TextServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineServiceImpl
+	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
+		Parameters:
+			u = parameter u : *UserTimelineServiceImpl
 			ctx = parameter ctx : context.Context
 			reqID = parameter reqID : int64
-			text = parameter text : string
-Function: socialnetwork.TextService.ComposeText
-Block #0: socialnetwork.TextService.ComposeText.entry
-			00: t0 = regexp.MustCompile("@[a-zA-Z0-9-_]+":string)
-			01: t1 = (*regexp.Regexp).FindAllString(t0, text, -1:int)
-			02: t2 = len(t1)
-			03: jump 1
-Block #1: socialnetwork.TextService.ComposeText.rangeindex.loop
-			00: t3 = phi [0: nil:[]string, 2: t13] #usernames
-			01: t4 = phi [0: -1:int, 2: t5]
-			02: t5 = t4 + 1:int
-			03: t6 = t5 < t2
-			04: if t6 goto 2 else 3
-Block #2: socialnetwork.TextService.ComposeText.rangeindex.body
-			00: t7 = &t1[t5]
-			01: t8 = *t7
-			02: t9 = slice t8[1:int:]
-			03: t10 = new [1]string (varargs)
-			04: t11 = &t10[0:int]
-			05: *t11 = t9
-			06: t12 = slice t10[:]
-			07: t13 = append(t3, t12...)
+			userID = parameter userID : int64
+			start = parameter start : int64
+			stop = parameter stop : int64
+Function: socialnetwork.UserTimelineService.ReadUserTimeline
+Block #0: socialnetwork.UserTimelineService.ReadUserTimeline.entry
+			00: t0 = &u.NumRequests [#5]
+			01: t1 = *t0
+			02: t2 = t1 + 1:int64
+			03: t3 = &u.NumRequests [#5]
+			04: *t3 = t2
+			05: t4 = stop <= start
+			06: if t4 goto 1 else 3
+Block #1: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t5 = new [0]int64 (slicelit)
+			01: t6 = slice t5[:]
+			02: return t6, nil:error
+Block #2: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t7 = strconv.FormatInt(userID, 10:int)
+			01: t8 = new []PostInfo (post_infos)
+			02: t9 = &u.userTimelineCache [#0]
+			03: t10 = *t9
+			04: t11 = make interface{} <- *[]PostInfo (t8)
+			05: t12 = invoke t10.Get(ctx, t7, t11)
+			06: t13 = extract t12 #0
+			07: t14 = extract t12 #1
+			08: t15 = t14 != nil:error
+			09: if t15 goto 4 else 5
+Block #3: socialnetwork.UserTimelineService.ReadUserTimeline.cond.false
+			00: t16 = start < 0:int64
+			01: if t16 goto 1 else 2
+Block #4: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t17 = new [0]int64 (slicelit)
+			01: t18 = slice t17[:]
+			02: return t18, t14
+Block #5: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: if t13 goto 6 else 8
+Block #6: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t19 = &u.CacheHits [#3]
+			01: t20 = *t19
+			02: t21 = t20 + 1:int64
+			03: t22 = &u.CacheHits [#3]
+			04: *t22 = t21
+			05: jump 7
+Block #7: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t23 = make map[int64]bool 
+			01: t24 = local PostInfo (post_info)
+			02: t25 = *t8
+			03: t26 = len(t25)
+			04: jump 9
+Block #8: socialnetwork.UserTimelineService.ReadUserTimeline.if.else
+			00: t27 = &u.CacheMiss [#4]
+			01: t28 = *t27
+			02: t29 = t28 + 1:int64
+			03: t30 = &u.CacheMiss [#4]
+			04: *t30 = t29
+			05: jump 7
+Block #9: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.loop
+			00: t31 = phi [7: nil:[]int64, 10: t42] #post_ids
+			01: t32 = phi [7: -1:int, 10: t33]
+			02: t33 = t32 + 1:int
+			03: t34 = t33 < t26
+			04: if t34 goto 10 else 11
+Block #10: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.body
+			00: t35 = &t25[t33]
+			01: t36 = *t35
+			02: *t24 = t36
+			03: t37 = &t24.PostID [#0]
+			04: t38 = *t37
+			05: t39 = new [1]int64 (varargs)
+			06: t40 = &t39[0:int]
+			07: *t40 = t38
+			08: t41 = slice t39[:]
+			09: t42 = append(t31, t41...)
+			10: t43 = &t24.PostID [#0]
+			11: t44 = *t43
+			12: t23[t44] = true:bool
+			13: jump 9
+Block #11: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.done
+			00: t45 = len(t31)
+			01: t46 = convert int64 <- int (t45)
+			02: t47 = start + t46
+			03: t48 = t47 < stop
+			04: if t48 goto 12 else 13
+Block #12: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t49 = &u.userTimelineDB [#1]
+			01: t50 = *t49
+			02: t51 = invoke t50.GetCollection(ctx, "usertimeline_db":string, "usertimeline":string)
+			03: t52 = extract t51 #0
+			04: t53 = extract t51 #1
+			05: t54 = t53 != nil:error
+			06: if t54 goto 14 else 15
+Block #13: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t55 = phi [11: nil:[]int64, 26: t116] #new_post_ids
+			01: t56 = append(t55, t31...)
+			02: t57 = new [1]any (varargs)
+			03: t58 = &t57[0:int]
+			04: t59 = make any <- []int64 (t56)
+			05: *t58 = t59
+			06: t60 = slice t57[:]
+			07: t61 = fmt.Println(t60...)
+			08: t62 = &u.postStorageService [#2]
+			09: t63 = *t62
+			10: t64 = invoke t63.ReadPosts(ctx, reqID, t56)
+			11: t65 = extract t64 #0
+			12: t66 = extract t64 #1
+			13: t67 = t66 != nil:error
+			14: if t67 goto 29 else 30
+Block #14: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t68 = new [0]int64 (slicelit)
+			01: t69 = slice t68[:]
+			02: return t69, t53
+Block #15: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t70 = new [1]any (varargs)
+			01: t71 = &t70[0:int]
+			02: t72 = make any <- int64 (userID)
+			03: *t71 = t72
+			04: t73 = slice t70[:]
+			05: t74 = fmt.Sprintf("{\"UserID\": %[1]d}":string, t73...)
+			06: t75 = new [1]any (varargs)
+			07: t76 = &t75[0:int]
+			08: t77 = make any <- int64 (stop)
+			09: *t76 = t77
+			10: t78 = slice t75[:]
+			11: t79 = fmt.Sprintf("{\"posts\": {\"$slic...":string, t78...)
+			12: t80 = parseNoSQLDBQuery(t74)
+			13: t81 = extract t80 #0
+			14: t82 = extract t80 #1
+			15: t83 = t82 != nil:error
+			16: if t83 goto 16 else 17
+Block #16: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t84 = new [0]int64 (slicelit)
+			01: t85 = slice t84[:]
+			02: return t85, t82
+Block #17: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t86 = parseNoSQLDBQuery(t79)
+			01: t87 = extract t86 #0
+			02: t88 = extract t86 #1
+			03: t89 = t88 != nil:error
+			04: if t89 goto 18 else 19
+Block #18: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t90 = new [0]int64 (slicelit)
+			01: t91 = slice t90[:]
+			02: return t91, t88
+Block #19: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t92 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
+			01: t93 = &t92[0:int]
+			02: *t93 = t87
+			03: t94 = slice t92[:]
+			04: t95 = invoke t52.FindOne(ctx, t81, t94...)
+			05: t96 = extract t95 #0
+			06: t97 = extract t95 #1
+			07: t98 = t97 != nil:error
+			08: if t98 goto 20 else 21
+Block #20: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t99 = new [0]int64 (slicelit)
+			01: t100 = slice t99[:]
+			02: return t100, t97
+Block #21: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t101 = new UserPosts (user_posts)
+			01: t102 = make interface{} <- *UserPosts (t101)
+			02: t103 = invoke t96.One(ctx, t102)
+			03: t104 = extract t103 #0
+			04: t105 = extract t103 #1
+			05: t106 = t105 != nil:error
+			06: if t106 goto 22 else 23
+Block #22: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t107 = new [0]int64 (slicelit)
+			01: t108 = slice t107[:]
+			02: return t108, t105
+Block #23: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: if t104 goto 25 else 24
+Block #24: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t109 = new [0]int64 (slicelit)
+			01: t110 = slice t109[:]
+			02: t111 = errors.New("Failed to find po...":string)
+			03: return t110, t111
+Block #25: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t112 = local PostInfo (post)
+			01: t113 = &t101.Posts [#1]
+			02: t114 = *t113
+			03: t115 = len(t114)
+			04: jump 26
+Block #26: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.loop
+			00: t116 = phi [25: nil:[]int64, 27: t116, 28: t132] #new_post_ids
+			01: t117 = phi [25: -1:int, 27: t118, 28: t118]
+			02: t118 = t117 + 1:int
+			03: t119 = t118 < t115
+			04: if t119 goto 27 else 13
+Block #27: socialnetwork.UserTimelineService.ReadUserTimeline.rangeindex.body
+			00: t120 = &t114[t118]
+			01: t121 = *t120
+			02: *t112 = t121
+			03: t122 = &t112.PostID [#0]
+			04: t123 = *t122
+			05: t124 = t23[t123],ok
+			06: t125 = extract t124 #0
+			07: t126 = extract t124 #1
+			08: if t126 goto 26 else 28
+Block #28: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t127 = &t112.PostID [#0]
+			01: t128 = *t127
+			02: t129 = new [1]int64 (varargs)
+			03: t130 = &t129[0:int]
+			04: *t130 = t128
+			05: t131 = slice t129[:]
+			06: t132 = append(t116, t131...)
+			07: jump 26
+Block #29: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t133 = new [0]int64 (slicelit)
+			01: t134 = slice t133[:]
+			02: return t134, t66
+Block #30: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: t135 = len(t55)
+			01: t136 = t135 > 0:int
+			02: if t136 goto 31 else 32
+Block #31: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t137 = &u.userTimelineCache [#0]
+			01: t138 = *t137
+			02: t139 = make interface{} <- []int64 (t56)
+			03: t140 = invoke t138.Put(ctx, t7, t139)
+			04: t141 = t140 != nil:error
+			05: if t141 goto 33 else 32
+Block #32: socialnetwork.UserTimelineService.ReadUserTimeline.if.done
+			00: return t56, nil:error
+Block #33: socialnetwork.UserTimelineService.ReadUserTimeline.if.then
+			00: t142 = new [0]int64 (slicelit)
+			01: t143 = slice t142[:]
+			02: return t143, t140
+	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64) error
+		Parameters:
+			u = parameter u : *UserTimelineServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			postID = parameter postID : int64
+			userID = parameter userID : int64
+			timestamp = parameter timestamp : int64
+Function: socialnetwork.UserTimelineService.WriteUserTimeline
+Block #0: socialnetwork.UserTimelineService.WriteUserTimeline.entry
+			00: t0 = &u.userTimelineDB [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "usertimeline_db":string, "usertimeline":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: return t4
+Block #2: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "userid":string
+			05: t10 = make interface{} <- int64 (userID)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindMany(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = new []UserPosts (userPosts)
+			12: t16 = t14 != nil:error
+			13: if t16 goto 3 else 4
+Block #3: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: return t14
+Block #4: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
+			00: t17 = make interface{} <- *[]UserPosts (t15)
+			01: t18 = invoke t13.All(ctx, t17)
+			02: t19 = *t15
+			03: t20 = len(t19)
+			04: t21 = t20 == 0:int
+			05: if t21 goto 5 else 7
+Block #5: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: t22 = new [2]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string ("Inserting new ent...":string)
+			03: *t23 = t24
+			04: t25 = &t22[1:int]
+			05: t26 = make any <- int64 (userID)
+			06: *t25 = t26
+			07: t27 = slice t22[:]
+			08: t28 = fmt.Println(t27...)
+			09: t29 = local UserPosts (userPosts)
+			10: t30 = &t29.UserID [#0]
+			11: t31 = &t29.Posts [#1]
+			12: t32 = new [1]PostInfo (slicelit)
+			13: t33 = &t32[0:int]
+			14: t34 = &t33.PostID [#0]
+			15: t35 = &t33.Timestamp [#1]
+			16: *t34 = postID
+			17: *t35 = timestamp
+			18: t36 = slice t32[:]
+			19: *t30 = userID
+			20: *t31 = t36
+			21: t37 = *t29
+			22: t38 = make interface{} <- UserPosts (t37)
+			23: t39 = invoke t3.InsertOne(ctx, t38)
+			24: t40 = t39 != nil:error
+			25: if t40 goto 8 else 6
+Block #6: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
+			00: t41 = new []PostInfo (postInfo)
+			01: t42 = strconv.FormatInt(userID, 10:int)
+			02: t43 = &u.userTimelineCache [#0]
+			03: t44 = *t43
+			04: t45 = make interface{} <- *[]PostInfo (t41)
+			05: t46 = invoke t44.Get(ctx, t42, t45)
+			06: t47 = extract t46 #0
+			07: t48 = extract t46 #1
+			08: t49 = t48 != nil:error
+			09: if t49 goto 12 else 13
+Block #7: socialnetwork.UserTimelineService.WriteUserTimeline.if.else
+			00: t50 = new [2]any (varargs)
+			01: t51 = &t50[0:int]
+			02: t52 = make any <- string ("Adding a new post...":string)
+			03: *t51 = t52
+			04: t53 = &t50[1:int]
+			05: t54 = make any <- int64 (userID)
+			06: *t53 = t54
+			07: t55 = slice t50[:]
+			08: t56 = fmt.Println(t55...)
+			09: t57 = strconv.FormatInt(postID, 10:int)
+			10: t58 = strconv.FormatInt(timestamp, 10:int)
+			11: t59 = new [2]any (varargs)
+			12: t60 = &t59[0:int]
+			13: t61 = make any <- string (t57)
+			14: *t60 = t61
+			15: t62 = &t59[1:int]
+			16: t63 = make any <- string (t58)
+			17: *t62 = t63
+			18: t64 = slice t59[:]
+			19: t65 = fmt.Sprintf("{\"$push\": {\"Posts...":string, t64...)
+			20: t66 = parseNoSQLDBQuery(t65)
+			21: t67 = extract t66 #0
+			22: t68 = extract t66 #1
+			23: t69 = t68 != nil:error
+			24: if t69 goto 9 else 10
+Block #8: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: t70 = errors.New("Failed to insert ...":string)
+			01: return t70
+Block #9: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: return t68
+Block #10: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
+			00: t71 = invoke t3.UpdateMany(ctx, t11, t67)
+			01: t72 = extract t71 #0
+			02: t73 = extract t71 #1
+			03: t74 = t73 != nil:error
+			04: if t74 goto 11 else 6
+Block #11: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: t75 = errors.New("Failed to insert ...":string)
+			01: return t75
+Block #12: socialnetwork.UserTimelineService.WriteUserTimeline.if.then
+			00: return t48
+Block #13: socialnetwork.UserTimelineService.WriteUserTimeline.if.done
+			00: t76 = *t41
+			01: t77 = local PostInfo (complit)
+			02: t78 = &t77.PostID [#0]
+			03: t79 = &t77.Timestamp [#1]
+			04: *t78 = postID
+			05: *t79 = timestamp
+			06: t80 = *t77
+			07: t81 = new [1]PostInfo (varargs)
+			08: t82 = &t81[0:int]
+			09: *t82 = t80
+			10: t83 = slice t81[:]
+			11: t84 = append(t76, t83...)
+			12: *t41 = t84
+			13: t85 = &u.userTimelineCache [#0]
+			14: t86 = *t85
+			15: t87 = *t41
+			16: t88 = make interface{} <- []PostInfo (t87)
+			17: t89 = invoke t86.Put(ctx, t42, t88)
+			18: return t89
+		Parameters:
+Function: socialnetwork.init
+Block #0: socialnetwork.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: socialnetwork.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = time.init()
+			03: t3 = strconv.init()
+			04: t4 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			05: t5 = errors.init()
+			06: t6 = fmt.init()
+			07: t7 = log.init()
+			08: t8 = strings.init()
+			09: t9 = sync.init()
+			10: t10 = go.mongodb.org/mongo-driver/bson.init()
+			11: t11 = regexp.init()
+			12: t12 = math/rand.init()
+			13: t13 = crypto/sha1.init()
+			14: t14 = encoding/base64.init()
+			15: t15 = github.com/dgrijalva/jwt-go.init()
+			16: t16 = convert []rune <- string ("abcdefghijklmnopq...":string)
+			17: *letterRunes = t16
+			18: jump 2
+Block #2: socialnetwork.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UrlShortenService
+	Method: func(ctx context.Context, reqID int64, urls []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
+	Method: func(ctx context.Context, reqID int64, shortenedUrls []string) ([]string, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			userCache = parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: socialnetwork.NewUserMentionServiceImpl
+Block #0: socialnetwork.NewUserMentionServiceImpl.entry
+			00: t0 = new UserMentionServiceImpl (complit)
+			01: t1 = &t0.userCache [#0]
+			02: t2 = &t0.userDB [#1]
+			03: *t1 = userCache
+			04: *t2 = userDB
+			05: t3 = make UserMentionService <- *UserMentionServiceImpl (t0)
+			06: return t3, nil:error
+	Global: init$guard, Type: *bool
+		Parameters:
+			query = parameter query : string
+Function: socialnetwork.parseNoSQLDBQuery
+Block #0: socialnetwork.parseNoSQLDBQuery.entry
+			00: return nil:go.mongodb.org/mongo-driver/bson/primitive.D, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator
+		Parameters:
+			ctx = parameter ctx : context.Context
+Function: socialnetwork.NewUniqueIdServiceImpl
+Block #0: socialnetwork.NewUniqueIdServiceImpl.entry
+			00: t0 = new UniqueIdServiceImpl (complit)
+			01: t1 = &t0.counter [#0]
+			02: t2 = &t0.current_timestamp [#1]
+			03: t3 = &t0.machine_id [#2]
+			04: t4 = GetMachineID()
+			05: *t1 = 0:int64
+			06: *t2 = -1:int64
+			07: *t3 = t4
+			08: t5 = make UniqueIdService <- *UniqueIdServiceImpl (t0)
+			09: return t5, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UrlShortenServiceImpl
+	Method: func(ctx context.Context, reqID int64, urls []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
+		Parameters:
+			u = parameter u : *UrlShortenServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			urls = parameter urls : []string
+Function: socialnetwork.UrlShortenService.ComposeUrls
+Block #0: socialnetwork.UrlShortenService.ComposeUrls.entry
+			00: t0 = len(urls)
+			01: jump 1
+Block #1: socialnetwork.UrlShortenService.ComposeUrls.rangeindex.loop
+			00: t1 = phi [0: nil:[]URL, 2: t19] #target_urls
+			01: t2 = phi [0: nil:[]interface{}, 2: t25] #target_url_docs
+			02: t3 = phi [0: -1:int, 2: t4]
+			03: t4 = t3 + 1:int
+			04: t5 = t4 < t0
+			05: if t5 goto 2 else 3
+Block #2: socialnetwork.UrlShortenService.ComposeUrls.rangeindex.body
+			00: t6 = &urls[t4]
+			01: t7 = *t6
+			02: t8 = &u.hostname [#1]
+			03: t9 = *t8
+			04: t10 = (*UrlShortenServiceImpl).genRandomStr(u, 10:int)
+			05: t11 = t9 + t10
+			06: t12 = local URL (target_url)
+			07: t13 = &t12.ShortenedUrl [#0]
+			08: t14 = &t12.ExpandedUrl [#1]
+			09: *t13 = t11
+			10: *t14 = t7
+			11: t15 = *t12
+			12: t16 = new [1]URL (varargs)
+			13: t17 = &t16[0:int]
+			14: *t17 = t15
+			15: t18 = slice t16[:]
+			16: t19 = append(t1, t18...)
+			17: t20 = *t12
+			18: t21 = new [1]interface{} (varargs)
+			19: t22 = &t21[0:int]
+			20: t23 = make interface{} <- URL (t20)
+			21: *t22 = t23
+			22: t24 = slice t21[:]
+			23: t25 = append(t2, t24...)
+			24: jump 1
+Block #3: socialnetwork.UrlShortenService.ComposeUrls.rangeindex.done
+			00: t26 = len(t1)
+			01: t27 = t26 > 0:int
+			02: if t27 goto 4 else 5
+Block #4: socialnetwork.UrlShortenService.ComposeUrls.if.then
+			00: t28 = &u.urlShortenDB [#0]
+			01: t29 = *t28
+			02: t30 = invoke t29.GetCollection(ctx, "urlshorten_db":string, "urlshorten":string)
+			03: t31 = extract t30 #0
+			04: t32 = extract t30 #1
+			05: t33 = t32 != nil:error
+			06: if t33 goto 6 else 7
+Block #5: socialnetwork.UrlShortenService.ComposeUrls.if.done
+			00: return t1, nil:error
+Block #6: socialnetwork.UrlShortenService.ComposeUrls.if.then
+			00: t34 = new [0]URL (slicelit)
+			01: t35 = slice t34[:]
+			02: return t35, t32
+Block #7: socialnetwork.UrlShortenService.ComposeUrls.if.done
+			00: t36 = invoke t31.InsertMany(ctx, t2)
+			01: t37 = t36 != nil:error
+			02: if t37 goto 8 else 5
+Block #8: socialnetwork.UrlShortenService.ComposeUrls.if.then
+			00: t38 = new [0]URL (slicelit)
+			01: t39 = slice t38[:]
+			02: return t39, t36
+	Method: func(ctx context.Context, reqID int64, shortenedUrls []string) ([]string, error)
+		Parameters:
+			u = parameter u : *UrlShortenServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			shortenedUrls = parameter shortenedUrls : []string
+Function: socialnetwork.UrlShortenService.GetExtendedUrls
+Block #0: socialnetwork.UrlShortenService.GetExtendedUrls.entry
+			00: t0 = new [0]string (slicelit)
+			01: t1 = slice t0[:]
+			02: return t1, nil:error
+	Method: func(length int) string
+		Parameters:
+			u = parameter u : *UrlShortenServiceImpl
+			length = parameter length : int
+Function: socialnetwork.UrlShortenService.genRandomStr
+Block #0: socialnetwork.UrlShortenService.genRandomStr.entry
+			00: t0 = make []rune length length
+			01: t1 = len(t0)
+			02: jump 1
+Block #1: socialnetwork.UrlShortenService.genRandomStr.rangeindex.loop
+			00: t2 = phi [0: -1:int, 2: t3]
+			01: t3 = t2 + 1:int
+			02: t4 = t3 < t1
+			03: if t4 goto 2 else 3
+Block #2: socialnetwork.UrlShortenService.genRandomStr.rangeindex.body
+			00: t5 = *letterRunes
+			01: t6 = *letterRunes
+			02: t7 = len(t6)
+			03: t8 = math/rand.Intn(t7)
+			04: t9 = &t5[t8]
+			05: t10 = *t9
+			06: t11 = &t0[t3]
+			07: *t11 = t10
 			08: jump 1
-Block #3: socialnetwork.TextService.ComposeText.rangeindex.done
-			00: t14 = regexp.MustCompile("(http://|https://...":string)
-			01: t15 = (*regexp.Regexp).FindAllString(t14, text, -1:int)
-			02: t16 = &t.urlShortenService [#0]
-			03: t17 = *t16
-			04: t18 = invoke t17.ComposeUrls(ctx, reqID, t15)
-			05: t19 = extract t18 #0
-			06: t20 = extract t18 #1
-			07: t21 = &t.userMentionService [#1]
-			08: t22 = *t21
-			09: t23 = invoke t22.ComposeUserMentions(ctx, reqID, t3)
-			10: t24 = extract t23 #0
-			11: t25 = extract t23 #1
-			12: t26 = t20 != nil:error
-			13: if t26 goto 4 else 5
-Block #4: socialnetwork.TextService.ComposeText.if.then
-			00: return text, t24, t19, t20
-Block #5: socialnetwork.TextService.ComposeText.if.done
-			00: t27 = t25 != nil:error
-			01: if t27 goto 6 else 7
-Block #6: socialnetwork.TextService.ComposeText.if.then
-			00: return text, t24, t19, t25
-Block #7: socialnetwork.TextService.ComposeText.if.done
-			00: t28 = len(t19)
-			01: t29 = t28 != 0:int
-			02: if t29 goto 8 else 9
-Block #8: socialnetwork.TextService.ComposeText.if.then
-			00: t30 = len(t15)
-			01: jump 10
-Block #9: socialnetwork.TextService.ComposeText.if.done
-			00: t31 = phi [7: text, 10: t32] #updated_text
-			01: return t31, t24, t19, nil:error
-Block #10: socialnetwork.TextService.ComposeText.rangeindex.loop
-			00: t32 = phi [8: text, 11: t41] #updated_text
-			01: t33 = phi [8: -1:int, 11: t34]
-			02: t34 = t33 + 1:int
-			03: t35 = t34 < t30
-			04: if t35 goto 11 else 9
-Block #11: socialnetwork.TextService.ComposeText.rangeindex.body
-			00: t36 = &t15[t34]
+Block #3: socialnetwork.UrlShortenService.genRandomStr.rangeindex.done
+			00: t12 = convert string <- []rune (t0)
+			01: return t12
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserIDServiceImpl
+	Method: func(ctx context.Context, reqID int64, username string) (int64, error)
+		Parameters:
+			u = parameter u : *UserIDServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+Function: socialnetwork.UserIDService.GetUserId
+Block #0: socialnetwork.UserIDService.GetUserId.entry
+			00: t0 = new int64 (user_id)
+			01: *t0 = -1:int64
+			02: t1 = &u.userCache [#0]
+			03: t2 = *t1
+			04: t3 = username + ":UserID":string
+			05: t4 = make interface{} <- *int64 (t0)
+			06: t5 = invoke t2.Get(ctx, t3, t4)
+			07: t6 = extract t5 #0
+			08: t7 = extract t5 #1
+			09: t8 = t7 != nil:error
+			10: if t8 goto 1 else 2
+Block #1: socialnetwork.UserIDService.GetUserId.if.then
+			00: t9 = *t0
+			01: return t9, t7
+Block #2: socialnetwork.UserIDService.GetUserId.if.done
+			00: if t6 goto 4 else 3
+Block #3: socialnetwork.UserIDService.GetUserId.if.then
+			00: t10 = new User (user)
+			01: t11 = &u.userDB [#1]
+			02: t12 = *t11
+			03: t13 = invoke t12.GetCollection(ctx, "user_db":string, "user":string)
+			04: t14 = extract t13 #0
+			05: t15 = extract t13 #1
+			06: t16 = t15 != nil:error
+			07: if t16 goto 5 else 6
+Block #4: socialnetwork.UserIDService.GetUserId.if.done
+			00: t17 = *t0
+			01: return t17, nil:error
+Block #5: socialnetwork.UserIDService.GetUserId.if.then
+			00: return -1:int64, t15
+Block #6: socialnetwork.UserIDService.GetUserId.if.done
+			00: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t19 = &t18[0:int]
+			02: t20 = &t19.Key [#0]
+			03: t21 = &t19.Value [#1]
+			04: *t20 = "username":string
+			05: t22 = make interface{} <- string (username)
+			06: *t21 = t22
+			07: t23 = slice t18[:]
+			08: t24 = invoke t14.FindOne(ctx, t23, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t25 = extract t24 #0
+			10: t26 = extract t24 #1
+			11: t27 = t26 != nil:error
+			12: if t27 goto 7 else 8
+Block #7: socialnetwork.UserIDService.GetUserId.if.then
+			00: return -1:int64, t26
+Block #8: socialnetwork.UserIDService.GetUserId.if.done
+			00: t28 = make interface{} <- *User (t10)
+			01: t29 = invoke t25.One(ctx, t28)
+			02: t30 = extract t29 #0
+			03: t31 = extract t29 #1
+			04: t32 = t31 != nil:error
+			05: if t32 goto 9 else 10
+Block #9: socialnetwork.UserIDService.GetUserId.if.then
+			00: return -1:int64, t31
+Block #10: socialnetwork.UserIDService.GetUserId.if.done
+			00: if t30 goto 12 else 11
+Block #11: socialnetwork.UserIDService.GetUserId.if.then
+			00: t33 = "Username ":string + username
+			01: t34 = t33 + " not found":string
+			02: t35 = errors.New(t34)
+			03: return -1:int64, t35
+Block #12: socialnetwork.UserIDService.GetUserId.if.done
+			00: t36 = &t10.UserID [#0]
 			01: t37 = *t36
-			02: t38 = &t19[t34]
-			03: t39 = &t38.ShortenedUrl [#0]
-			04: t40 = *t39
-			05: t41 = strings.ReplaceAll(t32, t37, t40)
-			06: jump 10
+			02: *t0 = t37
+			03: t38 = &u.userCache [#0]
+			04: t39 = *t38
+			05: t40 = username + ":UserID":string
+			06: t41 = *t0
+			07: t42 = make interface{} <- int64 (t41)
+			08: t43 = invoke t39.Put(ctx, t40, t42)
+			09: t44 = t43 != nil:error
+			10: if t44 goto 13 else 4
+Block #13: socialnetwork.UserIDService.GetUserId.if.then
+			00: return -1:int64, t43
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserServiceImpl
+	Method: func(ctx context.Context, reqID int64, userID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			userID = parameter userID : int64
+			username = parameter username : string
+Function: socialnetwork.UserService.ComposeCreatorWithUserId
+Block #0: socialnetwork.UserService.ComposeCreatorWithUserId.entry
+			00: t0 = local Creator (complit)
+			01: t1 = &t0.UserID [#0]
+			02: t2 = &t0.Username [#1]
+			03: *t1 = userID
+			04: *t2 = username
+			05: t3 = *t0
+			06: return t3, nil:error
+	Method: func(ctx context.Context, reqID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+Function: socialnetwork.UserService.ComposeCreatorWithUsername
+Block #0: socialnetwork.UserService.ComposeCreatorWithUsername.entry
+			00: t0 = new int64 (user_id)
+			01: *t0 = -1:int64
+			02: t1 = &u.userCache [#4]
+			03: t2 = *t1
+			04: t3 = username + ":UserID":string
+			05: t4 = make interface{} <- *int64 (t0)
+			06: t5 = invoke t2.Get(ctx, t3, t4)
+			07: t6 = *t0
+			08: t7 = t6 == -1:int64
+			09: if t7 goto 1 else 2
+Block #1: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
+			00: t8 = new User (user)
+			01: t9 = &u.userDB [#5]
+			02: t10 = *t9
+			03: t11 = invoke t10.GetCollection(ctx, "user_db":string, "user":string)
+			04: t12 = extract t11 #0
+			05: t13 = extract t11 #1
+			06: t14 = t13 != nil:error
+			07: if t14 goto 3 else 4
+Block #2: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
+			00: t15 = local Creator (complit)
+			01: t16 = &t15.UserID [#0]
+			02: t17 = *t0
+			03: t18 = &t15.Username [#1]
+			04: *t16 = t17
+			05: *t18 = username
+			06: t19 = *t15
+			07: return t19, nil:error
+Block #3: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
+			00: return struct{UserID int64; Username string}{}:Creator, t13
+Block #4: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
+			00: t20 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t21 = &t20[0:int]
+			02: t22 = &t21.Key [#0]
+			03: t23 = &t21.Value [#1]
+			04: *t22 = "username":string
+			05: t24 = make interface{} <- string (username)
+			06: *t23 = t24
+			07: t25 = slice t20[:]
+			08: t26 = invoke t12.FindOne(ctx, t25, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t27 = extract t26 #0
+			10: t28 = extract t26 #1
+			11: t29 = t28 != nil:error
+			12: if t29 goto 5 else 6
+Block #5: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
+			00: return struct{UserID int64; Username string}{}:Creator, t28
+Block #6: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
+			00: t30 = make interface{} <- *User (t8)
+			01: t31 = invoke t27.One(ctx, t30)
+			02: t32 = extract t31 #0
+			03: t33 = extract t31 #1
+			04: t34 = t33 != nil:error
+			05: if t34 goto 7 else 8
+Block #7: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
+			00: return struct{UserID int64; Username string}{}:Creator, t33
+Block #8: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
+			00: if t32 goto 10 else 9
+Block #9: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
+			00: t35 = errors.New("User doesn't exist":string)
+			01: return struct{UserID int64; Username string}{}:Creator, t35
+Block #10: socialnetwork.UserService.ComposeCreatorWithUsername.if.done
+			00: t36 = &t8.UserID [#0]
+			01: t37 = *t36
+			02: *t0 = t37
+			03: t38 = &u.userCache [#4]
+			04: t39 = *t38
+			05: t40 = username + ":UserID":string
+			06: t41 = *t0
+			07: t42 = make interface{} <- int64 (t41)
+			08: t43 = invoke t39.Put(ctx, t40, t42)
+			09: t44 = t43 != nil:error
+			10: if t44 goto 11 else 2
+Block #11: socialnetwork.UserService.ComposeCreatorWithUsername.if.then
+			00: return struct{UserID int64; Username string}{}:Creator, t43
+	Method: func(ctx context.Context, reqID int64, username string, password string) (string, error)
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+			password = parameter password : string
+Function: socialnetwork.UserService.Login
+Block #0: socialnetwork.UserService.Login.entry
+			00: t0 = time.Now()
+			01: t1 = (time.Time).UnixNano(t0)
+			02: t2 = t1 / 1000000:int64
+			03: t3 = new LoginObj (login)
+			04: t4 = &t3.UserID [#0]
+			05: *t4 = -1:int64
+			06: t5 = &u.userCache [#4]
+			07: t6 = *t5
+			08: t7 = username + ":Login":string
+			09: t8 = make interface{} <- *LoginObj (t3)
+			10: t9 = invoke t6.Get(ctx, t7, t8)
+			11: t10 = &t3.UserID [#0]
+			12: t11 = *t10
+			13: t12 = t11 == -1:int64
+			14: if t12 goto 1 else 2
+Block #1: socialnetwork.UserService.Login.if.then
+			00: t13 = new User (user)
+			01: t14 = &u.userDB [#5]
+			02: t15 = *t14
+			03: t16 = invoke t15.GetCollection(ctx, "user_db":string, "user":string)
+			04: t17 = extract t16 #0
+			05: t18 = extract t16 #1
+			06: t19 = t18 != nil:error
+			07: if t19 goto 3 else 4
+Block #2: socialnetwork.UserService.Login.if.done
+			00: t20 = &t3.Salt [#2]
+			01: t21 = *t20
+			02: t22 = password + t21
+			03: t23 = convert []byte <- string (t22)
+			04: t24 = (*UserServiceImpl).hashPwd(u, t23)
+			05: t25 = &t3.Password [#1]
+			06: t26 = *t25
+			07: t27 = t24 != t26
+			08: if t27 goto 7 else 8
+Block #3: socialnetwork.UserService.Login.if.then
+			00: return "":string, t18
+Block #4: socialnetwork.UserService.Login.if.done
+			00: t28 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t29 = &t28[0:int]
+			02: t30 = &t29.Key [#0]
+			03: t31 = &t29.Value [#1]
+			04: *t30 = "username":string
+			05: t32 = make interface{} <- string (username)
+			06: *t31 = t32
+			07: t33 = slice t28[:]
+			08: t34 = invoke t17.FindOne(ctx, t33, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t35 = extract t34 #0
+			10: t36 = extract t34 #1
+			11: t37 = t36 != nil:error
+			12: if t37 goto 5 else 6
+Block #5: socialnetwork.UserService.Login.if.then
+			00: return "":string, t36
+Block #6: socialnetwork.UserService.Login.if.done
+			00: t38 = make interface{} <- *User (t13)
+			01: t39 = invoke t35.One(ctx, t38)
+			02: t40 = &t13.PwdHashed [#4]
+			03: t41 = *t40
+			04: t42 = &t3.Password [#1]
+			05: *t42 = t41
+			06: t43 = &t13.Salt [#5]
+			07: t44 = *t43
+			08: t45 = &t3.Salt [#2]
+			09: *t45 = t44
+			10: t46 = &t13.UserID [#0]
+			11: t47 = *t46
+			12: t48 = &t3.UserID [#0]
+			13: *t48 = t47
+			14: jump 2
+Block #7: socialnetwork.UserService.Login.if.then
+			00: t49 = errors.New("Invalid credentials":string)
+			01: return "":string, t49
+Block #8: socialnetwork.UserService.Login.if.else
+			00: t50 = time.Now()
+			01: t51 = (time.Time).Add(t50, 360000000000:time.Duration)
+			02: t52 = new claimsT (complit)
+			03: t53 = &t52.Username [#0]
+			04: t54 = &t52.UserID [#1]
+			05: t55 = &t3.UserID [#0]
+			06: t56 = *t55
+			07: t57 = strconv.FormatInt(t56, 10:int)
+			08: t58 = &t52.Timestamp [#2]
+			09: t59 = &t52.StandardClaims [#3]
+			10: t60 = &t59.ExpiresAt [#1]
+			11: t61 = (time.Time).Unix(t51)
+			12: *t53 = username
+			13: *t54 = t57
+			14: *t58 = t2
+			15: *t60 = t61
+			16: t62 = *github.com/dgrijalva/jwt-go.SigningMethodHS256
+			17: t63 = make github.com/dgrijalva/jwt-go.SigningMethod <- *github.com/dgrijalva/jwt-go.SigningMethodHMAC (t62)
+			18: t64 = make github.com/dgrijalva/jwt-go.Claims <- *claimsT (t52)
+			19: t65 = github.com/dgrijalva/jwt-go.NewWithClaims(t63, t64)
+			20: t66 = &u.secret [#3]
+			21: t67 = *t66
+			22: t68 = convert []byte <- string (t67)
+			23: t69 = make interface{} <- []byte (t68)
+			24: t70 = (*github.com/dgrijalva/jwt-go.Token).SignedString(t65, t69)
+			25: t71 = extract t70 #0
+			26: t72 = extract t70 #1
+			27: t73 = t72 != nil:error
+			28: if t73 goto 9 else 10
+Block #9: socialnetwork.UserService.Login.if.then
+			00: t74 = errors.New("Failed to create ...":string)
+			01: return "":string, t74
+Block #10: socialnetwork.UserService.Login.if.done
+			00: t75 = &u.userCache [#4]
+			01: t76 = *t75
+			02: t77 = username + ":Login":string
+			03: t78 = *t3
+			04: t79 = make interface{} <- LoginObj (t78)
+			05: t80 = invoke t76.Put(ctx, t77, t79)
+			06: t81 = t80 != nil:error
+			07: if t81 goto 11 else 12
+Block #11: socialnetwork.UserService.Login.if.then
+			00: return "":string, t80
+Block #12: socialnetwork.UserService.Login.if.done
+			00: return t71, nil:error
+	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string) error
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			firstName = parameter firstName : string
+			lastName = parameter lastName : string
+			username = parameter username : string
+			password = parameter password : string
+Function: socialnetwork.UserService.RegisterUser
+Block #0: socialnetwork.UserService.RegisterUser.entry
+			00: t0 = time.Now()
+			01: t1 = (time.Time).UnixNano(t0)
+			02: t2 = t1 / 1000000:int64
+			03: t3 = (*UserServiceImpl).getCounter(u, t2)
+			04: t4 = strconv.FormatInt(t2, 16:int)
+			05: t5 = len(t4)
+			06: t6 = t5 > 10:int
+			07: if t6 goto 1 else 3
+Block #1: socialnetwork.UserService.RegisterUser.if.then
+			00: t7 = slice t4[:10:int]
+			01: jump 2
+Block #2: socialnetwork.UserService.RegisterUser.if.done
+			00: t8 = phi [1: t7, 3: t4, 4: t17] #timestamp_hex
+			01: t9 = strconv.FormatInt(t3, 16:int)
+			02: t10 = len(t9)
+			03: t11 = t10 > 1:int
+			04: if t11 goto 5 else 7
+Block #3: socialnetwork.UserService.RegisterUser.if.else
+			00: t12 = len(t4)
+			01: t13 = t12 < 10:int
+			02: if t13 goto 4 else 2
+Block #4: socialnetwork.UserService.RegisterUser.if.then
+			00: t14 = len(t4)
+			01: t15 = 10:int - t14
+			02: t16 = strings.Repeat("0":string, t15)
+			03: t17 = t16 + t4
+			04: jump 2
+Block #5: socialnetwork.UserService.RegisterUser.if.then
+			00: t18 = slice t9[:1:int]
+			01: jump 6
+Block #6: socialnetwork.UserService.RegisterUser.if.done
+			00: t19 = phi [5: t18, 7: t9, 8: t33] #counter_hex
+			01: t20 = &u.machine_id [#0]
+			02: t21 = *t20
+			03: t22 = t21 + t8
+			04: t23 = t22 + t19
+			05: t24 = strconv.ParseInt(t23, 16:int, 64:int)
+			06: t25 = extract t24 #0
+			07: t26 = extract t24 #1
+			08: t27 = t26 != nil:error
+			09: if t27 goto 9 else 10
+Block #7: socialnetwork.UserService.RegisterUser.if.else
+			00: t28 = len(t9)
+			01: t29 = t28 < 1:int
+			02: if t29 goto 8 else 6
+Block #8: socialnetwork.UserService.RegisterUser.if.then
+			00: t30 = len(t9)
+			01: t31 = 1:int - t30
+			02: t32 = strings.Repeat("0":string, t31)
+			03: t33 = t32 + t9
+			04: jump 6
+Block #9: socialnetwork.UserService.RegisterUser.if.then
+			00: return t26
+Block #10: socialnetwork.UserService.RegisterUser.if.done
+			00: t34 = t25 & 9223372036854775807:int64
+			01: t35 = (*UserServiceImpl).RegisterUserWithId(u, ctx, reqID, firstName, lastName, username, password, t34)
+			02: return t35
+	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string, userID int64) error
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			firstName = parameter firstName : string
+			lastName = parameter lastName : string
+			username = parameter username : string
+			password = parameter password : string
+			userID = parameter userID : int64
+Function: socialnetwork.UserService.RegisterUserWithId
+Block #0: socialnetwork.UserService.RegisterUserWithId.entry
+			00: t0 = &u.userDB [#5]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: socialnetwork.UserService.RegisterUserWithId.if.then
+			00: return t4
+Block #2: socialnetwork.UserService.RegisterUserWithId.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "username":string
+			05: t10 = make interface{} <- string (username)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: socialnetwork.UserService.RegisterUserWithId.if.then
+			00: return t14
+Block #4: socialnetwork.UserService.RegisterUserWithId.if.done
+			00: t16 = new User (user)
+			01: t17 = make interface{} <- *User (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: socialnetwork.UserService.RegisterUserWithId.if.then
+			00: return t20
+Block #6: socialnetwork.UserService.RegisterUserWithId.if.done
+			00: if t19 goto 7 else 8
+Block #7: socialnetwork.UserService.RegisterUserWithId.if.then
+			00: t22 = errors.New("Username already ...":string)
+			01: return t22
+Block #8: socialnetwork.UserService.RegisterUserWithId.if.done
+			00: t23 = (*UserServiceImpl).genRandomStr(u, 32:int)
+			01: t24 = password + t23
+			02: t25 = convert []byte <- string (t24)
+			03: t26 = (*UserServiceImpl).hashPwd(u, t25)
+			04: t27 = &t16.UserID [#0]
+			05: t28 = &t16.FirstName [#1]
+			06: t29 = &t16.LastName [#2]
+			07: t30 = &t16.PwdHashed [#4]
+			08: t31 = &t16.Salt [#5]
+			09: t32 = &t16.Username [#3]
+			10: *t27 = userID
+			11: *t28 = firstName
+			12: *t29 = lastName
+			13: *t30 = t26
+			14: *t31 = t23
+			15: *t32 = username
+			16: t33 = *t16
+			17: t34 = make interface{} <- User (t33)
+			18: t35 = invoke t3.InsertOne(ctx, t34)
+			19: t36 = t35 != nil:error
+			20: if t36 goto 9 else 10
+Block #9: socialnetwork.UserService.RegisterUserWithId.if.then
+			00: return t35
+Block #10: socialnetwork.UserService.RegisterUserWithId.if.done
+			00: t37 = &u.socialGraphService [#6]
+			01: t38 = *t37
+			02: t39 = invoke t38.InsertUser(ctx, reqID, userID)
+			03: return t39
+	Method: func(length int) string
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			length = parameter length : int
+Function: socialnetwork.UserService.genRandomStr
+Block #0: socialnetwork.UserService.genRandomStr.entry
+			00: t0 = make []rune length length
+			01: t1 = len(t0)
+			02: jump 1
+Block #1: socialnetwork.UserService.genRandomStr.rangeindex.loop
+			00: t2 = phi [0: -1:int, 2: t3]
+			01: t3 = t2 + 1:int
+			02: t4 = t3 < t1
+			03: if t4 goto 2 else 3
+Block #2: socialnetwork.UserService.genRandomStr.rangeindex.body
+			00: t5 = *letterRunes
+			01: t6 = *letterRunes
+			02: t7 = len(t6)
+			03: t8 = math/rand.Intn(t7)
+			04: t9 = &t5[t8]
+			05: t10 = *t9
+			06: t11 = &t0[t3]
+			07: *t11 = t10
+			08: jump 1
+Block #3: socialnetwork.UserService.genRandomStr.rangeindex.done
+			00: t12 = convert string <- []rune (t0)
+			01: return t12
+	Method: func(timestamp int64) int64
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			timestamp = parameter timestamp : int64
+Function: socialnetwork.UserService.getCounter
+Block #0: socialnetwork.UserService.getCounter.entry
+			00: t0 = &u.current_timestamp [#2]
+			01: t1 = *t0
+			02: t2 = t1 == timestamp
+			03: if t2 goto 1 else 2
+Block #1: socialnetwork.UserService.getCounter.if.then
+			00: t3 = &u.counter [#1]
+			01: t4 = *t3
+			02: t5 = &u.counter [#1]
+			03: t6 = *t5
+			04: t7 = t6 + 1:int64
+			05: t8 = &u.counter [#1]
+			06: *t8 = t7
+			07: return t4
+Block #2: socialnetwork.UserService.getCounter.if.else
+			00: t9 = &u.current_timestamp [#2]
+			01: *t9 = timestamp
+			02: t10 = &u.counter [#1]
+			03: *t10 = 1:int64
+			04: return 0:int64
+	Method: func(pwd []byte) string
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			pwd = parameter pwd : []byte
+Function: socialnetwork.UserService.hashPwd
+Block #0: socialnetwork.UserService.hashPwd.entry
+			00: t0 = crypto/sha1.New()
+			01: t1 = invoke t0.Write(pwd)
+			02: t2 = *encoding/base64.URLEncoding
+			03: t3 = invoke t0.Sum(nil:[]byte)
+			04: t4 = (*encoding/base64.Encoding).EncodeToString(t2, t3)
+			05: return t4
+		Parameters:
+			jsonQuery = parameter jsonQuery : string
+Function: socialnetwork.handleFormats
+Block #0: socialnetwork.handleFormats.entry
+			00: return nil:go.mongodb.org/mongo-driver/bson/primitive.D, nil:error
+		Parameters:
+Function: socialnetwork.main
+Block #0: socialnetwork.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewPostStorageServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.StorePost(t0, 0:int64, struct{PostID int64; Creator Creator; ReqID int64; Text string; UserMentions []UserMention; Medias []Media; Urls []URL; Timestamp int64; PostType int64}{}:Post)
+			05: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostType
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphService
+	Method: func(ctx context.Context, reqID int64, userID int64, followeeID int64) error
+	Method: func(ctx context.Context, reqID int64, userUsername string, followeeUsername string) error
+	Method: func(ctx context.Context, reqID int64, userID int64) ([]int64, error)
+	Method: func(ctx context.Context, reqID int64, userID int64) ([]int64, error)
+	Method: func(ctx context.Context, reqID int64, userID int64) error
+	Method: func(ctx context.Context, reqID int64, userID int64, followeeID int64) error
+	Method: func(ctx context.Context, reqID int64, userUsername string, followeeUsername string) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Wrk2APIServiceImpl
+	Method: func(ctx context.Context, userId int64, username string, post_type int64, text string, media_types []string, media_ids []int64) (int64, []int64, error)
+		Parameters:
+			w = parameter w : *Wrk2APIServiceImpl
+			ctx = parameter ctx : context.Context
+			userId = parameter userId : int64
+			username = parameter username : string
+			post_type = parameter post_type : int64
+			text = parameter text : string
+			media_types = parameter media_types : []string
+			media_ids = parameter media_ids : []int64
+Function: socialnetwork.Wrk2APIService.ComposePost
+Block #0: socialnetwork.Wrk2APIService.ComposePost.entry
+			00: t0 = userId == 0:int64
+			01: if t0 goto 1 else 4
+Block #1: socialnetwork.Wrk2APIService.ComposePost.if.then
+			00: t1 = new [0]int64 (slicelit)
+			01: t2 = slice t1[:]
+			02: t3 = errors.New("Incomplete Arguments":string)
+			03: return -1:int64, t2, t3
+Block #2: socialnetwork.Wrk2APIService.ComposePost.if.done
+			00: t4 = math/rand.Int63()
+			01: t5 = &w.composePostService [#1]
+			02: t6 = *t5
+			03: t7 = invoke t6.ComposePost(ctx, t4, username, userId, text, media_ids, media_types, post_type)
+			04: t8 = extract t7 #0
+			05: t9 = extract t7 #1
+			06: t10 = extract t7 #2
+			07: return t8, t9, t10
+Block #3: socialnetwork.Wrk2APIService.ComposePost.cond.false
+			00: t11 = text == "":string
+			01: if t11 goto 1 else 2
+Block #4: socialnetwork.Wrk2APIService.ComposePost.cond.false
+			00: t12 = username == "":string
+			01: if t12 goto 1 else 3
+	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
+		Parameters:
+			w = parameter w : *Wrk2APIServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			followeeName = parameter followeeName : string
+			userId = parameter userId : int64
+			followeeID = parameter followeeID : int64
+Function: socialnetwork.Wrk2APIService.Follow
+Block #0: socialnetwork.Wrk2APIService.Follow.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = userId != 0:int64
+			02: if t1 goto 3 else 2
+Block #1: socialnetwork.Wrk2APIService.Follow.if.then
+			00: t2 = &w.socialGraphService [#4]
+			01: t3 = *t2
+			02: t4 = invoke t3.Follow(ctx, t0, userId, followeeID)
+			03: return t4
+Block #2: socialnetwork.Wrk2APIService.Follow.if.else
+			00: t5 = username != "":string
+			01: if t5 goto 6 else 5
+Block #3: socialnetwork.Wrk2APIService.Follow.cond.true
+			00: t6 = followeeID != 0:int64
+			01: if t6 goto 1 else 2
+Block #4: socialnetwork.Wrk2APIService.Follow.if.then
+			00: t7 = &w.socialGraphService [#4]
+			01: t8 = *t7
+			02: t9 = invoke t8.FollowWithUsername(ctx, t0, username, followeeName)
+			03: return t9
+Block #5: socialnetwork.Wrk2APIService.Follow.if.done
+			00: t10 = errors.New("Invalid Arguments":string)
+			01: return t10
+Block #6: socialnetwork.Wrk2APIService.Follow.cond.true
+			00: t11 = followeeName != "":string
+			01: if t11 goto 4 else 5
+	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
+		Parameters:
+			w = parameter w : *Wrk2APIServiceImpl
+			ctx = parameter ctx : context.Context
+			userId = parameter userId : int64
+			start = parameter start : int64
+			stop = parameter stop : int64
+Function: socialnetwork.Wrk2APIService.ReadHomeTimeline
+Block #0: socialnetwork.Wrk2APIService.ReadHomeTimeline.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = &w.homeTimelineService [#3]
+			02: t2 = *t1
+			03: t3 = invoke t2.ReadHomeTimeline(ctx, t0, userId, start, stop)
+			04: t4 = extract t3 #0
+			05: t5 = extract t3 #1
+			06: return t4, t5
+	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
+		Parameters:
+			w = parameter w : *Wrk2APIServiceImpl
+			ctx = parameter ctx : context.Context
+			userId = parameter userId : int64
+			start = parameter start : int64
+			stop = parameter stop : int64
+Function: socialnetwork.Wrk2APIService.ReadUserTimeline
+Block #0: socialnetwork.Wrk2APIService.ReadUserTimeline.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = &w.userTimelineService [#2]
+			02: t2 = *t1
+			03: t3 = invoke t2.ReadUserTimeline(ctx, t0, userId, start, stop)
+			04: t4 = extract t3 #0
+			05: t5 = extract t3 #1
+			06: return t4, t5
+	Method: func(ctx context.Context, firstName string, lastName string, username string, password string, userId int64) error
+		Parameters:
+			w = parameter w : *Wrk2APIServiceImpl
+			ctx = parameter ctx : context.Context
+			firstName = parameter firstName : string
+			lastName = parameter lastName : string
+			username = parameter username : string
+			password = parameter password : string
+			userId = parameter userId : int64
+Function: socialnetwork.Wrk2APIService.Register
+Block #0: socialnetwork.Wrk2APIService.Register.entry
+			00: t0 = firstName == "":string
+			01: if t0 goto 1 else 5
+Block #1: socialnetwork.Wrk2APIService.Register.if.then
+			00: t1 = errors.New("Incomplete Arguments":string)
+			01: return t1
+Block #2: socialnetwork.Wrk2APIService.Register.if.done
+			00: t2 = math/rand.Int63()
+			01: t3 = &w.userService [#0]
+			02: t4 = *t3
+			03: t5 = invoke t4.RegisterUserWithId(ctx, t2, firstName, lastName, username, password, userId)
+			04: return t5
+Block #3: socialnetwork.Wrk2APIService.Register.cond.false
+			00: t6 = password == "":string
+			01: if t6 goto 1 else 2
+Block #4: socialnetwork.Wrk2APIService.Register.cond.false
+			00: t7 = username == "":string
+			01: if t7 goto 1 else 3
+Block #5: socialnetwork.Wrk2APIService.Register.cond.false
+			00: t8 = lastName == "":string
+			01: if t8 goto 1 else 4
+	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
+		Parameters:
+			w = parameter w : *Wrk2APIServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			followeeName = parameter followeeName : string
+			userId = parameter userId : int64
+			followeeID = parameter followeeID : int64
+Function: socialnetwork.Wrk2APIService.Unfollow
+Block #0: socialnetwork.Wrk2APIService.Unfollow.entry
+			00: t0 = math/rand.Int63()
+			01: t1 = userId != 0:int64
+			02: if t1 goto 3 else 2
+Block #1: socialnetwork.Wrk2APIService.Unfollow.if.then
+			00: t2 = &w.socialGraphService [#4]
+			01: t3 = *t2
+			02: t4 = invoke t3.Unfollow(ctx, t0, userId, followeeID)
+			03: return t4
+Block #2: socialnetwork.Wrk2APIService.Unfollow.if.else
+			00: t5 = username != "":string
+			01: if t5 goto 6 else 5
+Block #3: socialnetwork.Wrk2APIService.Unfollow.cond.true
+			00: t6 = followeeID != 0:int64
+			01: if t6 goto 1 else 2
+Block #4: socialnetwork.Wrk2APIService.Unfollow.if.then
+			00: t7 = &w.socialGraphService [#4]
+			01: t8 = *t7
+			02: t9 = invoke t8.UnfollowWithUsername(ctx, t0, username, followeeName)
+			03: return t9
+Block #5: socialnetwork.Wrk2APIService.Unfollow.if.done
+			00: t10 = errors.New("Invalid Arguments":string)
+			01: return t10
+Block #6: socialnetwork.Wrk2APIService.Unfollow.cond.true
+			00: t11 = followeeName != "":string
+			01: if t11 goto 4 else 5
+	Global: letterRunes, Type: *[]rune
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.ComposePostServiceImpl
 	Method: func(ctx context.Context, reqID int64, username string, userID int64, text string, mediaIDs []int64, mediaTypes []string, postType int64) (int64, []int64, error)
 		Parameters:
@@ -2394,79 +2563,6 @@ Block #14: socialnetwork.ComposePostService.ComposePost.if.then
 			00: return t18, t48, t66
 Block #15: socialnetwork.ComposePostService.ComposePost.if.done
 			00: return t18, t48, t69
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.HomeTimelineService
-	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
-	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64, userMentionIDs []int64) error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			homeTimelineCache = parameter homeTimelineCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			postStorageService = parameter postStorageService : PostStorageService
-			socialGraphService = parameter socialGraphService : SocialGraphService
-Function: socialnetwork.NewHomeTimelineServiceImpl
-Block #0: socialnetwork.NewHomeTimelineServiceImpl.entry
-			00: t0 = new HomeTimelineServiceImpl (complit)
-			01: t1 = &t0.homeTimelineCache [#0]
-			02: t2 = &t0.postStorageService [#1]
-			03: t3 = &t0.socialGraphService [#2]
-			04: *t1 = homeTimelineCache
-			05: *t2 = postStorageService
-			06: *t3 = socialGraphService
-			07: t4 = make HomeTimelineService <- *HomeTimelineServiceImpl (t0)
-			08: return t4, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphService
-	Method: func(ctx context.Context, reqID int64, userID int64, followeeID int64) error
-	Method: func(ctx context.Context, reqID int64, userUsername string, followeeUsername string) error
-	Method: func(ctx context.Context, reqID int64, userID int64) ([]int64, error)
-	Method: func(ctx context.Context, reqID int64, userID int64) ([]int64, error)
-	Method: func(ctx context.Context, reqID int64, userID int64) error
-	Method: func(ctx context.Context, reqID int64, userID int64, followeeID int64) error
-	Method: func(ctx context.Context, reqID int64, userUsername string, followeeUsername string) error
-	Unknown member type: *ssa.NamedConst
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.MediaServiceImpl
-	Method: func(ctx context.Context, reqID int64, mediaTypes []string, mediaIds []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Media, error)
-		Parameters:
-			m = parameter m : *MediaServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			mediaTypes = parameter mediaTypes : []string
-			mediaIds = parameter mediaIds : []int64
-Function: socialnetwork.MediaService.ComposeMedia
-Block #0: socialnetwork.MediaService.ComposeMedia.entry
-			00: t0 = len(mediaTypes)
-			01: t1 = len(mediaIds)
-			02: t2 = t0 != t1
-			03: if t2 goto 1 else 2
-Block #1: socialnetwork.MediaService.ComposeMedia.if.then
-			00: t3 = errors.New("The lengths of me...":string)
-			01: return nil:[]Media, t3
-Block #2: socialnetwork.MediaService.ComposeMedia.if.done
-			00: t4 = len(mediaIds)
-			01: jump 3
-Block #3: socialnetwork.MediaService.ComposeMedia.rangeindex.loop
-			00: t5 = phi [2: nil:[]Media, 4: t20] #medias
-			01: t6 = phi [2: -1:int, 4: t7]
-			02: t7 = t6 + 1:int
-			03: t8 = t7 < t4
-			04: if t8 goto 4 else 5
-Block #4: socialnetwork.MediaService.ComposeMedia.rangeindex.body
-			00: t9 = &mediaIds[t7]
-			01: t10 = *t9
-			02: t11 = local Media (media)
-			03: t12 = &t11.MediaID [#0]
-			04: t13 = &t11.MediaType [#1]
-			05: t14 = &mediaTypes[t7]
-			06: t15 = *t14
-			07: *t12 = t10
-			08: *t13 = t15
-			09: t16 = *t11
-			10: t17 = new [1]Media (varargs)
-			11: t18 = &t17[0:int]
-			12: *t18 = t16
-			13: t19 = slice t17[:]
-			14: t20 = append(t5, t19...)
-			15: jump 3
-Block #5: socialnetwork.MediaService.ComposeMedia.rangeindex.done
-			00: return t5, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostStorageServiceImpl
 	Method: func(ctx context.Context, reqID int64, postID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Post, error)
 		Parameters:
@@ -2773,200 +2869,104 @@ Block #2: socialnetwork.PostStorageService.StorePost.if.done
 			00: t6 = make interface{} <- Post (post)
 			01: t7 = invoke t3.InsertOne(ctx, t6)
 			02: return t7
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.PostType
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.HomeTimelineServiceImpl
-	Method: func(ctx context.Context, reqID int64, userID int64, start int64, stop int64) ([]int64, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.FolloweeInfo
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.TextServiceImpl
+	Method: func(ctx context.Context, reqID int64, text string) (string, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, []github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL, error)
 		Parameters:
-			h = parameter h : *HomeTimelineServiceImpl
+			t = parameter t : *TextServiceImpl
 			ctx = parameter ctx : context.Context
 			reqID = parameter reqID : int64
-			userID = parameter userID : int64
-			start = parameter start : int64
-			stop = parameter stop : int64
-Function: socialnetwork.HomeTimelineService.ReadHomeTimeline
-Block #0: socialnetwork.HomeTimelineService.ReadHomeTimeline.entry
-			00: t0 = stop <= start
-			01: if t0 goto 1 else 3
-Block #1: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.then
-			00: t1 = new [0]int64 (slicelit)
-			01: t2 = slice t1[:]
-			02: return t2, nil:error
-Block #2: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.done
-			00: t3 = strconv.FormatInt(userID, 10:int)
-			01: t4 = new []int64 (postIDs)
-			02: t5 = &h.homeTimelineCache [#0]
-			03: t6 = *t5
-			04: t7 = make interface{} <- *[]int64 (t4)
-			05: t8 = invoke t6.Get(ctx, t3, t7)
-			06: t9 = extract t8 #0
-			07: t10 = extract t8 #1
-			08: t11 = t10 != nil:error
-			09: if t11 goto 4 else 5
-Block #3: socialnetwork.HomeTimelineService.ReadHomeTimeline.cond.false
-			00: t12 = start < 0:int64
-			01: if t12 goto 1 else 2
-Block #4: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.then
-			00: t13 = new [0]int64 (slicelit)
-			01: t14 = slice t13[:]
-			02: return t14, t10
-Block #5: socialnetwork.HomeTimelineService.ReadHomeTimeline.if.done
-			00: t15 = *t4
-			01: return t15, nil:error
-	Method: func(ctx context.Context, reqID int64, postID int64, userID int64, timestamp int64, userMentionIDs []int64) error
-		Parameters:
-			h = parameter h : *HomeTimelineServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			postID = parameter postID : int64
-			userID = parameter userID : int64
-			timestamp = parameter timestamp : int64
-			userMentionIDs = parameter userMentionIDs : []int64
-Function: socialnetwork.HomeTimelineService.WriteHomeTimeline
-Block #0: socialnetwork.HomeTimelineService.WriteHomeTimeline.entry
-			00: t0 = &h.socialGraphService [#2]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetFollowers(ctx, reqID, userID)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.then
-			00: return t4
-Block #2: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.done
-			00: t6 = make map[int64]bool 
-			01: t7 = len(t3)
-			02: jump 3
-Block #3: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.loop
-			00: t8 = phi [2: -1:int, 4: t9]
-			01: t9 = t8 + 1:int
-			02: t10 = t9 < t7
-			03: if t10 goto 4 else 5
-Block #4: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.body
-			00: t11 = &t3[t9]
-			01: t12 = *t11
-			02: t6[t12] = true:bool
-			03: jump 3
-Block #5: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.done
-			00: t13 = len(userMentionIDs)
-			01: jump 6
-Block #6: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.loop
-			00: t14 = phi [5: -1:int, 7: t15]
-			01: t15 = t14 + 1:int
-			02: t16 = t15 < t13
-			03: if t16 goto 7 else 8
-Block #7: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.body
-			00: t17 = &userMentionIDs[t15]
-			01: t18 = *t17
-			02: t6[t18] = true:bool
-			03: jump 6
-Block #8: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeindex.done
-			00: t19 = range t6
-			01: jump 9
-Block #9: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeiter.loop
-			00: t20 = next t19
-			01: t21 = extract t20 #0
-			02: if t21 goto 10 else 11
-Block #10: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeiter.body
-			00: t22 = extract t20 #1
-			01: t23 = strconv.FormatInt(t22, 10:int)
-			02: t24 = new []PostInfo (posts)
-			03: t25 = &h.homeTimelineCache [#0]
-			04: t26 = *t25
-			05: t27 = make interface{} <- *[]PostInfo (t24)
-			06: t28 = invoke t26.Get(ctx, t23, t27)
-			07: t29 = extract t28 #0
-			08: t30 = extract t28 #1
-			09: t31 = t30 != nil:error
-			10: if t31 goto 12 else 13
-Block #11: socialnetwork.HomeTimelineService.WriteHomeTimeline.rangeiter.done
-			00: return nil:error
-Block #12: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.then
-			00: return t30
-Block #13: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.done
-			00: t32 = *t24
-			01: t33 = local PostInfo (complit)
-			02: t34 = &t33.PostID [#0]
-			03: t35 = &t33.Timestamp [#1]
-			04: *t34 = postID
-			05: *t35 = timestamp
-			06: t36 = *t33
-			07: t37 = new [1]PostInfo (varargs)
-			08: t38 = &t37[0:int]
-			09: *t38 = t36
-			10: t39 = slice t37[:]
-			11: t40 = append(t32, t39...)
-			12: *t24 = t40
-			13: t41 = &h.homeTimelineCache [#0]
-			14: t42 = *t41
-			15: t43 = *t24
-			16: t44 = make interface{} <- []PostInfo (t43)
-			17: t45 = invoke t42.Put(ctx, t23, t44)
-			18: t46 = t45 != nil:error
-			19: if t46 goto 14 else 9
-Block #14: socialnetwork.HomeTimelineService.WriteHomeTimeline.if.then
-			00: return t45
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.LoginObj
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserInfo
+			text = parameter text : string
+Function: socialnetwork.TextService.ComposeText
+Block #0: socialnetwork.TextService.ComposeText.entry
+			00: t0 = regexp.MustCompile("@[a-zA-Z0-9-_]+":string)
+			01: t1 = (*regexp.Regexp).FindAllString(t0, text, -1:int)
+			02: t2 = len(t1)
+			03: jump 1
+Block #1: socialnetwork.TextService.ComposeText.rangeindex.loop
+			00: t3 = phi [0: nil:[]string, 2: t13] #usernames
+			01: t4 = phi [0: -1:int, 2: t5]
+			02: t5 = t4 + 1:int
+			03: t6 = t5 < t2
+			04: if t6 goto 2 else 3
+Block #2: socialnetwork.TextService.ComposeText.rangeindex.body
+			00: t7 = &t1[t5]
+			01: t8 = *t7
+			02: t9 = slice t8[1:int:]
+			03: t10 = new [1]string (varargs)
+			04: t11 = &t10[0:int]
+			05: *t11 = t9
+			06: t12 = slice t10[:]
+			07: t13 = append(t3, t12...)
+			08: jump 1
+Block #3: socialnetwork.TextService.ComposeText.rangeindex.done
+			00: t14 = regexp.MustCompile("(http://|https://...":string)
+			01: t15 = (*regexp.Regexp).FindAllString(t14, text, -1:int)
+			02: t16 = &t.urlShortenService [#0]
+			03: t17 = *t16
+			04: t18 = invoke t17.ComposeUrls(ctx, reqID, t15)
+			05: t19 = extract t18 #0
+			06: t20 = extract t18 #1
+			07: t21 = &t.userMentionService [#1]
+			08: t22 = *t21
+			09: t23 = invoke t22.ComposeUserMentions(ctx, reqID, t3)
+			10: t24 = extract t23 #0
+			11: t25 = extract t23 #1
+			12: t26 = t20 != nil:error
+			13: if t26 goto 4 else 5
+Block #4: socialnetwork.TextService.ComposeText.if.then
+			00: return text, t24, t19, t20
+Block #5: socialnetwork.TextService.ComposeText.if.done
+			00: t27 = t25 != nil:error
+			01: if t27 goto 6 else 7
+Block #6: socialnetwork.TextService.ComposeText.if.then
+			00: return text, t24, t19, t25
+Block #7: socialnetwork.TextService.ComposeText.if.done
+			00: t28 = len(t19)
+			01: t29 = t28 != 0:int
+			02: if t29 goto 8 else 9
+Block #8: socialnetwork.TextService.ComposeText.if.then
+			00: t30 = len(t15)
+			01: jump 10
+Block #9: socialnetwork.TextService.ComposeText.if.done
+			00: t31 = phi [7: text, 10: t32] #updated_text
+			01: return t31, t24, t19, nil:error
+Block #10: socialnetwork.TextService.ComposeText.rangeindex.loop
+			00: t32 = phi [8: text, 11: t41] #updated_text
+			01: t33 = phi [8: -1:int, 11: t34]
+			02: t34 = t33 + 1:int
+			03: t35 = t34 < t30
+			04: if t35 goto 11 else 9
+Block #11: socialnetwork.TextService.ComposeText.rangeindex.body
+			00: t36 = &t15[t34]
+			01: t37 = *t36
+			02: t38 = &t19[t34]
+			03: t39 = &t38.ShortenedUrl [#0]
+			04: t40 = *t39
+			05: t41 = strings.ReplaceAll(t32, t37, t40)
+			06: jump 10
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserService
+	Method: func(ctx context.Context, reqID int64, userID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
+	Method: func(ctx context.Context, reqID int64, username string) (github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Creator, error)
+	Method: func(ctx context.Context, reqID int64, username string, password string) (string, error)
+	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string) error
+	Method: func(ctx context.Context, reqID int64, firstName string, lastName string, username string, password string, userID int64) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.URL
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention
+	Unknown member type: *ssa.NamedConst
 		Parameters:
 			ctx = parameter ctx : context.Context
-			urlShortenDB = parameter urlShortenDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: socialnetwork.NewUrlShortenServiceImpl
-Block #0: socialnetwork.NewUrlShortenServiceImpl.entry
-			00: t0 = time.Now()
-			01: t1 = (time.Time).UnixNano(t0)
-			02: t2 = math/rand.Seed(t1)
-			03: t3 = new UrlShortenServiceImpl (complit)
-			04: t4 = &t3.urlShortenDB [#0]
-			05: t5 = &t3.hostname [#1]
-			06: *t4 = urlShortenDB
-			07: *t5 = "http://short-url/":string
-			08: t6 = make UrlShortenService <- *UrlShortenServiceImpl (t3)
-			09: return t6, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			userCache = parameter userCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-			socialGraphService = parameter socialGraphService : SocialGraphService
-			secret = parameter secret : string
-Function: socialnetwork.NewUserServiceImpl
-Block #0: socialnetwork.NewUserServiceImpl.entry
-			00: t0 = new UserServiceImpl (complit)
-			01: t1 = &t0.counter [#1]
-			02: t2 = &t0.current_timestamp [#2]
-			03: t3 = &t0.machine_id [#0]
-			04: t4 = GetMachineID()
-			05: t5 = &t0.userCache [#4]
-			06: t6 = &t0.userDB [#5]
-			07: t7 = &t0.socialGraphService [#6]
-			08: t8 = &t0.secret [#3]
-			09: *t1 = 0:int64
-			10: *t2 = -1:int64
-			11: *t3 = t4
-			12: *t5 = userCache
-			13: *t6 = userDB
-			14: *t7 = socialGraphService
-			15: *t8 = secret
-			16: t9 = make UserService <- *UserServiceImpl (t0)
-			17: return t9, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.Wrk2APIService
-	Method: func(ctx context.Context, userId int64, username string, post_type int64, text string, media_types []string, media_ids []int64) (int64, []int64, error)
-	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
-	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
-	Method: func(ctx context.Context, userId int64, start int64, stop int64) ([]int64, error)
-	Method: func(ctx context.Context, firstName string, lastName string, username string, password string, userId int64) error
-	Method: func(ctx context.Context, username string, followeeName string, userId int64, followeeID int64) error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			urlShortenService = parameter urlShortenService : UrlShortenService
-			userMentionService = parameter userMentionService : UserMentionService
-Function: socialnetwork.NewTextServiceImpl
-Block #0: socialnetwork.NewTextServiceImpl.entry
-			00: t0 = new TextServiceImpl (complit)
-			01: t1 = &t0.urlShortenService [#0]
-			02: t2 = &t0.userMentionService [#1]
-			03: *t1 = urlShortenService
-			04: *t2 = userMentionService
-			05: t3 = make TextService <- *TextServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMentionService
-	Method: func(ctx context.Context, reqID int64, usernames []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserMention, error)
+			userTimelineCache = parameter userTimelineCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			userTimelineDB = parameter userTimelineDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			postStorageService = parameter postStorageService : PostStorageService
+Function: socialnetwork.NewUserTimelineServiceImpl
+Block #0: socialnetwork.NewUserTimelineServiceImpl.entry
+			00: t0 = new UserTimelineServiceImpl (complit)
+			01: t1 = &t0.userTimelineCache [#0]
+			02: t2 = &t0.userTimelineDB [#1]
+			03: t3 = &t0.postStorageService [#2]
+			04: *t1 = userTimelineCache
+			05: *t2 = userTimelineDB
+			06: *t3 = postStorageService
+			07: t4 = make UserTimelineService <- *UserTimelineServiceImpl (t0)
+			08: return t4, nil:error

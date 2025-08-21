@@ -1,23 +1,23 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1628571367 [label="if t12 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__1628571367 [label="if t12 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__2087877999 [label="if t8 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__2087877999 [label="if t8 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2690099 [label="return struct{BarID string; Text string}{}:Bar, t7", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2690099 [label="return struct{BarID string; Text string}{}:Bar, t7", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2690178 [label="return struct{BarID string; Text string}{}:Bar, t11", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2690178 [label="return struct{BarID string; Text string}{}:Bar, t11", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2690201 [label="return t13, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2690201 [label="return t13, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2689991 [label="*t1 = id", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2689991 [label="*t1 = id", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2690003 [label="*t2 = text", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2690003 [label="*t2 = text", style=bold, shape=ellipse, color="blue"];
-	N_nil_1154188456 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_instr__919474862 [label="if t8 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__919474862 [label="if t8 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__983190838 [label="if t12 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__983190838 [label="if t12 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_1491 [label="return struct{BarID string; Text string}{}:Bar, t7", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1491 [label="return struct{BarID string; Text string}{}:Bar, t7", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1570 [label="return struct{BarID string; Text string}{}:Bar, t11", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1570 [label="return struct{BarID string; Text string}{}:Bar, t11", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1593 [label="return t13, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1593 [label="return t13, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1383 [label="*t1 = id", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1383 [label="*t1 = id", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1395 [label="*t2 = text", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1395 [label="*t2 = text", style=bold, shape=ellipse, color="blue"];
+	N_nil_724183262 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
 	N_val__bar__string [label="\"bar\":string: \"bar\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__bar_db__string [label="\"bar_db\":string: \"bar_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2689972 [label="t0: local Bar (bar)
+	N_val_alloc_1364 [label="t0: local Bar (bar)
 
 ==== tainted ====
 _obj
@@ -27,25 +27,25 @@ _obj.BarID
 _obj.Text
 [write] @ bar_db.bar.Text
 ", style=bold, shape=box, color="orange"];
-	N_val_binary_2690088 [label="t8: t7 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_binary_2690167 [label="t12: t11 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2690057 [label="t5: invoke t4.GetCollection(ctx, \"bar_db\":string, \"bar\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2690148 [label="t11: invoke t6.InsertOne(ctx, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_1480 [label="t8: t7 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_1559 [label="t12: t11 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_1449 [label="t5: invoke t4.GetCollection(ctx, \"bar_db\":string, \"bar\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1540 [label="t11: invoke t6.InsertOne(ctx, t10)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt6 [label="t6: extract t5 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt7 [label="t7: extract t5 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2689991 [label="t1: &t0.BarID [#0]
+	N_val_field_1383 [label="t1: &t0.BarID [#0]
 
 ==== tainted ====
 _obj
 [write] @ bar_db.bar.BarID
 ", style=bold, shape=box, color="green"];
-	N_val_field_2690003 [label="t2: &t0.Text [#1]
+	N_val_field_1395 [label="t2: &t0.Text [#1]
 
 ==== tainted ====
 _obj
 [write] @ bar_db.bar.Text
 ", style=bold, shape=box, color="green"];
-	N_val_field_2690038 [label="t3: &s.barDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1430 [label="t3: &s.barDb [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet10 [label="t10: make interface{} <- Bar (t9)
 
 ==== tainted ====
@@ -56,23 +56,23 @@ _obj.BarID
 _obj.Text
 [write] @ bar_db.bar.Text
 ", style=bold, shape=box, color="black"];
-	N_val_param_2689883 [label="s: parameter s : *BarServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2689911 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2689932 [label="id: parameter id : string
+	N_val_param_1275 [label="s: parameter s : *BarServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_1303 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1324 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [write] @ bar_db.bar.BarID
 ", style=bold, shape=box, color="black"];
-	N_val_param_2689943 [label="text: parameter text : string
+	N_val_param_1335 [label="text: parameter text : string
 
 ==== tainted ====
 _obj
 [write] @ bar_db.bar.Text
 ", style=bold, shape=box, color="black"];
 	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar [label="struct{BarID string; Text string}{}:github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar: struct{BarID string; Text string}{}:github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar", style=bold, shape=ellipse, color="yellow"];
-	N_val_unary_2690038 [label="t4: *t3", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2690154 [label="t9: *t0
+	N_val_unary_1430 [label="t4: *t3", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1546 [label="t9: *t0
 
 ==== tainted ====
 _obj
@@ -82,7 +82,7 @@ _obj.BarID
 _obj.Text
 [write] @ bar_db.bar.Text
 ", style=bold, shape=box, color="red"];
-	N_val_unary_2690208 [label="t13: *t0
+	N_val_unary_1600 [label="t13: *t0
 
 ==== tainted ====
 _obj
@@ -92,34 +92,34 @@ _obj.BarID
 _obj.Text
 [write] @ bar_db.bar.Text
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2689972 -> N_val_field_2689991;
-	N_val_alloc_2689972 -> N_val_field_2690003;
-	N_val_field_2689991 -> N_instr_store_2689991;
-	N_val_param_2689932 -> N_instr_store_2689991;
-	N_val_field_2690003 -> N_instr_store_2690003;
-	N_val_param_2689943 -> N_instr_store_2690003;
-	N_val_param_2689883 -> N_val_field_2690038;
-	N_val_field_2690038 -> N_val_unary_2690038;
-	N_val_param_2689911 -> N_val_call_2690057;
-	N_val__bar_db__string -> N_val_call_2690057;
-	N_val__bar__string -> N_val_call_2690057;
-	N_val_call_2690057 -> N_val_extrt6;
-	N_val_call_2690057 -> N_val_extrt7;
-	N_val_extrt7 -> N_val_binary_2690088;
-	N_nil_1154188456 -> N_val_binary_2690088;
-	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_2690099;
-	N_val_extrt7 -> N_instr_ret_2690099;
-	N_val_alloc_2689972 -> N_val_unary_2690154;
-	N_val_unary_2690154 -> N_val_ifacet10;
-	N_val_param_2689911 -> N_val_call_2690148;
-	N_val_ifacet10 -> N_val_call_2690148;
-	N_val_call_2690148 -> N_val_binary_2690167;
-	N_nil_1154188456 -> N_val_binary_2690167;
-	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_2690178;
-	N_val_call_2690148 -> N_instr_ret_2690178;
-	N_val_alloc_2689972 -> N_val_unary_2690208;
-	N_val_unary_2690208 -> N_instr_ret_2690201;
-	N_nil_1154188456 -> N_instr_ret_2690201;
-	N_val_field_2689991 -> N_val_alloc_2689972 [label=".BarID", style=dashed, color=blue];
-	N_val_field_2690003 -> N_val_alloc_2689972 [label=".Text", style=dashed, color=blue];
+	N_val_alloc_1364 -> N_val_field_1383;
+	N_val_alloc_1364 -> N_val_field_1395;
+	N_val_field_1383 -> N_instr_store_1383;
+	N_val_param_1324 -> N_instr_store_1383;
+	N_val_field_1395 -> N_instr_store_1395;
+	N_val_param_1335 -> N_instr_store_1395;
+	N_val_param_1275 -> N_val_field_1430;
+	N_val_field_1430 -> N_val_unary_1430;
+	N_val_param_1303 -> N_val_call_1449;
+	N_val__bar_db__string -> N_val_call_1449;
+	N_val__bar__string -> N_val_call_1449;
+	N_val_call_1449 -> N_val_extrt6;
+	N_val_call_1449 -> N_val_extrt7;
+	N_val_extrt7 -> N_val_binary_1480;
+	N_nil_724183262 -> N_val_binary_1480;
+	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_1491;
+	N_val_extrt7 -> N_instr_ret_1491;
+	N_val_alloc_1364 -> N_val_unary_1546;
+	N_val_unary_1546 -> N_val_ifacet10;
+	N_val_param_1303 -> N_val_call_1540;
+	N_val_ifacet10 -> N_val_call_1540;
+	N_val_call_1540 -> N_val_binary_1559;
+	N_nil_724183262 -> N_val_binary_1559;
+	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_1570;
+	N_val_call_1540 -> N_instr_ret_1570;
+	N_val_alloc_1364 -> N_val_unary_1600;
+	N_val_unary_1600 -> N_instr_ret_1593;
+	N_nil_724183262 -> N_instr_ret_1593;
+	N_val_field_1383 -> N_val_alloc_1364 [label=".BarID", style=dashed, color=blue];
+	N_val_field_1395 -> N_val_alloc_1364 [label=".Text", style=dashed, color=blue];
 }

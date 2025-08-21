@@ -583,10 +583,10 @@ t7 (@StorePost): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl).Follow ###
-s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
-
 t0 (@Follow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@Follow): (*ssa.Alloc)
+
+s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1030,10 +1030,10 @@ t25 (@Unfollow): (*ssa.UnOp) (*t12)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl).UnfollowWithUsername ###
+s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
 t0 (@UnfollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@UnfollowWithUsername): (*ssa.Alloc)
-
-s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@UnfollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1182,9 +1182,6 @@ t29 (@ComposeUniqueId): (*ssa.Slice) (slice t22[:])
 t31 (@ComposeUniqueId): (*ssa.FieldAddr) (&u.machine_id [#2])
 
 t37 (@ComposeUniqueId): (*ssa.Extract) (extract t35 #1)
-	 → t2 (@ParseInt): (*ssa.MakeInterface)
-	 → t33 (@ParseInt): (*ssa.MakeInterface)
-	 → t38 (@ParseInt): (*ssa.MakeInterface)
 	 → t2 (@ParseUint): (*ssa.MakeInterface)
 	 → t14 (@ParseUint): (*ssa.MakeInterface)
 	 → t41 (@ParseUint): (*ssa.MakeInterface)
@@ -1193,6 +1190,9 @@ t37 (@ComposeUniqueId): (*ssa.Extract) (extract t35 #1)
 	 → t83 (@ParseUint): (*ssa.MakeInterface)
 	 → t90 (@ParseUint): (*ssa.MakeInterface)
 	 → t93 (@ParseUint): (*ssa.MakeInterface)
+	 → t2 (@ParseInt): (*ssa.MakeInterface)
+	 → t33 (@ParseInt): (*ssa.MakeInterface)
+	 → t38 (@ParseInt): (*ssa.MakeInterface)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UniqueIdServiceImpl).getCounter ###
@@ -1827,9 +1827,6 @@ ctx (@RegisterUser): (*ssa.Parameter) (parameter ctx : context.Context)
 t20 (@RegisterUser): (*ssa.FieldAddr) (&u.machine_id [#0])
 
 t26 (@RegisterUser): (*ssa.Extract) (extract t24 #1)
-	 → t2 (@ParseInt): (*ssa.MakeInterface)
-	 → t33 (@ParseInt): (*ssa.MakeInterface)
-	 → t38 (@ParseInt): (*ssa.MakeInterface)
 	 → t2 (@ParseUint): (*ssa.MakeInterface)
 	 → t14 (@ParseUint): (*ssa.MakeInterface)
 	 → t41 (@ParseUint): (*ssa.MakeInterface)
@@ -1838,6 +1835,9 @@ t26 (@RegisterUser): (*ssa.Extract) (extract t24 #1)
 	 → t83 (@ParseUint): (*ssa.MakeInterface)
 	 → t90 (@ParseUint): (*ssa.MakeInterface)
 	 → t93 (@ParseUint): (*ssa.MakeInterface)
+	 → t2 (@ParseInt): (*ssa.MakeInterface)
+	 → t33 (@ParseInt): (*ssa.MakeInterface)
+	 → t38 (@ParseInt): (*ssa.MakeInterface)
 
 t35 (@RegisterUser): (*ssa.Call) ((*UserServiceImpl).RegisterUserWithId(u, ctx, reqID, firstName, lastName, username, password, t34))
 	 → t2 (@New): (*ssa.MakeInterface)
@@ -1971,18 +1971,18 @@ t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
 	 → t3 (@NewEncoding): (*ssa.Alloc)
 
 t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
-	 → t8 (@Sum): (*ssa.Call)
-	 → t10 (@Sum): (*ssa.Call)
-	 → t6 (@Sum): (*ssa.Call)
-	 → t5 (@Sum): (*ssa.Call)
 	 → t15 (@Sum): (*ssa.Call)
 	 → t17 (@Sum): (*ssa.Call)
 	 → t20 (@Sum): (*ssa.Call)
 	 → t23 (@Sum): (*ssa.Call)
+	 → t5 (@Sum): (*ssa.Call)
+	 → t8 (@Sum): (*ssa.Call)
+	 → t10 (@Sum): (*ssa.Call)
+	 → t6 (@Sum): (*ssa.Call)
 	 → t31 (@sign): (*ssa.Alloc)
 	 → t58 (@sign): (*ssa.Alloc)
-	 → t34 (@verify): (*ssa.Alloc)
 	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice)
+	 → t34 (@verify): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.UserTimelineServiceImpl).ReadUserTimeline ###

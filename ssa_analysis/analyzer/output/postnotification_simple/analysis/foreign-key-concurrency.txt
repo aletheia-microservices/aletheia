@@ -1,8 +1,3 @@
 ---------------------------------------------------------------------
 ----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
 ---------------------------------------------------------------------
-entry request: UploadService.DeletePost
-	DELETE: (StorageService.DeletePost) --> (posts_db.post).DeleteOne(...)
-		CONCURRENT WRITE: (UploadService.UploadPost) --> (notifications_queue.notification).Push(...)
-		- written field: notifications_queue.notification.PostID
-			- affected constraint #0: FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID

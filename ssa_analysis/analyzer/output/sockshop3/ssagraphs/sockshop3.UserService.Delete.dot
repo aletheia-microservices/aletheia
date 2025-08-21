@@ -1,12 +1,12 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2798050 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2798050 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2797991 [label="*t7 = \"UserID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797991 [label="*t7 = \"UserID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2798008 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2798008 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_nil_1185257308 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2758204 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2758204 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2758145 [label="*t7 = \"UserID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2758145 [label="*t7 = \"UserID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2758162 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2758162 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_nil_1739434106 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val__UserID__string [label="\"UserID\":string: \"UserID\":string
 
 ==== tainted ====
@@ -15,24 +15,24 @@ _obj
 ", style=bold, shape=box, color="blue"];
 	N_val__user_db__string [label="\"user_db\":string: \"user_db\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__users__string [label="\"users\":string: \"users\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2797986 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+	N_val_alloc_2758140 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
 
 ==== tainted ====
 _obj
 [delete] @ user_db.users.UserID
 ", style=bold, shape=box, color="orange"];
-	N_val_call_2797944 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"users\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2798036 [label="t11: invoke t3.DeleteOne(ctx, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2758098 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"users\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2758190 [label="t11: invoke t3.DeleteOne(ctx, t10)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2797928 [label="t0: &s.db [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2797991 [label="t7: &t6.Key [#0]
+	N_val_field_2758082 [label="t0: &s.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2758145 [label="t7: &t6.Key [#0]
 
 ==== tainted ====
 _obj
 [delete] @ user_db.users.UserID
 ", style=bold, shape=box, color="green"];
-	N_val_field_2798008 [label="t8: &t6.Value [#1]
+	N_val_field_2758162 [label="t8: &t6.Value [#1]
 
 ==== tainted ====
 _obj
@@ -50,43 +50,43 @@ _obj
 _obj
 [delete] @ user_db.users.UserID
 ", style=bold, shape=box, color="green"];
-	N_val_param_2797826 [label="s: parameter s : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2797853 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2797874 [label="entity: parameter entity : string", style=bold, shape=ellipse, color="black"];
-	N_val_param_2797889 [label="id: parameter id : string
+	N_val_param_2757980 [label="s: parameter s : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2758007 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2758028 [label="entity: parameter entity : string", style=bold, shape=ellipse, color="black"];
+	N_val_param_2758043 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [delete] @ user_db.users.UserID
 ", style=bold, shape=box, color="black"];
-	N_val_slice_2797986 [label="t10: slice t5[:]
+	N_val_slice_2758140 [label="t10: slice t5[:]
 
 ==== tainted ====
 _obj
 [delete] @ user_db.users.UserID
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2797928 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2797826 -> N_val_field_2797928;
-	N_val_field_2797928 -> N_val_unary_2797928;
-	N_val_param_2797853 -> N_val_call_2797944;
-	N_val__user_db__string -> N_val_call_2797944;
-	N_val__users__string -> N_val_call_2797944;
-	N_val_call_2797944 -> N_val_extrt3;
-	N_val_call_2797944 -> N_val_extrt4;
-	N_val_alloc_2797986 -> N_val_indext6;
-	N_val_indext6 -> N_val_field_2797991;
-	N_val_indext6 -> N_val_field_2798008;
-	N_val_field_2797991 -> N_instr_store_2797991;
-	N_val__UserID__string -> N_instr_store_2797991;
-	N_val_param_2797889 -> N_val_ifacet9;
-	N_val_field_2798008 -> N_instr_store_2798008;
-	N_val_ifacet9 -> N_instr_store_2798008;
-	N_val_alloc_2797986 -> N_val_slice_2797986;
-	N_val_param_2797853 -> N_val_call_2798036;
-	N_val_slice_2797986 -> N_val_call_2798036;
-	N_nil_1185257308 -> N_instr_ret_2798050;
-	N_val_indext6 -> N_val_alloc_2797986 [label="[*]", style=dashed, color=blue];
-	N_val_slice_2797986 -> N_val_alloc_2797986 [label="", style=dashed, color=blue];
-	N_val_field_2797991 -> N_val_alloc_2797986 [label="[*].Key", style=dashed, color=blue];
-	N_val_field_2798008 -> N_val_alloc_2797986 [label="[*].Value", style=dashed, color=blue];
+	N_val_unary_2758082 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2757980 -> N_val_field_2758082;
+	N_val_field_2758082 -> N_val_unary_2758082;
+	N_val_param_2758007 -> N_val_call_2758098;
+	N_val__user_db__string -> N_val_call_2758098;
+	N_val__users__string -> N_val_call_2758098;
+	N_val_call_2758098 -> N_val_extrt3;
+	N_val_call_2758098 -> N_val_extrt4;
+	N_val_alloc_2758140 -> N_val_indext6;
+	N_val_indext6 -> N_val_field_2758145;
+	N_val_indext6 -> N_val_field_2758162;
+	N_val_field_2758145 -> N_instr_store_2758145;
+	N_val__UserID__string -> N_instr_store_2758145;
+	N_val_param_2758043 -> N_val_ifacet9;
+	N_val_field_2758162 -> N_instr_store_2758162;
+	N_val_ifacet9 -> N_instr_store_2758162;
+	N_val_alloc_2758140 -> N_val_slice_2758140;
+	N_val_param_2758007 -> N_val_call_2758190;
+	N_val_slice_2758140 -> N_val_call_2758190;
+	N_nil_1739434106 -> N_instr_ret_2758204;
+	N_val_indext6 -> N_val_alloc_2758140 [label="[*]", style=dashed, color=blue];
+	N_val_field_2758145 -> N_val_alloc_2758140 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_2758140 -> N_val_alloc_2758140 [label="", style=dashed, color=blue];
+	N_val_field_2758162 -> N_val_alloc_2758140 [label="[*].Value", style=dashed, color=blue];
 }

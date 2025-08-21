@@ -49,7 +49,6 @@
           "order_db.orders.Total"
         ],
         "constraints": [
-          "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_queue.notification",
           "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_db.shipments [MANDATORY]"
         ]
       }
@@ -89,9 +88,10 @@
         ],
         "constraints": [
           "FOREIGN_KEY ship_queue.notification.Name REFERENCES order_db.orders.CustomerID [MANDATORY]",
-          "FOREIGN_KEY ship_queue.notification.Status REFERENCES order_db.orders.Shipment.Status [MANDATORY]",
+          "FOREIGN_KEY ship_queue.notification REFERENCES order_db.orders.Shipment [MANDATORY]",
           "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.ID [MANDATORY]",
-          "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.Shipment.ID [MANDATORY]"
+          "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.Shipment.ID [MANDATORY]",
+          "FOREIGN_KEY ship_queue.notification.Status REFERENCES order_db.orders.Shipment.Status [MANDATORY]"
         ]
       }
     ]
