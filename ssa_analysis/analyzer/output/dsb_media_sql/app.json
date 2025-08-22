@@ -1,8 +1,10 @@
 {
   "name": "dsb_media_sql",
   "databases": [
+    "castinfo_db",
     "movieid_db",
-    "movieinfo_db"
+    "movieinfo_db",
+    "plot_db"
   ],
   "services": [
     {
@@ -12,16 +14,35 @@
       "impl": "APIServiceImpl",
       "fields": [
         "movieIdService #0 (movieid_service)",
-        "movieInfoService #1 (movieinfo_service)"
+        "movieInfoService #1 (movieinfo_service)",
+        "castInfoService #2 (castinfo_service)",
+        "plotService #3 (plot_service)"
       ],
       "methods": [
         "RegisterMovie",
-        "ReadMovie"
+        "ReadPage"
       ],
       "services": [
+        "CastInfoService",
         "MovieIdService",
-        "MovieInfoService"
+        "MovieInfoService",
+        "PlotService"
       ],
+      "databases": []
+    },
+    {
+      "name": "CastInfoService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfoService",
+      "pkg": "mediamicroservices_sql",
+      "impl": "CastInfoServiceImpl",
+      "fields": [
+        "CastInfoDB #0 (castinfo_db)"
+      ],
+      "methods": [
+        "WriteCastInfo",
+        "ReadCastInfo"
+      ],
+      "services": [],
       "databases": []
     },
     {
@@ -34,7 +55,8 @@
       ],
       "methods": [
         "RegisterMovieId",
-        "ReadMovieId"
+        "ReadMovieId",
+        "ReadMovieId2"
       ],
       "services": [],
       "databases": []
@@ -50,6 +72,21 @@
       "methods": [
         "WriteMovieInfo",
         "ReadMovieInfo"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "PlotService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotService",
+      "pkg": "mediamicroservices_sql",
+      "impl": "PlotServiceImpl",
+      "fields": [
+        "PlotDB #0 (plot_db)"
+      ],
+      "methods": [
+        "WritePlot",
+        "ReadPlot"
       ],
       "services": [],
       "databases": []

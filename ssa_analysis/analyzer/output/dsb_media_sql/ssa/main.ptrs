@@ -1,31 +1,61 @@
-### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIServiceImpl).ReadMovie ###
-api (@ReadMovie): (*ssa.Parameter) (parameter api : *APIServiceImpl)
-	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIServiceImpl).ReadPage ###
+api (@ReadPage): (*ssa.Parameter) (parameter api : *APIServiceImpl)
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
-ctx (@ReadMovie): (*ssa.Parameter) (parameter ctx : context.Context)
+ctx (@ReadPage): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t0 (@Background): (*ssa.MakeInterface)
 	 → t0 (@Background): (*ssa.MakeInterface)
 
-t0 (@ReadMovie): (*ssa.FieldAddr) (&api.movieIdService [#0])
-	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+t0 (@ReadPage): (*ssa.Alloc) (local MovieId (movie))
+	 → t0 (@ReadPage): (*ssa.Alloc)
+
+t1 (@ReadPage): (*ssa.FieldAddr) (&api.movieIdService [#0])
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
-t1 (@ReadMovie): (*ssa.UnOp) (*t0)
+t2 (@ReadPage): (*ssa.UnOp) (*t1)
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 	 → t2 (@NewMovieIdServiceImpl): (*ssa.MakeInterface)
 
-t4 (@ReadMovie): (*ssa.Extract) (extract t2 #1)
+t5 (@ReadPage): (*ssa.Extract) (extract t3 #1)
 
-t5 (@ReadMovie): (*ssa.FieldAddr) (&api.movieInfoService [#1])
-	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+t7 (@ReadPage): (*ssa.Alloc) (local MovieInfo (movieInfo))
+	 → t7 (@ReadPage): (*ssa.Alloc)
+
+t8 (@ReadPage): (*ssa.FieldAddr) (&api.movieInfoService [#1])
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
-t6 (@ReadMovie): (*ssa.UnOp) (*t5)
+t9 (@ReadPage): (*ssa.UnOp) (*t8)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
-t9 (@ReadMovie): (*ssa.Extract) (extract t7 #1)
+t10 (@ReadPage): (*ssa.FieldAddr) (&t0.movieid [#0])
+	 → t0 (@ReadPage): (*ssa.Alloc)
+
+t14 (@ReadPage): (*ssa.Extract) (extract t12 #1)
+
+t16 (@ReadPage): (*ssa.FieldAddr) (&api.castInfoService [#2])
+	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+
+t17 (@ReadPage): (*ssa.UnOp) (*t16)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
+
+t18 (@ReadPage): (*ssa.FieldAddr) (&t7.plotid [#3])
+	 → t7 (@ReadPage): (*ssa.Alloc)
+
+t22 (@ReadPage): (*ssa.Extract) (extract t20 #1)
+
+t24 (@ReadPage): (*ssa.FieldAddr) (&api.plotService [#3])
+	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+
+t25 (@ReadPage): (*ssa.UnOp) (*t24)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+
+t26 (@ReadPage): (*ssa.FieldAddr) (&t7.plotid [#3])
+	 → t7 (@ReadPage): (*ssa.Alloc)
+
+t30 (@ReadPage): (*ssa.Extract) (extract t28 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIServiceImpl).RegisterMovie ###
@@ -46,10 +76,117 @@ t8 (@RegisterMovie): (*ssa.FieldAddr) (&api.movieInfoService [#1])
 
 t9 (@RegisterMovie): (*ssa.UnOp) (*t8)
 
-t10 (@RegisterMovie): (*ssa.FieldAddr) (&t0.MovieID [#0])
+t10 (@RegisterMovie): (*ssa.FieldAddr) (&t0.movieid [#0])
 	 → t0 (@RegisterMovie): (*ssa.Alloc)
 
 t14 (@RegisterMovie): (*ssa.Extract) (extract t12 #1)
+
+t16 (@RegisterMovie): (*ssa.FieldAddr) (&api.castInfoService [#2])
+
+t17 (@RegisterMovie): (*ssa.UnOp) (*t16)
+
+t20 (@RegisterMovie): (*ssa.Extract) (extract t18 #1)
+
+t22 (@RegisterMovie): (*ssa.FieldAddr) (&api.plotService [#3])
+
+t23 (@RegisterMovie): (*ssa.UnOp) (*t22)
+
+t26 (@RegisterMovie): (*ssa.Extract) (extract t24 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfoServiceImpl).ReadCastInfo ###
+m (@ReadCastInfo): (*ssa.Parameter) (parameter m : *CastInfoServiceImpl)
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+
+ctx (@ReadCastInfo): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@ReadCastInfo): (*ssa.Alloc) (new CastInfo (CastInfo))
+	 → t0 (@ReadCastInfo): (*ssa.Alloc)
+
+t1 (@ReadCastInfo): (*ssa.FieldAddr) (&m.CastInfoDB [#0])
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+
+t2 (@ReadCastInfo): (*ssa.UnOp) (*t1)
+
+t3 (@ReadCastInfo): (*ssa.MakeInterface) (make interface{} <- *CastInfo (t0))
+	 → t3 (@ReadCastInfo): (*ssa.MakeInterface)
+
+t4 (@ReadCastInfo): (*ssa.Alloc) (new [1]any (varargs))
+	 → t4 (@ReadCastInfo): (*ssa.Alloc)
+
+t5 (@ReadCastInfo): (*ssa.IndexAddr) (&t4[0:int])
+	 → t4 (@ReadCastInfo): (*ssa.Alloc)
+
+t6 (@ReadCastInfo): (*ssa.MakeInterface) (make any <- string (castInfoID))
+	 → t6 (@ReadCastInfo): (*ssa.MakeInterface)
+
+t7 (@ReadCastInfo): (*ssa.Slice) (slice t4[:])
+	 → t4 (@ReadCastInfo): (*ssa.Alloc)
+
+t8 (@ReadCastInfo): (*ssa.Call) (invoke t2.Select(ctx, t3, "SELECT * FROM cas...":string, t7...))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfoServiceImpl).WriteCastInfo ###
+m (@WriteCastInfo): (*ssa.Parameter) (parameter m : *CastInfoServiceImpl)
+
+ctx (@WriteCastInfo): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@WriteCastInfo): (*ssa.Alloc) (local CastInfo (CastInfo))
+	 → t0 (@WriteCastInfo): (*ssa.Alloc)
+
+t1 (@WriteCastInfo): (*ssa.FieldAddr) (&t0.castinfoid [#0])
+	 → t0 (@WriteCastInfo): (*ssa.Alloc)
+
+t2 (@WriteCastInfo): (*ssa.FieldAddr) (&t0.name [#1])
+	 → t0 (@WriteCastInfo): (*ssa.Alloc)
+
+t3 (@WriteCastInfo): (*ssa.FieldAddr) (&t0.gender [#2])
+	 → t0 (@WriteCastInfo): (*ssa.Alloc)
+
+t4 (@WriteCastInfo): (*ssa.FieldAddr) (&t0.intro [#3])
+	 → t0 (@WriteCastInfo): (*ssa.Alloc)
+
+t5 (@WriteCastInfo): (*ssa.FieldAddr) (&m.CastInfoDB [#0])
+
+t6 (@WriteCastInfo): (*ssa.UnOp) (*t5)
+
+t7 (@WriteCastInfo): (*ssa.Alloc) (new [4]any (varargs))
+	 → t7 (@WriteCastInfo): (*ssa.Alloc)
+
+t8 (@WriteCastInfo): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@WriteCastInfo): (*ssa.Alloc)
+
+t9 (@WriteCastInfo): (*ssa.MakeInterface) (make any <- string (castInfoID))
+	 → t9 (@WriteCastInfo): (*ssa.MakeInterface)
+
+t10 (@WriteCastInfo): (*ssa.IndexAddr) (&t7[1:int])
+	 → t7 (@WriteCastInfo): (*ssa.Alloc)
+
+t11 (@WriteCastInfo): (*ssa.MakeInterface) (make any <- string (name))
+	 → t11 (@WriteCastInfo): (*ssa.MakeInterface)
+
+t12 (@WriteCastInfo): (*ssa.IndexAddr) (&t7[2:int])
+	 → t7 (@WriteCastInfo): (*ssa.Alloc)
+
+t13 (@WriteCastInfo): (*ssa.MakeInterface) (make any <- string (gender))
+	 → t13 (@WriteCastInfo): (*ssa.MakeInterface)
+
+t14 (@WriteCastInfo): (*ssa.IndexAddr) (&t7[3:int])
+	 → t7 (@WriteCastInfo): (*ssa.Alloc)
+
+t15 (@WriteCastInfo): (*ssa.MakeInterface) (make any <- string (intro))
+	 → t15 (@WriteCastInfo): (*ssa.MakeInterface)
+
+t16 (@WriteCastInfo): (*ssa.Slice) (slice t7[:])
+	 → t7 (@WriteCastInfo): (*ssa.Alloc)
+
+t18 (@WriteCastInfo): (*ssa.Extract) (extract t17 #0)
+
+t19 (@WriteCastInfo): (*ssa.Extract) (extract t17 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl).ReadMovieId ###
@@ -88,6 +225,36 @@ t7 (@ReadMovieId): (*ssa.Slice) (slice t4[:])
 t8 (@ReadMovieId): (*ssa.Call) (invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...))
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl).ReadMovieId2 ###
+m (@ReadMovieId2): (*ssa.Parameter) (parameter m : *MovieIdServiceImpl)
+
+ctx (@ReadMovieId2): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ReadMovieId2): (*ssa.Alloc) (new MovieId (movieId))
+	 → t0 (@ReadMovieId2): (*ssa.Alloc)
+
+t1 (@ReadMovieId2): (*ssa.FieldAddr) (&m.movieIdDB [#0])
+
+t2 (@ReadMovieId2): (*ssa.UnOp) (*t1)
+
+t3 (@ReadMovieId2): (*ssa.MakeInterface) (make interface{} <- *MovieId (t0))
+	 → t3 (@ReadMovieId2): (*ssa.MakeInterface)
+
+t4 (@ReadMovieId2): (*ssa.Alloc) (new [1]any (varargs))
+	 → t4 (@ReadMovieId2): (*ssa.Alloc)
+
+t5 (@ReadMovieId2): (*ssa.IndexAddr) (&t4[0:int])
+	 → t4 (@ReadMovieId2): (*ssa.Alloc)
+
+t6 (@ReadMovieId2): (*ssa.MakeInterface) (make any <- string (title))
+	 → t6 (@ReadMovieId2): (*ssa.MakeInterface)
+
+t7 (@ReadMovieId2): (*ssa.Slice) (slice t4[:])
+	 → t4 (@ReadMovieId2): (*ssa.Alloc)
+
+t8 (@ReadMovieId2): (*ssa.Call) (invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...))
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl).RegisterMovieId ###
 m (@RegisterMovieId): (*ssa.Parameter) (parameter m : *MovieIdServiceImpl)
 
@@ -96,10 +263,10 @@ ctx (@RegisterMovieId): (*ssa.Parameter) (parameter ctx : context.Context)
 t0 (@RegisterMovieId): (*ssa.Alloc) (local MovieId (movieId))
 	 → t0 (@RegisterMovieId): (*ssa.Alloc)
 
-t1 (@RegisterMovieId): (*ssa.FieldAddr) (&t0.MovieID [#0])
+t1 (@RegisterMovieId): (*ssa.FieldAddr) (&t0.movieid [#0])
 	 → t0 (@RegisterMovieId): (*ssa.Alloc)
 
-t2 (@RegisterMovieId): (*ssa.FieldAddr) (&t0.Title [#1])
+t2 (@RegisterMovieId): (*ssa.FieldAddr) (&t0.title [#1])
 	 → t0 (@RegisterMovieId): (*ssa.Alloc)
 
 t3 (@RegisterMovieId): (*ssa.FieldAddr) (&m.movieIdDB [#0])
@@ -173,46 +340,132 @@ ctx (@WriteMovieInfo): (*ssa.Parameter) (parameter ctx : context.Context)
 t0 (@WriteMovieInfo): (*ssa.Alloc) (local MovieInfo (movieInfo))
 	 → t0 (@WriteMovieInfo): (*ssa.Alloc)
 
-t1 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.MovieID [#0])
+t1 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.movieid [#0])
 	 → t0 (@WriteMovieInfo): (*ssa.Alloc)
 
-t2 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.Title [#1])
+t2 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.title [#1])
 	 → t0 (@WriteMovieInfo): (*ssa.Alloc)
 
-t3 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.Casts [#2])
+t3 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.castid [#2])
 	 → t0 (@WriteMovieInfo): (*ssa.Alloc)
 
-t4 (@WriteMovieInfo): (*ssa.FieldAddr) (&m.movieInfoDB [#0])
+t4 (@WriteMovieInfo): (*ssa.FieldAddr) (&t0.plotid [#3])
+	 → t0 (@WriteMovieInfo): (*ssa.Alloc)
 
-t5 (@WriteMovieInfo): (*ssa.UnOp) (*t4)
+t5 (@WriteMovieInfo): (*ssa.FieldAddr) (&m.movieInfoDB [#0])
 
-t6 (@WriteMovieInfo): (*ssa.Alloc) (new [3]any (varargs))
-	 → t6 (@WriteMovieInfo): (*ssa.Alloc)
+t6 (@WriteMovieInfo): (*ssa.UnOp) (*t5)
 
-t7 (@WriteMovieInfo): (*ssa.IndexAddr) (&t6[0:int])
-	 → t6 (@WriteMovieInfo): (*ssa.Alloc)
+t7 (@WriteMovieInfo): (*ssa.Alloc) (new [4]any (varargs))
+	 → t7 (@WriteMovieInfo): (*ssa.Alloc)
 
-t8 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (movieID))
-	 → t8 (@WriteMovieInfo): (*ssa.MakeInterface)
+t8 (@WriteMovieInfo): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@WriteMovieInfo): (*ssa.Alloc)
 
-t9 (@WriteMovieInfo): (*ssa.IndexAddr) (&t6[1:int])
-	 → t6 (@WriteMovieInfo): (*ssa.Alloc)
+t9 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (movieID))
+	 → t9 (@WriteMovieInfo): (*ssa.MakeInterface)
 
-t10 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (title))
-	 → t10 (@WriteMovieInfo): (*ssa.MakeInterface)
+t10 (@WriteMovieInfo): (*ssa.IndexAddr) (&t7[1:int])
+	 → t7 (@WriteMovieInfo): (*ssa.Alloc)
 
-t11 (@WriteMovieInfo): (*ssa.IndexAddr) (&t6[2:int])
-	 → t6 (@WriteMovieInfo): (*ssa.Alloc)
+t11 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (title))
+	 → t11 (@WriteMovieInfo): (*ssa.MakeInterface)
 
-t12 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (casts))
-	 → t12 (@WriteMovieInfo): (*ssa.MakeInterface)
+t12 (@WriteMovieInfo): (*ssa.IndexAddr) (&t7[2:int])
+	 → t7 (@WriteMovieInfo): (*ssa.Alloc)
 
-t13 (@WriteMovieInfo): (*ssa.Slice) (slice t6[:])
-	 → t6 (@WriteMovieInfo): (*ssa.Alloc)
+t13 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (castID))
+	 → t13 (@WriteMovieInfo): (*ssa.MakeInterface)
 
-t15 (@WriteMovieInfo): (*ssa.Extract) (extract t14 #0)
+t14 (@WriteMovieInfo): (*ssa.IndexAddr) (&t7[3:int])
+	 → t7 (@WriteMovieInfo): (*ssa.Alloc)
 
-t16 (@WriteMovieInfo): (*ssa.Extract) (extract t14 #1)
+t15 (@WriteMovieInfo): (*ssa.MakeInterface) (make any <- string (plotID))
+	 → t15 (@WriteMovieInfo): (*ssa.MakeInterface)
+
+t16 (@WriteMovieInfo): (*ssa.Slice) (slice t7[:])
+	 → t7 (@WriteMovieInfo): (*ssa.Alloc)
+
+t18 (@WriteMovieInfo): (*ssa.Extract) (extract t17 #0)
+
+t19 (@WriteMovieInfo): (*ssa.Extract) (extract t17 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotServiceImpl).ReadPlot ###
+m (@ReadPlot): (*ssa.Parameter) (parameter m : *PlotServiceImpl)
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+
+ctx (@ReadPlot): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@ReadPlot): (*ssa.Alloc) (new Plot (Plot))
+	 → t0 (@ReadPlot): (*ssa.Alloc)
+
+t1 (@ReadPlot): (*ssa.FieldAddr) (&m.PlotDB [#0])
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+
+t2 (@ReadPlot): (*ssa.UnOp) (*t1)
+
+t3 (@ReadPlot): (*ssa.MakeInterface) (make interface{} <- *Plot (t0))
+	 → t3 (@ReadPlot): (*ssa.MakeInterface)
+
+t4 (@ReadPlot): (*ssa.Alloc) (new [1]any (varargs))
+	 → t4 (@ReadPlot): (*ssa.Alloc)
+
+t5 (@ReadPlot): (*ssa.IndexAddr) (&t4[0:int])
+	 → t4 (@ReadPlot): (*ssa.Alloc)
+
+t6 (@ReadPlot): (*ssa.MakeInterface) (make any <- string (PlotID))
+	 → t6 (@ReadPlot): (*ssa.MakeInterface)
+
+t7 (@ReadPlot): (*ssa.Slice) (slice t4[:])
+	 → t4 (@ReadPlot): (*ssa.Alloc)
+
+t8 (@ReadPlot): (*ssa.Call) (invoke t2.Select(ctx, t3, "SELECT * FROM plo...":string, t7...))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotServiceImpl).WritePlot ###
+m (@WritePlot): (*ssa.Parameter) (parameter m : *PlotServiceImpl)
+
+ctx (@WritePlot): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@WritePlot): (*ssa.Alloc) (local Plot (plot))
+	 → t0 (@WritePlot): (*ssa.Alloc)
+
+t1 (@WritePlot): (*ssa.FieldAddr) (&t0.plotid [#0])
+	 → t0 (@WritePlot): (*ssa.Alloc)
+
+t2 (@WritePlot): (*ssa.FieldAddr) (&t0.plot [#1])
+	 → t0 (@WritePlot): (*ssa.Alloc)
+
+t3 (@WritePlot): (*ssa.FieldAddr) (&m.PlotDB [#0])
+
+t4 (@WritePlot): (*ssa.UnOp) (*t3)
+
+t5 (@WritePlot): (*ssa.Alloc) (new [2]any (varargs))
+	 → t5 (@WritePlot): (*ssa.Alloc)
+
+t6 (@WritePlot): (*ssa.IndexAddr) (&t5[0:int])
+	 → t5 (@WritePlot): (*ssa.Alloc)
+
+t7 (@WritePlot): (*ssa.MakeInterface) (make any <- string (plotID))
+	 → t7 (@WritePlot): (*ssa.MakeInterface)
+
+t8 (@WritePlot): (*ssa.IndexAddr) (&t5[1:int])
+	 → t5 (@WritePlot): (*ssa.Alloc)
+
+t9 (@WritePlot): (*ssa.MakeInterface) (make any <- string (plotText))
+	 → t9 (@WritePlot): (*ssa.MakeInterface)
+
+t10 (@WritePlot): (*ssa.Slice) (slice t5[:])
+	 → t5 (@WritePlot): (*ssa.Alloc)
+
+t12 (@WritePlot): (*ssa.Extract) (extract t11 #0)
+
+t13 (@WritePlot): (*ssa.Extract) (extract t11 #1)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.NewAPIServiceImpl ###
@@ -228,21 +481,51 @@ movieInfoService (@NewAPIServiceImpl): (*ssa.Parameter) (parameter movieInfoServ
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
+castInfoService (@NewAPIServiceImpl): (*ssa.Parameter) (parameter castInfoService : CastInfoService)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
+
+plotService (@NewAPIServiceImpl): (*ssa.Parameter) (parameter plotService : PlotService)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+
 t0 (@NewAPIServiceImpl): (*ssa.Alloc) (new APIServiceImpl (complit))
-	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
 t1 (@NewAPIServiceImpl): (*ssa.FieldAddr) (&t0.movieIdService [#0])
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
-	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
 t2 (@NewAPIServiceImpl): (*ssa.FieldAddr) (&t0.movieInfoService [#1])
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+
+t3 (@NewAPIServiceImpl): (*ssa.FieldAddr) (&t0.castInfoService [#2])
 	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
 
-t3 (@NewAPIServiceImpl): (*ssa.MakeInterface) (make APIService <- *APIServiceImpl (t0))
-	 → t3 (@NewAPIServiceImpl): (*ssa.MakeInterface)
-	 → t3 (@NewAPIServiceImpl): (*ssa.MakeInterface)
+t4 (@NewAPIServiceImpl): (*ssa.FieldAddr) (&t0.plotService [#3])
+	 → t0 (@NewAPIServiceImpl): (*ssa.Alloc)
+
+t5 (@NewAPIServiceImpl): (*ssa.MakeInterface) (make APIService <- *APIServiceImpl (t0))
+	 → t5 (@NewAPIServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.NewCastInfoServiceImpl ###
+ctx (@NewCastInfoServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+CastInfoDB (@NewCastInfoServiceImpl): (*ssa.Parameter) (parameter CastInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+
+t0 (@NewCastInfoServiceImpl): (*ssa.Alloc) (new CastInfoServiceImpl (complit))
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+
+t1 (@NewCastInfoServiceImpl): (*ssa.FieldAddr) (&t0.CastInfoDB [#0])
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewCastInfoServiceImpl): (*ssa.Alloc)
+
+t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface) (make CastInfoService <- *CastInfoServiceImpl (t0))
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.NewMovieIdServiceImpl ###
@@ -285,6 +568,26 @@ t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface) (make MovieInfoService <- *M
 	 → t2 (@NewMovieInfoServiceImpl): (*ssa.MakeInterface)
 
 
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.NewPlotServiceImpl ###
+ctx (@NewPlotServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+PlotDB (@NewPlotServiceImpl): (*ssa.Parameter) (parameter PlotDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+
+t0 (@NewPlotServiceImpl): (*ssa.Alloc) (new PlotServiceImpl (complit))
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+
+t1 (@NewPlotServiceImpl): (*ssa.FieldAddr) (&t0.PlotDB [#0])
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPlotServiceImpl): (*ssa.Alloc)
+
+t2 (@NewPlotServiceImpl): (*ssa.MakeInterface) (make PlotService <- *PlotServiceImpl (t0))
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+
+
 ### Function: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.main ###
 t0 (@main): (*ssa.Call) (context.Background())
 	 → t0 (@Background): (*ssa.MakeInterface)
@@ -300,9 +603,19 @@ t5 (@main): (*ssa.Extract) (extract t4 #0)
 t6 (@main): (*ssa.Extract) (extract t4 #1)
 
 t8 (@main): (*ssa.Extract) (extract t7 #0)
-	 → t3 (@NewAPIServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
 
 t9 (@main): (*ssa.Extract) (extract t7 #1)
+
+t11 (@main): (*ssa.Extract) (extract t10 #0)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+
+t12 (@main): (*ssa.Extract) (extract t10 #1)
+
+t14 (@main): (*ssa.Extract) (extract t13 #0)
+	 → t5 (@NewAPIServiceImpl): (*ssa.MakeInterface)
+
+t15 (@main): (*ssa.Extract) (extract t13 #1)
 
 
 ### Function: main.main ###
@@ -320,8 +633,18 @@ t5 (@main): (*ssa.Extract) (extract t4 #0)
 t6 (@main): (*ssa.Extract) (extract t4 #1)
 
 t8 (@main): (*ssa.Extract) (extract t7 #0)
-	 → t3 (@NewAPIServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewCastInfoServiceImpl): (*ssa.MakeInterface)
 
 t9 (@main): (*ssa.Extract) (extract t7 #1)
+
+t11 (@main): (*ssa.Extract) (extract t10 #0)
+	 → t2 (@NewPlotServiceImpl): (*ssa.MakeInterface)
+
+t12 (@main): (*ssa.Extract) (extract t10 #1)
+
+t14 (@main): (*ssa.Extract) (extract t13 #0)
+	 → t5 (@NewAPIServiceImpl): (*ssa.MakeInterface)
+
+t15 (@main): (*ssa.Extract) (extract t13 #1)
 
 

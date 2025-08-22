@@ -73,6 +73,16 @@ func (field *Field) IsPrimaryKey() bool {
 	return false
 }
 
+// includes primary key
+func (field *Field) IsUnique() bool {
+	for _, constraint := range field.constraints {
+		if (constraint.t == CONSTRAINT_UNIQUE || constraint.t == CONSTRAINT_PRIMARY) && len(constraint.fields) == 1 {
+			return true
+		}
+	}
+	return false
+}
+
 func (field *Field) GetConstraintForeignKey() []*Constraint {
 	var constraints []*Constraint
 	for _, constraint := range field.constraints {
@@ -102,10 +112,10 @@ func (field *Field) HasConstraintForeignKeyToField(otherField *Field) bool {
 }
 
 // searches for unicity in single field
-// also includes primary key
+// EXCLUDES primary key
 func (field *Field) HasContraintUnicity() bool {
 	for _, constraint := range field.constraints {
-		if constraint.t == CONSTRAINT_UNIQUE || constraint.t == CONSTRAINT_PRIMARY {
+		if constraint.t == CONSTRAINT_UNIQUE {
 			if len(constraint.fields) == 1 {
 				return true
 			}

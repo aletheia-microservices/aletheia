@@ -1,21 +1,23 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1037846571 [label="if t6 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1037846571 [label="if t6 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1150323141 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
-	N_instr__1150323141 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
-	N_instr__193974155 [label="if t21 goto 6 else 7", style=bold, shape=ellipse, color="black"];
-	N_instr__193974155 [label="if t21 goto 6 else 7", style=bold, shape=ellipse, color="black"];
-	N_instr__2147205266 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__2147205266 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__748332613 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__748332613 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__965193177 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__965193177 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1472433395 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__1472433395 [label="if t11 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__1876895956 [label="if t21 goto 6 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1876895956 [label="if t21 goto 6 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1924179985 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1924179985 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__349696178 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__349696178 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__430739274 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__430739274 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__702141962 [label="if t6 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__702141962 [label="if t6 goto 2 else 3", style=bold, shape=ellipse, color="black"];
 	N_instr_ret_36704 [label="return nil:*Order, t20", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_36704 [label="return nil:*Order, t20", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_36759 [label="return t1, nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_36759 [label="return t1, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1548101577 [label="*t0 = shipping2", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1548101577 [label="*t0 = shipping2", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_36373 [label="*t2 = items", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_36373 [label="*t2 = items", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_36461 [label="*t22 = \"myname1\":string", style=bold, shape=ellipse, color="blue"];
@@ -28,10 +30,8 @@ digraph G {
 	N_instr_store_36567 [label="*t13 = shipping1", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_36595 [label="*t15 = t14", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_36595 [label="*t15 = t14", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_74229928 [label="*t0 = shipping2", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_74229928 [label="*t0 = shipping2", style=bold, shape=ellipse, color="blue"];
-	N_nil_1696046078 [label="nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order: nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order", style=bold, shape=ellipse, color="yellow"];
-	N_nil_2035760541 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_1632703234 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_2071333128 [label="nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order: nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Order", style=bold, shape=ellipse, color="yellow"];
 	N_val__mycarrier__string [label="\"mycarrier\":string: \"mycarrier\":string
 
 ==== tainted ====
@@ -235,8 +235,8 @@ _obj
 _obj.Quantity
 [write] @ orders_db.orders.Items[*].Quantity
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_36310 -> N_instr_store_74229928;
-	N_val_param_36310 -> N_instr_store_74229928;
+	N_val_alloc_36310 -> N_instr_store_1548101577;
+	N_val_param_36310 -> N_instr_store_1548101577;
 	N_val_alloc_36364 -> N_val_field_36373;
 	N_val_field_36373 -> N_instr_store_36373;
 	N_val_param_36269 -> N_instr_store_36373;
@@ -271,23 +271,23 @@ _obj.Quantity
 	N_val_call_36656 -> N_val_extrt19;
 	N_val_call_36656 -> N_val_extrt20;
 	N_val_extrt20 -> N_val_binary_36693;
-	N_nil_2035760541 -> N_val_binary_36693;
+	N_nil_1632703234 -> N_val_binary_36693;
 	N_val_param_36289 -> N_val_field_36461;
 	N_val_field_36461 -> N_instr_store_36461;
 	N_val__myname1__string -> N_instr_store_36461;
 	N_val_alloc_36310 -> N_val_field_36502;
 	N_val_field_36502 -> N_instr_store_36502;
 	N_val__myname2__string -> N_instr_store_36502;
-	N_nil_1696046078 -> N_instr_ret_36704;
+	N_nil_2071333128 -> N_instr_ret_36704;
 	N_val_extrt20 -> N_instr_ret_36704;
 	N_val_alloc_36364 -> N_val_ifacet24;
 	N_val_param_36248 -> N_val_call_36744;
 	N_val_ifacet24 -> N_val_call_36744;
 	N_val_alloc_36364 -> N_instr_ret_36759;
-	N_nil_2035760541 -> N_instr_ret_36759;
-	N_val_field_36567 -> N_val_alloc_36364 [label=".Shipping", style=dashed, color=blue];
-	N_val_field_36502 -> N_val_alloc_36310 [label=".Name", style=dashed, color=blue];
+	N_nil_1632703234 -> N_instr_ret_36759;
 	N_val_field_36373 -> N_val_alloc_36364 [label=".Items", style=dashed, color=blue];
+	N_val_field_36567 -> N_val_alloc_36364 [label=".Shipping", style=dashed, color=blue];
 	N_val_field_36538 -> N_val_alloc_36310 [label=".Carrier", style=dashed, color=blue];
 	N_val_field_36595 -> N_val_alloc_36364 [label=".Shipping2", style=dashed, color=blue];
+	N_val_field_36502 -> N_val_alloc_36310 [label=".Name", style=dashed, color=blue];
 }

@@ -21,7 +21,13 @@ func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 		for i, writeSet := range vulnerableWriteSets {
 			results += fmt.Sprintf("\twrite (constrained) #%d: %s\n", i, writeSet.constrainedOp.call.String())
 			for _, field := range writeSet.constrainedFields {
-				results += fmt.Sprintf("\t\tfield (constrained): %s\n", field.GetPath())
+				results += fmt.Sprintf("\t\tfield (constrained): %s", field.GetPath())
+				if field.IsPrimaryKey() {
+					results += " (PRIMARY KEY)"
+				} else if field.IsUnique() {
+					results += " (UNIQUE)"
+				}
+				results += "\n"
 			}
 			for _, op := range writeSet.otherOps {
 				results += fmt.Sprintf("\t\tAFFECTED WRITE: %s\n", op.call.String())

@@ -57,11 +57,21 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 						field = fields[0]
 					}
 
-					if (detector.isTypePrimaryKey() && field.IsPrimaryKey() && otherField.IsPrimaryKey()) ||
-						(detector.isTypeForeignKey() && (!field.IsPrimaryKey() || !otherField.IsPrimaryKey())) {
-						foreignRead := &ForeignRead{op1: currOp, op2: otherOp, field1: field, field2: otherField}
-						detector.addForeignRead(request, foreignRead)
+					if field == nil {
+						//log.Panicf("[%s | CHECKER] nil field! other field = %s\n", detector.GetTypeStringUpper(), otherField.String())
+						if (detector.isTypePrimaryKey() && otherField.IsPrimaryKey()) ||
+							(detector.isTypeForeignKey() && !otherField.IsPrimaryKey()) {
+							foreignRead := &ForeignRead{op1: currOp, op2: otherOp, field2: otherField}
+							detector.addForeignRead(request, foreignRead)
+						}
+					} else {
+						if (detector.isTypePrimaryKey() && field.IsPrimaryKey() && otherField.IsPrimaryKey()) ||
+							(detector.isTypeForeignKey() && (!field.IsPrimaryKey() || !otherField.IsPrimaryKey())) {
+							foreignRead := &ForeignRead{op1: currOp, op2: otherOp, field1: field, field2: otherField}
+							detector.addForeignRead(request, foreignRead)
+						}
 					}
+
 
 				}
 			}

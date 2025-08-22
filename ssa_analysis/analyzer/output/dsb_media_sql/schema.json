@@ -1,4 +1,23 @@
 {
+  "castinfo_db": {
+    "name": "castinfo_db",
+    "schemas": [
+      {
+        "name": "castinfo",
+        "fields": [
+          "castinfo_db.castinfo",
+          "castinfo_db.castinfo.castinfoid",
+          "castinfo_db.castinfo.gender",
+          "castinfo_db.castinfo.intro",
+          "castinfo_db.castinfo.name"
+        ],
+        "constraints": [
+          "PRIMARY KEY (castinfo_db.castinfo.castinfoid)",
+          "FOREIGN_KEY castinfo_db.castinfo.castinfoid REFERENCES movieinfo_db.movieinfo.castid [MANDATORY]"
+        ]
+      }
+    ]
+  },
   "movieid_db": {
     "name": "movieid_db",
     "schemas": [
@@ -23,14 +42,33 @@
         "name": "movieinfo",
         "fields": [
           "movieinfo_db.movieinfo",
-          "movieinfo_db.movieinfo.casts",
+          "movieinfo_db.movieinfo.castid",
           "movieinfo_db.movieinfo.movieid",
+          "movieinfo_db.movieinfo.plotid",
           "movieinfo_db.movieinfo.title"
         ],
         "constraints": [
           "PRIMARY KEY (movieinfo_db.movieinfo.movieid)",
           "FOREIGN_KEY movieinfo_db.movieinfo.title REFERENCES movieid_db.movieid.title [MANDATORY]",
           "FOREIGN_KEY movieinfo_db.movieinfo.movieid REFERENCES movieid_db.movieid.movieid [MANDATORY]"
+        ]
+      }
+    ]
+  },
+  "plot_db": {
+    "name": "plot_db",
+    "schemas": [
+      {
+        "name": "plot",
+        "fields": [
+          "plot_db.plot",
+          "plot_db.plot.Plotid",
+          "plot_db.plot.plot",
+          "plot_db.plot.plotid"
+        ],
+        "constraints": [
+          "PRIMARY KEY (plot_db.plot.plotid)",
+          "FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]"
         ]
       }
     ]

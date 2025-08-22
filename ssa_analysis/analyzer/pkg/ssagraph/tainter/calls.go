@@ -272,9 +272,10 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			}
 
 			
-			var stmtVal, sliceArgsVal ssa.Value
+			var dstVal, stmtVal, sliceArgsVal ssa.Value
 			if opType == common.OP_READ {
 				// e.g., Select(ctx, &movieId, "SELECT * FROM movieid WHERE movieid = ?", movieID)
+				dstVal = call.Call.Args[1]
 				stmtVal = call.Call.Args[2]
 				sliceArgsVal = call.Call.Args[3]
 			} else if opType == common.OP_WRITE {
@@ -348,11 +349,12 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			}
 
 			if opType == common.OP_READ {
+				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
+				// and the readField has format <database>.<table>
 				if call.Call.Method.Name() == "Select" {
 					// select method reads entire row
-					fetchToVal := call.Call.Args[2]
 					readField := readFields[0]
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: fetchToVal, fieldpath: readField})
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: dstVal, fieldpath: readField})
 				}
 			}
 

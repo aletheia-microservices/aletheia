@@ -8,17 +8,17 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_UploadService_DeletePost [label="UploadService.DeletePost", style=bold, shape=box, color="blue"];
-		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
-		N_StorageService_ReadPost [label="StorageService.ReadPost", style=bold, shape=box, color="blue"];
 		N_UploadService_UploadPost [label="UploadService.UploadPost", style=bold, shape=box, color="blue"];
+		N_UploadService_DeletePost [label="UploadService.DeletePost", style=bold, shape=box, color="blue"];
 		N_StorageService_DeletePost [label="StorageService.DeletePost", style=bold, shape=box, color="blue"];
+		N_StorageService_ReadPost [label="StorageService.ReadPost", style=bold, shape=box, color="blue"];
 		N_StorageService_StorePost [label="StorageService.StorePost", style=bold, shape=box, color="blue"];
+		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
+		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()", color=blue];

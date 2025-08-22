@@ -8,42 +8,23 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_Frontend_PostCard [label="Frontend.PostCard
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ UserService.PostCard.userID
-
-
-==== param 1 (card) tainted ====
-_obj
-[rpc] @ UserService.PostCard.card
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ UserService.PostCard.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ UserService.PostCard.t4
-", style=bold, shape=box, color="blue"];
-		N_CartService_AddItem [label="CartService.AddItem
+		N_CartService_MergeCarts [label="CartService.MergeCarts
 
 ==== param 0 (customerID) tainted ====
 _obj
-[write, primary] @ cart_db.carts.ID
+[delete, primary] @ cart_db.carts.ID
 
 
-==== param 1 (item) tainted ====
+==== param 1 (sessionID) tainted ====
 _obj
-[write, primary] @ cart_db.carts.Items[*]
+[delete, primary] @ cart_db.carts.ID
+", style=bold, shape=box, color="blue"];
+		N_UserService_GetCards [label="UserService.GetCards", style=bold, shape=box, color="blue"];
+		N_CatalogueService_DeleteSock [label="CatalogueService.DeleteSock
 
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item) tainted ====
+==== param 0 (id) tainted ====
 _obj
-[write, primary] @ cart_db.carts.Items[*]
+[delete, primary] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="blue"];
 		N_Frontend_ListItems [label="Frontend.ListItems
 
@@ -76,18 +57,7 @@ _obj
 _obj
 [rpc] @ CatalogueService.List.t4
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_ListTags [label="Frontend.ListTags
-
-==== ret 0 ([]string) tainted ====
-_obj
-[rpc] @ CatalogueService.Tags.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.Tags.t4
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_Tags [label="CatalogueService.Tags", style=bold, shape=box, color="blue"];
+		N_CatalogueService_List [label="CatalogueService.List", style=bold, shape=box, color="blue"];
 		N_Frontend_NewOrder [label="Frontend.NewOrder
 
 ==== param 0 (userID) tainted ====
@@ -119,191 +89,6 @@ _obj
 _obj
 [rpc] @ OrderService.NewOrder.t4
 ", style=bold, shape=box, color="blue"];
-		N_UserService_Login [label="UserService.Login
-
-==== param 0 (username) tainted ====
-_obj
-[read, primary] @ user_db.users.username
-", style=bold, shape=box, color="blue"];
-		N_Frontend_GetCard [label="Frontend.GetCard
-
-==== param 0 (cardID) tainted ====
-_obj
-[rpc] @ UserService.GetCards.cardID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_GetAddress [label="Frontend.GetAddress
-
-==== param 0 (addressID) tainted ====
-_obj
-[rpc] @ UserService.GetAddresses.addressID
-", style=bold, shape=box, color="blue"];
-		N_UserService_PostAddress [label="UserService.PostAddress", style=bold, shape=box, color="blue"];
-		N_CartService_DeleteCart [label="CartService.DeleteCart", style=bold, shape=box, color="blue"];
-		N_Frontend_GetSock [label="Frontend.GetSock
-
-==== param 0 (itemID) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.itemID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.t4
-", style=bold, shape=box, color="blue"];
-		N_Frontend_Login [label="Frontend.Login
-
-==== param 0 (sessionID) tainted ====
-_obj
-[rpc] @ CartService.MergeCarts.sessionID
-
-
-==== param 1 (username) tainted ====
-_obj
-[rpc] @ UserService.Login.username
-
-
-==== param 2 (password) tainted ====
-_obj
-[rpc] @ UserService.Login.password
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ CartService.MergeCarts.sessionID
-
-
-==== ret 2 (error) tainted ====
-_obj
-[rpc] @ UserService.Login.t5
-", style=bold, shape=box, color="blue"];
-		N_Frontend_DeleteSock [label="Frontend.DeleteSock
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ CatalogueService.DeleteSock.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.DeleteSock.t2
-", style=bold, shape=box, color="blue"];
-		N_CartService_MergeCarts [label="CartService.MergeCarts
-
-==== param 0 (customerID) tainted ====
-_obj
-[delete, primary] @ cart_db.carts.ID
-
-
-==== param 1 (sessionID) tainted ====
-_obj
-[delete, primary] @ cart_db.carts.ID
-", style=bold, shape=box, color="blue"];
-		N_UserService_Register [label="UserService.Register
-
-==== param 0 (username) tainted ====
-_obj
-[write, primary] @ user_db.users.Username
-
-
-==== param 1 (password) tainted ====
-_obj
-[write, primary] @ user_db.users.Password
-
-
-==== param 2 (email) tainted ====
-_obj
-[write, primary] @ user_db.users.Email
-
-
-==== param 3 (first) tainted ====
-_obj
-[write, primary] @ user_db.users.FirstName
-
-
-==== param 4 (last) tainted ====
-_obj
-[write, primary] @ user_db.users.LastName
-
-
-==== ret 0 (string) tainted ====
-_obj
-[write, primary] @ user_db.users.UserID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_RemoveItem [label="Frontend.RemoveItem
-
-==== param 0 (sessionID) tainted ====
-_obj
-[rpc] @ CartService.RemoveItem.sessionID
-
-
-==== param 1 (itemID) tainted ====
-_obj
-[rpc] @ CartService.RemoveItem.itemID
-", style=bold, shape=box, color="blue"];
-		N_CartService_RemoveItem [label="CartService.RemoveItem", style=bold, shape=box, color="blue"];
-		N_OrderService_NewOrder [label="OrderService.NewOrder
-
-==== param 0 (customerID) tainted ====
-_obj
-[write, primary] @ order_db.orders.CustomerID
-[rpc] @ ShippingService.PostShipping.t31.Name
-[rpc] @ ShippingService.PostShipping.t33.Name
-[rpc] @ CartService.DeleteCart.t75
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
-_obj
-[write, primary] @ order_db.orders
-_obj.Address
-[write, primary] @ order_db.orders.Address
-_obj.Card
-[write, primary] @ order_db.orders.Card
-_obj.CustomerID
-[write, primary] @ order_db.orders.CustomerID
-_obj.Date
-[write, primary] @ order_db.orders.Date
-_obj.ID
-[write, primary] @ order_db.orders.ID
-_obj.ID.Shipment
-[write, primary] @ order_db.orders.ID
-[write, primary] @ order_db.orders.Shipment.ID
-_obj.Items
-[write, primary] @ order_db.orders.Items
-_obj.Name.Shipment
-[write, primary] @ order_db.orders.CustomerID
-_obj.Shipment
-[write, primary] @ order_db.orders.Shipment
-_obj.Status.Shipment
-[write, primary] @ order_db.orders.Shipment.Status
-_obj.Total
-[write, primary] @ order_db.orders.Total
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ ShippingService.PostShipping.t34
-", style=bold, shape=box, color="blue"];
-		N_Frontend_GetOrders [label="Frontend.GetOrders
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ OrderService.GetOrders.userID
-
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
-_obj
-[rpc] @ OrderService.GetOrders.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ OrderService.GetOrders.t4
-", style=bold, shape=box, color="blue"];
 		N_Frontend_GetOrder [label="Frontend.GetOrder
 
 ==== param 0 (orderID) tainted ====
@@ -320,8 +105,8 @@ _obj
 _obj
 [rpc] @ OrderService.GetOrder.t4
 ", style=bold, shape=box, color="blue"];
-		N_UserService_GetUsers [label="UserService.GetUsers", style=bold, shape=box, color="blue"];
-		N_UserService_GetCards [label="UserService.GetCards", style=bold, shape=box, color="blue"];
+		N_UserService_GetAddresses [label="UserService.GetAddresses", style=bold, shape=box, color="blue"];
+		N_UserService_PostAddress [label="UserService.PostAddress", style=bold, shape=box, color="blue"];
 		N_CatalogueService_AddSock [label="CatalogueService.AddSock
 
 ==== param 0 (sock) tainted ====
@@ -335,13 +120,75 @@ _obj.ID
 _obj
 [write, primary] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="blue"];
-		N_CatalogueService_DeleteSock [label="CatalogueService.DeleteSock
+		N_Frontend_DeleteCart [label="Frontend.DeleteCart
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.DeleteCart.sessionID
+", style=bold, shape=box, color="blue"];
+		N_CatalogueService_Get [label="CatalogueService.Get
 
 ==== param 0 (id) tainted ====
 _obj
-[delete, primary] @ catalogue_db.catalogue.ID
+[read, primary] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="blue"];
-		N_QueueMaster_Run [label="QueueMaster.Run", style=bold, shape=box, color="blue"];
+		N_OrderService_GetOrders [label="OrderService.GetOrders", style=bold, shape=box, color="blue"];
+		N_Frontend_DeleteSock [label="Frontend.DeleteSock
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ CatalogueService.DeleteSock.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.DeleteSock.t2
+", style=bold, shape=box, color="blue"];
+		N_OrderService_GetOrder [label="OrderService.GetOrder
+
+==== param 0 (orderID) tainted ====
+_obj
+[read, primary] @ order_db.orders.ID
+", style=bold, shape=box, color="blue"];
+		N_Frontend_PostAddress [label="Frontend.PostAddress
+
+==== param 0 (userID) tainted ====
+_obj
+[rpc] @ UserService.PostAddress.userID
+
+
+==== param 1 (address) tainted ====
+_obj
+[rpc] @ UserService.PostAddress.address
+
+
+==== ret 0 (string) tainted ====
+_obj
+[rpc] @ UserService.PostAddress.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ UserService.PostAddress.t4
+", style=bold, shape=box, color="blue"];
+		N_Frontend_LoadCatalogue [label="Frontend.LoadCatalogue", style=bold, shape=box, color="blue"];
+		N_CartService_RemoveItem [label="CartService.RemoveItem", style=bold, shape=box, color="blue"];
+		N_Frontend_GetSock [label="Frontend.GetSock
+
+==== param 0 (itemID) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.itemID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t4
+", style=bold, shape=box, color="blue"];
 		N_Frontend_Register [label="Frontend.Register
 
 ==== param 0 (sessionID) tainted ====
@@ -383,50 +230,84 @@ _obj
 _obj
 [rpc] @ UserService.Register.t4
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_PostAddress [label="Frontend.PostAddress
+		N_Frontend_PostCard [label="Frontend.PostCard
 
 ==== param 0 (userID) tainted ====
 _obj
-[rpc] @ UserService.PostAddress.userID
+[rpc] @ UserService.PostCard.userID
 
 
-==== param 1 (address) tainted ====
+==== param 1 (card) tainted ====
 _obj
-[rpc] @ UserService.PostAddress.address
+[rpc] @ UserService.PostCard.card
 
 
 ==== ret 0 (string) tainted ====
 _obj
-[rpc] @ UserService.PostAddress.t3
+[rpc] @ UserService.PostCard.t3
 
 
 ==== ret 1 (error) tainted ====
 _obj
-[rpc] @ UserService.PostAddress.t4
+[rpc] @ UserService.PostCard.t4
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_LoadCatalogue [label="Frontend.LoadCatalogue", style=bold, shape=box, color="blue"];
-		N_Frontend_AddItem [label="Frontend.AddItem
+		N_Frontend_ListTags [label="Frontend.ListTags
+
+==== ret 0 ([]string) tainted ====
+_obj
+[rpc] @ CatalogueService.Tags.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.Tags.t4
+", style=bold, shape=box, color="blue"];
+		N_UserService_Login [label="UserService.Login
+
+==== param 0 (username) tainted ====
+_obj
+[read, primary] @ user_db.users.username
+", style=bold, shape=box, color="blue"];
+		N_PaymentService_Authorise [label="PaymentService.Authorise", style=bold, shape=box, color="blue"];
+		N_Frontend_Login [label="Frontend.Login
 
 ==== param 0 (sessionID) tainted ====
 _obj
-[rpc] @ CartService.AddItem.t2
+[rpc] @ CartService.MergeCarts.sessionID
 
 
-==== param 1 (itemID) tainted ====
+==== param 1 (username) tainted ====
 _obj
-[rpc] @ CatalogueService.Get.itemID
-[rpc] @ CartService.AddItem.t18.ID
+[rpc] @ UserService.Login.username
+
+
+==== param 2 (password) tainted ====
+_obj
+[rpc] @ UserService.Login.password
 
 
 ==== ret 0 (string) tainted ====
 _obj
-[rpc] @ CartService.AddItem.t2
+[rpc] @ CartService.MergeCarts.sessionID
 
 
-==== ret 1 (error) tainted ====
+==== ret 2 (error) tainted ====
 _obj
-[rpc] @ CatalogueService.Get.t8
+[rpc] @ UserService.Login.t5
 ", style=bold, shape=box, color="blue"];
+		N_Frontend_GetUser [label="Frontend.GetUser
+
+==== param 0 (userID) tainted ====
+_obj
+[rpc] @ UserService.GetUsers.userID
+", style=bold, shape=box, color="blue"];
+		N_Frontend_GetAddress [label="Frontend.GetAddress
+
+==== param 0 (addressID) tainted ====
+_obj
+[rpc] @ UserService.GetAddresses.addressID
+", style=bold, shape=box, color="blue"];
+		N_CartService_DeleteCart [label="CartService.DeleteCart", style=bold, shape=box, color="blue"];
 		N_Frontend_UpdateItem [label="Frontend.UpdateItem
 
 ==== param 0 (sessionID) tainted ====
@@ -453,8 +334,99 @@ _obj
 _obj
 [rpc] @ CatalogueService.Get.t5
 ", style=bold, shape=box, color="blue"];
-		N_CatalogueService_List [label="CatalogueService.List", style=bold, shape=box, color="blue"];
-		N_PaymentService_Authorise [label="PaymentService.Authorise", style=bold, shape=box, color="blue"];
+		N_CatalogueService_Tags [label="CatalogueService.Tags", style=bold, shape=box, color="blue"];
+		N_Frontend_RemoveItem [label="Frontend.RemoveItem
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.RemoveItem.sessionID
+
+
+==== param 1 (itemID) tainted ====
+_obj
+[rpc] @ CartService.RemoveItem.itemID
+", style=bold, shape=box, color="blue"];
+		N_CartService_UpdateItem [label="CartService.UpdateItem", style=bold, shape=box, color="blue"];
+		N_UserService_PostCard [label="UserService.PostCard", style=bold, shape=box, color="blue"];
+		N_Frontend_AddItem [label="Frontend.AddItem
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.AddItem.t2
+
+
+==== param 1 (itemID) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.itemID
+[rpc] @ CartService.AddItem.t18.ID
+
+
+==== ret 0 (string) tainted ====
+_obj
+[rpc] @ CartService.AddItem.t2
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t8
+", style=bold, shape=box, color="blue"];
+		N_QueueMaster_Run [label="QueueMaster.Run", style=bold, shape=box, color="blue"];
+		N_ShippingService_UpdateStatus [label="ShippingService.UpdateStatus
+
+==== param 0 (id) tainted ====
+_obj
+[read, secondary] @ ship_queue.notification.ID
+[write, secondary] @ order_db.orders.ID
+[write, secondary] @ order_db.orders.Shipment.ID
+", style=bold, shape=box, color="blue"];
+		N_OrderService_NewOrder [label="OrderService.NewOrder
+
+==== param 0 (customerID) tainted ====
+_obj
+[write, primary] @ order_db.orders.CustomerID
+[rpc] @ ShippingService.PostShipping.t31.Name
+[rpc] @ ShippingService.PostShipping.t33.Name
+[rpc] @ CartService.DeleteCart.t75
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
+_obj
+[write, primary] @ order_db.orders
+_obj.Address
+[write, primary] @ order_db.orders.Address
+_obj.Card
+[write, primary] @ order_db.orders.Card
+_obj.CustomerID
+[write, primary] @ order_db.orders.CustomerID
+_obj.Date
+[write, primary] @ order_db.orders.Date
+_obj.ID
+[write, primary] @ order_db.orders.ID
+_obj.ID.Shipment
+[write, primary] @ order_db.orders.ID
+[write, primary] @ order_db.orders.Shipment.ID
+_obj.Items
+[write, primary] @ order_db.orders.Items
+_obj.Name.Shipment
+[write, primary] @ order_db.orders.CustomerID
+_obj.Shipment
+[write, primary] @ order_db.orders.Shipment
+[write, secondary] @ ship_queue.notification
+[write, secondary] @ ship_db.shipments
+_obj.Shipment.Name
+[write, secondary] @ order_db.orders.Shipment.Name
+[write, secondary] @ ship_queue.notification.Name
+[write, secondary] @ ship_db.shipments.Name
+_obj.Status.Shipment
+[write, primary] @ order_db.orders.Shipment.Status
+_obj.Total
+[write, primary] @ order_db.orders.Total
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ ShippingService.PostShipping.t34
+", style=bold, shape=box, color="blue"];
 		N_ShippingService_PostShipping [label="ShippingService.PostShipping
 
 ==== param 0 (shipment) tainted ====
@@ -468,51 +440,85 @@ _obj
 [write, primary] @ ship_queue.notification
 [write, primary] @ ship_db.shipments
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_GetUser [label="Frontend.GetUser
+		N_Frontend_GetOrders [label="Frontend.GetOrders
 
 ==== param 0 (userID) tainted ====
 _obj
-[rpc] @ UserService.GetUsers.userID
-", style=bold, shape=box, color="blue"];
-		N_UserService_PostCard [label="UserService.PostCard", style=bold, shape=box, color="blue"];
-		N_ShippingService_UpdateStatus [label="ShippingService.UpdateStatus
+[rpc] @ OrderService.GetOrders.userID
 
-==== param 0 (id) tainted ====
-_obj
-[read, secondary] @ ship_queue.notification.ID
-[write, secondary] @ order_db.orders.ID
-[write, secondary] @ order_db.orders.Shipment.ID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_DeleteCart [label="Frontend.DeleteCart
 
-==== param 0 (sessionID) tainted ====
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
 _obj
-[rpc] @ CartService.DeleteCart.sessionID
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_Get [label="CatalogueService.Get
+[rpc] @ OrderService.GetOrders.t3
 
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ catalogue_db.catalogue.ID
-", style=bold, shape=box, color="blue"];
-		N_CartService_UpdateItem [label="CartService.UpdateItem", style=bold, shape=box, color="blue"];
-		N_OrderService_GetOrders [label="OrderService.GetOrders", style=bold, shape=box, color="blue"];
-		N_OrderService_GetOrder [label="OrderService.GetOrder
 
-==== param 0 (orderID) tainted ====
+==== ret 1 (error) tainted ====
 _obj
-[read, primary] @ order_db.orders.ID
+[rpc] @ OrderService.GetOrders.t4
 ", style=bold, shape=box, color="blue"];
-		N_UserService_GetAddresses [label="UserService.GetAddresses", style=bold, shape=box, color="blue"];
+		N_UserService_GetUsers [label="UserService.GetUsers", style=bold, shape=box, color="blue"];
+		N_Frontend_GetCard [label="Frontend.GetCard
+
+==== param 0 (cardID) tainted ====
+_obj
+[rpc] @ UserService.GetCards.cardID
+", style=bold, shape=box, color="blue"];
+		N_CartService_AddItem [label="CartService.AddItem
+
+==== param 0 (customerID) tainted ====
+_obj
+[write, primary] @ cart_db.carts.ID
+
+
+==== param 1 (item) tainted ====
+_obj
+[write, primary] @ cart_db.carts.Items[*]
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item) tainted ====
+_obj
+[write, primary] @ cart_db.carts.Items[*]
+", style=bold, shape=box, color="blue"];
+		N_UserService_Register [label="UserService.Register
+
+==== param 0 (username) tainted ====
+_obj
+[write, primary] @ user_db.users.Username
+
+
+==== param 1 (password) tainted ====
+_obj
+[write, primary] @ user_db.users.Password
+
+
+==== param 2 (email) tainted ====
+_obj
+[write, primary] @ user_db.users.Email
+
+
+==== param 3 (first) tainted ====
+_obj
+[write, primary] @ user_db.users.FirstName
+
+
+==== param 4 (last) tainted ====
+_obj
+[write, primary] @ user_db.users.LastName
+
+
+==== ret 0 (string) tainted ====
+_obj
+[write, primary] @ user_db.users.UserID
+", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
 		N_order_db_orders [label="order_db.orders", style=bold, shape=cylinder, color="green"];
-		N_ship_db_shipments [label="ship_db.shipments", style=bold, shape=cylinder, color="green"];
-		N_catalogue_db_catalogue [label="catalogue_db.catalogue", style=bold, shape=cylinder, color="green"];
 		N_user_db_users [label="user_db.users", style=bold, shape=cylinder, color="green"];
-		N_ship_queue_notification [label="ship_queue.notification", style=bold, shape=cylinder, color="green"];
 		N_cart_db_carts [label="cart_db.carts", style=bold, shape=cylinder, color="green"];
+		N_ship_queue_notification [label="ship_queue.notification", style=bold, shape=cylinder, color="green"];
+		N_catalogue_db_catalogue [label="catalogue_db.catalogue", style=bold, shape=cylinder, color="green"];
+		N_ship_db_shipments [label="ship_db.shipments", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Frontend_DeleteCart [label="DeleteCart()", color=orange];
 	N_Frontend_DeleteCart -> N_CartService_DeleteCart [label="DeleteCart()
@@ -598,17 +604,17 @@ _obj
 [read, primary] @ catalogue_db.catalogue.ID
 
 
-==== arg 1 (t6) tainted ====
+==== arg 1 (t10) tainted ====
 _obj
 [read, primary] @ catalogue_db.catalogue.ID
 
 
-==== arg 2 (t10) tainted ====
+==== arg 2 (t7) tainted ====
 _obj
 [read, primary] @ catalogue_db.catalogue.ID
 
 
-==== arg 3 (t7) tainted ====
+==== arg 3 (t6) tainted ====
 _obj
 [read, primary] @ catalogue_db.catalogue.ID
 
@@ -759,6 +765,9 @@ _obj.ID
 [rpc] @ ShippingService.PostShipping.t33.ID
 _obj.Name
 [write, primary] @ order_db.orders.CustomerID
+[write, traced] @ order_db.orders.Shipment.Name
+[write, traced] @ ship_queue.notification.Name
+[write, traced] @ ship_db.shipments.Name
 [rpc] @ ShippingService.PostShipping.t31.Name
 [rpc] @ ShippingService.PostShipping.t33.Name
 [rpc] @ CartService.DeleteCart.t75
@@ -829,8 +838,14 @@ _obj.Name.Shipment
 [rpc] @ CartService.DeleteCart.t75
 _obj.Shipment
 [write, primary] @ order_db.orders.Shipment
+[write, secondary] @ ship_queue.notification
+[write, secondary] @ ship_db.shipments
 [rpc] @ ShippingService.PostShipping.t31
 [rpc] @ ShippingService.PostShipping.t33
+_obj.Shipment.Name
+[write, secondary] @ order_db.orders.Shipment.Name
+[write, secondary] @ ship_queue.notification.Name
+[write, secondary] @ ship_db.shipments.Name
 _obj.Status.Shipment
 [write, primary] @ order_db.orders.Shipment.Status
 [rpc] @ ShippingService.PostShipping.t31.Status
@@ -844,6 +859,9 @@ _obj.Total
 ==== arg 0 (t75) tainted ====
 _obj
 [write, primary] @ order_db.orders.CustomerID
+[write, traced] @ order_db.orders.Shipment.Name
+[write, traced] @ ship_queue.notification.Name
+[write, traced] @ ship_db.shipments.Name
 [rpc] @ ShippingService.PostShipping.t31.Name
 [rpc] @ ShippingService.PostShipping.t33.Name
 [rpc] @ CartService.DeleteCart.t75
@@ -865,6 +883,9 @@ _obj.ID
 [write, secondary] @ order_db.orders.Shipment.ID
 _obj.Name
 [write, secondary] @ order_db.orders.CustomerID
+[write, secondary] @ order_db.orders.Shipment.Name
+[write, secondary] @ ship_queue.notification.Name
+[write, secondary] @ ship_db.shipments.Name
 _obj.Status
 [write, secondary] @ order_db.orders.Shipment.Status
 ", color=green];
@@ -880,6 +901,9 @@ _obj.ID
 [write, secondary] @ order_db.orders.Shipment.ID
 _obj.Name
 [write, secondary] @ order_db.orders.CustomerID
+[write, secondary] @ order_db.orders.Shipment.Name
+[write, secondary] @ ship_queue.notification.Name
+[write, secondary] @ ship_db.shipments.Name
 _obj.Status
 [write, secondary] @ order_db.orders.Shipment.Status
 ", color=green];
@@ -925,22 +949,22 @@ _obj
 [read, primary] @ order_db.orders.ID
 
 
-==== arg 1 (t2) tainted ====
+==== arg 1 (t5) tainted ====
 _obj
 [read, primary] @ order_db.orders.ID
 
 
-==== arg 2 (t1) tainted ====
+==== arg 2 (t3) tainted ====
 _obj
 [read, primary] @ order_db.orders.ID
 
 
-==== arg 3 (t3) tainted ====
+==== arg 3 (t2) tainted ====
 _obj
 [read, primary] @ order_db.orders.ID
 
 
-==== arg 4 (t5) tainted ====
+==== arg 4 (t1) tainted ====
 _obj
 [read, primary] @ order_db.orders.ID
 ", color=green];
@@ -996,22 +1020,22 @@ _obj
 [read, primary] @ user_db.users.username
 
 
-==== arg 1 (t8) tainted ====
+==== arg 1 (t10) tainted ====
 _obj
 [read, primary] @ user_db.users.username
 
 
-==== arg 2 (t6) tainted ====
+==== arg 2 (t7) tainted ====
 _obj
 [read, primary] @ user_db.users.username
 
 
-==== arg 3 (t7) tainted ====
+==== arg 3 (t8) tainted ====
 _obj
 [read, primary] @ user_db.users.username
 
 
-==== arg 4 (t10) tainted ====
+==== arg 4 (t6) tainted ====
 _obj
 [read, primary] @ user_db.users.username
 ", color=green];
@@ -1023,25 +1047,25 @@ _obj
 [write, secondary] @ user_db.users.UserID
 
 
-==== arg 1 (t18) tainted ====
+==== arg 1 (t20) tainted ====
 _obj
 [delete, primary] @ cart_db.carts.ID
 [write, secondary] @ user_db.users.UserID
 
 
-==== arg 2 (t17) tainted ====
+==== arg 2 (t18) tainted ====
 _obj
 [delete, primary] @ cart_db.carts.ID
 [write, secondary] @ user_db.users.UserID
 
 
-==== arg 3 (t20) tainted ====
+==== arg 3 (t16) tainted ====
 _obj
 [delete, primary] @ cart_db.carts.ID
 [write, secondary] @ user_db.users.UserID
 
 
-==== arg 4 (t16) tainted ====
+==== arg 4 (t17) tainted ====
 _obj
 [delete, primary] @ cart_db.carts.ID
 [write, secondary] @ user_db.users.UserID
@@ -1203,6 +1227,7 @@ _obj
 ==== arg 0 (itemID) tainted ====
 _obj
 [read, secondary] @ catalogue_db.catalogue.ID
+[write, traced] @ cart_db.carts.Items[*].ID
 [rpc] @ CatalogueService.Get.itemID
 [rpc] @ CartService.AddItem.t18.ID
 
@@ -1265,6 +1290,7 @@ _obj[*].Items
 [write, primary] @ cart_db.carts.Items[*]
 _obj[*].Items.ID
 [read, secondary] @ catalogue_db.catalogue.ID
+[write, secondary] @ cart_db.carts.Items[*].ID
 ", color=green];
 	N_client -> N_Frontend_LoadCatalogue [label="LoadCatalogue()", color=orange];
 	N_Frontend_LoadCatalogue -> N_CatalogueService_AddSock [label="AddSock()
@@ -1314,12 +1340,12 @@ _obj
 [delete, primary] @ catalogue_db.catalogue.ID
 
 
-==== arg 3 (t10) tainted ====
+==== arg 3 (t7) tainted ====
 _obj
 [delete, primary] @ catalogue_db.catalogue.ID
 
 
-==== arg 4 (t7) tainted ====
+==== arg 4 (t10) tainted ====
 _obj
 [delete, primary] @ catalogue_db.catalogue.ID
 ", color=green];
@@ -1339,6 +1365,9 @@ _obj.ID
 [rpc] @ ShippingService.UpdateStatus.t12
 _obj.Name
 [write, secondary] @ order_db.orders.CustomerID
+[write, secondary] @ order_db.orders.Shipment.Name
+[write, secondary] @ ship_queue.notification.Name
+[write, secondary] @ ship_db.shipments.Name
 _obj.Status
 [write, secondary] @ order_db.orders.Shipment.Status
 ", color=green];

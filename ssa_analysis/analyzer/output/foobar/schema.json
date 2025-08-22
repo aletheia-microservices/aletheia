@@ -9,7 +9,9 @@
           "bar_db.bar.BarID",
           "bar_db.bar.Text"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY bar_db.bar.BarID REFERENCES foo_db.foo.FooID [MANDATORY]"
+        ]
       }
     ]
   },
@@ -19,7 +21,9 @@
       {
         "name": "foo",
         "fields": [
-          "foo_db.foo"
+          "foo_db.foo",
+          "foo_db.foo.FooID",
+          "foo_db.foo.Text"
         ],
         "constraints": []
       }

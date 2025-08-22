@@ -2,26 +2,36 @@ package abstractgraph
 
 import (
 	"fmt"
-	"strings"
 
 	"analyzer/pkg/common"
+	"analyzer/pkg/utils"
 )
 
 type AbstractTaint struct {
-	dbpath   string // field path in db
-	dbcallID string //i.e., the ID of the abstract edge representing the call
-	dbOpType common.DatabaseOperationType
-	primary  bool
-	traced   bool
+	fieldpath string // field path in db
+	dbcallID  string //i.e., the ID of the abstract edge representing the call
+	dbOpType  common.DatabaseOperationType
+	primary   bool
+	traced    bool
 }
 
 func NewAbstractTaint(dbpath string, dbcall string, opType common.DatabaseOperationType, primary bool, traced bool) *AbstractTaint {
 	return &AbstractTaint{
-		dbpath:   dbpath,
-		dbcallID: dbcall,
-		dbOpType: opType,
-		primary:  primary,
-		traced:   traced,
+		fieldpath: dbpath,
+		dbcallID:  dbcall,
+		dbOpType:  opType,
+		primary:   primary,
+		traced:    traced,
+	}
+}
+
+func (taint *AbstractTaint) Copy() *AbstractTaint {
+	return &AbstractTaint{
+		fieldpath: taint.fieldpath,
+		dbcallID:  taint.dbcallID,
+		dbOpType:  taint.dbOpType,
+		primary:   taint.primary,
+		traced:    taint.traced,
 	}
 }
 
@@ -50,7 +60,11 @@ func (taint *AbstractTaint) IsTraced() bool {
 }
 
 func (taint *AbstractTaint) GetDatabasePath() string {
-	return taint.dbpath
+	return taint.fieldpath
+}
+
+func (taint *AbstractTaint) AddSuffixToDatabasePath(suffix string) {
+	taint.fieldpath = taint.fieldpath + suffix
 }
 
 func (taint *AbstractTaint) GetDatabaseCallID() string {
@@ -58,16 +72,16 @@ func (taint *AbstractTaint) GetDatabaseCallID() string {
 }
 
 func (taint *AbstractTaint) String() string {
-	return taint.dbpath
+	return taint.fieldpath
 }
 
 func (taint *AbstractTaint) LongString() string {
-	return fmt.Sprintf("{%s, %s, %s, %t}", taint.dbpath, taint.dbcallID, common.OperationTypeToString(taint.dbOpType), taint.primary)
+	return fmt.Sprintf("{%s, %s, %s, %t}", taint.fieldpath, taint.dbcallID, common.OperationTypeToString(taint.dbOpType), taint.primary)
 }
 
 func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
 	fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
-	return taint.dbpath == other.dbpath &&
+	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID /* &&
 		taint.primary == other.primary &&
 		taint.dbOpType == other.dbOpType */
@@ -77,13 +91,9 @@ func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
 // other.dbfield: notification.PostID
 func (taint *AbstractTaint) IsUpperPath(other *AbstractTaint) (bool, string) {
 	fmt.Printf("[ABSTRACT TAINT] [SUPER] checking if taint is super path:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
-	if taint.dbpath != other.dbpath && strings.HasPrefix(other.dbpath, taint.dbpath) {
-		var subpath string
-		_, subpath, _ = strings.Cut(other.dbpath, taint.dbpath)
-		fmt.Printf("got subpath: %s\n", subpath)
-		return taint.dbcallID == other.dbcallID, subpath /* &&
-			taint.primary == other.primary &&
-			taint.dbOpType == other.dbOpType, subpath */
+	if ok, diff := utils.IsUpperPath(taint.fieldpath, other.fieldpath); ok {
+		fmt.Printf("got subpath: %s\n", diff)
+		return taint.dbcallID == other.dbcallID, diff
 	}
 	return false, ""
 }

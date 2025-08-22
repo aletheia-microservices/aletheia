@@ -1,3 +1,16 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
+entry request: APIService.ReadPage
+	FOREIGN KEY READS #0:
+		READ 1: (PlotService.ReadPlot) --> (plot_db.plot).Select(...)
+			- read field: plot_db.plot.plotid
+				- constraint #0: FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]
+		READ 2: (MovieInfoService.ReadMovieInfo) --> (movieinfo_db.movieinfo).Select(...)
+			- read field: movieinfo_db.movieinfo.plotid
+	FOREIGN KEY READS #1:
+		READ 1: (CastInfoService.ReadCastInfo) --> (castinfo_db.castinfo).Select(...)
+			- read field: plot_db.plot.plotid
+				- constraint #0: FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]
+		READ 2: (MovieInfoService.ReadMovieInfo) --> (movieinfo_db.movieinfo).Select(...)
+			- read field: movieinfo_db.movieinfo.plotid

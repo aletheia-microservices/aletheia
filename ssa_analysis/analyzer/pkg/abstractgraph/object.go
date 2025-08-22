@@ -152,8 +152,8 @@ func (obj *AbstractObject) GetAffectedDatabaseFieldsForCall(callID string) []str
 	for _, taintLst := range obj.GetPrimaryTaints() {
 		for _, taint := range taintLst {
 			if taint.GetDatabaseCallID() == callID {
-				if !slices.Contains(fieldpaths, taint.dbpath) {
-					fieldpaths = append(fieldpaths, taint.dbpath)
+				if !slices.Contains(fieldpaths, taint.fieldpath) {
+					fieldpaths = append(fieldpaths, taint.fieldpath)
 				}
 			}
 		}
@@ -262,10 +262,10 @@ func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint Abstract
 	exists := obj.HasEqualTaint(newtaint)
 	if !exists {
 		taint := &AbstractTaint{
-			dbpath:   newtaint.dbpath,
-			dbcallID: newtaint.dbcallID,
-			primary:  newtaint.primary,
-			dbOpType: newtaint.dbOpType,
+			fieldpath: newtaint.fieldpath,
+			dbcallID:  newtaint.dbcallID,
+			primary:   newtaint.primary,
+			dbOpType:  newtaint.dbOpType,
 		}
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
 		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)

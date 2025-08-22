@@ -6,6 +6,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/common"
+	"analyzer/pkg/utils"
 )
 
 type Iterator struct {
@@ -114,10 +115,10 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			for i, fromRet := range edge.GetReturns() {
+				fmt.Printf("\t\t[ITERATOR] [RETS] [index=%d] taint mapping for ret (%s)\n", i, fromRet.String())
 				toRet := toNode.GetReturnAt(i)
 				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetPrimaryTaints(), false, false)
 				taintMapping.Merge(taintMappingTmp)
-				fmt.Printf("\t\t[ITERATOR] [RETS] [index=%d] taint mapping for ret (%s): %s\n", i, fromRet.String(), taintMappingTmp.String())
 			}
 
 			// update object taints to the next node
@@ -134,7 +135,6 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 			// --------------------------------------------------
 			// --------------------------------------------------
-			taintMapping = abstractgraph.NewTaintMapping()
 
 			for _, otherEdge := range iterator.graph.GetEdgesFromNode(node) {
 				if otherEdge == edge || otherEdge.GetEdgeType() != abstractgraph.EDGE_SERVICE_RPC {
@@ -142,17 +142,15 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				}
 
 				// propagate taints across objects using trace info (args)
-				fmt.Printf("[TRACE] [ARG] edge: %s\n", edge.String())
-				fmt.Printf("[TRACE] [ARG] edge2: %s\n", otherEdge.String())
 				for _, arg := range edge.GetArguments() {
+					fmt.Printf("[TRACE] [ARG] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", arg.String(), edge.String(), otherEdge.String(), taintMapping.String())
 					taintTracedObjects(arg, otherEdge, taintMapping)
 				}
 
 				// propagate taints across objects using trace info (rets)
-				fmt.Printf("[TRACE] [RET] edge: %s\n", edge.String())
-				fmt.Printf("[TRACE] [RET] edge2: %s\n", otherEdge.String())
-				for _, arg := range edge.GetReturns() {
-					taintTracedObjects(arg, otherEdge, taintMapping)
+				for _, ret := range edge.GetReturns() {
+					fmt.Printf("[TRACE] [RET] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", ret.String(), edge.String(), otherEdge.String(), taintMapping.String())
+					taintTracedObjects(ret, otherEdge, taintMapping)
 				}
 			}
 
@@ -189,7 +187,6 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			abstractgraph.PropagateNewTaintsToDatabases(iterator.graph, taintMapping)
 
 			fmt.Println("[3] ============================================================ [3]")
-
 
 			for i, obj := range node.GetParams() {
 				fmt.Printf("\t\t[ITERATOR] [PARAM %d] > ENTER update object (%s) taints with new taint mapping\n", i, obj.String())
@@ -282,32 +279,92 @@ func propagateNewTaintsToObject(obj *abstractgraph.AbstractObject, taintMapping 
 	}
 }
 
-func taintTracedObjects(obj *abstractgraph.AbstractObject, otherEdge *abstractgraph.AbstractEdge, taintMapping *abstractgraph.TaintMapping){
-	for _, tracesLst := range obj.GetTraces() {
+func taintTracedObjects(obj *abstractgraph.AbstractObject, otherEdge *abstractgraph.AbstractEdge, taintMapping *abstractgraph.TaintMapping) {
+	for objpath, tracesLst := range obj.GetTraces() {
+		// e.g.,
+		// MediaMicroservices in APIService.ReadPage(...)
+		//
+		// movieId := movieIdService.ReadMovieId(title)
+		// movieInfo := movieInfoService.ReadMovieInfo(movieId.ID)
+		//
+		// t4 = ReadMovieId(..) => objpath 		 (@ t4.MovieID) = _obj.MovieID
+		// ReadMovieInfo(t10) 	=> tracedObjPath (@ t10) 		= _obj
+		//
+		// REMINDER: traceObjPath is simply the objpath of the traced object
 		for _, trace := range tracesLst {
 			if trace.GetServiceCallID() != otherEdge.GetID() {
 				continue
 			}
+			// e.g., SockShop3 @ Frontend.AddItem
+			// AddItem(ctx, sessionID, Item{ID: itemID, Quantity: 1, UnitPrice: sock.Price})
+			// <=> AddItem(ctx, sessionID, t18)
+			// ------------------------------------
+			// 		t12: local Item (complit)
+			// ------------------------------------
+			// 		t13: &t12.ID (#0)
+			// ==== tainted ====
+			// 		_obj
+			// [rpc] @ CatalogueService.Get.itemID
+			// [rpc] @ CatalogueService.AddItem.t18.ID
+			// 	  	   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			// ------------------------------------
+			// 		t18: *t12
+			// 		^^^^^^^^^
+			// ==== tainted ====
+			//		 _obj
+			// [rpc] @ CartService.AddItem.t18
+			// 		_obj.ID
+			// 		^^^^^^^^
+			// [rpc] @ CartService.Get.itemID
+			// [rpc] @ CartService.AddItem.t18.ID
+			// ------------------------------------
+			// 
+			// CURRENT OBJECT is t13 w/ objpath = _obj
+			// TRACED OBJECT is t18 w/ traceobjpath = _obj.ID
+			//
+			// we want to get the taints of t13 at _obj and propagate them to t18 on _obj.ID
+			// REMINDER: we just simply associate the SAME dbfield to t18 on _obj.ID
+			fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
+			tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName())
+			if tracedObj != nil {
+				tracedObjPath := trace.GetArgumentPath()
+				fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", obj.String(), objpath, tracedObjPath, tracedObj.String())
+				var selectedTaints = make(map[string][]*abstractgraph.AbstractTaint)
 
-			fmt.Printf("[TRACE] expected arg name = %s\n", trace.GetArgumentName())
-			fmt.Printf("[TRACE] all available args2 = %v\n", otherEdge.GetArguments())
-			otherArg := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName())
-			if otherArg != nil {
-				selectedTaints := make(map[string][]*abstractgraph.AbstractTaint)
-				for objpath2, tracesLst2 := range obj.GetTraces() {
-					for _, trace2 := range tracesLst2 {
-						fmt.Printf("debug: trace2 on obj path (%s): %s\n", objpath2, trace2.LongString())
-						if trace2.GetServiceCallID() == trace.GetServiceCallID() {
-							selectedTaints[trace.GetArgumentPath()] = obj.GetTaintsForObjectPath(objpath2)
-							break
-						}
+				var ok = true
+				var subpath = ""
+				// if there is no taint for current objpath then it is possible that there are upper taints
+				// so we go up, create a new subtaint and save to the selected taints of the traced object
+				// e.g., MediaMicroservices: APIService.ReadPage():
+				//
+				// 				CURRENT OBJECT BELOW
+				// ------------------------------------------
+				// ==== arg 1 (movieID) tainted ====
+				// 			_obj
+				// [read, secondary] @ movieid_db.movieid
+				// 			_obj.ID
+				// [rpc] @ MovieIdService.ReadMovieId.movieID
+				// ------------------------------------------
+				// after going up, we get a new potential subtaint
+				// (that we don't save for the current obj but only for the traced obj)
+				// ------------------------------------------
+				// 			_obj.ID
+				// [read, secondary] @ movieid_db.movieid.ID
+				// ------------------------------------------
+				for ok {
+					for _, taint := range obj.GetTaintsForObjectPath(objpath) {
+						subTaint := taint.Copy()
+						subTaint.AddSuffixToDatabasePath(subpath)
+						selectedTaints[tracedObjPath] = append(selectedTaints[tracedObjPath], subTaint)
 					}
+					objpath, subpath, ok = utils.ExtractUpperPath(objpath)
 				}
-				fmt.Printf("[TRACE] arg2 name = %s\n", otherArg.GetName())
-				taintMappingTmp := abstractgraph.MergeTaints(otherArg, selectedTaints, false, true)
+
+				taintMappingTmp := abstractgraph.MergeTaints(tracedObj, selectedTaints, false, true)
 				fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
 				taintMapping.Merge(taintMappingTmp)
 			}
+
 		}
 	}
 }

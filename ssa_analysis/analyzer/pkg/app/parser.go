@@ -257,6 +257,9 @@ type tableNameAlias struct {
 
 // ParseSQLRead returns two slices, one for written fields and another for filter fields
 // where each field return has format <table>.<field>
+//
+// NOTE: for SQL Selects on all fields (i.e., '*') the readFields length is 1
+// and the readField has format <database>.<table>
 func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 	fmt.Printf("[APP SQL PARSER] parsing sql read for database (%s): %s\n", db, stmtStr)
 	stmt, err := sqlparser.Parse(stmtStr)

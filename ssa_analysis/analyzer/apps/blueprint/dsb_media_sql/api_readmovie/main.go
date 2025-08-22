@@ -12,12 +12,16 @@ func main() {
 
 	var movieIdDB backend.RelationalDB
 	var movieInfoDB backend.RelationalDB
+	var castInfoDB backend.RelationalDB
+	var plotDB backend.RelationalDB
 
 	movieIdService, _ := mediamicroservices_sql.NewMovieIdServiceImpl(ctx, movieIdDB)
 	movieInfoService, _ := mediamicroservices_sql.NewMovieInfoServiceImpl(ctx, movieInfoDB)
-	api, _ := mediamicroservices_sql.NewAPIServiceImpl(ctx, movieIdService, movieInfoService)
+	castInfoService, _ := mediamicroservices_sql.NewCastInfoServiceImpl(ctx, castInfoDB)
+	plotService, _ := mediamicroservices_sql.NewPlotServiceImpl(ctx, plotDB)
+	api, _ := mediamicroservices_sql.NewAPIServiceImpl(ctx, movieIdService, movieInfoService, castInfoService, plotService)
 
 	var reqID int64
-	var movieID string
-	api.ReadMovie(ctx, reqID, movieID)
+	var title string
+	api.ReadPage(ctx, reqID, title)
 }

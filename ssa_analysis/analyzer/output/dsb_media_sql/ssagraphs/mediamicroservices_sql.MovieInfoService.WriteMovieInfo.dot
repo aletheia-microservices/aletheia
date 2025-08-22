@@ -1,173 +1,216 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2797356 [label="return t17, t16", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2797356 [label="return t17, t16", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2797180 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797180 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797198 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797198 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797216 [label="*t3 = casts", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797216 [label="*t3 = casts", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797332 [label="*t7 = t8", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797332 [label="*t7 = t8", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797341 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797341 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797348 [label="*t11 = t12", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2797348 [label="*t11 = t12", style=bold, shape=ellipse, color="blue"];
+	N_instr_ret_2881363 [label="return t20, t19", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2881363 [label="return t20, t19", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2881147 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881147 [label="*t1 = movieID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881165 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881165 [label="*t2 = title", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881184 [label="*t3 = castID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881184 [label="*t3 = castID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881203 [label="*t4 = plotID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881203 [label="*t4 = plotID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881330 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881330 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881339 [label="*t10 = t11", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881339 [label="*t10 = t11", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881346 [label="*t12 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881346 [label="*t12 = t13", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881354 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2881354 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
 	N_val__INSERT_INTO_movie_____string [label="\"INSERT INTO movie...\":string: \"INSERT INTO movie...\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2797147 [label="t0: local MovieInfo (movieInfo)
+	N_val_alloc_2881114 [label="t0: local MovieInfo (movieInfo)
 
 ==== tainted ====
-_obj.Casts
-[write] @ movieinfo_db.movieinfo.casts
-_obj.MovieID
+_obj.castid
+[write] @ movieinfo_db.movieinfo.castid
+_obj.movieid
 [write] @ movieinfo_db.movieinfo.movieid
-_obj.Title
+_obj.plotid
+[write] @ movieinfo_db.movieinfo.plotid
+_obj.title
 [write] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="orange"];
-	N_val_alloc_2797353 [label="t6: new [3]any (varargs)
+	N_val_alloc_2881360 [label="t7: new [4]any (varargs)
 
 ==== tainted ====
 _obj[*]
 [write] @ movieinfo_db.movieinfo.movieid
 [write] @ movieinfo_db.movieinfo.title
-[write] @ movieinfo_db.movieinfo.casts
+[write] @ movieinfo_db.movieinfo.castid
+[write] @ movieinfo_db.movieinfo.plotid
 ", style=bold, shape=box, color="orange"];
-	N_val_call_2797260 [label="t14: invoke t5.Exec(ctx, \"INSERT INTO movie...\":string, t13...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_extrt15 [label="t15: extract t14 #0", style=bold, shape=ellipse, color="black"];
-	N_val_extrt16 [label="t16: extract t14 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2797180 [label="t1: &t0.MovieID [#0]
+	N_val_call_2881246 [label="t17: invoke t6.Exec(ctx, \"INSERT INTO movie...\":string, t16...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt18 [label="t18: extract t17 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t17 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2881147 [label="t1: &t0.movieid [#0]
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.movieid
 ", style=bold, shape=box, color="green"];
-	N_val_field_2797198 [label="t2: &t0.Title [#1]
+	N_val_field_2881165 [label="t2: &t0.title [#1]
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="green"];
-	N_val_field_2797216 [label="t3: &t0.Casts [#2]
+	N_val_field_2881184 [label="t3: &t0.castid [#2]
 
 ==== tainted ====
 _obj
-[write] @ movieinfo_db.movieinfo.casts
+[write] @ movieinfo_db.movieinfo.castid
 ", style=bold, shape=box, color="green"];
-	N_val_field_2797244 [label="t4: &m.movieInfoDB [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_ifacet10 [label="t10: make any <- string (title)
+	N_val_field_2881203 [label="t4: &t0.plotid [#3]
+
+==== tainted ====
+_obj
+[write] @ movieinfo_db.movieinfo.plotid
+", style=bold, shape=box, color="green"];
+	N_val_field_2881230 [label="t5: &m.movieInfoDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet11 [label="t11: make any <- string (title)
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="black"];
-	N_val_ifacet12 [label="t12: make any <- string (casts)
+	N_val_ifacet13 [label="t13: make any <- string (castID)
 
 ==== tainted ====
 _obj
-[write] @ movieinfo_db.movieinfo.casts
+[write] @ movieinfo_db.movieinfo.castid
 ", style=bold, shape=box, color="black"];
-	N_val_ifacet8 [label="t8: make any <- string (movieID)
+	N_val_ifacet15 [label="t15: make any <- string (plotID)
+
+==== tainted ====
+_obj
+[write] @ movieinfo_db.movieinfo.plotid
+", style=bold, shape=box, color="black"];
+	N_val_ifacet9 [label="t9: make any <- string (movieID)
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.movieid
 ", style=bold, shape=box, color="black"];
-	N_val_indext11 [label="t11: &t6[2:int]
-
-==== tainted ====
-_obj
-[write] @ movieinfo_db.movieinfo.casts
-", style=bold, shape=box, color="green"];
-	N_val_indext7 [label="t7: &t6[0:int]
-
-==== tainted ====
-_obj
-[write] @ movieinfo_db.movieinfo.movieid
-", style=bold, shape=box, color="green"];
-	N_val_indext9 [label="t9: &t6[1:int]
+	N_val_indext10 [label="t10: &t7[1:int]
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="green"];
-	N_val_param_2797007 [label="m: parameter m : *MovieInfoServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2797047 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2797068 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2797081 [label="movieID: parameter movieID : string
+	N_val_indext12 [label="t12: &t7[2:int]
+
+==== tainted ====
+_obj
+[write] @ movieinfo_db.movieinfo.castid
+", style=bold, shape=box, color="green"];
+	N_val_indext14 [label="t14: &t7[3:int]
+
+==== tainted ====
+_obj
+[write] @ movieinfo_db.movieinfo.plotid
+", style=bold, shape=box, color="green"];
+	N_val_indext8 [label="t8: &t7[0:int]
+
+==== tainted ====
+_obj
+[write] @ movieinfo_db.movieinfo.movieid
+", style=bold, shape=box, color="green"];
+	N_val_param_2880958 [label="m: parameter m : *MovieInfoServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2880998 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2881019 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2881032 [label="movieID: parameter movieID : string
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.movieid
 ", style=bold, shape=box, color="black"];
-	N_val_param_2797097 [label="title: parameter title : string
+	N_val_param_2881048 [label="title: parameter title : string
 
 ==== tainted ====
 _obj
 [write] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="black"];
-	N_val_param_2797111 [label="casts: parameter casts : string
+	N_val_param_2881062 [label="castID: parameter castID : string
 
 ==== tainted ====
 _obj
-[write] @ movieinfo_db.movieinfo.casts
+[write] @ movieinfo_db.movieinfo.castid
 ", style=bold, shape=box, color="black"];
-	N_val_slicet13 [label="t13: slice t6[:]
+	N_val_param_2881077 [label="plotID: parameter plotID : string
+
+==== tainted ====
+_obj
+[write] @ movieinfo_db.movieinfo.plotid
+", style=bold, shape=box, color="black"];
+	N_val_slicet16 [label="t16: slice t7[:]
 
 ==== tainted ====
 _obj[*]
 [write] @ movieinfo_db.movieinfo.movieid
 [write] @ movieinfo_db.movieinfo.title
-[write] @ movieinfo_db.movieinfo.casts
+[write] @ movieinfo_db.movieinfo.castid
+[write] @ movieinfo_db.movieinfo.plotid
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2797244 [label="t5: *t4", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2797363 [label="t17: *t0
+	N_val_unary_2881230 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2881370 [label="t20: *t0
 
 ==== tainted ====
-_obj.Casts
-[write] @ movieinfo_db.movieinfo.casts
-_obj.MovieID
+_obj.castid
+[write] @ movieinfo_db.movieinfo.castid
+_obj.movieid
 [write] @ movieinfo_db.movieinfo.movieid
-_obj.Title
+_obj.plotid
+[write] @ movieinfo_db.movieinfo.plotid
+_obj.title
 [write] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2797147 -> N_val_field_2797180;
-	N_val_alloc_2797147 -> N_val_field_2797198;
-	N_val_alloc_2797147 -> N_val_field_2797216;
-	N_val_field_2797180 -> N_instr_store_2797180;
-	N_val_param_2797081 -> N_instr_store_2797180;
-	N_val_field_2797198 -> N_instr_store_2797198;
-	N_val_param_2797097 -> N_instr_store_2797198;
-	N_val_field_2797216 -> N_instr_store_2797216;
-	N_val_param_2797111 -> N_instr_store_2797216;
-	N_val_param_2797007 -> N_val_field_2797244;
-	N_val_field_2797244 -> N_val_unary_2797244;
-	N_val_alloc_2797353 -> N_val_indext7;
-	N_val_param_2797081 -> N_val_ifacet8;
-	N_val_indext7 -> N_instr_store_2797332;
-	N_val_ifacet8 -> N_instr_store_2797332;
-	N_val_alloc_2797353 -> N_val_indext9;
-	N_val_param_2797097 -> N_val_ifacet10;
-	N_val_indext9 -> N_instr_store_2797341;
-	N_val_ifacet10 -> N_instr_store_2797341;
-	N_val_alloc_2797353 -> N_val_indext11;
-	N_val_param_2797111 -> N_val_ifacet12;
-	N_val_indext11 -> N_instr_store_2797348;
-	N_val_ifacet12 -> N_instr_store_2797348;
-	N_val_alloc_2797353 -> N_val_slicet13;
-	N_val_param_2797047 -> N_val_call_2797260;
-	N_val__INSERT_INTO_movie_____string -> N_val_call_2797260;
-	N_val_slicet13 -> N_val_call_2797260;
-	N_val_call_2797260 -> N_val_extrt15;
-	N_val_call_2797260 -> N_val_extrt16;
-	N_val_alloc_2797147 -> N_val_unary_2797363;
-	N_val_unary_2797363 -> N_instr_ret_2797356;
-	N_val_extrt16 -> N_instr_ret_2797356;
-	N_val_field_2797216 -> N_val_alloc_2797147 [label=".Casts", style=dashed, color=blue];
-	N_val_field_2797198 -> N_val_alloc_2797147 [label=".Title", style=dashed, color=blue];
-	N_val_indext11 -> N_val_alloc_2797353 [label="[*]", style=dashed, color=blue];
-	N_val_slicet13 -> N_val_alloc_2797353 [label="", style=dashed, color=blue];
-	N_val_field_2797180 -> N_val_alloc_2797147 [label=".MovieID", style=dashed, color=blue];
-	N_val_indext9 -> N_val_alloc_2797353 [label="[*]", style=dashed, color=blue];
-	N_val_indext7 -> N_val_alloc_2797353 [label="[*]", style=dashed, color=blue];
+	N_val_alloc_2881114 -> N_val_field_2881147;
+	N_val_alloc_2881114 -> N_val_field_2881165;
+	N_val_alloc_2881114 -> N_val_field_2881184;
+	N_val_alloc_2881114 -> N_val_field_2881203;
+	N_val_field_2881147 -> N_instr_store_2881147;
+	N_val_param_2881032 -> N_instr_store_2881147;
+	N_val_field_2881165 -> N_instr_store_2881165;
+	N_val_param_2881048 -> N_instr_store_2881165;
+	N_val_field_2881184 -> N_instr_store_2881184;
+	N_val_param_2881062 -> N_instr_store_2881184;
+	N_val_field_2881203 -> N_instr_store_2881203;
+	N_val_param_2881077 -> N_instr_store_2881203;
+	N_val_param_2880958 -> N_val_field_2881230;
+	N_val_field_2881230 -> N_val_unary_2881230;
+	N_val_alloc_2881360 -> N_val_indext8;
+	N_val_param_2881032 -> N_val_ifacet9;
+	N_val_indext8 -> N_instr_store_2881330;
+	N_val_ifacet9 -> N_instr_store_2881330;
+	N_val_alloc_2881360 -> N_val_indext10;
+	N_val_param_2881048 -> N_val_ifacet11;
+	N_val_indext10 -> N_instr_store_2881339;
+	N_val_ifacet11 -> N_instr_store_2881339;
+	N_val_alloc_2881360 -> N_val_indext12;
+	N_val_param_2881062 -> N_val_ifacet13;
+	N_val_indext12 -> N_instr_store_2881346;
+	N_val_ifacet13 -> N_instr_store_2881346;
+	N_val_alloc_2881360 -> N_val_indext14;
+	N_val_param_2881077 -> N_val_ifacet15;
+	N_val_indext14 -> N_instr_store_2881354;
+	N_val_ifacet15 -> N_instr_store_2881354;
+	N_val_alloc_2881360 -> N_val_slicet16;
+	N_val_param_2880998 -> N_val_call_2881246;
+	N_val__INSERT_INTO_movie_____string -> N_val_call_2881246;
+	N_val_slicet16 -> N_val_call_2881246;
+	N_val_call_2881246 -> N_val_extrt18;
+	N_val_call_2881246 -> N_val_extrt19;
+	N_val_alloc_2881114 -> N_val_unary_2881370;
+	N_val_unary_2881370 -> N_instr_ret_2881363;
+	N_val_extrt19 -> N_instr_ret_2881363;
+	N_val_field_2881165 -> N_val_alloc_2881114 [label=".title", style=dashed, color=blue];
+	N_val_indext14 -> N_val_alloc_2881360 [label="[*]", style=dashed, color=blue];
+	N_val_slicet16 -> N_val_alloc_2881360 [label="", style=dashed, color=blue];
+	N_val_field_2881203 -> N_val_alloc_2881114 [label=".plotid", style=dashed, color=blue];
+	N_val_indext10 -> N_val_alloc_2881360 [label="[*]", style=dashed, color=blue];
+	N_val_indext8 -> N_val_alloc_2881360 [label="[*]", style=dashed, color=blue];
+	N_val_field_2881184 -> N_val_alloc_2881114 [label=".castid", style=dashed, color=blue];
+	N_val_field_2881147 -> N_val_alloc_2881114 [label=".movieid", style=dashed, color=blue];
+	N_val_indext12 -> N_val_alloc_2881360 [label="[*]", style=dashed, color=blue];
 }
