@@ -1,67 +1,46 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1654596345 [label="if t14 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__1654596345 [label="if t14 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__2036322475 [label="if t13 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__2036322475 [label="if t13 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_1881 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t5", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_1881 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t5", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_1930 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t12", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_1930 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t12", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_1960 [label="return t15, t11, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_1960 [label="return t15, t11, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_1767 [label="*t0 = t4", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_1767 [label="*t0 = t4", style=bold, shape=ellipse, color="blue"];
-	N_nil_48460385 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_alloc_1767 [label="t0: local Foo (foo)
+	N_instr__1741435859 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1741435859 [label="if t10 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__65335627 [label="if t11 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__65335627 [label="if t11 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_1874 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1874 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1923 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1923 [label="return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1953 [label="return t3, t8, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1953 [label="return t3, t8, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1183320534 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_1863 [label="t10: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_1912 [label="t11: t9 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_1800 [label="t2: invoke t1.ReadFoo(ctx, id)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1844 [label="t7: invoke t6.ReadBar(ctx, id)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ FooService.ReadFoo.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
 
 ==== tainted ====
 _obj
 [rpc] @ FooService.ReadFoo.t4
-_obj.FooID
-[rpc] @ FooService.ReadFoo.t4.FooID
-[rpc] @ BarService.ReadBar.t9
-", style=bold, shape=box, color="orange"];
-	N_val_binary_1870 [label="t13: t5 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_binary_1919 [label="t14: t12 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_1800 [label="t3: invoke t2.ReadFoo(ctx, id)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_1844 [label="t10: invoke t7.ReadBar(ctx, t9)", style=bold, shape=ellipse, color="yellow"];
-	N_val_extrt11 [label="t11: extract t10 #0
-
-==== tainted ====
-_obj
-[rpc] @ BarService.ReadBar.t11
 ", style=bold, shape=box, color="black"];
-	N_val_extrt12 [label="t12: extract t10 #1
+	N_val_extrt8 [label="t8: extract t7 #0
 
 ==== tainted ====
 _obj
-[rpc] @ BarService.ReadBar.t12
+[rpc] @ BarService.ReadBar.t8
 ", style=bold, shape=box, color="black"];
-	N_val_extrt4 [label="t4: extract t3 #0
+	N_val_extrt9 [label="t9: extract t7 #1
 
 ==== tainted ====
 _obj
-[rpc] @ FooService.ReadFoo.t4
-_obj.FooID
-[rpc] @ FooService.ReadFoo.t4.FooID
 [rpc] @ BarService.ReadBar.t9
 ", style=bold, shape=box, color="black"];
-	N_val_extrt5 [label="t5: extract t3 #1
-
-==== tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t5
-", style=bold, shape=box, color="black"];
-	N_val_field_1782 [label="t1: &d.fooService [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_1826 [label="t6: &d.barService [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_1854 [label="t8: &t0.FooID [#0]
-
-==== tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t4.FooID
-[rpc] @ BarService.ReadBar.t9
-", style=bold, shape=box, color="green"];
+	N_val_field_1782 [label="t0: &d.fooService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1826 [label="t5: &d.barService [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_param_1685 [label="d: parameter d : *FrontendImpl", style=bold, shape=ellipse, color="black"];
 	N_val_param_1713 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
 	N_val_param_1734 [label="id: parameter id : string
@@ -69,56 +48,35 @@ _obj
 ==== tainted ====
 _obj
 [rpc] @ FooService.ReadFoo.id
+[rpc] @ BarService.ReadBar.id
 ", style=bold, shape=box, color="black"];
 	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar [label="struct{BarID string; Text string}{}:github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar: struct{BarID string; Text string}{}:github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar", style=bold, shape=ellipse, color="yellow"];
 	N_val_struct_FooID_string__Text_string__OtherFoo__github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo [label="struct{FooID string; Text string; OtherFoo *github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo}{}:github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo: struct{FooID string; Text string; OtherFoo *github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo}{}:github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo", style=bold, shape=ellipse, color="yellow"];
-	N_val_unary_1782 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_1826 [label="t7: *t6", style=bold, shape=ellipse, color="red"];
-	N_val_unary_1854 [label="t9: *t8
-
-==== tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t4.FooID
-[rpc] @ BarService.ReadBar.t9
-", style=bold, shape=box, color="red"];
-	N_val_unary_1967 [label="t15: *t0
-
-==== tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t4
-_obj.FooID
-[rpc] @ FooService.ReadFoo.t4.FooID
-[rpc] @ BarService.ReadBar.t9
-", style=bold, shape=box, color="red"];
+	N_val_unary_1782 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1826 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
 	N_val_param_1685 -> N_val_field_1782;
 	N_val_field_1782 -> N_val_unary_1782;
 	N_val_param_1713 -> N_val_call_1800;
 	N_val_param_1734 -> N_val_call_1800;
+	N_val_call_1800 -> N_val_extrt3;
 	N_val_call_1800 -> N_val_extrt4;
-	N_val_alloc_1767 -> N_instr_store_1767;
-	N_val_extrt4 -> N_instr_store_1767;
-	N_val_call_1800 -> N_val_extrt5;
 	N_val_param_1685 -> N_val_field_1826;
 	N_val_field_1826 -> N_val_unary_1826;
-	N_val_alloc_1767 -> N_val_field_1854;
-	N_val_field_1854 -> N_val_unary_1854;
 	N_val_param_1713 -> N_val_call_1844;
-	N_val_unary_1854 -> N_val_call_1844;
-	N_val_call_1844 -> N_val_extrt11;
-	N_val_call_1844 -> N_val_extrt12;
-	N_val_extrt5 -> N_val_binary_1870;
-	N_nil_48460385 -> N_val_binary_1870;
-	N_val_struct_FooID_string__Text_string__OtherFoo__github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo -> N_instr_ret_1881;
-	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_1881;
-	N_val_extrt5 -> N_instr_ret_1881;
-	N_val_extrt12 -> N_val_binary_1919;
-	N_nil_48460385 -> N_val_binary_1919;
-	N_val_struct_FooID_string__Text_string__OtherFoo__github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo -> N_instr_ret_1930;
-	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_1930;
-	N_val_extrt12 -> N_instr_ret_1930;
-	N_val_alloc_1767 -> N_val_unary_1967;
-	N_val_unary_1967 -> N_instr_ret_1960;
-	N_val_extrt11 -> N_instr_ret_1960;
-	N_nil_48460385 -> N_instr_ret_1960;
-	N_val_field_1854 -> N_val_alloc_1767 [label=".FooID", style=dashed, color=blue];
+	N_val_param_1734 -> N_val_call_1844;
+	N_val_call_1844 -> N_val_extrt8;
+	N_val_call_1844 -> N_val_extrt9;
+	N_val_extrt4 -> N_val_binary_1863;
+	N_nil_1183320534 -> N_val_binary_1863;
+	N_val_struct_FooID_string__Text_string__OtherFoo__github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo -> N_instr_ret_1874;
+	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_1874;
+	N_val_extrt4 -> N_instr_ret_1874;
+	N_val_extrt9 -> N_val_binary_1912;
+	N_nil_1183320534 -> N_val_binary_1912;
+	N_val_struct_FooID_string__Text_string__OtherFoo__github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Foo -> N_instr_ret_1923;
+	N_val_struct_BarID_string__Text_string____github_com_blueprint_uservices_blueprint_examples_foobar_workflow_foobar_Bar -> N_instr_ret_1923;
+	N_val_extrt9 -> N_instr_ret_1923;
+	N_val_extrt3 -> N_instr_ret_1953;
+	N_val_extrt8 -> N_instr_ret_1953;
+	N_nil_1183320534 -> N_instr_ret_1953;
 }

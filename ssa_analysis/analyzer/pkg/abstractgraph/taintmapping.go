@@ -80,6 +80,21 @@ func (tm *TaintMapping) String() string {
 	return builder.String()
 }
 
+/* func ComputeTaintMapping(obj *AbstractObject) *TaintMapping {
+	taintMapping := &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
+
+	for objpath1, primaryTaintsLst := range obj.GetPrimaryTaints() {
+		for objpath2, secondaryTaintsLst := range obj.GetSecondaryTaints() {
+			if objpath1 == objpath2 {
+				for _, primaryTaint := range primaryTaintsLst {
+					taintMapping
+				}
+			}
+		}
+	}
+	return taintMapping
+} */
+
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool, traced bool) *TaintMapping {
 	fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
 	var taintMapping *TaintMapping
@@ -156,7 +171,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 									// when tainting primary vs. traced
 									taintMapping.AddIfNotExists(*newTaint, lowerTaint)
 								}
-								
+
 							}
 						}
 						objpath, subpath, ok = utils.ExtractUpperPath(objpath)

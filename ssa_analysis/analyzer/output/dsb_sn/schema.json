@@ -23,7 +23,9 @@
         "name": "post",
         "fields": [
           "post_db.post",
-          "post_db.post.PostID"
+          "post_db.post.PostID",
+          "post_db.post.PostType",
+          "post_db.post.ReqID"
         ],
         "constraints": []
       }
@@ -117,8 +119,8 @@
           "usertimeline_db.usertimeline.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key",
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]"
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
+          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key"
         ]
       }
     ]

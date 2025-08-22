@@ -175,23 +175,17 @@ d (@ReadFooBar): (*ssa.Parameter) (parameter d : *FrontendImpl)
 
 ctx (@ReadFooBar): (*ssa.Parameter) (parameter ctx : context.Context)
 
-t0 (@ReadFooBar): (*ssa.Alloc) (local Foo (foo))
-	 → t0 (@ReadFooBar): (*ssa.Alloc)
+t0 (@ReadFooBar): (*ssa.FieldAddr) (&d.fooService [#1])
 
-t1 (@ReadFooBar): (*ssa.FieldAddr) (&d.fooService [#1])
+t1 (@ReadFooBar): (*ssa.UnOp) (*t0)
 
-t2 (@ReadFooBar): (*ssa.UnOp) (*t1)
+t4 (@ReadFooBar): (*ssa.Extract) (extract t2 #1)
 
-t5 (@ReadFooBar): (*ssa.Extract) (extract t3 #1)
+t5 (@ReadFooBar): (*ssa.FieldAddr) (&d.barService [#0])
 
-t6 (@ReadFooBar): (*ssa.FieldAddr) (&d.barService [#0])
+t6 (@ReadFooBar): (*ssa.UnOp) (*t5)
 
-t7 (@ReadFooBar): (*ssa.UnOp) (*t6)
-
-t8 (@ReadFooBar): (*ssa.FieldAddr) (&t0.FooID [#0])
-	 → t0 (@ReadFooBar): (*ssa.Alloc)
-
-t12 (@ReadFooBar): (*ssa.Extract) (extract t10 #1)
+t9 (@ReadFooBar): (*ssa.Extract) (extract t7 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FrontendImpl).WriteFooBar ###

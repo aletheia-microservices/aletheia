@@ -1,3 +1,5 @@
+	Global: HelloWorldVariable, Type: *string
+	Global: init$guard, Type: *bool
 	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.BarServiceImpl
 	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
 		Parameters:
@@ -79,13 +81,6 @@ Block #3: foobar.BarService.WriteBar.if.then
 Block #4: foobar.BarService.WriteBar.if.done
 			00: t13 = *t0
 			01: return t13, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooPtr
-	Global: Hello_World_Variable, Type: *string
-	Global: HelloWorldVariable, Type: *string
-	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar
-	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.BarService
-	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
-	Method: func(ctx context.Context, id string, text string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
 		Parameters:
 			ctx = parameter ctx : context.Context
 			barDb = parameter barDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
@@ -96,96 +91,11 @@ Block #0: foobar.NewBarServiceImpl.entry
 			02: *t1 = barDb
 			03: t2 = make BarService <- *BarServiceImpl (t0)
 			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FrontendImpl
-	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
-		Parameters:
-			d = parameter d : *FrontendImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-Function: foobar.Frontend.ReadFooBar
-Block #0: foobar.Frontend.ReadFooBar.entry
-			00: t0 = local Foo (foo)
-			01: t1 = &d.fooService [#1]
-			02: t2 = *t1
-			03: t3 = invoke t2.ReadFoo(ctx, id)
-			04: t4 = extract t3 #0
-			05: *t0 = t4
-			06: t5 = extract t3 #1
-			07: t6 = &d.barService [#0]
-			08: t7 = *t6
-			09: t8 = &t0.FooID [#0]
-			10: t9 = *t8
-			11: t10 = invoke t7.ReadBar(ctx, t9)
-			12: t11 = extract t10 #0
-			13: t12 = extract t10 #1
-			14: t13 = t5 != nil:error
-			15: if t13 goto 1 else 2
-Block #1: foobar.Frontend.ReadFooBar.if.then
-			00: return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t5
-Block #2: foobar.Frontend.ReadFooBar.if.done
-			00: t14 = t12 != nil:error
-			01: if t14 goto 3 else 4
-Block #3: foobar.Frontend.ReadFooBar.if.then
-			00: return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t12
-Block #4: foobar.Frontend.ReadFooBar.if.done
-			00: t15 = *t0
-			01: return t15, t11, nil:error
-	Method: func(ctx context.Context, id string, fooText string, barText string) (string, error)
-		Parameters:
-			d = parameter d : *FrontendImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-			fooText = parameter fooText : string
-			barText = parameter barText : string
-Function: foobar.Frontend.WriteFooBar
-Block #0: foobar.Frontend.WriteFooBar.entry
-			00: t0 = local Foo (foo)
-			01: t1 = &d.fooService [#1]
-			02: t2 = *t1
-			03: t3 = invoke t2.WriteFoo(ctx, id, fooText)
-			04: t4 = extract t3 #0
-			05: *t0 = t4
-			06: t5 = extract t3 #1
-			07: t6 = local Bar (bar)
-			08: t7 = &d.barService [#0]
-			09: t8 = *t7
-			10: t9 = invoke t8.WriteBar(ctx, id, barText)
-			11: t10 = extract t9 #0
-			12: *t6 = t10
-			13: t11 = extract t9 #1
-			14: t12 = t5 != nil:error
-			15: if t12 goto 1 else 2
-Block #1: foobar.Frontend.WriteFooBar.if.then
-			00: return "":string, t5
-Block #2: foobar.Frontend.WriteFooBar.if.done
-			00: t13 = t11 != nil:error
-			01: if t13 goto 3 else 4
-Block #3: foobar.Frontend.WriteFooBar.if.then
-			00: return "":string, t11
-Block #4: foobar.Frontend.WriteFooBar.if.done
-			00: t14 = &t0.Text [#1]
-			01: t15 = *t14
-			02: t16 = &t6.Text [#1]
-			03: t17 = *t16
-			04: t18 = new [2]any (varargs)
-			05: t19 = &t18[0:int]
-			06: t20 = make any <- string (t15)
-			07: *t19 = t20
-			08: t21 = &t18[1:int]
-			09: t22 = make any <- string (t17)
-			10: *t21 = t22
-			11: t23 = slice t18[:]
-			12: t24 = fmt.Sprintf("%s, %s":string, t23...)
-			13: return t24, nil:error
-		Parameters:
-Function: foobar.main
-Block #0: foobar.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewBarServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = invoke t2.WriteBar(t0, "":string, "":string)
-			05: return
+	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooService
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, error)
+	Method: func(ctx context.Context, id string, text string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, error)
+	Global: Hello_World_Variable, Type: *string
+	Unknown member type: *ssa.NamedConst
 		Parameters:
 Function: foobar.init
 Block #0: foobar.init.entry
@@ -203,35 +113,16 @@ Block #1: foobar.init.init.start
 			08: jump 2
 Block #2: foobar.init.init.done
 			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo
-	Method: func() string
+	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooPtr
 		Parameters:
-			f = parameter f : *Foo
-Function: foobar.Foo.GetID
-Block #0: foobar.Foo.GetID.entry
-			00: t0 = &f.FooID [#0]
-			01: t1 = *t0
-			02: return t1
-	Method: func() *github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo
-		Parameters:
-			f = parameter f : *Foo
-Function: foobar.Foo.GetOtherFoo
-Block #0: foobar.Foo.GetOtherFoo.entry
-			00: t0 = &f.OtherFoo [#2]
-			01: t1 = *t0
-			02: return t1
-	Method: func(other *github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo)
-		Parameters:
-			f = parameter f : *Foo
-			other = parameter other : *Foo
-Function: foobar.Foo.SetOtherFoo
-Block #0: foobar.Foo.SetOtherFoo.entry
-			00: t0 = &f.OtherFoo [#2]
-			01: *t0 = other
-			02: return
-	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooService
-	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, error)
-	Method: func(ctx context.Context, id string, text string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, error)
+Function: foobar.main
+Block #0: foobar.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewBarServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.WriteBar(t0, "":string, "":string)
+			05: return
 		Parameters:
 			ctx = parameter ctx : context.Context
 			fooDb = parameter fooDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
@@ -246,19 +137,22 @@ Block #0: foobar.NewFooServiceImpl.entry
 	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
 	Method: func(ctx context.Context, id string, fooText string, barText string) (string, error)
 		Parameters:
-			ctx = parameter ctx : context.Context
-			fooService = parameter fooService : FooService
-			barService = parameter barService : BarService
-Function: foobar.NewFrontendImpl
-Block #0: foobar.NewFrontendImpl.entry
-			00: t0 = new FrontendImpl (complit)
-			01: t1 = &t0.fooService [#1]
-			02: t2 = &t0.barService [#0]
-			03: *t1 = fooService
-			04: *t2 = barService
-			05: t3 = make Frontend <- *FrontendImpl (t0)
-			06: return t3, nil:error
-	Global: init$guard, Type: *bool
+			s = parameter s : string
+Function: foobar.StringToInt64
+Block #0: foobar.StringToInt64.entry
+			00: t0 = strconv.ParseInt(s, 10:int, 64:int)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: foobar.StringToInt64.if.then
+			00: return 0:int64, t2
+Block #2: foobar.StringToInt64.if.done
+			00: return t1, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar
+	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.BarService
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
+	Method: func(ctx context.Context, id string, text string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
 	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooServiceImpl
 	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, error)
 		Parameters:
@@ -340,23 +234,124 @@ Block #3: foobar.FooService.WriteFoo.if.then
 Block #4: foobar.FooService.WriteFoo.if.done
 			00: t13 = *t6
 			01: return t13, nil:error
-	Unknown member type: *ssa.NamedConst
 		Parameters:
 			i = parameter i : int64
 Function: foobar.Int64ToString
 Block #0: foobar.Int64ToString.entry
 			00: t0 = strconv.FormatInt(i, 10:int)
 			01: return t0
+	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo
+	Method: func() string
 		Parameters:
-			s = parameter s : string
-Function: foobar.StringToInt64
-Block #0: foobar.StringToInt64.entry
-			00: t0 = strconv.ParseInt(s, 10:int, 64:int)
-			01: t1 = extract t0 #0
-			02: t2 = extract t0 #1
-			03: t3 = t2 != nil:error
-			04: if t3 goto 1 else 2
-Block #1: foobar.StringToInt64.if.then
-			00: return 0:int64, t2
-Block #2: foobar.StringToInt64.if.done
-			00: return t1, nil:error
+			f = parameter f : *Foo
+Function: foobar.Foo.GetID
+Block #0: foobar.Foo.GetID.entry
+			00: t0 = &f.FooID [#0]
+			01: t1 = *t0
+			02: return t1
+	Method: func() *github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo
+		Parameters:
+			f = parameter f : *Foo
+Function: foobar.Foo.GetOtherFoo
+Block #0: foobar.Foo.GetOtherFoo.entry
+			00: t0 = &f.OtherFoo [#2]
+			01: t1 = *t0
+			02: return t1
+	Method: func(other *github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo)
+		Parameters:
+			f = parameter f : *Foo
+			other = parameter other : *Foo
+Function: foobar.Foo.SetOtherFoo
+Block #0: foobar.Foo.SetOtherFoo.entry
+			00: t0 = &f.OtherFoo [#2]
+			01: *t0 = other
+			02: return
+	Type: github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FrontendImpl
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo, github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar, error)
+		Parameters:
+			d = parameter d : *FrontendImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: foobar.Frontend.ReadFooBar
+Block #0: foobar.Frontend.ReadFooBar.entry
+			00: t0 = &d.fooService [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.ReadFoo(ctx, id)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = &d.barService [#0]
+			06: t6 = *t5
+			07: t7 = invoke t6.ReadBar(ctx, id)
+			08: t8 = extract t7 #0
+			09: t9 = extract t7 #1
+			10: t10 = t4 != nil:error
+			11: if t10 goto 1 else 2
+Block #1: foobar.Frontend.ReadFooBar.if.then
+			00: return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t4
+Block #2: foobar.Frontend.ReadFooBar.if.done
+			00: t11 = t9 != nil:error
+			01: if t11 goto 3 else 4
+Block #3: foobar.Frontend.ReadFooBar.if.then
+			00: return struct{FooID string; Text string; OtherFoo *Foo}{}:Foo, struct{BarID string; Text string}{}:Bar, t9
+Block #4: foobar.Frontend.ReadFooBar.if.done
+			00: return t3, t8, nil:error
+	Method: func(ctx context.Context, id string, fooText string, barText string) (string, error)
+		Parameters:
+			d = parameter d : *FrontendImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+			fooText = parameter fooText : string
+			barText = parameter barText : string
+Function: foobar.Frontend.WriteFooBar
+Block #0: foobar.Frontend.WriteFooBar.entry
+			00: t0 = local Foo (foo)
+			01: t1 = &d.fooService [#1]
+			02: t2 = *t1
+			03: t3 = invoke t2.WriteFoo(ctx, id, fooText)
+			04: t4 = extract t3 #0
+			05: *t0 = t4
+			06: t5 = extract t3 #1
+			07: t6 = local Bar (bar)
+			08: t7 = &d.barService [#0]
+			09: t8 = *t7
+			10: t9 = invoke t8.WriteBar(ctx, id, barText)
+			11: t10 = extract t9 #0
+			12: *t6 = t10
+			13: t11 = extract t9 #1
+			14: t12 = t5 != nil:error
+			15: if t12 goto 1 else 2
+Block #1: foobar.Frontend.WriteFooBar.if.then
+			00: return "":string, t5
+Block #2: foobar.Frontend.WriteFooBar.if.done
+			00: t13 = t11 != nil:error
+			01: if t13 goto 3 else 4
+Block #3: foobar.Frontend.WriteFooBar.if.then
+			00: return "":string, t11
+Block #4: foobar.Frontend.WriteFooBar.if.done
+			00: t14 = &t0.Text [#1]
+			01: t15 = *t14
+			02: t16 = &t6.Text [#1]
+			03: t17 = *t16
+			04: t18 = new [2]any (varargs)
+			05: t19 = &t18[0:int]
+			06: t20 = make any <- string (t15)
+			07: *t19 = t20
+			08: t21 = &t18[1:int]
+			09: t22 = make any <- string (t17)
+			10: *t21 = t22
+			11: t23 = slice t18[:]
+			12: t24 = fmt.Sprintf("%s, %s":string, t23...)
+			13: return t24, nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			fooService = parameter fooService : FooService
+			barService = parameter barService : BarService
+Function: foobar.NewFrontendImpl
+Block #0: foobar.NewFrontendImpl.entry
+			00: t0 = new FrontendImpl (complit)
+			01: t1 = &t0.fooService [#1]
+			02: t2 = &t0.barService [#0]
+			03: *t1 = fooService
+			04: *t2 = barService
+			05: t3 = make Frontend <- *FrontendImpl (t0)
+			06: return t3, nil:error

@@ -583,10 +583,10 @@ t7 (@StorePost): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl).Follow ###
+s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
 t0 (@Follow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@Follow): (*ssa.Alloc)
-
-s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -644,10 +644,10 @@ t31 (@Follow): (*ssa.UnOp) (*t18)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow/socialnetwork.SocialGraphServiceImpl).FollowWithUsername ###
-s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
-
 t0 (@FollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@FollowWithUsername): (*ssa.Alloc)
+
+s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@FollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1976,9 +1976,9 @@ t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
 	 → t20 (@Sum): (*ssa.Call)
 	 → t23 (@Sum): (*ssa.Call)
 	 → t5 (@Sum): (*ssa.Call)
+	 → t6 (@Sum): (*ssa.Call)
 	 → t8 (@Sum): (*ssa.Call)
 	 → t10 (@Sum): (*ssa.Call)
-	 → t6 (@Sum): (*ssa.Call)
 	 → t31 (@sign): (*ssa.Alloc)
 	 → t58 (@sign): (*ssa.Alloc)
 	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice)

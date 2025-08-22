@@ -50,28 +50,12 @@ _obj.FooID
 _obj.Text
 [write, primary] @ foo_db.foo.Text
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_ReadFooBar [label="Frontend.ReadFooBar
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.id
-
-
-==== ret 2 (error) tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t5
-", style=bold, shape=box, color="blue"];
-		N_FooService_ReadFoo [label="FooService.ReadFoo
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ foo_db.foo.FooID
-", style=bold, shape=box, color="blue"];
 		N_BarService_WriteBar [label="BarService.WriteBar
 
 ==== param 0 (id) tainted ====
 _obj
 [write, primary] @ bar_db.bar.BarID
+[write, secondary] @ foo_db.foo.FooID
 
 
 ==== param 1 (text) tainted ====
@@ -87,17 +71,36 @@ _obj.BarID
 _obj.Text
 [write, primary] @ bar_db.bar.Text
 ", style=bold, shape=box, color="blue"];
+		N_Frontend_ReadFooBar [label="Frontend.ReadFooBar
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ FooService.ReadFoo.id
+[rpc] @ BarService.ReadBar.id
+
+
+==== ret 2 (error) tainted ====
+_obj
+[rpc] @ FooService.ReadFoo.t4
+", style=bold, shape=box, color="blue"];
+		N_FooService_ReadFoo [label="FooService.ReadFoo
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ foo_db.foo.FooID
+", style=bold, shape=box, color="blue"];
 		N_BarService_ReadBar [label="BarService.ReadBar
 
 ==== param 0 (id) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
+[read, secondary] @ foo_db.foo.FooID
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_foo_db_foo [label="foo_db.foo", style=bold, shape=cylinder, color="green"];
 		N_bar_db_bar [label="bar_db.bar", style=bold, shape=cylinder, color="green"];
+		N_foo_db_foo [label="foo_db.foo", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Frontend_WriteFooBar [label="WriteFooBar()", color=orange];
 	N_Frontend_WriteFooBar -> N_FooService_WriteFoo [label="WriteFoo()
@@ -189,38 +192,38 @@ _obj.Text
 ==== arg 0 (id) tainted ====
 _obj
 [read, secondary] @ foo_db.foo.FooID
+[read, traced] @ bar_db.bar.BarID
 [rpc] @ FooService.ReadFoo.id
+[rpc] @ BarService.ReadBar.id
 
 
-==== ret 0 (t4) tainted ====
+==== ret 0 (t3) tainted ====
+_obj
+[rpc] @ FooService.ReadFoo.t3
+
+
+==== ret 1 (t4) tainted ====
 _obj
 [rpc] @ FooService.ReadFoo.t4
-_obj.FooID
-[rpc] @ FooService.ReadFoo.t4.FooID
-[rpc] @ BarService.ReadBar.t9
-
-
-==== ret 1 (t5) tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t5
 ", color=blue];
 	N_Frontend_ReadFooBar -> N_BarService_ReadBar [label="ReadBar()
 
-==== arg 0 (t9) tainted ====
+==== arg 0 (id) tainted ====
 _obj
+[read, traced] @ foo_db.foo.FooID
 [read, secondary] @ bar_db.bar.BarID
-[rpc] @ FooService.ReadFoo.t4.FooID
+[rpc] @ FooService.ReadFoo.id
+[rpc] @ BarService.ReadBar.id
+
+
+==== ret 0 (t8) tainted ====
+_obj
+[rpc] @ BarService.ReadBar.t8
+
+
+==== ret 1 (t9) tainted ====
+_obj
 [rpc] @ BarService.ReadBar.t9
-
-
-==== ret 0 (t11) tainted ====
-_obj
-[rpc] @ BarService.ReadBar.t11
-
-
-==== ret 1 (t12) tainted ====
-_obj
-[rpc] @ BarService.ReadBar.t12
 ", color=blue];
 	N_FooService_ReadFoo -> N_foo_db_foo [label="FindOne()
 
@@ -239,12 +242,12 @@ _obj
 [read, primary] @ foo_db.foo.FooID
 
 
-==== arg 3 (t8) tainted ====
+==== arg 3 (t10) tainted ====
 _obj
 [read, primary] @ foo_db.foo.FooID
 
 
-==== arg 4 (t10) tainted ====
+==== arg 4 (t8) tainted ====
 _obj
 [read, primary] @ foo_db.foo.FooID
 ", color=green];
@@ -253,25 +256,30 @@ _obj
 ==== arg 0 (t7) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
+[read, secondary] @ foo_db.foo.FooID
 
 
-==== arg 1 (t9) tainted ====
+==== arg 1 (t8) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
+[read, secondary] @ foo_db.foo.FooID
 
 
-==== arg 2 (t8) tainted ====
+==== arg 2 (t12) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
+[read, secondary] @ foo_db.foo.FooID
 
 
-==== arg 3 (t12) tainted ====
+==== arg 3 (t10) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
+[read, secondary] @ foo_db.foo.FooID
 
 
-==== arg 4 (t10) tainted ====
+==== arg 4 (t9) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
+[read, secondary] @ foo_db.foo.FooID
 ", color=green];
 }

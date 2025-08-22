@@ -1,3 +1,10 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
+entry request: Frontend.ReadFooBar
+	FOREIGN KEY READS #0:
+		READ 1: (BarService.ReadBar) --> (bar_db.bar).FindOne(...)
+			- read field: bar_db.bar.BarID
+				- constraint #0: FOREIGN_KEY bar_db.bar.BarID REFERENCES foo_db.foo.FooID [MANDATORY]
+		READ 2: (FooService.ReadFoo) --> (foo_db.foo).FindOne(...)
+			- read field: foo_db.foo.FooID

@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2821434 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2821434 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2821456 [label="t2: invoke t1.Get(ctx, itemID)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2794692 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2794692 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2794714 [label="t2: invoke t1.Get(ctx, itemID)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,22 +15,22 @@ _obj
 _obj
 [rpc] @ CatalogueService.Get.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_2821443 [label="t0: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2821356 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2821381 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2821402 [label="itemID: parameter itemID : string
+	N_val_field_2794701 [label="t0: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2794614 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2794639 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2794660 [label="itemID: parameter itemID : string
 
 ==== tainted ====
 _obj
 [rpc] @ CatalogueService.Get.itemID
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2821443 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2821356 -> N_val_field_2821443;
-	N_val_field_2821443 -> N_val_unary_2821443;
-	N_val_param_2821381 -> N_val_call_2821456;
-	N_val_param_2821402 -> N_val_call_2821456;
-	N_val_call_2821456 -> N_val_extrt3;
-	N_val_call_2821456 -> N_val_extrt4;
-	N_val_extrt3 -> N_instr_ret_2821434;
-	N_val_extrt4 -> N_instr_ret_2821434;
+	N_val_unary_2794701 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2794614 -> N_val_field_2794701;
+	N_val_field_2794701 -> N_val_unary_2794701;
+	N_val_param_2794639 -> N_val_call_2794714;
+	N_val_param_2794660 -> N_val_call_2794714;
+	N_val_call_2794714 -> N_val_extrt3;
+	N_val_call_2794714 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_2794692;
+	N_val_extrt4 -> N_instr_ret_2794692;
 }

@@ -8,28 +8,28 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_GeoService_Nearby [label="GeoService.Nearby", style=bold, shape=box, color="blue"];
+		N_ReservationService_CheckAvailability [label="ReservationService.CheckAvailability", style=bold, shape=box, color="blue"];
+		N_RecommendationService_GetRecommendations [label="RecommendationService.GetRecommendations", style=bold, shape=box, color="blue"];
+		N_FrontEndService_ReservationHandler [label="FrontEndService.ReservationHandler", style=bold, shape=box, color="blue"];
+		N_SearchService_Nearby [label="SearchService.Nearby", style=bold, shape=box, color="blue"];
+		N_ProfileService_GetProfiles [label="ProfileService.GetProfiles", style=bold, shape=box, color="blue"];
 		N_RateService_GetRates [label="RateService.GetRates", style=bold, shape=box, color="blue"];
 		N_FrontEndService_UserHandler [label="FrontEndService.UserHandler", style=bold, shape=box, color="blue"];
-		N_SearchService_Nearby [label="SearchService.Nearby", style=bold, shape=box, color="blue"];
-		N_FrontEndService_RecommendHandler [label="FrontEndService.RecommendHandler", style=bold, shape=box, color="blue"];
-		N_ReservationService_CheckAvailability [label="ReservationService.CheckAvailability", style=bold, shape=box, color="blue"];
-		N_ProfileService_GetProfiles [label="ProfileService.GetProfiles", style=bold, shape=box, color="blue"];
-		N_RecommendationService_GetRecommendations [label="RecommendationService.GetRecommendations", style=bold, shape=box, color="blue"];
-		N_UserService_CheckUser [label="UserService.CheckUser", style=bold, shape=box, color="blue"];
-		N_FrontEndService_ReservationHandler [label="FrontEndService.ReservationHandler", style=bold, shape=box, color="blue"];
-		N_FrontEndService_SearchHandler [label="FrontEndService.SearchHandler", style=bold, shape=box, color="blue"];
 		N_ReservationService_MakeReservation [label="ReservationService.MakeReservation", style=bold, shape=box, color="blue"];
+		N_FrontEndService_RecommendHandler [label="FrontEndService.RecommendHandler", style=bold, shape=box, color="blue"];
+		N_UserService_CheckUser [label="UserService.CheckUser", style=bold, shape=box, color="blue"];
+		N_FrontEndService_SearchHandler [label="FrontEndService.SearchHandler", style=bold, shape=box, color="blue"];
+		N_GeoService_Nearby [label="GeoService.Nearby", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
 		N_profile_cache_* [label="profile_cache.*", style=bold, shape=cylinder, color="green"];
+		N_reservation_db_number [label="reservation_db.number", style=bold, shape=cylinder, color="green"];
+		N_profile_db_hotels [label="profile_db.hotels", style=bold, shape=cylinder, color="green"];
 		N_reservation_db_reservation [label="reservation_db.reservation", style=bold, shape=cylinder, color="green"];
 		N_reserv_cache_* [label="reserv_cache.*", style=bold, shape=cylinder, color="green"];
 		N_reserv_cache__cap [label="reserv_cache._cap", style=bold, shape=cylinder, color="green"];
-		N_profile_db_hotels [label="profile_db.hotels", style=bold, shape=cylinder, color="green"];
 		N_rate_cache_* [label="rate_cache.*", style=bold, shape=cylinder, color="green"];
-		N_reservation_db_number [label="reservation_db.number", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_FrontEndService_SearchHandler [label="SearchHandler()", color=orange];
 	N_FrontEndService_SearchHandler -> N_SearchService_Nearby [label="Nearby()", color=blue];

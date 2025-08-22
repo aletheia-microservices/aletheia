@@ -185,6 +185,14 @@ func (obj *AbstractObject) GetSecondaryTaints() map[string][]*AbstractTaint {
 	return obj.taints
 }
 
+func (obj *AbstractObject) GetAllTaintsFlatList() []*AbstractTaint {
+	var lst []*AbstractTaint
+	for _, taints := range obj.taints {
+		lst = append(lst, taints...)
+	}
+	return lst
+}
+
 func (obj *AbstractObject) GetPrimaryTaintsFlatList() []*AbstractTaint {
 	var lst []*AbstractTaint
 	for _, taints := range obj.taints {

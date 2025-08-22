@@ -13,11 +13,13 @@ digraph G {
 ==== param 1 (movieID) tainted ====
 _obj
 [write, primary] @ movieinfo_db.movieinfo.movieid
+[write, secondary] @ movieid_db.movieid.movieid
 
 
 ==== param 2 (title) tainted ====
 _obj
 [write, primary] @ movieinfo_db.movieinfo.title
+[write, secondary] @ movieid_db.movieid.title
 
 
 ==== param 3 (castID) tainted ====
@@ -40,27 +42,48 @@ _obj.plotid
 _obj.title
 [write, primary] @ movieinfo_db.movieinfo.title
 ", style=bold, shape=box, color="blue"];
+		N_APIService_ReadPage [label="APIService.ReadPage
+
+==== param 0 (reqID) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.reqID
+[rpc] @ MovieInfoService.ReadMovieInfo.reqID
+[rpc] @ CastInfoService.ReadCastInfo.reqID
+[rpc] @ PlotService.ReadPlot.reqID
+
+
+==== param 1 (movieID) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.movieID
+
+
+==== ret 4 (error) tainted ====
+_obj
+[rpc] @ MovieIdService.ReadMovieId.t5
+", style=bold, shape=box, color="blue"];
+		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
+
+==== param 1 (movieID) tainted ====
+_obj
+[read, primary] @ movieinfo_db.movieinfo.movieid
+[read, secondary] @ movieid_db.movieid.movieid
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo) tainted ====
+_obj
+[read, primary] @ movieinfo_db.movieinfo
+", style=bold, shape=box, color="blue"];
 		N_CastInfoService_ReadCastInfo [label="CastInfoService.ReadCastInfo
 
 ==== param 1 (castInfoID) tainted ====
 _obj
 [read, primary] @ castinfo_db.castinfo.castinfoid
+[read, secondary] @ movieinfo_db.movieinfo.plotid
 
 
 ==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo) tainted ====
 _obj
 [read, primary] @ castinfo_db.castinfo
-", style=bold, shape=box, color="blue"];
-		N_PlotService_ReadPlot [label="PlotService.ReadPlot
-
-==== param 1 (PlotID) tainted ====
-_obj
-[read, primary] @ plot_db.plot.Plotid
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot) tainted ====
-_obj
-[read, primary] @ plot_db.plot
 ", style=bold, shape=box, color="blue"];
 		N_APIService_RegisterMovie [label="APIService.RegisterMovie
 
@@ -119,11 +142,46 @@ _obj
 _obj
 [rpc] @ MovieIdService.RegisterMovieId.t6
 ", style=bold, shape=box, color="blue"];
+		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+
+
+==== param 2 (title) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.title
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
+_obj.movieid
+[write, primary] @ movieid_db.movieid.movieid
+_obj.title
+[write, primary] @ movieid_db.movieid.title
+
+
+==== ret 1 (string) tainted ====
+_obj
+[write, primary] @ movieid_db.movieid.movieid
+", style=bold, shape=box, color="blue"];
+		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
+
+==== param 1 (movieID) tainted ====
+_obj
+[read, primary] @ movieid_db.movieid.movieid
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
+_obj
+[read, primary] @ movieid_db.movieid
+", style=bold, shape=box, color="blue"];
 		N_CastInfoService_WriteCastInfo [label="CastInfoService.WriteCastInfo
 
 ==== param 1 (castInfoID) tainted ====
 _obj
 [write, primary] @ castinfo_db.castinfo.castinfoid
+[write, secondary] @ movieinfo_db.movieinfo.castid
 
 
 ==== param 2 (name) tainted ====
@@ -151,11 +209,24 @@ _obj.intro
 _obj.name
 [write, primary] @ castinfo_db.castinfo.name
 ", style=bold, shape=box, color="blue"];
+		N_PlotService_ReadPlot [label="PlotService.ReadPlot
+
+==== param 1 (PlotID) tainted ====
+_obj
+[read, primary] @ plot_db.plot.Plotid
+[read, secondary] @ movieinfo_db.movieinfo.plotid
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot) tainted ====
+_obj
+[read, primary] @ plot_db.plot
+", style=bold, shape=box, color="blue"];
 		N_PlotService_WritePlot [label="PlotService.WritePlot
 
 ==== param 1 (plotID) tainted ====
 _obj
 [write, primary] @ plot_db.plot.plotid
+[write, secondary] @ movieinfo_db.movieinfo.plotid
 
 
 ==== param 2 (plotText) tainted ====
@@ -169,77 +240,13 @@ _obj.plot
 _obj.plotid
 [write, primary] @ plot_db.plot.plotid
 ", style=bold, shape=box, color="blue"];
-		N_APIService_ReadPage [label="APIService.ReadPage
-
-==== param 0 (reqID) tainted ====
-_obj
-[rpc] @ MovieIdService.ReadMovieId.reqID
-[rpc] @ MovieInfoService.ReadMovieInfo.reqID
-[rpc] @ CastInfoService.ReadCastInfo.reqID
-[rpc] @ PlotService.ReadPlot.reqID
-
-
-==== param 1 (movieID) tainted ====
-_obj
-[rpc] @ MovieIdService.ReadMovieId.movieID
-
-
-==== ret 4 (error) tainted ====
-_obj
-[rpc] @ MovieIdService.ReadMovieId.t5
-", style=bold, shape=box, color="blue"];
-		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo
-
-==== param 1 (movieID) tainted ====
-_obj
-[read, primary] @ movieinfo_db.movieinfo.movieid
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo) tainted ====
-_obj
-[read, primary] @ movieinfo_db.movieinfo
-", style=bold, shape=box, color="blue"];
-		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId
-
-==== param 1 (movieID) tainted ====
-_obj
-[read, primary] @ movieid_db.movieid.movieid
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
-_obj
-[read, primary] @ movieid_db.movieid
-", style=bold, shape=box, color="blue"];
-		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId
-
-==== param 1 (movieID) tainted ====
-_obj
-[write, primary] @ movieid_db.movieid.movieid
-
-
-==== param 2 (title) tainted ====
-_obj
-[write, primary] @ movieid_db.movieid.title
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId) tainted ====
-_obj.movieid
-[write, primary] @ movieid_db.movieid.movieid
-_obj.title
-[write, primary] @ movieid_db.movieid.title
-
-
-==== ret 1 (string) tainted ====
-_obj
-[write, primary] @ movieid_db.movieid.movieid
-", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
+		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
 		N_plot_db_plot [label="plot_db.plot", style=bold, shape=cylinder, color="green"];
 		N_movieid_db_movieid [label="movieid_db.movieid", style=bold, shape=cylinder, color="green"];
 		N_castinfo_db_castinfo [label="castinfo_db.castinfo", style=bold, shape=cylinder, color="green"];
-		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_APIService_RegisterMovie [label="RegisterMovie()", color=orange];
 	N_APIService_RegisterMovie -> N_MovieIdService_RegisterMovieId [label="RegisterMovieId()
@@ -505,7 +512,6 @@ _obj
 [write, primary] @ plot_db.plot.plot
 _objid
 [write, secondary] @ movieinfo_db.movieinfo.plotid
-[write, secondary] @ plot_db.plot.plotid
 ", color=green];
 	N_client -> N_APIService_ReadPage [label="ReadPage()", color=orange];
 	N_APIService_ReadPage -> N_MovieIdService_ReadMovieId [label="ReadMovieId()
@@ -635,8 +641,6 @@ _obj
 ==== arg 1 (t3) tainted ====
 _obj
 [read, primary] @ movieid_db.movieid
-_obj.movieid
-[read, secondary] @ movieid_db.movieid.movieid
 ", color=green];
 	N_MovieInfoService_ReadMovieInfo -> N_movieinfo_db_movieinfo [label="Select()
 
@@ -651,8 +655,6 @@ _obj
 [read, primary] @ movieinfo_db.movieinfo
 _obj.movieid
 [read, secondary] @ movieid_db.movieid.movieid
-_obj.plotid
-[read, secondary] @ movieinfo_db.movieinfo.plotid
 ", color=green];
 	N_CastInfoService_ReadCastInfo -> N_castinfo_db_castinfo [label="Select()
 
