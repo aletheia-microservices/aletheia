@@ -31,6 +31,18 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
 }
 
+var APPS_ENTRYPOINTS_PATHS = map[string]string{
+	"foobar":                  "blueprint/foobar/fooservice_writefoo",
+	"postnotification":        "blueprint/postnotification/notifyservice_run",
+	"postnotification_simple": "blueprint/postnotification/notifyservice_run",
+	"digota":                  "blueprint/digota/skuservice_get",
+	"sockshop3":               "blueprint/sockshop3/userservice_login",
+	"dsb_media_sql":           "blueprint/dsb_media_sql/api_readmovie",
+	"dsb_sn":                  "blueprint/dsb_sn/poststorageservice_storepost",
+	"dsb_hotel2":              "blueprint/dsb_hotel2/geoservice_nearby",
+	"train_ticket2":           "blueprint/train_ticket2/assuranceservice_deletebyid",
+}
+
 var APPS_SQL_TABLES = map[string][]string{
 	// key is the name of the app
 	// value is a list of <database_name>:<sql_filepath>
@@ -40,6 +52,14 @@ var APPS_SQL_TABLES = map[string][]string{
 		"castinfo_db:../../blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/castinfo.sql",
 		"plot_db:../../blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/plot.sql",
 	},
+}
+
+func GetAppEntrypointPath(appsimplename string) string {
+	if path, ok := APPS_ENTRYPOINTS_PATHS[appsimplename]; ok {
+		return path
+	}
+	log.Fatalf("[UTILS] entrypoint path not found for appsimplename (%s)", appsimplename)
+	return ""
 }
 
 func IsAppPackagePath(pkgpath string) bool {

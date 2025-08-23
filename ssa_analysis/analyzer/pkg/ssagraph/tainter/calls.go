@@ -17,48 +17,16 @@ import (
 
 const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
 
-var BLUEPRINT_BACKEND_QUEUE_CALLS = []string{"Push", "Pop"}
-var BLUEPRINT_BACKEND_NOSQLDATABASE_CALLS = []string{"GetCollection"}
-var BLUEPRINT_BACKEND_NOSQLCOLLECTION_CALLS = []string{"InsertOne", "FindOne", "DeleteOne"}
-var BLUEPRINT_BACKEND_RELATIONALDB_CALLS = []string{"Exec", "Select"}
-var BLUEPRINT_BACKEND_CACHE_CALLS = []string{"Get", "Put"}
+var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
+var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
+var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne"}
+var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One"}
+var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select"}
+var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put"}
 
 type ValFieldPath struct {
 	val       ssa.Value
 	fieldpath string
-}			
-
-func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) bool {
-	if alloc, ok := val.(*ssa.Alloc); ok {
-		if ptr, ok := alloc.Type().(*types.Pointer); ok {
-			if array, ok := ptr.Elem().Underlying().(*types.Array); ok {
-				if named, ok := array.Elem().(*types.Named); ok {
-					// this is the real type
-					// go.mongodb.org/mongo-driver/bson/primitive.E
-					if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "E" {
-						return true
-					}
-				}
-			}
-		}
-	} else if slice, ok := val.(*ssa.Slice); ok {
-		if named, ok := slice.Type().(*types.Named); ok {
-			// this is the alias type
-			// go.mongodb.org/mongo-driver/bson/primitive.D
-			if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "D" {
-				return true
-			}
-		}
-		// should lead to the same result but just do it because why not
-		return ssaValueIsUsedInMongoBsonFilter(graph, slice.X)
-	} else {
-		for _, edge := range graph.GetEdgesTypedFrom(graph.GetNodeByName(val.Name()), ssagraph.EDGE_POINTS_TO) {
-			if ssaValueIsUsedInMongoBsonFilter(graph, edge.GetToNode().GetValue()) {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
@@ -129,116 +97,6 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 	return "", "", "", -1, nil, false
 }
 
-func isBlueprintNoSQLDatabaseCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) bool {
-	if typeNamed, ok := unOp.Type().(*types.Named); ok {
-		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLDatabase" {
-			if !slices.Contains(BLUEPRINT_BACKEND_NOSQLDATABASE_CALLS, call.Call.Method.Name()) {
-				return false
-			}
-			// call for NoSQLDatabase.GetCollection(...)
-			// skip for now
-			return true
-		}
-	}
-	return false
-}
-
-// TODO: get database name (not the db name of mongodb!)
-func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (string, string, common.DatabaseOperationType, []ValFieldPath, bool) {
-	var opType common.DatabaseOperationType
-	if typeNamed, ok := extr.Type().(*types.Named); ok {
-		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCollection" {
-			if !slices.Contains(BLUEPRINT_BACKEND_NOSQLCOLLECTION_CALLS, call.Call.Method.Name()) {
-				return "", "", -1, nil, false
-			}
-
-			switch call.Call.Method.Name() {
-			case "FindOne":
-				opType = common.OP_READ
-			case "InsertOne":
-				opType = common.OP_WRITE
-			case "DeleteOne":
-				opType = common.OP_DELETE
-			default:
-				log.Fatalf("unknown method name for queue call: %s\n", call.String())
-			}
-
-			// e.g.
-			// t29 = invoke t28.GetCollection(ctx, "posts_db":string, "post":string)
-			// t30 = extract t29 #0
-			// t34 = invoke t30.InsertOne(ctx, t33)
-			if ssaExtract, ok := call.Call.Value.(*ssa.Extract); ok {
-				if ssaCall, ok := ssaExtract.Tuple.(*ssa.Call); ok {
-					databaseVal := ssaCall.Call.Args[1]
-					collectionVal := ssaCall.Call.Args[2]
-					database, _ := utils.ExtractStringFromValue(databaseVal)
-					collection, _ := utils.ExtractStringFromValue(collectionVal)
-
-					// sanity check
-					// keep this while database logic is not complete
-					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("database (%s) extracted from value (%s) not found for app with databases: %v", database, databaseVal.String(), graph.GetApp().GetAllDatabases())
-					}
-
-					var valFieldPathLst []ValFieldPath
-
-					if opType == common.OP_WRITE {
-						docVal := call.Call.Args[1]
-						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-							val: docVal, 
-							fieldpath: database + "." + collection,
-						})
-					} else { 
-						//e.g., Digota: SkuService.Get()
-						filterVal := call.Call.Args[1]
-						filterKeyToValues := make(map[string][]ssa.Value, 1)
-
-						if slice, ok := filterVal.(*ssa.Slice); ok && ssaValueIsUsedInMongoBsonFilter(graph, slice) {
-							var vals []ssa.Value
-							var filterKey string
-
-							targetNode := graph.GetNodeByName(slice.X.Name())
-							vals = append(vals, targetNode.GetValue())
-
-							for _, edge := range graph.GetEdgesTypedTo(targetNode, ssagraph.EDGE_POINTS_TO) {
-								vals = append(vals, edge.GetFromNode().GetValue())
-								
-								if edge.GetPath() == "[*].Key" {
-									keyFieldNode := edge.GetFromNode()
-									for _, edge := range graph.GetEdgesTypedFrom(keyFieldNode, ssagraph.EDGE_STORE_ADDRESS) {
-										storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
-										filterKey, _ = utils.ExtractStringFromValue(storeInstr.Val)
-									}
-								}
-							}
-							filterKeyToValues[filterKey] = vals
-						}
-
-						for filter, vals := range filterKeyToValues {
-							for _, val := range vals {
-								fieldpath := database + "." + collection + "." + filter
-								valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-									val: val, 
-									fieldpath: fieldpath,
-								})
-								/* fmt.Printf("FIELDPATH = (%s) // VAL = (%s)\n", fieldpath, val.String()) */
-							}
-						}
-	
-						/* if database == "skus_db" && opType == common.OP_READ {
-							log.Fatal("EXIT!")
-						} */
-					}
-
-
-					return database, collection, opType, valFieldPathLst, true
-				}
-			}
-		}
-	}
-	return "", "", -1, nil, false
-}
-
 // example:
 // t3 = &m.movieIdDB [#0]
 // t4 = *t3
@@ -257,7 +115,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 	var opType common.DatabaseOperationType
 	if typeNamed, ok := unOp.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".RelationalDB" {
-			if !slices.Contains(BLUEPRINT_BACKEND_RELATIONALDB_CALLS, call.Call.Method.Name()) {
+			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_RELATIONALDB, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
 			fmt.Printf("[CALLS RELATIONALDB] found RelationalDB call: %v\n", call)
@@ -271,7 +129,6 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				log.Fatalf("unknown method name for queue call: %s\n", call.String())
 			}
 
-			
 			var dstVal, stmtVal, sliceArgsVal ssa.Value
 			if opType == common.OP_READ {
 				// e.g., Select(ctx, &movieId, "SELECT * FROM movieid WHERE movieid = ?", movieID)
@@ -372,7 +229,7 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 	var opType common.DatabaseOperationType
 	if typeNamed, ok := unOp.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".Queue" {
-			if !slices.Contains(BLUEPRINT_BACKEND_QUEUE_CALLS, call.Call.Method.Name()) {
+			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_QUEUE, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
 
@@ -404,7 +261,7 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 	var opType common.DatabaseOperationType
 	if typeNamed, ok := unOp.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".Cache" {
-			if !slices.Contains(BLUEPRINT_BACKEND_CACHE_CALLS, call.Call.Method.Name()) {
+			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_CACHE, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
 
@@ -458,6 +315,206 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 	return "", "", -1, nil, false
 }
 
+func isBlueprintNoSQLDatabaseCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) bool {
+	if typeNamed, ok := unOp.Type().(*types.Named); ok {
+		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLDatabase" {
+			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE, call.Call.Method.Name()) {
+				return false
+			}
+			// call for NoSQLDatabase.GetCollection(...)
+			// skip for now
+			return true
+		}
+	}
+	return false
+}
+
+// e.g.
+// cursor, err := collection.FindOne(ctx, query)
+func isBlueprintNoSQLCursorCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (ssa.Value, bool) {
+	if typeNamed, ok := extr.Type().(*types.Named); ok {
+		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCursor" {
+			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR, call.Call.Method.Name()) {
+				return nil, false
+			}
+			dst := call.Call.Args[1]
+
+			// just to be more precise
+			// e.g., FooBar: FooService.ReadFoo()
+			// t0: new Foo
+			// t17: make interface{} <- *Foo (t0)
+			// t18: invoke t14.One(ctx, t17)
+			if iface, ok := dst.(*ssa.MakeInterface); ok {
+				return iface.X, true
+			}
+
+			// return original dst value
+			return dst, true
+		}
+	}
+	return nil, false
+}
+
+// TODO: get database name (not the db name of mongodb!)
+func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (string, string, common.DatabaseOperationType, []ValFieldPath, bool) {
+	var opType common.DatabaseOperationType
+	if typeNamed, ok := extr.Type().(*types.Named); ok {
+		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCollection" {
+			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION, call.Call.Method.Name()) {
+				return "", "", -1, nil, false
+			}
+
+			switch call.Call.Method.Name() {
+			case "FindOne":
+				opType = common.OP_READ
+			case "InsertOne":
+				opType = common.OP_WRITE
+			case "DeleteOne":
+				opType = common.OP_DELETE
+			default:
+				log.Fatalf("unknown method name for queue call: %s\n", call.String())
+			}
+
+			// e.g.
+			// t29 = invoke t28.GetCollection(ctx, "posts_db":string, "post":string)
+			// t30 = extract t29 #0
+			// t34 = invoke t30.InsertOne(ctx, t33)
+			if ssaExtract, ok := call.Call.Value.(*ssa.Extract); ok {
+				if ssaCall, ok := ssaExtract.Tuple.(*ssa.Call); ok {
+					databaseVal := ssaCall.Call.Args[1]
+					collectionVal := ssaCall.Call.Args[2]
+					database, _ := utils.ExtractStringFromValue(databaseVal)
+					collection, _ := utils.ExtractStringFromValue(collectionVal)
+
+					// sanity check
+					// keep this while database logic is not complete
+					if !graph.GetApp().HasDatabase(database) {
+						log.Fatalf("database (%s) extracted from value (%s) not found for app with databases: %v", database, databaseVal.String(), graph.GetApp().GetAllDatabases())
+					}
+
+					var valFieldPathLst []ValFieldPath
+
+					if opType == common.OP_WRITE {
+						docVal := call.Call.Args[1]
+						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+							val:       docVal,
+							fieldpath: database + "." + collection,
+						})
+					} else { // reads, updates, or deletes
+						filterVal := call.Call.Args[1]
+						for filter, vals := range computeNoSQLFilterKeyToValues(graph, filterVal) {
+							for _, val := range vals {
+								fieldpath := database + "." + collection + "." + filter
+								valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+									val:       val,
+									fieldpath: fieldpath,
+								})
+							}
+						}
+					}
+
+					if opType == common.OP_READ {
+						for cursorCall, extr := range getNoSQLCursorCallsFromCollectionCall(graph, call) {
+							if dstVal, ok := isBlueprintNoSQLCursorCall(graph, cursorCall, extr); ok {
+								fieldpath := database + "." + collection
+								valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+									val:       dstVal,
+									fieldpath: fieldpath,
+								})
+							}
+						}
+					}
+
+					return database, collection, opType, valFieldPathLst, true
+				}
+			}
+		}
+	}
+	return "", "", -1, nil, false
+}
+
+func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonVal ssa.Value) map[string][]ssa.Value {
+	filterKeyToValues := make(map[string][]ssa.Value)
+	if slice, ok := bsonVal.(*ssa.Slice); ok && ssaValueIsUsedInMongoBsonFilter(graph, slice) {
+		var vals []ssa.Value
+		var filterKey string
+
+		targetNode := graph.GetNodeByName(slice.X.Name())
+		vals = append(vals, targetNode.GetValue())
+
+		for _, edge := range graph.GetEdgesTypedTo(targetNode, ssagraph.EDGE_POINTS_TO) {
+			vals = append(vals, edge.GetFromNode().GetValue())
+
+			if edge.GetPath() == "[*].Key" {
+				keyFieldNode := edge.GetFromNode()
+				for _, edge := range graph.GetEdgesTypedFrom(keyFieldNode, ssagraph.EDGE_STORE_ADDRESS) {
+					storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
+					filterKey, _ = utils.ExtractStringFromValue(storeInstr.Val)
+				}
+			}
+		}
+		filterKeyToValues[filterKey] = vals
+	}
+	return filterKeyToValues
+}
+
+func getNoSQLCursorCallsFromCollectionCall(graph *ssagraph.SSAGraph, collectionCall *ssa.Call) map[*ssa.Call]*ssa.Extract {
+	var cursorCalls = make(map[*ssa.Call]*ssa.Extract)
+	callNode := graph.GetNodeByName(collectionCall.Name())
+	for _, edge := range graph.GetEdgesFromNode(callNode) {
+		if edge.IsType(ssagraph.EDGE_EXTRACT) && edge.GetIndex() == 0 {
+			// e.g., FooBar: FooService.ReadFoo()
+			// cursor, err := collection.FindOne(ctx, query)
+			cursorNode := edge.GetToNode()
+			for _, edge := range graph.GetEdgesFromNode(cursorNode) {
+				if edge.IsType(ssagraph.EDGE_RECEIVER_ON_CALL) {
+					cursorCall := edge.GetToNode().GetValue().(*ssa.Call)
+
+					// checking if Call.Value is Extract is the standard for every NoSQL call
+					if extr, ok := cursorCall.Call.Value.(*ssa.Extract); ok {
+						cursorCalls[cursorCall] = extr
+					}
+				}
+			}
+			break
+		}
+	}
+	return cursorCalls
+}
+
+func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) bool {
+	if alloc, ok := val.(*ssa.Alloc); ok {
+		if ptr, ok := alloc.Type().(*types.Pointer); ok {
+			if array, ok := ptr.Elem().Underlying().(*types.Array); ok {
+				if named, ok := array.Elem().(*types.Named); ok {
+					// this is the real type
+					// go.mongodb.org/mongo-driver/bson/primitive.E
+					if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "E" {
+						return true
+					}
+				}
+			}
+		}
+	} else if slice, ok := val.(*ssa.Slice); ok {
+		if named, ok := slice.Type().(*types.Named); ok {
+			// this is the alias type
+			// go.mongodb.org/mongo-driver/bson/primitive.D
+			if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "D" {
+				return true
+			}
+		}
+		// should lead to the same result but just do it because why not
+		return ssaValueIsUsedInMongoBsonFilter(graph, slice.X)
+	} else {
+		for _, edge := range graph.GetEdgesTypedFrom(graph.GetNodeByName(val.Name()), ssagraph.EDGE_POINTS_TO) {
+			if ssaValueIsUsedInMongoBsonFilter(graph, edge.GetToNode().GetValue()) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // extractDatabaseNameFromUnOp can be used for RelationalDB and Queue calls
 // it cannot be used for NoSQLDatabase calls because the collection is extracted beforehand
 func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (string, bool) {
@@ -492,37 +549,4 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 		}
 	}
 	return "", false
-}
-
-// TODO
-func parseArgumentsForMongoDBFilter(graph *ssagraph.SSAGraph, bsonFilter ssa.Value) ([]ssa.Value, []string) {
-	var args []ssa.Value
-	var keys []string
-	bsonFilterNode := graph.GetNodeByName(bsonFilter.Name())
-	bsonFilterAllocNode := graph.GetEdgesToNodeExceptPointerTo(bsonFilterNode)[0].GetFromNode()
-	elemNode := graph.GetEdgesFromNodeExceptPointerTo(bsonFilterAllocNode)[0].GetToNode()
-	bsonFilterKeyNode := graph.GetEdgesFromNode(elemNode)[0].GetToNode()
-	// only 1 expected
-	edge := recurseEdgesForwardUntilStoreAddress(graph, bsonFilterKeyNode, nil, make(map[*ssagraph.SSANode]bool))[0]
-	key := edge.GetToNode().GetInstruction().(*ssa.Store).Val.(*ssa.Const).Value.ExactString()
-	keys = append(keys, "."+key)
-	arg := graph.GetEdgesFromNode(elemNode)[1].GetToNode().GetValue()
-	args = append(args, arg)
-	return args, keys
-}
-
-func recurseEdgesForwardUntilStoreAddress(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, storeEdges []*ssagraph.SSAEdge, visited map[*ssagraph.SSANode]bool) []*ssagraph.SSAEdge {
-	if _, ok := visited[node]; ok {
-		return storeEdges
-	}
-	visited[node] = true
-
-	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
-			storeEdges = append(storeEdges, edge)
-		} else if edge.GetType() == ssagraph.EDGE_FIELD || edge.GetType() == ssagraph.EDGE_INDEX || edge.GetType() == ssagraph.EDGE_USAGE {
-			storeEdges = append(storeEdges, recurseEdgesForwardUntilStoreAddress(graph, edge.GetToNode(), storeEdges, visited)...)
-		}
-	}
-	return storeEdges
 }

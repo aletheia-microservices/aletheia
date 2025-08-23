@@ -47,25 +47,6 @@ func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMod
 	}
 }
 
-func doTaintPointerToSets(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool) {
-	fmt.Printf("[TAINT|POINTERS] visiting %s: %s // TAINT INFO = (%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
-	node := graph.GetNodeByName(val.Name())
-	for _, edge := range graph.GetEdgesFromNode(node) {
-		if edge.GetType() == ssagraph.EDGE_POINTS_TO {
-			if edge.GetPath() != "" {
-				// add before
-				// note that both edge.path and objfields/dbfields already have "." before them
-				taintInfo = taintInfo.updatePathPrefix(edge.GetPath())
-			}
-			fmt.Printf("\t[TAINT|POINTERS] calling doTaintNode for pointed at: %s\n", edge.GetToNode().GetName())
-			doTaintNode(edge.GetToNode(), taintInfo, TAINT_MODE_NEARBY)
-
-			propagateTaintNearby(graph, edge.GetToNode().GetValue(), taintInfo, visited, nil, upwards)
-		}
-	}
-	fmt.Printf("\t[TAINT|POINTERS] exiting %s: %s\n", val.Name(), val.String())
-}
-
 func getObjectPathDiff(longPath1 string, shortPath2 string) string {
 	longPath1 = strings.TrimPrefix(longPath1, "_obj")
 	shortPath2 = strings.TrimPrefix(shortPath2, "_obj")
@@ -85,7 +66,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 
 	node := graph.GetNodeByName(val.Name())
 	doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
-	
+
 	fmt.Printf("[TAINT NEARBY] current node: %v\n", node)
 	for _, edge := range graph.GetEdgesFromNode(node) {
 		toNode := edge.GetToNode()
@@ -122,7 +103,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 			propagateTaintNearby(graph, addrNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 		case ssagraph.EDGE_POINTS_TO:
 			// ignore for now
-		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_CALL_ON, ssagraph.EDGE_EXTRACT:
+		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_ARG_ON_CALL, ssagraph.EDGE_EXTRACT:
 			// skip
 		case ssagraph.EDGE_BINOP_X:
 			binOp := edge.GetToNode().GetValue().(*ssa.BinOp)
@@ -177,7 +158,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 			propagateTaintNearby(graph, addrNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 		case ssagraph.EDGE_POINTS_TO:
 			// ignore for now
-		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_CALL_ON, ssagraph.EDGE_EXTRACT:
+		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_ARG_ON_CALL, ssagraph.EDGE_EXTRACT:
 			// skip
 		case ssagraph.EDGE_BINOP_X:
 			binOp := edge.GetToNode().GetValue().(*ssa.BinOp)
@@ -389,7 +370,6 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 			callId := ssagraph.ComputeCallID(graph, node)
 			svcCall := ssagraph.NewServiceCall(callId, node, argNodes, retNodes, service, method, funcShortPath)
 			graph.AddServiceCall(svcCall)
-
 
 			for _, argNode := range argNodes {
 				arg := argNode.GetValue()

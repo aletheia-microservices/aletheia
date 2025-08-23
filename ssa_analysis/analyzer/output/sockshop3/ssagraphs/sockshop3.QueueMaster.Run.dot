@@ -1,14 +1,14 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1434468131 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__1434468131 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__1726789384 [label="if t3 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1726789384 [label="if t3 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1969188070 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__1969188070 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2804127 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2804127 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1520403725 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr__1497402237 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1497402237 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1526611391 [label="if t3 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__1526611391 [label="if t3 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__1958697286 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1958697286 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2608784 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2608784 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_2002613005 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val__shipped__string [label="\"shipped\":string: \"shipped\":string
 
 ==== tainted ====
@@ -16,8 +16,8 @@ _obj
 [rpc] @ ShippingService.UpdateStatus."shipped":string
 ", style=bold, shape=box, color="yellow"];
 	N_val_0_int [label="0:int: 0:int", style=bold, shape=ellipse, color="black"];
-	N_val__2804094 [label="t1: select nonblocking [<-t0]", style=bold, shape=ellipse, color="black"];
-	N_val_alloc_2804156 [label="t4: new Shipment (shipment)
+	N_val__2608751 [label="t1: select nonblocking [<-t0]", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2608813 [label="t4: new Shipment (shipment)
 
 ==== tainted ====
 _obj
@@ -27,18 +27,23 @@ _obj.ID
 [rpc] @ ShippingService.UpdateStatus.t12
 ", style=bold, shape=box, color="orange"];
 	N_val_binaryt3 [label="t3: t2 == 0:int", style=bold, shape=ellipse, color="black"];
-	N_val_call_2804120 [label="t0: invoke ctx.Done()", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2804184 [label="t8: invoke t6.Pop(ctx, t7)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2804227 [label="t13: invoke t10.UpdateStatus(ctx, t12, \"shipped\":string)
+	N_val_call_2608777 [label="t0: invoke ctx.Done()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2608841 [label="t8: invoke t6.Pop(ctx, t7)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2608884 [label="t13: invoke t10.UpdateStatus(ctx, t12, \"shipped\":string)
 
 ==== tainted ====
 _obj
 [rpc] @ ShippingService.UpdateStatus.t13
 ", style=bold, shape=box, color="yellow"];
 	N_val_extrt2 [label="t2: extract t1 #0", style=bold, shape=ellipse, color="black"];
-	N_val_field_2804179 [label="t5: &q.q [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2804206 [label="t9: &q.shipping [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2804242 [label="t11: &t4.ID [#0]
+	N_val_field_2608836 [label="t5: &q.q [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2608863 [label="t9: &q.shipping [#1]
+
+==== tainted ====
+_obj
+[rpc] @ ShippingService.UpdateStatus.t13
+", style=bold, shape=box, color="green"];
+	N_val_field_2608899 [label="t11: &t4.ID [#0]
 
 ==== tainted ====
 _obj
@@ -54,32 +59,45 @@ _obj.ID
 [read] @ ship_queue.notification.ID
 [rpc] @ ShippingService.UpdateStatus.t12
 ", style=bold, shape=box, color="black"];
-	N_val_param_2804032 [label="q: parameter q : *QueueMasterImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2804056 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2804179 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2804206 [label="t10: *t9", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2804242 [label="t12: *t11
+	N_val_param_2608689 [label="q: parameter q : *QueueMasterImpl
+
+==== tainted ====
+_obj.shipping
+[rpc] @ ShippingService.UpdateStatus.t13
+", style=bold, shape=box, color="black"];
+	N_val_param_2608713 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2608836 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2608863 [label="t10: *t9
+
+==== tainted ====
+_obj
+[rpc] @ ShippingService.UpdateStatus.t13
+", style=bold, shape=box, color="red"];
+	N_val_unary_2608899 [label="t12: *t11
 
 ==== tainted ====
 _obj
 [read] @ ship_queue.notification.ID
 [rpc] @ ShippingService.UpdateStatus.t12
 ", style=bold, shape=box, color="red"];
-	N_val__2804094 -> N_val_extrt2;
+	N_val_param_2608713 -> N_val_call_2608777;
+	N_val__2608751 -> N_val_extrt2;
 	N_val_extrt2 -> N_val_binaryt3;
 	N_val_0_int -> N_val_binaryt3;
-	N_nil_1520403725 -> N_instr_ret_2804127;
-	N_val_param_2804032 -> N_val_field_2804179;
-	N_val_field_2804179 -> N_val_unary_2804179;
-	N_val_alloc_2804156 -> N_val_ifacet7;
-	N_val_param_2804056 -> N_val_call_2804184;
-	N_val_ifacet7 -> N_val_call_2804184;
-	N_val_param_2804032 -> N_val_field_2804206;
-	N_val_field_2804206 -> N_val_unary_2804206;
-	N_val_alloc_2804156 -> N_val_field_2804242;
-	N_val_field_2804242 -> N_val_unary_2804242;
-	N_val_param_2804056 -> N_val_call_2804227;
-	N_val_unary_2804242 -> N_val_call_2804227;
-	N_val__shipped__string -> N_val_call_2804227;
-	N_val_field_2804242 -> N_val_alloc_2804156 [label=".ID", style=dashed, color=blue];
+	N_nil_2002613005 -> N_instr_ret_2608784;
+	N_val_param_2608689 -> N_val_field_2608836;
+	N_val_field_2608836 -> N_val_unary_2608836;
+	N_val_alloc_2608813 -> N_val_ifacet7;
+	N_val_param_2608713 -> N_val_call_2608841;
+	N_val_ifacet7 -> N_val_call_2608841;
+	N_val_unary_2608836 -> N_val_call_2608841;
+	N_val_param_2608689 -> N_val_field_2608863;
+	N_val_field_2608863 -> N_val_unary_2608863;
+	N_val_alloc_2608813 -> N_val_field_2608899;
+	N_val_field_2608899 -> N_val_unary_2608899;
+	N_val_param_2608713 -> N_val_call_2608884;
+	N_val_unary_2608899 -> N_val_call_2608884;
+	N_val__shipped__string -> N_val_call_2608884;
+	N_val_unary_2608863 -> N_val_call_2608884;
+	N_val_field_2608899 -> N_val_alloc_2608813 [label=".ID", style=dashed, color=blue];
 }

@@ -1,101 +1,3 @@
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfoService
-	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, error)
-	Method: func(ctx context.Context, reqID int64, castInfoID string, name string, gender string, intro string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, error)
-		Parameters:
-			ctx = parameter ctx : context.Context
-			movieIdDB = parameter movieIdDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
-Function: mediamicroservices_sql.NewMovieIdServiceImpl
-Block #0: mediamicroservices_sql.NewMovieIdServiceImpl.entry
-			00: t0 = new MovieIdServiceImpl (complit)
-			01: t1 = &t0.movieIdDB [#0]
-			02: *t1 = movieIdDB
-			03: t2 = make MovieIdService <- *MovieIdServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoService
-	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
-	Method: func(ctx context.Context, reqID int64, movieID string, title string, castID string, plotID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
-		Parameters:
-			ctx = parameter ctx : context.Context
-			PlotDB = parameter PlotDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
-Function: mediamicroservices_sql.NewPlotServiceImpl
-Block #0: mediamicroservices_sql.NewPlotServiceImpl.entry
-			00: t0 = new PlotServiceImpl (complit)
-			01: t1 = &t0.PlotDB [#0]
-			02: *t1 = PlotDB
-			03: t2 = make PlotService <- *PlotServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotServiceImpl
-	Method: func(ctx context.Context, reqID int64, PlotID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
-		Parameters:
-			m = parameter m : *PlotServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			PlotID = parameter PlotID : string
-Function: mediamicroservices_sql.PlotService.ReadPlot
-Block #0: mediamicroservices_sql.PlotService.ReadPlot.entry
-			00: t0 = new Plot (Plot)
-			01: t1 = &m.PlotDB [#0]
-			02: t2 = *t1
-			03: t3 = make interface{} <- *Plot (t0)
-			04: t4 = new [1]any (varargs)
-			05: t5 = &t4[0:int]
-			06: t6 = make any <- string (PlotID)
-			07: *t5 = t6
-			08: t7 = slice t4[:]
-			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM plo...":string, t7...)
-			10: t9 = *t0
-			11: return t9, t8
-	Method: func(ctx context.Context, reqID int64, plotID string, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
-		Parameters:
-			m = parameter m : *PlotServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			plotID = parameter plotID : string
-			plotText = parameter plotText : string
-Function: mediamicroservices_sql.PlotService.WritePlot
-Block #0: mediamicroservices_sql.PlotService.WritePlot.entry
-			00: t0 = local Plot (plot)
-			01: t1 = &t0.plotid [#0]
-			02: t2 = &t0.plot [#1]
-			03: *t1 = plotID
-			04: *t2 = plotText
-			05: t3 = &m.PlotDB [#0]
-			06: t4 = *t3
-			07: t5 = new [2]any (varargs)
-			08: t6 = &t5[0:int]
-			09: t7 = make any <- string (plotID)
-			10: *t6 = t7
-			11: t8 = &t5[1:int]
-			12: t9 = make any <- string (plotText)
-			13: *t8 = t9
-			14: t10 = slice t5[:]
-			15: t11 = invoke t4.Exec(ctx, "INSERT INTO plot(...":string, t10...)
-			16: t12 = extract t11 #0
-			17: t13 = extract t11 #1
-			18: t14 = *t0
-			19: return t14, t13
-		Parameters:
-			ctx = parameter ctx : context.Context
-			movieIdService = parameter movieIdService : MovieIdService
-			movieInfoService = parameter movieInfoService : MovieInfoService
-			castInfoService = parameter castInfoService : CastInfoService
-			plotService = parameter plotService : PlotService
-Function: mediamicroservices_sql.NewAPIServiceImpl
-Block #0: mediamicroservices_sql.NewAPIServiceImpl.entry
-			00: t0 = new APIServiceImpl (complit)
-			01: t1 = &t0.movieIdService [#0]
-			02: t2 = &t0.movieInfoService [#1]
-			03: t3 = &t0.castInfoService [#2]
-			04: t4 = &t0.plotService [#3]
-			05: *t1 = movieIdService
-			06: *t2 = movieInfoService
-			07: *t3 = castInfoService
-			08: *t4 = plotService
-			09: t5 = make APIService <- *APIServiceImpl (t0)
-			10: return t5, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfoServiceImpl
 	Method: func(ctx context.Context, reqID int64, castInfoID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, error)
 		Parameters:
@@ -158,11 +60,135 @@ Block #0: mediamicroservices_sql.CastInfoService.WriteCastInfo.entry
 			27: t19 = extract t17 #1
 			28: t20 = *t0
 			29: return t20, t19
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdService
+		Parameters:
+			ctx = parameter ctx : context.Context
+			CastInfoDB = parameter CastInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
+Function: mediamicroservices_sql.NewCastInfoServiceImpl
+Block #0: mediamicroservices_sql.NewCastInfoServiceImpl.entry
+			00: t0 = new CastInfoServiceImpl (complit)
+			01: t1 = &t0.CastInfoDB [#0]
+			02: *t1 = CastInfoDB
+			03: t2 = make CastInfoService <- *CastInfoServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoService
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, title string, castID string, plotID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			PlotDB = parameter PlotDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
+Function: mediamicroservices_sql.NewPlotServiceImpl
+Block #0: mediamicroservices_sql.NewPlotServiceImpl.entry
+			00: t0 = new PlotServiceImpl (complit)
+			01: t1 = &t0.PlotDB [#0]
+			02: *t1 = PlotDB
+			03: t2 = make PlotService <- *PlotServiceImpl (t0)
+			04: return t2, nil:error
+		Parameters:
+Function: mediamicroservices_sql.main
+Block #0: mediamicroservices_sql.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewMovieIdServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = NewMovieInfoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+			05: t5 = extract t4 #0
+			06: t6 = extract t4 #1
+			07: t7 = NewCastInfoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+			08: t8 = extract t7 #0
+			09: t9 = extract t7 #1
+			10: t10 = NewPlotServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
+			11: t11 = extract t10 #0
+			12: t12 = extract t10 #1
+			13: t13 = NewAPIServiceImpl(t0, t2, t5, t8, t11)
+			14: t14 = extract t13 #0
+			15: t15 = extract t13 #1
+			16: t16 = invoke t14.ReadPage(t0, 0:int64, "":string)
+			17: return
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIService
+	Method: func(ctx context.Context, reqID int64, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, title string, castID string, castName string, castGender string, castIntro string, plotID string, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
+		Parameters:
+			m = parameter m : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+Function: mediamicroservices_sql.MovieIdService.ReadMovieId
+Block #0: mediamicroservices_sql.MovieIdService.ReadMovieId.entry
+			00: t0 = new MovieId (movieId)
+			01: t1 = &m.movieIdDB [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *MovieId (t0)
+			04: t4 = new [1]any (varargs)
+			05: t5 = &t4[0:int]
+			06: t6 = make any <- string (movieID)
+			07: *t5 = t6
+			08: t7 = slice t4[:]
+			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...)
+			10: t9 = *t0
+			11: return t9, t8
 	Method: func(ctx context.Context, reqID int64, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
+		Parameters:
+			m = parameter m : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			title = parameter title : string
+Function: mediamicroservices_sql.MovieIdService.ReadMovieId2
+Block #0: mediamicroservices_sql.MovieIdService.ReadMovieId2.entry
+			00: t0 = new MovieId (movieId)
+			01: t1 = &m.movieIdDB [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *MovieId (t0)
+			04: t4 = new [1]any (varargs)
+			05: t5 = &t4[0:int]
+			06: t6 = make any <- string (title)
+			07: *t5 = t6
+			08: t7 = slice t4[:]
+			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...)
+			10: t9 = *t0
+			11: return t9, t8
 	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, string, error)
+		Parameters:
+			m = parameter m : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			title = parameter title : string
+Function: mediamicroservices_sql.MovieIdService.RegisterMovieId
+Block #0: mediamicroservices_sql.MovieIdService.RegisterMovieId.entry
+			00: t0 = local MovieId (movieId)
+			01: t1 = &t0.movieid [#0]
+			02: t2 = &t0.title [#1]
+			03: *t1 = movieID
+			04: *t2 = title
+			05: t3 = &m.movieIdDB [#0]
+			06: t4 = *t3
+			07: t5 = new [2]any (varargs)
+			08: t6 = &t5[0:int]
+			09: t7 = make any <- string (movieID)
+			10: *t6 = t7
+			11: t8 = &t5[1:int]
+			12: t9 = make any <- string (title)
+			13: *t8 = t9
+			14: t10 = slice t5[:]
+			15: t11 = invoke t4.Exec(ctx, "INSERT INTO movie...":string, t10...)
+			16: t12 = extract t11 #0
+			17: t13 = extract t11 #1
+			18: t14 = *t0
+			19: return t14, movieID, t13
+		Parameters:
+			ctx = parameter ctx : context.Context
+			movieIdDB = parameter movieIdDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
+Function: mediamicroservices_sql.NewMovieIdServiceImpl
+Block #0: mediamicroservices_sql.NewMovieIdServiceImpl.entry
+			00: t0 = new MovieIdServiceImpl (complit)
+			01: t1 = &t0.movieIdDB [#0]
+			02: *t1 = movieIdDB
+			03: t2 = make MovieIdService <- *MovieIdServiceImpl (t0)
+			04: return t2, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfoServiceImpl
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, error)
 		Parameters:
@@ -225,19 +251,56 @@ Block #0: mediamicroservices_sql.MovieInfoService.WriteMovieInfo.entry
 			27: t19 = extract t17 #1
 			28: t20 = *t0
 			29: return t20, t19
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotServiceImpl
+	Method: func(ctx context.Context, reqID int64, PlotID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
 		Parameters:
+			m = parameter m : *PlotServiceImpl
 			ctx = parameter ctx : context.Context
-			movieInfoDB = parameter movieInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
-Function: mediamicroservices_sql.NewMovieInfoServiceImpl
-Block #0: mediamicroservices_sql.NewMovieInfoServiceImpl.entry
-			00: t0 = new MovieInfoServiceImpl (complit)
-			01: t1 = &t0.movieInfoDB [#0]
-			02: *t1 = movieInfoDB
-			03: t2 = make MovieInfoService <- *MovieInfoServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotService
-	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
+			reqID = parameter reqID : int64
+			PlotID = parameter PlotID : string
+Function: mediamicroservices_sql.PlotService.ReadPlot
+Block #0: mediamicroservices_sql.PlotService.ReadPlot.entry
+			00: t0 = new Plot (Plot)
+			01: t1 = &m.PlotDB [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *Plot (t0)
+			04: t4 = new [1]any (varargs)
+			05: t5 = &t4[0:int]
+			06: t6 = make any <- string (PlotID)
+			07: *t5 = t6
+			08: t7 = slice t4[:]
+			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM plo...":string, t7...)
+			10: t9 = *t0
+			11: return t9, t8
 	Method: func(ctx context.Context, reqID int64, plotID string, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
+		Parameters:
+			m = parameter m : *PlotServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			plotID = parameter plotID : string
+			plotText = parameter plotText : string
+Function: mediamicroservices_sql.PlotService.WritePlot
+Block #0: mediamicroservices_sql.PlotService.WritePlot.entry
+			00: t0 = local Plot (plot)
+			01: t1 = &t0.plotid [#0]
+			02: t2 = &t0.plot [#1]
+			03: *t1 = plotID
+			04: *t2 = plotText
+			05: t3 = &m.PlotDB [#0]
+			06: t4 = *t3
+			07: t5 = new [2]any (varargs)
+			08: t6 = &t5[0:int]
+			09: t7 = make any <- string (plotID)
+			10: *t6 = t7
+			11: t8 = &t5[1:int]
+			12: t9 = make any <- string (plotText)
+			13: *t8 = t9
+			14: t10 = slice t5[:]
+			15: t11 = invoke t4.Exec(ctx, "INSERT INTO plot(...":string, t10...)
+			16: t12 = extract t11 #0
+			17: t13 = extract t11 #1
+			18: t14 = *t0
+			19: return t14, t13
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIServiceImpl
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
 		Parameters:
@@ -362,111 +425,33 @@ Block #7: mediamicroservices_sql.APIService.RegisterMovie.if.then
 Block #8: mediamicroservices_sql.APIService.RegisterMovie.if.done
 			00: t28 = *t0
 			01: return t28, t13, t19, t25, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.APIService
-	Method: func(ctx context.Context, reqID int64, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
-	Method: func(ctx context.Context, reqID int64, movieID string, title string, castID string, castName string, castGender string, castIntro string, plotID string, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
 		Parameters:
 			ctx = parameter ctx : context.Context
-			CastInfoDB = parameter CastInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
-Function: mediamicroservices_sql.NewCastInfoServiceImpl
-Block #0: mediamicroservices_sql.NewCastInfoServiceImpl.entry
-			00: t0 = new CastInfoServiceImpl (complit)
-			01: t1 = &t0.CastInfoDB [#0]
-			02: *t1 = CastInfoDB
-			03: t2 = make CastInfoService <- *CastInfoServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdServiceImpl
+			movieIdService = parameter movieIdService : MovieIdService
+			movieInfoService = parameter movieInfoService : MovieInfoService
+			castInfoService = parameter castInfoService : CastInfoService
+			plotService = parameter plotService : PlotService
+Function: mediamicroservices_sql.NewAPIServiceImpl
+Block #0: mediamicroservices_sql.NewAPIServiceImpl.entry
+			00: t0 = new APIServiceImpl (complit)
+			01: t1 = &t0.movieIdService [#0]
+			02: t2 = &t0.movieInfoService [#1]
+			03: t3 = &t0.castInfoService [#2]
+			04: t4 = &t0.plotService [#3]
+			05: *t1 = movieIdService
+			06: *t2 = movieInfoService
+			07: *t3 = castInfoService
+			08: *t4 = plotService
+			09: t5 = make APIService <- *APIServiceImpl (t0)
+			10: return t5, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfoService
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, error)
+	Method: func(ctx context.Context, reqID int64, castInfoID string, name string, gender string, intro string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.CastInfo, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieIdService
 	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
-		Parameters:
-			m = parameter m : *MovieIdServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			movieID = parameter movieID : string
-Function: mediamicroservices_sql.MovieIdService.ReadMovieId
-Block #0: mediamicroservices_sql.MovieIdService.ReadMovieId.entry
-			00: t0 = new MovieId (movieId)
-			01: t1 = &m.movieIdDB [#0]
-			02: t2 = *t1
-			03: t3 = make interface{} <- *MovieId (t0)
-			04: t4 = new [1]any (varargs)
-			05: t5 = &t4[0:int]
-			06: t6 = make any <- string (movieID)
-			07: *t5 = t6
-			08: t7 = slice t4[:]
-			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...)
-			10: t9 = *t0
-			11: return t9, t8
 	Method: func(ctx context.Context, reqID int64, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, error)
-		Parameters:
-			m = parameter m : *MovieIdServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			title = parameter title : string
-Function: mediamicroservices_sql.MovieIdService.ReadMovieId2
-Block #0: mediamicroservices_sql.MovieIdService.ReadMovieId2.entry
-			00: t0 = new MovieId (movieId)
-			01: t1 = &m.movieIdDB [#0]
-			02: t2 = *t1
-			03: t3 = make interface{} <- *MovieId (t0)
-			04: t4 = new [1]any (varargs)
-			05: t5 = &t4[0:int]
-			06: t6 = make any <- string (title)
-			07: *t5 = t6
-			08: t7 = slice t4[:]
-			09: t8 = invoke t2.Select(ctx, t3, "SELECT * FROM mov...":string, t7...)
-			10: t9 = *t0
-			11: return t9, t8
 	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId, string, error)
-		Parameters:
-			m = parameter m : *MovieIdServiceImpl
-			ctx = parameter ctx : context.Context
-			reqID = parameter reqID : int64
-			movieID = parameter movieID : string
-			title = parameter title : string
-Function: mediamicroservices_sql.MovieIdService.RegisterMovieId
-Block #0: mediamicroservices_sql.MovieIdService.RegisterMovieId.entry
-			00: t0 = local MovieId (movieId)
-			01: t1 = &t0.movieid [#0]
-			02: t2 = &t0.title [#1]
-			03: *t1 = movieID
-			04: *t2 = title
-			05: t3 = &m.movieIdDB [#0]
-			06: t4 = *t3
-			07: t5 = new [2]any (varargs)
-			08: t6 = &t5[0:int]
-			09: t7 = make any <- string (movieID)
-			10: *t6 = t7
-			11: t8 = &t5[1:int]
-			12: t9 = make any <- string (title)
-			13: *t8 = t9
-			14: t10 = slice t5[:]
-			15: t11 = invoke t4.Exec(ctx, "INSERT INTO movie...":string, t10...)
-			16: t12 = extract t11 #0
-			17: t13 = extract t11 #1
-			18: t14 = *t0
-			19: return t14, movieID, t13
-		Parameters:
-Function: mediamicroservices_sql.main
-Block #0: mediamicroservices_sql.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewMovieIdServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = NewMovieInfoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
-			05: t5 = extract t4 #0
-			06: t6 = extract t4 #1
-			07: t7 = NewCastInfoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
-			08: t8 = extract t7 #0
-			09: t9 = extract t7 #1
-			10: t10 = NewPlotServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB)
-			11: t11 = extract t10 #0
-			12: t12 = extract t10 #1
-			13: t13 = NewAPIServiceImpl(t0, t2, t5, t8, t11)
-			14: t14 = extract t13 #0
-			15: t15 = extract t13 #1
-			16: t16 = invoke t14.ReadPage(t0, 0:int64, "":string)
-			17: return
-	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot
 		Parameters:
 Function: mediamicroservices_sql.init
 Block #0: mediamicroservices_sql.init.entry
@@ -479,3 +464,18 @@ Block #1: mediamicroservices_sql.init.init.start
 			03: jump 2
 Block #2: mediamicroservices_sql.init.init.done
 			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieId
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.MovieInfo
+		Parameters:
+			ctx = parameter ctx : context.Context
+			movieInfoDB = parameter movieInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
+Function: mediamicroservices_sql.NewMovieInfoServiceImpl
+Block #0: mediamicroservices_sql.NewMovieInfoServiceImpl.entry
+			00: t0 = new MovieInfoServiceImpl (complit)
+			01: t1 = &t0.movieInfoDB [#0]
+			02: *t1 = movieInfoDB
+			03: t2 = make MovieInfoService <- *MovieInfoServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.PlotService
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)
+	Method: func(ctx context.Context, reqID int64, plotID string, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.Plot, error)

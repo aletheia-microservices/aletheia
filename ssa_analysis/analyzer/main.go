@@ -25,22 +25,23 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 3 {
+	if len(os.Args) < 2 {
 		fmt.Fprintf(os.Stderr, "usage: program <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- foobar blueprint/foobar/fooservice_writefoo")
-		fmt.Fprintln(os.Stderr, "- postnotification_simple blueprint/postnotification/notifyservice_run")
-		fmt.Fprintln(os.Stderr, "- digota blueprint/digota/skuservice_get")
-		fmt.Fprintln(os.Stderr, "- sockshop3 blueprint/sockshop3/userservice_login")
-		fmt.Fprintln(os.Stderr, "- dsb_media_sql blueprint/dsb_media_sql/api_readmovie")
-		fmt.Fprintln(os.Stderr, "- dsb_sn blueprint/dsb_sn/poststorageservice_storepost")
-		fmt.Fprintln(os.Stderr, "- dsb_hotel2 blueprint/dsb_hotel2/geoservice_nearby")
-		fmt.Fprintln(os.Stderr, "- train_ticket2 blueprint/train_ticket2/assuranceservice_deletebyid")
+		fmt.Fprintln(os.Stderr, "- foobar")
+		fmt.Fprintln(os.Stderr, "- postnotification_simple")
+		fmt.Fprintln(os.Stderr, "- digota")
+		fmt.Fprintln(os.Stderr, "- sockshop3")
+		fmt.Fprintln(os.Stderr, "- dsb_media_sql")
+		fmt.Fprintln(os.Stderr, "- dsb_sn")
+		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
+		fmt.Fprintln(os.Stderr, "- train_ticket2")
 		os.Exit(1)
 	}
 
 	appname := os.Args[1]
-	apppath := os.Args[2]
+
+	apppath := utils.GetAppEntrypointPath(appname)
 	app := app.NewApp(appname)
 	app.Init()
 

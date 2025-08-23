@@ -5,4 +5,6 @@ entry request: Frontend.DeleteSock
 	DELETE: (CatalogueService.DeleteSock) --> (catalogue_db.catalogue).DeleteOne(...)
 		MISSING DELETE on field: cart_db.carts.Items[*].ID
 			- affected constraint #0: FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.catalogue.ID
+		MISSING DELETE on field: cart_db.carts.Items[*].UnitPrice
+			- affected constraint #0: FOREIGN_KEY cart_db.carts.Items[*].UnitPrice REFERENCES catalogue_db.catalogue.Price
 

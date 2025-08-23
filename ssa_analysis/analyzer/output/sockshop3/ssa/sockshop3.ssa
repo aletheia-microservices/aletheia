@@ -1,3 +1,130 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.PaymentServiceImpl
+	Method: func(ctx context.Context, amount float32) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Authorisation, error)
+		Parameters:
+			s = parameter s : *PaymentServiceImpl
+			ctx = parameter ctx : context.Context
+			amount = parameter amount : float32
+Function: sockshop3.PaymentService.Authorise
+Block #0: sockshop3.PaymentService.Authorise.entry
+			00: t0 = local Authorisation (authorization)
+			01: t1 = &t0.Authorised [#0]
+			02: t2 = &t0.Message [#1]
+			03: *t1 = false:bool
+			04: *t2 = "Payment declined:...":string
+			05: t3 = *t0
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingServiceImpl
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
+		Parameters:
+			s = parameter s : *ShippingServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: sockshop3.ShippingService.GetShipment
+Block #0: sockshop3.ShippingService.GetShipment.entry
+			00: t0 = &s.db [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			06: t6 = &t5[0:int]
+			07: t7 = &t6.Key [#0]
+			08: t8 = &t6.Value [#1]
+			09: *t7 = "ID":string
+			10: t9 = make interface{} <- string (id)
+			11: *t8 = t9
+			12: t10 = slice t5[:]
+			13: t11 = invoke t3.FindOne(ctx, t10, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			14: t12 = extract t11 #0
+			15: t13 = extract t11 #1
+			16: t14 = t13 != nil:error
+			17: if t14 goto 1 else 2
+Block #1: sockshop3.ShippingService.GetShipment.if.then
+			00: return struct{ID string; Name string; Status string}{}:Shipment, t13
+Block #2: sockshop3.ShippingService.GetShipment.if.done
+			00: t15 = new Shipment (shipment)
+			01: t16 = make interface{} <- *Shipment (t15)
+			02: t17 = invoke t12.One(ctx, t16)
+			03: t18 = *t15
+			04: return t18, nil:error
+	Method: func(ctx context.Context, shipment github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
+		Parameters:
+			service = parameter service : *ShippingServiceImpl
+			ctx = parameter ctx : context.Context
+			shipment = parameter shipment : Shipment
+Function: sockshop3.ShippingService.PostShipping
+Block #0: sockshop3.ShippingService.PostShipping.entry
+			00: t0 = &service.db [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = &service.q [#0]
+			06: t6 = *t5
+			07: t7 = make interface{} <- Shipment (shipment)
+			08: t8 = invoke t6.Push(ctx, t7)
+			09: t9 = make interface{} <- Shipment (shipment)
+			10: t10 = invoke t3.InsertOne(ctx, t9)
+			11: return shipment, t10
+	Method: func(ctx context.Context, id string, status string) error
+		Parameters:
+			s = parameter s : *ShippingServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+			status = parameter status : string
+Function: sockshop3.ShippingService.UpdateStatus
+Block #0: sockshop3.ShippingService.UpdateStatus.entry
+			00: t0 = &s.db [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			06: t6 = &t5[0:int]
+			07: t7 = &t6.Key [#0]
+			08: t8 = &t6.Value [#1]
+			09: *t7 = "ID":string
+			10: t9 = make interface{} <- string (id)
+			11: *t8 = t9
+			12: t10 = slice t5[:]
+			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			14: t12 = &t11[0:int]
+			15: t13 = &t12.Key [#0]
+			16: t14 = &t12.Value [#1]
+			17: t15 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			18: t16 = &t15[0:int]
+			19: t17 = &t16.Key [#0]
+			20: t18 = &t16.Value [#1]
+			21: *t17 = "status":string
+			22: t19 = make interface{} <- string (status)
+			23: *t18 = t19
+			24: t20 = slice t15[:]
+			25: *t13 = "$set":string
+			26: t21 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t20)
+			27: *t14 = t21
+			28: t22 = slice t11[:]
+			29: t23 = invoke t3.UpdateOne(ctx, t10, t22)
+			30: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment
+		Parameters:
+Function: sockshop3.init
+Block #0: sockshop3.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: sockshop3.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			03: t3 = go.mongodb.org/mongo-driver/bson.init()
+			04: t4 = slices.init()
+			05: t5 = strings.init()
+			06: t6 = github.com/google/uuid.init()
+			07: t7 = sync.init()
+			08: t8 = time.init()
+			09: t9 = errors.init()
+			10: jump 2
+Block #2: sockshop3.init.init.done
+			00: return
 	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartServiceImpl
 	Method: func(ctx context.Context, customerID string, item github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item, error)
 		Parameters:
@@ -165,730 +292,14 @@ Block #0: sockshop3.CartService.UpdateItem.entry
 			22: t17 = make interface{} <- *cart (t0)
 			23: t18 = invoke t9.Upsert(ctx, t16, t17)
 			24: return nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Frontend
-	Method: func(ctx context.Context, sessionID string, itemID string) (newSessionID string, err error)
-	Method: func(ctx context.Context, sessionID string) error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueService
+	Method: func(ctx context.Context, sock github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) (string, error)
+	Method: func(ctx context.Context, tags []string) error
+	Method: func(ctx context.Context, tags []string) (int, error)
 	Method: func(ctx context.Context, id string) error
-	Method: func(ctx context.Context, addressID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address, error)
-	Method: func(ctx context.Context, cardID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card, error)
-	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-	Method: func(ctx context.Context, userID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-	Method: func(ctx context.Context, itemID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock, error)
-	Method: func(ctx context.Context, userID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock, error)
 	Method: func(ctx context.Context, tags []string, order string, pageNum int, pageSize int) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock, error)
 	Method: func(ctx context.Context) ([]string, error)
-	Method: func(ctx context.Context) (string, error)
-	Method: func(ctx context.Context, sessionID string, username string, password string) (newSessionID string, u github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, err error)
-	Method: func(ctx context.Context, userID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-	Method: func(ctx context.Context, userID string, address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) (string, error)
-	Method: func(ctx context.Context, userID string, card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) (string, error)
-	Method: func(ctx context.Context, sessionID string, username string, password string, email string, first string, last string) (newSessionID string, err error)
-	Method: func(ctx context.Context, sessionID string, itemID string) error
-	Method: func(ctx context.Context, sessionID string, itemID string, quantity int) (newSessionID string, err error)
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.PaymentServiceImpl
-	Method: func(ctx context.Context, amount float32) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Authorisation, error)
-		Parameters:
-			s = parameter s : *PaymentServiceImpl
-			ctx = parameter ctx : context.Context
-			amount = parameter amount : float32
-Function: sockshop3.PaymentService.Authorise
-Block #0: sockshop3.PaymentService.Authorise.entry
-			00: t0 = local Authorisation (authorization)
-			01: t1 = &t0.Authorised [#0]
-			02: t2 = &t0.Message [#1]
-			03: *t1 = false:bool
-			04: *t2 = "Payment declined:...":string
-			05: t3 = *t0
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.QueueMaster
-	Method: func(ctx context.Context) error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: sockshop3.NewShippingServiceImpl
-Block #0: sockshop3.NewShippingServiceImpl.entry
-			00: t0 = new ShippingServiceImpl (complit)
-			01: t1 = &t0.q [#0]
-			02: t2 = &t0.db [#1]
-			03: *t1 = queue
-			04: *t2 = db
-			05: t3 = make ShippingService <- *ShippingServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl
-	Method: func(ctx context.Context, entity string, id string) error
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			entity = parameter entity : string
-			id = parameter id : string
-Function: sockshop3.UserService.Delete
-Block #0: sockshop3.UserService.Delete.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			06: t6 = &t5[0:int]
-			07: t7 = &t6.Key [#0]
-			08: t8 = &t6.Value [#1]
-			09: *t7 = "UserID":string
-			10: t9 = make interface{} <- string (id)
-			11: *t8 = t9
-			12: t10 = slice t5[:]
-			13: t11 = invoke t3.DeleteOne(ctx, t10)
-			14: return nil:error
-	Method: func(ctx context.Context, addressid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			addressid = parameter addressid : string
-Function: sockshop3.UserService.GetAddresses
-Block #0: sockshop3.UserService.GetAddresses.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new []Address (addresses)
-			06: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			07: t7 = &t6[0:int]
-			08: t8 = &t7.Key [#0]
-			09: t9 = &t7.Value [#1]
-			10: *t8 = "Addresses":string
-			11: t10 = make interface{} <- string (addressid)
-			12: *t9 = t10
-			13: t11 = slice t6[:]
-			14: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			15: t13 = &t12[0:int]
-			16: t14 = &t13.Key [#0]
-			17: t15 = &t13.Value [#1]
-			18: *t14 = "Addresses":string
-			19: t16 = make interface{} <- bool (true:bool)
-			20: *t15 = t16
-			21: t17 = slice t12[:]
-			22: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
-			23: t19 = &t18[0:int]
-			24: *t19 = t17
-			25: t20 = slice t18[:]
-			26: t21 = invoke t3.FindMany(ctx, t11, t20...)
-			27: t22 = extract t21 #0
-			28: t23 = extract t21 #1
-			29: t24 = make interface{} <- *[]Address (t5)
-			30: t25 = invoke t22.All(ctx, t24)
-			31: t26 = *t5
-			32: return t26, nil:error
-	Method: func(ctx context.Context, cardid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			cardid = parameter cardid : string
-Function: sockshop3.UserService.GetCards
-Block #0: sockshop3.UserService.GetCards.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new []Card (cards)
-			06: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			07: t7 = &t6[0:int]
-			08: t8 = &t7.Key [#0]
-			09: t9 = &t7.Value [#1]
-			10: *t8 = "Cards":string
-			11: t10 = make interface{} <- string (cardid)
-			12: *t9 = t10
-			13: t11 = slice t6[:]
-			14: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			15: t13 = &t12[0:int]
-			16: t14 = &t13.Key [#0]
-			17: t15 = &t13.Value [#1]
-			18: *t14 = "Cards":string
-			19: t16 = make interface{} <- bool (true:bool)
-			20: *t15 = t16
-			21: t17 = slice t12[:]
-			22: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
-			23: t19 = &t18[0:int]
-			24: *t19 = t17
-			25: t20 = slice t18[:]
-			26: t21 = invoke t3.FindMany(ctx, t11, t20...)
-			27: t22 = extract t21 #0
-			28: t23 = extract t21 #1
-			29: t24 = make interface{} <- *[]Card (t5)
-			30: t25 = invoke t22.All(ctx, t24)
-			31: t26 = *t5
-			32: return t26, nil:error
-	Method: func(ctx context.Context, userid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			userid = parameter userid : string
-Function: sockshop3.UserService.GetUsers
-Block #0: sockshop3.UserService.GetUsers.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new []User (users)
-			06: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			07: t7 = &t6[0:int]
-			08: t8 = &t7.Key [#0]
-			09: t9 = &t7.Value [#1]
-			10: *t8 = "UserID":string
-			11: t10 = make interface{} <- string (userid)
-			12: *t9 = t10
-			13: t11 = slice t6[:]
-			14: t12 = invoke t3.FindMany(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			15: t13 = extract t12 #0
-			16: t14 = extract t12 #1
-			17: t15 = make interface{} <- *[]User (t5)
-			18: t16 = invoke t13.All(ctx, t15)
-			19: t17 = *t5
-			20: return t17, nil:error
-	Method: func(ctx context.Context, username string, password string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			password = parameter password : string
-Function: sockshop3.UserService.Login
-Block #0: sockshop3.UserService.Login.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			06: t6 = &t5[0:int]
-			07: t7 = &t6.Key [#0]
-			08: t8 = &t6.Value [#1]
-			09: *t7 = "username":string
-			10: t9 = make interface{} <- string (username)
-			11: *t8 = t9
-			12: t10 = slice t5[:]
-			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			14: t12 = &t11[0:int]
-			15: t13 = &t12.Key [#0]
-			16: t14 = &t12.Value [#1]
-			17: *t13 = "password":string
-			18: t15 = make interface{} <- bool (true:bool)
-			19: *t14 = t15
-			20: t16 = slice t11[:]
-			21: t17 = new User (user)
-			22: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
-			23: t19 = &t18[0:int]
-			24: *t19 = t16
-			25: t20 = slice t18[:]
-			26: t21 = invoke t3.FindOne(ctx, t10, t20...)
-			27: t22 = extract t21 #0
-			28: t23 = extract t21 #1
-			29: t24 = make interface{} <- *User (t17)
-			30: t25 = invoke t22.One(ctx, t24)
-			31: t26 = &t17.Password [#4]
-			32: t27 = *t26
-			33: t28 = t27 != password
-			34: if t28 goto 1 else 2
-Block #1: sockshop3.UserService.Login.if.then
-			00: t29 = errors.New("Unauthorized":string)
-			01: return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29
-Block #2: sockshop3.UserService.Login.if.done
-			00: t30 = *t17
-			01: return t30, nil:error
-	Method: func(ctx context.Context, userid string, address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) (string, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			userid = parameter userid : string
-			address = parameter address : Address
-Function: sockshop3.UserService.PostAddress
-Block #0: sockshop3.UserService.PostAddress.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			06: t6 = &t5[0:int]
-			07: t7 = &t6.Key [#0]
-			08: t8 = &t6.Value [#1]
-			09: *t7 = "UserID":string
-			10: t9 = make interface{} <- string (userid)
-			11: *t8 = t9
-			12: t10 = slice t5[:]
-			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			14: t12 = &t11[0:int]
-			15: t13 = &t12.Key [#0]
-			16: t14 = &t12.Value [#1]
-			17: *t13 = "Address":string
-			18: t15 = make interface{} <- Address (address)
-			19: *t14 = t15
-			20: t16 = slice t11[:]
-			21: t17 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t16)
-			22: t18 = invoke t3.Upsert(ctx, t10, t17)
-			23: return userid, nil:error
-	Method: func(ctx context.Context, userid string, card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) (string, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			userid = parameter userid : string
-			card = parameter card : Card
-Function: sockshop3.UserService.PostCard
-Block #0: sockshop3.UserService.PostCard.entry
-			00: t0 = &s.db [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			06: t6 = &t5[0:int]
-			07: t7 = &t6.Key [#0]
-			08: t8 = &t6.Value [#1]
-			09: *t7 = "UserID":string
-			10: t9 = make interface{} <- string (userid)
-			11: *t8 = t9
-			12: t10 = slice t5[:]
-			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			14: t12 = &t11[0:int]
-			15: t13 = &t12.Key [#0]
-			16: t14 = &t12.Value [#1]
-			17: *t13 = "Card":string
-			18: t15 = make interface{} <- Card (card)
-			19: *t14 = t15
-			20: t16 = slice t11[:]
-			21: t17 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t16)
-			22: t18 = invoke t3.Upsert(ctx, t10, t17)
-			23: return userid, nil:error
-	Method: func(ctx context.Context, u github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User) (string, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			u = parameter u : User
-Function: sockshop3.UserService.PostUser
-Block #0: sockshop3.UserService.PostUser.entry
-			00: t0 = local User (u)
-			01: *t0 = u
-			02: t1 = &s.db [#0]
-			03: t2 = *t1
-			04: t3 = invoke t2.GetCollection(ctx, "user_db":string, "users":string)
-			05: t4 = extract t3 #0
-			06: t5 = extract t3 #1
-			07: t6 = *t0
-			08: t7 = make interface{} <- User (t6)
-			09: t8 = invoke t4.InsertOne(ctx, t7)
-			10: t9 = &t0.UserID [#7]
-			11: t10 = *t9
-			12: return t10, nil:error
-	Method: func(ctx context.Context, username string, password string, email string, first string, last string) (string, error)
-		Parameters:
-			s = parameter s : *UserServiceImpl
-			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			password = parameter password : string
-			email = parameter email : string
-			first = parameter first : string
-			last = parameter last : string
-Function: sockshop3.UserService.Register
-Block #0: sockshop3.UserService.Register.entry
-			00: t0 = local User (u)
-			01: t1 = &t0.Username [#3]
-			02: *t1 = username
-			03: t2 = &t0.Password [#4]
-			04: *t2 = password
-			05: t3 = &t0.Email [#2]
-			06: *t3 = email
-			07: t4 = &t0.FirstName [#0]
-			08: *t4 = first
-			09: t5 = &t0.LastName [#1]
-			10: *t5 = last
-			11: t6 = &t0.Addresses [#5]
-			12: *t6 = struct{Street string; Number string; Country string; City string; PostCode string; ID string}{}:Address
-			13: t7 = &t0.Cards [#6]
-			14: *t7 = struct{LongNum string; Expires string; CCV string; ID string}{}:Card
-			15: t8 = &s.db [#0]
-			16: t9 = *t8
-			17: t10 = invoke t9.GetCollection(ctx, "user_db":string, "users":string)
-			18: t11 = extract t10 #0
-			19: t12 = extract t10 #1
-			20: t13 = *t0
-			21: t14 = make interface{} <- User (t13)
-			22: t15 = invoke t11.InsertOne(ctx, t14)
-			23: t16 = &t0.UserID [#7]
-			24: t17 = *t16
-			25: return t17, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderServiceImpl
-	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-		Parameters:
-			s = parameter s : *OrderServiceImpl
-			ctx = parameter ctx : context.Context
-			orderID = parameter orderID : string
-Function: sockshop3.OrderService.GetOrder
-Block #0: sockshop3.OrderService.GetOrder.entry
-			00: t0 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t1 = &t0[0:int]
-			02: t2 = &t1.Key [#0]
-			03: t3 = &t1.Value [#1]
-			04: *t2 = "ID":string
-			05: t4 = make interface{} <- string (orderID)
-			06: *t3 = t4
-			07: t5 = slice t0[:]
-			08: t6 = &s.db [#4]
-			09: t7 = *t6
-			10: t8 = invoke t7.GetCollection(ctx, "order_db":string, "orders":string)
-			11: t9 = extract t8 #0
-			12: t10 = extract t8 #1
-			13: t11 = invoke t9.FindOne(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			14: t12 = extract t11 #0
-			15: t13 = extract t11 #1
-			16: t14 = t13 != nil:error
-			17: if t14 goto 1 else 2
-Block #1: sockshop3.OrderService.GetOrder.if.then
-			00: return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t13
-Block #2: sockshop3.OrderService.GetOrder.if.done
-			00: t15 = new Order (order)
-			01: t16 = make interface{} <- *Order (t15)
-			02: t17 = invoke t12.One(ctx, t16)
-			03: t18 = *t15
-			04: return t18, nil:error
-	Method: func(ctx context.Context, customerID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-		Parameters:
-			s = parameter s : *OrderServiceImpl
-			ctx = parameter ctx : context.Context
-			customerID = parameter customerID : string
-Function: sockshop3.OrderService.GetOrders
-Block #0: sockshop3.OrderService.GetOrders.entry
-			00: t0 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t1 = &t0[0:int]
-			02: t2 = &t1.Key [#0]
-			03: t3 = &t1.Value [#1]
-			04: *t2 = "CustomerID":string
-			05: t4 = make interface{} <- string (customerID)
-			06: *t3 = t4
-			07: t5 = slice t0[:]
-			08: t6 = &s.db [#4]
-			09: t7 = *t6
-			10: t8 = invoke t7.GetCollection(ctx, "order_db":string, "orders":string)
-			11: t9 = extract t8 #0
-			12: t10 = extract t8 #1
-			13: t11 = invoke t9.FindMany(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			14: t12 = extract t11 #0
-			15: t13 = extract t11 #1
-			16: t14 = t13 != nil:error
-			17: if t14 goto 1 else 2
-Block #1: sockshop3.OrderService.GetOrders.if.then
-			00: return nil:[]Order, t13
-Block #2: sockshop3.OrderService.GetOrders.if.done
-			00: t15 = new []Order (orders)
-			01: t16 = make interface{} <- *[]Order (t15)
-			02: t17 = invoke t12.All(ctx, t16)
-			03: t18 = t17 != nil:error
-			04: if t18 goto 3 else 4
-Block #3: sockshop3.OrderService.GetOrders.if.then
-			00: return nil:[]Order, t17
-Block #4: sockshop3.OrderService.GetOrders.if.done
-			00: t19 = *t15
-			01: return t19, nil:error
-	Method: func(ctx context.Context, customerID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-		Parameters:
-			s = parameter s : *OrderServiceImpl
-			ctx = parameter ctx : context.Context
-			customerID = parameter customerID : string
-			addressID = parameter addressID : string
-			cardID = parameter cardID : string
-			cartID = parameter cartID : string
-Function: sockshop3.OrderService.NewOrder
-Block #0: sockshop3.OrderService.NewOrder.entry
-			00: t0 = new *OrderServiceImpl (s)
-			01: *t0 = s
-			02: t1 = new context.Context (ctx)
-			03: *t1 = ctx
-			04: t2 = new string (customerID)
-			05: *t2 = customerID
-			06: t3 = new string (addressID)
-			07: *t3 = addressID
-			08: t4 = new string (cardID)
-			09: *t4 = cardID
-			10: t5 = new string (cartID)
-			11: *t5 = cartID
-			12: t6 = new sync.WaitGroup (wg)
-			13: t7 = (*sync.WaitGroup).Add(t6, 4:int)
-			14: t8 = new []Item (items)
-			15: t9 = new []Address (addresses)
-			16: t10 = new []Card (cards)
-			17: t11 = make closure (*OrderServiceImpl).NewOrder$1 [t6, t8, t0, t1, t5]
-			18: go t11()
-			19: t12 = make closure (*OrderServiceImpl).NewOrder$2 [t6, t0, t1, t2]
-			20: go t12()
-			21: t13 = make closure (*OrderServiceImpl).NewOrder$3 [t6, t9, t0, t1, t3]
-			22: go t13()
-			23: t14 = make closure (*OrderServiceImpl).NewOrder$4 [t6, t10, t0, t1, t4]
-			24: go t14()
-			25: t15 = (*sync.WaitGroup).Wait(t6)
-			26: t16 = *t0
-			27: t17 = &t16.payments [#2]
-			28: t18 = *t17
-			29: t19 = *t1
-			30: t20 = invoke t18.Authorise(t19, 10:float32)
-			31: t21 = local Shipment (shipment)
-			32: t22 = &t21.ID [#0]
-			33: t23 = github.com/google/uuid.NewString()
-			34: t24 = &t21.Name [#1]
-			35: t25 = *t2
-			36: t26 = &t21.Status [#2]
-			37: *t22 = t23
-			38: *t24 = t25
-			39: *t26 = "awaiting shipment":string
-			40: t27 = *t0
-			41: t28 = &t27.shipping [#3]
-			42: t29 = *t28
-			43: t30 = *t1
-			44: t31 = *t21
-			45: t32 = invoke t29.PostShipping(t30, t31)
-			46: t33 = extract t32 #0
-			47: *t21 = t33
-			48: t34 = extract t32 #1
-			49: t35 = t34 != nil:error
-			50: if t35 goto 1 else 2
-Block #1: sockshop3.OrderService.NewOrder.if.then
-			00: return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t34
-Block #2: sockshop3.OrderService.NewOrder.if.done
-			00: t36 = local Order (order)
-			01: t37 = &t36.ID [#0]
-			02: t38 = &t21.ID [#0]
-			03: t39 = *t38
-			04: t40 = &t36.CustomerID [#1]
-			05: t41 = *t2
-			06: t42 = &t36.Address [#3]
-			07: t43 = *t9
-			08: t44 = &t43[0:int]
-			09: t45 = *t44
-			10: t46 = &t36.Card [#4]
-			11: t47 = *t10
-			12: t48 = &t47[0:int]
-			13: t49 = *t48
-			14: t50 = &t36.Items [#5]
-			15: t51 = *t8
-			16: t52 = &t36.Shipment [#6]
-			17: t53 = *t21
-			18: t54 = &t36.Date [#7]
-			19: t55 = time.Now()
-			20: t56 = (time.Time).String(t55)
-			21: t57 = &t36.Total [#8]
-			22: *t37 = t39
-			23: *t40 = t41
-			24: *t42 = t45
-			25: *t46 = t49
-			26: *t50 = t51
-			27: *t52 = t53
-			28: *t54 = t56
-			29: *t57 = 10:float32
-			30: t58 = *t0
-			31: t59 = &t58.db [#4]
-			32: t60 = *t59
-			33: t61 = *t1
-			34: t62 = invoke t60.GetCollection(t61, "order_db":string, "orders":string)
-			35: t63 = extract t62 #0
-			36: t64 = extract t62 #1
-			37: t65 = *t1
-			38: t66 = *t36
-			39: t67 = make interface{} <- Order (t66)
-			40: t68 = invoke t63.InsertOne(t65, t67)
-			41: t69 = t68 != nil:error
-			42: if t69 goto 3 else 4
-Block #3: sockshop3.OrderService.NewOrder.if.then
-			00: return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t68
-Block #4: sockshop3.OrderService.NewOrder.if.done
-			00: t70 = *t36
-			01: t71 = *t0
-			02: t72 = &t71.carts [#1]
-			03: t73 = *t72
-			04: t74 = *t1
-			05: t75 = *t2
-			06: t76 = invoke t73.DeleteCart(t74, t75)
-			07: return t70, t76
-		Parameters:
-			ctx = parameter ctx : context.Context
-			declineOverAmount = parameter declineOverAmount : string
-Function: sockshop3.NewPaymentServiceImpl
-Block #0: sockshop3.NewPaymentServiceImpl.entry
-			00: t0 = new PaymentServiceImpl (complit)
-			01: t1 = &t0.declineOverAmount [#0]
-			02: *t1 = 50:float32
-			03: t2 = make PaymentService <- *PaymentServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserService
-	Method: func(ctx context.Context, entity string, id string) error
-	Method: func(ctx context.Context, id string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address, error)
-	Method: func(ctx context.Context, cardid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card, error)
-	Method: func(ctx context.Context, id string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
-	Method: func(ctx context.Context, username string, password string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
-	Method: func(ctx context.Context, userid string, address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) (string, error)
-	Method: func(ctx context.Context, userid string, card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) (string, error)
-	Method: func(ctx context.Context, user github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User) (string, error)
-	Method: func(ctx context.Context, username string, password string, email string, first string, last string) (string, error)
-	Global: init$guard, Type: *bool
-		Parameters:
-Function: sockshop3.init
-Block #0: sockshop3.init.entry
-			00: t0 = *init$guard
-			01: if t0 goto 2 else 1
-Block #1: sockshop3.init.init.start
-			00: *init$guard = true:bool
-			01: t1 = context.init()
-			02: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
-			03: t3 = go.mongodb.org/mongo-driver/bson.init()
-			04: t4 = slices.init()
-			05: t5 = strings.init()
-			06: t6 = github.com/google/uuid.init()
-			07: t7 = sync.init()
-			08: t8 = time.init()
-			09: t9 = errors.init()
-			10: jump 2
-Block #2: sockshop3.init.init.done
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.PaymentService
-	Method: func(ctx context.Context, amount float32) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Authorisation, error)
-		Parameters:
-			ctx = parameter ctx : context.Context
-			user = parameter user : UserService
-			catalogue = parameter catalogue : CatalogueService
-			cart = parameter cart : CartService
-			order = parameter order : OrderService
-Function: sockshop3.NewFrontendImpl
-Block #0: sockshop3.NewFrontendImpl.entry
-			00: t0 = new FrontendImpl (complit)
-			01: t1 = &t0.user [#0]
-			02: t2 = &t0.catalogue [#1]
-			03: t3 = &t0.cart [#2]
-			04: t4 = &t0.order [#3]
-			05: *t1 = user
-			06: *t2 = catalogue
-			07: *t3 = cart
-			08: *t4 = order
-			09: t5 = make Frontend <- *FrontendImpl (t0)
-			10: return t5, nil:error
-		Parameters:
-Function: sockshop3.main
-Block #0: sockshop3.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewUserServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = invoke t2.Login(t0, "":string, "":string)
-			05: return
-		Parameters:
-			ctx = parameter ctx : context.Context
-			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
-			shipping = parameter shipping : ShippingService
-Function: sockshop3.NewQueueMasterImpl
-Block #0: sockshop3.NewQueueMasterImpl.entry
-			00: t0 = new QueueMasterImpl (complit)
-			01: t1 = &t0.q [#0]
-			02: t2 = &t0.shipping [#1]
-			03: t3 = &t0.exitOnError [#2]
-			04: t4 = &t0.processed [#3]
-			05: *t1 = queue
-			06: *t2 = shipping
-			07: *t3 = false:bool
-			08: *t4 = 0:int32
-			09: t5 = make QueueMaster <- *QueueMasterImpl (t0)
-			10: return t5, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingServiceImpl
-	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
-		Parameters:
-			s = parameter s : *ShippingServiceImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-Function: sockshop3.ShippingService.GetShipment
-Block #0: sockshop3.ShippingService.GetShipment.entry
-			00: t0 = &s.db [#1]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			06: t6 = &t5[0:int]
-			07: t7 = &t6.Key [#0]
-			08: t8 = &t6.Value [#1]
-			09: *t7 = "ID":string
-			10: t9 = make interface{} <- string (id)
-			11: *t8 = t9
-			12: t10 = slice t5[:]
-			13: t11 = invoke t3.FindOne(ctx, t10, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			14: t12 = extract t11 #0
-			15: t13 = extract t11 #1
-			16: t14 = t13 != nil:error
-			17: if t14 goto 1 else 2
-Block #1: sockshop3.ShippingService.GetShipment.if.then
-			00: return struct{ID string; Name string; Status string}{}:Shipment, t13
-Block #2: sockshop3.ShippingService.GetShipment.if.done
-			00: t15 = new Shipment (shipment)
-			01: t16 = make interface{} <- *Shipment (t15)
-			02: t17 = invoke t12.One(ctx, t16)
-			03: t18 = *t15
-			04: return t18, nil:error
-	Method: func(ctx context.Context, shipment github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
-		Parameters:
-			service = parameter service : *ShippingServiceImpl
-			ctx = parameter ctx : context.Context
-			shipment = parameter shipment : Shipment
-Function: sockshop3.ShippingService.PostShipping
-Block #0: sockshop3.ShippingService.PostShipping.entry
-			00: t0 = &service.db [#1]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = &service.q [#0]
-			06: t6 = *t5
-			07: t7 = make interface{} <- Shipment (shipment)
-			08: t8 = invoke t6.Push(ctx, t7)
-			09: t9 = make interface{} <- Shipment (shipment)
-			10: t10 = invoke t3.InsertOne(ctx, t9)
-			11: return shipment, t10
-	Method: func(ctx context.Context, id string, status string) error
-		Parameters:
-			s = parameter s : *ShippingServiceImpl
-			ctx = parameter ctx : context.Context
-			id = parameter id : string
-			status = parameter status : string
-Function: sockshop3.ShippingService.UpdateStatus
-Block #0: sockshop3.ShippingService.UpdateStatus.entry
-			00: t0 = &s.db [#1]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			06: t6 = &t5[0:int]
-			07: t7 = &t6.Key [#0]
-			08: t8 = &t6.Value [#1]
-			09: *t7 = "ID":string
-			10: t9 = make interface{} <- string (id)
-			11: *t8 = t9
-			12: t10 = slice t5[:]
-			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			14: t12 = &t11[0:int]
-			15: t13 = &t12.Key [#0]
-			16: t14 = &t12.Value [#1]
-			17: t15 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			18: t16 = &t15[0:int]
-			19: t17 = &t16.Key [#0]
-			20: t18 = &t16.Value [#1]
-			21: *t17 = "status":string
-			22: t19 = make interface{} <- string (status)
-			23: *t18 = t19
-			24: t20 = slice t15[:]
-			25: *t13 = "$set":string
-			26: t21 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t20)
-			27: *t14 = t21
-			28: t22 = slice t11[:]
-			29: t23 = invoke t3.UpdateOne(ctx, t10, t22)
-			30: return nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.tag
 	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.FrontendImpl
 	Method: func(ctx context.Context, sessionID string, itemID string) (string, error)
 		Parameters:
@@ -921,18 +332,20 @@ Block #4: sockshop3.Frontend.AddItem.if.done
 			01: t11 = *t10
 			02: t12 = local Item (complit)
 			03: t13 = &t12.ID [#0]
-			04: t14 = &t12.Quantity [#1]
-			05: t15 = &t12.UnitPrice [#2]
-			06: t16 = &t3.Price [#6]
-			07: t17 = *t16
-			08: *t13 = itemID
-			09: *t14 = 1:int
-			10: *t15 = t17
-			11: t18 = *t12
-			12: t19 = invoke t11.AddItem(ctx, t2, t18)
-			13: t20 = extract t19 #0
-			14: t21 = extract t19 #1
-			15: return t2, t21
+			04: t14 = &t3.ID [#0]
+			05: t15 = *t14
+			06: t16 = &t12.Quantity [#1]
+			07: t17 = &t12.UnitPrice [#2]
+			08: t18 = &t3.Price [#6]
+			09: t19 = *t18
+			10: *t13 = t15
+			11: *t16 = 1:int
+			12: *t17 = t19
+			13: t20 = *t12
+			14: t21 = invoke t11.AddItem(ctx, t2, t20)
+			15: t22 = extract t21 #0
+			16: t23 = extract t21 #1
+			17: return t2, t23
 	Method: func(ctx context.Context, sessionID string) error
 		Parameters:
 			f = parameter f : *FrontendImpl
@@ -1258,18 +671,252 @@ Block #2: sockshop3.Frontend.UpdateItem.if.done
 			13: t17 = *t9
 			14: t18 = invoke t8.UpdateItem(ctx, sessionID, t17)
 			15: return sessionID, t18
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueService
-	Method: func(ctx context.Context, sock github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) (string, error)
-	Method: func(ctx context.Context, tags []string) error
-	Method: func(ctx context.Context, tags []string) (int, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: sockshop3.NewUserServiceImpl
+Block #0: sockshop3.NewUserServiceImpl.entry
+			00: t0 = new UserServiceImpl (complit)
+			01: t1 = &t0.db [#0]
+			02: *t1 = db
+			03: t2 = make UserService <- *UserServiceImpl (t0)
+			04: return t2, nil:error
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.cart
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Frontend
+	Method: func(ctx context.Context, sessionID string, itemID string) (newSessionID string, err error)
+	Method: func(ctx context.Context, sessionID string) error
 	Method: func(ctx context.Context, id string) error
-	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock, error)
+	Method: func(ctx context.Context, addressID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address, error)
+	Method: func(ctx context.Context, cardID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card, error)
+	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+	Method: func(ctx context.Context, userID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+	Method: func(ctx context.Context, itemID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock, error)
+	Method: func(ctx context.Context, userID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
 	Method: func(ctx context.Context, tags []string, order string, pageNum int, pageSize int) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock, error)
 	Method: func(ctx context.Context) ([]string, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Authorisation
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock
+	Method: func(ctx context.Context) (string, error)
+	Method: func(ctx context.Context, sessionID string, username string, password string) (newSessionID string, u github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, err error)
+	Method: func(ctx context.Context, userID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+	Method: func(ctx context.Context, userID string, address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) (string, error)
+	Method: func(ctx context.Context, userID string, card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) (string, error)
+	Method: func(ctx context.Context, sessionID string, username string, password string, email string, first string, last string) (newSessionID string, err error)
+	Method: func(ctx context.Context, sessionID string, itemID string) error
+	Method: func(ctx context.Context, sessionID string, itemID string, quantity int) (newSessionID string, err error)
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderServiceImpl
+	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			orderID = parameter orderID : string
+Function: sockshop3.OrderService.GetOrder
+Block #0: sockshop3.OrderService.GetOrder.entry
+			00: t0 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t1 = &t0[0:int]
+			02: t2 = &t1.Key [#0]
+			03: t3 = &t1.Value [#1]
+			04: *t2 = "ID":string
+			05: t4 = make interface{} <- string (orderID)
+			06: *t3 = t4
+			07: t5 = slice t0[:]
+			08: t6 = &s.db [#4]
+			09: t7 = *t6
+			10: t8 = invoke t7.GetCollection(ctx, "order_db":string, "orders":string)
+			11: t9 = extract t8 #0
+			12: t10 = extract t8 #1
+			13: t11 = invoke t9.FindOne(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			14: t12 = extract t11 #0
+			15: t13 = extract t11 #1
+			16: t14 = t13 != nil:error
+			17: if t14 goto 1 else 2
+Block #1: sockshop3.OrderService.GetOrder.if.then
+			00: return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t13
+Block #2: sockshop3.OrderService.GetOrder.if.done
+			00: t15 = new Order (order)
+			01: t16 = make interface{} <- *Order (t15)
+			02: t17 = invoke t12.One(ctx, t16)
+			03: t18 = *t15
+			04: return t18, nil:error
+	Method: func(ctx context.Context, customerID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			customerID = parameter customerID : string
+Function: sockshop3.OrderService.GetOrders
+Block #0: sockshop3.OrderService.GetOrders.entry
+			00: t0 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t1 = &t0[0:int]
+			02: t2 = &t1.Key [#0]
+			03: t3 = &t1.Value [#1]
+			04: *t2 = "CustomerID":string
+			05: t4 = make interface{} <- string (customerID)
+			06: *t3 = t4
+			07: t5 = slice t0[:]
+			08: t6 = &s.db [#4]
+			09: t7 = *t6
+			10: t8 = invoke t7.GetCollection(ctx, "order_db":string, "orders":string)
+			11: t9 = extract t8 #0
+			12: t10 = extract t8 #1
+			13: t11 = invoke t9.FindMany(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			14: t12 = extract t11 #0
+			15: t13 = extract t11 #1
+			16: t14 = t13 != nil:error
+			17: if t14 goto 1 else 2
+Block #1: sockshop3.OrderService.GetOrders.if.then
+			00: return nil:[]Order, t13
+Block #2: sockshop3.OrderService.GetOrders.if.done
+			00: t15 = new []Order (orders)
+			01: t16 = make interface{} <- *[]Order (t15)
+			02: t17 = invoke t12.All(ctx, t16)
+			03: t18 = t17 != nil:error
+			04: if t18 goto 3 else 4
+Block #3: sockshop3.OrderService.GetOrders.if.then
+			00: return nil:[]Order, t17
+Block #4: sockshop3.OrderService.GetOrders.if.done
+			00: t19 = *t15
+			01: return t19, nil:error
+	Method: func(ctx context.Context, customerID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			customerID = parameter customerID : string
+			addressID = parameter addressID : string
+			cardID = parameter cardID : string
+			cartID = parameter cartID : string
+Function: sockshop3.OrderService.NewOrder
+Block #0: sockshop3.OrderService.NewOrder.entry
+			00: t0 = new *OrderServiceImpl (s)
+			01: *t0 = s
+			02: t1 = new context.Context (ctx)
+			03: *t1 = ctx
+			04: t2 = new string (customerID)
+			05: *t2 = customerID
+			06: t3 = new string (addressID)
+			07: *t3 = addressID
+			08: t4 = new string (cardID)
+			09: *t4 = cardID
+			10: t5 = new string (cartID)
+			11: *t5 = cartID
+			12: t6 = new sync.WaitGroup (wg)
+			13: t7 = (*sync.WaitGroup).Add(t6, 4:int)
+			14: t8 = new []Item (items)
+			15: t9 = new []Address (addresses)
+			16: t10 = new []Card (cards)
+			17: t11 = make closure (*OrderServiceImpl).NewOrder$1 [t6, t8, t0, t1, t5]
+			18: go t11()
+			19: t12 = make closure (*OrderServiceImpl).NewOrder$2 [t6, t0, t1, t2]
+			20: go t12()
+			21: t13 = make closure (*OrderServiceImpl).NewOrder$3 [t6, t9, t0, t1, t3]
+			22: go t13()
+			23: t14 = make closure (*OrderServiceImpl).NewOrder$4 [t6, t10, t0, t1, t4]
+			24: go t14()
+			25: t15 = (*sync.WaitGroup).Wait(t6)
+			26: t16 = *t0
+			27: t17 = &t16.payments [#2]
+			28: t18 = *t17
+			29: t19 = *t1
+			30: t20 = invoke t18.Authorise(t19, 10:float32)
+			31: t21 = local Shipment (shipment)
+			32: t22 = &t21.ID [#0]
+			33: t23 = github.com/google/uuid.NewString()
+			34: t24 = &t21.Name [#1]
+			35: t25 = *t2
+			36: t26 = &t21.Status [#2]
+			37: *t22 = t23
+			38: *t24 = t25
+			39: *t26 = "awaiting shipment":string
+			40: t27 = *t0
+			41: t28 = &t27.shipping [#3]
+			42: t29 = *t28
+			43: t30 = *t1
+			44: t31 = *t21
+			45: t32 = invoke t29.PostShipping(t30, t31)
+			46: t33 = extract t32 #0
+			47: *t21 = t33
+			48: t34 = extract t32 #1
+			49: t35 = t34 != nil:error
+			50: if t35 goto 1 else 2
+Block #1: sockshop3.OrderService.NewOrder.if.then
+			00: return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t34
+Block #2: sockshop3.OrderService.NewOrder.if.done
+			00: t36 = local Order (order)
+			01: t37 = &t36.ID [#0]
+			02: t38 = &t21.ID [#0]
+			03: t39 = *t38
+			04: t40 = &t36.CustomerID [#1]
+			05: t41 = *t2
+			06: t42 = &t36.Address [#3]
+			07: t43 = *t9
+			08: t44 = &t43[0:int]
+			09: t45 = *t44
+			10: t46 = &t36.Card [#4]
+			11: t47 = *t10
+			12: t48 = &t47[0:int]
+			13: t49 = *t48
+			14: t50 = &t36.Items [#5]
+			15: t51 = *t8
+			16: t52 = &t36.Shipment [#6]
+			17: t53 = *t21
+			18: t54 = &t36.Date [#7]
+			19: t55 = time.Now()
+			20: t56 = (time.Time).String(t55)
+			21: t57 = &t36.Total [#8]
+			22: *t37 = t39
+			23: *t40 = t41
+			24: *t42 = t45
+			25: *t46 = t49
+			26: *t50 = t51
+			27: *t52 = t53
+			28: *t54 = t56
+			29: *t57 = 10:float32
+			30: t58 = *t0
+			31: t59 = &t58.db [#4]
+			32: t60 = *t59
+			33: t61 = *t1
+			34: t62 = invoke t60.GetCollection(t61, "order_db":string, "orders":string)
+			35: t63 = extract t62 #0
+			36: t64 = extract t62 #1
+			37: t65 = *t1
+			38: t66 = *t36
+			39: t67 = make interface{} <- Order (t66)
+			40: t68 = invoke t63.InsertOne(t65, t67)
+			41: t69 = t68 != nil:error
+			42: if t69 goto 3 else 4
+Block #3: sockshop3.OrderService.NewOrder.if.then
+			00: return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t68
+Block #4: sockshop3.OrderService.NewOrder.if.done
+			00: t70 = *t36
+			01: t71 = *t0
+			02: t72 = &t71.carts [#1]
+			03: t73 = *t72
+			04: t74 = *t1
+			05: t75 = *t2
+			06: t76 = invoke t73.DeleteCart(t74, t75)
+			07: return t70, t76
 	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderService
+	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+	Method: func(ctx context.Context, customerID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+	Method: func(ctx context.Context, customerID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+			shipping = parameter shipping : ShippingService
+Function: sockshop3.NewQueueMasterImpl
+Block #0: sockshop3.NewQueueMasterImpl.entry
+			00: t0 = new QueueMasterImpl (complit)
+			01: t1 = &t0.q [#0]
+			02: t2 = &t0.shipping [#1]
+			03: t3 = &t0.exitOnError [#2]
+			04: t4 = &t0.processed [#3]
+			05: *t1 = queue
+			06: *t2 = shipping
+			07: *t3 = false:bool
+			08: *t4 = 0:int32
+			09: t5 = make QueueMaster <- *QueueMasterImpl (t0)
+			10: return t5, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.QueueMasterImpl
 	Method: func(ctx context.Context) error
 		Parameters:
@@ -1298,7 +945,327 @@ Block #3: sockshop3.QueueMaster.Run.select.next
 			08: t12 = *t11
 			09: t13 = invoke t10.UpdateStatus(ctx, t12, "shipped":string)
 			10: jump 1
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserServiceImpl
+	Method: func(ctx context.Context, entity string, id string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			entity = parameter entity : string
+			id = parameter id : string
+Function: sockshop3.UserService.Delete
+Block #0: sockshop3.UserService.Delete.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			06: t6 = &t5[0:int]
+			07: t7 = &t6.Key [#0]
+			08: t8 = &t6.Value [#1]
+			09: *t7 = "UserID":string
+			10: t9 = make interface{} <- string (id)
+			11: *t8 = t9
+			12: t10 = slice t5[:]
+			13: t11 = invoke t3.DeleteOne(ctx, t10)
+			14: return nil:error
+	Method: func(ctx context.Context, addressid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addressid = parameter addressid : string
+Function: sockshop3.UserService.GetAddresses
+Block #0: sockshop3.UserService.GetAddresses.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new []Address (addresses)
+			06: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			07: t7 = &t6[0:int]
+			08: t8 = &t7.Key [#0]
+			09: t9 = &t7.Value [#1]
+			10: *t8 = "Addresses":string
+			11: t10 = make interface{} <- string (addressid)
+			12: *t9 = t10
+			13: t11 = slice t6[:]
+			14: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			15: t13 = &t12[0:int]
+			16: t14 = &t13.Key [#0]
+			17: t15 = &t13.Value [#1]
+			18: *t14 = "Addresses":string
+			19: t16 = make interface{} <- bool (true:bool)
+			20: *t15 = t16
+			21: t17 = slice t12[:]
+			22: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
+			23: t19 = &t18[0:int]
+			24: *t19 = t17
+			25: t20 = slice t18[:]
+			26: t21 = invoke t3.FindMany(ctx, t11, t20...)
+			27: t22 = extract t21 #0
+			28: t23 = extract t21 #1
+			29: t24 = make interface{} <- *[]Address (t5)
+			30: t25 = invoke t22.All(ctx, t24)
+			31: t26 = *t5
+			32: return t26, nil:error
+	Method: func(ctx context.Context, cardid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cardid = parameter cardid : string
+Function: sockshop3.UserService.GetCards
+Block #0: sockshop3.UserService.GetCards.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new []Card (cards)
+			06: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			07: t7 = &t6[0:int]
+			08: t8 = &t7.Key [#0]
+			09: t9 = &t7.Value [#1]
+			10: *t8 = "Cards":string
+			11: t10 = make interface{} <- string (cardid)
+			12: *t9 = t10
+			13: t11 = slice t6[:]
+			14: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			15: t13 = &t12[0:int]
+			16: t14 = &t13.Key [#0]
+			17: t15 = &t13.Value [#1]
+			18: *t14 = "Cards":string
+			19: t16 = make interface{} <- bool (true:bool)
+			20: *t15 = t16
+			21: t17 = slice t12[:]
+			22: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
+			23: t19 = &t18[0:int]
+			24: *t19 = t17
+			25: t20 = slice t18[:]
+			26: t21 = invoke t3.FindMany(ctx, t11, t20...)
+			27: t22 = extract t21 #0
+			28: t23 = extract t21 #1
+			29: t24 = make interface{} <- *[]Card (t5)
+			30: t25 = invoke t22.All(ctx, t24)
+			31: t26 = *t5
+			32: return t26, nil:error
+	Method: func(ctx context.Context, userid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+Function: sockshop3.UserService.GetUsers
+Block #0: sockshop3.UserService.GetUsers.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new []User (users)
+			06: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			07: t7 = &t6[0:int]
+			08: t8 = &t7.Key [#0]
+			09: t9 = &t7.Value [#1]
+			10: *t8 = "UserID":string
+			11: t10 = make interface{} <- string (userid)
+			12: *t9 = t10
+			13: t11 = slice t6[:]
+			14: t12 = invoke t3.FindMany(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			15: t13 = extract t12 #0
+			16: t14 = extract t12 #1
+			17: t15 = make interface{} <- *[]User (t5)
+			18: t16 = invoke t13.All(ctx, t15)
+			19: t17 = *t5
+			20: return t17, nil:error
+	Method: func(ctx context.Context, username string, password string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			password = parameter password : string
+Function: sockshop3.UserService.Login
+Block #0: sockshop3.UserService.Login.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			06: t6 = &t5[0:int]
+			07: t7 = &t6.Key [#0]
+			08: t8 = &t6.Value [#1]
+			09: *t7 = "username":string
+			10: t9 = make interface{} <- string (username)
+			11: *t8 = t9
+			12: t10 = slice t5[:]
+			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			14: t12 = &t11[0:int]
+			15: t13 = &t12.Key [#0]
+			16: t14 = &t12.Value [#1]
+			17: *t13 = "password":string
+			18: t15 = make interface{} <- bool (true:bool)
+			19: *t14 = t15
+			20: t16 = slice t11[:]
+			21: t17 = new User (user)
+			22: t18 = new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs)
+			23: t19 = &t18[0:int]
+			24: *t19 = t16
+			25: t20 = slice t18[:]
+			26: t21 = invoke t3.FindOne(ctx, t10, t20...)
+			27: t22 = extract t21 #0
+			28: t23 = extract t21 #1
+			29: t24 = make interface{} <- *User (t17)
+			30: t25 = invoke t22.One(ctx, t24)
+			31: t26 = &t17.Password [#4]
+			32: t27 = *t26
+			33: t28 = t27 != password
+			34: if t28 goto 1 else 2
+Block #1: sockshop3.UserService.Login.if.then
+			00: t29 = errors.New("Unauthorized":string)
+			01: return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29
+Block #2: sockshop3.UserService.Login.if.done
+			00: t30 = *t17
+			01: return t30, nil:error
+	Method: func(ctx context.Context, userid string, address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+			address = parameter address : Address
+Function: sockshop3.UserService.PostAddress
+Block #0: sockshop3.UserService.PostAddress.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			06: t6 = &t5[0:int]
+			07: t7 = &t6.Key [#0]
+			08: t8 = &t6.Value [#1]
+			09: *t7 = "UserID":string
+			10: t9 = make interface{} <- string (userid)
+			11: *t8 = t9
+			12: t10 = slice t5[:]
+			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			14: t12 = &t11[0:int]
+			15: t13 = &t12.Key [#0]
+			16: t14 = &t12.Value [#1]
+			17: *t13 = "Address":string
+			18: t15 = make interface{} <- Address (address)
+			19: *t14 = t15
+			20: t16 = slice t11[:]
+			21: t17 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t16)
+			22: t18 = invoke t3.Upsert(ctx, t10, t17)
+			23: return userid, nil:error
+	Method: func(ctx context.Context, userid string, card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+			card = parameter card : Card
+Function: sockshop3.UserService.PostCard
+Block #0: sockshop3.UserService.PostCard.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "users":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			06: t6 = &t5[0:int]
+			07: t7 = &t6.Key [#0]
+			08: t8 = &t6.Value [#1]
+			09: *t7 = "UserID":string
+			10: t9 = make interface{} <- string (userid)
+			11: *t8 = t9
+			12: t10 = slice t5[:]
+			13: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			14: t12 = &t11[0:int]
+			15: t13 = &t12.Key [#0]
+			16: t14 = &t12.Value [#1]
+			17: *t13 = "Card":string
+			18: t15 = make interface{} <- Card (card)
+			19: *t14 = t15
+			20: t16 = slice t11[:]
+			21: t17 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t16)
+			22: t18 = invoke t3.Upsert(ctx, t10, t17)
+			23: return userid, nil:error
+	Method: func(ctx context.Context, u github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			u = parameter u : User
+Function: sockshop3.UserService.PostUser
+Block #0: sockshop3.UserService.PostUser.entry
+			00: t0 = local User (u)
+			01: *t0 = u
+			02: t1 = &s.db [#0]
+			03: t2 = *t1
+			04: t3 = invoke t2.GetCollection(ctx, "user_db":string, "users":string)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = *t0
+			08: t7 = make interface{} <- User (t6)
+			09: t8 = invoke t4.InsertOne(ctx, t7)
+			10: t9 = &t0.UserID [#7]
+			11: t10 = *t9
+			12: return t10, nil:error
+	Method: func(ctx context.Context, username string, password string, email string, first string, last string) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			password = parameter password : string
+			email = parameter email : string
+			first = parameter first : string
+			last = parameter last : string
+Function: sockshop3.UserService.Register
+Block #0: sockshop3.UserService.Register.entry
+			00: t0 = local User (u)
+			01: t1 = &t0.Username [#3]
+			02: *t1 = username
+			03: t2 = &t0.Password [#4]
+			04: *t2 = password
+			05: t3 = &t0.Email [#2]
+			06: *t3 = email
+			07: t4 = &t0.FirstName [#0]
+			08: *t4 = first
+			09: t5 = &t0.LastName [#1]
+			10: *t5 = last
+			11: t6 = &t0.Addresses [#5]
+			12: *t6 = struct{Street string; Number string; Country string; City string; PostCode string; ID string}{}:Address
+			13: t7 = &t0.Cards [#6]
+			14: *t7 = struct{LongNum string; Expires string; CCV string; ID string}{}:Card
+			15: t8 = &s.db [#0]
+			16: t9 = *t8
+			17: t10 = invoke t9.GetCollection(ctx, "user_db":string, "users":string)
+			18: t11 = extract t10 #0
+			19: t12 = extract t10 #1
+			20: t13 = *t0
+			21: t14 = make interface{} <- User (t13)
+			22: t15 = invoke t11.InsertOne(ctx, t14)
+			23: t16 = &t0.UserID [#7]
+			24: t17 = *t16
+			25: return t17, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingService
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
+	Method: func(ctx context.Context, shipment github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
+	Method: func(ctx context.Context, id string, status string) error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.PaymentService
+	Method: func(ctx context.Context, amount float32) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Authorisation, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			declineOverAmount = parameter declineOverAmount : string
+Function: sockshop3.NewPaymentServiceImpl
+Block #0: sockshop3.NewPaymentServiceImpl.entry
+			00: t0 = new PaymentServiceImpl (complit)
+			01: t1 = &t0.declineOverAmount [#0]
+			02: *t1 = 50:float32
+			03: t2 = make PaymentService <- *PaymentServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.QueueMaster
+	Method: func(ctx context.Context) error
 	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CartService
 	Method: func(ctx context.Context, customerID string, item github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item, error)
 	Method: func(ctx context.Context, customerID string) error
@@ -1307,7 +1274,25 @@ Block #3: sockshop3.QueueMaster.Run.select.next
 	Method: func(ctx context.Context, customerID string, sessionID string) error
 	Method: func(ctx context.Context, customerID string, itemID string) error
 	Method: func(ctx context.Context, customerID string, item github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item) error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.cart
+		Parameters:
+Function: sockshop3.main
+Block #0: sockshop3.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewUserServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.Login(t0, "":string, "":string)
+			05: return
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.UserService
+	Method: func(ctx context.Context, entity string, id string) error
+	Method: func(ctx context.Context, id string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address, error)
+	Method: func(ctx context.Context, cardid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card, error)
+	Method: func(ctx context.Context, id string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
+	Method: func(ctx context.Context, username string, password string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User, error)
+	Method: func(ctx context.Context, userid string, address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) (string, error)
+	Method: func(ctx context.Context, userid string, card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) (string, error)
+	Method: func(ctx context.Context, user github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User) (string, error)
+	Method: func(ctx context.Context, username string, password string, email string, first string, last string) (string, error)
 		Parameters:
 			ctx = parameter ctx : context.Context
 			userService = parameter userService : UserService
@@ -1330,21 +1315,61 @@ Block #0: sockshop3.NewOrderServiceImpl.entry
 			10: *t5 = orderDB
 			11: t6 = make OrderService <- *OrderServiceImpl (t0)
 			12: return t6, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.ShippingService
-	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
-	Method: func(ctx context.Context, shipment github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment, error)
-	Method: func(ctx context.Context, id string, status string) error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: sockshop3.NewShippingServiceImpl
+Block #0: sockshop3.NewShippingServiceImpl.entry
+			00: t0 = new ShippingServiceImpl (complit)
+			01: t1 = &t0.q [#0]
+			02: t2 = &t0.db [#1]
+			03: *t1 = queue
+			04: *t2 = db
+			05: t3 = make ShippingService <- *ShippingServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address
+		Parameters:
+			ctx = parameter ctx : context.Context
+			catalogue_db = parameter catalogue_db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: sockshop3.NewCatalogueServiceImpl
+Block #0: sockshop3.NewCatalogueServiceImpl.entry
+			00: t0 = new CatalogueServiceImpl (complit)
+			01: t1 = &t0.catalogue_db [#0]
+			02: *t1 = catalogue_db
+			03: t2 = make CatalogueService <- *CatalogueServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.tag
+		Parameters:
+			ctx = parameter ctx : context.Context
+			user = parameter user : UserService
+			catalogue = parameter catalogue : CatalogueService
+			cart = parameter cart : CartService
+			order = parameter order : OrderService
+Function: sockshop3.NewFrontendImpl
+Block #0: sockshop3.NewFrontendImpl.entry
+			00: t0 = new FrontendImpl (complit)
+			01: t1 = &t0.user [#0]
+			02: t2 = &t0.catalogue [#1]
+			03: t3 = &t0.cart [#2]
+			04: t4 = &t0.order [#3]
+			05: *t1 = user
+			06: *t2 = catalogue
+			07: *t3 = cart
+			08: *t4 = order
+			09: t5 = make Frontend <- *FrontendImpl (t0)
+			10: return t5, nil:error
 		Parameters:
 			ctx = parameter ctx : context.Context
 			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: sockshop3.NewUserServiceImpl
-Block #0: sockshop3.NewUserServiceImpl.entry
-			00: t0 = new UserServiceImpl (complit)
+Function: sockshop3.NewCartServiceImpl
+Block #0: sockshop3.NewCartServiceImpl.entry
+			00: t0 = new CartServiceImpl (complit)
 			01: t1 = &t0.db [#0]
 			02: *t1 = db
-			03: t2 = make UserService <- *UserServiceImpl (t0)
+			03: t2 = make CartService <- *CartServiceImpl (t0)
 			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User
 	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.CatalogueServiceImpl
 	Method: func(ctx context.Context, sock github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) (string, error)
 		Parameters:
@@ -1574,27 +1599,4 @@ Block #0: sockshop3.CatalogueService.Tags.entry
 			23: t20 = make interface{} <- *[]Sock (t5)
 			24: t21 = invoke t18.All(ctx, t20)
 			25: return nil:[]string, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			catalogue_db = parameter catalogue_db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: sockshop3.NewCatalogueServiceImpl
-Block #0: sockshop3.NewCatalogueServiceImpl.entry
-			00: t0 = new CatalogueServiceImpl (complit)
-			01: t1 = &t0.catalogue_db [#0]
-			02: *t1 = catalogue_db
-			03: t2 = make CatalogueService <- *CatalogueServiceImpl (t0)
-			04: return t2, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: sockshop3.NewCartServiceImpl
-Block #0: sockshop3.NewCartServiceImpl.entry
-			00: t0 = new CartServiceImpl (complit)
-			01: t1 = &t0.db [#0]
-			02: *t1 = db
-			03: t2 = make CartService <- *CartServiceImpl (t0)
-			04: return t2, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.OrderService
-	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-	Method: func(ctx context.Context, customerID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
-	Method: func(ctx context.Context, customerID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Authorisation

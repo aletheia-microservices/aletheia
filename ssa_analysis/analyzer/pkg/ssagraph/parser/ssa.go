@@ -220,6 +220,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	switch t := val.(type) {
 	case *ssa.Call:
 		for _, arg := range t.Call.Args {
+			fmt.Printf("[SSA PARSE VALUE] [CALL: %s] ARG: %s\n", t.Name(), arg.Name())
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == arg.Name() {
 					fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
@@ -233,7 +234,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 				}
 			}
 			argNode := parseValue(graph, instr, instrIdx, arg, visited)
-			graph.CreateAndAddNewEdge(argNode, node, ssagraph.EDGE_CALL_ON, 0, "")
+			graph.CreateAndAddNewEdge(argNode, node, ssagraph.EDGE_ARG_ON_CALL, 0, "")
+		}
+		if t.Call.IsInvoke() {
+			rcv := t.Call.Value
+			fmt.Printf("[SSA PARSE VALUE] [CALL: %s] RCV: %s\n", t.Name(), rcv.Name())
+			rcvNode := parseValue(graph, instr, instrIdx, rcv, visited)
+			graph.CreateAndAddNewEdge(rcvNode, node, ssagraph.EDGE_RECEIVER_ON_CALL, 0, "")
 		}
 	case *ssa.Alloc:
 		// nothing to do
@@ -322,7 +329,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
 		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
-	
+
 	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.Range, *ssa.Next, *ssa.ChangeInterface, *ssa.Index:
 		// TODO
 		fmt.Printf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())

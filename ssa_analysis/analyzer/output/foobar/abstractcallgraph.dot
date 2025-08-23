@@ -8,17 +8,17 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_Frontend_WriteFooBar [label="Frontend.WriteFooBar", style=bold, shape=box, color="blue"];
-		N_FooService_WriteFoo [label="FooService.WriteFoo", style=bold, shape=box, color="blue"];
-		N_BarService_WriteBar [label="BarService.WriteBar", style=bold, shape=box, color="blue"];
 		N_Frontend_ReadFooBar [label="Frontend.ReadFooBar", style=bold, shape=box, color="blue"];
+		N_Frontend_WriteFooBar [label="Frontend.WriteFooBar", style=bold, shape=box, color="blue"];
+		N_BarService_WriteBar [label="BarService.WriteBar", style=bold, shape=box, color="blue"];
+		N_FooService_WriteFoo [label="FooService.WriteFoo", style=bold, shape=box, color="blue"];
 		N_FooService_ReadFoo [label="FooService.ReadFoo", style=bold, shape=box, color="blue"];
 		N_BarService_ReadBar [label="BarService.ReadBar", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_bar_db_bar [label="bar_db.bar", style=bold, shape=cylinder, color="green"];
 		N_foo_db_foo [label="foo_db.foo", style=bold, shape=cylinder, color="green"];
+		N_bar_db_bar [label="bar_db.bar", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Frontend_WriteFooBar [label="WriteFooBar()", color=orange];
 	N_Frontend_WriteFooBar -> N_FooService_WriteFoo [label="WriteFoo()", color=blue];

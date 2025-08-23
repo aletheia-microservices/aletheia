@@ -19,7 +19,12 @@ _obj
 _obj
 [rpc] @ StorageService.DeletePost.t2
 ", style=bold, shape=box, color="blue"];
-		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
+		N_StorageService_DeletePost [label="StorageService.DeletePost
+
+==== param 0 (postID) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
+", style=bold, shape=box, color="blue"];
 		N_StorageService_ReadPost [label="StorageService.ReadPost
 
 ==== param 0 (reqID) tainted ====
@@ -31,6 +36,11 @@ _obj
 _obj
 [read, primary] @ posts_db.post.PostID
 [read, secondary] @ notifications_queue.notification.PostID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post) tainted ====
+_obj
+[read, primary] @ posts_db.post
 ", style=bold, shape=box, color="blue"];
 		N_UploadService_UploadPost [label="UploadService.UploadPost
 
@@ -59,12 +69,7 @@ _obj
 _obj
 [write, primary] @ posts_db.post.PostID
 ", style=bold, shape=box, color="blue"];
-		N_StorageService_DeletePost [label="StorageService.DeletePost
-
-==== param 0 (postID) tainted ====
-_obj
-[delete, primary] @ posts_db.post.PostID
-", style=bold, shape=box, color="blue"];
+		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
@@ -153,17 +158,17 @@ _obj
 [delete, primary] @ posts_db.post.PostID
 
 
-==== arg 1 (t8) tainted ====
+==== arg 1 (t7) tainted ====
 _obj
 [delete, primary] @ posts_db.post.PostID
 
 
-==== arg 2 (t7) tainted ====
+==== arg 2 (t9) tainted ====
 _obj
 [delete, primary] @ posts_db.post.PostID
 
 
-==== arg 3 (t9) tainted ====
+==== arg 3 (t8) tainted ====
 _obj
 [delete, primary] @ posts_db.post.PostID
 
@@ -210,13 +215,13 @@ _obj
 [read, secondary] @ notifications_queue.notification.PostID
 
 
-==== arg 1 (t9) tainted ====
+==== arg 1 (t10) tainted ====
 _obj
 [read, primary] @ posts_db.post.PostID
 [read, secondary] @ notifications_queue.notification.PostID
 
 
-==== arg 2 (t10) tainted ====
+==== arg 2 (t11) tainted ====
 _obj
 [read, primary] @ posts_db.post.PostID
 [read, secondary] @ notifications_queue.notification.PostID
@@ -228,9 +233,16 @@ _obj
 [read, secondary] @ notifications_queue.notification.PostID
 
 
-==== arg 4 (t11) tainted ====
+==== arg 4 (t9) tainted ====
 _obj
 [read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
+
+
+==== arg 5 (t0) tainted ====
+_obj
+[read, primary] @ posts_db.post
+_obj.PostID
 [read, secondary] @ notifications_queue.notification.PostID
 ", color=green];
 }

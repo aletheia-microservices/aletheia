@@ -6,7 +6,8 @@ const (
 	EDGE_USAGE EdgeType = iota
 	EDGE_STORE_ADDRESS
 	EDGE_STORE_VALUE // usually pointed by element that is used as copy in store
-	EDGE_CALL_ON
+	EDGE_ARG_ON_CALL
+	EDGE_RECEIVER_ON_CALL
 	EDGE_RETURN_ON
 	EDGE_EXTRACT
 	EDGE_PHI_ON
@@ -39,8 +40,16 @@ func (edge *SSAEdge) GetParam() string {
 	return edge.param
 }
 
+func (edge *SSAEdge) GetIndex() int {
+	return edge.index
+}
+
 func (edge *SSAEdge) GetType() EdgeType {
 	return edge.edgeType
+}
+
+func (edge *SSAEdge) IsType(t EdgeType) bool {
+	return edge.edgeType == t
 }
 
 func (edge *SSAEdge) HasFromNode(node *SSANode) bool {
@@ -71,7 +80,9 @@ func (edge *SSAEdge) GetTypeString() string {
 		return "STORE_ADDRESS"
 	case EDGE_STORE_VALUE:
 		return "STORE_VALUE"
-	case EDGE_CALL_ON:
+	case EDGE_ARG_ON_CALL:
+		return "CALL_ON"
+	case EDGE_RECEIVER_ON_CALL:
 		return "CALL_ON"
 	case EDGE_RETURN_ON:
 		return "RETURN_ON"

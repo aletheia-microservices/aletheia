@@ -1,47 +1,49 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1128094658 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__1128094658 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_4720739 [label="return t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4720739 [label="return t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4720754 [label="return t7", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4720754 [label="return t7", style=bold, shape=ellipse, color="yellow"];
-	N_nil_187509369 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_instr__543488911 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__543488911 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_4527390 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4527390 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4527405 [label="return t7", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4527405 [label="return t7", style=bold, shape=ellipse, color="yellow"];
+	N_nil_511955944 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
 	N_val__user__string [label="\"user\":string: \"user\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__user_db__string [label="\"user_db\":string: \"user_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_binary_4720728 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_4720695 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"user\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_4720775 [label="t7: invoke t3.InsertOne(ctx, t6)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_4527379 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_4527346 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"user\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4527426 [label="t7: invoke t3.InsertOne(ctx, t6)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_4720675 [label="t0: &u.userDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4527326 [label="t0: &u.userDB [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet6 [label="t6: make interface{} <- User (user)
 
 ==== tainted ====
 _obj
 [write] @ user_db.user
 ", style=bold, shape=box, color="black"];
-	N_val_param_4720590 [label="u: parameter u : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_4720619 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_4720640 [label="user: parameter user : User
+	N_val_param_4527241 [label="u: parameter u : *UserServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4527270 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4527291 [label="user: parameter user : User
 
 ==== tainted ====
 _obj
 [write] @ user_db.user
 ", style=bold, shape=box, color="black"];
-	N_val_unary_4720675 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_4720590 -> N_val_field_4720675;
-	N_val_field_4720675 -> N_val_unary_4720675;
-	N_val_param_4720619 -> N_val_call_4720695;
-	N_val__user_db__string -> N_val_call_4720695;
-	N_val__user__string -> N_val_call_4720695;
-	N_val_call_4720695 -> N_val_extrt3;
-	N_val_call_4720695 -> N_val_extrt4;
-	N_val_extrt4 -> N_val_binary_4720728;
-	N_nil_187509369 -> N_val_binary_4720728;
-	N_val_extrt4 -> N_instr_ret_4720739;
-	N_val_param_4720640 -> N_val_ifacet6;
-	N_val_param_4720619 -> N_val_call_4720775;
-	N_val_ifacet6 -> N_val_call_4720775;
-	N_val_call_4720775 -> N_instr_ret_4720754;
+	N_val_unary_4527326 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4527241 -> N_val_field_4527326;
+	N_val_field_4527326 -> N_val_unary_4527326;
+	N_val_param_4527270 -> N_val_call_4527346;
+	N_val__user_db__string -> N_val_call_4527346;
+	N_val__user__string -> N_val_call_4527346;
+	N_val_unary_4527326 -> N_val_call_4527346;
+	N_val_call_4527346 -> N_val_extrt3;
+	N_val_call_4527346 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_4527379;
+	N_nil_511955944 -> N_val_binary_4527379;
+	N_val_extrt4 -> N_instr_ret_4527390;
+	N_val_param_4527291 -> N_val_ifacet6;
+	N_val_param_4527270 -> N_val_call_4527426;
+	N_val_ifacet6 -> N_val_call_4527426;
+	N_val_extrt3 -> N_val_call_4527426;
+	N_val_call_4527426 -> N_instr_ret_4527405;
 }
