@@ -14,7 +14,7 @@ const (
 	APP_PATH_DIGOTA                  = "digota/workflow/digota"
 	APP_PATH_DSB_MEDIA_SQL           = "dsb_media_sql/workflow/mediamicroservices_sql"
 	APP_PATH_SOCKSHOP3               = "sockshop3/workflow/sockshop3"
-	APP_PATH_DSB_SN                  = "dsb_sn/workflow/socialnetwork"
+	APP_PATH_DSB_SN2                 = "dsb_sn2/workflow/socialnetwork2"
 	APP_PATH_FOO_BAR                 = "foobar/workflow/foobar"
 	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
@@ -25,7 +25,7 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DIGOTA,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIA_SQL,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP3,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SN,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SN2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
@@ -38,7 +38,7 @@ var APPS_ENTRYPOINTS_PATHS = map[string]string{
 	"digota":                  "blueprint/digota/skuservice_get",
 	"sockshop3":               "blueprint/sockshop3/userservice_login",
 	"dsb_media_sql":           "blueprint/dsb_media_sql/api_readmovie",
-	"dsb_sn":                  "blueprint/dsb_sn/poststorageservice_storepost",
+	"dsb_sn2":                 "blueprint/dsb_sn2/poststorageservice_storepost",
 	"dsb_hotel2":              "blueprint/dsb_hotel2/geoservice_nearby",
 	"train_ticket2":           "blueprint/train_ticket2/assuranceservice_deletebyid",
 }

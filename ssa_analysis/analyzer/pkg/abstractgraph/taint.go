@@ -36,7 +36,7 @@ func (taint *AbstractTaint) Copy() *AbstractTaint {
 }
 
 func (taint *AbstractTaint) IsRead() bool {
-	return taint.dbOpType == common.OP_READ
+	return taint.dbOpType == common.OP_READ || taint.dbOpType == common.OP_READ_MANY
 }
 
 func (taint *AbstractTaint) IsWrite() bool {

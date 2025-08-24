@@ -329,13 +329,40 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
 		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
+	
+	case *ssa.Range:
+		// e.g., dsb_sn2 at PostStorageService.ReadPosts:
+		// ----------------------------------------
+		// t0 = make map[int64]bool
+		// t71 = range t0
+		// ----------------------------------------
+		// for k := range unique_post_ids {
+		// 	  unique_pids = append(unique_pids, k)
+		// }
+		// ----------------------------------------
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_RANGE_OF, 0, "")
+	case *ssa.Next:
+		// e.g., dsb_sn2 at PostStorageService.ReadPosts:
+		// ----------------------------------------
+		// t0 = make map[int64]bool
+		// t71 = range t0
+		// t74 = next t71
+		// ----------------------------------------
+		// for k := range unique_post_ids {
+		// 	  unique_pids = append(unique_pids, k)
+		// }
+		// ----------------------------------------
+		iterNode := parseValue(graph, instr, instrIdx, t.Iter, visited)
+		graph.CreateAndAddNewEdge(iterNode, node, ssagraph.EDGE_ITERATOR_OF, 0, "")
 
-	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.Range, *ssa.Next, *ssa.ChangeInterface, *ssa.Index:
+	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.ChangeInterface, *ssa.Index, 
+		*ssa.TypeAssert, *ssa.ChangeType: // dsb_sn2
 		// TODO
-		fmt.Printf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		fmt.Printf("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 
 	default:
-		log.Fatalf("[SSA PARSE VALUE] ignoring... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		log.Fatalf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 	}
 	return node
 }

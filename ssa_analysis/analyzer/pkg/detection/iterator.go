@@ -135,7 +135,7 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// ===================
 			for _, detector := range iterator.detectors {
 				switch edge.GetOpType() {
-				case common.OP_READ:
+				case common.OP_READ, common.OP_READ_MANY:
 					detector.OnRead(iterator.app, edge)
 				case common.OP_WRITE:
 					detector.OnWrite(iterator.app, edge)

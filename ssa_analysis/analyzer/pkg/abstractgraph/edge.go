@@ -21,7 +21,7 @@ type AbstractEdge struct {
 	t EdgeType
 
 	opType common.DatabaseOperationType // for database calls
-
+	
 	// format: <func_short_path>_<ssa_instr_name>
 	// except for entrypoint edges where format is just <func_short_path>
 	id     string
@@ -33,7 +33,7 @@ type AbstractEdge struct {
 }
 
 func (edge *AbstractEdge) String() string {
-	return fmt.Sprintf("(%s) --> (%s).%s(...)", edge.from.String(), edge.to.String(), edge.method)
+	return fmt.Sprintf("%s() --> %s.%s()", edge.from.String(), edge.to.String(), edge.method)
 }
 
 func (edge *AbstractEdge) GetOpType() common.DatabaseOperationType {

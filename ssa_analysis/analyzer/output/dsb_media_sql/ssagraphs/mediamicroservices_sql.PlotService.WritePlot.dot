@@ -1,17 +1,17 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2723079 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2723079 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2722948 [label="*t1 = plotID", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2722948 [label="*t1 = plotID", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2722964 [label="*t2 = plotText", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2722964 [label="*t2 = plotText", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2723060 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2723060 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2723068 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2723068 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_ret_1845742 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1845742 [label="return t14, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_1845611 [label="*t1 = plotID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845611 [label="*t1 = plotID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845627 [label="*t2 = plotText", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845627 [label="*t2 = plotText", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845723 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845723 [label="*t6 = t7", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845731 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_1845731 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
 	N_val__INSERT_INTO_plot______string [label="\"INSERT INTO plot(...\":string: \"INSERT INTO plot(...\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2722926 [label="t0: local Plot (plot)
+	N_val_alloc_1845589 [label="t0: local Plot (plot)
 
 ==== tainted ====
 _obj.plot
@@ -19,29 +19,29 @@ _obj.plot
 _obj.plotid
 [write] @ plot_db.plot.plotid
 ", style=bold, shape=box, color="orange"];
-	N_val_alloc_2723076 [label="t5: new [2]any (varargs)
+	N_val_alloc_1845739 [label="t5: new [2]any (varargs)
 
 ==== tainted ====
 _obj[*]
 [write] @ plot_db.plot.plotid
 [write] @ plot_db.plot.plot
 ", style=bold, shape=box, color="orange"];
-	N_val_call_2723005 [label="t11: invoke t4.Exec(ctx, \"INSERT INTO plot(...\":string, t10...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1845668 [label="t11: invoke t4.Exec(ctx, \"INSERT INTO plot(...\":string, t10...)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2722948 [label="t1: &t0.plotid [#0]
+	N_val_field_1845611 [label="t1: &t0.plotid [#0]
 
 ==== tainted ====
 _obj
 [write] @ plot_db.plot.plotid
 ", style=bold, shape=box, color="green"];
-	N_val_field_2722964 [label="t2: &t0.plot [#1]
+	N_val_field_1845627 [label="t2: &t0.plot [#1]
 
 ==== tainted ====
 _obj
 [write] @ plot_db.plot.plot
 ", style=bold, shape=box, color="green"];
-	N_val_field_2722994 [label="t3: &m.PlotDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_1845657 [label="t3: &m.PlotDB [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet7 [label="t7: make any <- string (plotID)
 
 ==== tainted ====
@@ -66,16 +66,16 @@ _obj
 _obj
 [write] @ plot_db.plot.plot
 ", style=bold, shape=box, color="green"];
-	N_val_param_2722813 [label="m: parameter m : *PlotServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2722843 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2722864 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_2722877 [label="plotID: parameter plotID : string
+	N_val_param_1845476 [label="m: parameter m : *PlotServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_1845506 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1845527 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_1845540 [label="plotID: parameter plotID : string
 
 ==== tainted ====
 _obj
 [write] @ plot_db.plot.plotid
 ", style=bold, shape=box, color="black"];
-	N_val_param_2722892 [label="plotText: parameter plotText : string
+	N_val_param_1845555 [label="plotText: parameter plotText : string
 
 ==== tainted ====
 _obj
@@ -88,8 +88,8 @@ _obj[*]
 [write] @ plot_db.plot.plotid
 [write] @ plot_db.plot.plot
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2722994 [label="t4: *t3", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2723086 [label="t14: *t0
+	N_val_unary_1845657 [label="t4: *t3", style=bold, shape=ellipse, color="red"];
+	N_val_unary_1845749 [label="t14: *t0
 
 ==== tainted ====
 _obj.plot
@@ -97,35 +97,35 @@ _obj.plot
 _obj.plotid
 [write] @ plot_db.plot.plotid
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2722926 -> N_val_field_2722948;
-	N_val_alloc_2722926 -> N_val_field_2722964;
-	N_val_field_2722948 -> N_instr_store_2722948;
-	N_val_param_2722877 -> N_instr_store_2722948;
-	N_val_field_2722964 -> N_instr_store_2722964;
-	N_val_param_2722892 -> N_instr_store_2722964;
-	N_val_param_2722813 -> N_val_field_2722994;
-	N_val_field_2722994 -> N_val_unary_2722994;
-	N_val_alloc_2723076 -> N_val_indext6;
-	N_val_param_2722877 -> N_val_ifacet7;
-	N_val_indext6 -> N_instr_store_2723060;
-	N_val_ifacet7 -> N_instr_store_2723060;
-	N_val_alloc_2723076 -> N_val_indext8;
-	N_val_param_2722892 -> N_val_ifacet9;
-	N_val_indext8 -> N_instr_store_2723068;
-	N_val_ifacet9 -> N_instr_store_2723068;
-	N_val_alloc_2723076 -> N_val_slicet10;
-	N_val_param_2722843 -> N_val_call_2723005;
-	N_val__INSERT_INTO_plot______string -> N_val_call_2723005;
-	N_val_slicet10 -> N_val_call_2723005;
-	N_val_unary_2722994 -> N_val_call_2723005;
-	N_val_call_2723005 -> N_val_extrt12;
-	N_val_call_2723005 -> N_val_extrt13;
-	N_val_alloc_2722926 -> N_val_unary_2723086;
-	N_val_unary_2723086 -> N_instr_ret_2723079;
-	N_val_extrt13 -> N_instr_ret_2723079;
-	N_val_indext8 -> N_val_alloc_2723076 [label="[*]", style=dashed, color=blue];
-	N_val_indext6 -> N_val_alloc_2723076 [label="[*]", style=dashed, color=blue];
-	N_val_field_2722948 -> N_val_alloc_2722926 [label=".plotid", style=dashed, color=blue];
-	N_val_field_2722964 -> N_val_alloc_2722926 [label=".plot", style=dashed, color=blue];
-	N_val_slicet10 -> N_val_alloc_2723076 [label="", style=dashed, color=blue];
+	N_val_alloc_1845589 -> N_val_field_1845611;
+	N_val_alloc_1845589 -> N_val_field_1845627;
+	N_val_field_1845611 -> N_instr_store_1845611;
+	N_val_param_1845540 -> N_instr_store_1845611;
+	N_val_field_1845627 -> N_instr_store_1845627;
+	N_val_param_1845555 -> N_instr_store_1845627;
+	N_val_param_1845476 -> N_val_field_1845657;
+	N_val_field_1845657 -> N_val_unary_1845657;
+	N_val_alloc_1845739 -> N_val_indext6;
+	N_val_param_1845540 -> N_val_ifacet7;
+	N_val_indext6 -> N_instr_store_1845723;
+	N_val_ifacet7 -> N_instr_store_1845723;
+	N_val_alloc_1845739 -> N_val_indext8;
+	N_val_param_1845555 -> N_val_ifacet9;
+	N_val_indext8 -> N_instr_store_1845731;
+	N_val_ifacet9 -> N_instr_store_1845731;
+	N_val_alloc_1845739 -> N_val_slicet10;
+	N_val_param_1845506 -> N_val_call_1845668;
+	N_val__INSERT_INTO_plot______string -> N_val_call_1845668;
+	N_val_slicet10 -> N_val_call_1845668;
+	N_val_unary_1845657 -> N_val_call_1845668;
+	N_val_call_1845668 -> N_val_extrt12;
+	N_val_call_1845668 -> N_val_extrt13;
+	N_val_alloc_1845589 -> N_val_unary_1845749;
+	N_val_unary_1845749 -> N_instr_ret_1845742;
+	N_val_extrt13 -> N_instr_ret_1845742;
+	N_val_indext8 -> N_val_alloc_1845739 [label="[*]", style=dashed, color=blue];
+	N_val_field_1845611 -> N_val_alloc_1845589 [label=".plotid", style=dashed, color=blue];
+	N_val_field_1845627 -> N_val_alloc_1845589 [label=".plot", style=dashed, color=blue];
+	N_val_indext6 -> N_val_alloc_1845739 [label="[*]", style=dashed, color=blue];
+	N_val_slicet10 -> N_val_alloc_1845739 [label="", style=dashed, color=blue];
 }

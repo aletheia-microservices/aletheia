@@ -1,0 +1,58 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2776280 [label="return t4, t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2776280 [label="return t4, t5", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2776276 [label="t0: math/rand.Int63()
+
+==== tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.t0
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2776325 [label="t3: invoke t2.ReadUserTimeline(ctx, t0, userId, start, stop)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt4 [label="t4: extract t3 #0
+
+==== tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.t4
+", style=bold, shape=box, color="black"];
+	N_val_extrt5 [label="t5: extract t3 #1
+
+==== tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.t5
+", style=bold, shape=box, color="black"];
+	N_val_field_2776289 [label="t1: &w.userTimelineService [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2776137 [label="w: parameter w : *Wrk2APIServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2776177 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2776198 [label="userId: parameter userId : int64
+
+==== tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.userId
+", style=bold, shape=box, color="black"];
+	N_val_param_2776212 [label="start: parameter start : int64
+
+==== tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.start
+", style=bold, shape=box, color="black"];
+	N_val_param_2776225 [label="stop: parameter stop : int64
+
+==== tainted ====
+_obj
+[rpc] @ UserTimelineService.ReadUserTimeline.stop
+", style=bold, shape=box, color="black"];
+	N_val_unary_2776289 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_param_2776137 -> N_val_field_2776289;
+	N_val_field_2776289 -> N_val_unary_2776289;
+	N_val_param_2776177 -> N_val_call_2776325;
+	N_val_call_2776276 -> N_val_call_2776325;
+	N_val_param_2776198 -> N_val_call_2776325;
+	N_val_param_2776212 -> N_val_call_2776325;
+	N_val_param_2776225 -> N_val_call_2776325;
+	N_val_unary_2776289 -> N_val_call_2776325;
+	N_val_call_2776325 -> N_val_extrt4;
+	N_val_call_2776325 -> N_val_extrt5;
+	N_val_extrt4 -> N_instr_ret_2776280;
+	N_val_extrt5 -> N_instr_ret_2776280;
+}

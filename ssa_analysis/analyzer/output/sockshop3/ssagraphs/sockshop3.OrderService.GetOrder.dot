@@ -1,17 +1,17 @@
 digraph G {
 	rankdir=TD;
-	N_instr__141416271 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__141416271 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2509207 [label="return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2509207 [label="return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2509273 [label="return t18, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2509273 [label="return t18, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2509051 [label="*t2 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2509051 [label="*t2 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2509064 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2509064 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
-	N_nil_1819095021 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
-	N_nil_1980538874 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_instr__1617448020 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1617448020 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_25435 [label="return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_25435 [label="return struct{ID string; CustomerID string; Customer User; Address Address; Card Card; Items []Item; Shipment Shipment; Date string; Total float32}{}:Order, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_25501 [label="return t18, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_25501 [label="return t18, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_25279 [label="*t2 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_25279 [label="*t2 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_25292 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_25292 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
+	N_nil_1428516467 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_802415295 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
 	N_val__ID__string [label="\"ID\":string: \"ID\":string
 
 ==== tainted ====
@@ -20,39 +20,24 @@ _obj
 ", style=bold, shape=box, color="blue"];
 	N_val__order_db__string [label="\"order_db\":string: \"order_db\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__orders__string [label="\"orders\":string: \"orders\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2509046 [label="t0: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-
-==== tainted ====
-_obj
-[read] @ order_db.orders.ID
-", style=bold, shape=box, color="orange"];
-	N_val_alloc_2509235 [label="t15: new Order (order)
+	N_val_alloc_25274 [label="t0: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_25463 [label="t15: new Order (order)
 
 ==== tainted ====
 _obj
 [read] @ order_db.orders
 ", style=bold, shape=box, color="orange"];
-	N_val_binary_2509196 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2509112 [label="t8: invoke t7.GetCollection(ctx, \"order_db\":string, \"orders\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2509174 [label="t11: invoke t9.FindOne(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2509258 [label="t17: invoke t12.One(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_25424 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_25340 [label="t8: invoke t7.GetCollection(ctx, \"order_db\":string, \"orders\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_25402 [label="t11: invoke t9.FindOne(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_25486 [label="t17: invoke t12.One(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt10 [label="t10: extract t8 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt9 [label="t9: extract t8 #0", style=bold, shape=ellipse, color="black"];
-	N_val_field_2509051 [label="t2: &t1.Key [#0]
-
-==== tainted ====
-_obj
-[read] @ order_db.orders.ID
-", style=bold, shape=box, color="green"];
-	N_val_field_2509064 [label="t3: &t1.Value [#1]
-
-==== tainted ====
-_obj
-[read] @ order_db.orders.ID
-", style=bold, shape=box, color="green"];
-	N_val_field_2509096 [label="t6: &s.db [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_25279 [label="t2: &t1.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_25292 [label="t3: &t1.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_25324 [label="t6: &s.db [#4]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet16 [label="t16: make interface{} <- *Order (t15)
 
 ==== tainted ====
@@ -65,70 +50,60 @@ _obj
 _obj
 [read] @ order_db.orders.ID
 ", style=bold, shape=box, color="black"];
-	N_val_indext1 [label="t1: &t0[0:int]
-
-==== tainted ====
-_obj
-[read] @ order_db.orders.ID
-", style=bold, shape=box, color="green"];
-	N_val_param_2508945 [label="s: parameter s : *OrderServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2508975 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2508996 [label="orderID: parameter orderID : string
+	N_val_indext1 [label="t1: &t0[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_25173 [label="s: parameter s : *OrderServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_25203 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_25224 [label="orderID: parameter orderID : string
 
 ==== tainted ====
 _obj
 [read] @ order_db.orders.ID
 ", style=bold, shape=box, color="black"];
-	N_val_slice_2509046 [label="t5: slice t0[:]
-
-==== tainted ====
-_obj
-[read] @ order_db.orders.ID
-", style=bold, shape=box, color="black"];
+	N_val_slice_25274 [label="t5: slice t0[:]", style=bold, shape=ellipse, color="black"];
 	N_val_struct_ID_string__CustomerID_string__Customer_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User__Address_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Card_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__Items___github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Item__Shipment_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Shipment__Date_string__Total_float32____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Order [label="struct{ID string; CustomerID string; Customer github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User; Address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address; Card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card; Items []github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item; Shipment github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment; Date string; Total float32}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order: struct{ID string; CustomerID string; Customer github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User; Address github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address; Card github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card; Items []github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item; Shipment github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment; Date string; Total float32}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order", style=bold, shape=ellipse, color="yellow"];
-	N_val_unary_2509096 [label="t7: *t6", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2509280 [label="t18: *t15
+	N_val_unary_25324 [label="t7: *t6", style=bold, shape=ellipse, color="red"];
+	N_val_unary_25508 [label="t18: *t15
 
 ==== tainted ====
 _obj
 [read] @ order_db.orders
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2509046 -> N_val_indext1;
-	N_val_indext1 -> N_val_field_2509051;
-	N_val_indext1 -> N_val_field_2509064;
-	N_val_field_2509051 -> N_instr_store_2509051;
-	N_val__ID__string -> N_instr_store_2509051;
-	N_val_param_2508996 -> N_val_ifacet4;
-	N_val_field_2509064 -> N_instr_store_2509064;
-	N_val_ifacet4 -> N_instr_store_2509064;
-	N_val_alloc_2509046 -> N_val_slice_2509046;
-	N_val_param_2508945 -> N_val_field_2509096;
-	N_val_field_2509096 -> N_val_unary_2509096;
-	N_val_param_2508975 -> N_val_call_2509112;
-	N_val__order_db__string -> N_val_call_2509112;
-	N_val__orders__string -> N_val_call_2509112;
-	N_val_unary_2509096 -> N_val_call_2509112;
-	N_val_call_2509112 -> N_val_extrt9;
-	N_val_call_2509112 -> N_val_extrt10;
-	N_val_param_2508975 -> N_val_call_2509174;
-	N_val_slice_2509046 -> N_val_call_2509174;
-	N_nil_1980538874 -> N_val_call_2509174;
-	N_val_extrt9 -> N_val_call_2509174;
-	N_val_call_2509174 -> N_val_extrt12;
-	N_val_call_2509174 -> N_val_extrt13;
-	N_val_extrt13 -> N_val_binary_2509196;
-	N_nil_1819095021 -> N_val_binary_2509196;
-	N_val_struct_ID_string__CustomerID_string__Customer_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User__Address_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Card_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__Items___github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Item__Shipment_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Shipment__Date_string__Total_float32____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Order -> N_instr_ret_2509207;
-	N_val_extrt13 -> N_instr_ret_2509207;
-	N_val_alloc_2509235 -> N_val_ifacet16;
-	N_val_param_2508975 -> N_val_call_2509258;
-	N_val_ifacet16 -> N_val_call_2509258;
-	N_val_extrt12 -> N_val_call_2509258;
-	N_val_alloc_2509235 -> N_val_unary_2509280;
-	N_val_unary_2509280 -> N_instr_ret_2509273;
-	N_nil_1819095021 -> N_instr_ret_2509273;
-	N_val_slice_2509046 -> N_val_alloc_2509046 [label="", style=dashed, color=blue];
-	N_val_field_2509051 -> N_val_alloc_2509046 [label="[*].Key", style=dashed, color=blue];
-	N_val_indext1 -> N_val_alloc_2509046 [label="[*]", style=dashed, color=blue];
-	N_val_field_2509064 -> N_val_alloc_2509046 [label="[*].Value", style=dashed, color=blue];
+	N_val_alloc_25274 -> N_val_indext1;
+	N_val_indext1 -> N_val_field_25279;
+	N_val_indext1 -> N_val_field_25292;
+	N_val_field_25279 -> N_instr_store_25279;
+	N_val__ID__string -> N_instr_store_25279;
+	N_val_param_25224 -> N_val_ifacet4;
+	N_val_field_25292 -> N_instr_store_25292;
+	N_val_ifacet4 -> N_instr_store_25292;
+	N_val_alloc_25274 -> N_val_slice_25274;
+	N_val_param_25173 -> N_val_field_25324;
+	N_val_field_25324 -> N_val_unary_25324;
+	N_val_param_25203 -> N_val_call_25340;
+	N_val__order_db__string -> N_val_call_25340;
+	N_val__orders__string -> N_val_call_25340;
+	N_val_unary_25324 -> N_val_call_25340;
+	N_val_call_25340 -> N_val_extrt9;
+	N_val_call_25340 -> N_val_extrt10;
+	N_val_param_25203 -> N_val_call_25402;
+	N_val_slice_25274 -> N_val_call_25402;
+	N_nil_802415295 -> N_val_call_25402;
+	N_val_extrt9 -> N_val_call_25402;
+	N_val_call_25402 -> N_val_extrt12;
+	N_val_call_25402 -> N_val_extrt13;
+	N_val_extrt13 -> N_val_binary_25424;
+	N_nil_1428516467 -> N_val_binary_25424;
+	N_val_struct_ID_string__CustomerID_string__Customer_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User__Address_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Card_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__Items___github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Item__Shipment_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Shipment__Date_string__Total_float32____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Order -> N_instr_ret_25435;
+	N_val_extrt13 -> N_instr_ret_25435;
+	N_val_alloc_25463 -> N_val_ifacet16;
+	N_val_param_25203 -> N_val_call_25486;
+	N_val_ifacet16 -> N_val_call_25486;
+	N_val_extrt12 -> N_val_call_25486;
+	N_val_alloc_25463 -> N_val_unary_25508;
+	N_val_unary_25508 -> N_instr_ret_25501;
+	N_nil_1428516467 -> N_instr_ret_25501;
+	N_val_field_25279 -> N_val_alloc_25274 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_25274 -> N_val_alloc_25274 [label="", style=dashed, color=blue];
+	N_val_field_25292 -> N_val_alloc_25274 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext1 -> N_val_alloc_25274 [label="[*]", style=dashed, color=blue];
 }

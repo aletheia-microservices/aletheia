@@ -165,6 +165,25 @@ ctx (@Nearby): (*ssa.Parameter) (parameter ctx : context.Context)
 	 → t0 (@Background): (*ssa.MakeInterface)
 	 → t0 (@Background): (*ssa.MakeInterface)
 
+t1 (@Nearby): (*ssa.Phi) (phi [0: nil:[]string, 2: t11] #hotelIds)
+	 → t11 (@Nearby): (*ssa.Call)
+
+t5 (@Nearby): (*ssa.IndexAddr) (&nil:[]github.com/hailocab/go-geoindex.Point[t3])
+
+t6 (@Nearby): (*ssa.UnOp) (*t5)
+
+t8 (@Nearby): (*ssa.Alloc) (new [1]string (varargs))
+	 → t8 (@Nearby): (*ssa.Alloc)
+
+t9 (@Nearby): (*ssa.IndexAddr) (&t8[0:int])
+	 → t8 (@Nearby): (*ssa.Alloc)
+
+t10 (@Nearby): (*ssa.Slice) (slice t8[:])
+	 → t8 (@Nearby): (*ssa.Alloc)
+
+t11 (@Nearby): (*ssa.Call) (append(t1, t10...))
+	 → t11 (@Nearby): (*ssa.Call)
+
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoServiceImpl).newGeoIndex ###
 g (@newGeoIndex): (*ssa.Parameter) (parameter g : *GeoServiceImpl)
@@ -200,6 +219,25 @@ t13 (@newGeoIndex): (*ssa.MakeInterface) (make interface{} <- *[]Point (t6))
 	 → t13 (@newGeoIndex): (*ssa.MakeInterface)
 
 t14 (@newGeoIndex): (*ssa.Call) (invoke t10.All(ctx, t13))
+
+t15 (@newGeoIndex): (*ssa.Call) (github.com/hailocab/go-geoindex.NewClusteringIndex())
+	 → t0 (@NewClusteringIndex): (*ssa.Alloc)
+
+t16 (@newGeoIndex): (*ssa.FieldAddr) (&g.index [#1])
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+t17 (@newGeoIndex): (*ssa.UnOp) (*t6)
+
+t22 (@newGeoIndex): (*ssa.IndexAddr) (&t17[t20])
+
+t24 (@newGeoIndex): (*ssa.FieldAddr) (&g.index [#1])
+	 → t0 (@NewGeoServiceImpl): (*ssa.Alloc)
+
+t25 (@newGeoIndex): (*ssa.UnOp) (*t24)
+	 → t0 (@NewClusteringIndex): (*ssa.Alloc)
+
+t26 (@newGeoIndex): (*ssa.MakeInterface) (make github.com/hailocab/go-geoindex.Point <- Point (t23))
+	 → t26 (@newGeoIndex): (*ssa.MakeInterface)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileServiceImpl).GetProfiles ###
@@ -374,6 +412,175 @@ r (@GetRecommendations): (*ssa.Parameter) (parameter r : *RecommendationServiceI
 
 ctx (@GetRecommendations): (*ssa.Parameter) (parameter ctx : context.Context)
 
+t1 (@GetRecommendations): (*ssa.Alloc) (new github.com/hailocab/go-geoindex.GeoPoint (complit))
+	 → t1 (@GetRecommendations): (*ssa.Alloc)
+
+t2 (@GetRecommendations): (*ssa.FieldAddr) (&t1.Pid [#0])
+	 → t1 (@GetRecommendations): (*ssa.Alloc)
+
+t3 (@GetRecommendations): (*ssa.FieldAddr) (&t1.Plat [#1])
+	 → t1 (@GetRecommendations): (*ssa.Alloc)
+
+t4 (@GetRecommendations): (*ssa.FieldAddr) (&t1.Plon [#2])
+	 → t1 (@GetRecommendations): (*ssa.Alloc)
+
+t5 (@GetRecommendations): (*ssa.MakeMap) (make map[string]float64 )
+	 → t5 (@GetRecommendations): (*ssa.MakeMap)
+
+t6 (@GetRecommendations): (*ssa.Alloc) (local Hotel (hotel))
+	 → t6 (@GetRecommendations): (*ssa.Alloc)
+
+t7 (@GetRecommendations): (*ssa.FieldAddr) (&r.hotels [#1])
+
+t8 (@GetRecommendations): (*ssa.UnOp) (*t7)
+
+t10 (@GetRecommendations): (*ssa.Phi) (phi [9: t37, 19: t75, 13: nil:[]string, 28: t109] #hotelIds)
+	 → t50 (@GetRecommendations): (*ssa.Call)
+	 → t88 (@GetRecommendations): (*ssa.Call)
+	 → t118 (@GetRecommendations): (*ssa.Call)
+
+t16 (@GetRecommendations): (*ssa.Alloc) (new github.com/hailocab/go-geoindex.GeoPoint (complit))
+	 → t16 (@GetRecommendations): (*ssa.Alloc)
+
+t17 (@GetRecommendations): (*ssa.FieldAddr) (&t16.Pid [#0])
+	 → t16 (@GetRecommendations): (*ssa.Alloc)
+
+t18 (@GetRecommendations): (*ssa.FieldAddr) (&t16.Plat [#1])
+	 → t16 (@GetRecommendations): (*ssa.Alloc)
+
+t19 (@GetRecommendations): (*ssa.FieldAddr) (&t6.HLat [#1])
+	 → t6 (@GetRecommendations): (*ssa.Alloc)
+
+t21 (@GetRecommendations): (*ssa.FieldAddr) (&t16.Plon [#2])
+	 → t16 (@GetRecommendations): (*ssa.Alloc)
+
+t22 (@GetRecommendations): (*ssa.FieldAddr) (&t6.HLon [#2])
+	 → t6 (@GetRecommendations): (*ssa.Alloc)
+
+t24 (@GetRecommendations): (*ssa.MakeInterface) (make github.com/hailocab/go-geoindex.Point <- *github.com/hailocab/go-geoindex.GeoPoint (t1))
+	 → t24 (@GetRecommendations): (*ssa.MakeInterface)
+
+t25 (@GetRecommendations): (*ssa.MakeInterface) (make github.com/hailocab/go-geoindex.Point <- *github.com/hailocab/go-geoindex.GeoPoint (t16))
+	 → t25 (@GetRecommendations): (*ssa.MakeInterface)
+
+t30 (@GetRecommendations): (*ssa.Alloc) (local Hotel (hotel))
+	 → t30 (@GetRecommendations): (*ssa.Alloc)
+
+t31 (@GetRecommendations): (*ssa.FieldAddr) (&r.hotels [#1])
+
+t32 (@GetRecommendations): (*ssa.UnOp) (*t31)
+
+t35 (@GetRecommendations): (*ssa.FieldAddr) (&t6.HId [#0])
+	 → t6 (@GetRecommendations): (*ssa.Alloc)
+
+t37 (@GetRecommendations): (*ssa.Phi) (phi [6: nil:[]string, 10: t37, 11: t50] #hotelIds)
+	 → t50 (@GetRecommendations): (*ssa.Call)
+
+t41 (@GetRecommendations): (*ssa.FieldAddr) (&t30.HId [#0])
+	 → t30 (@GetRecommendations): (*ssa.Alloc)
+
+t45 (@GetRecommendations): (*ssa.FieldAddr) (&t30.HId [#0])
+	 → t30 (@GetRecommendations): (*ssa.Alloc)
+
+t47 (@GetRecommendations): (*ssa.Alloc) (new [1]string (varargs))
+	 → t47 (@GetRecommendations): (*ssa.Alloc)
+
+t48 (@GetRecommendations): (*ssa.IndexAddr) (&t47[0:int])
+	 → t47 (@GetRecommendations): (*ssa.Alloc)
+
+t49 (@GetRecommendations): (*ssa.Slice) (slice t47[:])
+	 → t47 (@GetRecommendations): (*ssa.Alloc)
+
+t50 (@GetRecommendations): (*ssa.Call) (append(t37, t49...))
+	 → t50 (@GetRecommendations): (*ssa.Call)
+
+t51 (@GetRecommendations): (*ssa.MakeMap) (make map[string]float64 )
+	 → t51 (@GetRecommendations): (*ssa.MakeMap)
+
+t52 (@GetRecommendations): (*ssa.Alloc) (local Hotel (hotel))
+	 → t52 (@GetRecommendations): (*ssa.Alloc)
+
+t53 (@GetRecommendations): (*ssa.FieldAddr) (&r.hotels [#1])
+
+t54 (@GetRecommendations): (*ssa.UnOp) (*t53)
+
+t61 (@GetRecommendations): (*ssa.FieldAddr) (&t52.HRate [#3])
+	 → t52 (@GetRecommendations): (*ssa.Alloc)
+
+t64 (@GetRecommendations): (*ssa.Alloc) (local Hotel (hotel))
+	 → t64 (@GetRecommendations): (*ssa.Alloc)
+
+t65 (@GetRecommendations): (*ssa.FieldAddr) (&r.hotels [#1])
+
+t66 (@GetRecommendations): (*ssa.UnOp) (*t65)
+
+t68 (@GetRecommendations): (*ssa.FieldAddr) (&t52.HRate [#3])
+	 → t52 (@GetRecommendations): (*ssa.Alloc)
+
+t71 (@GetRecommendations): (*ssa.FieldAddr) (&t52.HId [#0])
+	 → t52 (@GetRecommendations): (*ssa.Alloc)
+
+t73 (@GetRecommendations): (*ssa.FieldAddr) (&t52.HRate [#3])
+	 → t52 (@GetRecommendations): (*ssa.Alloc)
+
+t75 (@GetRecommendations): (*ssa.Phi) (phi [16: nil:[]string, 20: t75, 21: t88] #hotelIds)
+	 → t88 (@GetRecommendations): (*ssa.Call)
+
+t79 (@GetRecommendations): (*ssa.FieldAddr) (&t64.HId [#0])
+	 → t64 (@GetRecommendations): (*ssa.Alloc)
+
+t83 (@GetRecommendations): (*ssa.FieldAddr) (&t64.HId [#0])
+	 → t64 (@GetRecommendations): (*ssa.Alloc)
+
+t85 (@GetRecommendations): (*ssa.Alloc) (new [1]string (varargs))
+	 → t85 (@GetRecommendations): (*ssa.Alloc)
+
+t86 (@GetRecommendations): (*ssa.IndexAddr) (&t85[0:int])
+	 → t85 (@GetRecommendations): (*ssa.Alloc)
+
+t87 (@GetRecommendations): (*ssa.Slice) (slice t85[:])
+	 → t85 (@GetRecommendations): (*ssa.Alloc)
+
+t88 (@GetRecommendations): (*ssa.Call) (append(t75, t87...))
+	 → t88 (@GetRecommendations): (*ssa.Call)
+
+t89 (@GetRecommendations): (*ssa.MakeMap) (make map[string]float64 )
+	 → t89 (@GetRecommendations): (*ssa.MakeMap)
+
+t90 (@GetRecommendations): (*ssa.Alloc) (local Hotel (hotel))
+	 → t90 (@GetRecommendations): (*ssa.Alloc)
+
+t91 (@GetRecommendations): (*ssa.FieldAddr) (&r.hotels [#1])
+
+t92 (@GetRecommendations): (*ssa.UnOp) (*t91)
+
+t98 (@GetRecommendations): (*ssa.FieldAddr) (&t90.HPrice [#4])
+	 → t90 (@GetRecommendations): (*ssa.Alloc)
+
+t102 (@GetRecommendations): (*ssa.FieldAddr) (&t90.HPrice [#4])
+	 → t90 (@GetRecommendations): (*ssa.Alloc)
+
+t105 (@GetRecommendations): (*ssa.FieldAddr) (&t90.HId [#0])
+	 → t90 (@GetRecommendations): (*ssa.Alloc)
+
+t107 (@GetRecommendations): (*ssa.FieldAddr) (&t90.HPrice [#4])
+	 → t90 (@GetRecommendations): (*ssa.Alloc)
+
+t109 (@GetRecommendations): (*ssa.Phi) (phi [25: nil:[]string, 29: t109, 30: t118] #hotelIds)
+	 → t118 (@GetRecommendations): (*ssa.Call)
+
+t115 (@GetRecommendations): (*ssa.Alloc) (new [1]string (varargs))
+	 → t115 (@GetRecommendations): (*ssa.Alloc)
+
+t116 (@GetRecommendations): (*ssa.IndexAddr) (&t115[0:int])
+	 → t115 (@GetRecommendations): (*ssa.Alloc)
+
+t117 (@GetRecommendations): (*ssa.Slice) (slice t115[:])
+	 → t115 (@GetRecommendations): (*ssa.Alloc)
+
+t118 (@GetRecommendations): (*ssa.Call) (append(t109, t117...))
+	 → t118 (@GetRecommendations): (*ssa.Call)
+
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationServiceImpl).LoadRecommendations ###
 r (@LoadRecommendations): (*ssa.Parameter) (parameter r : *RecommendationServiceImpl)
@@ -405,6 +612,20 @@ t13 (@LoadRecommendations): (*ssa.MakeInterface) (make interface{} <- *[]Hotel (
 	 → t13 (@LoadRecommendations): (*ssa.MakeInterface)
 
 t14 (@LoadRecommendations): (*ssa.Call) (invoke t9.All(ctx, t13))
+
+t15 (@LoadRecommendations): (*ssa.Alloc) (local Hotel (hotel))
+	 → t15 (@LoadRecommendations): (*ssa.Alloc)
+
+t16 (@LoadRecommendations): (*ssa.UnOp) (*t12)
+
+t21 (@LoadRecommendations): (*ssa.IndexAddr) (&t16[t19])
+
+t23 (@LoadRecommendations): (*ssa.FieldAddr) (&r.hotels [#1])
+
+t24 (@LoadRecommendations): (*ssa.UnOp) (*t23)
+
+t25 (@LoadRecommendations): (*ssa.FieldAddr) (&t15.HId [#0])
+	 → t15 (@LoadRecommendations): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationServiceImpl).CheckAvailability ###
@@ -1010,6 +1231,25 @@ u (@CheckUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
 
 ctx (@CheckUser): (*ssa.Parameter) (parameter ctx : context.Context)
 
+t0 (@CheckUser): (*ssa.Convert) (convert []byte <- string (password))
+	 → t0 (@CheckUser): (*ssa.Convert)
+
+t2 (@CheckUser): (*ssa.Alloc) (new [1]any (varargs))
+	 → t2 (@CheckUser): (*ssa.Alloc)
+
+t3 (@CheckUser): (*ssa.IndexAddr) (&t2[0:int])
+	 → t2 (@CheckUser): (*ssa.Alloc)
+
+t4 (@CheckUser): (*ssa.MakeInterface) (make any <- [32]byte (t1))
+	 → t4 (@CheckUser): (*ssa.MakeInterface)
+
+t5 (@CheckUser): (*ssa.Slice) (slice t2[:])
+	 → t2 (@CheckUser): (*ssa.Alloc)
+
+t7 (@CheckUser): (*ssa.FieldAddr) (&u.users [#0])
+
+t8 (@CheckUser): (*ssa.UnOp) (*t7)
+
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserServiceImpl).LoadUsers ###
 u (@LoadUsers): (*ssa.Parameter) (parameter u : *UserServiceImpl)
@@ -1041,6 +1281,23 @@ t13 (@LoadUsers): (*ssa.MakeInterface) (make interface{} <- *[]User (t6))
 	 → t13 (@LoadUsers): (*ssa.MakeInterface)
 
 t14 (@LoadUsers): (*ssa.Call) (invoke t10.All(ctx, t13))
+
+t15 (@LoadUsers): (*ssa.Alloc) (local User (user))
+	 → t15 (@LoadUsers): (*ssa.Alloc)
+
+t16 (@LoadUsers): (*ssa.UnOp) (*t6)
+
+t21 (@LoadUsers): (*ssa.IndexAddr) (&t16[t19])
+
+t23 (@LoadUsers): (*ssa.FieldAddr) (&u.users [#0])
+
+t24 (@LoadUsers): (*ssa.UnOp) (*t23)
+
+t25 (@LoadUsers): (*ssa.FieldAddr) (&t15.Username [#0])
+	 → t15 (@LoadUsers): (*ssa.Alloc)
+
+t27 (@LoadUsers): (*ssa.FieldAddr) (&t15.Password [#1])
+	 → t15 (@LoadUsers): (*ssa.Alloc)
 
 
 ### Function: (github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Point).Id ###

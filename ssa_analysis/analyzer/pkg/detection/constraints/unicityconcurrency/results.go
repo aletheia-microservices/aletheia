@@ -17,7 +17,7 @@ func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 
 	var results string
 	for request, vulnerableWriteSets := range detector.vulnerableWriteSets {
-		results += fmt.Sprintf("entry request: %s\n", request.entry.String())
+		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for i, writeSet := range vulnerableWriteSets {
 			results += fmt.Sprintf("\twrite (constrained) #%d: %s\n", i, writeSet.constrainedOp.call.String())
 			for _, field := range writeSet.constrainedFields {

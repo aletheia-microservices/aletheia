@@ -26,7 +26,7 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 		if !found {
 			continue
 		}
-		results += fmt.Sprintf("entry request: %s\n", request.entry.String())
+		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for _, cascadeDelete := range cascadeDeletes {
 			if len(cascadeDelete.pendingFields) == 0 {
 				continue

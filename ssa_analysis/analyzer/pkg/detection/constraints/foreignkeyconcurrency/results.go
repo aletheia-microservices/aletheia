@@ -17,7 +17,7 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 
 	var results string
 	for request, dangerousDeleteLst := range detector.dangerousDeletes {
-		results += fmt.Sprintf("entry request: %s\n", request.entry.String())
+		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for _, dangerousDelete := range dangerousDeleteLst {
 			results += fmt.Sprintf("\tDELETE: %s\n", dangerousDelete.delete.call.String())
 			/* for _, field := range dangerousDelete.delete.schema.GetAllFieldsLst() {

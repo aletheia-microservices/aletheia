@@ -1,0 +1,2752 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.ComposePostServiceImpl).ComposePost ###
+c (@ComposePost): (*ssa.Parameter) (parameter c : *ComposePostServiceImpl)
+
+ctx (@ComposePost): (*ssa.Parameter) (parameter ctx : context.Context)
+
+mediaIDs (@ComposePost): (*ssa.Parameter) (parameter mediaIDs : []int64)
+
+mediaTypes (@ComposePost): (*ssa.Parameter) (parameter mediaTypes : []string)
+
+t3 (@ComposePost): (*ssa.FieldAddr) (&c.textService [#5])
+
+t4 (@ComposePost): (*ssa.UnOp) (*t3)
+
+t7 (@ComposePost): (*ssa.Extract) (extract t5 #1)
+
+t8 (@ComposePost): (*ssa.Extract) (extract t5 #2)
+
+t9 (@ComposePost): (*ssa.Extract) (extract t5 #3)
+
+t10 (@ComposePost): (*ssa.FieldAddr) (&c.mediaService [#4])
+
+t11 (@ComposePost): (*ssa.UnOp) (*t10)
+
+t13 (@ComposePost): (*ssa.Extract) (extract t12 #0)
+
+t14 (@ComposePost): (*ssa.Extract) (extract t12 #1)
+
+t15 (@ComposePost): (*ssa.FieldAddr) (&c.uniqueIDService [#3])
+
+t16 (@ComposePost): (*ssa.UnOp) (*t15)
+
+t19 (@ComposePost): (*ssa.Extract) (extract t17 #1)
+
+t20 (@ComposePost): (*ssa.FieldAddr) (&c.userService [#2])
+
+t21 (@ComposePost): (*ssa.UnOp) (*t20)
+
+t24 (@ComposePost): (*ssa.Extract) (extract t22 #1)
+
+t26 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t26 (@ComposePost): (*ssa.Alloc)
+
+t27 (@ComposePost): (*ssa.Slice) (slice t26[:])
+	 → t26 (@ComposePost): (*ssa.Alloc)
+
+t29 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t29 (@ComposePost): (*ssa.Alloc)
+
+t30 (@ComposePost): (*ssa.Slice) (slice t29[:])
+	 → t29 (@ComposePost): (*ssa.Alloc)
+
+t32 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t32 (@ComposePost): (*ssa.Alloc)
+
+t33 (@ComposePost): (*ssa.Slice) (slice t32[:])
+	 → t32 (@ComposePost): (*ssa.Alloc)
+
+t35 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t35 (@ComposePost): (*ssa.Alloc)
+
+t36 (@ComposePost): (*ssa.Slice) (slice t35[:])
+	 → t35 (@ComposePost): (*ssa.Alloc)
+
+t37 (@ComposePost): (*ssa.Alloc) (local Post (post))
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t38 (@ComposePost): (*ssa.FieldAddr) (&t37.PostID [#0])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t39 (@ComposePost): (*ssa.FieldAddr) (&t37.Creator [#1])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t40 (@ComposePost): (*ssa.FieldAddr) (&t37.Medias [#5])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t41 (@ComposePost): (*ssa.FieldAddr) (&t37.Text [#3])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t42 (@ComposePost): (*ssa.FieldAddr) (&t37.Urls [#6])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t43 (@ComposePost): (*ssa.FieldAddr) (&t37.UserMentions [#4])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t44 (@ComposePost): (*ssa.FieldAddr) (&t37.ReqID [#2])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t45 (@ComposePost): (*ssa.FieldAddr) (&t37.PostType [#8])
+	 → t37 (@ComposePost): (*ssa.Alloc)
+
+t46 (@ComposePost): (*ssa.Alloc) (local UserMention (um))
+	 → t46 (@ComposePost): (*ssa.Alloc)
+
+t48 (@ComposePost): (*ssa.Phi) (phi [8: nil:[]int64, 10: t59] #usermentionIds)
+	 → t59 (@ComposePost): (*ssa.Call)
+
+t52 (@ComposePost): (*ssa.IndexAddr) (&t7[t50])
+
+t54 (@ComposePost): (*ssa.FieldAddr) (&t46.UserID [#0])
+	 → t46 (@ComposePost): (*ssa.Alloc)
+
+t56 (@ComposePost): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t56 (@ComposePost): (*ssa.Alloc)
+
+t57 (@ComposePost): (*ssa.IndexAddr) (&t56[0:int])
+	 → t56 (@ComposePost): (*ssa.Alloc)
+
+t58 (@ComposePost): (*ssa.Slice) (slice t56[:])
+	 → t56 (@ComposePost): (*ssa.Alloc)
+
+t59 (@ComposePost): (*ssa.Call) (append(t48, t58...))
+	 → t59 (@ComposePost): (*ssa.Call)
+
+t60 (@ComposePost): (*ssa.FieldAddr) (&c.postStorageService [#0])
+
+t61 (@ComposePost): (*ssa.UnOp) (*t60)
+
+t63 (@ComposePost): (*ssa.Call) (invoke t61.StorePost(ctx, reqID, t62))
+
+t64 (@ComposePost): (*ssa.FieldAddr) (&c.userTimelineService [#1])
+
+t65 (@ComposePost): (*ssa.UnOp) (*t64)
+
+t66 (@ComposePost): (*ssa.Call) (invoke t65.WriteUserTimeline(ctx, reqID, t18, userID, t2))
+
+t67 (@ComposePost): (*ssa.FieldAddr) (&c.homeTimelineService [#6])
+
+t68 (@ComposePost): (*ssa.UnOp) (*t67)
+
+t69 (@ComposePost): (*ssa.Call) (invoke t68.WriteHomeTimeline(ctx, reqID, t18, userID, t2, t48))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.HomeTimelineServiceImpl).ReadHomeTimeline ###
+h (@ReadHomeTimeline): (*ssa.Parameter) (parameter h : *HomeTimelineServiceImpl)
+
+ctx (@ReadHomeTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@ReadHomeTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t1 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t2 (@ReadHomeTimeline): (*ssa.Slice) (slice t1[:])
+	 → t1 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t4 (@ReadHomeTimeline): (*ssa.Alloc) (new []PostInfo (postInfos))
+	 → t4 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t5 (@ReadHomeTimeline): (*ssa.FieldAddr) (&h.homeTimelineCache [#0])
+
+t6 (@ReadHomeTimeline): (*ssa.UnOp) (*t5)
+
+t7 (@ReadHomeTimeline): (*ssa.MakeInterface) (make interface{} <- *[]PostInfo (t4))
+	 → t7 (@ReadHomeTimeline): (*ssa.MakeInterface)
+
+t10 (@ReadHomeTimeline): (*ssa.Extract) (extract t8 #1)
+
+t13 (@ReadHomeTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t13 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t14 (@ReadHomeTimeline): (*ssa.Slice) (slice t13[:])
+	 → t13 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t15 (@ReadHomeTimeline): (*ssa.Alloc) (local PostInfo (pinfo))
+	 → t15 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t16 (@ReadHomeTimeline): (*ssa.UnOp) (*t4)
+
+t18 (@ReadHomeTimeline): (*ssa.Phi) (phi [5: nil:[]int64, 7: t29] #postIDs)
+	 → t29 (@ReadHomeTimeline): (*ssa.Call)
+
+t22 (@ReadHomeTimeline): (*ssa.IndexAddr) (&t16[t20])
+
+t24 (@ReadHomeTimeline): (*ssa.FieldAddr) (&t15.PostID [#0])
+	 → t15 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t26 (@ReadHomeTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t26 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t27 (@ReadHomeTimeline): (*ssa.IndexAddr) (&t26[0:int])
+	 → t26 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t28 (@ReadHomeTimeline): (*ssa.Slice) (slice t26[:])
+	 → t26 (@ReadHomeTimeline): (*ssa.Alloc)
+
+t29 (@ReadHomeTimeline): (*ssa.Call) (append(t18, t28...))
+	 → t29 (@ReadHomeTimeline): (*ssa.Call)
+
+t36 (@ReadHomeTimeline): (*ssa.Phi) (phi [8: t18, 12: t46] #postIDs)
+	 → t29 (@ReadHomeTimeline): (*ssa.Call)
+
+t37 (@ReadHomeTimeline): (*ssa.FieldAddr) (&h.postStorageService [#1])
+
+t38 (@ReadHomeTimeline): (*ssa.UnOp) (*t37)
+
+t40 (@ReadHomeTimeline): (*ssa.Extract) (extract t39 #0)
+
+t41 (@ReadHomeTimeline): (*ssa.Extract) (extract t39 #1)
+
+t46 (@ReadHomeTimeline): (*ssa.Slice) (slice t18[start:t45])
+	 → t29 (@ReadHomeTimeline): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.HomeTimelineServiceImpl).WriteHomeTimeline ###
+h (@WriteHomeTimeline): (*ssa.Parameter) (parameter h : *HomeTimelineServiceImpl)
+
+ctx (@WriteHomeTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
+
+userMentionIDs (@WriteHomeTimeline): (*ssa.Parameter) (parameter userMentionIDs : []int64)
+
+t0 (@WriteHomeTimeline): (*ssa.FieldAddr) (&h.socialGraphService [#2])
+
+t1 (@WriteHomeTimeline): (*ssa.UnOp) (*t0)
+
+t3 (@WriteHomeTimeline): (*ssa.Extract) (extract t2 #0)
+
+t4 (@WriteHomeTimeline): (*ssa.Extract) (extract t2 #1)
+
+t6 (@WriteHomeTimeline): (*ssa.MakeMap) (make map[int64]bool )
+	 → t6 (@WriteHomeTimeline): (*ssa.MakeMap)
+
+t11 (@WriteHomeTimeline): (*ssa.IndexAddr) (&t3[t9])
+
+t17 (@WriteHomeTimeline): (*ssa.IndexAddr) (&userMentionIDs[t15])
+
+t24 (@WriteHomeTimeline): (*ssa.Alloc) (new []PostInfo (posts))
+	 → t24 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t25 (@WriteHomeTimeline): (*ssa.FieldAddr) (&h.homeTimelineCache [#0])
+
+t26 (@WriteHomeTimeline): (*ssa.UnOp) (*t25)
+
+t27 (@WriteHomeTimeline): (*ssa.MakeInterface) (make interface{} <- *[]PostInfo (t24))
+	 → t27 (@WriteHomeTimeline): (*ssa.MakeInterface)
+
+t30 (@WriteHomeTimeline): (*ssa.Extract) (extract t28 #1)
+
+t32 (@WriteHomeTimeline): (*ssa.UnOp) (*t24)
+	 → t40 (@WriteHomeTimeline): (*ssa.Call)
+
+t33 (@WriteHomeTimeline): (*ssa.Alloc) (local PostInfo (complit))
+	 → t33 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t34 (@WriteHomeTimeline): (*ssa.FieldAddr) (&t33.PostID [#0])
+	 → t33 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t35 (@WriteHomeTimeline): (*ssa.FieldAddr) (&t33.Timestamp [#1])
+	 → t33 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t37 (@WriteHomeTimeline): (*ssa.Alloc) (new [1]PostInfo (varargs))
+	 → t37 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t38 (@WriteHomeTimeline): (*ssa.IndexAddr) (&t37[0:int])
+	 → t37 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t39 (@WriteHomeTimeline): (*ssa.Slice) (slice t37[:])
+	 → t37 (@WriteHomeTimeline): (*ssa.Alloc)
+
+t40 (@WriteHomeTimeline): (*ssa.Call) (append(t32, t39...))
+	 → t40 (@WriteHomeTimeline): (*ssa.Call)
+
+t41 (@WriteHomeTimeline): (*ssa.FieldAddr) (&h.homeTimelineCache [#0])
+
+t42 (@WriteHomeTimeline): (*ssa.UnOp) (*t41)
+
+t43 (@WriteHomeTimeline): (*ssa.UnOp) (*t24)
+	 → t40 (@WriteHomeTimeline): (*ssa.Call)
+
+t44 (@WriteHomeTimeline): (*ssa.MakeInterface) (make interface{} <- []PostInfo (t43))
+	 → t44 (@WriteHomeTimeline): (*ssa.MakeInterface)
+
+t45 (@WriteHomeTimeline): (*ssa.Call) (invoke t42.Put(ctx, t23, t44))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.MediaServiceImpl).ComposeMedia ###
+m (@ComposeMedia): (*ssa.Parameter) (parameter m : *MediaServiceImpl)
+
+ctx (@ComposeMedia): (*ssa.Parameter) (parameter ctx : context.Context)
+
+mediaTypes (@ComposeMedia): (*ssa.Parameter) (parameter mediaTypes : []string)
+
+mediaIds (@ComposeMedia): (*ssa.Parameter) (parameter mediaIds : []int64)
+
+t3 (@ComposeMedia): (*ssa.Call) (errors.New("The lengths of me...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@ComposeMedia): (*ssa.Phi) (phi [2: nil:[]Media, 4: t20] #medias)
+	 → t20 (@ComposeMedia): (*ssa.Call)
+
+t9 (@ComposeMedia): (*ssa.IndexAddr) (&mediaIds[t7])
+
+t11 (@ComposeMedia): (*ssa.Alloc) (local Media (media))
+	 → t11 (@ComposeMedia): (*ssa.Alloc)
+
+t12 (@ComposeMedia): (*ssa.FieldAddr) (&t11.MediaID [#0])
+	 → t11 (@ComposeMedia): (*ssa.Alloc)
+
+t13 (@ComposeMedia): (*ssa.FieldAddr) (&t11.MediaType [#1])
+	 → t11 (@ComposeMedia): (*ssa.Alloc)
+
+t14 (@ComposeMedia): (*ssa.IndexAddr) (&mediaTypes[t7])
+
+t17 (@ComposeMedia): (*ssa.Alloc) (new [1]Media (varargs))
+	 → t17 (@ComposeMedia): (*ssa.Alloc)
+
+t18 (@ComposeMedia): (*ssa.IndexAddr) (&t17[0:int])
+	 → t17 (@ComposeMedia): (*ssa.Alloc)
+
+t19 (@ComposeMedia): (*ssa.Slice) (slice t17[:])
+	 → t17 (@ComposeMedia): (*ssa.Alloc)
+
+t20 (@ComposeMedia): (*ssa.Call) (append(t5, t19...))
+	 → t20 (@ComposeMedia): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.PostStorageServiceImpl).ReadPost ###
+p (@ReadPost): (*ssa.Parameter) (parameter p : *PostStorageServiceImpl)
+
+ctx (@ReadPost): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ReadPost): (*ssa.Alloc) (new Post (post))
+	 → t0 (@ReadPost): (*ssa.Alloc)
+
+t1 (@ReadPost): (*ssa.FieldAddr) (&p.postStorageCache [#0])
+
+t2 (@ReadPost): (*ssa.UnOp) (*t1)
+
+t4 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- *Post (t0))
+	 → t4 (@ReadPost): (*ssa.MakeInterface)
+
+t7 (@ReadPost): (*ssa.Extract) (extract t5 #1)
+
+t10 (@ReadPost): (*ssa.FieldAddr) (&p.postStorageDB [#1])
+
+t11 (@ReadPost): (*ssa.UnOp) (*t10)
+
+t13 (@ReadPost): (*ssa.Extract) (extract t12 #0)
+
+t14 (@ReadPost): (*ssa.Extract) (extract t12 #1)
+
+t18 (@ReadPost): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t18 (@ReadPost): (*ssa.Alloc)
+
+t19 (@ReadPost): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@ReadPost): (*ssa.Alloc)
+
+t20 (@ReadPost): (*ssa.FieldAddr) (&t19.Key [#0])
+	 → t18 (@ReadPost): (*ssa.Alloc)
+
+t21 (@ReadPost): (*ssa.FieldAddr) (&t19.Value [#1])
+	 → t18 (@ReadPost): (*ssa.Alloc)
+
+t22 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- int64 (postID))
+	 → t22 (@ReadPost): (*ssa.MakeInterface)
+
+t23 (@ReadPost): (*ssa.Slice) (slice t18[:])
+	 → t18 (@ReadPost): (*ssa.Alloc)
+
+t25 (@ReadPost): (*ssa.Extract) (extract t24 #0)
+
+t26 (@ReadPost): (*ssa.Extract) (extract t24 #1)
+
+t29 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- *Post (t0))
+	 → t29 (@ReadPost): (*ssa.MakeInterface)
+
+t32 (@ReadPost): (*ssa.Extract) (extract t30 #1)
+
+t34 (@ReadPost): (*ssa.Call) (errors.New("Post doesn't exis...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.PostStorageServiceImpl).ReadPosts ###
+p (@ReadPosts): (*ssa.Parameter) (parameter p : *PostStorageServiceImpl)
+
+ctx (@ReadPosts): (*ssa.Parameter) (parameter ctx : context.Context)
+
+postIDs (@ReadPosts): (*ssa.Parameter) (parameter postIDs : []int64)
+
+t0 (@ReadPosts): (*ssa.MakeMap) (make map[int64]bool )
+	 → t0 (@ReadPosts): (*ssa.MakeMap)
+
+t5 (@ReadPosts): (*ssa.IndexAddr) (&postIDs[t3])
+
+t10 (@ReadPosts): (*ssa.Alloc) (new [0]Post (slicelit))
+	 → t10 (@ReadPosts): (*ssa.Alloc)
+
+t11 (@ReadPosts): (*ssa.Slice) (slice t10[:])
+	 → t10 (@ReadPosts): (*ssa.Alloc)
+
+t12 (@ReadPosts): (*ssa.Call) (errors.New("Post Ids are dupl...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t14 (@ReadPosts): (*ssa.Phi) (phi [5: nil:[]string, 7: t24] #keys)
+	 → t24 (@ReadPosts): (*ssa.Call)
+
+t18 (@ReadPosts): (*ssa.IndexAddr) (&postIDs[t16])
+
+t21 (@ReadPosts): (*ssa.Alloc) (new [1]string (varargs))
+	 → t21 (@ReadPosts): (*ssa.Alloc)
+
+t22 (@ReadPosts): (*ssa.IndexAddr) (&t21[0:int])
+	 → t21 (@ReadPosts): (*ssa.Alloc)
+
+t23 (@ReadPosts): (*ssa.Slice) (slice t21[:])
+	 → t21 (@ReadPosts): (*ssa.Alloc)
+
+t24 (@ReadPosts): (*ssa.Call) (append(t14, t23...))
+	 → t24 (@ReadPosts): (*ssa.Call)
+
+t26 (@ReadPosts): (*ssa.MakeSlice) (make []Post t25 t25)
+	 → t26 (@ReadPosts): (*ssa.MakeSlice)
+
+t28 (@ReadPosts): (*ssa.Phi) (phi [8: nil:[]interface{}, 10: t37] #retvals)
+	 → t37 (@ReadPosts): (*ssa.Call)
+
+t32 (@ReadPosts): (*ssa.IndexAddr) (&t26[t30])
+	 → t26 (@ReadPosts): (*ssa.MakeSlice)
+
+t33 (@ReadPosts): (*ssa.Alloc) (new [1]interface{} (varargs))
+	 → t33 (@ReadPosts): (*ssa.Alloc)
+
+t34 (@ReadPosts): (*ssa.IndexAddr) (&t33[0:int])
+	 → t33 (@ReadPosts): (*ssa.Alloc)
+
+t35 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- *Post (t32))
+	 → t35 (@ReadPosts): (*ssa.MakeInterface)
+
+t36 (@ReadPosts): (*ssa.Slice) (slice t33[:])
+	 → t33 (@ReadPosts): (*ssa.Alloc)
+
+t37 (@ReadPosts): (*ssa.Call) (append(t28, t36...))
+	 → t37 (@ReadPosts): (*ssa.Call)
+
+t38 (@ReadPosts): (*ssa.FieldAddr) (&p.postStorageCache [#0])
+
+t39 (@ReadPosts): (*ssa.UnOp) (*t38)
+
+t40 (@ReadPosts): (*ssa.Call) (invoke t39.Mget(ctx, t14, t28))
+
+t41 (@ReadPosts): (*ssa.Alloc) (local Post (post))
+	 → t41 (@ReadPosts): (*ssa.Alloc)
+
+t43 (@ReadPosts): (*ssa.Phi) (phi [11: nil:[]Post, 13: t43, 15: t65] #retposts)
+	 → t65 (@ReadPosts): (*ssa.Call)
+
+t47 (@ReadPosts): (*ssa.IndexAddr) (&t26[t45])
+	 → t26 (@ReadPosts): (*ssa.MakeSlice)
+
+t49 (@ReadPosts): (*ssa.FieldAddr) (&t41.PostID [#0])
+	 → t41 (@ReadPosts): (*ssa.Alloc)
+
+t52 (@ReadPosts): (*ssa.FieldAddr) (&p.NumReqs [#3])
+
+t55 (@ReadPosts): (*ssa.FieldAddr) (&p.NumReqs [#3])
+
+t58 (@ReadPosts): (*ssa.FieldAddr) (&t41.PostID [#0])
+	 → t41 (@ReadPosts): (*ssa.Alloc)
+
+t62 (@ReadPosts): (*ssa.Alloc) (new [1]Post (varargs))
+	 → t62 (@ReadPosts): (*ssa.Alloc)
+
+t63 (@ReadPosts): (*ssa.IndexAddr) (&t62[0:int])
+	 → t62 (@ReadPosts): (*ssa.Alloc)
+
+t64 (@ReadPosts): (*ssa.Slice) (slice t62[:])
+	 → t62 (@ReadPosts): (*ssa.Alloc)
+
+t65 (@ReadPosts): (*ssa.Call) (append(t43, t64...))
+	 → t65 (@ReadPosts): (*ssa.Call)
+
+t66 (@ReadPosts): (*ssa.FieldAddr) (&p.CacheMiss [#4])
+
+t69 (@ReadPosts): (*ssa.FieldAddr) (&p.CacheMiss [#4])
+
+t70 (@ReadPosts): (*ssa.Alloc) (new []Post (new_posts))
+	 → t70 (@ReadPosts): (*ssa.Alloc)
+
+t72 (@ReadPosts): (*ssa.Phi) (phi [14: t43, 27: t118] #retposts)
+	 → t65 (@ReadPosts): (*ssa.Call)
+	 → t118 (@ReadPosts): (*ssa.Call)
+
+t73 (@ReadPosts): (*ssa.Phi) (phi [16: nil:[]int64, 19: t80] #unique_pids)
+	 → t80 (@ReadPosts): (*ssa.Call)
+
+t77 (@ReadPosts): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t77 (@ReadPosts): (*ssa.Alloc)
+
+t78 (@ReadPosts): (*ssa.IndexAddr) (&t77[0:int])
+	 → t77 (@ReadPosts): (*ssa.Alloc)
+
+t79 (@ReadPosts): (*ssa.Slice) (slice t77[:])
+	 → t77 (@ReadPosts): (*ssa.Alloc)
+
+t80 (@ReadPosts): (*ssa.Call) (append(t73, t79...))
+	 → t80 (@ReadPosts): (*ssa.Call)
+
+t81 (@ReadPosts): (*ssa.FieldAddr) (&p.postStorageDB [#1])
+
+t82 (@ReadPosts): (*ssa.UnOp) (*t81)
+
+t84 (@ReadPosts): (*ssa.Extract) (extract t83 #0)
+
+t85 (@ReadPosts): (*ssa.Extract) (extract t83 #1)
+
+t87 (@ReadPosts): (*ssa.Alloc) (new [0]Post (slicelit))
+	 → t87 (@ReadPosts): (*ssa.Alloc)
+
+t88 (@ReadPosts): (*ssa.Slice) (slice t87[:])
+	 → t87 (@ReadPosts): (*ssa.Alloc)
+
+t89 (@ReadPosts): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t89 (@ReadPosts): (*ssa.Alloc)
+
+t90 (@ReadPosts): (*ssa.IndexAddr) (&t89[0:int])
+	 → t89 (@ReadPosts): (*ssa.Alloc)
+
+t91 (@ReadPosts): (*ssa.FieldAddr) (&t90.Key [#0])
+	 → t89 (@ReadPosts): (*ssa.Alloc)
+
+t92 (@ReadPosts): (*ssa.FieldAddr) (&t90.Value [#1])
+	 → t89 (@ReadPosts): (*ssa.Alloc)
+
+t93 (@ReadPosts): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t93 (@ReadPosts): (*ssa.Alloc)
+
+t94 (@ReadPosts): (*ssa.IndexAddr) (&t93[0:int])
+	 → t93 (@ReadPosts): (*ssa.Alloc)
+
+t95 (@ReadPosts): (*ssa.FieldAddr) (&t94.Key [#0])
+	 → t93 (@ReadPosts): (*ssa.Alloc)
+
+t96 (@ReadPosts): (*ssa.FieldAddr) (&t94.Value [#1])
+	 → t93 (@ReadPosts): (*ssa.Alloc)
+
+t97 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- []int64 (postIDs))
+	 → t97 (@ReadPosts): (*ssa.MakeInterface)
+
+t98 (@ReadPosts): (*ssa.Slice) (slice t93[:])
+	 → t93 (@ReadPosts): (*ssa.Alloc)
+
+t99 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t98))
+	 → t99 (@ReadPosts): (*ssa.MakeInterface)
+
+t100 (@ReadPosts): (*ssa.Slice) (slice t89[:])
+	 → t89 (@ReadPosts): (*ssa.Alloc)
+
+t102 (@ReadPosts): (*ssa.Extract) (extract t101 #0)
+
+t103 (@ReadPosts): (*ssa.Extract) (extract t101 #1)
+
+t105 (@ReadPosts): (*ssa.Alloc) (new [1]any (varargs))
+	 → t105 (@ReadPosts): (*ssa.Alloc)
+
+t106 (@ReadPosts): (*ssa.IndexAddr) (&t105[0:int])
+	 → t105 (@ReadPosts): (*ssa.Alloc)
+
+t107 (@ReadPosts): (*ssa.ChangeInterface) (change interface any <- error (t103))
+
+t108 (@ReadPosts): (*ssa.Slice) (slice t105[:])
+	 → t105 (@ReadPosts): (*ssa.Alloc)
+
+t110 (@ReadPosts): (*ssa.Alloc) (new [0]Post (slicelit))
+	 → t110 (@ReadPosts): (*ssa.Alloc)
+
+t111 (@ReadPosts): (*ssa.Slice) (slice t110[:])
+	 → t110 (@ReadPosts): (*ssa.Alloc)
+
+t112 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- *[]Post (t70))
+	 → t112 (@ReadPosts): (*ssa.MakeInterface)
+
+t113 (@ReadPosts): (*ssa.Call) (invoke t102.All(ctx, t112))
+
+t115 (@ReadPosts): (*ssa.Alloc) (new [0]Post (slicelit))
+	 → t115 (@ReadPosts): (*ssa.Alloc)
+
+t116 (@ReadPosts): (*ssa.Slice) (slice t115[:])
+	 → t115 (@ReadPosts): (*ssa.Alloc)
+
+t117 (@ReadPosts): (*ssa.UnOp) (*t70)
+
+t118 (@ReadPosts): (*ssa.Call) (append(t43, t117...))
+	 → t65 (@ReadPosts): (*ssa.Call)
+	 → t118 (@ReadPosts): (*ssa.Call)
+
+t119 (@ReadPosts): (*ssa.Alloc) (local Post (new_post))
+	 → t119 (@ReadPosts): (*ssa.Alloc)
+
+t120 (@ReadPosts): (*ssa.UnOp) (*t70)
+
+t125 (@ReadPosts): (*ssa.IndexAddr) (&t120[t123])
+
+t127 (@ReadPosts): (*ssa.FieldAddr) (&p.postStorageCache [#0])
+
+t128 (@ReadPosts): (*ssa.UnOp) (*t127)
+
+t129 (@ReadPosts): (*ssa.FieldAddr) (&t119.PostID [#0])
+	 → t119 (@ReadPosts): (*ssa.Alloc)
+
+t133 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- Post (t132))
+	 → t133 (@ReadPosts): (*ssa.MakeInterface)
+
+t134 (@ReadPosts): (*ssa.Call) (invoke t128.Put(ctx, t131, t133))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.PostStorageServiceImpl).StorePost ###
+p (@StorePost): (*ssa.Parameter) (parameter p : *PostStorageServiceImpl)
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+
+ctx (@StorePost): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t0 (@StorePost): (*ssa.FieldAddr) (&p.postStorageDB [#1])
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+
+t1 (@StorePost): (*ssa.UnOp) (*t0)
+
+t3 (@StorePost): (*ssa.Extract) (extract t2 #0)
+
+t4 (@StorePost): (*ssa.Extract) (extract t2 #1)
+
+t6 (@StorePost): (*ssa.MakeInterface) (make interface{} <- Post (post))
+	 → t6 (@StorePost): (*ssa.MakeInterface)
+
+t7 (@StorePost): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).Follow ###
+t0 (@Follow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
+	 → t0 (@Follow): (*ssa.Alloc)
+
+s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@Follow): (*ssa.Alloc) (new context.Context (ctx))
+	 → t1 (@Follow): (*ssa.Alloc)
+
+t2 (@Follow): (*ssa.Alloc) (new int64 (userID))
+	 → t2 (@Follow): (*ssa.Alloc)
+
+t3 (@Follow): (*ssa.Alloc) (new int64 (followeeID))
+	 → t3 (@Follow): (*ssa.Alloc)
+
+t4 (@Follow): (*ssa.Alloc) (new int64 (now))
+	 → t4 (@Follow): (*ssa.Alloc)
+
+t7 (@Follow): (*ssa.Alloc) (new string (timestamp))
+	 → t7 (@Follow): (*ssa.Alloc)
+
+t10 (@Follow): (*ssa.Alloc) (new string (userIDstr))
+	 → t10 (@Follow): (*ssa.Alloc)
+
+t13 (@Follow): (*ssa.Alloc) (new string (followeeIDstr))
+	 → t13 (@Follow): (*ssa.Alloc)
+
+t16 (@Follow): (*ssa.Alloc) (new error (err1))
+	 → t16 (@Follow): (*ssa.Alloc)
+
+t17 (@Follow): (*ssa.Alloc) (new error (err2))
+	 → t17 (@Follow): (*ssa.Alloc)
+
+t18 (@Follow): (*ssa.Alloc) (new error (err3))
+	 → t18 (@Follow): (*ssa.Alloc)
+
+t19 (@Follow): (*ssa.Alloc) (new sync.WaitGroup (wg))
+	 → t19 (@Follow): (*ssa.Alloc)
+
+t21 (@Follow): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).Follow$1 [t19, t0, t1, t16, t10, t13, t7])
+	 → Follow$1 (@Follow): (*ssa.Function)
+
+t22 (@Follow): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).Follow$2 [t19, t0, t1, t16, t13, t10, t7, t17])
+	 → Follow$2 (@Follow): (*ssa.Function)
+
+t23 (@Follow): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).Follow$3 [t19, t0, t1, t10, t13, t3, t4, t2, t18])
+	 → Follow$3 (@Follow): (*ssa.Function)
+
+t25 (@Follow): (*ssa.UnOp) (*t16)
+
+t27 (@Follow): (*ssa.UnOp) (*t16)
+
+t28 (@Follow): (*ssa.UnOp) (*t17)
+
+t30 (@Follow): (*ssa.UnOp) (*t17)
+
+t31 (@Follow): (*ssa.UnOp) (*t18)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).FollowWithUsername ###
+t0 (@FollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
+	 → t0 (@FollowWithUsername): (*ssa.Alloc)
+
+s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+ctx (@FollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@FollowWithUsername): (*ssa.Alloc) (new context.Context (ctx))
+	 → t1 (@FollowWithUsername): (*ssa.Alloc)
+
+t2 (@FollowWithUsername): (*ssa.Alloc) (new int64 (reqID))
+	 → t2 (@FollowWithUsername): (*ssa.Alloc)
+
+t3 (@FollowWithUsername): (*ssa.Alloc) (new string (username))
+	 → t3 (@FollowWithUsername): (*ssa.Alloc)
+
+t4 (@FollowWithUsername): (*ssa.Alloc) (new string (followee_name))
+	 → t4 (@FollowWithUsername): (*ssa.Alloc)
+
+t5 (@FollowWithUsername): (*ssa.Alloc) (new int64 (id))
+	 → t5 (@FollowWithUsername): (*ssa.Alloc)
+
+t6 (@FollowWithUsername): (*ssa.Alloc) (new int64 (followee_id))
+	 → t6 (@FollowWithUsername): (*ssa.Alloc)
+
+t7 (@FollowWithUsername): (*ssa.Alloc) (new error (err1))
+	 → t7 (@FollowWithUsername): (*ssa.Alloc)
+
+t8 (@FollowWithUsername): (*ssa.Alloc) (new error (err2))
+	 → t8 (@FollowWithUsername): (*ssa.Alloc)
+
+t9 (@FollowWithUsername): (*ssa.Alloc) (new sync.WaitGroup (wg))
+	 → t9 (@FollowWithUsername): (*ssa.Alloc)
+
+t11 (@FollowWithUsername): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).FollowWithUsername$1 [t9, t5, t7, t0, t1, t2, t3])
+	 → FollowWithUsername$1 (@FollowWithUsername): (*ssa.Function)
+
+t12 (@FollowWithUsername): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).FollowWithUsername$2 [t9, t6, t8, t0, t1, t2, t4])
+	 → FollowWithUsername$2 (@FollowWithUsername): (*ssa.Function)
+
+t14 (@FollowWithUsername): (*ssa.UnOp) (*t7)
+
+t16 (@FollowWithUsername): (*ssa.UnOp) (*t7)
+
+t17 (@FollowWithUsername): (*ssa.UnOp) (*t8)
+
+t19 (@FollowWithUsername): (*ssa.UnOp) (*t8)
+
+t20 (@FollowWithUsername): (*ssa.UnOp) (*t0)
+
+t21 (@FollowWithUsername): (*ssa.UnOp) (*t1)
+
+t25 (@FollowWithUsername): (*ssa.Call) ((*SocialGraphServiceImpl).Follow(t20, t21, t22, t23, t24))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).GetFollowees ###
+s (@GetFollowees): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+ctx (@GetFollowees): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetFollowees): (*ssa.Alloc) (new []FolloweeInfo (followeeInfos))
+	 → t0 (@GetFollowees): (*ssa.Alloc)
+
+t2 (@GetFollowees): (*ssa.FieldAddr) (&s.socialGraphCache [#0])
+
+t3 (@GetFollowees): (*ssa.UnOp) (*t2)
+
+t5 (@GetFollowees): (*ssa.MakeInterface) (make interface{} <- *[]FolloweeInfo (t0))
+	 → t5 (@GetFollowees): (*ssa.MakeInterface)
+
+t8 (@GetFollowees): (*ssa.Extract) (extract t6 #1)
+
+t10 (@GetFollowees): (*ssa.FieldAddr) (&s.socialGraphDB [#1])
+
+t11 (@GetFollowees): (*ssa.UnOp) (*t10)
+
+t13 (@GetFollowees): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetFollowees): (*ssa.Extract) (extract t12 #1)
+
+t16 (@GetFollowees): (*ssa.Phi) (phi [18: t43, 19: t62] #followees)
+	 → t54 (@GetFollowees): (*ssa.Call)
+	 → t73 (@GetFollowees): (*ssa.Call)
+
+t17 (@GetFollowees): (*ssa.Alloc) (local FolloweeInfo (f))
+	 → t17 (@GetFollowees): (*ssa.Alloc)
+
+t18 (@GetFollowees): (*ssa.UnOp) (*t0)
+
+t23 (@GetFollowees): (*ssa.Extract) (extract t22 #0)
+
+t24 (@GetFollowees): (*ssa.Extract) (extract t22 #1)
+
+t27 (@GetFollowees): (*ssa.Extract) (extract t26 #0)
+
+t28 (@GetFollowees): (*ssa.Extract) (extract t26 #1)
+
+t30 (@GetFollowees): (*ssa.Alloc) (new UserInfo (userInfo))
+	 → t30 (@GetFollowees): (*ssa.Alloc)
+
+t31 (@GetFollowees): (*ssa.MakeInterface) (make interface{} <- *UserInfo (t30))
+	 → t31 (@GetFollowees): (*ssa.MakeInterface)
+
+t34 (@GetFollowees): (*ssa.Extract) (extract t32 #1)
+
+t38 (@GetFollowees): (*ssa.Call) (errors.New(t37))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t39 (@GetFollowees): (*ssa.Alloc) (local FolloweeInfo (followee))
+	 → t39 (@GetFollowees): (*ssa.Alloc)
+
+t40 (@GetFollowees): (*ssa.FieldAddr) (&t30.Followees [#2])
+	 → t30 (@GetFollowees): (*ssa.Alloc)
+
+t41 (@GetFollowees): (*ssa.UnOp) (*t40)
+
+t43 (@GetFollowees): (*ssa.Phi) (phi [15: nil:[]int64, 17: t54] #followees)
+	 → t54 (@GetFollowees): (*ssa.Call)
+
+t47 (@GetFollowees): (*ssa.IndexAddr) (&t41[t45])
+
+t49 (@GetFollowees): (*ssa.FieldAddr) (&t39.FolloweeID [#0])
+	 → t39 (@GetFollowees): (*ssa.Alloc)
+
+t51 (@GetFollowees): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t51 (@GetFollowees): (*ssa.Alloc)
+
+t52 (@GetFollowees): (*ssa.IndexAddr) (&t51[0:int])
+	 → t51 (@GetFollowees): (*ssa.Alloc)
+
+t53 (@GetFollowees): (*ssa.Slice) (slice t51[:])
+	 → t51 (@GetFollowees): (*ssa.Alloc)
+
+t54 (@GetFollowees): (*ssa.Call) (append(t43, t53...))
+	 → t54 (@GetFollowees): (*ssa.Call)
+
+t55 (@GetFollowees): (*ssa.FieldAddr) (&s.socialGraphCache [#0])
+
+t56 (@GetFollowees): (*ssa.UnOp) (*t55)
+
+t58 (@GetFollowees): (*ssa.FieldAddr) (&t30.Followees [#2])
+	 → t30 (@GetFollowees): (*ssa.Alloc)
+
+t59 (@GetFollowees): (*ssa.UnOp) (*t58)
+
+t60 (@GetFollowees): (*ssa.MakeInterface) (make interface{} <- []FolloweeInfo (t59))
+	 → t60 (@GetFollowees): (*ssa.MakeInterface)
+
+t61 (@GetFollowees): (*ssa.Call) (invoke t56.Put(ctx, t57, t60))
+
+t62 (@GetFollowees): (*ssa.Phi) (phi [5: nil:[]int64, 20: t73] #followees)
+	 → t73 (@GetFollowees): (*ssa.Call)
+
+t66 (@GetFollowees): (*ssa.IndexAddr) (&t18[t64])
+
+t68 (@GetFollowees): (*ssa.FieldAddr) (&t17.FolloweeID [#0])
+	 → t17 (@GetFollowees): (*ssa.Alloc)
+
+t70 (@GetFollowees): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t70 (@GetFollowees): (*ssa.Alloc)
+
+t71 (@GetFollowees): (*ssa.IndexAddr) (&t70[0:int])
+	 → t70 (@GetFollowees): (*ssa.Alloc)
+
+t72 (@GetFollowees): (*ssa.Slice) (slice t70[:])
+	 → t70 (@GetFollowees): (*ssa.Alloc)
+
+t73 (@GetFollowees): (*ssa.Call) (append(t62, t72...))
+	 → t73 (@GetFollowees): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).GetFollowers ###
+s (@GetFollowers): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+ctx (@GetFollowers): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetFollowers): (*ssa.Alloc) (new []FollowerInfo (followerInfos))
+	 → t0 (@GetFollowers): (*ssa.Alloc)
+
+t2 (@GetFollowers): (*ssa.FieldAddr) (&s.socialGraphCache [#0])
+
+t3 (@GetFollowers): (*ssa.UnOp) (*t2)
+
+t5 (@GetFollowers): (*ssa.MakeInterface) (make interface{} <- *[]FollowerInfo (t0))
+	 → t5 (@GetFollowers): (*ssa.MakeInterface)
+
+t8 (@GetFollowers): (*ssa.Extract) (extract t6 #1)
+
+t10 (@GetFollowers): (*ssa.FieldAddr) (&s.socialGraphDB [#1])
+
+t11 (@GetFollowers): (*ssa.UnOp) (*t10)
+
+t13 (@GetFollowers): (*ssa.Extract) (extract t12 #0)
+
+t14 (@GetFollowers): (*ssa.Extract) (extract t12 #1)
+
+t16 (@GetFollowers): (*ssa.Phi) (phi [16: t42, 17: t61] #followers)
+	 → t53 (@GetFollowers): (*ssa.Call)
+	 → t72 (@GetFollowers): (*ssa.Call)
+
+t17 (@GetFollowers): (*ssa.Alloc) (local FollowerInfo (f))
+	 → t17 (@GetFollowers): (*ssa.Alloc)
+
+t18 (@GetFollowers): (*ssa.UnOp) (*t0)
+
+t23 (@GetFollowers): (*ssa.Extract) (extract t22 #0)
+
+t24 (@GetFollowers): (*ssa.Extract) (extract t22 #1)
+
+t26 (@GetFollowers): (*ssa.Extract) (extract t25 #0)
+
+t27 (@GetFollowers): (*ssa.Extract) (extract t25 #1)
+
+t29 (@GetFollowers): (*ssa.Alloc) (new UserInfo (userInfo))
+	 → t29 (@GetFollowers): (*ssa.Alloc)
+
+t30 (@GetFollowers): (*ssa.MakeInterface) (make interface{} <- *UserInfo (t29))
+	 → t30 (@GetFollowers): (*ssa.MakeInterface)
+
+t33 (@GetFollowers): (*ssa.Extract) (extract t31 #1)
+
+t37 (@GetFollowers): (*ssa.Call) (errors.New(t36))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t38 (@GetFollowers): (*ssa.Alloc) (local FollowerInfo (follower))
+	 → t38 (@GetFollowers): (*ssa.Alloc)
+
+t39 (@GetFollowers): (*ssa.FieldAddr) (&t29.Followers [#1])
+	 → t29 (@GetFollowers): (*ssa.Alloc)
+
+t40 (@GetFollowers): (*ssa.UnOp) (*t39)
+
+t42 (@GetFollowers): (*ssa.Phi) (phi [13: nil:[]int64, 15: t53] #followers)
+	 → t53 (@GetFollowers): (*ssa.Call)
+
+t46 (@GetFollowers): (*ssa.IndexAddr) (&t40[t44])
+
+t48 (@GetFollowers): (*ssa.FieldAddr) (&t38.FollowerID [#0])
+	 → t38 (@GetFollowers): (*ssa.Alloc)
+
+t50 (@GetFollowers): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t50 (@GetFollowers): (*ssa.Alloc)
+
+t51 (@GetFollowers): (*ssa.IndexAddr) (&t50[0:int])
+	 → t50 (@GetFollowers): (*ssa.Alloc)
+
+t52 (@GetFollowers): (*ssa.Slice) (slice t50[:])
+	 → t50 (@GetFollowers): (*ssa.Alloc)
+
+t53 (@GetFollowers): (*ssa.Call) (append(t42, t52...))
+	 → t53 (@GetFollowers): (*ssa.Call)
+
+t54 (@GetFollowers): (*ssa.FieldAddr) (&s.socialGraphCache [#0])
+
+t55 (@GetFollowers): (*ssa.UnOp) (*t54)
+
+t57 (@GetFollowers): (*ssa.FieldAddr) (&t29.Followers [#1])
+	 → t29 (@GetFollowers): (*ssa.Alloc)
+
+t58 (@GetFollowers): (*ssa.UnOp) (*t57)
+
+t59 (@GetFollowers): (*ssa.MakeInterface) (make interface{} <- []FollowerInfo (t58))
+	 → t59 (@GetFollowers): (*ssa.MakeInterface)
+
+t60 (@GetFollowers): (*ssa.Call) (invoke t55.Put(ctx, t56, t59))
+
+t61 (@GetFollowers): (*ssa.Phi) (phi [5: nil:[]int64, 18: t72] #followers)
+	 → t72 (@GetFollowers): (*ssa.Call)
+
+t65 (@GetFollowers): (*ssa.IndexAddr) (&t18[t63])
+
+t67 (@GetFollowers): (*ssa.FieldAddr) (&t17.FollowerID [#0])
+	 → t17 (@GetFollowers): (*ssa.Alloc)
+
+t69 (@GetFollowers): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t69 (@GetFollowers): (*ssa.Alloc)
+
+t70 (@GetFollowers): (*ssa.IndexAddr) (&t69[0:int])
+	 → t69 (@GetFollowers): (*ssa.Alloc)
+
+t71 (@GetFollowers): (*ssa.Slice) (slice t69[:])
+	 → t69 (@GetFollowers): (*ssa.Alloc)
+
+t72 (@GetFollowers): (*ssa.Call) (append(t61, t71...))
+	 → t72 (@GetFollowers): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).InsertUser ###
+s (@InsertUser): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+ctx (@InsertUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@InsertUser): (*ssa.FieldAddr) (&s.socialGraphDB [#1])
+
+t1 (@InsertUser): (*ssa.UnOp) (*t0)
+
+t3 (@InsertUser): (*ssa.Extract) (extract t2 #0)
+
+t4 (@InsertUser): (*ssa.Extract) (extract t2 #1)
+
+t6 (@InsertUser): (*ssa.Alloc) (local UserInfo (user))
+	 → t6 (@InsertUser): (*ssa.Alloc)
+
+t7 (@InsertUser): (*ssa.FieldAddr) (&t6.UserID [#0])
+	 → t6 (@InsertUser): (*ssa.Alloc)
+
+t8 (@InsertUser): (*ssa.FieldAddr) (&t6.Followers [#1])
+	 → t6 (@InsertUser): (*ssa.Alloc)
+
+t9 (@InsertUser): (*ssa.Alloc) (new [0]FollowerInfo (slicelit))
+	 → t9 (@InsertUser): (*ssa.Alloc)
+
+t10 (@InsertUser): (*ssa.Slice) (slice t9[:])
+	 → t9 (@InsertUser): (*ssa.Alloc)
+
+t11 (@InsertUser): (*ssa.FieldAddr) (&t6.Followees [#2])
+	 → t6 (@InsertUser): (*ssa.Alloc)
+
+t12 (@InsertUser): (*ssa.Alloc) (new [0]FolloweeInfo (slicelit))
+	 → t12 (@InsertUser): (*ssa.Alloc)
+
+t13 (@InsertUser): (*ssa.Slice) (slice t12[:])
+	 → t12 (@InsertUser): (*ssa.Alloc)
+
+t15 (@InsertUser): (*ssa.MakeInterface) (make interface{} <- UserInfo (t14))
+	 → t15 (@InsertUser): (*ssa.MakeInterface)
+
+t16 (@InsertUser): (*ssa.Call) (invoke t3.InsertOne(ctx, t15))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).Unfollow ###
+s (@Unfollow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+t0 (@Unfollow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
+	 → t0 (@Unfollow): (*ssa.Alloc)
+
+ctx (@Unfollow): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@Unfollow): (*ssa.Alloc) (new context.Context (ctx))
+	 → t1 (@Unfollow): (*ssa.Alloc)
+
+t2 (@Unfollow): (*ssa.Alloc) (new int64 (userID))
+	 → t2 (@Unfollow): (*ssa.Alloc)
+
+t3 (@Unfollow): (*ssa.Alloc) (new int64 (followeeID))
+	 → t3 (@Unfollow): (*ssa.Alloc)
+
+t4 (@Unfollow): (*ssa.Alloc) (new string (userIDstr))
+	 → t4 (@Unfollow): (*ssa.Alloc)
+
+t7 (@Unfollow): (*ssa.Alloc) (new string (followeeIDstr))
+	 → t7 (@Unfollow): (*ssa.Alloc)
+
+t10 (@Unfollow): (*ssa.Alloc) (new error (err1))
+	 → t10 (@Unfollow): (*ssa.Alloc)
+
+t11 (@Unfollow): (*ssa.Alloc) (new error (err2))
+	 → t11 (@Unfollow): (*ssa.Alloc)
+
+t12 (@Unfollow): (*ssa.Alloc) (new error (err3))
+	 → t12 (@Unfollow): (*ssa.Alloc)
+
+t13 (@Unfollow): (*ssa.Alloc) (new sync.WaitGroup (wg))
+	 → t13 (@Unfollow): (*ssa.Alloc)
+
+t15 (@Unfollow): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).Unfollow$1 [t13, t0, t1, t10, t4, t7])
+	 → Unfollow$1 (@Unfollow): (*ssa.Function)
+
+t16 (@Unfollow): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).Unfollow$2 [t13, t0, t1, t11, t7, t4])
+	 → Unfollow$2 (@Unfollow): (*ssa.Function)
+
+t17 (@Unfollow): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).Unfollow$3 [t13, t0, t1, t4, t7, t3, t2, t12])
+	 → Unfollow$3 (@Unfollow): (*ssa.Function)
+
+t19 (@Unfollow): (*ssa.UnOp) (*t10)
+
+t21 (@Unfollow): (*ssa.UnOp) (*t10)
+
+t22 (@Unfollow): (*ssa.UnOp) (*t11)
+
+t24 (@Unfollow): (*ssa.UnOp) (*t11)
+
+t25 (@Unfollow): (*ssa.UnOp) (*t12)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).UnfollowWithUsername ###
+t0 (@UnfollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
+	 → t0 (@UnfollowWithUsername): (*ssa.Alloc)
+
+s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
+ctx (@UnfollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@UnfollowWithUsername): (*ssa.Alloc) (new context.Context (ctx))
+	 → t1 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t2 (@UnfollowWithUsername): (*ssa.Alloc) (new int64 (reqID))
+	 → t2 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t3 (@UnfollowWithUsername): (*ssa.Alloc) (new string (username))
+	 → t3 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t4 (@UnfollowWithUsername): (*ssa.Alloc) (new string (followee_name))
+	 → t4 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t5 (@UnfollowWithUsername): (*ssa.Alloc) (new int64 (id))
+	 → t5 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t6 (@UnfollowWithUsername): (*ssa.Alloc) (new int64 (followee_id))
+	 → t6 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t7 (@UnfollowWithUsername): (*ssa.Alloc) (new error (err1))
+	 → t7 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t8 (@UnfollowWithUsername): (*ssa.Alloc) (new error (err2))
+	 → t8 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t9 (@UnfollowWithUsername): (*ssa.Alloc) (new sync.WaitGroup (wg))
+	 → t9 (@UnfollowWithUsername): (*ssa.Alloc)
+
+t11 (@UnfollowWithUsername): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).UnfollowWithUsername$1 [t9, t5, t7, t0, t1, t2, t3])
+	 → UnfollowWithUsername$1 (@UnfollowWithUsername): (*ssa.Function)
+
+t12 (@UnfollowWithUsername): (*ssa.MakeClosure) (make closure (*SocialGraphServiceImpl).UnfollowWithUsername$2 [t9, t6, t8, t0, t1, t2, t4])
+	 → UnfollowWithUsername$2 (@UnfollowWithUsername): (*ssa.Function)
+
+t14 (@UnfollowWithUsername): (*ssa.UnOp) (*t7)
+
+t16 (@UnfollowWithUsername): (*ssa.UnOp) (*t7)
+
+t17 (@UnfollowWithUsername): (*ssa.UnOp) (*t8)
+
+t19 (@UnfollowWithUsername): (*ssa.UnOp) (*t8)
+
+t20 (@UnfollowWithUsername): (*ssa.UnOp) (*t0)
+
+t21 (@UnfollowWithUsername): (*ssa.UnOp) (*t1)
+
+t25 (@UnfollowWithUsername): (*ssa.Call) ((*SocialGraphServiceImpl).Unfollow(t20, t21, t22, t23, t24))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.TextServiceImpl).ComposeText ###
+t (@ComposeText): (*ssa.Parameter) (parameter t : *TextServiceImpl)
+
+ctx (@ComposeText): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ComposeText): (*ssa.Call) (regexp.MustCompile("@[a-zA-Z0-9-_]+":string))
+	 → t15 (@compile): (*ssa.Alloc)
+
+t1 (@ComposeText): (*ssa.Call) ((*regexp.Regexp).FindAllString(t0, text, -1:int))
+	 → t2 (@FindAllString$1): (*ssa.Alloc)
+	 → t14 (@FindAllString$1): (*ssa.Call)
+
+t3 (@ComposeText): (*ssa.Phi) (phi [0: nil:[]string, 2: t13] #usernames)
+	 → t13 (@ComposeText): (*ssa.Call)
+
+t7 (@ComposeText): (*ssa.IndexAddr) (&t1[t5])
+	 → t2 (@FindAllString$1): (*ssa.Alloc)
+	 → t14 (@FindAllString$1): (*ssa.Call)
+
+t10 (@ComposeText): (*ssa.Alloc) (new [1]string (varargs))
+	 → t10 (@ComposeText): (*ssa.Alloc)
+
+t11 (@ComposeText): (*ssa.IndexAddr) (&t10[0:int])
+	 → t10 (@ComposeText): (*ssa.Alloc)
+
+t12 (@ComposeText): (*ssa.Slice) (slice t10[:])
+	 → t10 (@ComposeText): (*ssa.Alloc)
+
+t13 (@ComposeText): (*ssa.Call) (append(t3, t12...))
+	 → t13 (@ComposeText): (*ssa.Call)
+
+t14 (@ComposeText): (*ssa.Call) (regexp.MustCompile("(http://|https://...":string))
+	 → t15 (@compile): (*ssa.Alloc)
+
+t15 (@ComposeText): (*ssa.Call) ((*regexp.Regexp).FindAllString(t14, text, -1:int))
+	 → t2 (@FindAllString$1): (*ssa.Alloc)
+	 → t14 (@FindAllString$1): (*ssa.Call)
+
+t16 (@ComposeText): (*ssa.FieldAddr) (&t.urlShortenService [#0])
+
+t17 (@ComposeText): (*ssa.UnOp) (*t16)
+
+t19 (@ComposeText): (*ssa.Extract) (extract t18 #0)
+
+t20 (@ComposeText): (*ssa.Extract) (extract t18 #1)
+
+t21 (@ComposeText): (*ssa.FieldAddr) (&t.userMentionService [#1])
+
+t22 (@ComposeText): (*ssa.UnOp) (*t21)
+
+t24 (@ComposeText): (*ssa.Extract) (extract t23 #0)
+
+t25 (@ComposeText): (*ssa.Extract) (extract t23 #1)
+
+t36 (@ComposeText): (*ssa.IndexAddr) (&t15[t34])
+	 → t2 (@FindAllString$1): (*ssa.Alloc)
+	 → t14 (@FindAllString$1): (*ssa.Call)
+
+t38 (@ComposeText): (*ssa.IndexAddr) (&t19[t34])
+
+t39 (@ComposeText): (*ssa.FieldAddr) (&t38.ShortenedUrl [#0])
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UniqueIdServiceImpl).ComposeUniqueId ###
+u (@ComposeUniqueId): (*ssa.Parameter) (parameter u : *UniqueIdServiceImpl)
+
+ctx (@ComposeUniqueId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t20 (@ComposeUniqueId): (*ssa.FieldAddr) (&u.machine_id [#2])
+
+t22 (@ComposeUniqueId): (*ssa.Alloc) (new [3]any (varargs))
+	 → t22 (@ComposeUniqueId): (*ssa.Alloc)
+
+t23 (@ComposeUniqueId): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@ComposeUniqueId): (*ssa.Alloc)
+
+t24 (@ComposeUniqueId): (*ssa.MakeInterface) (make any <- string (t21))
+	 → t24 (@ComposeUniqueId): (*ssa.MakeInterface)
+
+t25 (@ComposeUniqueId): (*ssa.IndexAddr) (&t22[1:int])
+	 → t22 (@ComposeUniqueId): (*ssa.Alloc)
+
+t26 (@ComposeUniqueId): (*ssa.MakeInterface) (make any <- string (t8))
+	 → t26 (@ComposeUniqueId): (*ssa.MakeInterface)
+
+t27 (@ComposeUniqueId): (*ssa.IndexAddr) (&t22[2:int])
+	 → t22 (@ComposeUniqueId): (*ssa.Alloc)
+
+t28 (@ComposeUniqueId): (*ssa.MakeInterface) (make any <- string (t19))
+	 → t28 (@ComposeUniqueId): (*ssa.MakeInterface)
+
+t29 (@ComposeUniqueId): (*ssa.Slice) (slice t22[:])
+	 → t22 (@ComposeUniqueId): (*ssa.Alloc)
+
+t31 (@ComposeUniqueId): (*ssa.FieldAddr) (&u.machine_id [#2])
+
+t37 (@ComposeUniqueId): (*ssa.Extract) (extract t35 #1)
+	 → t2 (@ParseUint): (*ssa.MakeInterface)
+	 → t14 (@ParseUint): (*ssa.MakeInterface)
+	 → t41 (@ParseUint): (*ssa.MakeInterface)
+	 → t75 (@ParseUint): (*ssa.MakeInterface)
+	 → t80 (@ParseUint): (*ssa.MakeInterface)
+	 → t83 (@ParseUint): (*ssa.MakeInterface)
+	 → t90 (@ParseUint): (*ssa.MakeInterface)
+	 → t93 (@ParseUint): (*ssa.MakeInterface)
+	 → t2 (@ParseInt): (*ssa.MakeInterface)
+	 → t33 (@ParseInt): (*ssa.MakeInterface)
+	 → t38 (@ParseInt): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UniqueIdServiceImpl).getCounter ###
+u (@getCounter): (*ssa.Parameter) (parameter u : *UniqueIdServiceImpl)
+
+t0 (@getCounter): (*ssa.FieldAddr) (&u.current_timestamp [#1])
+
+t3 (@getCounter): (*ssa.FieldAddr) (&u.counter [#0])
+
+t5 (@getCounter): (*ssa.FieldAddr) (&u.counter [#0])
+
+t8 (@getCounter): (*ssa.FieldAddr) (&u.counter [#0])
+
+t9 (@getCounter): (*ssa.FieldAddr) (&u.current_timestamp [#1])
+
+t10 (@getCounter): (*ssa.FieldAddr) (&u.counter [#0])
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UrlShortenServiceImpl).ComposeUrls ###
+u (@ComposeUrls): (*ssa.Parameter) (parameter u : *UrlShortenServiceImpl)
+
+ctx (@ComposeUrls): (*ssa.Parameter) (parameter ctx : context.Context)
+
+urls (@ComposeUrls): (*ssa.Parameter) (parameter urls : []string)
+
+t1 (@ComposeUrls): (*ssa.Phi) (phi [0: nil:[]URL, 2: t19] #target_urls)
+	 → t19 (@ComposeUrls): (*ssa.Call)
+
+t2 (@ComposeUrls): (*ssa.Phi) (phi [0: nil:[]interface{}, 2: t25] #target_url_docs)
+	 → t25 (@ComposeUrls): (*ssa.Call)
+
+t6 (@ComposeUrls): (*ssa.IndexAddr) (&urls[t4])
+
+t8 (@ComposeUrls): (*ssa.FieldAddr) (&u.hostname [#1])
+
+t12 (@ComposeUrls): (*ssa.Alloc) (local URL (target_url))
+	 → t12 (@ComposeUrls): (*ssa.Alloc)
+
+t13 (@ComposeUrls): (*ssa.FieldAddr) (&t12.ShortenedUrl [#0])
+	 → t12 (@ComposeUrls): (*ssa.Alloc)
+
+t14 (@ComposeUrls): (*ssa.FieldAddr) (&t12.ExpandedUrl [#1])
+	 → t12 (@ComposeUrls): (*ssa.Alloc)
+
+t16 (@ComposeUrls): (*ssa.Alloc) (new [1]URL (varargs))
+	 → t16 (@ComposeUrls): (*ssa.Alloc)
+
+t17 (@ComposeUrls): (*ssa.IndexAddr) (&t16[0:int])
+	 → t16 (@ComposeUrls): (*ssa.Alloc)
+
+t18 (@ComposeUrls): (*ssa.Slice) (slice t16[:])
+	 → t16 (@ComposeUrls): (*ssa.Alloc)
+
+t19 (@ComposeUrls): (*ssa.Call) (append(t1, t18...))
+	 → t19 (@ComposeUrls): (*ssa.Call)
+
+t21 (@ComposeUrls): (*ssa.Alloc) (new [1]interface{} (varargs))
+	 → t21 (@ComposeUrls): (*ssa.Alloc)
+
+t22 (@ComposeUrls): (*ssa.IndexAddr) (&t21[0:int])
+	 → t21 (@ComposeUrls): (*ssa.Alloc)
+
+t23 (@ComposeUrls): (*ssa.MakeInterface) (make interface{} <- URL (t20))
+	 → t23 (@ComposeUrls): (*ssa.MakeInterface)
+
+t24 (@ComposeUrls): (*ssa.Slice) (slice t21[:])
+	 → t21 (@ComposeUrls): (*ssa.Alloc)
+
+t25 (@ComposeUrls): (*ssa.Call) (append(t2, t24...))
+	 → t25 (@ComposeUrls): (*ssa.Call)
+
+t28 (@ComposeUrls): (*ssa.FieldAddr) (&u.urlShortenDB [#0])
+
+t29 (@ComposeUrls): (*ssa.UnOp) (*t28)
+
+t31 (@ComposeUrls): (*ssa.Extract) (extract t30 #0)
+
+t32 (@ComposeUrls): (*ssa.Extract) (extract t30 #1)
+
+t34 (@ComposeUrls): (*ssa.Alloc) (new [0]URL (slicelit))
+	 → t34 (@ComposeUrls): (*ssa.Alloc)
+
+t35 (@ComposeUrls): (*ssa.Slice) (slice t34[:])
+	 → t34 (@ComposeUrls): (*ssa.Alloc)
+
+t36 (@ComposeUrls): (*ssa.Call) (invoke t31.InsertMany(ctx, t2))
+
+t38 (@ComposeUrls): (*ssa.Alloc) (new [0]URL (slicelit))
+	 → t38 (@ComposeUrls): (*ssa.Alloc)
+
+t39 (@ComposeUrls): (*ssa.Slice) (slice t38[:])
+	 → t38 (@ComposeUrls): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UrlShortenServiceImpl).GetExtendedUrls ###
+u (@GetExtendedUrls): (*ssa.Parameter) (parameter u : *UrlShortenServiceImpl)
+
+ctx (@GetExtendedUrls): (*ssa.Parameter) (parameter ctx : context.Context)
+
+shortenedUrls (@GetExtendedUrls): (*ssa.Parameter) (parameter shortenedUrls : []string)
+
+t0 (@GetExtendedUrls): (*ssa.Alloc) (new [0]string (slicelit))
+	 → t0 (@GetExtendedUrls): (*ssa.Alloc)
+
+t1 (@GetExtendedUrls): (*ssa.Slice) (slice t0[:])
+	 → t0 (@GetExtendedUrls): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UrlShortenServiceImpl).genRandomStr ###
+u (@genRandomStr): (*ssa.Parameter) (parameter u : *UrlShortenServiceImpl)
+
+t0 (@genRandomStr): (*ssa.MakeSlice) (make []rune length length)
+	 → t0 (@genRandomStr): (*ssa.MakeSlice)
+
+t5 (@genRandomStr): (*ssa.UnOp) (*letterRunes)
+	 → t19 (@init): (*ssa.Convert)
+
+t6 (@genRandomStr): (*ssa.UnOp) (*letterRunes)
+	 → t19 (@init): (*ssa.Convert)
+
+t9 (@genRandomStr): (*ssa.IndexAddr) (&t5[t8])
+	 → t19 (@init): (*ssa.Convert)
+
+t11 (@genRandomStr): (*ssa.IndexAddr) (&t0[t3])
+	 → t0 (@genRandomStr): (*ssa.MakeSlice)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserIDServiceImpl).GetUserId ###
+u (@GetUserId): (*ssa.Parameter) (parameter u : *UserIDServiceImpl)
+
+ctx (@GetUserId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetUserId): (*ssa.Alloc) (new int64 (user_id))
+	 → t0 (@GetUserId): (*ssa.Alloc)
+
+t1 (@GetUserId): (*ssa.FieldAddr) (&u.userCache [#0])
+
+t2 (@GetUserId): (*ssa.UnOp) (*t1)
+
+t4 (@GetUserId): (*ssa.MakeInterface) (make interface{} <- *int64 (t0))
+	 → t4 (@GetUserId): (*ssa.MakeInterface)
+
+t7 (@GetUserId): (*ssa.Extract) (extract t5 #1)
+
+t10 (@GetUserId): (*ssa.Alloc) (new User (user))
+	 → t10 (@GetUserId): (*ssa.Alloc)
+
+t11 (@GetUserId): (*ssa.FieldAddr) (&u.userDB [#1])
+
+t12 (@GetUserId): (*ssa.UnOp) (*t11)
+
+t14 (@GetUserId): (*ssa.Extract) (extract t13 #0)
+
+t15 (@GetUserId): (*ssa.Extract) (extract t13 #1)
+
+t18 (@GetUserId): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t18 (@GetUserId): (*ssa.Alloc)
+
+t19 (@GetUserId): (*ssa.IndexAddr) (&t18[0:int])
+	 → t18 (@GetUserId): (*ssa.Alloc)
+
+t20 (@GetUserId): (*ssa.FieldAddr) (&t19.Key [#0])
+	 → t18 (@GetUserId): (*ssa.Alloc)
+
+t21 (@GetUserId): (*ssa.FieldAddr) (&t19.Value [#1])
+	 → t18 (@GetUserId): (*ssa.Alloc)
+
+t22 (@GetUserId): (*ssa.MakeInterface) (make interface{} <- string (username))
+	 → t22 (@GetUserId): (*ssa.MakeInterface)
+
+t23 (@GetUserId): (*ssa.Slice) (slice t18[:])
+	 → t18 (@GetUserId): (*ssa.Alloc)
+
+t25 (@GetUserId): (*ssa.Extract) (extract t24 #0)
+
+t26 (@GetUserId): (*ssa.Extract) (extract t24 #1)
+
+t28 (@GetUserId): (*ssa.MakeInterface) (make interface{} <- *User (t10))
+	 → t28 (@GetUserId): (*ssa.MakeInterface)
+
+t31 (@GetUserId): (*ssa.Extract) (extract t29 #1)
+
+t35 (@GetUserId): (*ssa.Call) (errors.New(t34))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t36 (@GetUserId): (*ssa.FieldAddr) (&t10.UserID [#0])
+	 → t10 (@GetUserId): (*ssa.Alloc)
+
+t38 (@GetUserId): (*ssa.FieldAddr) (&u.userCache [#0])
+
+t39 (@GetUserId): (*ssa.UnOp) (*t38)
+
+t42 (@GetUserId): (*ssa.MakeInterface) (make interface{} <- int64 (t41))
+	 → t42 (@GetUserId): (*ssa.MakeInterface)
+
+t43 (@GetUserId): (*ssa.Call) (invoke t39.Put(ctx, t40, t42))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserMentionServiceImpl).ComposeUserMentions ###
+u (@ComposeUserMentions): (*ssa.Parameter) (parameter u : *UserMentionServiceImpl)
+
+ctx (@ComposeUserMentions): (*ssa.Parameter) (parameter ctx : context.Context)
+
+usernames (@ComposeUserMentions): (*ssa.Parameter) (parameter usernames : []string)
+
+t0 (@ComposeUserMentions): (*ssa.MakeMap) (make map[string]bool )
+	 → t0 (@ComposeUserMentions): (*ssa.MakeMap)
+
+t1 (@ComposeUserMentions): (*ssa.MakeMap) (make map[string]string )
+	 → t1 (@ComposeUserMentions): (*ssa.MakeMap)
+
+t3 (@ComposeUserMentions): (*ssa.Phi) (phi [0: nil:[]string, 2: t13] #keys)
+	 → t13 (@ComposeUserMentions): (*ssa.Call)
+
+t7 (@ComposeUserMentions): (*ssa.IndexAddr) (&usernames[t5])
+
+t10 (@ComposeUserMentions): (*ssa.Alloc) (new [1]string (varargs))
+	 → t10 (@ComposeUserMentions): (*ssa.Alloc)
+
+t11 (@ComposeUserMentions): (*ssa.IndexAddr) (&t10[0:int])
+	 → t10 (@ComposeUserMentions): (*ssa.Alloc)
+
+t12 (@ComposeUserMentions): (*ssa.Slice) (slice t10[:])
+	 → t10 (@ComposeUserMentions): (*ssa.Alloc)
+
+t13 (@ComposeUserMentions): (*ssa.Call) (append(t3, t12...))
+	 → t13 (@ComposeUserMentions): (*ssa.Call)
+
+t16 (@ComposeUserMentions): (*ssa.MakeSlice) (make []int64 t15 t15)
+	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
+
+t18 (@ComposeUserMentions): (*ssa.Phi) (phi [3: nil:[]interface{}, 5: t27] #retvals)
+	 → t27 (@ComposeUserMentions): (*ssa.Call)
+
+t22 (@ComposeUserMentions): (*ssa.IndexAddr) (&t16[t20])
+	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
+
+t23 (@ComposeUserMentions): (*ssa.Alloc) (new [1]interface{} (varargs))
+	 → t23 (@ComposeUserMentions): (*ssa.Alloc)
+
+t24 (@ComposeUserMentions): (*ssa.IndexAddr) (&t23[0:int])
+	 → t23 (@ComposeUserMentions): (*ssa.Alloc)
+
+t25 (@ComposeUserMentions): (*ssa.MakeInterface) (make interface{} <- *int64 (t22))
+	 → t25 (@ComposeUserMentions): (*ssa.MakeInterface)
+
+t26 (@ComposeUserMentions): (*ssa.Slice) (slice t23[:])
+	 → t23 (@ComposeUserMentions): (*ssa.Alloc)
+
+t27 (@ComposeUserMentions): (*ssa.Call) (append(t18, t26...))
+	 → t27 (@ComposeUserMentions): (*ssa.Call)
+
+t28 (@ComposeUserMentions): (*ssa.FieldAddr) (&u.userCache [#0])
+
+t29 (@ComposeUserMentions): (*ssa.UnOp) (*t28)
+
+t30 (@ComposeUserMentions): (*ssa.Call) (invoke t29.Mget(ctx, t3, t18))
+
+t32 (@ComposeUserMentions): (*ssa.Phi) (phi [6: nil:[]UserMention, 8: t32, 10: t53] #user_mentions)
+	 → t53 (@ComposeUserMentions): (*ssa.Call)
+
+t36 (@ComposeUserMentions): (*ssa.IndexAddr) (&t3[t34])
+	 → t13 (@ComposeUserMentions): (*ssa.Call)
+
+t38 (@ComposeUserMentions): (*ssa.IndexAddr) (&t16[t34])
+	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
+
+t43 (@ComposeUserMentions): (*ssa.Alloc) (local UserMention (user_mention))
+	 → t43 (@ComposeUserMentions): (*ssa.Alloc)
+
+t44 (@ComposeUserMentions): (*ssa.FieldAddr) (&t43.UserID [#0])
+	 → t43 (@ComposeUserMentions): (*ssa.Alloc)
+
+t45 (@ComposeUserMentions): (*ssa.IndexAddr) (&t16[t34])
+	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
+
+t47 (@ComposeUserMentions): (*ssa.FieldAddr) (&t43.Username [#1])
+	 → t43 (@ComposeUserMentions): (*ssa.Alloc)
+
+t50 (@ComposeUserMentions): (*ssa.Alloc) (new [1]UserMention (varargs))
+	 → t50 (@ComposeUserMentions): (*ssa.Alloc)
+
+t51 (@ComposeUserMentions): (*ssa.IndexAddr) (&t50[0:int])
+	 → t50 (@ComposeUserMentions): (*ssa.Alloc)
+
+t52 (@ComposeUserMentions): (*ssa.Slice) (slice t50[:])
+	 → t50 (@ComposeUserMentions): (*ssa.Alloc)
+
+t53 (@ComposeUserMentions): (*ssa.Call) (append(t32, t52...))
+	 → t53 (@ComposeUserMentions): (*ssa.Call)
+
+t56 (@ComposeUserMentions): (*ssa.Alloc) (new [1]any (varargs))
+	 → t56 (@ComposeUserMentions): (*ssa.Alloc)
+
+t57 (@ComposeUserMentions): (*ssa.IndexAddr) (&t56[0:int])
+	 → t56 (@ComposeUserMentions): (*ssa.Alloc)
+
+t58 (@ComposeUserMentions): (*ssa.MakeInterface) (make any <- string ("Looking for user ...":string))
+	 → t58 (@ComposeUserMentions): (*ssa.MakeInterface)
+
+t59 (@ComposeUserMentions): (*ssa.Slice) (slice t56[:])
+	 → t56 (@ComposeUserMentions): (*ssa.Alloc)
+
+t62 (@ComposeUserMentions): (*ssa.Phi) (phi [9: t32, 23: t104] #user_mentions)
+	 → t53 (@ComposeUserMentions): (*ssa.Call)
+	 → t104 (@ComposeUserMentions): (*ssa.Call)
+
+t63 (@ComposeUserMentions): (*ssa.Phi) (phi [11: nil:[]string, 14: t72] #names)
+	 → t72 (@ComposeUserMentions): (*ssa.Call)
+
+t69 (@ComposeUserMentions): (*ssa.Alloc) (new [1]string (varargs))
+	 → t69 (@ComposeUserMentions): (*ssa.Alloc)
+
+t70 (@ComposeUserMentions): (*ssa.IndexAddr) (&t69[0:int])
+	 → t69 (@ComposeUserMentions): (*ssa.Alloc)
+
+t71 (@ComposeUserMentions): (*ssa.Slice) (slice t69[:])
+	 → t69 (@ComposeUserMentions): (*ssa.Alloc)
+
+t72 (@ComposeUserMentions): (*ssa.Call) (append(t63, t71...))
+	 → t72 (@ComposeUserMentions): (*ssa.Call)
+
+t73 (@ComposeUserMentions): (*ssa.FieldAddr) (&u.userDB [#1])
+
+t74 (@ComposeUserMentions): (*ssa.UnOp) (*t73)
+
+t76 (@ComposeUserMentions): (*ssa.Extract) (extract t75 #0)
+
+t77 (@ComposeUserMentions): (*ssa.Extract) (extract t75 #1)
+
+t83 (@ComposeUserMentions): (*ssa.Extract) (extract t82 #0)
+
+t84 (@ComposeUserMentions): (*ssa.Extract) (extract t82 #1)
+
+t86 (@ComposeUserMentions): (*ssa.Alloc) (new [1]any (varargs))
+	 → t86 (@ComposeUserMentions): (*ssa.Alloc)
+
+t87 (@ComposeUserMentions): (*ssa.IndexAddr) (&t86[0:int])
+	 → t86 (@ComposeUserMentions): (*ssa.Alloc)
+
+t88 (@ComposeUserMentions): (*ssa.ChangeInterface) (change interface any <- error (t84))
+
+t89 (@ComposeUserMentions): (*ssa.Slice) (slice t86[:])
+	 → t86 (@ComposeUserMentions): (*ssa.Alloc)
+
+t91 (@ComposeUserMentions): (*ssa.Alloc) (new [0]UserMention (slicelit))
+	 → t91 (@ComposeUserMentions): (*ssa.Alloc)
+
+t92 (@ComposeUserMentions): (*ssa.Slice) (slice t91[:])
+	 → t91 (@ComposeUserMentions): (*ssa.Alloc)
+
+t94 (@ComposeUserMentions): (*ssa.Extract) (extract t93 #0)
+
+t95 (@ComposeUserMentions): (*ssa.Extract) (extract t93 #1)
+
+t97 (@ComposeUserMentions): (*ssa.Alloc) (new [0]UserMention (slicelit))
+	 → t97 (@ComposeUserMentions): (*ssa.Alloc)
+
+t98 (@ComposeUserMentions): (*ssa.Slice) (slice t97[:])
+	 → t97 (@ComposeUserMentions): (*ssa.Alloc)
+
+t99 (@ComposeUserMentions): (*ssa.Alloc) (new []UserMention (new_user_mentions))
+	 → t99 (@ComposeUserMentions): (*ssa.Alloc)
+
+t100 (@ComposeUserMentions): (*ssa.MakeInterface) (make interface{} <- *[]UserMention (t99))
+	 → t100 (@ComposeUserMentions): (*ssa.MakeInterface)
+
+t101 (@ComposeUserMentions): (*ssa.Call) (invoke t94.All(ctx, t100))
+
+t103 (@ComposeUserMentions): (*ssa.UnOp) (*t99)
+
+t104 (@ComposeUserMentions): (*ssa.Call) (append(t32, t103...))
+	 → t53 (@ComposeUserMentions): (*ssa.Call)
+	 → t104 (@ComposeUserMentions): (*ssa.Call)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).ComposeCreatorWithUserId ###
+u (@ComposeCreatorWithUserId): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@ComposeCreatorWithUserId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ComposeCreatorWithUserId): (*ssa.Alloc) (local Creator (complit))
+	 → t0 (@ComposeCreatorWithUserId): (*ssa.Alloc)
+
+t1 (@ComposeCreatorWithUserId): (*ssa.FieldAddr) (&t0.UserID [#0])
+	 → t0 (@ComposeCreatorWithUserId): (*ssa.Alloc)
+
+t2 (@ComposeCreatorWithUserId): (*ssa.FieldAddr) (&t0.Username [#1])
+	 → t0 (@ComposeCreatorWithUserId): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).ComposeCreatorWithUsername ###
+u (@ComposeCreatorWithUsername): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@ComposeCreatorWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ComposeCreatorWithUsername): (*ssa.Alloc) (new int64 (user_id))
+	 → t0 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t1 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&u.userCache [#4])
+
+t2 (@ComposeCreatorWithUsername): (*ssa.UnOp) (*t1)
+
+t4 (@ComposeCreatorWithUsername): (*ssa.MakeInterface) (make interface{} <- *int64 (t0))
+	 → t4 (@ComposeCreatorWithUsername): (*ssa.MakeInterface)
+
+t8 (@ComposeCreatorWithUsername): (*ssa.Alloc) (new User (user))
+	 → t8 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t9 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&u.userDB [#5])
+
+t10 (@ComposeCreatorWithUsername): (*ssa.UnOp) (*t9)
+
+t12 (@ComposeCreatorWithUsername): (*ssa.Extract) (extract t11 #0)
+
+t13 (@ComposeCreatorWithUsername): (*ssa.Extract) (extract t11 #1)
+
+t15 (@ComposeCreatorWithUsername): (*ssa.Alloc) (local Creator (complit))
+	 → t15 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t16 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&t15.UserID [#0])
+	 → t15 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t18 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&t15.Username [#1])
+	 → t15 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t20 (@ComposeCreatorWithUsername): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t20 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t21 (@ComposeCreatorWithUsername): (*ssa.IndexAddr) (&t20[0:int])
+	 → t20 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t22 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&t21.Key [#0])
+	 → t20 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t23 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&t21.Value [#1])
+	 → t20 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t24 (@ComposeCreatorWithUsername): (*ssa.MakeInterface) (make interface{} <- string (username))
+	 → t24 (@ComposeCreatorWithUsername): (*ssa.MakeInterface)
+
+t25 (@ComposeCreatorWithUsername): (*ssa.Slice) (slice t20[:])
+	 → t20 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t27 (@ComposeCreatorWithUsername): (*ssa.Extract) (extract t26 #0)
+
+t28 (@ComposeCreatorWithUsername): (*ssa.Extract) (extract t26 #1)
+
+t30 (@ComposeCreatorWithUsername): (*ssa.MakeInterface) (make interface{} <- *User (t8))
+	 → t30 (@ComposeCreatorWithUsername): (*ssa.MakeInterface)
+
+t33 (@ComposeCreatorWithUsername): (*ssa.Extract) (extract t31 #1)
+
+t35 (@ComposeCreatorWithUsername): (*ssa.Call) (errors.New("User doesn't exist":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t36 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&t8.UserID [#0])
+	 → t8 (@ComposeCreatorWithUsername): (*ssa.Alloc)
+
+t38 (@ComposeCreatorWithUsername): (*ssa.FieldAddr) (&u.userCache [#4])
+
+t39 (@ComposeCreatorWithUsername): (*ssa.UnOp) (*t38)
+
+t42 (@ComposeCreatorWithUsername): (*ssa.MakeInterface) (make interface{} <- int64 (t41))
+	 → t42 (@ComposeCreatorWithUsername): (*ssa.MakeInterface)
+
+t43 (@ComposeCreatorWithUsername): (*ssa.Call) (invoke t39.Put(ctx, t40, t42))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).Login ###
+u (@Login): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@Login): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t3 (@Login): (*ssa.Alloc) (new LoginObj (login))
+	 → t3 (@Login): (*ssa.Alloc)
+
+t4 (@Login): (*ssa.FieldAddr) (&t3.UserID [#0])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t5 (@Login): (*ssa.FieldAddr) (&u.userCache [#4])
+
+t6 (@Login): (*ssa.UnOp) (*t5)
+
+t8 (@Login): (*ssa.MakeInterface) (make interface{} <- *LoginObj (t3))
+	 → t8 (@Login): (*ssa.MakeInterface)
+
+t10 (@Login): (*ssa.FieldAddr) (&t3.UserID [#0])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t13 (@Login): (*ssa.Alloc) (new User (user))
+	 → t13 (@Login): (*ssa.Alloc)
+
+t14 (@Login): (*ssa.FieldAddr) (&u.userDB [#5])
+
+t15 (@Login): (*ssa.UnOp) (*t14)
+
+t17 (@Login): (*ssa.Extract) (extract t16 #0)
+
+t18 (@Login): (*ssa.Extract) (extract t16 #1)
+
+t20 (@Login): (*ssa.FieldAddr) (&t3.Salt [#2])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t23 (@Login): (*ssa.Convert) (convert []byte <- string (t22))
+	 → t23 (@Login): (*ssa.Convert)
+
+t25 (@Login): (*ssa.FieldAddr) (&t3.Password [#1])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t28 (@Login): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t28 (@Login): (*ssa.Alloc)
+
+t29 (@Login): (*ssa.IndexAddr) (&t28[0:int])
+	 → t28 (@Login): (*ssa.Alloc)
+
+t30 (@Login): (*ssa.FieldAddr) (&t29.Key [#0])
+	 → t28 (@Login): (*ssa.Alloc)
+
+t31 (@Login): (*ssa.FieldAddr) (&t29.Value [#1])
+	 → t28 (@Login): (*ssa.Alloc)
+
+t32 (@Login): (*ssa.MakeInterface) (make interface{} <- string (username))
+	 → t32 (@Login): (*ssa.MakeInterface)
+
+t33 (@Login): (*ssa.Slice) (slice t28[:])
+	 → t28 (@Login): (*ssa.Alloc)
+
+t35 (@Login): (*ssa.Extract) (extract t34 #0)
+
+t36 (@Login): (*ssa.Extract) (extract t34 #1)
+
+t38 (@Login): (*ssa.MakeInterface) (make interface{} <- *User (t13))
+	 → t38 (@Login): (*ssa.MakeInterface)
+
+t40 (@Login): (*ssa.FieldAddr) (&t13.PwdHashed [#4])
+	 → t13 (@Login): (*ssa.Alloc)
+
+t42 (@Login): (*ssa.FieldAddr) (&t3.Password [#1])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t43 (@Login): (*ssa.FieldAddr) (&t13.Salt [#5])
+	 → t13 (@Login): (*ssa.Alloc)
+
+t45 (@Login): (*ssa.FieldAddr) (&t3.Salt [#2])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t46 (@Login): (*ssa.FieldAddr) (&t13.UserID [#0])
+	 → t13 (@Login): (*ssa.Alloc)
+
+t48 (@Login): (*ssa.FieldAddr) (&t3.UserID [#0])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t49 (@Login): (*ssa.Call) (errors.New("Invalid credentials":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t52 (@Login): (*ssa.Alloc) (new claimsT (complit))
+	 → t52 (@Login): (*ssa.Alloc)
+
+t53 (@Login): (*ssa.FieldAddr) (&t52.Username [#0])
+	 → t52 (@Login): (*ssa.Alloc)
+
+t54 (@Login): (*ssa.FieldAddr) (&t52.UserID [#1])
+	 → t52 (@Login): (*ssa.Alloc)
+
+t55 (@Login): (*ssa.FieldAddr) (&t3.UserID [#0])
+	 → t3 (@Login): (*ssa.Alloc)
+
+t58 (@Login): (*ssa.FieldAddr) (&t52.Timestamp [#2])
+	 → t52 (@Login): (*ssa.Alloc)
+
+t59 (@Login): (*ssa.FieldAddr) (&t52.StandardClaims [#3])
+	 → t52 (@Login): (*ssa.Alloc)
+
+t60 (@Login): (*ssa.FieldAddr) (&t59.ExpiresAt [#1])
+	 → t52 (@Login): (*ssa.Alloc)
+
+t62 (@Login): (*ssa.UnOp) (*github.com/dgrijalva/jwt-go.SigningMethodHS256)
+	 → t0 (@init#2): (*ssa.Alloc)
+
+t63 (@Login): (*ssa.MakeInterface) (make github.com/dgrijalva/jwt-go.SigningMethod <- *github.com/dgrijalva/jwt-go.SigningMethodHMAC (t62))
+	 → t63 (@Login): (*ssa.MakeInterface)
+
+t64 (@Login): (*ssa.MakeInterface) (make github.com/dgrijalva/jwt-go.Claims <- *claimsT (t52))
+	 → t64 (@Login): (*ssa.MakeInterface)
+
+t65 (@Login): (*ssa.Call) (github.com/dgrijalva/jwt-go.NewWithClaims(t63, t64))
+	 → t0 (@NewWithClaims): (*ssa.Alloc)
+
+t66 (@Login): (*ssa.FieldAddr) (&u.secret [#3])
+
+t68 (@Login): (*ssa.Convert) (convert []byte <- string (t67))
+	 → t68 (@Login): (*ssa.Convert)
+
+t69 (@Login): (*ssa.MakeInterface) (make interface{} <- []byte (t68))
+	 → t69 (@Login): (*ssa.MakeInterface)
+
+t72 (@Login): (*ssa.Extract) (extract t70 #1)
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+	 → t8 (@encode): (*ssa.MakeInterface)
+	 → t30 (@addrMarshalerEncoder): (*ssa.MakeInterface)
+	 → t35 (@marshalerEncoder): (*ssa.MakeInterface)
+	 → t16 (@addrTextMarshalerEncoder): (*ssa.MakeInterface)
+	 → t21 (@textMarshalerEncoder): (*ssa.MakeInterface)
+	 → t3 (@unsupportedTypeEncoder): (*ssa.MakeInterface)
+	 → t33 (@encode): (*ssa.MakeInterface)
+	 → t40 (@encode): (*ssa.MakeInterface)
+	 → t34 (@encode): (*ssa.MakeInterface)
+
+t74 (@Login): (*ssa.Call) (errors.New("Failed to create ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t75 (@Login): (*ssa.FieldAddr) (&u.userCache [#4])
+
+t76 (@Login): (*ssa.UnOp) (*t75)
+
+t79 (@Login): (*ssa.MakeInterface) (make interface{} <- LoginObj (t78))
+	 → t79 (@Login): (*ssa.MakeInterface)
+
+t80 (@Login): (*ssa.Call) (invoke t76.Put(ctx, t77, t79))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).RegisterUser ###
+u (@RegisterUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@RegisterUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t20 (@RegisterUser): (*ssa.FieldAddr) (&u.machine_id [#0])
+
+t26 (@RegisterUser): (*ssa.Extract) (extract t24 #1)
+	 → t2 (@ParseUint): (*ssa.MakeInterface)
+	 → t14 (@ParseUint): (*ssa.MakeInterface)
+	 → t41 (@ParseUint): (*ssa.MakeInterface)
+	 → t75 (@ParseUint): (*ssa.MakeInterface)
+	 → t80 (@ParseUint): (*ssa.MakeInterface)
+	 → t83 (@ParseUint): (*ssa.MakeInterface)
+	 → t90 (@ParseUint): (*ssa.MakeInterface)
+	 → t93 (@ParseUint): (*ssa.MakeInterface)
+	 → t2 (@ParseInt): (*ssa.MakeInterface)
+	 → t33 (@ParseInt): (*ssa.MakeInterface)
+	 → t38 (@ParseInt): (*ssa.MakeInterface)
+
+t35 (@RegisterUser): (*ssa.Call) ((*UserServiceImpl).RegisterUserWithId(u, ctx, reqID, firstName, lastName, username, password, t34))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).RegisterUserWithId ###
+u (@RegisterUserWithId): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+ctx (@RegisterUserWithId): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@RegisterUserWithId): (*ssa.FieldAddr) (&u.userDB [#5])
+
+t1 (@RegisterUserWithId): (*ssa.UnOp) (*t0)
+
+t3 (@RegisterUserWithId): (*ssa.Extract) (extract t2 #0)
+
+t4 (@RegisterUserWithId): (*ssa.Extract) (extract t2 #1)
+
+t6 (@RegisterUserWithId): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@RegisterUserWithId): (*ssa.Alloc)
+
+t7 (@RegisterUserWithId): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@RegisterUserWithId): (*ssa.Alloc)
+
+t8 (@RegisterUserWithId): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@RegisterUserWithId): (*ssa.Alloc)
+
+t9 (@RegisterUserWithId): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@RegisterUserWithId): (*ssa.Alloc)
+
+t10 (@RegisterUserWithId): (*ssa.MakeInterface) (make interface{} <- string (username))
+	 → t10 (@RegisterUserWithId): (*ssa.MakeInterface)
+
+t11 (@RegisterUserWithId): (*ssa.Slice) (slice t6[:])
+	 → t6 (@RegisterUserWithId): (*ssa.Alloc)
+
+t13 (@RegisterUserWithId): (*ssa.Extract) (extract t12 #0)
+
+t14 (@RegisterUserWithId): (*ssa.Extract) (extract t12 #1)
+
+t16 (@RegisterUserWithId): (*ssa.Alloc) (new User (user))
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t17 (@RegisterUserWithId): (*ssa.MakeInterface) (make interface{} <- *User (t16))
+	 → t17 (@RegisterUserWithId): (*ssa.MakeInterface)
+
+t20 (@RegisterUserWithId): (*ssa.Extract) (extract t18 #1)
+
+t22 (@RegisterUserWithId): (*ssa.Call) (errors.New("Username already ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t25 (@RegisterUserWithId): (*ssa.Convert) (convert []byte <- string (t24))
+	 → t25 (@RegisterUserWithId): (*ssa.Convert)
+
+t27 (@RegisterUserWithId): (*ssa.FieldAddr) (&t16.UserID [#0])
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t28 (@RegisterUserWithId): (*ssa.FieldAddr) (&t16.FirstName [#1])
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t29 (@RegisterUserWithId): (*ssa.FieldAddr) (&t16.LastName [#2])
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t30 (@RegisterUserWithId): (*ssa.FieldAddr) (&t16.PwdHashed [#4])
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t31 (@RegisterUserWithId): (*ssa.FieldAddr) (&t16.Salt [#5])
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t32 (@RegisterUserWithId): (*ssa.FieldAddr) (&t16.Username [#3])
+	 → t16 (@RegisterUserWithId): (*ssa.Alloc)
+
+t34 (@RegisterUserWithId): (*ssa.MakeInterface) (make interface{} <- User (t33))
+	 → t34 (@RegisterUserWithId): (*ssa.MakeInterface)
+
+t35 (@RegisterUserWithId): (*ssa.Call) (invoke t3.InsertOne(ctx, t34))
+
+t37 (@RegisterUserWithId): (*ssa.FieldAddr) (&u.socialGraphService [#6])
+
+t38 (@RegisterUserWithId): (*ssa.UnOp) (*t37)
+
+t39 (@RegisterUserWithId): (*ssa.Call) (invoke t38.InsertUser(ctx, reqID, userID))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).genRandomStr ###
+u (@genRandomStr): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+t0 (@genRandomStr): (*ssa.MakeSlice) (make []rune length length)
+	 → t0 (@genRandomStr): (*ssa.MakeSlice)
+
+t5 (@genRandomStr): (*ssa.UnOp) (*letterRunes)
+	 → t19 (@init): (*ssa.Convert)
+
+t6 (@genRandomStr): (*ssa.UnOp) (*letterRunes)
+	 → t19 (@init): (*ssa.Convert)
+
+t9 (@genRandomStr): (*ssa.IndexAddr) (&t5[t8])
+	 → t19 (@init): (*ssa.Convert)
+
+t11 (@genRandomStr): (*ssa.IndexAddr) (&t0[t3])
+	 → t0 (@genRandomStr): (*ssa.MakeSlice)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).getCounter ###
+u (@getCounter): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+t0 (@getCounter): (*ssa.FieldAddr) (&u.current_timestamp [#2])
+
+t3 (@getCounter): (*ssa.FieldAddr) (&u.counter [#1])
+
+t5 (@getCounter): (*ssa.FieldAddr) (&u.counter [#1])
+
+t8 (@getCounter): (*ssa.FieldAddr) (&u.counter [#1])
+
+t9 (@getCounter): (*ssa.FieldAddr) (&u.current_timestamp [#2])
+
+t10 (@getCounter): (*ssa.FieldAddr) (&u.counter [#1])
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).hashPwd ###
+u (@hashPwd): (*ssa.Parameter) (parameter u : *UserServiceImpl)
+
+pwd (@hashPwd): (*ssa.Parameter) (parameter pwd : []byte)
+	 → t23 (@Login): (*ssa.Convert)
+	 → t25 (@RegisterUserWithId): (*ssa.Convert)
+
+t0 (@hashPwd): (*ssa.Call) (crypto/sha1.New())
+	 → t3 (@New): (*ssa.MakeInterface)
+
+t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
+	 → t3 (@NewEncoding): (*ssa.Alloc)
+
+t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
+	 → t8 (@Sum): (*ssa.Call)
+	 → t10 (@Sum): (*ssa.Call)
+	 → t6 (@Sum): (*ssa.Call)
+	 → t15 (@Sum): (*ssa.Call)
+	 → t17 (@Sum): (*ssa.Call)
+	 → t20 (@Sum): (*ssa.Call)
+	 → t23 (@Sum): (*ssa.Call)
+	 → t5 (@Sum): (*ssa.Call)
+	 → t31 (@sign): (*ssa.Alloc)
+	 → t58 (@sign): (*ssa.Alloc)
+	 → t34 (@verify): (*ssa.Alloc)
+	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserTimelineServiceImpl).ReadUserTimeline ###
+u (@ReadUserTimeline): (*ssa.Parameter) (parameter u : *UserTimelineServiceImpl)
+
+ctx (@ReadUserTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.NumRequests [#5])
+
+t3 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.NumRequests [#5])
+
+t5 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t5 (@ReadUserTimeline): (*ssa.Alloc)
+
+t6 (@ReadUserTimeline): (*ssa.Slice) (slice t5[:])
+	 → t5 (@ReadUserTimeline): (*ssa.Alloc)
+
+t8 (@ReadUserTimeline): (*ssa.Alloc) (new []PostInfo (post_infos))
+	 → t8 (@ReadUserTimeline): (*ssa.Alloc)
+
+t9 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.userTimelineCache [#0])
+
+t10 (@ReadUserTimeline): (*ssa.UnOp) (*t9)
+
+t11 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- *[]PostInfo (t8))
+	 → t11 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t14 (@ReadUserTimeline): (*ssa.Extract) (extract t12 #1)
+
+t17 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t17 (@ReadUserTimeline): (*ssa.Alloc)
+
+t18 (@ReadUserTimeline): (*ssa.Slice) (slice t17[:])
+	 → t17 (@ReadUserTimeline): (*ssa.Alloc)
+
+t19 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheHits [#3])
+
+t22 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheHits [#3])
+
+t23 (@ReadUserTimeline): (*ssa.MakeMap) (make map[int64]bool )
+	 → t23 (@ReadUserTimeline): (*ssa.MakeMap)
+
+t24 (@ReadUserTimeline): (*ssa.Alloc) (local PostInfo (post_info))
+	 → t24 (@ReadUserTimeline): (*ssa.Alloc)
+
+t25 (@ReadUserTimeline): (*ssa.UnOp) (*t8)
+
+t27 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheMiss [#4])
+
+t30 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.CacheMiss [#4])
+
+t31 (@ReadUserTimeline): (*ssa.Phi) (phi [7: nil:[]int64, 10: t42] #post_ids)
+	 → t42 (@ReadUserTimeline): (*ssa.Call)
+
+t35 (@ReadUserTimeline): (*ssa.IndexAddr) (&t25[t33])
+
+t37 (@ReadUserTimeline): (*ssa.FieldAddr) (&t24.PostID [#0])
+	 → t24 (@ReadUserTimeline): (*ssa.Alloc)
+
+t39 (@ReadUserTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t39 (@ReadUserTimeline): (*ssa.Alloc)
+
+t40 (@ReadUserTimeline): (*ssa.IndexAddr) (&t39[0:int])
+	 → t39 (@ReadUserTimeline): (*ssa.Alloc)
+
+t41 (@ReadUserTimeline): (*ssa.Slice) (slice t39[:])
+	 → t39 (@ReadUserTimeline): (*ssa.Alloc)
+
+t42 (@ReadUserTimeline): (*ssa.Call) (append(t31, t41...))
+	 → t42 (@ReadUserTimeline): (*ssa.Call)
+
+t43 (@ReadUserTimeline): (*ssa.FieldAddr) (&t24.PostID [#0])
+	 → t24 (@ReadUserTimeline): (*ssa.Alloc)
+
+t49 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.userTimelineDB [#1])
+
+t50 (@ReadUserTimeline): (*ssa.UnOp) (*t49)
+
+t52 (@ReadUserTimeline): (*ssa.Extract) (extract t51 #0)
+
+t53 (@ReadUserTimeline): (*ssa.Extract) (extract t51 #1)
+
+t55 (@ReadUserTimeline): (*ssa.Phi) (phi [11: nil:[]int64, 22: t118] #new_post_ids)
+	 → t134 (@ReadUserTimeline): (*ssa.Call)
+
+t56 (@ReadUserTimeline): (*ssa.Call) (append(t55, t31...))
+	 → t56 (@ReadUserTimeline): (*ssa.Call)
+	 → t134 (@ReadUserTimeline): (*ssa.Call)
+
+t57 (@ReadUserTimeline): (*ssa.Alloc) (new [1]any (varargs))
+	 → t57 (@ReadUserTimeline): (*ssa.Alloc)
+
+t58 (@ReadUserTimeline): (*ssa.IndexAddr) (&t57[0:int])
+	 → t57 (@ReadUserTimeline): (*ssa.Alloc)
+
+t59 (@ReadUserTimeline): (*ssa.MakeInterface) (make any <- []int64 (t56))
+	 → t59 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t60 (@ReadUserTimeline): (*ssa.Slice) (slice t57[:])
+	 → t57 (@ReadUserTimeline): (*ssa.Alloc)
+
+t62 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.postStorageService [#2])
+
+t63 (@ReadUserTimeline): (*ssa.UnOp) (*t62)
+
+t65 (@ReadUserTimeline): (*ssa.Extract) (extract t64 #0)
+
+t66 (@ReadUserTimeline): (*ssa.Extract) (extract t64 #1)
+
+t68 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t68 (@ReadUserTimeline): (*ssa.Alloc)
+
+t69 (@ReadUserTimeline): (*ssa.Slice) (slice t68[:])
+	 → t68 (@ReadUserTimeline): (*ssa.Alloc)
+
+t70 (@ReadUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
+
+t71 (@ReadUserTimeline): (*ssa.IndexAddr) (&t70[0:int])
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
+
+t72 (@ReadUserTimeline): (*ssa.FieldAddr) (&t71.Key [#0])
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
+
+t73 (@ReadUserTimeline): (*ssa.FieldAddr) (&t71.Value [#1])
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
+
+t74 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- int64 (userID))
+	 → t74 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t75 (@ReadUserTimeline): (*ssa.Slice) (slice t70[:])
+	 → t70 (@ReadUserTimeline): (*ssa.Alloc)
+
+t76 (@ReadUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t76 (@ReadUserTimeline): (*ssa.Alloc)
+
+t77 (@ReadUserTimeline): (*ssa.IndexAddr) (&t76[0:int])
+	 → t76 (@ReadUserTimeline): (*ssa.Alloc)
+
+t78 (@ReadUserTimeline): (*ssa.FieldAddr) (&t77.Key [#0])
+	 → t76 (@ReadUserTimeline): (*ssa.Alloc)
+
+t79 (@ReadUserTimeline): (*ssa.FieldAddr) (&t77.Value [#1])
+	 → t76 (@ReadUserTimeline): (*ssa.Alloc)
+
+t80 (@ReadUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t80 (@ReadUserTimeline): (*ssa.Alloc)
+
+t81 (@ReadUserTimeline): (*ssa.IndexAddr) (&t80[0:int])
+	 → t80 (@ReadUserTimeline): (*ssa.Alloc)
+
+t82 (@ReadUserTimeline): (*ssa.FieldAddr) (&t81.Key [#0])
+	 → t80 (@ReadUserTimeline): (*ssa.Alloc)
+
+t83 (@ReadUserTimeline): (*ssa.FieldAddr) (&t81.Value [#1])
+	 → t80 (@ReadUserTimeline): (*ssa.Alloc)
+
+t84 (@ReadUserTimeline): (*ssa.Alloc) (new [2]interface{} (slicelit))
+	 → t84 (@ReadUserTimeline): (*ssa.Alloc)
+
+t85 (@ReadUserTimeline): (*ssa.IndexAddr) (&t84[0:int])
+	 → t84 (@ReadUserTimeline): (*ssa.Alloc)
+
+t86 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- int (0:int))
+	 → t86 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t87 (@ReadUserTimeline): (*ssa.IndexAddr) (&t84[1:int])
+	 → t84 (@ReadUserTimeline): (*ssa.Alloc)
+
+t88 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- int64 (stop))
+	 → t88 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t89 (@ReadUserTimeline): (*ssa.Slice) (slice t84[:])
+	 → t84 (@ReadUserTimeline): (*ssa.Alloc)
+
+t90 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.A (t89))
+	 → t90 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t91 (@ReadUserTimeline): (*ssa.Slice) (slice t80[:])
+	 → t80 (@ReadUserTimeline): (*ssa.Alloc)
+
+t92 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t91))
+	 → t92 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t93 (@ReadUserTimeline): (*ssa.Slice) (slice t76[:])
+	 → t76 (@ReadUserTimeline): (*ssa.Alloc)
+
+t94 (@ReadUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.D (varargs))
+	 → t94 (@ReadUserTimeline): (*ssa.Alloc)
+
+t95 (@ReadUserTimeline): (*ssa.IndexAddr) (&t94[0:int])
+	 → t94 (@ReadUserTimeline): (*ssa.Alloc)
+
+t96 (@ReadUserTimeline): (*ssa.Slice) (slice t94[:])
+	 → t94 (@ReadUserTimeline): (*ssa.Alloc)
+
+t98 (@ReadUserTimeline): (*ssa.Extract) (extract t97 #0)
+
+t99 (@ReadUserTimeline): (*ssa.Extract) (extract t97 #1)
+
+t101 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t101 (@ReadUserTimeline): (*ssa.Alloc)
+
+t102 (@ReadUserTimeline): (*ssa.Slice) (slice t101[:])
+	 → t101 (@ReadUserTimeline): (*ssa.Alloc)
+
+t103 (@ReadUserTimeline): (*ssa.Alloc) (new UserPosts (user_posts))
+	 → t103 (@ReadUserTimeline): (*ssa.Alloc)
+
+t104 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- *UserPosts (t103))
+	 → t104 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t107 (@ReadUserTimeline): (*ssa.Extract) (extract t105 #1)
+
+t109 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t109 (@ReadUserTimeline): (*ssa.Alloc)
+
+t110 (@ReadUserTimeline): (*ssa.Slice) (slice t109[:])
+	 → t109 (@ReadUserTimeline): (*ssa.Alloc)
+
+t111 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t111 (@ReadUserTimeline): (*ssa.Alloc)
+
+t112 (@ReadUserTimeline): (*ssa.Slice) (slice t111[:])
+	 → t111 (@ReadUserTimeline): (*ssa.Alloc)
+
+t113 (@ReadUserTimeline): (*ssa.Call) (errors.New("Failed to find po...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t114 (@ReadUserTimeline): (*ssa.Alloc) (local PostInfo (post))
+	 → t114 (@ReadUserTimeline): (*ssa.Alloc)
+
+t115 (@ReadUserTimeline): (*ssa.FieldAddr) (&t103.Posts [#1])
+	 → t103 (@ReadUserTimeline): (*ssa.Alloc)
+
+t116 (@ReadUserTimeline): (*ssa.UnOp) (*t115)
+
+t118 (@ReadUserTimeline): (*ssa.Phi) (phi [21: nil:[]int64, 23: t118, 24: t134] #new_post_ids)
+	 → t134 (@ReadUserTimeline): (*ssa.Call)
+
+t122 (@ReadUserTimeline): (*ssa.IndexAddr) (&t116[t120])
+
+t124 (@ReadUserTimeline): (*ssa.FieldAddr) (&t114.PostID [#0])
+	 → t114 (@ReadUserTimeline): (*ssa.Alloc)
+
+t129 (@ReadUserTimeline): (*ssa.FieldAddr) (&t114.PostID [#0])
+	 → t114 (@ReadUserTimeline): (*ssa.Alloc)
+
+t131 (@ReadUserTimeline): (*ssa.Alloc) (new [1]int64 (varargs))
+	 → t131 (@ReadUserTimeline): (*ssa.Alloc)
+
+t132 (@ReadUserTimeline): (*ssa.IndexAddr) (&t131[0:int])
+	 → t131 (@ReadUserTimeline): (*ssa.Alloc)
+
+t133 (@ReadUserTimeline): (*ssa.Slice) (slice t131[:])
+	 → t131 (@ReadUserTimeline): (*ssa.Alloc)
+
+t134 (@ReadUserTimeline): (*ssa.Call) (append(t118, t133...))
+	 → t134 (@ReadUserTimeline): (*ssa.Call)
+
+t135 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t135 (@ReadUserTimeline): (*ssa.Alloc)
+
+t136 (@ReadUserTimeline): (*ssa.Slice) (slice t135[:])
+	 → t135 (@ReadUserTimeline): (*ssa.Alloc)
+
+t139 (@ReadUserTimeline): (*ssa.FieldAddr) (&u.userTimelineCache [#0])
+
+t140 (@ReadUserTimeline): (*ssa.UnOp) (*t139)
+
+t141 (@ReadUserTimeline): (*ssa.MakeInterface) (make interface{} <- []int64 (t56))
+	 → t141 (@ReadUserTimeline): (*ssa.MakeInterface)
+
+t142 (@ReadUserTimeline): (*ssa.Call) (invoke t140.Put(ctx, t7, t141))
+
+t144 (@ReadUserTimeline): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t144 (@ReadUserTimeline): (*ssa.Alloc)
+
+t145 (@ReadUserTimeline): (*ssa.Slice) (slice t144[:])
+	 → t144 (@ReadUserTimeline): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserTimelineServiceImpl).WriteUserTimeline ###
+u (@WriteUserTimeline): (*ssa.Parameter) (parameter u : *UserTimelineServiceImpl)
+
+ctx (@WriteUserTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@WriteUserTimeline): (*ssa.FieldAddr) (&u.userTimelineDB [#1])
+
+t1 (@WriteUserTimeline): (*ssa.UnOp) (*t0)
+
+t3 (@WriteUserTimeline): (*ssa.Extract) (extract t2 #0)
+
+t4 (@WriteUserTimeline): (*ssa.Extract) (extract t2 #1)
+
+t6 (@WriteUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@WriteUserTimeline): (*ssa.Alloc)
+
+t7 (@WriteUserTimeline): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@WriteUserTimeline): (*ssa.Alloc)
+
+t8 (@WriteUserTimeline): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@WriteUserTimeline): (*ssa.Alloc)
+
+t9 (@WriteUserTimeline): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@WriteUserTimeline): (*ssa.Alloc)
+
+t10 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- int64 (userID))
+	 → t10 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t11 (@WriteUserTimeline): (*ssa.Slice) (slice t6[:])
+	 → t6 (@WriteUserTimeline): (*ssa.Alloc)
+
+t13 (@WriteUserTimeline): (*ssa.Extract) (extract t12 #0)
+
+t14 (@WriteUserTimeline): (*ssa.Extract) (extract t12 #1)
+
+t15 (@WriteUserTimeline): (*ssa.Alloc) (new []UserPosts (userPosts))
+	 → t15 (@WriteUserTimeline): (*ssa.Alloc)
+
+t17 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- *[]UserPosts (t15))
+	 → t17 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t18 (@WriteUserTimeline): (*ssa.Call) (invoke t13.All(ctx, t17))
+
+t19 (@WriteUserTimeline): (*ssa.UnOp) (*t15)
+
+t22 (@WriteUserTimeline): (*ssa.Alloc) (new [2]any (varargs))
+	 → t22 (@WriteUserTimeline): (*ssa.Alloc)
+
+t23 (@WriteUserTimeline): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@WriteUserTimeline): (*ssa.Alloc)
+
+t24 (@WriteUserTimeline): (*ssa.MakeInterface) (make any <- string ("Inserting new ent...":string))
+	 → t24 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t25 (@WriteUserTimeline): (*ssa.IndexAddr) (&t22[1:int])
+	 → t22 (@WriteUserTimeline): (*ssa.Alloc)
+
+t26 (@WriteUserTimeline): (*ssa.MakeInterface) (make any <- int64 (userID))
+	 → t26 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t27 (@WriteUserTimeline): (*ssa.Slice) (slice t22[:])
+	 → t22 (@WriteUserTimeline): (*ssa.Alloc)
+
+t29 (@WriteUserTimeline): (*ssa.Alloc) (local UserPosts (userPosts))
+	 → t29 (@WriteUserTimeline): (*ssa.Alloc)
+
+t30 (@WriteUserTimeline): (*ssa.FieldAddr) (&t29.UserID [#0])
+	 → t29 (@WriteUserTimeline): (*ssa.Alloc)
+
+t31 (@WriteUserTimeline): (*ssa.FieldAddr) (&t29.Posts [#1])
+	 → t29 (@WriteUserTimeline): (*ssa.Alloc)
+
+t32 (@WriteUserTimeline): (*ssa.Alloc) (new [1]PostInfo (slicelit))
+	 → t32 (@WriteUserTimeline): (*ssa.Alloc)
+
+t33 (@WriteUserTimeline): (*ssa.IndexAddr) (&t32[0:int])
+	 → t32 (@WriteUserTimeline): (*ssa.Alloc)
+
+t34 (@WriteUserTimeline): (*ssa.FieldAddr) (&t33.PostID [#0])
+	 → t32 (@WriteUserTimeline): (*ssa.Alloc)
+
+t35 (@WriteUserTimeline): (*ssa.FieldAddr) (&t33.Timestamp [#1])
+	 → t32 (@WriteUserTimeline): (*ssa.Alloc)
+
+t36 (@WriteUserTimeline): (*ssa.Slice) (slice t32[:])
+	 → t32 (@WriteUserTimeline): (*ssa.Alloc)
+
+t38 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- UserPosts (t37))
+	 → t38 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t39 (@WriteUserTimeline): (*ssa.Call) (invoke t3.InsertOne(ctx, t38))
+
+t41 (@WriteUserTimeline): (*ssa.Alloc) (new []PostInfo (postInfo))
+	 → t41 (@WriteUserTimeline): (*ssa.Alloc)
+
+t43 (@WriteUserTimeline): (*ssa.FieldAddr) (&u.userTimelineCache [#0])
+
+t44 (@WriteUserTimeline): (*ssa.UnOp) (*t43)
+
+t45 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- *[]PostInfo (t41))
+	 → t45 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t48 (@WriteUserTimeline): (*ssa.Extract) (extract t46 #1)
+
+t50 (@WriteUserTimeline): (*ssa.Alloc) (new [2]any (varargs))
+	 → t50 (@WriteUserTimeline): (*ssa.Alloc)
+
+t51 (@WriteUserTimeline): (*ssa.IndexAddr) (&t50[0:int])
+	 → t50 (@WriteUserTimeline): (*ssa.Alloc)
+
+t52 (@WriteUserTimeline): (*ssa.MakeInterface) (make any <- string ("Adding a new post...":string))
+	 → t52 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t53 (@WriteUserTimeline): (*ssa.IndexAddr) (&t50[1:int])
+	 → t50 (@WriteUserTimeline): (*ssa.Alloc)
+
+t54 (@WriteUserTimeline): (*ssa.MakeInterface) (make any <- int64 (userID))
+	 → t54 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t55 (@WriteUserTimeline): (*ssa.Slice) (slice t50[:])
+	 → t50 (@WriteUserTimeline): (*ssa.Alloc)
+
+t59 (@WriteUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t59 (@WriteUserTimeline): (*ssa.Alloc)
+
+t60 (@WriteUserTimeline): (*ssa.IndexAddr) (&t59[0:int])
+	 → t59 (@WriteUserTimeline): (*ssa.Alloc)
+
+t61 (@WriteUserTimeline): (*ssa.FieldAddr) (&t60.Key [#0])
+	 → t59 (@WriteUserTimeline): (*ssa.Alloc)
+
+t62 (@WriteUserTimeline): (*ssa.FieldAddr) (&t60.Value [#1])
+	 → t59 (@WriteUserTimeline): (*ssa.Alloc)
+
+t63 (@WriteUserTimeline): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t63 (@WriteUserTimeline): (*ssa.Alloc)
+
+t64 (@WriteUserTimeline): (*ssa.IndexAddr) (&t63[0:int])
+	 → t63 (@WriteUserTimeline): (*ssa.Alloc)
+
+t65 (@WriteUserTimeline): (*ssa.FieldAddr) (&t64.Key [#0])
+	 → t63 (@WriteUserTimeline): (*ssa.Alloc)
+
+t66 (@WriteUserTimeline): (*ssa.FieldAddr) (&t64.Value [#1])
+	 → t63 (@WriteUserTimeline): (*ssa.Alloc)
+
+t67 (@WriteUserTimeline): (*ssa.Alloc) (new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t68 (@WriteUserTimeline): (*ssa.IndexAddr) (&t67[0:int])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t69 (@WriteUserTimeline): (*ssa.FieldAddr) (&t68.Key [#0])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t70 (@WriteUserTimeline): (*ssa.FieldAddr) (&t68.Value [#1])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t71 (@WriteUserTimeline): (*ssa.Alloc) (new [1]interface{} (slicelit))
+	 → t71 (@WriteUserTimeline): (*ssa.Alloc)
+
+t72 (@WriteUserTimeline): (*ssa.IndexAddr) (&t71[0:int])
+	 → t71 (@WriteUserTimeline): (*ssa.Alloc)
+
+t73 (@WriteUserTimeline): (*ssa.Alloc) (new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t74 (@WriteUserTimeline): (*ssa.IndexAddr) (&t73[0:int])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t75 (@WriteUserTimeline): (*ssa.FieldAddr) (&t74.Key [#0])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t76 (@WriteUserTimeline): (*ssa.FieldAddr) (&t74.Value [#1])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t77 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- string (t57))
+	 → t77 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t78 (@WriteUserTimeline): (*ssa.IndexAddr) (&t73[1:int])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t79 (@WriteUserTimeline): (*ssa.FieldAddr) (&t78.Key [#0])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t80 (@WriteUserTimeline): (*ssa.FieldAddr) (&t78.Value [#1])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t81 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- string (t58))
+	 → t81 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t82 (@WriteUserTimeline): (*ssa.Slice) (slice t73[:])
+	 → t73 (@WriteUserTimeline): (*ssa.Alloc)
+
+t83 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t82))
+	 → t83 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t84 (@WriteUserTimeline): (*ssa.Slice) (slice t71[:])
+	 → t71 (@WriteUserTimeline): (*ssa.Alloc)
+
+t85 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.A (t84))
+	 → t85 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t86 (@WriteUserTimeline): (*ssa.IndexAddr) (&t67[1:int])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t87 (@WriteUserTimeline): (*ssa.FieldAddr) (&t86.Key [#0])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t88 (@WriteUserTimeline): (*ssa.FieldAddr) (&t86.Value [#1])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t89 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- int (0:int))
+	 → t89 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t90 (@WriteUserTimeline): (*ssa.Slice) (slice t67[:])
+	 → t67 (@WriteUserTimeline): (*ssa.Alloc)
+
+t91 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t90))
+	 → t91 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t92 (@WriteUserTimeline): (*ssa.Slice) (slice t63[:])
+	 → t63 (@WriteUserTimeline): (*ssa.Alloc)
+
+t93 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.D (t92))
+	 → t93 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t94 (@WriteUserTimeline): (*ssa.Slice) (slice t59[:])
+	 → t59 (@WriteUserTimeline): (*ssa.Alloc)
+
+t97 (@WriteUserTimeline): (*ssa.Extract) (extract t95 #1)
+
+t99 (@WriteUserTimeline): (*ssa.Call) (errors.New("Failed to insert ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t100 (@WriteUserTimeline): (*ssa.Call) (errors.New("Failed to insert ...":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t101 (@WriteUserTimeline): (*ssa.UnOp) (*t41)
+	 → t109 (@WriteUserTimeline): (*ssa.Call)
+
+t102 (@WriteUserTimeline): (*ssa.Alloc) (local PostInfo (complit))
+	 → t102 (@WriteUserTimeline): (*ssa.Alloc)
+
+t103 (@WriteUserTimeline): (*ssa.FieldAddr) (&t102.PostID [#0])
+	 → t102 (@WriteUserTimeline): (*ssa.Alloc)
+
+t104 (@WriteUserTimeline): (*ssa.FieldAddr) (&t102.Timestamp [#1])
+	 → t102 (@WriteUserTimeline): (*ssa.Alloc)
+
+t106 (@WriteUserTimeline): (*ssa.Alloc) (new [1]PostInfo (varargs))
+	 → t106 (@WriteUserTimeline): (*ssa.Alloc)
+
+t107 (@WriteUserTimeline): (*ssa.IndexAddr) (&t106[0:int])
+	 → t106 (@WriteUserTimeline): (*ssa.Alloc)
+
+t108 (@WriteUserTimeline): (*ssa.Slice) (slice t106[:])
+	 → t106 (@WriteUserTimeline): (*ssa.Alloc)
+
+t109 (@WriteUserTimeline): (*ssa.Call) (append(t101, t108...))
+	 → t109 (@WriteUserTimeline): (*ssa.Call)
+
+t110 (@WriteUserTimeline): (*ssa.FieldAddr) (&u.userTimelineCache [#0])
+
+t111 (@WriteUserTimeline): (*ssa.UnOp) (*t110)
+
+t112 (@WriteUserTimeline): (*ssa.UnOp) (*t41)
+	 → t109 (@WriteUserTimeline): (*ssa.Call)
+
+t113 (@WriteUserTimeline): (*ssa.MakeInterface) (make interface{} <- []PostInfo (t112))
+	 → t113 (@WriteUserTimeline): (*ssa.MakeInterface)
+
+t114 (@WriteUserTimeline): (*ssa.Call) (invoke t111.Put(ctx, t42, t113))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Wrk2APIServiceImpl).ComposePost ###
+w (@ComposePost): (*ssa.Parameter) (parameter w : *Wrk2APIServiceImpl)
+
+ctx (@ComposePost): (*ssa.Parameter) (parameter ctx : context.Context)
+
+media_types (@ComposePost): (*ssa.Parameter) (parameter media_types : []string)
+
+media_ids (@ComposePost): (*ssa.Parameter) (parameter media_ids : []int64)
+
+t1 (@ComposePost): (*ssa.Alloc) (new [0]int64 (slicelit))
+	 → t1 (@ComposePost): (*ssa.Alloc)
+
+t2 (@ComposePost): (*ssa.Slice) (slice t1[:])
+	 → t1 (@ComposePost): (*ssa.Alloc)
+
+t3 (@ComposePost): (*ssa.Call) (errors.New("Incomplete Arguments":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t5 (@ComposePost): (*ssa.FieldAddr) (&w.composePostService [#1])
+
+t6 (@ComposePost): (*ssa.UnOp) (*t5)
+
+t9 (@ComposePost): (*ssa.Extract) (extract t7 #1)
+
+t10 (@ComposePost): (*ssa.Extract) (extract t7 #2)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Wrk2APIServiceImpl).Follow ###
+w (@Follow): (*ssa.Parameter) (parameter w : *Wrk2APIServiceImpl)
+
+ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t2 (@Follow): (*ssa.FieldAddr) (&w.socialGraphService [#4])
+
+t3 (@Follow): (*ssa.UnOp) (*t2)
+
+t4 (@Follow): (*ssa.Call) (invoke t3.Follow(ctx, t0, userId, followeeID))
+
+t7 (@Follow): (*ssa.FieldAddr) (&w.socialGraphService [#4])
+
+t8 (@Follow): (*ssa.UnOp) (*t7)
+
+t9 (@Follow): (*ssa.Call) (invoke t8.FollowWithUsername(ctx, t0, username, followeeName))
+
+t10 (@Follow): (*ssa.Call) (errors.New("Invalid Arguments":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Wrk2APIServiceImpl).ReadHomeTimeline ###
+w (@ReadHomeTimeline): (*ssa.Parameter) (parameter w : *Wrk2APIServiceImpl)
+
+ctx (@ReadHomeTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@ReadHomeTimeline): (*ssa.FieldAddr) (&w.homeTimelineService [#3])
+
+t2 (@ReadHomeTimeline): (*ssa.UnOp) (*t1)
+
+t4 (@ReadHomeTimeline): (*ssa.Extract) (extract t3 #0)
+
+t5 (@ReadHomeTimeline): (*ssa.Extract) (extract t3 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Wrk2APIServiceImpl).ReadUserTimeline ###
+w (@ReadUserTimeline): (*ssa.Parameter) (parameter w : *Wrk2APIServiceImpl)
+
+ctx (@ReadUserTimeline): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@ReadUserTimeline): (*ssa.FieldAddr) (&w.userTimelineService [#2])
+
+t2 (@ReadUserTimeline): (*ssa.UnOp) (*t1)
+
+t4 (@ReadUserTimeline): (*ssa.Extract) (extract t3 #0)
+
+t5 (@ReadUserTimeline): (*ssa.Extract) (extract t3 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Wrk2APIServiceImpl).Register ###
+w (@Register): (*ssa.Parameter) (parameter w : *Wrk2APIServiceImpl)
+
+ctx (@Register): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t1 (@Register): (*ssa.Call) (errors.New("Incomplete Arguments":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t3 (@Register): (*ssa.FieldAddr) (&w.userService [#0])
+
+t4 (@Register): (*ssa.UnOp) (*t3)
+
+t5 (@Register): (*ssa.Call) (invoke t4.RegisterUserWithId(ctx, t2, firstName, lastName, username, password, userId))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Wrk2APIServiceImpl).Unfollow ###
+w (@Unfollow): (*ssa.Parameter) (parameter w : *Wrk2APIServiceImpl)
+
+ctx (@Unfollow): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t2 (@Unfollow): (*ssa.FieldAddr) (&w.socialGraphService [#4])
+
+t3 (@Unfollow): (*ssa.UnOp) (*t2)
+
+t4 (@Unfollow): (*ssa.Call) (invoke t3.Unfollow(ctx, t0, userId, followeeID))
+
+t7 (@Unfollow): (*ssa.FieldAddr) (&w.socialGraphService [#4])
+
+t8 (@Unfollow): (*ssa.UnOp) (*t7)
+
+t9 (@Unfollow): (*ssa.Call) (invoke t8.UnfollowWithUsername(ctx, t0, username, followeeName))
+
+t10 (@Unfollow): (*ssa.Call) (errors.New("Invalid Arguments":string))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.NewPostStorageServiceImpl ###
+ctx (@NewPostStorageServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
+	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+postStorageCache (@NewPostStorageServiceImpl): (*ssa.Parameter) (parameter postStorageCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache)
+
+postStorageDB (@NewPostStorageServiceImpl): (*ssa.Parameter) (parameter postStorageDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+
+t0 (@NewPostStorageServiceImpl): (*ssa.Alloc) (new PostStorageServiceImpl (complit))
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+
+t1 (@NewPostStorageServiceImpl): (*ssa.FieldAddr) (&t0.postStorageCache [#0])
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+
+t2 (@NewPostStorageServiceImpl): (*ssa.FieldAddr) (&t0.postStorageDB [#1])
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewPostStorageServiceImpl): (*ssa.Alloc)
+
+t3 (@NewPostStorageServiceImpl): (*ssa.MakeInterface) (make PostStorageService <- *PostStorageServiceImpl (t0))
+	 → t3 (@NewPostStorageServiceImpl): (*ssa.MakeInterface)
+	 → t3 (@NewPostStorageServiceImpl): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.init ###
+t19 (@init): (*ssa.Convert) (convert []rune <- string ("abcdefghijklmnopq...":string))
+	 → t19 (@init): (*ssa.Convert)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t3 (@NewPostStorageServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+t4 (@main): (*ssa.Call) (invoke t2.StorePost(t0, 0:int64, struct{PostID int64; Creator Creator; ReqID int64; Text string; UserMentions []UserMention; Medias []Media; Urls []URL; Timestamp int64; PostType int64}{}:Post))
+
+
+### Function: main.main ###
+t0 (@main): (*ssa.Call) (context.Background())
+	 → t0 (@Background): (*ssa.MakeInterface)
+
+t2 (@main): (*ssa.Extract) (extract t1 #0)
+	 → t3 (@NewPostStorageServiceImpl): (*ssa.MakeInterface)
+
+t3 (@main): (*ssa.Extract) (extract t1 #1)
+
+t4 (@main): (*ssa.Call) (invoke t2.StorePost(t0, 0:int64, struct{PostID int64; Creator github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Creator; ReqID int64; Text string; UserMentions []github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserMention; Medias []github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Media; Urls []github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.URL; Timestamp int64; PostType int64}{}:github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.Post))
+
+

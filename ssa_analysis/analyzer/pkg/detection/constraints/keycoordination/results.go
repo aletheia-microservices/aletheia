@@ -21,7 +21,7 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 
 	var results string
 	for request, foreignreads := range detector.foreignReads {
-		results += fmt.Sprintf("entry request: %s\n", request.entry.String())
+		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for i, foreignread := range foreignreads {
 			if detector.isTypePrimaryKey() {
 				results += fmt.Sprintf("\tPRIMARY KEY READS #%d:\n", i)

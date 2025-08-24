@@ -1,0 +1,13 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
+---------------------------------------------------------------------
+entry request: Wrk2APIService.ReadUserTimeline()
+	FOREIGN KEY READS #0:
+		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
+		READ 2: UserTimelineService.ReadUserTimeline() --> usertimeline_cache.*.Get()
+			- read field: usertimeline_cache.*.Value[*].PostID
+	FOREIGN KEY READS #1:
+		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
+		READ 2: UserTimelineService.ReadUserTimeline() --> usertimeline_db.usertimeline.FindOne()
+			- read field: usertimeline_db.usertimeline.Posts[*].PostID
+				- constraint #0: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]

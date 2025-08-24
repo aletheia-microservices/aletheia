@@ -1,81 +1,111 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1541914817 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__1541914817 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__1623234260 [label="if t17 goto 5 else 6", style=bold, shape=ellipse, color="black"];
-	N_instr__1623234260 [label="if t17 goto 5 else 6", style=bold, shape=ellipse, color="black"];
-	N_instr__613629425 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__613629425 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_4433564 [label="return t7, t5", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433564 [label="return t7, t5", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433653 [label="return t14, t12", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433653 [label="return t14, t12", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433735 [label="return t18, t16", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433735 [label="return t18, t16", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433764 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4433764 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1104079771 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
-	N_nil_1437369587 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_instr__1498389065 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1498389065 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1785766916 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1785766916 [label="if t13 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__953136343 [label="if t17 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__953136343 [label="if t17 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2872404 [label="return t7, t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872404 [label="return t7, t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872493 [label="return t14, t12", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872493 [label="return t14, t12", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872575 [label="return t18, t16", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872575 [label="return t18, t16", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872604 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2872604 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1009590686 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_109202759 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
 	N_val__contacts__string [label="\"contacts\":string: \"contacts\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__contacts_db__string [label="\"contacts_db\":string: \"contacts_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_4433449 [label="t0: new []Contact (all_contacts)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_4433630 [label="t8: new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_binary_4433553 [label="t6: t5 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_binary_4433642 [label="t13: t12 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_binary_4433724 [label="t17: t16 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_4433512 [label="t3: invoke t2.GetCollection(ctx, \"contacts_db\":string, \"contacts\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_4433618 [label="t10: invoke t4.FindMany(ctx, t9, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_4433695 [label="t16: invoke t11.All(ctx, t15)", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2872289 [label="t0: new []Contact (all_contacts)
+
+==== tainted ====
+_obj[*]
+[read] @ contacts_db.contacts
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_2872470 [label="t8: new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_2872393 [label="t6: t5 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2872482 [label="t13: t12 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2872564 [label="t17: t16 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2872352 [label="t3: invoke t2.GetCollection(ctx, \"contacts_db\":string, \"contacts\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2872458 [label="t10: invoke t4.FindMany(ctx, t9, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2872535 [label="t16: invoke t11.All(ctx, t15)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt11 [label="t11: extract t10 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt12 [label="t12: extract t10 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t3 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt5 [label="t5: extract t3 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_4433488 [label="t1: &c.contactsDB [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_ifacet15 [label="t15: make interface{} <- *[]Contact (t0)", style=bold, shape=ellipse, color="black"];
-	N_val_param_4433363 [label="c: parameter c : *ContactsServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_4433402 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_slice_4433630 [label="t9: slice t8[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_4433488 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_4433571 [label="t7: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_4433660 [label="t14: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_4433742 [label="t18: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_4433771 [label="t19: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_4433363 -> N_val_field_4433488;
-	N_val_field_4433488 -> N_val_unary_4433488;
-	N_val_param_4433402 -> N_val_call_4433512;
-	N_val__contacts_db__string -> N_val_call_4433512;
-	N_val__contacts__string -> N_val_call_4433512;
-	N_val_unary_4433488 -> N_val_call_4433512;
-	N_val_call_4433512 -> N_val_extrt4;
-	N_val_call_4433512 -> N_val_extrt5;
-	N_val_extrt5 -> N_val_binary_4433553;
-	N_nil_1104079771 -> N_val_binary_4433553;
-	N_val_alloc_4433449 -> N_val_unary_4433571;
-	N_val_unary_4433571 -> N_instr_ret_4433564;
-	N_val_extrt5 -> N_instr_ret_4433564;
-	N_val_alloc_4433630 -> N_val_slice_4433630;
-	N_val_param_4433402 -> N_val_call_4433618;
-	N_val_slice_4433630 -> N_val_call_4433618;
-	N_nil_1437369587 -> N_val_call_4433618;
-	N_val_extrt4 -> N_val_call_4433618;
-	N_val_call_4433618 -> N_val_extrt11;
-	N_val_call_4433618 -> N_val_extrt12;
-	N_val_extrt12 -> N_val_binary_4433642;
-	N_nil_1104079771 -> N_val_binary_4433642;
-	N_val_alloc_4433449 -> N_val_unary_4433660;
-	N_val_unary_4433660 -> N_instr_ret_4433653;
-	N_val_extrt12 -> N_instr_ret_4433653;
-	N_val_alloc_4433449 -> N_val_ifacet15;
-	N_val_param_4433402 -> N_val_call_4433695;
-	N_val_ifacet15 -> N_val_call_4433695;
-	N_val_extrt11 -> N_val_call_4433695;
-	N_val_call_4433695 -> N_val_binary_4433724;
-	N_nil_1104079771 -> N_val_binary_4433724;
-	N_val_alloc_4433449 -> N_val_unary_4433742;
-	N_val_unary_4433742 -> N_instr_ret_4433735;
-	N_val_call_4433695 -> N_instr_ret_4433735;
-	N_val_alloc_4433449 -> N_val_unary_4433771;
-	N_val_unary_4433771 -> N_instr_ret_4433764;
-	N_nil_1104079771 -> N_instr_ret_4433764;
-	N_val_slice_4433630 -> N_val_alloc_4433630 [label="", style=dashed, color=blue];
+	N_val_field_2872328 [label="t1: &c.contactsDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet15 [label="t15: make interface{} <- *[]Contact (t0)
+
+==== tainted ====
+_obj[*]
+[read] @ contacts_db.contacts
+", style=bold, shape=box, color="black"];
+	N_val_param_2872203 [label="c: parameter c : *ContactsServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2872242 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_slice_2872470 [label="t9: slice t8[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2872328 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2872411 [label="t7: *t0
+
+==== tainted ====
+_obj[*]
+[read] @ contacts_db.contacts
+", style=bold, shape=box, color="red"];
+	N_val_unary_2872500 [label="t14: *t0
+
+==== tainted ====
+_obj[*]
+[read] @ contacts_db.contacts
+", style=bold, shape=box, color="red"];
+	N_val_unary_2872582 [label="t18: *t0
+
+==== tainted ====
+_obj[*]
+[read] @ contacts_db.contacts
+", style=bold, shape=box, color="red"];
+	N_val_unary_2872611 [label="t19: *t0
+
+==== tainted ====
+_obj[*]
+[read] @ contacts_db.contacts
+", style=bold, shape=box, color="red"];
+	N_val_param_2872203 -> N_val_field_2872328;
+	N_val_field_2872328 -> N_val_unary_2872328;
+	N_val_param_2872242 -> N_val_call_2872352;
+	N_val__contacts_db__string -> N_val_call_2872352;
+	N_val__contacts__string -> N_val_call_2872352;
+	N_val_unary_2872328 -> N_val_call_2872352;
+	N_val_call_2872352 -> N_val_extrt4;
+	N_val_call_2872352 -> N_val_extrt5;
+	N_val_extrt5 -> N_val_binary_2872393;
+	N_nil_1009590686 -> N_val_binary_2872393;
+	N_val_alloc_2872289 -> N_val_unary_2872411;
+	N_val_unary_2872411 -> N_instr_ret_2872404;
+	N_val_extrt5 -> N_instr_ret_2872404;
+	N_val_alloc_2872470 -> N_val_slice_2872470;
+	N_val_param_2872242 -> N_val_call_2872458;
+	N_val_slice_2872470 -> N_val_call_2872458;
+	N_nil_109202759 -> N_val_call_2872458;
+	N_val_extrt4 -> N_val_call_2872458;
+	N_val_call_2872458 -> N_val_extrt11;
+	N_val_call_2872458 -> N_val_extrt12;
+	N_val_extrt12 -> N_val_binary_2872482;
+	N_nil_1009590686 -> N_val_binary_2872482;
+	N_val_alloc_2872289 -> N_val_unary_2872500;
+	N_val_unary_2872500 -> N_instr_ret_2872493;
+	N_val_extrt12 -> N_instr_ret_2872493;
+	N_val_alloc_2872289 -> N_val_ifacet15;
+	N_val_param_2872242 -> N_val_call_2872535;
+	N_val_ifacet15 -> N_val_call_2872535;
+	N_val_extrt11 -> N_val_call_2872535;
+	N_val_call_2872535 -> N_val_binary_2872564;
+	N_nil_1009590686 -> N_val_binary_2872564;
+	N_val_alloc_2872289 -> N_val_unary_2872582;
+	N_val_unary_2872582 -> N_instr_ret_2872575;
+	N_val_call_2872535 -> N_instr_ret_2872575;
+	N_val_alloc_2872289 -> N_val_unary_2872611;
+	N_val_unary_2872611 -> N_instr_ret_2872604;
+	N_nil_1009590686 -> N_instr_ret_2872604;
+	N_val_slice_2872470 -> N_val_alloc_2872470 [label="", style=dashed, color=blue];
 }

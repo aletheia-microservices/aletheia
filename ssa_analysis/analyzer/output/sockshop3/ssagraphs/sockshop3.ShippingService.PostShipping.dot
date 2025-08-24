@@ -1,16 +1,16 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2610500 [label="return shipment, t10", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2610500 [label="return shipment, t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_14027 [label="return shipment, t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_14027 [label="return shipment, t10", style=bold, shape=ellipse, color="yellow"];
 	N_val__ship_db__string [label="\"ship_db\":string: \"ship_db\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__shipments__string [label="\"shipments\":string: \"shipments\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2610438 [label="t2: invoke t1.GetCollection(ctx, \"ship_db\":string, \"shipments\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2610483 [label="t8: invoke t6.Push(ctx, t7)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2610537 [label="t10: invoke t3.InsertOne(ctx, t9)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_13965 [label="t2: invoke t1.GetCollection(ctx, \"ship_db\":string, \"shipments\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_14010 [label="t8: invoke t6.Push(ctx, t7)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_14064 [label="t10: invoke t3.InsertOne(ctx, t9)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2610422 [label="t0: &service.db [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2610477 [label="t5: &service.q [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_13949 [label="t0: &service.db [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_14004 [label="t5: &service.q [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet7 [label="t7: make interface{} <- Shipment (shipment)
 
 ==== tainted ====
@@ -25,35 +25,35 @@ _obj
 [write] @ ship_queue.notification
 [write] @ ship_db.shipments
 ", style=bold, shape=box, color="black"];
-	N_val_param_2610293 [label="service: parameter service : *ShippingServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2610336 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2610357 [label="shipment: parameter shipment : Shipment
+	N_val_param_13820 [label="service: parameter service : *ShippingServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_13863 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_13884 [label="shipment: parameter shipment : Shipment
 
 ==== tainted ====
 _obj
 [write] @ ship_queue.notification
 [write] @ ship_db.shipments
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2610422 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2610477 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
-	N_val_param_2610293 -> N_val_field_2610422;
-	N_val_field_2610422 -> N_val_unary_2610422;
-	N_val_param_2610336 -> N_val_call_2610438;
-	N_val__ship_db__string -> N_val_call_2610438;
-	N_val__shipments__string -> N_val_call_2610438;
-	N_val_unary_2610422 -> N_val_call_2610438;
-	N_val_call_2610438 -> N_val_extrt3;
-	N_val_call_2610438 -> N_val_extrt4;
-	N_val_param_2610293 -> N_val_field_2610477;
-	N_val_field_2610477 -> N_val_unary_2610477;
-	N_val_param_2610357 -> N_val_ifacet7;
-	N_val_param_2610336 -> N_val_call_2610483;
-	N_val_ifacet7 -> N_val_call_2610483;
-	N_val_unary_2610477 -> N_val_call_2610483;
-	N_val_param_2610357 -> N_val_ifacet9;
-	N_val_param_2610336 -> N_val_call_2610537;
-	N_val_ifacet9 -> N_val_call_2610537;
-	N_val_extrt3 -> N_val_call_2610537;
-	N_val_param_2610357 -> N_instr_ret_2610500;
-	N_val_call_2610537 -> N_instr_ret_2610500;
+	N_val_unary_13949 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_14004 [label="t6: *t5", style=bold, shape=ellipse, color="red"];
+	N_val_param_13820 -> N_val_field_13949;
+	N_val_field_13949 -> N_val_unary_13949;
+	N_val_param_13863 -> N_val_call_13965;
+	N_val__ship_db__string -> N_val_call_13965;
+	N_val__shipments__string -> N_val_call_13965;
+	N_val_unary_13949 -> N_val_call_13965;
+	N_val_call_13965 -> N_val_extrt3;
+	N_val_call_13965 -> N_val_extrt4;
+	N_val_param_13820 -> N_val_field_14004;
+	N_val_field_14004 -> N_val_unary_14004;
+	N_val_param_13884 -> N_val_ifacet7;
+	N_val_param_13863 -> N_val_call_14010;
+	N_val_ifacet7 -> N_val_call_14010;
+	N_val_unary_14004 -> N_val_call_14010;
+	N_val_param_13884 -> N_val_ifacet9;
+	N_val_param_13863 -> N_val_call_14064;
+	N_val_ifacet9 -> N_val_call_14064;
+	N_val_extrt3 -> N_val_call_14064;
+	N_val_param_13884 -> N_instr_ret_14027;
+	N_val_call_14064 -> N_instr_ret_14027;
 }

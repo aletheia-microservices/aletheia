@@ -8,6 +8,48 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
+		N_Frontend_ReadFooBar [label="Frontend.ReadFooBar
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ FooService.ReadFoo.id
+
+
+==== ret 2 (error) tainted ====
+_obj
+[rpc] @ FooService.ReadFoo.t5
+", style=bold, shape=box, color="blue"];
+		N_BarService_ReadBar [label="BarService.ReadBar
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ bar_db.bar.BarID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar) tainted ====
+_obj
+[read, primary] @ bar_db.bar
+", style=bold, shape=box, color="blue"];
+		N_FooService_WriteFoo [label="FooService.WriteFoo
+
+==== param 0 (id) tainted ====
+_obj
+[write, primary] @ foo_db.foo.FooID
+
+
+==== param 1 (text) tainted ====
+_obj
+[write, primary] @ foo_db.foo.Text
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo) tainted ====
+_obj
+[write, primary] @ foo_db.foo
+_obj.FooID
+[write, primary] @ foo_db.foo.FooID
+_obj.Text
+[write, primary] @ foo_db.foo.Text
+", style=bold, shape=box, color="blue"];
 		N_BarService_WriteBar [label="BarService.WriteBar
 
 ==== param 0 (id) tainted ====
@@ -27,17 +69,6 @@ _obj.BarID
 [write, primary] @ bar_db.bar.BarID
 _obj.Text
 [write, primary] @ bar_db.bar.Text
-", style=bold, shape=box, color="blue"];
-		N_Frontend_ReadFooBar [label="Frontend.ReadFooBar
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.id
-
-
-==== ret 2 (error) tainted ====
-_obj
-[rpc] @ FooService.ReadFoo.t5
 ", style=bold, shape=box, color="blue"];
 		N_Frontend_WriteFooBar [label="Frontend.WriteFooBar
 
@@ -61,26 +92,6 @@ _obj
 _obj
 [rpc] @ FooService.WriteFoo.t5
 ", style=bold, shape=box, color="blue"];
-		N_FooService_WriteFoo [label="FooService.WriteFoo
-
-==== param 0 (id) tainted ====
-_obj
-[write, primary] @ foo_db.foo.FooID
-
-
-==== param 1 (text) tainted ====
-_obj
-[write, primary] @ foo_db.foo.Text
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo) tainted ====
-_obj
-[write, primary] @ foo_db.foo
-_obj.FooID
-[write, primary] @ foo_db.foo.FooID
-_obj.Text
-[write, primary] @ foo_db.foo.Text
-", style=bold, shape=box, color="blue"];
 		N_FooService_ReadFoo [label="FooService.ReadFoo
 
 ==== param 0 (id) tainted ====
@@ -91,17 +102,6 @@ _obj
 ==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Foo) tainted ====
 _obj
 [read, primary] @ foo_db.foo
-", style=bold, shape=box, color="blue"];
-		N_BarService_ReadBar [label="BarService.ReadBar
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ bar_db.bar.BarID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Bar) tainted ====
-_obj
-[read, primary] @ bar_db.bar
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
@@ -237,68 +237,35 @@ _obj
 ", color=blue];
 	N_FooService_ReadFoo -> N_foo_db_foo [label="FindOne()
 
-==== arg 0 (t7) tainted ====
+==== arg 0 (\"FooID\":string) tainted ====
 _obj
 [read, primary] @ foo_db.foo.FooID
 
 
-==== arg 1 (t12) tainted ====
+==== arg 1 (t11) tainted ====
 _obj
 [read, primary] @ foo_db.foo.FooID
 
 
-==== arg 2 (t10) tainted ====
-_obj
-[read, primary] @ foo_db.foo.FooID
-
-
-==== arg 3 (t9) tainted ====
-_obj
-[read, primary] @ foo_db.foo.FooID
-
-
-==== arg 4 (t8) tainted ====
-_obj
-[read, primary] @ foo_db.foo.FooID
-
-
-==== arg 5 (t0) tainted ====
+==== arg 2 (t0) tainted ====
 _obj
 [read, primary] @ foo_db.foo
 ", color=green];
 	N_BarService_ReadBar -> N_bar_db_bar [label="FindOne()
 
-==== arg 0 (t7) tainted ====
+==== arg 0 (\"BarID\":string) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
 [read, secondary] @ foo_db.foo.FooID
 
 
-==== arg 1 (t8) tainted ====
+==== arg 1 (t11) tainted ====
 _obj
 [read, primary] @ bar_db.bar.BarID
 [read, secondary] @ foo_db.foo.FooID
 
 
-==== arg 2 (t12) tainted ====
-_obj
-[read, primary] @ bar_db.bar.BarID
-[read, secondary] @ foo_db.foo.FooID
-
-
-==== arg 3 (t9) tainted ====
-_obj
-[read, primary] @ bar_db.bar.BarID
-[read, secondary] @ foo_db.foo.FooID
-
-
-==== arg 4 (t10) tainted ====
-_obj
-[read, primary] @ bar_db.bar.BarID
-[read, secondary] @ foo_db.foo.FooID
-
-
-==== arg 5 (t0) tainted ====
+==== arg 2 (t0) tainted ====
 _obj
 [read, primary] @ bar_db.bar
 _obj.BarID

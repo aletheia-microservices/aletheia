@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------
 ----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
 ---------------------------------------------------------------------
-entry request: ProductService.Delete
-	DELETE: (SkuService.Delete) --> (skus_db.skus).DeleteOne(...)
-		CONCURRENT WRITE: (OrderService.New) --> (orders_db.orders).InsertOne(...)
+entry request: ProductService.Delete()
+	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
+		CONCURRENT WRITE: OrderService.New() --> orders_db.orders.InsertOne()
 		- written field: orders_db.orders.Items[*].Parent
 			- affected constraint #0: FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus.Id

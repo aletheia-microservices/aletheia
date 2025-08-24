@@ -34,6 +34,7 @@ type TaintInfo struct {
 	path     string
 	val      ssa.Value
 	infoType TaintInfoType
+	objroot  bool
 	dbTaint  DBTaint
 	svTaint  SVTaint
 }
@@ -43,6 +44,7 @@ func NewTaintInfoDatabase(dbpath string, path string, val ssa.Value, dbcall *ssa
 		path:     path,
 		val:      val,
 		infoType: TAINT_INFO_DATABASE,
+		objroot:  true,
 		dbTaint: DBTaint{
 			path: dbpath,
 			call: dbcall,
@@ -60,6 +62,15 @@ func NewTaintInfoService(svpath string, path string, val ssa.Value, svcall *ssag
 			call: svcall,
 		},
 	}
+}
+
+func (t TaintInfo) enableObjectRoot() TaintInfo {
+	t.objroot = true
+	return t
+}
+
+func (t TaintInfo) isObjectRoot() bool {
+	return t.objroot
 }
 
 func (t TaintInfo) isTypeDatabase() bool {
@@ -99,7 +110,7 @@ func (t TaintInfo) updateValue(val ssa.Value) TaintInfo {
 	return t
 }
 
-func (t TaintInfo) updatePathPrefix(prefix string) TaintInfo {
+func (t TaintInfo) updateObjectPathPrefix(prefix string) TaintInfo {
 	t.path = prefix + t.path
 	return t
 }

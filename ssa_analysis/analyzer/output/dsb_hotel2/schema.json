@@ -44,30 +44,39 @@
   },
   "rate_db": {
     "name": "rate_db",
+    "schemas": [
+      {
+        "name": "inventory",
+        "fields": [
+          "rate_db.inventory",
+          "rate_db.inventory.HotelID"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "recommendation_db": {
+    "name": "recommendation_db",
     "schemas": null
   },
-  "recommendations_db": {
-    "name": "recommendations_db",
-    "schemas": null
-  },
-  "reserv_cache": {
-    "name": "reserv_cache",
+  "reservation_cache": {
+    "name": "reservation_cache",
     "schemas": [
       {
         "name": "*",
         "fields": [
-          "reserv_cache.*.Key",
-          "reserv_cache.*.Value",
-          "reserv_cache._cap.Key",
-          "reserv_cache._cap.Value"
+          "reservation_cache.*.Key",
+          "reservation_cache.*.Value",
+          "reservation_cache._cap.Key",
+          "reservation_cache._cap.Value"
         ],
         "constraints": []
       },
       {
         "name": "_cap",
         "fields": [
-          "reserv_cache._cap.Key",
-          "reserv_cache._cap.Value"
+          "reservation_cache._cap.Key",
+          "reservation_cache._cap.Value"
         ],
         "constraints": []
       }
@@ -77,12 +86,11 @@
     "name": "reservation_db",
     "schemas": [
       {
-        "name": "number",
+        "name": "reservation",
         "fields": [
           "reservation_db.number",
-          "reservation_db.number.HotelID",
+          "reservation_db.number.HotelId",
           "reservation_db.number.Number",
-          "reservation_db.number.hotelid",
           "reservation_db.reservation",
           "reservation_db.reservation.CustomerName",
           "reservation_db.reservation.HotelId",
@@ -93,14 +101,9 @@
         "constraints": []
       },
       {
-        "name": "reservation",
+        "name": "number",
         "fields": [
-          "reservation_db.reservation",
-          "reservation_db.reservation.CustomerName",
-          "reservation_db.reservation.HotelId",
-          "reservation_db.reservation.InDate",
-          "reservation_db.reservation.Number",
-          "reservation_db.reservation.OutDate"
+          "reservation_db.number.HotelId"
         ],
         "constraints": []
       }

@@ -22,6 +22,8 @@ const (
 	EDGE_FIELD
 	EDGE_INDEX
 	EDGE_PARAMETER
+	EDGE_RANGE_OF
+	EDGE_ITERATOR_OF
 	EDGE_POINTS_TO
 )
 
@@ -66,6 +68,10 @@ func (edge *SSAEdge) GetToNode() *SSANode {
 
 func (edge *SSAEdge) GetPath() string {
 	return edge.path
+}
+
+func (edge *SSAEdge) HasPath(path string) bool {
+	return edge.path == path
 }
 
 func (edge *SSAEdge) SetPath(path string) {
@@ -114,6 +120,10 @@ func (edge *SSAEdge) GetTypeString() string {
 		return "EDGE_LOOKUP_TARGET"
 	case EDGE_LOOKUP_INDEX:
 		return "EDGE_LOOKUP_INDEX"
+	case EDGE_RANGE_OF:
+		return "EDGE_RANGE_OF"
+	case EDGE_ITERATOR_OF:
+		return "EDGE_ITERATOR_OF"
 	default:
 		return "UNKNOWN"
 	}

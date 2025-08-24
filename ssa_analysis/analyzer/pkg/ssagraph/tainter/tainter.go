@@ -9,9 +9,33 @@ import (
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/ssagraph"
+	"analyzer/pkg/utils"
 )
 
+// REMINDER:
+// sometimes there are can be taints such as: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
+// this may happen when any[] type is using, for example, fmt.Print calls
+// e.g., dsb_sn2 at UserTimelineService.ReadUserTimeline:
+// > post_ids = append(new_post_ids, post_ids...)
+// > fmt.Println(post_ids)
+// ----------------------------
+// t56: append(t55, t31...)
+// t59: make any <- []int64 (t56)
+// *t58 = t59
+// t58: &t57[0:int]
+// t57: new [1]any (vargs)
+// t60: slice t57[:]
+// t61: fmt.Println(t60...)
+// ----------------------------
+// t56 taint is:		 _obj[*], usertimeline_db.usertimeline.Posts[*].PostID
+// t57 taint becomes: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
+// ----------------------------
 func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMode) {
+	// sanity check for dsb_hotel2 app
+	if (strings.Contains(taintInfo.path, ".HId[*]")) && taintInfo.dbTaint.call.GetDatabaseName() == "recommendation_db" {
+		log.Fatalf("[TAINT] [DSB_HOTEL2] unexpected taint info path (%s): %v\n", taintInfo.path, taintInfo)
+	}
+
 	if taintInfo.isTypeDatabase() && taintInfo.getDatabaseCall() == nil {
 		// FIXME: verify this
 		fmt.Printf("[TAINT] [4] nil db call for taint info: %v\n", taintInfo)
@@ -57,17 +81,21 @@ func getObjectPathDiff(longPath1 string, shortPath2 string) string {
 func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
 	taintInfo = taintInfo.updateValue(val)
 
-	fmt.Printf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+	fmt.Printf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 	if visited[val] {
 		fmt.Printf("\t[TAINT NEARBY] skipping value %s: %s\n", val.Name(), val.String())
 		return
 	}
 	visited[val] = true
 
+	if ssaValueIsUsedInMongoBsonFilter(graph, val) {
+		return // skip
+	}
+
 	node := graph.GetNodeByName(val.Name())
 	doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
 
-	fmt.Printf("[TAINT NEARBY] current node: %v\n", node)
+	fmt.Printf("[TAINT NEARBY] [ROOT=%t] current node: %v\n", taintInfo.objroot, node)
 	for _, edge := range graph.GetEdgesFromNode(node) {
 		toNode := edge.GetToNode()
 		fmt.Printf("\t[TAINT NEARBY] edge (%s) to node: %v\n", edge.GetTypeString(), toNode)
@@ -77,22 +105,21 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 			if upwards {
 				break
 			}
-			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, toNode.GetValue()) {
-				propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-			} else {
-				taintInfoTmp := taintInfo.updateCallPathSuffix("." + edge.GetParam())
-				propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
-			}
+			taintInfoTmp := taintInfo.updateCallPathSuffix("." + edge.GetParam())
+			propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
 		case ssagraph.EDGE_INDEX:
 			if upwards {
 				break
 			}
-			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, toNode.GetValue()) {
-				propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+			var taintInfoTmp TaintInfo
+			if taintInfo.isObjectRoot() {
+				taintInfoTmp = taintInfo.updateCallPathSuffix("[" + edge.GetParam() + "]")
 			} else {
-				taintInfoTmp := taintInfo.updateCallPathSuffix("[" + edge.GetParam() + "]")
-				propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+				taintInfoTmp = taintInfo.enableObjectRoot()
+				taintInfoTmp.path, _ = strings.CutSuffix(taintInfoTmp.path, "[*]")
 			}
+
+			propagateTaintNearby(graph, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
 		case ssagraph.EDGE_STORE_ADDRESS:
 			val := toNode.GetInstruction().(*ssa.Store).Val
 			valNode := graph.GetNodeByName(val.Name())
@@ -103,7 +130,52 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 			propagateTaintNearby(graph, addrNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 		case ssagraph.EDGE_POINTS_TO:
 			// ignore for now
-		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_ARG_ON_CALL, ssagraph.EDGE_EXTRACT:
+		case ssagraph.EDGE_ARG_ON_CALL:
+			if ok, builtin := utils.SSAValueIsBuiltinFuncCall(toNode.GetValue()); ok {
+				if ok, taintFunc, _ := utils.SSABuiltinFuncIsDirect(builtin); ok {
+					/* if funcName == "append" && toNode.GetValue().Name() == "t80" {
+						fmt.Printf("NODE: %s\n", node.String())
+						fmt.Printf("CALL: %s\n", toNode.GetValue().String())
+						for _, edge := range graph.GetEdgesToNode(toNode) {
+							funcArg := edge.GetFromNode()
+							fmt.Printf("ARG: %v\n", funcArg.String())
+							if funcArg == node {
+								fmt.Printf("skipping...\n")
+							}
+						}
+						log.Fatalf("HERE!")
+					} */
+
+					if taintFunc {
+						// REMINDER:
+						// builtin append() can safely taint its arguments because
+						// the Go SSA transforms the second argument into a slice
+						// e.g. in dsb_sn2 at UserTimelineService.ReadUserTimeline:
+						// > new_post_ids = append(new_post_ids, post.PostID)
+						// ----------------------------
+						// t107: local PostInfo (post)
+						// t122: &t107.PostID [#0]
+						// t123: *t122
+						// t124: new[1]int64 (varargs)
+						// t125: &t124[0:int]
+						// *t125 = t123
+						// t126: slice t124[:]
+						// t127: append(t111, t126...)
+						// ----------------------------
+						propagateTaintNearby(graph, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+					} else {
+						for _, edge := range graph.GetEdgesToNode(toNode) {
+							funcArg := edge.GetFromNode()
+							if funcArg != node {
+								propagateTaintNearby(graph, funcArg.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+							}
+						}
+					}
+
+				}
+			}
+			// skip
+		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_EXTRACT:
 			// skip
 		case ssagraph.EDGE_BINOP_X:
 			binOp := edge.GetToNode().GetValue().(*ssa.BinOp)
@@ -127,27 +199,31 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo Tai
 		}
 	}
 
-	fmt.Printf("[TAINT NEARBY] current node: %v\n", node)
+	fmt.Printf("[TAINT NEARBY] [ROOT=%t] current node: %v\n", taintInfo.objroot, node)
 	for _, edge := range graph.GetEdgesToNode(node) {
 		fromNode := edge.GetFromNode()
 		fmt.Printf("\t[TAINT NEARBY] edge (%s) from node: %v\n", edge.GetTypeString(), fromNode)
+
+		if ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
+			continue // skip
+		}
+
 		switch edge.GetType() {
 		case ssagraph.EDGE_FIELD:
-			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
-				propagateTaintNearby(graph, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-			} else {
-				visitedTmp := make(map[ssa.Value]bool)
-				taintInfoTmp := taintInfo.updateObjectPathSuffix("." + edge.GetParam())
-				propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
-			}
+			visitedTmp := make(map[ssa.Value]bool)
+			taintInfoTmp := taintInfo.updateObjectPathPrefix("." + edge.GetParam())
+			propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
 		case ssagraph.EDGE_INDEX:
-			if ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()) && ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
-				propagateTaintNearby(graph, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+			visitedTmp := make(map[ssa.Value]bool)
+
+			var taintInfoTmp TaintInfo
+			if taintInfo.isObjectRoot() {
+				taintInfoTmp = taintInfo.updateObjectPathPrefix("[" + edge.GetParam() + "]")
 			} else {
-				visitedTmp := make(map[ssa.Value]bool)
-				taintInfoTmp := taintInfo.updateObjectPathSuffix("[" + edge.GetParam() + "]")
-				propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
+				taintInfoTmp = taintInfo.enableObjectRoot()
 			}
+
+			propagateTaintNearby(graph, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
 		case ssagraph.EDGE_STORE_ADDRESS:
 			val := fromNode.GetInstruction().(*ssa.Store).Val
 			valNode := graph.GetNodeByName(val.Name())
@@ -193,6 +269,11 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 
 	node := graph.GetNodeByName(val.Name())
 	fmt.Printf("\t[TAINT FETCH] checking upper taints: %v\n", node.GetTaints())
+
+	if ssaValueIsUsedInMongoBsonFilter(graph, val) {
+		return // skip
+	}
+
 	// 1. taint "subpaths" for current variable and save to later taint the corresponding "subobjects" that requested the upper taint
 	for objPath, taints := range node.GetTaints() {
 
@@ -316,15 +397,31 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 
 			for _, valFieldPath := range valFieldPathLst {
 				dbfield := valFieldPath.fieldpath
-				arg := valFieldPath.val
+				obj := valFieldPath.val
 
 				visited := make(map[ssa.Value]bool)
+
 				taintInfo := NewTaintInfoDatabase(dbfield, "", nil, dbCall)
 
-				propagateTaintNearby(graph, arg, taintInfo, visited, nil, false)
+				// e.g. dsb_hotel2: RecommendationService.LoadRecommendations()
+				// where &hotels is the destination
+				// -----------------------------------------------
+				// var hotels []Hotel
+				// cursor, err := collection.FindMany(ctx, filter)
+				// cursor.All(ctx, &hotels)
+				// -----------------------------------------------
+				// REMINDER:
+				// cannot do default propagateTaintNearby (root=true) for read operations fetched
+				// into arrays/slices (e.g., FindMany) because the default taintinfo is the root path
+				// when propagating to other objects
+				if valFieldPath.bsonCursorMany || valFieldPath.bsonFilterIn {
+					taintInfo.path += "[*]"
+					taintInfo.objroot = false
+				}
 
-				node := graph.GetNodeByName(arg.Name())
-				nodesToVisit = append(nodesToVisit, node)
+				propagateTaintNearby(graph, obj, taintInfo, visited, nil, false)
+				objNode := graph.GetNodeByName(obj.Name())
+				nodesToVisit = append(nodesToVisit, objNode)
 			}
 
 			checkUpperTaintsForObjects(graph, nodesToVisit)
