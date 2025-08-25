@@ -530,7 +530,7 @@ t95 (@ReadPosts): (*ssa.FieldAddr) (&t94.Key [#0])
 t96 (@ReadPosts): (*ssa.FieldAddr) (&t94.Value [#1])
 	 → t93 (@ReadPosts): (*ssa.Alloc)
 
-t97 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- []int64 (postIDs))
+t97 (@ReadPosts): (*ssa.MakeInterface) (make interface{} <- []int64 (t73))
 	 → t97 (@ReadPosts): (*ssa.MakeInterface)
 
 t98 (@ReadPosts): (*ssa.Slice) (slice t93[:])
@@ -626,10 +626,10 @@ t7 (@StorePost): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).Follow ###
+s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
 t0 (@Follow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@Follow): (*ssa.Alloc)
-
-s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1073,10 +1073,10 @@ t25 (@Unfollow): (*ssa.UnOp) (*t12)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).UnfollowWithUsername ###
+s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
 t0 (@UnfollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@UnfollowWithUsername): (*ssa.Alloc)
-
-s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@UnfollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1440,176 +1440,6 @@ u (@ComposeUserMentions): (*ssa.Parameter) (parameter u : *UserMentionServiceImp
 ctx (@ComposeUserMentions): (*ssa.Parameter) (parameter ctx : context.Context)
 
 usernames (@ComposeUserMentions): (*ssa.Parameter) (parameter usernames : []string)
-
-t0 (@ComposeUserMentions): (*ssa.MakeMap) (make map[string]bool )
-	 → t0 (@ComposeUserMentions): (*ssa.MakeMap)
-
-t1 (@ComposeUserMentions): (*ssa.MakeMap) (make map[string]string )
-	 → t1 (@ComposeUserMentions): (*ssa.MakeMap)
-
-t3 (@ComposeUserMentions): (*ssa.Phi) (phi [0: nil:[]string, 2: t13] #keys)
-	 → t13 (@ComposeUserMentions): (*ssa.Call)
-
-t7 (@ComposeUserMentions): (*ssa.IndexAddr) (&usernames[t5])
-
-t10 (@ComposeUserMentions): (*ssa.Alloc) (new [1]string (varargs))
-	 → t10 (@ComposeUserMentions): (*ssa.Alloc)
-
-t11 (@ComposeUserMentions): (*ssa.IndexAddr) (&t10[0:int])
-	 → t10 (@ComposeUserMentions): (*ssa.Alloc)
-
-t12 (@ComposeUserMentions): (*ssa.Slice) (slice t10[:])
-	 → t10 (@ComposeUserMentions): (*ssa.Alloc)
-
-t13 (@ComposeUserMentions): (*ssa.Call) (append(t3, t12...))
-	 → t13 (@ComposeUserMentions): (*ssa.Call)
-
-t16 (@ComposeUserMentions): (*ssa.MakeSlice) (make []int64 t15 t15)
-	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
-
-t18 (@ComposeUserMentions): (*ssa.Phi) (phi [3: nil:[]interface{}, 5: t27] #retvals)
-	 → t27 (@ComposeUserMentions): (*ssa.Call)
-
-t22 (@ComposeUserMentions): (*ssa.IndexAddr) (&t16[t20])
-	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
-
-t23 (@ComposeUserMentions): (*ssa.Alloc) (new [1]interface{} (varargs))
-	 → t23 (@ComposeUserMentions): (*ssa.Alloc)
-
-t24 (@ComposeUserMentions): (*ssa.IndexAddr) (&t23[0:int])
-	 → t23 (@ComposeUserMentions): (*ssa.Alloc)
-
-t25 (@ComposeUserMentions): (*ssa.MakeInterface) (make interface{} <- *int64 (t22))
-	 → t25 (@ComposeUserMentions): (*ssa.MakeInterface)
-
-t26 (@ComposeUserMentions): (*ssa.Slice) (slice t23[:])
-	 → t23 (@ComposeUserMentions): (*ssa.Alloc)
-
-t27 (@ComposeUserMentions): (*ssa.Call) (append(t18, t26...))
-	 → t27 (@ComposeUserMentions): (*ssa.Call)
-
-t28 (@ComposeUserMentions): (*ssa.FieldAddr) (&u.userCache [#0])
-
-t29 (@ComposeUserMentions): (*ssa.UnOp) (*t28)
-
-t30 (@ComposeUserMentions): (*ssa.Call) (invoke t29.Mget(ctx, t3, t18))
-
-t32 (@ComposeUserMentions): (*ssa.Phi) (phi [6: nil:[]UserMention, 8: t32, 10: t53] #user_mentions)
-	 → t53 (@ComposeUserMentions): (*ssa.Call)
-
-t36 (@ComposeUserMentions): (*ssa.IndexAddr) (&t3[t34])
-	 → t13 (@ComposeUserMentions): (*ssa.Call)
-
-t38 (@ComposeUserMentions): (*ssa.IndexAddr) (&t16[t34])
-	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
-
-t43 (@ComposeUserMentions): (*ssa.Alloc) (local UserMention (user_mention))
-	 → t43 (@ComposeUserMentions): (*ssa.Alloc)
-
-t44 (@ComposeUserMentions): (*ssa.FieldAddr) (&t43.UserID [#0])
-	 → t43 (@ComposeUserMentions): (*ssa.Alloc)
-
-t45 (@ComposeUserMentions): (*ssa.IndexAddr) (&t16[t34])
-	 → t16 (@ComposeUserMentions): (*ssa.MakeSlice)
-
-t47 (@ComposeUserMentions): (*ssa.FieldAddr) (&t43.Username [#1])
-	 → t43 (@ComposeUserMentions): (*ssa.Alloc)
-
-t50 (@ComposeUserMentions): (*ssa.Alloc) (new [1]UserMention (varargs))
-	 → t50 (@ComposeUserMentions): (*ssa.Alloc)
-
-t51 (@ComposeUserMentions): (*ssa.IndexAddr) (&t50[0:int])
-	 → t50 (@ComposeUserMentions): (*ssa.Alloc)
-
-t52 (@ComposeUserMentions): (*ssa.Slice) (slice t50[:])
-	 → t50 (@ComposeUserMentions): (*ssa.Alloc)
-
-t53 (@ComposeUserMentions): (*ssa.Call) (append(t32, t52...))
-	 → t53 (@ComposeUserMentions): (*ssa.Call)
-
-t56 (@ComposeUserMentions): (*ssa.Alloc) (new [1]any (varargs))
-	 → t56 (@ComposeUserMentions): (*ssa.Alloc)
-
-t57 (@ComposeUserMentions): (*ssa.IndexAddr) (&t56[0:int])
-	 → t56 (@ComposeUserMentions): (*ssa.Alloc)
-
-t58 (@ComposeUserMentions): (*ssa.MakeInterface) (make any <- string ("Looking for user ...":string))
-	 → t58 (@ComposeUserMentions): (*ssa.MakeInterface)
-
-t59 (@ComposeUserMentions): (*ssa.Slice) (slice t56[:])
-	 → t56 (@ComposeUserMentions): (*ssa.Alloc)
-
-t62 (@ComposeUserMentions): (*ssa.Phi) (phi [9: t32, 23: t104] #user_mentions)
-	 → t53 (@ComposeUserMentions): (*ssa.Call)
-	 → t104 (@ComposeUserMentions): (*ssa.Call)
-
-t63 (@ComposeUserMentions): (*ssa.Phi) (phi [11: nil:[]string, 14: t72] #names)
-	 → t72 (@ComposeUserMentions): (*ssa.Call)
-
-t69 (@ComposeUserMentions): (*ssa.Alloc) (new [1]string (varargs))
-	 → t69 (@ComposeUserMentions): (*ssa.Alloc)
-
-t70 (@ComposeUserMentions): (*ssa.IndexAddr) (&t69[0:int])
-	 → t69 (@ComposeUserMentions): (*ssa.Alloc)
-
-t71 (@ComposeUserMentions): (*ssa.Slice) (slice t69[:])
-	 → t69 (@ComposeUserMentions): (*ssa.Alloc)
-
-t72 (@ComposeUserMentions): (*ssa.Call) (append(t63, t71...))
-	 → t72 (@ComposeUserMentions): (*ssa.Call)
-
-t73 (@ComposeUserMentions): (*ssa.FieldAddr) (&u.userDB [#1])
-
-t74 (@ComposeUserMentions): (*ssa.UnOp) (*t73)
-
-t76 (@ComposeUserMentions): (*ssa.Extract) (extract t75 #0)
-
-t77 (@ComposeUserMentions): (*ssa.Extract) (extract t75 #1)
-
-t83 (@ComposeUserMentions): (*ssa.Extract) (extract t82 #0)
-
-t84 (@ComposeUserMentions): (*ssa.Extract) (extract t82 #1)
-
-t86 (@ComposeUserMentions): (*ssa.Alloc) (new [1]any (varargs))
-	 → t86 (@ComposeUserMentions): (*ssa.Alloc)
-
-t87 (@ComposeUserMentions): (*ssa.IndexAddr) (&t86[0:int])
-	 → t86 (@ComposeUserMentions): (*ssa.Alloc)
-
-t88 (@ComposeUserMentions): (*ssa.ChangeInterface) (change interface any <- error (t84))
-
-t89 (@ComposeUserMentions): (*ssa.Slice) (slice t86[:])
-	 → t86 (@ComposeUserMentions): (*ssa.Alloc)
-
-t91 (@ComposeUserMentions): (*ssa.Alloc) (new [0]UserMention (slicelit))
-	 → t91 (@ComposeUserMentions): (*ssa.Alloc)
-
-t92 (@ComposeUserMentions): (*ssa.Slice) (slice t91[:])
-	 → t91 (@ComposeUserMentions): (*ssa.Alloc)
-
-t94 (@ComposeUserMentions): (*ssa.Extract) (extract t93 #0)
-
-t95 (@ComposeUserMentions): (*ssa.Extract) (extract t93 #1)
-
-t97 (@ComposeUserMentions): (*ssa.Alloc) (new [0]UserMention (slicelit))
-	 → t97 (@ComposeUserMentions): (*ssa.Alloc)
-
-t98 (@ComposeUserMentions): (*ssa.Slice) (slice t97[:])
-	 → t97 (@ComposeUserMentions): (*ssa.Alloc)
-
-t99 (@ComposeUserMentions): (*ssa.Alloc) (new []UserMention (new_user_mentions))
-	 → t99 (@ComposeUserMentions): (*ssa.Alloc)
-
-t100 (@ComposeUserMentions): (*ssa.MakeInterface) (make interface{} <- *[]UserMention (t99))
-	 → t100 (@ComposeUserMentions): (*ssa.MakeInterface)
-
-t101 (@ComposeUserMentions): (*ssa.Call) (invoke t94.All(ctx, t100))
-
-t103 (@ComposeUserMentions): (*ssa.UnOp) (*t99)
-
-t104 (@ComposeUserMentions): (*ssa.Call) (append(t32, t103...))
-	 → t53 (@ComposeUserMentions): (*ssa.Call)
-	 → t104 (@ComposeUserMentions): (*ssa.Call)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserServiceImpl).ComposeCreatorWithUserId ###
@@ -2014,18 +1844,18 @@ t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
 	 → t3 (@NewEncoding): (*ssa.Alloc)
 
 t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
+	 → t5 (@Sum): (*ssa.Call)
 	 → t8 (@Sum): (*ssa.Call)
 	 → t10 (@Sum): (*ssa.Call)
-	 → t6 (@Sum): (*ssa.Call)
 	 → t15 (@Sum): (*ssa.Call)
 	 → t17 (@Sum): (*ssa.Call)
 	 → t20 (@Sum): (*ssa.Call)
 	 → t23 (@Sum): (*ssa.Call)
-	 → t5 (@Sum): (*ssa.Call)
+	 → t6 (@Sum): (*ssa.Call)
 	 → t31 (@sign): (*ssa.Alloc)
 	 → t58 (@sign): (*ssa.Alloc)
-	 → t34 (@verify): (*ssa.Alloc)
 	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice)
+	 → t34 (@verify): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserTimelineServiceImpl).ReadUserTimeline ###

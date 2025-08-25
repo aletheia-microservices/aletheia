@@ -21,51 +21,58 @@ const (
 )
 
 type DBTaint struct {
-	path string                 // with full path: <database>.<table>.<fieldname>[.<any sub path>]
-	call *ssagraph.DatabaseCall //currently this is only used to get the ID later in the parser of abstractcallgraph
+	dbpath string                 // with full path: <database>.<table>.<fieldname>[.<any sub path>]
+	dbcall *ssagraph.DatabaseCall //currently this is only used to get the ID later in the parser of abstractcallgraph
 }
 
 type SVTaint struct {
-	path string                // with full path: <method param name>[.<any sub path>]
-	call *ssagraph.ServiceCall //currently this is only used to get the ID later in the parser of abstractcallgraph
+	svpath string                // with full path: <method param name>[.<any sub path>]
+	svcall *ssagraph.ServiceCall //currently this is only used to get the ID later in the parser of abstractcallgraph
 }
 
 type TaintInfo struct {
-	path     string
-	val      ssa.Value
-	infoType TaintInfoType
+	objpath  string
+	objval   ssa.Value
+	prevval  ssa.Value // debug purposes
 	objroot  bool
+	infoType TaintInfoType
 	dbTaint  DBTaint
 	svTaint  SVTaint
 }
 
 func NewTaintInfoDatabase(dbpath string, path string, val ssa.Value, dbcall *ssagraph.DatabaseCall) TaintInfo {
 	return TaintInfo{
-		path:     path,
-		val:      val,
+		objpath:  path,
+		objval:   val,
 		infoType: TAINT_INFO_DATABASE,
 		objroot:  true,
 		dbTaint: DBTaint{
-			path: dbpath,
-			call: dbcall,
+			dbpath: dbpath,
+			dbcall: dbcall,
 		},
 	}
 }
 
 func NewTaintInfoService(svpath string, path string, val ssa.Value, svcall *ssagraph.ServiceCall) TaintInfo {
 	return TaintInfo{
-		path:     path,
-		val:      val,
+		objpath:  path,
+		objval:   val,
 		infoType: TAINT_INFO_SERVICE,
+		objroot:  true,
 		svTaint: SVTaint{
-			path: svpath,
-			call: svcall,
+			svpath: svpath,
+			svcall: svcall,
 		},
 	}
 }
 
 func (t TaintInfo) enableObjectRoot() TaintInfo {
 	t.objroot = true
+	return t
+}
+
+func (t TaintInfo) disableObjectRoot() TaintInfo {
+	t.objroot = false
 	return t
 }
 
@@ -82,49 +89,49 @@ func (t TaintInfo) isTypeService() bool {
 }
 
 func (t TaintInfo) getObjectFullPath() string {
-	return "_obj" + t.path
+	return "_obj" + t.objpath
 }
 
 func (t TaintInfo) getObjectPath() string {
-	return t.path
+	return t.objpath
 }
 
 func (t TaintInfo) getDatabasePath() string {
-	return t.dbTaint.path
+	return t.dbTaint.dbpath
 }
 
 func (t TaintInfo) getDatabaseCall() *ssagraph.DatabaseCall {
-	return t.dbTaint.call
+	return t.dbTaint.dbcall
 }
 
 func (t TaintInfo) getServicePath() string {
-	return t.svTaint.path
+	return t.svTaint.svpath
 }
 
 func (t TaintInfo) getServiceCall() *ssagraph.ServiceCall {
-	return t.svTaint.call
+	return t.svTaint.svcall
 }
 
 func (t TaintInfo) updateValue(val ssa.Value) TaintInfo {
-	t.val = val
+	t.objval = val
 	return t
 }
 
 func (t TaintInfo) updateObjectPathPrefix(prefix string) TaintInfo {
-	t.path = prefix + t.path
+	t.objpath = prefix + t.objpath
 	return t
 }
 
 func (t TaintInfo) updateObjectPathSuffix(suffix string) TaintInfo {
-	t.path = t.path + suffix
+	t.objpath = t.objpath + suffix
 	return t
 }
 
 func (t TaintInfo) updateCallPathSuffix(suffix string) TaintInfo {
 	if t.infoType == TAINT_INFO_DATABASE {
-		t.dbTaint.path = t.dbTaint.path + suffix
+		t.dbTaint.dbpath = t.dbTaint.dbpath + suffix
 	} else if t.infoType == TAINT_INFO_SERVICE {
-		t.svTaint.path = t.svTaint.path + suffix
+		t.svTaint.svpath = t.svTaint.svpath + suffix
 	}
 	return t
 }
@@ -142,24 +149,24 @@ func NewCheckTaintInfo() *CheckTaintInfo {
 
 func (t *CheckTaintInfo) addToInheritedTaints(objPath string, dbfield string, dbcall *ssagraph.DatabaseCall) {
 	for _, taint := range t.inheritedTaints[objPath] {
-		if taint.path == dbfield {
+		if taint.dbpath == dbfield {
 			return
 		}
 	}
 	t.inheritedTaints[objPath] = append(t.inheritedTaints[objPath], DBTaint{
-		path: dbfield,
-		call: dbcall,
+		dbpath: dbfield,
+		dbcall: dbcall,
 	})
 }
 
 func (t *CheckTaintInfo) addToIndirectTaints(dbfield string, dbcall *ssagraph.DatabaseCall) {
 	for _, taint := range t.indirectTaints {
-		if taint.path == dbfield {
+		if taint.dbpath == dbfield {
 			return
 		}
 	}
 	t.indirectTaints = append(t.indirectTaints, DBTaint{
-		path: dbfield,
-		call: dbcall,
+		dbpath: dbfield,
+		dbcall: dbcall,
 	})
 }

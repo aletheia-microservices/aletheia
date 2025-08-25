@@ -25,8 +25,11 @@ var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put"}
 
 type ValFieldPath struct {
-	val            ssa.Value
-	fieldpath      string
+	val       ssa.Value
+	fieldpath string
+
+	// nosql only
+	bsonFilterKey  string
 	bsonCursorMany bool // destination objects from nosql cursor reads
 	bsonFilterIn   bool // bson filter: $in
 }
@@ -474,20 +477,29 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonVal ssa.Value) 
 						for _, edge := range graph.GetEdgesTypedFrom(bsonKeyNode, ssagraph.EDGE_STORE_ADDRESS) {
 							storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
 							filterObjs = append(filterObjs, ValFieldPath{
-								val: storeInstr.Val,
+								val:           storeInstr.Val,
+								bsonFilterKey: filterField,
 							})
-							// should only occur once but we keep iterating just for sanity check
+							// should only occur once
 							if filterFieldTmp, ok := utils.ExtractStringFromValue(storeInstr.Val); ok {
 								filterField = filterFieldTmp
+								break
 							}
 						}
-					} else if edge.GetParam() == "Value" {
+					}
+				}
+				if filterField == "" {
+					filterField = "*"
+				}
+				for _, edge := range graph.GetEdgesTypedFrom(bsonElemNode, ssagraph.EDGE_FIELD) {
+					if edge.GetParam() == "Value" {
 						// track objects used as value in store instructions for current bson value
 						bsonValueNode := edge.GetToNode()
 						for _, edge := range graph.GetEdgesTypedFrom(bsonValueNode, ssagraph.EDGE_STORE_ADDRESS) {
 							storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
 							filterObjs = append(filterObjs, ValFieldPath{
-								val: storeInstr.Val,
+								val:           storeInstr.Val,
+								bsonFilterKey: filterField,
 							})
 							if iface, ok := storeInstr.Val.(*ssa.MakeInterface); ok {
 								for filterFieldTmp, filterObjsTmp := range computeNoSQLFilterKeyToValues(graph, iface.X) {
@@ -495,6 +507,7 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonVal ssa.Value) 
 									case "$in":
 										for _, filterObjTmp := range filterObjsTmp {
 											filterObjTmp.bsonFilterIn = true
+											filterObjTmp.bsonFilterKey = filterField
 											filterObjs = append(filterObjs, filterObjTmp)
 										}
 									default:

@@ -180,7 +180,7 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 			index = val
 		}
 
-		graph.CreateAndAddNewEdge(mapNode, node, ssagraph.EDGE_MAP_TARGET, 0, index)
+		graph.CreateAndAddNewEdge(mapNode, node, ssagraph.EDGE_MAP_UPDATE, 0, index)
 		graph.CreateAndAddNewEdge(keyNode, node, ssagraph.EDGE_MAP_KEY, 0, index)
 		graph.CreateAndAddNewEdge(valueNode, node, ssagraph.EDGE_MAP_VALUE, 0, index)
 
@@ -329,7 +329,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
 		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
-	
+
 	case *ssa.Range:
 		// e.g., dsb_sn2 at PostStorageService.ReadPosts:
 		// ----------------------------------------
@@ -356,7 +356,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		iterNode := parseValue(graph, instr, instrIdx, t.Iter, visited)
 		graph.CreateAndAddNewEdge(iterNode, node, ssagraph.EDGE_ITERATOR_OF, 0, "")
 
-	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.ChangeInterface, *ssa.Index, 
+	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.ChangeInterface, *ssa.Index,
 		*ssa.TypeAssert, *ssa.ChangeType: // dsb_sn2
 		// TODO
 		fmt.Printf("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())

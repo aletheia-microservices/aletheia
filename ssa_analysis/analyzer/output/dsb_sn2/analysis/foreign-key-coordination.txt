@@ -1,6 +1,11 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
+entry request: Wrk2APIService.ReadHomeTimeline()
+	FOREIGN KEY READS #0:
+		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
+		READ 2: HomeTimelineService.ReadHomeTimeline() --> hometimeline_cache.*.Get()
+			- read field: hometimeline_cache.*.Value[*].PostID
 entry request: Wrk2APIService.ReadUserTimeline()
 	FOREIGN KEY READS #0:
 		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
@@ -11,3 +16,13 @@ entry request: Wrk2APIService.ReadUserTimeline()
 		READ 2: UserTimelineService.ReadUserTimeline() --> usertimeline_db.usertimeline.FindOne()
 			- read field: usertimeline_db.usertimeline.Posts[*].PostID
 				- constraint #0: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+				- constraint #1: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID
+				- constraint #2: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID
+entry request: Wrk2APIService.ComposePost()
+	FOREIGN KEY READS #0:
+		READ 1: HomeTimelineService.WriteHomeTimeline() --> hometimeline_cache.*.Get()
+			- read field: usertimeline_db.usertimeline.Posts[*].Timestamp
+				- constraint #0: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES usertimeline_cache.*.Value[*].Timestamp
+				- constraint #1: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp
+		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_cache.*.Get()
+			- read field: usertimeline_cache.*.Value[*].Timestamp

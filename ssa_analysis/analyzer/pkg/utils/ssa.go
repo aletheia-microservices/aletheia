@@ -25,7 +25,7 @@ func SSAValueIsBuiltinFuncCall(val ssa.Value) (bool, *ssa.Builtin) {
 }
 
 // direct => can be tainted
-func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, bool, string) {
+func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, int, string) {
 	// append(slice []Type, elems ...Type) []Type
 	// -----------------------------------
 	// copy(dst, src []Type) int
@@ -48,9 +48,11 @@ func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, bool, string) {
 	// error
 	switch builtin.Name() {
 	case "append":
-		return true, true, builtin.Name()
-	case "copy", "delete":
-		return true, false, builtin.Name()
+		return true, 1, builtin.Name()
+	case "copy":
+		return true, 2, builtin.Name()
+	case "delete":
+		return true, 3, builtin.Name()
 	}
-	return false, false, ""
+	return false, -1, ""
 }

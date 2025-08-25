@@ -1,24 +1,24 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_1845961 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_1845961 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_1845952 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_1845952 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
+	N_instr_ret_2785827 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2785827 [label="return t9, t8", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2785818 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2785818 [label="*t5 = t6", style=bold, shape=ellipse, color="blue"];
 	N_val__SELECT___FROM_plo_____string [label="\"SELECT * FROM plo...\":string: \"SELECT * FROM plo...\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_1845867 [label="t0: new Plot (Plot)
+	N_val_alloc_2785733 [label="t0: new Plot (Plot)
 
 ==== tainted ====
 _obj
 [read] @ plot_db.plot
 ", style=bold, shape=box, color="orange"];
-	N_val_alloc_1845958 [label="t4: new [1]any (varargs)
+	N_val_alloc_2785824 [label="t4: new [1]any (varargs)
 
 ==== tainted ====
 _obj[*]
 [read] @ plot_db.plot.Plotid
 ", style=bold, shape=box, color="orange"];
-	N_val_call_1845900 [label="t8: invoke t2.Select(ctx, t3, \"SELECT * FROM plo...\":string, t7...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_field_1845887 [label="t1: &m.PlotDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_call_2785766 [label="t8: invoke t2.Select(ctx, t3, \"SELECT * FROM plo...\":string, t7...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2785753 [label="t1: &m.PlotDB [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet3 [label="t3: make interface{} <- *Plot (t0)
 
 ==== tainted ====
@@ -37,10 +37,10 @@ _obj
 _obj
 [read] @ plot_db.plot.Plotid
 ", style=bold, shape=box, color="green"];
-	N_val_param_1845768 [label="m: parameter m : *PlotServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_1845797 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_1845818 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
-	N_val_param_1845831 [label="PlotID: parameter PlotID : string
+	N_val_param_2785634 [label="m: parameter m : *PlotServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2785663 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2785684 [label="reqID: parameter reqID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2785697 [label="PlotID: parameter PlotID : string
 
 ==== tainted ====
 _obj
@@ -52,29 +52,29 @@ _obj
 _obj[*]
 [read] @ plot_db.plot.Plotid
 ", style=bold, shape=box, color="black"];
-	N_val_unary_1845887 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_unary_1845968 [label="t9: *t0
+	N_val_unary_2785753 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2785834 [label="t9: *t0
 
 ==== tainted ====
 _obj
 [read] @ plot_db.plot
 ", style=bold, shape=box, color="red"];
-	N_val_param_1845768 -> N_val_field_1845887;
-	N_val_field_1845887 -> N_val_unary_1845887;
-	N_val_alloc_1845867 -> N_val_ifacet3;
-	N_val_alloc_1845958 -> N_val_indext5;
-	N_val_param_1845831 -> N_val_ifacet6;
-	N_val_indext5 -> N_instr_store_1845952;
-	N_val_ifacet6 -> N_instr_store_1845952;
-	N_val_alloc_1845958 -> N_val_slicet7;
-	N_val_param_1845797 -> N_val_call_1845900;
-	N_val_ifacet3 -> N_val_call_1845900;
-	N_val__SELECT___FROM_plo_____string -> N_val_call_1845900;
-	N_val_slicet7 -> N_val_call_1845900;
-	N_val_unary_1845887 -> N_val_call_1845900;
-	N_val_alloc_1845867 -> N_val_unary_1845968;
-	N_val_unary_1845968 -> N_instr_ret_1845961;
-	N_val_call_1845900 -> N_instr_ret_1845961;
-	N_val_indext5 -> N_val_alloc_1845958 [label="[*]", style=dashed, color=blue];
-	N_val_slicet7 -> N_val_alloc_1845958 [label="", style=dashed, color=blue];
+	N_val_param_2785634 -> N_val_field_2785753;
+	N_val_field_2785753 -> N_val_unary_2785753;
+	N_val_alloc_2785733 -> N_val_ifacet3;
+	N_val_alloc_2785824 -> N_val_indext5;
+	N_val_param_2785697 -> N_val_ifacet6;
+	N_val_indext5 -> N_instr_store_2785818;
+	N_val_ifacet6 -> N_instr_store_2785818;
+	N_val_alloc_2785824 -> N_val_slicet7;
+	N_val_param_2785663 -> N_val_call_2785766;
+	N_val_ifacet3 -> N_val_call_2785766;
+	N_val__SELECT___FROM_plo_____string -> N_val_call_2785766;
+	N_val_slicet7 -> N_val_call_2785766;
+	N_val_unary_2785753 -> N_val_call_2785766;
+	N_val_alloc_2785733 -> N_val_unary_2785834;
+	N_val_unary_2785834 -> N_instr_ret_2785827;
+	N_val_call_2785766 -> N_instr_ret_2785827;
+	N_val_indext5 -> N_val_alloc_2785824 [label="[*]", style=dashed, color=blue];
+	N_val_slicet7 -> N_val_alloc_2785824 [label="", style=dashed, color=blue];
 }
