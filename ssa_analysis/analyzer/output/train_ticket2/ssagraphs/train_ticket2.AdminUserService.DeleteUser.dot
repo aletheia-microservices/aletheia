@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_1873542 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1873542 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1873573 [label="t2: invoke t1.DeleteUser(ctx, userID)
+
+==== tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_1873551 [label="t0: &a.userService [#0]
+
+==== tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_1873461 [label="a: parameter a : *AdminUserServiceImpl
+
+==== tainted ====
+_obj.userService
+[rpc] @ UserService.DeleteUser.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_1873497 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1873518 [label="userID: parameter userID : string
+
+==== tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.userID
+", style=bold, shape=box, color="black"];
+	N_val_unary_1873551 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_1873461 -> N_val_field_1873551;
+	N_val_field_1873551 -> N_val_unary_1873551;
+	N_val_param_1873497 -> N_val_call_1873573;
+	N_val_param_1873518 -> N_val_call_1873573;
+	N_val_unary_1873551 -> N_val_call_1873573;
+	N_val_call_1873573 -> N_instr_ret_1873542;
+}

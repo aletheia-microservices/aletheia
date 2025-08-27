@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_1787856 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1787856 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1787893 [label="t2: invoke t1.DeleteStation(ctx, id)
+
+==== tainted ====
+_obj
+[rpc] @ StationService.DeleteStation.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_1787865 [label="t0: &a.stationService [#0]
+
+==== tainted ====
+_obj
+[rpc] @ StationService.DeleteStation.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_1787771 [label="a: parameter a : *AdminBasicInfoServiceImpl
+
+==== tainted ====
+_obj.stationService
+[rpc] @ StationService.DeleteStation.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_1787815 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1787836 [label="id: parameter id : string
+
+==== tainted ====
+_obj
+[rpc] @ StationService.DeleteStation.id
+", style=bold, shape=box, color="black"];
+	N_val_unary_1787865 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ StationService.DeleteStation.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_1787771 -> N_val_field_1787865;
+	N_val_field_1787865 -> N_val_unary_1787865;
+	N_val_param_1787815 -> N_val_call_1787893;
+	N_val_param_1787836 -> N_val_call_1787893;
+	N_val_unary_1787865 -> N_val_call_1787893;
+	N_val_call_1787893 -> N_instr_ret_1787856;
+}

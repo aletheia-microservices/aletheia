@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_1787275 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1787275 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1787303 [label="t2: invoke t1.Create(ctx, trainType)
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Create.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_1787284 [label="t0: &a.trainService [#1]
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Create.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_1787185 [label="a: parameter a : *AdminBasicInfoServiceImpl
+
+==== tainted ====
+_obj.trainService
+[rpc] @ TrainService.Create.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_1787224 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1787245 [label="trainType: parameter trainType : TrainType
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Create.trainType
+", style=bold, shape=box, color="black"];
+	N_val_unary_1787284 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Create.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_1787185 -> N_val_field_1787284;
+	N_val_field_1787284 -> N_val_unary_1787284;
+	N_val_param_1787224 -> N_val_call_1787303;
+	N_val_param_1787245 -> N_val_call_1787303;
+	N_val_unary_1787284 -> N_val_call_1787303;
+	N_val_call_1787303 -> N_instr_ret_1787275;
+}

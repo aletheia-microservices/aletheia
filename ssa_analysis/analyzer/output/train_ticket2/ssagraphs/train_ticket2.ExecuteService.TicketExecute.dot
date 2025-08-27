@@ -1,0 +1,124 @@
+digraph G {
+	rankdir=TD;
+	N_instr__57288405 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__57288405 [label="if t6 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__924729265 [label="if t9 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__924729265 [label="if t9 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2278112 [label="return t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2278112 [label="return t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2278207 [label="return t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2278207 [label="return t10", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2278303 [label="return t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2278303 [label="return t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2278045 [label="*t0 = t4", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2278045 [label="*t0 = t4", style=bold, shape=ellipse, color="blue"];
+	N_nil_386608081 [label="nil:[]any: nil:[]any", style=bold, shape=ellipse, color="yellow"];
+	N_nil_562087709 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__ticket_not_collected__string [label="\"ticket not collected\":string: \"ticket not collected\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_3_int [label="3:int: 3:int", style=bold, shape=ellipse, color="black"];
+	N_val_4_int [label="4:int: 4:int
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.4:int
+", style=bold, shape=box, color="yellow"];
+	N_val_alloc_2278045 [label="t0: local Order (order)
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Find.t4
+_obj.Status
+[rpc] @ OrderService.Find.t4.Status
+", style=bold, shape=box, color="orange"];
+	N_val_binary_2278101 [label="t6: t5 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2278177 [label="t9: t8 != 3:int", style=bold, shape=ellipse, color="black"];
+	N_val_call_2278078 [label="t3: invoke t2.Find(ctx, orderID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2278224 [label="t10: fmt.Errorf(\"ticket not collected\":string, nil:[]any...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2278336 [label="t13: invoke t12.ModifyOrder(ctx, orderID, 4:int)
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.t13
+", style=bold, shape=box, color="yellow"];
+	N_val_extrt4 [label="t4: extract t3 #0
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Find.t4
+_obj.Status
+[rpc] @ OrderService.Find.t4.Status
+", style=bold, shape=box, color="black"];
+	N_val_extrt5 [label="t5: extract t3 #1
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", style=bold, shape=box, color="black"];
+	N_val_field_2278061 [label="t1: &e.orderService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2278170 [label="t7: &t0.Status [#14]
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Find.t4.Status
+", style=bold, shape=box, color="green"];
+	N_val_field_2278312 [label="t11: &e.orderService [#0]
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.t13
+", style=bold, shape=box, color="green"];
+	N_val_param_2277933 [label="e: parameter e : *ExecuteServiceImpl
+
+==== tainted ====
+_obj.orderService
+[rpc] @ OrderService.ModifyOrder.t13
+", style=bold, shape=box, color="black"];
+	N_val_param_2277970 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2277991 [label="orderID: parameter orderID : string
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+", style=bold, shape=box, color="black"];
+	N_val_unary_2278061 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2278170 [label="t8: *t7
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Find.t4.Status
+", style=bold, shape=box, color="red"];
+	N_val_unary_2278312 [label="t12: *t11
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.t13
+", style=bold, shape=box, color="red"];
+	N_val_param_2277933 -> N_val_field_2278061;
+	N_val_field_2278061 -> N_val_unary_2278061;
+	N_val_param_2277970 -> N_val_call_2278078;
+	N_val_param_2277991 -> N_val_call_2278078;
+	N_val_unary_2278061 -> N_val_call_2278078;
+	N_val_call_2278078 -> N_val_extrt4;
+	N_val_alloc_2278045 -> N_instr_store_2278045;
+	N_val_extrt4 -> N_instr_store_2278045;
+	N_val_call_2278078 -> N_val_extrt5;
+	N_val_extrt5 -> N_val_binary_2278101;
+	N_nil_562087709 -> N_val_binary_2278101;
+	N_val_extrt5 -> N_instr_ret_2278112;
+	N_val_alloc_2278045 -> N_val_field_2278170;
+	N_val_field_2278170 -> N_val_unary_2278170;
+	N_val_unary_2278170 -> N_val_binary_2278177;
+	N_val_3_int -> N_val_binary_2278177;
+	N_val__ticket_not_collected__string -> N_val_call_2278224;
+	N_nil_386608081 -> N_val_call_2278224;
+	N_val_call_2278224 -> N_instr_ret_2278207;
+	N_val_param_2277933 -> N_val_field_2278312;
+	N_val_field_2278312 -> N_val_unary_2278312;
+	N_val_param_2277970 -> N_val_call_2278336;
+	N_val_param_2277991 -> N_val_call_2278336;
+	N_val_4_int -> N_val_call_2278336;
+	N_val_unary_2278312 -> N_val_call_2278336;
+	N_val_call_2278336 -> N_instr_ret_2278303;
+	N_val_field_2278170 -> N_val_alloc_2278045 [label=".Status", style=dashed, color=blue];
+}

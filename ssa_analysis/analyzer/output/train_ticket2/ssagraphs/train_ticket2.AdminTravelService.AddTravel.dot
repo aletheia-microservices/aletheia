@@ -1,0 +1,37 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_1868212 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1868212 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1868245 [label="t2: invoke t1.CreateTrip(ctx, travelInfo)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ TravelService.CreateTrip.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
+
+==== tainted ====
+_obj
+[rpc] @ TravelService.CreateTrip.t4
+", style=bold, shape=box, color="black"];
+	N_val_field_1868221 [label="t0: &a.travelService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_1868114 [label="a: parameter a : *AdminTravelServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_1868151 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1868172 [label="travelInfo: parameter travelInfo : TravelInfo
+
+==== tainted ====
+_obj
+[rpc] @ TravelService.CreateTrip.travelInfo
+", style=bold, shape=box, color="black"];
+	N_val_unary_1868221 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_1868114 -> N_val_field_1868221;
+	N_val_field_1868221 -> N_val_unary_1868221;
+	N_val_param_1868151 -> N_val_call_1868245;
+	N_val_param_1868172 -> N_val_call_1868245;
+	N_val_unary_1868221 -> N_val_call_1868245;
+	N_val_call_1868245 -> N_val_extrt3;
+	N_val_call_1868245 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_1868212;
+	N_val_extrt4 -> N_instr_ret_1868212;
+}

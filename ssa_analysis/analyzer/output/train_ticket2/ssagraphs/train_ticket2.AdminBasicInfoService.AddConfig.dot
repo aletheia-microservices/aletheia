@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_1787414 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1787414 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1787443 [label="t2: invoke t1.Create(ctx, config)
+
+==== tainted ====
+_obj
+[rpc] @ ConfigService.Create.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_1787423 [label="t0: &a.configService [#2]
+
+==== tainted ====
+_obj
+[rpc] @ ConfigService.Create.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_1787329 [label="a: parameter a : *AdminBasicInfoServiceImpl
+
+==== tainted ====
+_obj.configService
+[rpc] @ ConfigService.Create.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_1787369 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1787390 [label="config: parameter config : Config
+
+==== tainted ====
+_obj
+[rpc] @ ConfigService.Create.config
+", style=bold, shape=box, color="black"];
+	N_val_unary_1787423 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ ConfigService.Create.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_1787329 -> N_val_field_1787423;
+	N_val_field_1787423 -> N_val_unary_1787423;
+	N_val_param_1787369 -> N_val_call_1787443;
+	N_val_param_1787390 -> N_val_call_1787443;
+	N_val_unary_1787423 -> N_val_call_1787443;
+	N_val_call_1787443 -> N_instr_ret_1787414;
+}

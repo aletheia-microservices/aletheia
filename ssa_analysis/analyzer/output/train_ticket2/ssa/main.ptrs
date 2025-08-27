@@ -1,9 +1,226 @@
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).AddConfig ###
+a (@AddConfig): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@AddConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddConfig): (*ssa.FieldAddr) (&a.configService [#2])
+
+t1 (@AddConfig): (*ssa.UnOp) (*t0)
+
+t2 (@AddConfig): (*ssa.Call) (invoke t1.Create(ctx, config))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).AddContact ###
+a (@AddContact): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@AddContact): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddContact): (*ssa.FieldAddr) (&a.contactsService [#3])
+
+t1 (@AddContact): (*ssa.UnOp) (*t0)
+
+t2 (@AddContact): (*ssa.Call) (invoke t1.CreateContacts(ctx, contact))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).AddPrice ###
+a (@AddPrice): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@AddPrice): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddPrice): (*ssa.FieldAddr) (&a.priceService [#4])
+
+t1 (@AddPrice): (*ssa.UnOp) (*t0)
+
+t2 (@AddPrice): (*ssa.Call) (invoke t1.CreateNewPriceConfig(ctx, config))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).AddStation ###
+a (@AddStation): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@AddStation): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddStation): (*ssa.FieldAddr) (&a.stationService [#0])
+
+t1 (@AddStation): (*ssa.UnOp) (*t0)
+
+t2 (@AddStation): (*ssa.Call) (invoke t1.CreateStation(ctx, station))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).AddTrain ###
+a (@AddTrain): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@AddTrain): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddTrain): (*ssa.FieldAddr) (&a.trainService [#1])
+
+t1 (@AddTrain): (*ssa.UnOp) (*t0)
+
+t2 (@AddTrain): (*ssa.Call) (invoke t1.Create(ctx, trainType))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).DeleteConfig ###
+a (@DeleteConfig): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@DeleteConfig): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteConfig): (*ssa.FieldAddr) (&a.configService [#2])
+
+t1 (@DeleteConfig): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteConfig): (*ssa.Call) (invoke t1.Delete(ctx, name))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).DeleteContact ###
+a (@DeleteContact): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@DeleteContact): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteContact): (*ssa.FieldAddr) (&a.contactsService [#3])
+
+t1 (@DeleteContact): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteContact): (*ssa.Call) (invoke t1.Delete(ctx, id))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).DeletePrice ###
+a (@DeletePrice): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@DeletePrice): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeletePrice): (*ssa.FieldAddr) (&a.priceService [#4])
+
+t1 (@DeletePrice): (*ssa.UnOp) (*t0)
+
+t2 (@DeletePrice): (*ssa.Call) (invoke t1.DeletePriceConfig(ctx, id))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).DeleteStation ###
+a (@DeleteStation): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@DeleteStation): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteStation): (*ssa.FieldAddr) (&a.stationService [#0])
+
+t1 (@DeleteStation): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteStation): (*ssa.Call) (invoke t1.DeleteStation(ctx, id))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminBasicInfoServiceImpl).DeleteTrain ###
+a (@DeleteTrain): (*ssa.Parameter) (parameter a : *AdminBasicInfoServiceImpl)
+
+ctx (@DeleteTrain): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteTrain): (*ssa.FieldAddr) (&a.trainService [#1])
+
+t1 (@DeleteTrain): (*ssa.UnOp) (*t0)
+
+t4 (@DeleteTrain): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminOrderServiceImpl).AddOrder ###
+a (@AddOrder): (*ssa.Parameter) (parameter a : *AdminOrderServiceImpl)
+
+ctx (@AddOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddOrder): (*ssa.FieldAddr) (&a.orderService [#0])
+
+t1 (@AddOrder): (*ssa.UnOp) (*t0)
+
+t4 (@AddOrder): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminOrderServiceImpl).DeleteOrder ###
+a (@DeleteOrder): (*ssa.Parameter) (parameter a : *AdminOrderServiceImpl)
+
+ctx (@DeleteOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteOrder): (*ssa.FieldAddr) (&a.orderService [#0])
+
+t1 (@DeleteOrder): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteOrder): (*ssa.Call) (invoke t1.Delete(ctx, id))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminRouteServiceImpl).AddRoute ###
+a (@AddRoute): (*ssa.Parameter) (parameter a : *AdminRouteServiceImpl)
+
+ctx (@AddRoute): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddRoute): (*ssa.FieldAddr) (&a.routeService [#0])
+
+t1 (@AddRoute): (*ssa.UnOp) (*t0)
+
+t4 (@AddRoute): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminRouteServiceImpl).DeleteRoute ###
+a (@DeleteRoute): (*ssa.Parameter) (parameter a : *AdminRouteServiceImpl)
+
+ctx (@DeleteRoute): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteRoute): (*ssa.FieldAddr) (&a.routeService [#0])
+
+t1 (@DeleteRoute): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteRoute): (*ssa.Call) (invoke t1.DeleteRoute(ctx, id))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminTravelServiceImpl).AddTravel ###
+a (@AddTravel): (*ssa.Parameter) (parameter a : *AdminTravelServiceImpl)
+
+ctx (@AddTravel): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddTravel): (*ssa.FieldAddr) (&a.travelService [#0])
+
+t1 (@AddTravel): (*ssa.UnOp) (*t0)
+
+t4 (@AddTravel): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminTravelServiceImpl).DeleteTravel ###
+a (@DeleteTravel): (*ssa.Parameter) (parameter a : *AdminTravelServiceImpl)
+
+ctx (@DeleteTravel): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteTravel): (*ssa.FieldAddr) (&a.travelService [#0])
+
+t1 (@DeleteTravel): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteTravel): (*ssa.Call) (invoke t1.DeleteTrip(ctx, tripID))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminUserServiceImpl).AddUser ###
+a (@AddUser): (*ssa.Parameter) (parameter a : *AdminUserServiceImpl)
+
+ctx (@AddUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddUser): (*ssa.FieldAddr) (&a.userService [#0])
+
+t1 (@AddUser): (*ssa.UnOp) (*t0)
+
+t2 (@AddUser): (*ssa.Call) (invoke t1.SaveUser(ctx, user))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AdminUserServiceImpl).DeleteUser ###
+a (@DeleteUser): (*ssa.Parameter) (parameter a : *AdminUserServiceImpl)
+
+ctx (@DeleteUser): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteUser): (*ssa.FieldAddr) (&a.userService [#0])
+
+t1 (@DeleteUser): (*ssa.UnOp) (*t0)
+
+t2 (@DeleteUser): (*ssa.Call) (invoke t1.DeleteUser(ctx, userID))
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).Create ###
 a (@Create): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl)
 
 ctx (@Create): (*ssa.Parameter) (parameter ctx : context.Context)
 
 t2 (@Create): (*ssa.Extract) (extract t0 #1)
+	 → t2 (@New): (*ssa.MakeInterface)
 
 t6 (@Create): (*ssa.Alloc) (local Assurance (assurance))
 	 → t6 (@Create): (*ssa.Alloc)
@@ -205,7 +422,7 @@ a (@GetAllAssuranceTypes): (*ssa.Parameter) (parameter a : *AssuranceServiceImpl
 ctx (@GetAllAssuranceTypes): (*ssa.Parameter) (parameter ctx : context.Context)
 
 t0 (@GetAllAssuranceTypes): (*ssa.UnOp) (*ALL_ASSURANCES)
-	 → t13 (@init): (*ssa.Alloc)
+	 → t16 (@init): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.AssuranceServiceImpl).GetAllAssurances ###
@@ -307,6 +524,367 @@ t31 (@Modify): (*ssa.FieldAddr) (&t0.ID [#0])
 
 t34 (@Modify): (*ssa.Call) (errors.New(t33))
 	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.BasicServiceImpl).QueryForTravel ###
+b (@QueryForTravel): (*ssa.Parameter) (parameter b : *BasicServiceImpl)
+
+ctx (@QueryForTravel): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@QueryForTravel): (*ssa.Alloc) (local Travel (info))
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t1 (@QueryForTravel): (*ssa.FieldAddr) (&t0.StartPlace [#1])
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t3 (@QueryForTravel): (*ssa.FieldAddr) (&b.stationService [#0])
+
+t4 (@QueryForTravel): (*ssa.UnOp) (*t3)
+
+t7 (@QueryForTravel): (*ssa.Extract) (extract t5 #1)
+
+t9 (@QueryForTravel): (*ssa.Alloc) (new [1]any (varargs))
+	 → t9 (@QueryForTravel): (*ssa.Alloc)
+
+t10 (@QueryForTravel): (*ssa.IndexAddr) (&t9[0:int])
+	 → t9 (@QueryForTravel): (*ssa.Alloc)
+
+t11 (@QueryForTravel): (*ssa.MakeInterface) (make any <- string (t2))
+	 → t11 (@QueryForTravel): (*ssa.MakeInterface)
+
+t12 (@QueryForTravel): (*ssa.Slice) (slice t9[:])
+	 → t9 (@QueryForTravel): (*ssa.Alloc)
+
+t13 (@QueryForTravel): (*ssa.Call) (fmt.Errorf("start place (%s) ...":string, t12...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t14 (@QueryForTravel): (*ssa.FieldAddr) (&t0.EndPlace [#2])
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t16 (@QueryForTravel): (*ssa.FieldAddr) (&b.stationService [#0])
+
+t17 (@QueryForTravel): (*ssa.UnOp) (*t16)
+
+t20 (@QueryForTravel): (*ssa.Extract) (extract t18 #1)
+
+t22 (@QueryForTravel): (*ssa.Alloc) (new [1]any (varargs))
+	 → t22 (@QueryForTravel): (*ssa.Alloc)
+
+t23 (@QueryForTravel): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@QueryForTravel): (*ssa.Alloc)
+
+t24 (@QueryForTravel): (*ssa.MakeInterface) (make any <- string (t15))
+	 → t24 (@QueryForTravel): (*ssa.MakeInterface)
+
+t25 (@QueryForTravel): (*ssa.Slice) (slice t22[:])
+	 → t22 (@QueryForTravel): (*ssa.Alloc)
+
+t26 (@QueryForTravel): (*ssa.Call) (fmt.Errorf("end place (%s) do...":string, t25...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t27 (@QueryForTravel): (*ssa.Alloc) (local TrainType (trainType))
+	 → t27 (@QueryForTravel): (*ssa.Alloc)
+
+t28 (@QueryForTravel): (*ssa.FieldAddr) (&b.trainService [#1])
+
+t29 (@QueryForTravel): (*ssa.UnOp) (*t28)
+
+t30 (@QueryForTravel): (*ssa.FieldAddr) (&t0.Trip [#0])
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t31 (@QueryForTravel): (*ssa.FieldAddr) (&t30.TrainTypeName [#2])
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t35 (@QueryForTravel): (*ssa.Extract) (extract t33 #1)
+
+t37 (@QueryForTravel): (*ssa.FieldAddr) (&t0.Trip [#0])
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t38 (@QueryForTravel): (*ssa.FieldAddr) (&t37.ID [#0])
+	 → t0 (@QueryForTravel): (*ssa.Alloc)
+
+t40 (@QueryForTravel): (*ssa.Alloc) (local Route (route))
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t41 (@QueryForTravel): (*ssa.FieldAddr) (&b.routeService [#2])
+
+t42 (@QueryForTravel): (*ssa.UnOp) (*t41)
+
+t45 (@QueryForTravel): (*ssa.Extract) (extract t43 #1)
+
+t47 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Stations [#1])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t48 (@QueryForTravel): (*ssa.UnOp) (*t47)
+
+t50 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Stations [#1])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t51 (@QueryForTravel): (*ssa.UnOp) (*t50)
+
+t53 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Stations [#1])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t54 (@QueryForTravel): (*ssa.UnOp) (*t53)
+
+t56 (@QueryForTravel): (*ssa.Alloc) (local PriceConfig (priceConfig))
+	 → t56 (@QueryForTravel): (*ssa.Alloc)
+
+t57 (@QueryForTravel): (*ssa.FieldAddr) (&b.priceService [#3])
+
+t58 (@QueryForTravel): (*ssa.UnOp) (*t57)
+
+t59 (@QueryForTravel): (*ssa.FieldAddr) (&t27.Name [#1])
+	 → t27 (@QueryForTravel): (*ssa.Alloc)
+
+t63 (@QueryForTravel): (*ssa.Extract) (extract t61 #1)
+
+t65 (@QueryForTravel): (*ssa.Call) (fmt.Errorf("station not corre...":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t66 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Stations [#1])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t67 (@QueryForTravel): (*ssa.UnOp) (*t66)
+
+t69 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Stations [#1])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t70 (@QueryForTravel): (*ssa.UnOp) (*t69)
+
+t73 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Stations [#1])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t74 (@QueryForTravel): (*ssa.UnOp) (*t73)
+
+t76 (@QueryForTravel): (*ssa.MakeMap) (make map[string]string )
+	 → t76 (@QueryForTravel): (*ssa.MakeMap)
+
+t77 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Distances [#2])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t78 (@QueryForTravel): (*ssa.UnOp) (*t77)
+
+t79 (@QueryForTravel): (*ssa.IndexAddr) (&t78[t55])
+
+t81 (@QueryForTravel): (*ssa.FieldAddr) (&t40.Distances [#2])
+	 → t40 (@QueryForTravel): (*ssa.Alloc)
+
+t82 (@QueryForTravel): (*ssa.UnOp) (*t81)
+
+t83 (@QueryForTravel): (*ssa.IndexAddr) (&t82[t52])
+
+t86 (@QueryForTravel): (*ssa.FieldAddr) (&t56.BasicPriceRate [#3])
+	 → t56 (@QueryForTravel): (*ssa.Alloc)
+
+t90 (@QueryForTravel): (*ssa.FieldAddr) (&t56.FirstClassPriceRate [#4])
+	 → t56 (@QueryForTravel): (*ssa.Alloc)
+
+t96 (@QueryForTravel): (*ssa.Alloc) (local TravelResult (result))
+	 → t96 (@QueryForTravel): (*ssa.Alloc)
+
+t97 (@QueryForTravel): (*ssa.FieldAddr) (&t96.TrainType [#2])
+	 → t96 (@QueryForTravel): (*ssa.Alloc)
+
+t99 (@QueryForTravel): (*ssa.FieldAddr) (&t96.Route [#3])
+	 → t96 (@QueryForTravel): (*ssa.Alloc)
+
+t101 (@QueryForTravel): (*ssa.FieldAddr) (&t96.Prices [#4])
+	 → t96 (@QueryForTravel): (*ssa.Alloc)
+
+t102 (@QueryForTravel): (*ssa.FieldAddr) (&t96.Percent [#1])
+	 → t96 (@QueryForTravel): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.CancelServiceImpl).CalculateRefund ###
+c (@CalculateRefund): (*ssa.Parameter) (parameter c : *CancelServiceImpl)
+
+ctx (@CalculateRefund): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CalculateRefund): (*ssa.Alloc) (local Order (order))
+	 → t0 (@CalculateRefund): (*ssa.Alloc)
+
+t1 (@CalculateRefund): (*ssa.FieldAddr) (&c.orderService [#0])
+
+t2 (@CalculateRefund): (*ssa.UnOp) (*t1)
+
+t5 (@CalculateRefund): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CalculateRefund): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CalculateRefund): (*ssa.Alloc)
+
+t10 (@CalculateRefund): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CalculateRefund): (*ssa.Alloc)
+
+t13 (@CalculateRefund): (*ssa.Call) (fmt.Errorf("not permitted":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t14 (@CalculateRefund): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CalculateRefund): (*ssa.Alloc)
+
+t20 (@CalculateRefund): (*ssa.Extract) (extract t18 #1)
+	 → t7 (@ParseFloat): (*ssa.MakeInterface)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+	 → t14 (@atof32): (*ssa.MakeInterface)
+	 → t36 (@atof32): (*ssa.MakeInterface)
+	 → t43 (@atof32): (*ssa.MakeInterface)
+	 → t13 (@atof64): (*ssa.MakeInterface)
+	 → t34 (@atof64): (*ssa.MakeInterface)
+	 → t40 (@atof64): (*ssa.MakeInterface)
+	 → t75 (@atofHex): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.CancelServiceImpl).CancelOrder ###
+c (@CancelOrder): (*ssa.Parameter) (parameter c : *CancelServiceImpl)
+
+ctx (@CancelOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CancelOrder): (*ssa.Alloc) (local Order (order))
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t1 (@CancelOrder): (*ssa.FieldAddr) (&c.orderService [#0])
+
+t2 (@CancelOrder): (*ssa.UnOp) (*t1)
+
+t5 (@CancelOrder): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CancelOrder): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t10 (@CancelOrder): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t11 (@CancelOrder): (*ssa.FieldAddr) (&c.orderService [#0])
+
+t12 (@CancelOrder): (*ssa.UnOp) (*t11)
+
+t16 (@CancelOrder): (*ssa.Extract) (extract t14 #1)
+
+t18 (@CancelOrder): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t21 (@CancelOrder): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t27 (@CancelOrder): (*ssa.Extract) (extract t25 #1)
+	 → t7 (@ParseFloat): (*ssa.MakeInterface)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+	 → t14 (@atof32): (*ssa.MakeInterface)
+	 → t36 (@atof32): (*ssa.MakeInterface)
+	 → t43 (@atof32): (*ssa.MakeInterface)
+	 → t13 (@atof64): (*ssa.MakeInterface)
+	 → t34 (@atof64): (*ssa.MakeInterface)
+	 → t40 (@atof64): (*ssa.MakeInterface)
+	 → t75 (@atofHex): (*ssa.MakeInterface)
+
+t29 (@CancelOrder): (*ssa.FieldAddr) (&c.insidePaymentService [#2])
+
+t30 (@CancelOrder): (*ssa.UnOp) (*t29)
+
+t31 (@CancelOrder): (*ssa.Call) (invoke t30.Drawback(ctx, loginID, t26))
+
+t33 (@CancelOrder): (*ssa.Alloc) (local User (user))
+	 → t33 (@CancelOrder): (*ssa.Alloc)
+
+t34 (@CancelOrder): (*ssa.FieldAddr) (&c.userService [#1])
+
+t35 (@CancelOrder): (*ssa.UnOp) (*t34)
+
+t36 (@CancelOrder): (*ssa.FieldAddr) (&t0.AccountID [#4])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t40 (@CancelOrder): (*ssa.Extract) (extract t38 #1)
+
+t42 (@CancelOrder): (*ssa.Alloc) (local NotifyInfo (notifyInfo))
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t43 (@CancelOrder): (*ssa.FieldAddr) (&t42.Date [#6])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t45 (@CancelOrder): (*ssa.FieldAddr) (&t42.Email [#0])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t46 (@CancelOrder): (*ssa.FieldAddr) (&t33.Email [#6])
+	 → t33 (@CancelOrder): (*ssa.Alloc)
+
+t48 (@CancelOrder): (*ssa.FieldAddr) (&t42.StartPlace [#3])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t49 (@CancelOrder): (*ssa.FieldAddr) (&t0.FromStation [#12])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t51 (@CancelOrder): (*ssa.FieldAddr) (&t42.EndPlace [#4])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t52 (@CancelOrder): (*ssa.FieldAddr) (&t0.ToStation [#13])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t54 (@CancelOrder): (*ssa.FieldAddr) (&t42.Username [#2])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t55 (@CancelOrder): (*ssa.FieldAddr) (&t33.Username [#1])
+	 → t33 (@CancelOrder): (*ssa.Alloc)
+
+t57 (@CancelOrder): (*ssa.FieldAddr) (&t42.SeatNumber [#8])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t58 (@CancelOrder): (*ssa.FieldAddr) (&t0.SeatNumber [#11])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t60 (@CancelOrder): (*ssa.FieldAddr) (&t42.OrderNumber [#1])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t61 (@CancelOrder): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t63 (@CancelOrder): (*ssa.FieldAddr) (&t42.Price [#9])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t64 (@CancelOrder): (*ssa.FieldAddr) (&t0.Price [#15])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t66 (@CancelOrder): (*ssa.FieldAddr) (&t42.SeatClass [#7])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t67 (@CancelOrder): (*ssa.FieldAddr) (&t0.SeatClass [#10])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t70 (@CancelOrder): (*ssa.FieldAddr) (&t42.StartTime [#5])
+	 → t42 (@CancelOrder): (*ssa.Alloc)
+
+t71 (@CancelOrder): (*ssa.FieldAddr) (&t0.TravelTime [#3])
+	 → t0 (@CancelOrder): (*ssa.Alloc)
+
+t73 (@CancelOrder): (*ssa.FieldAddr) (&c.emailQueue [#3])
+
+t74 (@CancelOrder): (*ssa.UnOp) (*t73)
+
+t76 (@CancelOrder): (*ssa.MakeInterface) (make interface{} <- NotifyInfo (t75))
+	 → t76 (@CancelOrder): (*ssa.MakeInterface)
+
+t79 (@CancelOrder): (*ssa.Extract) (extract t77 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).Create ###
@@ -788,6 +1366,100 @@ t40 (@GetPriceInfo): (*ssa.Slice) (slice t31[:])
 	 → t31 (@GetPriceInfo): (*ssa.Alloc)
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignServiceImpl).InsertConsign ###
+c (@InsertConsign): (*ssa.Parameter) (parameter c : *ConsignServiceImpl)
+
+ctx (@InsertConsign): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@InsertConsign): (*ssa.Alloc) (local ConsignRequest (consignRequest))
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t1 (@InsertConsign): (*ssa.FieldAddr) (&c.consignPriceService [#0])
+
+t2 (@InsertConsign): (*ssa.UnOp) (*t1)
+
+t3 (@InsertConsign): (*ssa.FieldAddr) (&t0.Weight [#9])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t5 (@InsertConsign): (*ssa.FieldAddr) (&t0.IsWithin [#10])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t9 (@InsertConsign): (*ssa.Extract) (extract t7 #1)
+
+t11 (@InsertConsign): (*ssa.Alloc) (local ConsignRecord (consignRecord))
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t12 (@InsertConsign): (*ssa.FieldAddr) (&t11.OrderID [#1])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t13 (@InsertConsign): (*ssa.FieldAddr) (&t0.OrderID [#1])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t15 (@InsertConsign): (*ssa.FieldAddr) (&t11.AccountID [#2])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t16 (@InsertConsign): (*ssa.FieldAddr) (&t0.AccountID [#2])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t18 (@InsertConsign): (*ssa.FieldAddr) (&t11.HandleDate [#3])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t19 (@InsertConsign): (*ssa.FieldAddr) (&t0.HandleDate [#3])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t21 (@InsertConsign): (*ssa.FieldAddr) (&t11.TargetDate [#4])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t22 (@InsertConsign): (*ssa.FieldAddr) (&t0.TargetDate [#4])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t24 (@InsertConsign): (*ssa.FieldAddr) (&t11.FromPlace [#5])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t25 (@InsertConsign): (*ssa.FieldAddr) (&t0.From [#5])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t27 (@InsertConsign): (*ssa.FieldAddr) (&t11.ToPlace [#6])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t28 (@InsertConsign): (*ssa.FieldAddr) (&t0.To [#6])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t30 (@InsertConsign): (*ssa.FieldAddr) (&t11.Consignee [#7])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t31 (@InsertConsign): (*ssa.FieldAddr) (&t0.Consignee [#7])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t33 (@InsertConsign): (*ssa.FieldAddr) (&t11.Phone [#8])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t34 (@InsertConsign): (*ssa.FieldAddr) (&t0.Phone [#8])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t36 (@InsertConsign): (*ssa.FieldAddr) (&t11.Weight [#10])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t37 (@InsertConsign): (*ssa.FieldAddr) (&t0.Weight [#9])
+	 → t0 (@InsertConsign): (*ssa.Alloc)
+
+t39 (@InsertConsign): (*ssa.FieldAddr) (&t11.Price [#9])
+	 → t11 (@InsertConsign): (*ssa.Alloc)
+
+t40 (@InsertConsign): (*ssa.FieldAddr) (&c.consignDB [#1])
+
+t41 (@InsertConsign): (*ssa.UnOp) (*t40)
+
+t43 (@InsertConsign): (*ssa.Extract) (extract t42 #0)
+
+t44 (@InsertConsign): (*ssa.Extract) (extract t42 #1)
+
+t47 (@InsertConsign): (*ssa.MakeInterface) (make interface{} <- ConsignRecord (t46))
+	 → t47 (@InsertConsign): (*ssa.MakeInterface)
+
+t48 (@InsertConsign): (*ssa.Call) (invoke t43.InsertOne(ctx, t47))
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).CreateContacts ###
 c (@CreateContacts): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
 
@@ -867,13 +1539,10 @@ t34 (@CreateContacts): (*ssa.Extract) (extract t32 #1)
 t35 (@CreateContacts): (*ssa.Call) (errors.New("Contact already e...":string))
 	 → t2 (@New): (*ssa.MakeInterface)
 
-t37 (@CreateContacts): (*ssa.FieldAddr) (&t0.AccountID [#1])
-	 → t0 (@CreateContacts): (*ssa.Alloc)
+t38 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- Contact (t37))
+	 → t38 (@CreateContacts): (*ssa.MakeInterface)
 
-t39 (@CreateContacts): (*ssa.MakeInterface) (make interface{} <- Contact (t38))
-	 → t39 (@CreateContacts): (*ssa.MakeInterface)
-
-t40 (@CreateContacts): (*ssa.Call) (invoke t4.InsertOne(ctx, t39))
+t39 (@CreateContacts): (*ssa.Call) (invoke t4.InsertOne(ctx, t38))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).Delete ###
@@ -881,39 +1550,33 @@ c (@Delete): (*ssa.Parameter) (parameter c : *ContactsServiceImpl)
 
 ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
 
-t0 (@Delete): (*ssa.Alloc) (local Contact (contact))
-	 → t0 (@Delete): (*ssa.Alloc)
+t0 (@Delete): (*ssa.FieldAddr) (&c.contactsDB [#0])
 
-t1 (@Delete): (*ssa.FieldAddr) (&c.contactsDB [#0])
+t1 (@Delete): (*ssa.UnOp) (*t0)
 
-t2 (@Delete): (*ssa.UnOp) (*t1)
+t3 (@Delete): (*ssa.Extract) (extract t2 #0)
 
-t4 (@Delete): (*ssa.Extract) (extract t3 #0)
+t4 (@Delete): (*ssa.Extract) (extract t2 #1)
 
-t5 (@Delete): (*ssa.Extract) (extract t3 #1)
+t6 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Delete): (*ssa.Alloc)
 
-t7 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
-	 → t7 (@Delete): (*ssa.Alloc)
+t7 (@Delete): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Delete): (*ssa.Alloc)
 
-t8 (@Delete): (*ssa.IndexAddr) (&t7[0:int])
-	 → t7 (@Delete): (*ssa.Alloc)
+t8 (@Delete): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Delete): (*ssa.Alloc)
 
-t9 (@Delete): (*ssa.FieldAddr) (&t8.Key [#0])
-	 → t7 (@Delete): (*ssa.Alloc)
+t9 (@Delete): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Delete): (*ssa.Alloc)
 
-t10 (@Delete): (*ssa.FieldAddr) (&t8.Value [#1])
-	 → t7 (@Delete): (*ssa.Alloc)
+t10 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@Delete): (*ssa.MakeInterface)
 
-t11 (@Delete): (*ssa.FieldAddr) (&t0.ID [#0])
-	 → t0 (@Delete): (*ssa.Alloc)
+t11 (@Delete): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Delete): (*ssa.Alloc)
 
-t13 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (t12))
-	 → t13 (@Delete): (*ssa.MakeInterface)
-
-t14 (@Delete): (*ssa.Slice) (slice t7[:])
-	 → t7 (@Delete): (*ssa.Alloc)
-
-t15 (@Delete): (*ssa.Call) (invoke t4.DeleteOne(ctx, t14))
+t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ContactsServiceImpl).FindContactsByAccountId ###
@@ -1098,6 +1761,108 @@ t16 (@Modify): (*ssa.MakeInterface) (make interface{} <- Contact (t15))
 t19 (@Modify): (*ssa.Extract) (extract t17 #1)
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).AddAssurance ###
+d (@AddAssurance): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@AddAssurance): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddAssurance): (*ssa.FieldAddr) (&d.assuranceService [#0])
+
+t1 (@AddAssurance): (*ssa.UnOp) (*t0)
+
+t4 (@AddAssurance): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).AddContact ###
+d (@AddContact): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@AddContact): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@AddContact): (*ssa.FieldAddr) (&d.contactsService [#3])
+
+t1 (@AddContact): (*ssa.UnOp) (*t0)
+
+t2 (@AddContact): (*ssa.Call) (invoke t1.CreateContacts(ctx, contact))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).GetAllConfigs ###
+d (@GetAllConfigs): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@GetAllConfigs): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllConfigs): (*ssa.FieldAddr) (&d.configService [#2])
+
+t1 (@GetAllConfigs): (*ssa.UnOp) (*t0)
+
+t3 (@GetAllConfigs): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAllConfigs): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).GetAllContacts ###
+d (@GetAllContacts): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@GetAllContacts): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllContacts): (*ssa.FieldAddr) (&d.contactsService [#3])
+
+t1 (@GetAllContacts): (*ssa.UnOp) (*t0)
+
+t3 (@GetAllContacts): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAllContacts): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).GetAllOrders ###
+d (@GetAllOrders): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@GetAllOrders): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetAllOrders): (*ssa.FieldAddr) (&d.orderService [#6])
+
+t1 (@GetAllOrders): (*ssa.UnOp) (*t0)
+
+t3 (@GetAllOrders): (*ssa.Extract) (extract t2 #0)
+
+t4 (@GetAllOrders): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).GetTravel ###
+d (@GetTravel): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@GetTravel): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetTravel): (*ssa.FieldAddr) (&d.basicService [#1])
+
+t1 (@GetTravel): (*ssa.UnOp) (*t0)
+
+t4 (@GetTravel): (*ssa.Extract) (extract t2 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).Pay ###
+d (@Pay): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@Pay): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Pay): (*ssa.FieldAddr) (&d.paymentService [#4])
+
+t1 (@Pay): (*ssa.UnOp) (*t0)
+
+t2 (@Pay): (*ssa.Call) (invoke t1.Pay(ctx, payment))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DashboardImpl).PreserveTicketConfirm ###
+d (@PreserveTicketConfirm): (*ssa.Parameter) (parameter d : *DashboardImpl)
+
+ctx (@PreserveTicketConfirm): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@PreserveTicketConfirm): (*ssa.FieldAddr) (&d.preserveService [#5])
+
+t1 (@PreserveTicketConfirm): (*ssa.UnOp) (*t0)
+
+t4 (@PreserveTicketConfirm): (*ssa.Extract) (extract t2 #1)
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.DeliveryServiceImpl).Run ###
 d (@Run): (*ssa.Parameter) (parameter d : *DeliveryServiceImpl)
 
@@ -1164,6 +1929,228 @@ t37 (@Run): (*ssa.Slice) (slice t34[:])
 	 → t34 (@Run): (*ssa.Alloc)
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ExecuteServiceImpl).TicketCollect ###
+e (@TicketCollect): (*ssa.Parameter) (parameter e : *ExecuteServiceImpl)
+
+ctx (@TicketCollect): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@TicketCollect): (*ssa.Alloc) (local Order (order))
+	 → t0 (@TicketCollect): (*ssa.Alloc)
+
+t1 (@TicketCollect): (*ssa.FieldAddr) (&e.orderService [#0])
+
+t2 (@TicketCollect): (*ssa.UnOp) (*t1)
+
+t5 (@TicketCollect): (*ssa.Extract) (extract t3 #1)
+
+t7 (@TicketCollect): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@TicketCollect): (*ssa.Alloc)
+
+t10 (@TicketCollect): (*ssa.Call) (fmt.Errorf("ticket not paid o...":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t11 (@TicketCollect): (*ssa.FieldAddr) (&e.orderService [#0])
+
+t12 (@TicketCollect): (*ssa.UnOp) (*t11)
+
+t13 (@TicketCollect): (*ssa.Call) (invoke t12.ModifyOrder(ctx, orderID, 3:int))
+
+t14 (@TicketCollect): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@TicketCollect): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ExecuteServiceImpl).TicketExecute ###
+e (@TicketExecute): (*ssa.Parameter) (parameter e : *ExecuteServiceImpl)
+
+ctx (@TicketExecute): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@TicketExecute): (*ssa.Alloc) (local Order (order))
+	 → t0 (@TicketExecute): (*ssa.Alloc)
+
+t1 (@TicketExecute): (*ssa.FieldAddr) (&e.orderService [#0])
+
+t2 (@TicketExecute): (*ssa.UnOp) (*t1)
+
+t5 (@TicketExecute): (*ssa.Extract) (extract t3 #1)
+
+t7 (@TicketExecute): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@TicketExecute): (*ssa.Alloc)
+
+t10 (@TicketExecute): (*ssa.Call) (fmt.Errorf("ticket not collected":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t11 (@TicketExecute): (*ssa.FieldAddr) (&e.orderService [#0])
+
+t12 (@TicketExecute): (*ssa.UnOp) (*t11)
+
+t13 (@TicketExecute): (*ssa.Call) (invoke t12.ModifyOrder(ctx, orderID, 4:int))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.FoodServiceImpl).CreateFoodOrder ###
+c (@CreateFoodOrder): (*ssa.Parameter) (parameter c : *FoodServiceImpl)
+
+ctx (@CreateFoodOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateFoodOrder): (*ssa.Alloc) (local FoodOrder (addFoodOrder))
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t1 (@CreateFoodOrder): (*ssa.Alloc) (local FoodOrder (foodOrder))
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t2 (@CreateFoodOrder): (*ssa.FieldAddr) (&t1.OrderID [#1])
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t3 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.OrderID [#1])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t5 (@CreateFoodOrder): (*ssa.FieldAddr) (&t1.FoodType [#2])
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t6 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.FoodType [#2])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t8 (@CreateFoodOrder): (*ssa.FieldAddr) (&t1.StationName [#3])
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t9 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.StationName [#3])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t11 (@CreateFoodOrder): (*ssa.FieldAddr) (&t1.StoreName [#4])
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t12 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.StoreName [#4])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t14 (@CreateFoodOrder): (*ssa.FieldAddr) (&t1.FoodName [#5])
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t15 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.FoodName [#5])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t17 (@CreateFoodOrder): (*ssa.FieldAddr) (&t1.Price [#6])
+	 → t1 (@CreateFoodOrder): (*ssa.Alloc)
+
+t18 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.Price [#6])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t20 (@CreateFoodOrder): (*ssa.FieldAddr) (&c.foodDB [#0])
+
+t21 (@CreateFoodOrder): (*ssa.UnOp) (*t20)
+
+t23 (@CreateFoodOrder): (*ssa.Extract) (extract t22 #0)
+
+t24 (@CreateFoodOrder): (*ssa.Extract) (extract t22 #1)
+
+t27 (@CreateFoodOrder): (*ssa.MakeInterface) (make interface{} <- FoodOrder (t26))
+	 → t27 (@CreateFoodOrder): (*ssa.MakeInterface)
+
+t28 (@CreateFoodOrder): (*ssa.Call) (invoke t23.InsertOne(ctx, t27))
+
+t30 (@CreateFoodOrder): (*ssa.Alloc) (local Delivery (delivery))
+	 → t30 (@CreateFoodOrder): (*ssa.Alloc)
+
+t31 (@CreateFoodOrder): (*ssa.FieldAddr) (&t30.OrderID [#1])
+	 → t30 (@CreateFoodOrder): (*ssa.Alloc)
+
+t32 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.OrderID [#1])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t34 (@CreateFoodOrder): (*ssa.FieldAddr) (&t30.FoodName [#2])
+	 → t30 (@CreateFoodOrder): (*ssa.Alloc)
+
+t35 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.FoodName [#5])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t37 (@CreateFoodOrder): (*ssa.FieldAddr) (&t30.StationName [#4])
+	 → t30 (@CreateFoodOrder): (*ssa.Alloc)
+
+t38 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.StationName [#3])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t40 (@CreateFoodOrder): (*ssa.FieldAddr) (&t30.StoreName [#3])
+	 → t30 (@CreateFoodOrder): (*ssa.Alloc)
+
+t41 (@CreateFoodOrder): (*ssa.FieldAddr) (&t0.StoreName [#4])
+	 → t0 (@CreateFoodOrder): (*ssa.Alloc)
+
+t43 (@CreateFoodOrder): (*ssa.FieldAddr) (&c.deliveryQueue [#1])
+
+t44 (@CreateFoodOrder): (*ssa.UnOp) (*t43)
+
+t46 (@CreateFoodOrder): (*ssa.MakeInterface) (make interface{} <- Delivery (t45))
+	 → t46 (@CreateFoodOrder): (*ssa.MakeInterface)
+
+t49 (@CreateFoodOrder): (*ssa.Extract) (extract t47 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.InsidePaymentServiceImpl).Drawback ###
+o (@Drawback): (*ssa.Parameter) (parameter o : *InsidePaymentServiceImpl)
+
+ctx (@Drawback): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Drawback): (*ssa.FieldAddr) (&o.insidePaymentDB [#0])
+
+t1 (@Drawback): (*ssa.UnOp) (*t0)
+
+t3 (@Drawback): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Drawback): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Drawback): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Drawback): (*ssa.Alloc)
+
+t7 (@Drawback): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Drawback): (*ssa.Alloc)
+
+t8 (@Drawback): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Drawback): (*ssa.Alloc)
+
+t9 (@Drawback): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Drawback): (*ssa.Alloc)
+
+t10 (@Drawback): (*ssa.MakeInterface) (make interface{} <- string (userID))
+	 → t10 (@Drawback): (*ssa.MakeInterface)
+
+t11 (@Drawback): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Drawback): (*ssa.Alloc)
+
+t12 (@Drawback): (*ssa.Alloc) (new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t13 (@Drawback): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t14 (@Drawback): (*ssa.FieldAddr) (&t13.Key [#0])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t15 (@Drawback): (*ssa.FieldAddr) (&t13.Value [#1])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t16 (@Drawback): (*ssa.MakeInterface) (make interface{} <- string (money))
+	 → t16 (@Drawback): (*ssa.MakeInterface)
+
+t17 (@Drawback): (*ssa.IndexAddr) (&t12[1:int])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t18 (@Drawback): (*ssa.FieldAddr) (&t17.Key [#0])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t19 (@Drawback): (*ssa.FieldAddr) (&t17.Value [#1])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t20 (@Drawback): (*ssa.MakeInterface) (make interface{} <- int (1:int))
+	 → t20 (@Drawback): (*ssa.MakeInterface)
+
+t21 (@Drawback): (*ssa.Slice) (slice t12[:])
+	 → t12 (@Drawback): (*ssa.Alloc)
+
+t24 (@Drawback): (*ssa.Extract) (extract t22 #1)
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.NewsServiceImpl).Hello ###
 n (@Hello): (*ssa.Parameter) (parameter n : *NewsServiceImpl)
 
@@ -1171,6 +2158,445 @@ ctx (@Hello): (*ssa.Parameter) (parameter ctx : context.Context)
 
 t0 (@Hello): (*ssa.Convert) (convert []byte <- string ("[\n               ...":string))
 	 → t0 (@Hello): (*ssa.Convert)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).Create ###
+o (@Create): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@Create): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Create): (*ssa.Alloc) (local Order (order))
+	 → t0 (@Create): (*ssa.Alloc)
+
+t1 (@Create): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t2 (@Create): (*ssa.UnOp) (*t1)
+
+t4 (@Create): (*ssa.Extract) (extract t3 #0)
+
+t5 (@Create): (*ssa.Extract) (extract t3 #1)
+
+t7 (@Create): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@Create): (*ssa.Alloc)
+
+t8 (@Create): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t9 (@Create): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t10 (@Create): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t11 (@Create): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Create): (*ssa.Alloc)
+
+t13 (@Create): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@Create): (*ssa.MakeInterface)
+
+t14 (@Create): (*ssa.Slice) (slice t7[:])
+	 → t7 (@Create): (*ssa.Alloc)
+
+t16 (@Create): (*ssa.Extract) (extract t15 #0)
+
+t17 (@Create): (*ssa.Extract) (extract t15 #1)
+
+t19 (@Create): (*ssa.Alloc) (new Order (orderTmp))
+	 → t19 (@Create): (*ssa.Alloc)
+
+t20 (@Create): (*ssa.MakeInterface) (make interface{} <- *Order (t19))
+	 → t20 (@Create): (*ssa.MakeInterface)
+
+t23 (@Create): (*ssa.Extract) (extract t21 #1)
+
+t25 (@Create): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@Create): (*ssa.Alloc)
+
+t27 (@Create): (*ssa.Alloc) (new [1]any (varargs))
+	 → t27 (@Create): (*ssa.Alloc)
+
+t28 (@Create): (*ssa.IndexAddr) (&t27[0:int])
+	 → t27 (@Create): (*ssa.Alloc)
+
+t29 (@Create): (*ssa.MakeInterface) (make any <- string (t26))
+	 → t29 (@Create): (*ssa.MakeInterface)
+
+t30 (@Create): (*ssa.Slice) (slice t27[:])
+	 → t27 (@Create): (*ssa.Alloc)
+
+t31 (@Create): (*ssa.Call) (fmt.Errorf("order (%s) alread...":string, t30...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t33 (@Create): (*ssa.MakeInterface) (make interface{} <- Order (t32))
+	 → t33 (@Create): (*ssa.MakeInterface)
+
+t34 (@Create): (*ssa.Call) (invoke t4.InsertOne(ctx, t33))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).Delete ###
+o (@Delete): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@Delete): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Delete): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t1 (@Delete): (*ssa.UnOp) (*t0)
+
+t3 (@Delete): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Delete): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Delete): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t7 (@Delete): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t8 (@Delete): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t9 (@Delete): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t10 (@Delete): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@Delete): (*ssa.MakeInterface)
+
+t11 (@Delete): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Delete): (*ssa.Alloc)
+
+t12 (@Delete): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).Find ###
+o (@Find): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@Find): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Find): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t1 (@Find): (*ssa.UnOp) (*t0)
+
+t3 (@Find): (*ssa.Extract) (extract t2 #0)
+
+t4 (@Find): (*ssa.Extract) (extract t2 #1)
+
+t6 (@Find): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@Find): (*ssa.Alloc)
+
+t7 (@Find): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t8 (@Find): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t9 (@Find): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t10 (@Find): (*ssa.MakeInterface) (make interface{} <- string (orderID))
+	 → t10 (@Find): (*ssa.MakeInterface)
+
+t11 (@Find): (*ssa.Slice) (slice t6[:])
+	 → t6 (@Find): (*ssa.Alloc)
+
+t13 (@Find): (*ssa.Extract) (extract t12 #0)
+
+t14 (@Find): (*ssa.Extract) (extract t12 #1)
+
+t16 (@Find): (*ssa.Alloc) (new Order (order))
+	 → t16 (@Find): (*ssa.Alloc)
+
+t17 (@Find): (*ssa.MakeInterface) (make interface{} <- *Order (t16))
+	 → t17 (@Find): (*ssa.MakeInterface)
+
+t20 (@Find): (*ssa.Extract) (extract t18 #1)
+
+t22 (@Find): (*ssa.Alloc) (new [1]any (varargs))
+	 → t22 (@Find): (*ssa.Alloc)
+
+t23 (@Find): (*ssa.IndexAddr) (&t22[0:int])
+	 → t22 (@Find): (*ssa.Alloc)
+
+t24 (@Find): (*ssa.MakeInterface) (make any <- string (orderID))
+	 → t24 (@Find): (*ssa.MakeInterface)
+
+t25 (@Find): (*ssa.Slice) (slice t22[:])
+	 → t22 (@Find): (*ssa.Alloc)
+
+t26 (@Find): (*ssa.Call) (fmt.Errorf("order (%s) not found":string, t25...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).FindAll ###
+o (@FindAll): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@FindAll): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@FindAll): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t1 (@FindAll): (*ssa.UnOp) (*t0)
+
+t3 (@FindAll): (*ssa.Extract) (extract t2 #0)
+
+t4 (@FindAll): (*ssa.Extract) (extract t2 #1)
+
+t6 (@FindAll): (*ssa.Alloc) (new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@FindAll): (*ssa.Alloc)
+
+t7 (@FindAll): (*ssa.Slice) (slice t6[:])
+	 → t6 (@FindAll): (*ssa.Alloc)
+
+t9 (@FindAll): (*ssa.Extract) (extract t8 #0)
+
+t10 (@FindAll): (*ssa.Extract) (extract t8 #1)
+
+t12 (@FindAll): (*ssa.Alloc) (new []Order (orders))
+	 → t12 (@FindAll): (*ssa.Alloc)
+
+t13 (@FindAll): (*ssa.MakeInterface) (make interface{} <- *[]Order (t12))
+	 → t13 (@FindAll): (*ssa.MakeInterface)
+
+t14 (@FindAll): (*ssa.Call) (invoke t9.All(ctx, t13))
+
+t16 (@FindAll): (*ssa.UnOp) (*t12)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).GetTicketListByDateAndTripID ###
+o (@GetTicketListByDateAndTripID): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@GetTicketListByDateAndTripID): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetTicketListByDateAndTripID): (*ssa.Alloc) (local SeatRequest (seatRequest))
+	 → t0 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t1 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t2 (@GetTicketListByDateAndTripID): (*ssa.UnOp) (*t1)
+
+t4 (@GetTicketListByDateAndTripID): (*ssa.Extract) (extract t3 #0)
+
+t5 (@GetTicketListByDateAndTripID): (*ssa.Extract) (extract t3 #1)
+
+t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc) (new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t8 (@GetTicketListByDateAndTripID): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t9 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t10 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t11 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t0.TravelDate [#0])
+	 → t0 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t13 (@GetTicketListByDateAndTripID): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@GetTicketListByDateAndTripID): (*ssa.MakeInterface)
+
+t14 (@GetTicketListByDateAndTripID): (*ssa.IndexAddr) (&t7[1:int])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t15 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t14.Key [#0])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t16 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t14.Value [#1])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t17 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t0.TrainNumber [#1])
+	 → t0 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t19 (@GetTicketListByDateAndTripID): (*ssa.MakeInterface) (make interface{} <- string (t18))
+	 → t19 (@GetTicketListByDateAndTripID): (*ssa.MakeInterface)
+
+t20 (@GetTicketListByDateAndTripID): (*ssa.Slice) (slice t7[:])
+	 → t7 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t22 (@GetTicketListByDateAndTripID): (*ssa.Extract) (extract t21 #0)
+
+t23 (@GetTicketListByDateAndTripID): (*ssa.Extract) (extract t21 #1)
+
+t25 (@GetTicketListByDateAndTripID): (*ssa.Alloc) (new []Order (orders))
+	 → t25 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t26 (@GetTicketListByDateAndTripID): (*ssa.MakeInterface) (make interface{} <- *[]Order (t25))
+	 → t26 (@GetTicketListByDateAndTripID): (*ssa.MakeInterface)
+
+t27 (@GetTicketListByDateAndTripID): (*ssa.Call) (invoke t22.All(ctx, t26))
+
+t29 (@GetTicketListByDateAndTripID): (*ssa.UnOp) (*t25)
+
+t32 (@GetTicketListByDateAndTripID): (*ssa.Call) (fmt.Errorf("left ticket info ...":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t33 (@GetTicketListByDateAndTripID): (*ssa.UnOp) (*t25)
+
+t35 (@GetTicketListByDateAndTripID): (*ssa.MakeSlice) (make []Ticket t34 t34)
+	 → t35 (@GetTicketListByDateAndTripID): (*ssa.MakeSlice)
+
+t36 (@GetTicketListByDateAndTripID): (*ssa.Alloc) (local Order (order))
+	 → t36 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t37 (@GetTicketListByDateAndTripID): (*ssa.UnOp) (*t25)
+
+t42 (@GetTicketListByDateAndTripID): (*ssa.IndexAddr) (&t37[t40])
+
+t44 (@GetTicketListByDateAndTripID): (*ssa.Alloc) (local Ticket (complit))
+	 → t44 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t45 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t44.StartStation [#1])
+	 → t44 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t46 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t36.FromStation [#12])
+	 → t36 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t48 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t44.DestStation [#2])
+	 → t44 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t49 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t36.ToStation [#13])
+	 → t36 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t52 (@GetTicketListByDateAndTripID): (*ssa.IndexAddr) (&t35[t40])
+	 → t35 (@GetTicketListByDateAndTripID): (*ssa.MakeSlice)
+
+t53 (@GetTicketListByDateAndTripID): (*ssa.Alloc) (local LeftTicketInfo (leftTicketInfo))
+	 → t53 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+t54 (@GetTicketListByDateAndTripID): (*ssa.FieldAddr) (&t53.SoldTickets [#0])
+	 → t53 (@GetTicketListByDateAndTripID): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).ModifyOrder ###
+o (@ModifyOrder): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@ModifyOrder): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@ModifyOrder): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t1 (@ModifyOrder): (*ssa.UnOp) (*t0)
+
+t3 (@ModifyOrder): (*ssa.Extract) (extract t2 #0)
+
+t4 (@ModifyOrder): (*ssa.Extract) (extract t2 #1)
+
+t6 (@ModifyOrder): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@ModifyOrder): (*ssa.Alloc)
+
+t7 (@ModifyOrder): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@ModifyOrder): (*ssa.Alloc)
+
+t8 (@ModifyOrder): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@ModifyOrder): (*ssa.Alloc)
+
+t9 (@ModifyOrder): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@ModifyOrder): (*ssa.Alloc)
+
+t10 (@ModifyOrder): (*ssa.MakeInterface) (make interface{} <- string (id))
+	 → t10 (@ModifyOrder): (*ssa.MakeInterface)
+
+t11 (@ModifyOrder): (*ssa.Slice) (slice t6[:])
+	 → t6 (@ModifyOrder): (*ssa.Alloc)
+
+t12 (@ModifyOrder): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t12 (@ModifyOrder): (*ssa.Alloc)
+
+t13 (@ModifyOrder): (*ssa.IndexAddr) (&t12[0:int])
+	 → t12 (@ModifyOrder): (*ssa.Alloc)
+
+t14 (@ModifyOrder): (*ssa.FieldAddr) (&t13.Key [#0])
+	 → t12 (@ModifyOrder): (*ssa.Alloc)
+
+t15 (@ModifyOrder): (*ssa.FieldAddr) (&t13.Value [#1])
+	 → t12 (@ModifyOrder): (*ssa.Alloc)
+
+t16 (@ModifyOrder): (*ssa.MakeInterface) (make interface{} <- int (status))
+	 → t16 (@ModifyOrder): (*ssa.MakeInterface)
+
+t17 (@ModifyOrder): (*ssa.Slice) (slice t12[:])
+	 → t12 (@ModifyOrder): (*ssa.Alloc)
+
+t20 (@ModifyOrder): (*ssa.Extract) (extract t18 #1)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.OrderServiceImpl).UpdateStatus ###
+o (@UpdateStatus): (*ssa.Parameter) (parameter o : *OrderServiceImpl)
+
+ctx (@UpdateStatus): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@UpdateStatus): (*ssa.Alloc) (local Order (order))
+	 → t0 (@UpdateStatus): (*ssa.Alloc)
+
+t1 (@UpdateStatus): (*ssa.FieldAddr) (&o.orderDB [#0])
+
+t2 (@UpdateStatus): (*ssa.UnOp) (*t1)
+
+t4 (@UpdateStatus): (*ssa.Extract) (extract t3 #0)
+
+t5 (@UpdateStatus): (*ssa.Extract) (extract t3 #1)
+
+t7 (@UpdateStatus): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@UpdateStatus): (*ssa.Alloc)
+
+t8 (@UpdateStatus): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@UpdateStatus): (*ssa.Alloc)
+
+t9 (@UpdateStatus): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@UpdateStatus): (*ssa.Alloc)
+
+t10 (@UpdateStatus): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@UpdateStatus): (*ssa.Alloc)
+
+t11 (@UpdateStatus): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@UpdateStatus): (*ssa.Alloc)
+
+t13 (@UpdateStatus): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@UpdateStatus): (*ssa.MakeInterface)
+
+t14 (@UpdateStatus): (*ssa.Slice) (slice t7[:])
+	 → t7 (@UpdateStatus): (*ssa.Alloc)
+
+t16 (@UpdateStatus): (*ssa.Extract) (extract t15 #0)
+
+t17 (@UpdateStatus): (*ssa.Extract) (extract t15 #1)
+
+t19 (@UpdateStatus): (*ssa.Alloc) (new Order (oldOrder))
+	 → t19 (@UpdateStatus): (*ssa.Alloc)
+
+t20 (@UpdateStatus): (*ssa.MakeInterface) (make interface{} <- *Order (t19))
+	 → t20 (@UpdateStatus): (*ssa.MakeInterface)
+
+t23 (@UpdateStatus): (*ssa.Extract) (extract t21 #1)
+
+t25 (@UpdateStatus): (*ssa.FieldAddr) (&t0.ID [#0])
+	 → t0 (@UpdateStatus): (*ssa.Alloc)
+
+t27 (@UpdateStatus): (*ssa.Alloc) (new [1]any (varargs))
+	 → t27 (@UpdateStatus): (*ssa.Alloc)
+
+t28 (@UpdateStatus): (*ssa.IndexAddr) (&t27[0:int])
+	 → t27 (@UpdateStatus): (*ssa.Alloc)
+
+t29 (@UpdateStatus): (*ssa.MakeInterface) (make any <- string (t26))
+	 → t29 (@UpdateStatus): (*ssa.MakeInterface)
+
+t30 (@UpdateStatus): (*ssa.Slice) (slice t27[:])
+	 → t27 (@UpdateStatus): (*ssa.Alloc)
+
+t31 (@UpdateStatus): (*ssa.Call) (fmt.Errorf("order (%s) does n...":string, t30...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t33 (@UpdateStatus): (*ssa.MakeInterface) (make interface{} <- Order (t32))
+	 → t33 (@UpdateStatus): (*ssa.MakeInterface)
+
+t36 (@UpdateStatus): (*ssa.Extract) (extract t34 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PaymentServiceImpl).AddMoney ###
@@ -1391,6 +2817,474 @@ t15 (@Query): (*ssa.MakeInterface) (make interface{} <- *[]Payment (t0))
 t16 (@Query): (*ssa.Call) (invoke t11.All(ctx, t15))
 
 t17 (@Query): (*ssa.UnOp) (*t0)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PreserveServiceImpl).Preserve ###
+p (@Preserve): (*ssa.Parameter) (parameter p : *PreserveServiceImpl)
+
+ctx (@Preserve): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@Preserve): (*ssa.Alloc) (local OrderTicketsInfo (oti))
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t1 (@Preserve): (*ssa.Alloc) (local Contact (contact))
+	 → t1 (@Preserve): (*ssa.Alloc)
+
+t2 (@Preserve): (*ssa.FieldAddr) (&p.contactsService [#3])
+
+t3 (@Preserve): (*ssa.UnOp) (*t2)
+
+t4 (@Preserve): (*ssa.FieldAddr) (&t0.ContactsID [#1])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t8 (@Preserve): (*ssa.Extract) (extract t6 #1)
+
+t10 (@Preserve): (*ssa.Alloc) (local TripAllDetailInfo (gtdi))
+	 → t10 (@Preserve): (*ssa.Alloc)
+
+t11 (@Preserve): (*ssa.FieldAddr) (&t10.From [#2])
+	 → t10 (@Preserve): (*ssa.Alloc)
+
+t12 (@Preserve): (*ssa.FieldAddr) (&t0.From [#6])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t14 (@Preserve): (*ssa.FieldAddr) (&t10.To [#3])
+	 → t10 (@Preserve): (*ssa.Alloc)
+
+t15 (@Preserve): (*ssa.FieldAddr) (&t0.To [#7])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t17 (@Preserve): (*ssa.FieldAddr) (&t10.TravelDate [#1])
+	 → t10 (@Preserve): (*ssa.Alloc)
+
+t18 (@Preserve): (*ssa.FieldAddr) (&t0.Date [#5])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t20 (@Preserve): (*ssa.FieldAddr) (&t10.TripID [#0])
+	 → t10 (@Preserve): (*ssa.Alloc)
+
+t21 (@Preserve): (*ssa.FieldAddr) (&t0.TripID [#2])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t23 (@Preserve): (*ssa.Alloc) (local TripAllDetail (gtdr))
+	 → t23 (@Preserve): (*ssa.Alloc)
+
+t24 (@Preserve): (*ssa.FieldAddr) (&p.travelService [#8])
+
+t25 (@Preserve): (*ssa.UnOp) (*t24)
+
+t29 (@Preserve): (*ssa.Extract) (extract t27 #1)
+
+t31 (@Preserve): (*ssa.Alloc) (local TripResponse (tripResponse))
+	 → t31 (@Preserve): (*ssa.Alloc)
+
+t32 (@Preserve): (*ssa.FieldAddr) (&t23.tripResponse [#1])
+	 → t23 (@Preserve): (*ssa.Alloc)
+
+t34 (@Preserve): (*ssa.FieldAddr) (&t0.SeatType [#3])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t37 (@Preserve): (*ssa.FieldAddr) (&t31.ConfortClass [#7])
+	 → t31 (@Preserve): (*ssa.Alloc)
+
+t40 (@Preserve): (*ssa.Alloc) (local Travel (travelQuery))
+	 → t40 (@Preserve): (*ssa.Alloc)
+
+t41 (@Preserve): (*ssa.FieldAddr) (&t40.Trip [#0])
+	 → t40 (@Preserve): (*ssa.Alloc)
+
+t42 (@Preserve): (*ssa.FieldAddr) (&t40.StartPlace [#1])
+	 → t40 (@Preserve): (*ssa.Alloc)
+
+t43 (@Preserve): (*ssa.FieldAddr) (&t0.From [#6])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t45 (@Preserve): (*ssa.FieldAddr) (&t40.EndPlace [#2])
+	 → t40 (@Preserve): (*ssa.Alloc)
+
+t46 (@Preserve): (*ssa.FieldAddr) (&t0.To [#7])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t48 (@Preserve): (*ssa.FieldAddr) (&t40.DepartureTime [#3])
+	 → t40 (@Preserve): (*ssa.Alloc)
+
+t50 (@Preserve): (*ssa.Alloc) (local TravelResult (travelResult))
+	 → t50 (@Preserve): (*ssa.Alloc)
+
+t51 (@Preserve): (*ssa.FieldAddr) (&p.basicService [#1])
+
+t52 (@Preserve): (*ssa.UnOp) (*t51)
+
+t56 (@Preserve): (*ssa.Extract) (extract t54 #1)
+
+t58 (@Preserve): (*ssa.FieldAddr) (&t31.EconomyClass [#6])
+	 → t31 (@Preserve): (*ssa.Alloc)
+
+t61 (@Preserve): (*ssa.Call) (fmt.Errorf("seat not enough":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t62 (@Preserve): (*ssa.Call) (fmt.Errorf("seat not enough":string, nil:[]any...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t63 (@Preserve): (*ssa.FieldAddr) (&t31.ConfortClass [#7])
+	 → t31 (@Preserve): (*ssa.Alloc)
+
+t66 (@Preserve): (*ssa.Alloc) (local SeatRequest (seatRequest))
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t67 (@Preserve): (*ssa.FieldAddr) (&t66.TravelDate [#0])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t68 (@Preserve): (*ssa.FieldAddr) (&t0.Date [#5])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t70 (@Preserve): (*ssa.FieldAddr) (&t66.TrainNumber [#1])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t71 (@Preserve): (*ssa.FieldAddr) (&t0.TripID [#2])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t73 (@Preserve): (*ssa.FieldAddr) (&t66.StartStation [#2])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t74 (@Preserve): (*ssa.FieldAddr) (&t0.From [#6])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t76 (@Preserve): (*ssa.FieldAddr) (&t66.DestStation [#3])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t77 (@Preserve): (*ssa.FieldAddr) (&t0.To [#7])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t79 (@Preserve): (*ssa.FieldAddr) (&t66.SeatType [#4])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t80 (@Preserve): (*ssa.FieldAddr) (&t0.SeatType [#3])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t82 (@Preserve): (*ssa.FieldAddr) (&t66.TotalNum [#5])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t83 (@Preserve): (*ssa.FieldAddr) (&t50.TrainType [#2])
+	 → t50 (@Preserve): (*ssa.Alloc)
+
+t84 (@Preserve): (*ssa.FieldAddr) (&t83.EconomyClass [#2])
+	 → t50 (@Preserve): (*ssa.Alloc)
+
+t86 (@Preserve): (*ssa.FieldAddr) (&t66.Stations [#6])
+	 → t66 (@Preserve): (*ssa.Alloc)
+
+t87 (@Preserve): (*ssa.FieldAddr) (&t50.Route [#3])
+	 → t50 (@Preserve): (*ssa.Alloc)
+
+t88 (@Preserve): (*ssa.FieldAddr) (&t87.Stations [#1])
+	 → t50 (@Preserve): (*ssa.Alloc)
+
+t89 (@Preserve): (*ssa.UnOp) (*t88)
+
+t90 (@Preserve): (*ssa.Alloc) (local Ticket (ticket))
+	 → t90 (@Preserve): (*ssa.Alloc)
+
+t91 (@Preserve): (*ssa.FieldAddr) (&p.seatService [#6])
+
+t92 (@Preserve): (*ssa.UnOp) (*t91)
+
+t96 (@Preserve): (*ssa.Extract) (extract t94 #1)
+
+t98 (@Preserve): (*ssa.Alloc) (local Order (order))
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t99 (@Preserve): (*ssa.FieldAddr) (&t98.TrainNumber [#8])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t100 (@Preserve): (*ssa.FieldAddr) (&t0.TripID [#2])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t102 (@Preserve): (*ssa.FieldAddr) (&t98.AccountID [#4])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t103 (@Preserve): (*ssa.FieldAddr) (&t0.AccountID [#0])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t105 (@Preserve): (*ssa.FieldAddr) (&t98.FromStation [#12])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t106 (@Preserve): (*ssa.FieldAddr) (&t0.From [#6])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t108 (@Preserve): (*ssa.FieldAddr) (&t98.ToStation [#13])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t109 (@Preserve): (*ssa.FieldAddr) (&t0.To [#7])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t111 (@Preserve): (*ssa.FieldAddr) (&t98.BoughtDate [#1])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t113 (@Preserve): (*ssa.FieldAddr) (&t98.ContactsName [#5])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t114 (@Preserve): (*ssa.FieldAddr) (&t1.Name [#2])
+	 → t1 (@Preserve): (*ssa.Alloc)
+
+t116 (@Preserve): (*ssa.FieldAddr) (&t98.ContactsDocumentNumber [#7])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t117 (@Preserve): (*ssa.FieldAddr) (&t1.DocumentNumber [#4])
+	 → t1 (@Preserve): (*ssa.Alloc)
+
+t119 (@Preserve): (*ssa.FieldAddr) (&t98.DocumentType [#6])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t120 (@Preserve): (*ssa.FieldAddr) (&t1.DocumentType [#3])
+	 → t1 (@Preserve): (*ssa.Alloc)
+
+t122 (@Preserve): (*ssa.FieldAddr) (&t98.SeatClass [#10])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t123 (@Preserve): (*ssa.FieldAddr) (&t0.SeatType [#3])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t125 (@Preserve): (*ssa.FieldAddr) (&t98.SeatNumber [#11])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t126 (@Preserve): (*ssa.FieldAddr) (&t90.SeatNo [#0])
+	 → t90 (@Preserve): (*ssa.Alloc)
+
+t129 (@Preserve): (*ssa.FieldAddr) (&t98.Price [#15])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t130 (@Preserve): (*ssa.FieldAddr) (&t50.Prices [#4])
+	 → t50 (@Preserve): (*ssa.Alloc)
+
+t131 (@Preserve): (*ssa.UnOp) (*t130)
+
+t133 (@Preserve): (*ssa.FieldAddr) (&t98.TravelDate [#2])
+	 → t98 (@Preserve): (*ssa.Alloc)
+
+t134 (@Preserve): (*ssa.FieldAddr) (&t0.Date [#5])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t136 (@Preserve): (*ssa.Alloc) (local Order (cor))
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t137 (@Preserve): (*ssa.FieldAddr) (&p.orderService [#5])
+
+t138 (@Preserve): (*ssa.UnOp) (*t137)
+
+t142 (@Preserve): (*ssa.Extract) (extract t140 #1)
+
+t144 (@Preserve): (*ssa.FieldAddr) (&t0.Assurance [#8])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t147 (@Preserve): (*ssa.FieldAddr) (&p.assuranceService [#0])
+
+t148 (@Preserve): (*ssa.UnOp) (*t147)
+
+t149 (@Preserve): (*ssa.FieldAddr) (&t0.Assurance [#8])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t151 (@Preserve): (*ssa.FieldAddr) (&t136.ID [#0])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t155 (@Preserve): (*ssa.Extract) (extract t153 #1)
+
+t157 (@Preserve): (*ssa.FieldAddr) (&t0.FoodType [#9])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t160 (@Preserve): (*ssa.Alloc) (local FoodOrder (foodOrder))
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t161 (@Preserve): (*ssa.FieldAddr) (&t160.OrderID [#1])
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t162 (@Preserve): (*ssa.FieldAddr) (&t136.ID [#0])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t164 (@Preserve): (*ssa.FieldAddr) (&t160.FoodType [#2])
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t165 (@Preserve): (*ssa.FieldAddr) (&t0.FoodType [#9])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t167 (@Preserve): (*ssa.FieldAddr) (&t160.FoodName [#5])
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t168 (@Preserve): (*ssa.FieldAddr) (&t0.FoodName [#12])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t170 (@Preserve): (*ssa.FieldAddr) (&t160.Price [#6])
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t171 (@Preserve): (*ssa.FieldAddr) (&t0.FoodPrice [#13])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t173 (@Preserve): (*ssa.FieldAddr) (&t0.FoodType [#9])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t176 (@Preserve): (*ssa.FieldAddr) (&t0.ConsigneeName [#15])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t179 (@Preserve): (*ssa.FieldAddr) (&t0.StationName [#10])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t181 (@Preserve): (*ssa.FieldAddr) (&t160.StationName [#3])
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t182 (@Preserve): (*ssa.FieldAddr) (&t0.StoreName [#11])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t184 (@Preserve): (*ssa.FieldAddr) (&t160.StoreName [#4])
+	 → t160 (@Preserve): (*ssa.Alloc)
+
+t185 (@Preserve): (*ssa.FieldAddr) (&p.foodService [#4])
+
+t186 (@Preserve): (*ssa.UnOp) (*t185)
+
+t190 (@Preserve): (*ssa.Extract) (extract t188 #1)
+
+t192 (@Preserve): (*ssa.Alloc) (local ConsignRequest (consignRequest))
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t193 (@Preserve): (*ssa.FieldAddr) (&t192.OrderID [#1])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t194 (@Preserve): (*ssa.FieldAddr) (&t136.ID [#0])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t196 (@Preserve): (*ssa.FieldAddr) (&t192.AccountID [#2])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t197 (@Preserve): (*ssa.FieldAddr) (&t136.AccountID [#4])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t199 (@Preserve): (*ssa.FieldAddr) (&t192.HandleDate [#3])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t200 (@Preserve): (*ssa.FieldAddr) (&t0.HandleDate [#14])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t202 (@Preserve): (*ssa.FieldAddr) (&t192.TargetDate [#4])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t203 (@Preserve): (*ssa.FieldAddr) (&t136.TravelDate [#2])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t205 (@Preserve): (*ssa.FieldAddr) (&t192.From [#5])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t206 (@Preserve): (*ssa.FieldAddr) (&t136.FromStation [#12])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t208 (@Preserve): (*ssa.FieldAddr) (&t192.To [#6])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t209 (@Preserve): (*ssa.FieldAddr) (&t136.ToStation [#13])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t211 (@Preserve): (*ssa.FieldAddr) (&t192.Consignee [#7])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t212 (@Preserve): (*ssa.FieldAddr) (&t0.ConsigneeName [#15])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t214 (@Preserve): (*ssa.FieldAddr) (&t192.Phone [#8])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t215 (@Preserve): (*ssa.FieldAddr) (&t0.ConsigneePhone [#16])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t217 (@Preserve): (*ssa.FieldAddr) (&t192.Weight [#9])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t218 (@Preserve): (*ssa.FieldAddr) (&t0.ConsigneeWeight [#17])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t220 (@Preserve): (*ssa.FieldAddr) (&t192.IsWithin [#10])
+	 → t192 (@Preserve): (*ssa.Alloc)
+
+t221 (@Preserve): (*ssa.FieldAddr) (&t0.IsWithin [#18])
+	 → t0 (@Preserve): (*ssa.Alloc)
+
+t223 (@Preserve): (*ssa.FieldAddr) (&p.consignService [#2])
+
+t224 (@Preserve): (*ssa.UnOp) (*t223)
+
+t227 (@Preserve): (*ssa.Alloc) (local User (user))
+	 → t227 (@Preserve): (*ssa.Alloc)
+
+t228 (@Preserve): (*ssa.FieldAddr) (&p.userService [#9])
+
+t229 (@Preserve): (*ssa.UnOp) (*t228)
+
+t230 (@Preserve): (*ssa.FieldAddr) (&t136.AccountID [#4])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t234 (@Preserve): (*ssa.Extract) (extract t232 #1)
+
+t236 (@Preserve): (*ssa.Alloc) (local NotifyInfo (notifyInfo))
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t237 (@Preserve): (*ssa.FieldAddr) (&t236.Email [#0])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t238 (@Preserve): (*ssa.FieldAddr) (&t227.Email [#6])
+	 → t227 (@Preserve): (*ssa.Alloc)
+
+t240 (@Preserve): (*ssa.FieldAddr) (&t236.StartPlace [#3])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t241 (@Preserve): (*ssa.FieldAddr) (&t136.FromStation [#12])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t243 (@Preserve): (*ssa.FieldAddr) (&t236.EndPlace [#4])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t244 (@Preserve): (*ssa.FieldAddr) (&t136.ToStation [#13])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t246 (@Preserve): (*ssa.FieldAddr) (&t236.Username [#2])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t247 (@Preserve): (*ssa.FieldAddr) (&t227.Username [#1])
+	 → t227 (@Preserve): (*ssa.Alloc)
+
+t249 (@Preserve): (*ssa.FieldAddr) (&t236.SeatNumber [#8])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t250 (@Preserve): (*ssa.FieldAddr) (&t136.SeatNumber [#11])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t252 (@Preserve): (*ssa.FieldAddr) (&t236.OrderNumber [#1])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t253 (@Preserve): (*ssa.FieldAddr) (&t136.ID [#0])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t255 (@Preserve): (*ssa.FieldAddr) (&t236.Price [#9])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t256 (@Preserve): (*ssa.FieldAddr) (&t136.Price [#15])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t258 (@Preserve): (*ssa.FieldAddr) (&t236.StartTime [#5])
+	 → t236 (@Preserve): (*ssa.Alloc)
+
+t259 (@Preserve): (*ssa.FieldAddr) (&t136.TravelTime [#3])
+	 → t136 (@Preserve): (*ssa.Alloc)
+
+t261 (@Preserve): (*ssa.FieldAddr) (&p.emailQueue [#10])
+
+t262 (@Preserve): (*ssa.UnOp) (*t261)
+
+t264 (@Preserve): (*ssa.MakeInterface) (make interface{} <- NotifyInfo (t263))
+	 → t264 (@Preserve): (*ssa.MakeInterface)
+
+t267 (@Preserve): (*ssa.Extract) (extract t265 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).CreateNewPriceConfig ###
@@ -1642,21 +3536,21 @@ rtsAndTypes (@FindByRouteIDsAndTrainTypes): (*ssa.Parameter) (parameter rtsAndTy
 t0 (@FindByRouteIDsAndTrainTypes): (*ssa.MakeMap) (make map[string]PriceConfig )
 	 → t0 (@FindByRouteIDsAndTrainTypes): (*ssa.MakeMap)
 
-t1 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&rtsAndTypes[0:int])
+t5 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&rtsAndTypes[t3])
 
-t3 (@FindByRouteIDsAndTrainTypes): (*ssa.Call) (strings.Split(t2, ":":string))
+t7 (@FindByRouteIDsAndTrainTypes): (*ssa.Call) (strings.Split(t6, ":":string))
 	 → t13 (@genSplit): (*ssa.MakeSlice)
 	 → t3 (@explode): (*ssa.MakeSlice)
 
-t4 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&t3[0:int])
+t8 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&t7[0:int])
 	 → t13 (@genSplit): (*ssa.MakeSlice)
 	 → t3 (@explode): (*ssa.MakeSlice)
 
-t6 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&t3[1:int])
+t10 (@FindByRouteIDsAndTrainTypes): (*ssa.IndexAddr) (&t7[1:int])
 	 → t13 (@genSplit): (*ssa.MakeSlice)
 	 → t3 (@explode): (*ssa.MakeSlice)
 
-t10 (@FindByRouteIDsAndTrainTypes): (*ssa.Extract) (extract t8 #1)
+t14 (@FindByRouteIDsAndTrainTypes): (*ssa.Extract) (extract t12 #1)
 	 → t2 (@New): (*ssa.MakeInterface)
 
 
@@ -2141,6 +4035,156 @@ t38 (@GetRouteByStartAndEnd): (*ssa.Extract) (extract t36 #1)
 
 t46 (@GetRouteByStartAndEnd): (*ssa.Call) (errors.New(t45))
 	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.SeatServiceImpl).DistributeSeat ###
+s (@DistributeSeat): (*ssa.Parameter) (parameter s : *SeatServiceImpl)
+
+ctx (@DistributeSeat): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DistributeSeat): (*ssa.Alloc) (local SeatRequest (seatRequest))
+	 → t0 (@DistributeSeat): (*ssa.Alloc)
+
+t1 (@DistributeSeat): (*ssa.Alloc) (local LeftTicketInfo (leftTicketInfo))
+	 → t1 (@DistributeSeat): (*ssa.Alloc)
+
+t2 (@DistributeSeat): (*ssa.FieldAddr) (&s.orderService [#0])
+
+t3 (@DistributeSeat): (*ssa.UnOp) (*t2)
+
+t7 (@DistributeSeat): (*ssa.Extract) (extract t5 #1)
+
+t9 (@DistributeSeat): (*ssa.FieldAddr) (&t0.Stations [#6])
+	 → t0 (@DistributeSeat): (*ssa.Alloc)
+
+t10 (@DistributeSeat): (*ssa.UnOp) (*t9)
+
+t11 (@DistributeSeat): (*ssa.FieldAddr) (&t0.TotalNum [#5])
+	 → t0 (@DistributeSeat): (*ssa.Alloc)
+
+t13 (@DistributeSeat): (*ssa.FieldAddr) (&t0.StartStation [#2])
+	 → t0 (@DistributeSeat): (*ssa.Alloc)
+
+t15 (@DistributeSeat): (*ssa.Alloc) (local Ticket (ticket))
+	 → t15 (@DistributeSeat): (*ssa.Alloc)
+
+t16 (@DistributeSeat): (*ssa.FieldAddr) (&t15.StartStation [#1])
+	 → t15 (@DistributeSeat): (*ssa.Alloc)
+
+t17 (@DistributeSeat): (*ssa.FieldAddr) (&t0.DestStation [#3])
+	 → t0 (@DistributeSeat): (*ssa.Alloc)
+
+t19 (@DistributeSeat): (*ssa.FieldAddr) (&t15.DestStation [#2])
+	 → t15 (@DistributeSeat): (*ssa.Alloc)
+
+t22 (@DistributeSeat): (*ssa.FieldAddr) (&t1.SoldTickets [#0])
+	 → t1 (@DistributeSeat): (*ssa.Alloc)
+
+t23 (@DistributeSeat): (*ssa.UnOp) (*t22)
+
+t26 (@DistributeSeat): (*ssa.FieldAddr) (&t1.SoldTickets [#0])
+	 → t1 (@DistributeSeat): (*ssa.Alloc)
+
+t27 (@DistributeSeat): (*ssa.UnOp) (*t26)
+
+t28 (@DistributeSeat): (*ssa.Alloc) (local Ticket (soldTicket))
+	 → t28 (@DistributeSeat): (*ssa.Alloc)
+
+t31 (@DistributeSeat): (*ssa.FieldAddr) (&t15.SeatNo [#0])
+	 → t15 (@DistributeSeat): (*ssa.Alloc)
+
+t36 (@DistributeSeat): (*ssa.IndexAddr) (&t27[t34])
+
+t38 (@DistributeSeat): (*ssa.FieldAddr) (&t28.DestStation [#2])
+	 → t28 (@DistributeSeat): (*ssa.Alloc)
+
+t43 (@DistributeSeat): (*ssa.FieldAddr) (&t28.SeatNo [#0])
+	 → t28 (@DistributeSeat): (*ssa.Alloc)
+
+t45 (@DistributeSeat): (*ssa.FieldAddr) (&t15.SeatNo [#0])
+	 → t15 (@DistributeSeat): (*ssa.Alloc)
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.SeatServiceImpl).GetLeftTicketOfInterval ###
+s (@GetLeftTicketOfInterval): (*ssa.Parameter) (parameter s : *SeatServiceImpl)
+
+ctx (@GetLeftTicketOfInterval): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetLeftTicketOfInterval): (*ssa.Alloc) (local SeatRequest (seatRequest))
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t1 (@GetLeftTicketOfInterval): (*ssa.Alloc) (local LeftTicketInfo (leftTicketInfo))
+	 → t1 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t2 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t0.TrainNumber [#1])
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t5 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&s.orderService [#0])
+
+t6 (@GetLeftTicketOfInterval): (*ssa.UnOp) (*t5)
+
+t10 (@GetLeftTicketOfInterval): (*ssa.Extract) (extract t8 #1)
+
+t12 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t0.Stations [#6])
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t13 (@GetLeftTicketOfInterval): (*ssa.UnOp) (*t12)
+
+t14 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t0.TotalNum [#5])
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t16 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t1.SoldTickets [#0])
+	 → t1 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t17 (@GetLeftTicketOfInterval): (*ssa.UnOp) (*t16)
+
+t21 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t0.StartStation [#2])
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t23 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t1.SoldTickets [#0])
+	 → t1 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t24 (@GetLeftTicketOfInterval): (*ssa.UnOp) (*t23)
+
+t26 (@GetLeftTicketOfInterval): (*ssa.Alloc) (local Ticket (soldTicket))
+	 → t26 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t30 (@GetLeftTicketOfInterval): (*ssa.Alloc) (local Config (config))
+	 → t30 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t31 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&s.configService [#1])
+
+t32 (@GetLeftTicketOfInterval): (*ssa.UnOp) (*t31)
+
+t35 (@GetLeftTicketOfInterval): (*ssa.Extract) (extract t33 #1)
+
+t41 (@GetLeftTicketOfInterval): (*ssa.IndexAddr) (&t24[t39])
+
+t43 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t26.DestStation [#2])
+	 → t26 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t49 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t30.Value [#1])
+	 → t30 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t53 (@GetLeftTicketOfInterval): (*ssa.Extract) (extract t51 #1)
+	 → t7 (@ParseFloat): (*ssa.MakeInterface)
+	 → t14 (@atof32): (*ssa.MakeInterface)
+	 → t36 (@atof32): (*ssa.MakeInterface)
+	 → t43 (@atof32): (*ssa.MakeInterface)
+	 → t13 (@atof64): (*ssa.MakeInterface)
+	 → t34 (@atof64): (*ssa.MakeInterface)
+	 → t40 (@atof64): (*ssa.MakeInterface)
+	 → t75 (@atofHex): (*ssa.MakeInterface)
+
+t55 (@GetLeftTicketOfInterval): (*ssa.IndexAddr) (&t13[0:int])
+
+t57 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t0.StartStation [#2])
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
+
+t68 (@GetLeftTicketOfInterval): (*ssa.IndexAddr) (&t13[t67])
+
+t70 (@GetLeftTicketOfInterval): (*ssa.FieldAddr) (&t0.DestStation [#3])
+	 → t0 (@GetLeftTicketOfInterval): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.StationFoodServiceImpl).Cleanup ###
@@ -2958,7 +5002,7 @@ t3 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t2 #0)
 
 t4 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t2 #1)
 
-t6 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+t6 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]Food (slicelit))
 	 → t6 (@ListTrainFoodByTripID): (*ssa.Alloc)
 
 t7 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t6[:])
@@ -2986,7 +5030,7 @@ t15 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t14 #0)
 
 t16 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t14 #1)
 
-t18 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+t18 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]Food (slicelit))
 	 → t18 (@ListTrainFoodByTripID): (*ssa.Alloc)
 
 t19 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t18[:])
@@ -3000,13 +5044,13 @@ t21 (@ListTrainFoodByTripID): (*ssa.MakeInterface) (make interface{} <- *TrainFo
 
 t24 (@ListTrainFoodByTripID): (*ssa.Extract) (extract t22 #1)
 
-t26 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+t26 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]Food (slicelit))
 	 → t26 (@ListTrainFoodByTripID): (*ssa.Alloc)
 
 t27 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t26[:])
 	 → t26 (@ListTrainFoodByTripID): (*ssa.Alloc)
 
-t28 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow/food.Food (slicelit))
+t28 (@ListTrainFoodByTripID): (*ssa.Alloc) (new [0]Food (slicelit))
 	 → t28 (@ListTrainFoodByTripID): (*ssa.Alloc)
 
 t29 (@ListTrainFoodByTripID): (*ssa.Slice) (slice t28[:])
@@ -3303,6 +5347,495 @@ t16 (@Update): (*ssa.MakeInterface) (make interface{} <- TrainType (t15))
 t19 (@Update): (*ssa.Extract) (extract t17 #1)
 
 
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TravelServiceImpl).CreateTrip ###
+t (@CreateTrip): (*ssa.Parameter) (parameter t : *TravelServiceImpl)
+
+ctx (@CreateTrip): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@CreateTrip): (*ssa.Alloc) (local TravelInfo (info))
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t1 (@CreateTrip): (*ssa.FieldAddr) (&t.travelDB [#2])
+
+t2 (@CreateTrip): (*ssa.UnOp) (*t1)
+
+t4 (@CreateTrip): (*ssa.Extract) (extract t3 #0)
+
+t5 (@CreateTrip): (*ssa.Extract) (extract t3 #1)
+
+t7 (@CreateTrip): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@CreateTrip): (*ssa.Alloc)
+
+t8 (@CreateTrip): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@CreateTrip): (*ssa.Alloc)
+
+t9 (@CreateTrip): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@CreateTrip): (*ssa.Alloc)
+
+t10 (@CreateTrip): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@CreateTrip): (*ssa.Alloc)
+
+t11 (@CreateTrip): (*ssa.FieldAddr) (&t0.TripID [#1])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t13 (@CreateTrip): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@CreateTrip): (*ssa.MakeInterface)
+
+t14 (@CreateTrip): (*ssa.Slice) (slice t7[:])
+	 → t7 (@CreateTrip): (*ssa.Alloc)
+
+t16 (@CreateTrip): (*ssa.Extract) (extract t15 #0)
+
+t17 (@CreateTrip): (*ssa.Extract) (extract t15 #1)
+
+t19 (@CreateTrip): (*ssa.Alloc) (new Trip (trip))
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t20 (@CreateTrip): (*ssa.MakeInterface) (make interface{} <- *Trip (t19))
+	 → t20 (@CreateTrip): (*ssa.MakeInterface)
+
+t23 (@CreateTrip): (*ssa.Extract) (extract t21 #1)
+
+t25 (@CreateTrip): (*ssa.FieldAddr) (&t0.TripID [#1])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t27 (@CreateTrip): (*ssa.Alloc) (new [1]any (varargs))
+	 → t27 (@CreateTrip): (*ssa.Alloc)
+
+t28 (@CreateTrip): (*ssa.IndexAddr) (&t27[0:int])
+	 → t27 (@CreateTrip): (*ssa.Alloc)
+
+t29 (@CreateTrip): (*ssa.MakeInterface) (make any <- string (t26))
+	 → t29 (@CreateTrip): (*ssa.MakeInterface)
+
+t30 (@CreateTrip): (*ssa.Slice) (slice t27[:])
+	 → t27 (@CreateTrip): (*ssa.Alloc)
+
+t31 (@CreateTrip): (*ssa.Call) (fmt.Errorf("trip (%s) already...":string, t30...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t32 (@CreateTrip): (*ssa.FieldAddr) (&t19.TripID [#1])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t33 (@CreateTrip): (*ssa.FieldAddr) (&t0.TripID [#1])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t35 (@CreateTrip): (*ssa.FieldAddr) (&t19.TrainTypeName [#2])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t36 (@CreateTrip): (*ssa.FieldAddr) (&t0.TrainTypeName [#2])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t38 (@CreateTrip): (*ssa.FieldAddr) (&t19.RouteID [#3])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t39 (@CreateTrip): (*ssa.FieldAddr) (&t0.RouteID [#3])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t41 (@CreateTrip): (*ssa.FieldAddr) (&t19.StartStationName [#4])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t42 (@CreateTrip): (*ssa.FieldAddr) (&t0.StartStationName [#4])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t44 (@CreateTrip): (*ssa.FieldAddr) (&t19.StationsName [#5])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t45 (@CreateTrip): (*ssa.FieldAddr) (&t0.StationsName [#6])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t47 (@CreateTrip): (*ssa.FieldAddr) (&t19.TerminalStationName [#6])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t48 (@CreateTrip): (*ssa.FieldAddr) (&t0.TerminalStationName [#5])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t50 (@CreateTrip): (*ssa.FieldAddr) (&t19.StartTime [#7])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t51 (@CreateTrip): (*ssa.FieldAddr) (&t0.StartTime [#7])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t53 (@CreateTrip): (*ssa.FieldAddr) (&t19.EndTime [#8])
+	 → t19 (@CreateTrip): (*ssa.Alloc)
+
+t54 (@CreateTrip): (*ssa.FieldAddr) (&t0.EndTime [#8])
+	 → t0 (@CreateTrip): (*ssa.Alloc)
+
+t57 (@CreateTrip): (*ssa.MakeInterface) (make interface{} <- Trip (t56))
+	 → t57 (@CreateTrip): (*ssa.MakeInterface)
+
+t58 (@CreateTrip): (*ssa.Call) (invoke t4.InsertOne(ctx, t57))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TravelServiceImpl).DeleteTrip ###
+t (@DeleteTrip): (*ssa.Parameter) (parameter t : *TravelServiceImpl)
+
+ctx (@DeleteTrip): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@DeleteTrip): (*ssa.FieldAddr) (&t.travelDB [#2])
+
+t1 (@DeleteTrip): (*ssa.UnOp) (*t0)
+
+t3 (@DeleteTrip): (*ssa.Extract) (extract t2 #0)
+
+t4 (@DeleteTrip): (*ssa.Extract) (extract t2 #1)
+
+t6 (@DeleteTrip): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t6 (@DeleteTrip): (*ssa.Alloc)
+
+t7 (@DeleteTrip): (*ssa.IndexAddr) (&t6[0:int])
+	 → t6 (@DeleteTrip): (*ssa.Alloc)
+
+t8 (@DeleteTrip): (*ssa.FieldAddr) (&t7.Key [#0])
+	 → t6 (@DeleteTrip): (*ssa.Alloc)
+
+t9 (@DeleteTrip): (*ssa.FieldAddr) (&t7.Value [#1])
+	 → t6 (@DeleteTrip): (*ssa.Alloc)
+
+t10 (@DeleteTrip): (*ssa.MakeInterface) (make interface{} <- string (tripID))
+	 → t10 (@DeleteTrip): (*ssa.MakeInterface)
+
+t11 (@DeleteTrip): (*ssa.Slice) (slice t6[:])
+	 → t6 (@DeleteTrip): (*ssa.Alloc)
+
+t12 (@DeleteTrip): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
+
+
+### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TravelServiceImpl).GetTripAllDetailInfo ###
+t (@GetTripAllDetailInfo): (*ssa.Parameter) (parameter t : *TravelServiceImpl)
+
+ctx (@GetTripAllDetailInfo): (*ssa.Parameter) (parameter ctx : context.Context)
+
+t0 (@GetTripAllDetailInfo): (*ssa.Alloc) (local TripAllDetailInfo (gtdi))
+	 → t0 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t1 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t.travelDB [#2])
+
+t2 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t1)
+
+t4 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t3 #0)
+
+t5 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t3 #1)
+
+t7 (@GetTripAllDetailInfo): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
+	 → t7 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t8 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t7[0:int])
+	 → t7 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t9 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t8.Key [#0])
+	 → t7 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t10 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t8.Value [#1])
+	 → t7 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t11 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t0.TripID [#0])
+	 → t0 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t13 (@GetTripAllDetailInfo): (*ssa.MakeInterface) (make interface{} <- string (t12))
+	 → t13 (@GetTripAllDetailInfo): (*ssa.MakeInterface)
+
+t14 (@GetTripAllDetailInfo): (*ssa.Slice) (slice t7[:])
+	 → t7 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t16 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t15 #0)
+
+t17 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t15 #1)
+
+t19 (@GetTripAllDetailInfo): (*ssa.Alloc) (new Trip (trip))
+	 → t19 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t20 (@GetTripAllDetailInfo): (*ssa.MakeInterface) (make interface{} <- *Trip (t19))
+	 → t20 (@GetTripAllDetailInfo): (*ssa.MakeInterface)
+
+t23 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t21 #1)
+
+t25 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t0.TripID [#0])
+	 → t0 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t27 (@GetTripAllDetailInfo): (*ssa.Alloc) (new [1]any (varargs))
+	 → t27 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t28 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t27[0:int])
+	 → t27 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t29 (@GetTripAllDetailInfo): (*ssa.MakeInterface) (make any <- string (t26))
+	 → t29 (@GetTripAllDetailInfo): (*ssa.MakeInterface)
+
+t30 (@GetTripAllDetailInfo): (*ssa.Slice) (slice t27[:])
+	 → t27 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t31 (@GetTripAllDetailInfo): (*ssa.Call) (fmt.Errorf("trip (%s) not found":string, t30...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t32 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t0.From [#2])
+	 → t0 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t34 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t0.To [#3])
+	 → t0 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t36 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t0.TravelDate [#1])
+	 → t0 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t39 (@GetTripAllDetailInfo): (*ssa.Alloc) (new [1]any (varargs))
+	 → t39 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t40 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t39[0:int])
+	 → t39 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t41 (@GetTripAllDetailInfo): (*ssa.MakeInterface) (make any <- string (t37))
+	 → t41 (@GetTripAllDetailInfo): (*ssa.MakeInterface)
+
+t42 (@GetTripAllDetailInfo): (*ssa.Slice) (slice t39[:])
+	 → t39 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t43 (@GetTripAllDetailInfo): (*ssa.Call) (fmt.Errorf("departure time (%...":string, t42...))
+	 → t25 (@Errorf): (*ssa.MakeInterface)
+	 → t45 (@Errorf): (*ssa.MakeInterface)
+	 → t2 (@New): (*ssa.MakeInterface)
+
+t44 (@GetTripAllDetailInfo): (*ssa.Alloc) (local Travel (travelQuery))
+	 → t44 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t45 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t44.Trip [#0])
+	 → t44 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t47 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t44.StartPlace [#1])
+	 → t44 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t48 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t44.EndPlace [#2])
+	 → t44 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t49 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t44.DepartureTime [#3])
+	 → t44 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t50 (@GetTripAllDetailInfo): (*ssa.Alloc) (local TravelResult (travelResult))
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t51 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t.basicService [#0])
+
+t52 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t51)
+
+t56 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t54 #1)
+
+t58 (@GetTripAllDetailInfo): (*ssa.Alloc) (local Route (route))
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t59 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t50.Route [#3])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t61 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Stations [#1])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t62 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t61)
+
+t63 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t50.TrainType [#2])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t64 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t63.ComfortClass [#3])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t66 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t50.TrainType [#2])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t67 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t66.EconomyClass [#2])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t69 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t.seatService [#1])
+
+t70 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t69)
+
+t71 (@GetTripAllDetailInfo): (*ssa.Alloc) (local SeatRequest (complit))
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t72 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.TravelDate [#0])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t73 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.TrainNumber [#1])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t74 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t19.TripID [#1])
+	 → t19 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t76 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.StartStation [#2])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t77 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.DestStation [#3])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t78 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.SeatType [#4])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t79 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.TotalNum [#5])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t80 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t71.Stations [#6])
+	 → t71 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t84 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t82 #1)
+
+t86 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t.seatService [#1])
+
+t87 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t86)
+
+t88 (@GetTripAllDetailInfo): (*ssa.Alloc) (local SeatRequest (complit))
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t89 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.TravelDate [#0])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t90 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.TrainNumber [#1])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t91 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t19.TripID [#1])
+	 → t19 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t93 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.StartStation [#2])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t94 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.DestStation [#3])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t95 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.SeatType [#4])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t96 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.TotalNum [#5])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t97 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t88.Stations [#6])
+	 → t88 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t101 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t99 #1)
+
+t103 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Stations [#1])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t104 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t103)
+
+t106 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Stations [#1])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t107 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t106)
+
+t109 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Distances [#2])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t110 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t109)
+
+t111 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t110[t105])
+
+t113 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Distances [#2])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t114 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t113)
+
+t115 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t114[0:int])
+
+t118 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Distances [#2])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t119 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t118)
+
+t120 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t119[t108])
+
+t122 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t58.Distances [#2])
+	 → t58 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t123 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t122)
+
+t124 (@GetTripAllDetailInfo): (*ssa.IndexAddr) (&t123[0:int])
+
+t127 (@GetTripAllDetailInfo): (*ssa.Alloc) (local TrainType (trainType))
+	 → t127 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t128 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t50.TrainType [#2])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t131 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t127.AvgSpeed [#4])
+	 → t127 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t135 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t127.AvgSpeed [#4])
+	 → t127 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t138 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t19.StartTime [#7])
+	 → t19 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t140 (@GetTripAllDetailInfo): (*ssa.UnOp) (*time.Local)
+
+t143 (@GetTripAllDetailInfo): (*ssa.Extract) (extract t141 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t153 (@GetTripAllDetailInfo): (*ssa.Alloc) (local TripResponse (tripResponse))
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t154 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.TripID [#0])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t155 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t19.TripID [#1])
+	 → t19 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t157 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.TrainTypeName [#1])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t158 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t19.TrainTypeName [#2])
+	 → t19 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t160 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.ConfortClass [#7])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t161 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.EconomyClass [#6])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t162 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.PriceForConfortClass [#9])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t163 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t50.Prices [#4])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t164 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t163)
+
+t166 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.PriceForEconomyClass [#8])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t167 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t50.Prices [#4])
+	 → t50 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t168 (@GetTripAllDetailInfo): (*ssa.UnOp) (*t167)
+
+t170 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.StartStation [#2])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t171 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.TerminalStation [#3])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t172 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.StartTime [#4])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t173 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t153.EndTime [#5])
+	 → t153 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t174 (@GetTripAllDetailInfo): (*ssa.Alloc) (local TripAllDetail (gtdr))
+	 → t174 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t175 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t174.trip [#0])
+	 → t174 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+t177 (@GetTripAllDetailInfo): (*ssa.FieldAddr) (&t174.tripResponse [#1])
+	 → t174 (@GetTripAllDetailInfo): (*ssa.Alloc)
+
+
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.UserServiceImpl).DeleteUser ###
 u (@DeleteUser): (*ssa.Parameter) (parameter u : *UserServiceImpl)
 
@@ -3565,27 +6098,139 @@ t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface) (make AssuranceService <- *A
 	 → t2 (@NewAssuranceServiceImpl): (*ssa.MakeInterface)
 
 
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.afterToday ###
+t0 (@afterToday): (*ssa.UnOp) (*time.Local)
+
+t3 (@afterToday): (*ssa.Extract) (extract t1 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.calculateRefund ###
+t0 (@calculateRefund): (*ssa.Alloc) (local Order (order))
+	 → t0 (@calculateRefund): (*ssa.Alloc)
+
+t1 (@calculateRefund): (*ssa.FieldAddr) (&t0.Status [#14])
+	 → t0 (@calculateRefund): (*ssa.Alloc)
+
+t4 (@calculateRefund): (*ssa.FieldAddr) (&t0.TravelDate [#2])
+	 → t0 (@calculateRefund): (*ssa.Alloc)
+
+t6 (@calculateRefund): (*ssa.UnOp) (*time.Local)
+
+t9 (@calculateRefund): (*ssa.Extract) (extract t7 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t11 (@calculateRefund): (*ssa.FieldAddr) (&t0.TravelTime [#3])
+	 → t0 (@calculateRefund): (*ssa.Alloc)
+
+t13 (@calculateRefund): (*ssa.UnOp) (*time.Local)
+
+t16 (@calculateRefund): (*ssa.Extract) (extract t14 #1)
+	 → t30 (@parse): (*ssa.MakeInterface)
+	 → t39 (@parse): (*ssa.MakeInterface)
+	 → t380 (@parse): (*ssa.MakeInterface)
+	 → t383 (@parse): (*ssa.MakeInterface)
+	 → t402 (@parse): (*ssa.MakeInterface)
+	 → t423 (@parse): (*ssa.MakeInterface)
+	 → t427 (@parse): (*ssa.MakeInterface)
+	 → t432 (@parse): (*ssa.MakeInterface)
+
+t26 (@calculateRefund): (*ssa.UnOp) (*time.Local)
+
+t30 (@calculateRefund): (*ssa.FieldAddr) (&t0.Price [#15])
+	 → t0 (@calculateRefund): (*ssa.Alloc)
+
+t34 (@calculateRefund): (*ssa.Extract) (extract t32 #1)
+	 → t7 (@ParseFloat): (*ssa.MakeInterface)
+	 → t14 (@atof32): (*ssa.MakeInterface)
+	 → t36 (@atof32): (*ssa.MakeInterface)
+	 → t43 (@atof32): (*ssa.MakeInterface)
+	 → t13 (@atof64): (*ssa.MakeInterface)
+	 → t34 (@atof64): (*ssa.MakeInterface)
+	 → t40 (@atof64): (*ssa.MakeInterface)
+	 → t75 (@atofHex): (*ssa.MakeInterface)
+
+t37 (@calculateRefund): (*ssa.Alloc) (new [1]any (varargs))
+	 → t37 (@calculateRefund): (*ssa.Alloc)
+
+t38 (@calculateRefund): (*ssa.IndexAddr) (&t37[0:int])
+	 → t37 (@calculateRefund): (*ssa.Alloc)
+
+t39 (@calculateRefund): (*ssa.MakeInterface) (make any <- float64 (t36))
+	 → t39 (@calculateRefund): (*ssa.MakeInterface)
+
+t40 (@calculateRefund): (*ssa.Slice) (slice t37[:])
+	 → t37 (@calculateRefund): (*ssa.Alloc)
+
+
 ### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.getAssuranceType ###
 ctx (@getAssuranceType): (*ssa.Parameter) (parameter ctx : context.Context)
 
 t0 (@getAssuranceType): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Index [#0])
 
+t4 (@getAssuranceType): (*ssa.Alloc) (new [1]any (varargs))
+	 → t4 (@getAssuranceType): (*ssa.Alloc)
+
+t5 (@getAssuranceType): (*ssa.IndexAddr) (&t4[0:int])
+	 → t4 (@getAssuranceType): (*ssa.Alloc)
+
+t6 (@getAssuranceType): (*ssa.MakeInterface) (make any <- int (index))
+	 → t6 (@getAssuranceType): (*ssa.MakeInterface)
+
+t7 (@getAssuranceType): (*ssa.Slice) (slice t4[:])
+	 → t4 (@getAssuranceType): (*ssa.Alloc)
+
+t9 (@getAssuranceType): (*ssa.Call) (errors.New(t8))
+	 → t2 (@New): (*ssa.MakeInterface)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.indexOf ###
+list (@indexOf): (*ssa.Parameter) (parameter list : []string)
+
+t4 (@indexOf): (*ssa.IndexAddr) (&list[t2])
+
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.init ###
-t10 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Index [#0])
+t13 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Index [#0])
 
-t11 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Name [#1])
+t14 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Name [#1])
 
-t12 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Price [#2])
+t15 (@init): (*ssa.FieldAddr) (&TRAFFIC_ACCIDENT.Price [#2])
 
-t13 (@init): (*ssa.Alloc) (new [1]AssuranceType (slicelit))
-	 → t13 (@init): (*ssa.Alloc)
+t16 (@init): (*ssa.Alloc) (new [1]AssuranceType (slicelit))
+	 → t16 (@init): (*ssa.Alloc)
 
-t14 (@init): (*ssa.IndexAddr) (&t13[0:int])
-	 → t13 (@init): (*ssa.Alloc)
+t17 (@init): (*ssa.IndexAddr) (&t16[0:int])
+	 → t16 (@init): (*ssa.Alloc)
 
-t16 (@init): (*ssa.Slice) (slice t13[:])
-	 → t13 (@init): (*ssa.Alloc)
+t19 (@init): (*ssa.Slice) (slice t16[:])
+	 → t16 (@init): (*ssa.Alloc)
+
+
+### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.isContained ###
+soldTickets (@isContained): (*ssa.Parameter) (parameter soldTickets : []Ticket)
+
+t0 (@isContained): (*ssa.Alloc) (local Ticket (t))
+	 → t0 (@isContained): (*ssa.Alloc)
+
+t5 (@isContained): (*ssa.IndexAddr) (&soldTickets[t3])
+
+t7 (@isContained): (*ssa.FieldAddr) (&t0.SeatNo [#0])
+	 → t0 (@isContained): (*ssa.Alloc)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.main ###

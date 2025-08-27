@@ -7,24 +7,16 @@
 4. (nosql): parse NoSQL constraint file
 5. (nosql): parse advanced filters for mongodb UPDATES
 6. (nosql): get tags from struct fields and apply to dbfield taints (e.g., postid insteand of PostID)
+7. (detection): improve precision about affected fields/constraints
 
 ## TODOS (MAJOR)
 1. implement inter-procedural analysis
 2. improve ssagraph taint algorithm
+3. reduce number of foreign keys (and thus absence of cascade delestes) by filtering by unique dbfields
+4. implement transitivity for inference of foreign keys with writes in diff requests (if A references B and B references C, then A references C)
 
 ## ASSUMPTIONS
 - inline functions or go routines are ignored by parser
 - for mongodb, the name in blueprint wiring must match the database name used in `GetCollection()`
 - the service structure name that implements exposed methods must be `<service_interface_name>Impl`
 - the service constructor must return the service interface and not the service struct
-
-
-Block #26: socialnetwork2.UserTimelineService.ReadUserTimeline.if.done
-			00: t122 = &t107.PostID [#0]
-			01: t123 = *t122
-			02: t124 = new [1]int64 (varargs)
-			03: t125 = &t124[0:int]
-			04: *t125 = t123
-			05: t126 = slice t124[:]
-			06: t127 = append(t111, t126...)
-			07: jump 24

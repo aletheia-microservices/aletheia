@@ -1,3 +1,62 @@
 ---------------------------------------------------------------------
 ----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
 ---------------------------------------------------------------------
+entry request: AdminOrderService.DeleteOrder()
+	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
+		CONCURRENT WRITE: ConsignService.InsertConsign() --> consign_db.consign_record.InsertOne()
+		- written field: consign_db.consign_record.OrderID
+			- affected constraint #0: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID
+		CONCURRENT WRITE: PreserveService.Preserve() --> email_queue.notification.Push()
+		- written field: email_queue.notification.OrderNumber
+			- affected constraint #0: FOREIGN_KEY email_queue.notification.OrderNumber REFERENCES order_db.order.ID
+		CONCURRENT WRITE: CancelService.CancelOrder() --> email_queue.notification.Push()
+		- written field: email_queue.notification.OrderNumber
+			- affected constraint #0: FOREIGN_KEY email_queue.notification.OrderNumber REFERENCES order_db.order.ID
+		- written field: email_queue.notification.Price
+			- affected constraint #0: FOREIGN_KEY email_queue.notification.Price REFERENCES order_db.order.Price
+		- written field: email_queue.notification.SeatNumber
+			- affected constraint #0: FOREIGN_KEY email_queue.notification.SeatNumber REFERENCES order_db.order.SeatNumber
+		- written field: email_queue.notification.StartTime
+			- affected constraint #0: FOREIGN_KEY email_queue.notification.StartTime REFERENCES order_db.order.TravelTime
+		CONCURRENT WRITE: AssuranceService.Create() --> assurance_db.assurance.InsertOne()
+		- written field: assurance_db.assurance.OrderID
+			- affected constraint #0: FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES order_db.order.ID
+		CONCURRENT WRITE: FoodService.CreateFoodOrder() --> food_db.food_order.InsertOne()
+		- written field: food_db.food_order.OrderID
+			- affected constraint #0: FOREIGN_KEY food_db.food_order.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID
+		CONCURRENT WRITE: FoodService.CreateFoodOrder() --> delivery_queue.notification.Push()
+		- written field: delivery_queue.notification.OrderID
+			- affected constraint #0: FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES order_db.order.ID
+		CONCURRENT WRITE: DeliveryService.Run() --> delivery_db.delivery.InsertOne()
+		- written field: delivery_db.delivery.OrderID
+			- affected constraint #0: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #2: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID
+entry request: AdminUserService.DeleteUser()
+	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
+		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
+		- written field: order_db.order.AccountID
+			- affected constraint #0: FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID
+		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
+		- written field: order_db.order.AccountID
+			- affected constraint #0: FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID
+entry request: AdminBasicInfoService.DeleteContact()
+	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
+		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
+		- written field: order_db.order.ContactsDocumentNumber
+			- affected constraint #0: FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contacts.DocumentNumber
+		- written field: order_db.order.DocumentType
+			- affected constraint #0: FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType
+		- written field: order_db.order.ContactsName
+			- affected constraint #0: FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name
+		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
+		- written field: order_db.order.DocumentType
+			- affected constraint #0: FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType
+		- written field: order_db.order.ContactsName
+			- affected constraint #0: FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name
+		- written field: order_db.order.ContactsDocumentNumber
+			- affected constraint #0: FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contacts.DocumentNumber

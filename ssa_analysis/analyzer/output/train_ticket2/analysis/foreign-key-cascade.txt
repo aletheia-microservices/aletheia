@@ -1,3 +1,43 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
+entry request: AdminOrderService.DeleteOrder()
+	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
+		MISSING DELETE on field: assurance_db.assurance.OrderID
+			- affected constraint #0: FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES order_db.order.ID
+		MISSING DELETE on field: consign_db.consign_record.TargetDate
+			- affected constraint #0: FOREIGN_KEY consign_db.consign_record.TargetDate REFERENCES order_db.order.TravelDate [MANDATORY]
+		MISSING DELETE on field: consign_db.consign_record.OrderID
+			- affected constraint #0: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID
+		MISSING DELETE on field: consign_db.consign_record.AccountID
+			- affected constraint #0: FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES order_db.order.AccountID [MANDATORY]
+		MISSING DELETE on field: consign_db.consign_record.FromPlace
+			- affected constraint #0: FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES email_queue.notification.StartPlace [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES order_db.order.FromStation [MANDATORY]
+		MISSING DELETE on field: consign_db.consign_record.ToPlace
+			- affected constraint #0: FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES email_queue.notification.EndPlace [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES order_db.order.ToStation [MANDATORY]
+		MISSING DELETE on field: food_db.food_order.OrderID
+			- affected constraint #0: FOREIGN_KEY food_db.food_order.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID
+		MISSING DELETE on field: delivery_db.delivery.OrderID
+			- affected constraint #0: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]
+			- affected constraint #1: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+			- affected constraint #2: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID
+
+entry request: AdminUserService.DeleteUser()
+	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
+		MISSING DELETE on field: order_db.order.AccountID
+			- affected constraint #0: FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID
+
+entry request: AdminBasicInfoService.DeleteContact()
+	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
+		MISSING DELETE on field: order_db.order.DocumentType
+			- affected constraint #0: FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType
+		MISSING DELETE on field: order_db.order.ContactsName
+			- affected constraint #0: FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name
+		MISSING DELETE on field: order_db.order.ContactsDocumentNumber
+			- affected constraint #0: FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contacts.DocumentNumber
+

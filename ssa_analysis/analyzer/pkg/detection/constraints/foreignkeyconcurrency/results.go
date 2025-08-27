@@ -28,6 +28,9 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 				for _, field := range write.affectedFields {
 					results += fmt.Sprintf("\t\t- written field: %s\n", field.GetPath())
 					for i, constraint := range field.GetConstraints() {
+						/* if !constraint.IsMandatory() {
+							results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
+						} */
 						results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
 					}
 				}

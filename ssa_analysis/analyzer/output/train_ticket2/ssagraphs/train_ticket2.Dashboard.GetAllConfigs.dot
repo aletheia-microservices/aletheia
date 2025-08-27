@@ -1,0 +1,30 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2234368 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2234368 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2234398 [label="t2: invoke t1.FindAll(ctx)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ ConfigService.FindAll.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
+
+==== tainted ====
+_obj
+[rpc] @ ConfigService.FindAll.t4
+", style=bold, shape=box, color="black"];
+	N_val_field_2234377 [label="t0: &d.configService [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2234294 [label="d: parameter d : *DashboardImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2234326 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2234377 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2234294 -> N_val_field_2234377;
+	N_val_field_2234377 -> N_val_unary_2234377;
+	N_val_param_2234326 -> N_val_call_2234398;
+	N_val_unary_2234377 -> N_val_call_2234398;
+	N_val_call_2234398 -> N_val_extrt3;
+	N_val_call_2234398 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_2234368;
+	N_val_extrt4 -> N_instr_ret_2234368;
+}

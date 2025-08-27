@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_1867602 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_1867602 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_1867635 [label="t2: invoke t1.DeleteRoute(ctx, id)
+
+==== tainted ====
+_obj
+[rpc] @ RouteService.DeleteRoute.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_1867611 [label="t0: &a.routeService [#0]
+
+==== tainted ====
+_obj
+[rpc] @ RouteService.DeleteRoute.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_1867523 [label="a: parameter a : *AdminRouteServiceImpl
+
+==== tainted ====
+_obj.routeService
+[rpc] @ RouteService.DeleteRoute.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_1867561 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_1867582 [label="id: parameter id : string
+
+==== tainted ====
+_obj
+[rpc] @ RouteService.DeleteRoute.id
+", style=bold, shape=box, color="black"];
+	N_val_unary_1867611 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ RouteService.DeleteRoute.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_1867523 -> N_val_field_1867611;
+	N_val_field_1867611 -> N_val_unary_1867611;
+	N_val_param_1867561 -> N_val_call_1867635;
+	N_val_param_1867582 -> N_val_call_1867635;
+	N_val_unary_1867611 -> N_val_call_1867635;
+	N_val_call_1867635 -> N_instr_ret_1867602;
+}

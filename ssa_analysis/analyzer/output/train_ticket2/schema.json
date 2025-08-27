@@ -10,7 +10,10 @@
           "assurance_db.assurance.ID",
           "assurance_db.assurance.OrderID"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]",
+          "FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES order_db.order.ID"
+        ]
       }
     ]
   },
@@ -28,22 +31,40 @@
       }
     ]
   },
-  "consignprice_db": {
-    "name": "consignprice_db",
+  "consign_db": {
+    "name": "consign_db",
     "schemas": [
       {
-        "name": "consign",
+        "name": "consign_record",
         "fields": [
-          "consignprice_db.consign",
-          "consignprice_db.consign.BeyondPrice",
-          "consignprice_db.consign.Index",
-          "consignprice_db.consign.InitialPrice",
-          "consignprice_db.consign.InitialWeight",
-          "consignprice_db.consign.WithinPrice"
+          "consign_db.consign_record",
+          "consign_db.consign_record.AccountID",
+          "consign_db.consign_record.Consignee",
+          "consign_db.consign_record.FromPlace",
+          "consign_db.consign_record.HandleDate",
+          "consign_db.consign_record.OrderID",
+          "consign_db.consign_record.Phone",
+          "consign_db.consign_record.Price",
+          "consign_db.consign_record.TargetDate",
+          "consign_db.consign_record.ToPlace",
+          "consign_db.consign_record.Weight"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY consign_db.consign_record.TargetDate REFERENCES order_db.order.TravelDate [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID",
+          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES order_db.order.AccountID [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES email_queue.notification.StartPlace [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES order_db.order.FromStation [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES email_queue.notification.EndPlace [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES order_db.order.ToStation [MANDATORY]"
+        ]
       }
     ]
+  },
+  "consignprice_db": {
+    "name": "consignprice_db",
+    "schemas": null
   },
   "contacts_db": {
     "name": "contacts_db",
@@ -55,7 +76,8 @@
           "contacts_db.contacts.AccountID",
           "contacts_db.contacts.DocumentNumber",
           "contacts_db.contacts.DocumentType",
-          "contacts_db.contacts.ID"
+          "contacts_db.contacts.ID",
+          "contacts_db.contacts.Name"
         ],
         "constraints": []
       }
@@ -67,52 +89,135 @@
       {
         "name": "delivery",
         "fields": [
-          "delivery_db.delivery"
+          "delivery_db.delivery",
+          "delivery_db.delivery.FoodName",
+          "delivery_db.delivery.OrderID",
+          "delivery_db.delivery.StationName",
+          "delivery_db.delivery.StoreName"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY delivery_db.delivery REFERENCES delivery_queue.notification [MANDATORY]",
+          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]",
+          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]",
+          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID",
+          "FOREIGN_KEY delivery_db.delivery.StoreName REFERENCES delivery_queue.notification.StoreName [MANDATORY]",
+          "FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES delivery_queue.notification.FoodName [MANDATORY]",
+          "FOREIGN_KEY delivery_db.delivery.StationName REFERENCES delivery_queue.notification.StationName [MANDATORY]"
+        ]
       }
     ]
   },
-  "delivery_q": {
-    "name": "delivery_q",
+  "delivery_queue": {
+    "name": "delivery_queue",
     "schemas": [
       {
         "name": "notification",
         "fields": [
-          "delivery_q.notification"
+          "delivery_queue.notification",
+          "delivery_queue.notification.FoodName",
+          "delivery_queue.notification.OrderID",
+          "delivery_queue.notification.StationName",
+          "delivery_queue.notification.StoreName"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]",
+          "FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES order_db.order.ID"
+        ]
       }
     ]
+  },
+  "email_queue": {
+    "name": "email_queue",
+    "schemas": [
+      {
+        "name": "notification",
+        "fields": [
+          "email_queue.notification",
+          "email_queue.notification.Date",
+          "email_queue.notification.Email",
+          "email_queue.notification.EndPlace",
+          "email_queue.notification.OrderNumber",
+          "email_queue.notification.Price",
+          "email_queue.notification.SeatClass",
+          "email_queue.notification.SeatNumber",
+          "email_queue.notification.StartPlace",
+          "email_queue.notification.StartTime",
+          "email_queue.notification.Username"
+        ],
+        "constraints": [
+          "FOREIGN_KEY email_queue.notification.OrderNumber REFERENCES order_db.order.ID",
+          "FOREIGN_KEY email_queue.notification.SeatNumber REFERENCES order_db.order.SeatNumber",
+          "FOREIGN_KEY email_queue.notification.Price REFERENCES order_db.order.Price",
+          "FOREIGN_KEY email_queue.notification.StartTime REFERENCES order_db.order.TravelTime"
+        ]
+      }
+    ]
+  },
+  "food_db": {
+    "name": "food_db",
+    "schemas": [
+      {
+        "name": "food_order",
+        "fields": [
+          "food_db.food_order",
+          "food_db.food_order.FoodName",
+          "food_db.food_order.FoodType",
+          "food_db.food_order.OrderID",
+          "food_db.food_order.Price",
+          "food_db.food_order.StationName",
+          "food_db.food_order.StoreName"
+        ],
+        "constraints": [
+          "FOREIGN_KEY food_db.food_order.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]",
+          "FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID"
+        ]
+      }
+    ]
+  },
+  "inside_payment_db": {
+    "name": "inside_payment_db",
+    "schemas": null
   },
   "money_db": {
     "name": "money_db",
     "schemas": null
   },
-  "payment_db": {
-    "name": "payment_db",
+  "order_db": {
+    "name": "order_db",
     "schemas": [
       {
-        "name": "money",
+        "name": "order",
         "fields": [
-          "payment_db.money",
-          "payment_db.money.ID",
-          "payment_db.money.Price",
-          "payment_db.money.UserID",
-          "payment_db.payment",
-          "payment_db.payment.ID"
+          "order_db.order",
+          "order_db.order.AccountID",
+          "order_db.order.ContactsDocumentNumber",
+          "order_db.order.ContactsName",
+          "order_db.order.DocumentType",
+          "order_db.order.FromStation",
+          "order_db.order.ID",
+          "order_db.order.Price",
+          "order_db.order.SeatClass",
+          "order_db.order.SeatNumber",
+          "order_db.order.Status",
+          "order_db.order.ToStation",
+          "order_db.order.TrainNumber",
+          "order_db.order.TravelDate",
+          "order_db.order.TravelTime"
         ],
-        "constraints": []
-      },
-      {
-        "name": "payment",
-        "fields": [
-          "payment_db.payment",
-          "payment_db.payment.ID"
-        ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType",
+          "FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name",
+          "FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contacts.DocumentNumber",
+          "FOREIGN_KEY order_db.order.ToStation REFERENCES email_queue.notification.EndPlace [MANDATORY]",
+          "FOREIGN_KEY order_db.order.FromStation REFERENCES email_queue.notification.StartPlace [MANDATORY]",
+          "FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID"
+        ]
       }
     ]
+  },
+  "payment_db": {
+    "name": "payment_db",
+    "schemas": null
   },
   "price_db": {
     "name": "price_db",
@@ -136,8 +241,6 @@
         "name": "route",
         "fields": [
           "route_db.route",
-          "route_db.route.$and",
-          "route_db.route.$and[*]",
           "route_db.route.Distances",
           "route_db.route.EndStation",
           "route_db.route.ID",
@@ -164,17 +267,7 @@
   },
   "stationfood_db": {
     "name": "stationfood_db",
-    "schemas": [
-      {
-        "name": "stationfood",
-        "fields": [
-          "stationfood_db.stationfood",
-          "stationfood_db.stationfood.ID",
-          "stationfood_db.stationfood.StationName"
-        ],
-        "constraints": []
-      }
-    ]
+    "schemas": null
   },
   "train_db": {
     "name": "train_db",
@@ -192,13 +285,24 @@
   },
   "trainfood_db": {
     "name": "trainfood_db",
+    "schemas": null
+  },
+  "travel_db": {
+    "name": "travel_db",
     "schemas": [
       {
-        "name": "trainfood",
+        "name": "trip",
         "fields": [
-          "trainfood_db.trainfood",
-          "trainfood_db.trainfood.Foods",
-          "trainfood_db.trainfood.TripID"
+          "travel_db.trip",
+          "travel_db.trip.EndTime",
+          "travel_db.trip.ID",
+          "travel_db.trip.RouteID",
+          "travel_db.trip.StartStationName",
+          "travel_db.trip.StartTime",
+          "travel_db.trip.StationsName",
+          "travel_db.trip.TerminalStationName",
+          "travel_db.trip.TrainTypeName",
+          "travel_db.trip.TripID"
         ],
         "constraints": []
       }
@@ -211,8 +315,7 @@
         "name": "user",
         "fields": [
           "user_db.user",
-          "user_db.user.UserID",
-          "user_db.user.Username"
+          "user_db.user.UserID"
         ],
         "constraints": []
       }

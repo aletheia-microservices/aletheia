@@ -1,3 +1,53 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
+entry request: Dashboard.PreserveTicketConfirm()
+	FOREIGN KEY READS #0:
+		READ 1: DeliveryService.Run() --> delivery_queue.notification.Pop()
+			- read field: consign_db.consign_record.OrderID
+				- constraint #0: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+				- constraint #1: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID
+		READ 2: OrderService.Create() --> order_db.order.FindOne()
+			- read field: order_db.order.ID
+	FOREIGN KEY READS #1:
+		READ 1: OrderService.GetTicketListByDateAndTripID() --> order_db.order.FindMany()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.TripID
+	FOREIGN KEY READS #2:
+		READ 1: RouteService.GetRouteById() --> route_db.route.FindOne()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.ID
+	FOREIGN KEY READS #3:
+		READ 1: TrainService.RetrieveByName() --> train_db.train.FindOne()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.TrainTypeName
+	FOREIGN KEY READS #4:
+		READ 1: OrderService.GetTicketListByDateAndTripID() --> order_db.order.FindMany()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.TripID
+	FOREIGN KEY READS #5:
+		READ 1: OrderService.GetTicketListByDateAndTripID() --> order_db.order.FindMany()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.TripID
+	FOREIGN KEY READS #6:
+		READ 1: RouteService.GetRouteById() --> route_db.route.FindOne()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.ID
+	FOREIGN KEY READS #7:
+		READ 1: TrainService.RetrieveByName() --> train_db.train.FindOne()
+		READ 2: TravelService.GetTripAllDetailInfo() --> travel_db.trip.FindOne()
+			- read field: travel_db.trip.TrainTypeName
+entry request: CancelService.CancelOrder()
+	FOREIGN KEY READS #0:
+		READ 1: UserService.FindByUserID() --> user_db.user.FindOne()
+			- read field: user_db.user.UserID
+		READ 2: OrderService.Find() --> order_db.order.FindOne()
+			- read field: order_db.order.AccountID
+				- constraint #0: FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID
+	FOREIGN KEY READS #1:
+		READ 1: OrderService.UpdateStatus() --> order_db.order.FindOne()
+			- read field: delivery_queue.notification.OrderID
+				- constraint #0: FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES email_queue.notification.OrderNumber [MANDATORY]
+				- constraint #1: FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES order_db.order.ID
+		READ 2: OrderService.Find() --> order_db.order.FindOne()
+			- read field: order_db.order.ID
