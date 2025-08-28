@@ -1,16 +1,16 @@
 digraph G {
 	rankdir=TD;
-	N_instr__925199767 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__925199767 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2719706 [label="return nil:[]Item, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2719706 [label="return nil:[]Item, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2719727 [label="return t4, t5", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2719727 [label="return t4, t5", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1245095498 [label="nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item: nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1420142095 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr__1381515453 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1381515453 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2581138 [label="return nil:[]Item, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2581138 [label="return nil:[]Item, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2581159 [label="return t4, t5", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2581159 [label="return t4, t5", style=bold, shape=ellipse, color="yellow"];
+	N_nil_628855398 [label="nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item: nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Item", style=bold, shape=ellipse, color="yellow"];
+	N_nil_656274202 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val____string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="black"];
-	N_val_binary_2719696 [label="t0: sessionID == \"\":string", style=bold, shape=ellipse, color="black"];
-	N_val_call_2719748 [label="t3: invoke t2.GetCart(ctx, sessionID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_2581128 [label="t0: sessionID == \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_call_2581180 [label="t3: invoke t2.GetCart(ctx, sessionID)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt4 [label="t4: extract t3 #0
 
 ==== tainted ====
@@ -23,27 +23,27 @@ _obj
 _obj
 [rpc] @ CartService.GetCart.t5
 ", style=bold, shape=box, color="black"];
-	N_val_field_2719736 [label="t1: &f.cart [#2]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2719600 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2719625 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2719646 [label="sessionID: parameter sessionID : string
+	N_val_field_2581168 [label="t1: &f.cart [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2581032 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2581057 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2581078 [label="sessionID: parameter sessionID : string
 
 ==== tainted ====
 _obj
 [rpc] @ CartService.GetCart.sessionID
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2719736 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
-	N_val_param_2719646 -> N_val_binary_2719696;
-	N_val____string -> N_val_binary_2719696;
-	N_nil_1245095498 -> N_instr_ret_2719706;
-	N_nil_1420142095 -> N_instr_ret_2719706;
-	N_val_param_2719600 -> N_val_field_2719736;
-	N_val_field_2719736 -> N_val_unary_2719736;
-	N_val_param_2719625 -> N_val_call_2719748;
-	N_val_param_2719646 -> N_val_call_2719748;
-	N_val_unary_2719736 -> N_val_call_2719748;
-	N_val_call_2719748 -> N_val_extrt4;
-	N_val_call_2719748 -> N_val_extrt5;
-	N_val_extrt4 -> N_instr_ret_2719727;
-	N_val_extrt5 -> N_instr_ret_2719727;
+	N_val_unary_2581168 [label="t2: *t1", style=bold, shape=ellipse, color="red"];
+	N_val_param_2581078 -> N_val_binary_2581128;
+	N_val____string -> N_val_binary_2581128;
+	N_nil_628855398 -> N_instr_ret_2581138;
+	N_nil_656274202 -> N_instr_ret_2581138;
+	N_val_param_2581032 -> N_val_field_2581168;
+	N_val_field_2581168 -> N_val_unary_2581168;
+	N_val_param_2581057 -> N_val_call_2581180;
+	N_val_param_2581078 -> N_val_call_2581180;
+	N_val_unary_2581168 -> N_val_call_2581180;
+	N_val_call_2581180 -> N_val_extrt4;
+	N_val_call_2581180 -> N_val_extrt5;
+	N_val_extrt4 -> N_instr_ret_2581159;
+	N_val_extrt5 -> N_instr_ret_2581159;
 }

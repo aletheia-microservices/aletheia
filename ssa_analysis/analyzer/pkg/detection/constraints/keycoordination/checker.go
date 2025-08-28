@@ -38,11 +38,15 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			if secondaryTaint.GetDatabaseCallID() != currOp.GetCallID() && secondaryTaint.IsRead() {
 				otherOp := request.FindOperationByCallID(secondaryTaint.GetDatabaseCallID())
 
-				if currOp == otherOp {
+				if currOp == otherOp || otherOp == nil {
 					continue
 				}
 
-				if otherOp != nil && !detector.hasForeignRead(request, currOp, otherOp) {
+				if currOp.call.GetToNode().GetDatabaseName() == otherOp.call.GetToNode().GetDatabaseName() {
+					continue
+				}
+
+				if !detector.hasForeignRead(request, currOp, otherOp) {
 					otherFieldpath := secondaryTaint.GetDatabasePath()
 					otherDatabase := app.GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherFieldpath))
 					otherField := app.ComputeDatabaseFieldFromPath(otherDatabase, otherFieldpath)

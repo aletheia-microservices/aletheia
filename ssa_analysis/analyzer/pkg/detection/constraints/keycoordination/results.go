@@ -2,6 +2,7 @@ package keycoordination
 
 import (
 	"fmt"
+	"log"
 
 	"analyzer/pkg/app"
 )
@@ -20,13 +21,17 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 	header += "---------------------------------------------------------------------\n"
 
 	var results string
+	total := 0
 	for request, foreignreads := range detector.foreignReads {
 		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
-		for i, foreignread := range foreignreads {
+		for _, foreignread := range foreignreads {
+			total++
 			if detector.isTypePrimaryKey() {
-				results += fmt.Sprintf("\tPRIMARY KEY READS #%d:\n", i)
+				results += fmt.Sprintf("\tPRIMARY KEY READS #%d:\n", total)
 			} else if detector.isTypeForeignKey() {
-				results += fmt.Sprintf("\tFOREIGN KEY READS #%d:\n", i)
+				results += fmt.Sprintf("\tFOREIGN KEY READS #%d:\n", total)
+			} else {
+				log.Fatalf("unexpected")
 			}
 			results += fmt.Sprintf("\t\tREAD 1: %s\n", foreignread.op1.call.String())
 			var shift = 0

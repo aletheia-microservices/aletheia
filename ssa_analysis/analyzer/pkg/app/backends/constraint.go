@@ -11,27 +11,54 @@ const (
 type Constraint struct {
 	t ConstraintType
 	// for foreign key constraint, index 0 is for field referencing and index 1 is for field being referenced
-	fields []*Field
-	mandatory bool // for foreign key constraints
+	fields            []*Field
+	mandatory         bool         // for foreign key constraints
+
+	// 1. applies to foreign key only
+	// 2. the entire constraint is non-mandatory if any keyvalue is non-mandatory
+	// 3. for a given request index:
+	// - when a given execution is mandatory, the mandatory flag is always overwritten to true
+	// - when a given execution is non-mandatory, the mandatory flag is only set to false if it is not yet true
+	// key is end-to-end request index
+	// map is mandatory bool
+	reqIdxToMandatory map[int]bool
 }
 
 func NewConstraint(t ConstraintType, fields ...*Field) *Constraint {
 	return &Constraint{
 		t:      t,
 		fields: fields,
+		reqIdxToMandatory: make(map[int]bool),
 	}
 }
 
 func (constraint *Constraint) IsMandatory() bool {
-	return constraint.mandatory
+	for _, m := range constraint.reqIdxToMandatory {
+		if !m {
+			return false
+		}
+	}
+	return true
 }
 
-func (constraint *Constraint) EnableMandatory() {
+func (constraint *Constraint) EnableMandatory(reqIdx int) bool {
+	constraint.reqIdxToMandatory[reqIdx] = true
 	constraint.mandatory = true
+	return true
 }
 
-func (constraint *Constraint) DisableMandatory() {
+func (constraint *Constraint) DisableMandatory(reqIdx int) bool {
+	if m, ok := constraint.reqIdxToMandatory[reqIdx]; ok {
+		if m {
+			return false
+		}
+		constraint.reqIdxToMandatory[reqIdx] = false
+		return true
+	}
+
+	constraint.reqIdxToMandatory[reqIdx] = false
 	constraint.mandatory = false
+	return true
 }
 
 func (constraint *Constraint) IsForeignKey() bool {

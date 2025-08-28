@@ -1,59 +1,5 @@
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndService
-	Method: func(ctx context.Context, lat float64, lon float64, require string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
-	Method: func(ctx context.Context, inDate string, outDate string, hotelId string, customerName string, username string, password string, roomNumber int64) (string, error)
-	Method: func(ctx context.Context, customerName string, inDate string, outDate string, lat float64, lon float64, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
-	Method: func(ctx context.Context, username string, password string) (string, error)
-		Parameters:
-			date = parameter date : string
-Function: hotelreservation2.checkDataFormat
-Block #0: hotelreservation2.checkDataFormat.entry
-			00: t0 = len(date)
-			01: t1 = t0 != 10:int
-			02: if t1 goto 1 else 2
-Block #1: hotelreservation2.checkDataFormat.if.then
-			00: return false:bool
-Block #2: hotelreservation2.checkDataFormat.if.done
-			00: jump 5
-Block #3: hotelreservation2.checkDataFormat.for.body
-			00: t2 = t3 == 4:int
-			01: if t2 goto 6 else 9
-Block #4: hotelreservation2.checkDataFormat.for.done
-			00: return true:bool
-Block #5: hotelreservation2.checkDataFormat.for.loop
-			00: t3 = phi [2: 0:int, 7: t7] #i
-			01: t4 = t3 < 10:int
-			02: if t4 goto 3 else 4
-Block #6: hotelreservation2.checkDataFormat.if.then
-			00: t5 = date[t3]
-			01: t6 = t5 != 45:byte
-			02: if t6 goto 10 else 7
-Block #7: hotelreservation2.checkDataFormat.if.done
-			00: t7 = t3 + 1:int
-			01: jump 5
-Block #8: hotelreservation2.checkDataFormat.if.else
-			00: t8 = date[t3]
-			01: t9 = t8 < 48:byte
-			02: if t9 goto 11 else 12
-Block #9: hotelreservation2.checkDataFormat.cond.false
-			00: t10 = t3 == 7:int
-			01: if t10 goto 6 else 8
-Block #10: hotelreservation2.checkDataFormat.if.then
-			00: return false:bool
-Block #11: hotelreservation2.checkDataFormat.if.then
-			00: return false:bool
-Block #12: hotelreservation2.checkDataFormat.cond.false
-			00: t11 = date[t3]
-			01: t12 = t11 > 57:byte
-			02: if t12 goto 11 else 7
-		Parameters:
-Function: hotelreservation2.main
-Block #0: hotelreservation2.main.entry
-			00: t0 = context.Background()
-			01: t1 = NewGeoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
-			02: t2 = extract t1 #0
-			03: t3 = extract t1 #1
-			04: t4 = invoke t2.Nearby(t0, 0:float64, 0:float64)
-			05: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserService
+	Method: func(ctx context.Context, username string, password string) (bool, error)
 		Parameters:
 Function: hotelreservation2.init
 Block #0: hotelreservation2.init.entry
@@ -72,20 +18,6 @@ Block #1: hotelreservation2.init.init.start
 			09: t9 = fmt.init()
 			10: jump 2
 Block #2: hotelreservation2.init.init.done
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Hotel
-	Method: func()
-		Parameters:
-			h = parameter h : Hotel
-Function: hotelreservation2.Hotel.remote
-Block #0: hotelreservation2.Hotel.remote.entry
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Address
-	Method: func()
-		Parameters:
-			a = parameter a : Address
-Function: hotelreservation2.Address.remote
-Block #0: hotelreservation2.Address.remote.entry
 			00: return
 		Parameters:
 			ctx = parameter ctx : context.Context
@@ -109,441 +41,6 @@ Block #0: hotelreservation2.NewFrontEndServiceImpl.entry
 			10: *t5 = reservationService
 			11: t6 = make FrontEndService <- *FrontEndServiceImpl (t0)
 			12: return t6, nil:error
-	Unknown member type: *ssa.NamedConst
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RateService
-	Method: func(ctx context.Context, hotelIDs []string, inDate string, outDate string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationService
-	Method: func(ctx context.Context, customerName string, hotelIDs []string, inDate string, outDate string, roomNumber int64) ([]string, error)
-	Method: func(ctx context.Context, customerName string, hotelIds []string, inDate string, outDate string, roomNumber int64) ([]string, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelNumber
-	Method: func()
-		Parameters:
-			h = parameter h : HotelNumber
-Function: hotelreservation2.HotelNumber.remote
-Block #0: hotelreservation2.HotelNumber.remote.entry
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RateServiceImpl
-	Method: func(ctx context.Context, hotelIDs []string, inDate string, outDate string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan, error)
-		Parameters:
-			r = parameter r : *RateServiceImpl
-			ctx = parameter ctx : context.Context
-			hotelIDs = parameter hotelIDs : []string
-			inDate = parameter inDate : string
-			outDate = parameter outDate : string
-Function: hotelreservation2.RateService.GetRates
-Block #0: hotelreservation2.RateService.GetRates.entry
-			00: t0 = len(hotelIDs)
-			01: jump 1
-Block #1: hotelreservation2.RateService.GetRates.rangeindex.loop
-			00: t1 = phi [0: nil:[]RatePlan, 7: t22] #rate_plans
-			01: t2 = phi [0: -1:int, 7: t3]
-			02: t3 = t2 + 1:int
-			03: t4 = t3 < t0
-			04: if t4 goto 2 else 3
-Block #2: hotelreservation2.RateService.GetRates.rangeindex.body
-			00: t5 = &hotelIDs[t3]
-			01: t6 = *t5
-			02: t7 = new []RatePlan (hotel_rate_plans)
-			03: t8 = &r.rateCache [#0]
-			04: t9 = *t8
-			05: t10 = make interface{} <- *[]RatePlan (t7)
-			06: t11 = invoke t9.Get(ctx, t6, t10)
-			07: t12 = extract t11 #0
-			08: t13 = extract t11 #1
-			09: t14 = t13 != nil:error
-			10: if t14 goto 4 else 5
-Block #3: hotelreservation2.RateService.GetRates.rangeindex.done
-			00: return t1, nil:error
-Block #4: hotelreservation2.RateService.GetRates.if.then
-			00: return t1, t13
-Block #5: hotelreservation2.RateService.GetRates.if.done
-			00: if t12 goto 7 else 6
-Block #6: hotelreservation2.RateService.GetRates.if.then
-			00: t15 = &r.rateDB [#1]
-			01: t16 = *t15
-			02: t17 = invoke t16.GetCollection(ctx, "rate_db":string, "inventory":string)
-			03: t18 = extract t17 #0
-			04: t19 = extract t17 #1
-			05: t20 = t19 != nil:error
-			06: if t20 goto 8 else 9
-Block #7: hotelreservation2.RateService.GetRates.if.done
-			00: t21 = *t7
-			01: t22 = append(t1, t21...)
-			02: jump 1
-Block #8: hotelreservation2.RateService.GetRates.if.then
-			00: t23 = new [0]RatePlan (slicelit)
-			01: t24 = slice t23[:]
-			02: return t24, t19
-Block #9: hotelreservation2.RateService.GetRates.if.done
-			00: t25 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t26 = &t25[0:int]
-			02: t27 = &t26.Key [#0]
-			03: t28 = &t26.Value [#1]
-			04: *t27 = "HotelID":string
-			05: t29 = make interface{} <- string (t6)
-			06: *t28 = t29
-			07: t30 = slice t25[:]
-			08: t31 = invoke t18.FindMany(ctx, t30, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t32 = extract t31 #0
-			10: t33 = extract t31 #1
-			11: t34 = t33 != nil:error
-			12: if t34 goto 10 else 11
-Block #10: hotelreservation2.RateService.GetRates.if.then
-			00: return t1, t33
-Block #11: hotelreservation2.RateService.GetRates.if.done
-			00: t35 = make interface{} <- *[]RatePlan (t7)
-			01: t36 = invoke t32.All(ctx, t35)
-			02: t37 = &r.rateCache [#0]
-			03: t38 = *t37
-			04: t39 = *t7
-			05: t40 = make interface{} <- []RatePlan (t39)
-			06: t41 = invoke t38.Put(ctx, t6, t40)
-			07: jump 7
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.SearchService
-	Method: func(ctx context.Context, lat float64, lon float64, inDate string, outDate string) ([]string, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.User
-	Method: func()
-		Parameters:
-			u = parameter u : User
-Function: hotelreservation2.User.remote
-Block #0: hotelreservation2.User.remote.entry
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan
-	Method: func()
-		Parameters:
-			rp = parameter rp : RatePlan
-Function: hotelreservation2.RatePlan.remote
-Block #0: hotelreservation2.RatePlan.remote.entry
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndServiceImpl
-	Method: func(ctx context.Context, lat float64, lon float64, require string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
-		Parameters:
-			f = parameter f : *FrontEndServiceImpl
-			ctx = parameter ctx : context.Context
-			lat = parameter lat : float64
-			lon = parameter lon : float64
-			require = parameter require : string
-			locale = parameter locale : string
-Function: hotelreservation2.FrontEndService.RecommendHandler
-Block #0: hotelreservation2.FrontEndService.RecommendHandler.entry
-			00: t0 = require != "dis":string
-			01: if t0 goto 4 else 2
-Block #1: hotelreservation2.FrontEndService.RecommendHandler.if.then
-			00: t1 = new [0]HotelProfile (slicelit)
-			01: t2 = slice t1[:]
-			02: t3 = "Invalid require p...":string + require
-			03: t4 = errors.New(t3)
-			04: return t2, t4
-Block #2: hotelreservation2.FrontEndService.RecommendHandler.if.done
-			00: t5 = &f.recommendationService [#2]
-			01: t6 = *t5
-			02: t7 = invoke t6.GetRecommendations(ctx, require, lat, lon)
-			03: t8 = extract t7 #0
-			04: t9 = extract t7 #1
-			05: t10 = t9 != nil:error
-			06: if t10 goto 5 else 6
-Block #3: hotelreservation2.FrontEndService.RecommendHandler.cond.true
-			00: t11 = require != "price":string
-			01: if t11 goto 1 else 2
-Block #4: hotelreservation2.FrontEndService.RecommendHandler.cond.true
-			00: t12 = require != "rate":string
-			01: if t12 goto 3 else 2
-Block #5: hotelreservation2.FrontEndService.RecommendHandler.if.then
-			00: t13 = new [0]HotelProfile (slicelit)
-			01: t14 = slice t13[:]
-			02: return t14, t9
-Block #6: hotelreservation2.FrontEndService.RecommendHandler.if.done
-			00: t15 = locale == "":string
-			01: if t15 goto 7 else 8
-Block #7: hotelreservation2.FrontEndService.RecommendHandler.if.then
-			00: jump 8
-Block #8: hotelreservation2.FrontEndService.RecommendHandler.if.done
-			00: t16 = phi [6: locale, 7: "en":string] #locale
-			01: t17 = &f.profileService [#1]
-			02: t18 = *t17
-			03: t19 = invoke t18.GetProfiles(ctx, t8, t16)
-			04: t20 = extract t19 #0
-			05: t21 = extract t19 #1
-			06: t22 = t21 != nil:error
-			07: if t22 goto 9 else 10
-Block #9: hotelreservation2.FrontEndService.RecommendHandler.if.then
-			00: t23 = new [0]HotelProfile (slicelit)
-			01: t24 = slice t23[:]
-			02: return t24, t21
-Block #10: hotelreservation2.FrontEndService.RecommendHandler.if.done
-			00: return t20, nil:error
-	Method: func(ctx context.Context, inDate string, outDate string, hotelId string, customerName string, username string, password string, roomNumber int64) (string, error)
-		Parameters:
-			f = parameter f : *FrontEndServiceImpl
-			ctx = parameter ctx : context.Context
-			inDate = parameter inDate : string
-			outDate = parameter outDate : string
-			hotelId = parameter hotelId : string
-			customerName = parameter customerName : string
-			username = parameter username : string
-			password = parameter password : string
-			roomNumber = parameter roomNumber : int64
-Function: hotelreservation2.FrontEndService.ReservationHandler
-Block #0: hotelreservation2.FrontEndService.ReservationHandler.entry
-			00: t0 = inDate == "":string
-			01: if t0 goto 1 else 3
-Block #1: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t1 = errors.New("Please specify in...":string)
-			01: return "":string, t1
-Block #2: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t2 = checkDataFormat(inDate)
-			01: if t2 goto 6 else 4
-Block #3: hotelreservation2.FrontEndService.ReservationHandler.cond.false
-			00: t3 = outDate == "":string
-			01: if t3 goto 1 else 2
-Block #4: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t4 = errors.New("Please check inDa...":string)
-			01: return "":string, t4
-Block #5: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t5 = hotelId == "":string
-			01: if t5 goto 7 else 8
-Block #6: hotelreservation2.FrontEndService.ReservationHandler.cond.false
-			00: t6 = checkDataFormat(outDate)
-			01: if t6 goto 5 else 4
-Block #7: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t7 = errors.New("Please specify ho...":string)
-			01: return "":string, t7
-Block #8: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t8 = customerName == "":string
-			01: if t8 goto 9 else 10
-Block #9: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t9 = errors.New("Please specify cu...":string)
-			01: return "":string, t9
-Block #10: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t10 = username == "":string
-			01: if t10 goto 11 else 13
-Block #11: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t11 = errors.New("Please specify us...":string)
-			01: return "":string, t11
-Block #12: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t12 = &f.userService [#3]
-			01: t13 = *t12
-			02: t14 = invoke t13.CheckUser(ctx, username, password)
-			03: t15 = extract t14 #0
-			04: t16 = extract t14 #1
-			05: t17 = t16 != nil:error
-			06: if t17 goto 14 else 15
-Block #13: hotelreservation2.FrontEndService.ReservationHandler.cond.false
-			00: t18 = password == "":string
-			01: if t18 goto 11 else 12
-Block #14: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: return "":string, t16
-Block #15: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: if t15 goto 17 else 16
-Block #16: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t19 = errors.New("Invalid credentials":string)
-			01: return "Invalid credentials":string, t19
-Block #17: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t20 = &f.reservationService [#4]
-			01: t21 = *t20
-			02: t22 = new [1]string (slicelit)
-			03: t23 = &t22[0:int]
-			04: *t23 = hotelId
-			05: t24 = slice t22[:]
-			06: t25 = invoke t21.MakeReservation(ctx, customerName, t24, inDate, outDate, roomNumber)
-			07: t26 = extract t25 #0
-			08: t27 = extract t25 #1
-			09: t28 = t27 != nil:error
-			10: if t28 goto 18 else 19
-Block #18: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: return "":string, t27
-Block #19: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: t29 = len(t26)
-			01: t30 = t29 == 0:int
-			02: if t30 goto 20 else 21
-Block #20: hotelreservation2.FrontEndService.ReservationHandler.if.then
-			00: t31 = errors.New("Failed to make re...":string)
-			01: return "Failed to make re...":string, t31
-Block #21: hotelreservation2.FrontEndService.ReservationHandler.if.done
-			00: return "Reservation succe...":string, nil:error
-	Method: func(ctx context.Context, customerName string, inDate string, outDate string, lat float64, lon float64, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
-		Parameters:
-			f = parameter f : *FrontEndServiceImpl
-			ctx = parameter ctx : context.Context
-			customerName = parameter customerName : string
-			inDate = parameter inDate : string
-			outDate = parameter outDate : string
-			lat = parameter lat : float64
-			lon = parameter lon : float64
-			locale = parameter locale : string
-Function: hotelreservation2.FrontEndService.SearchHandler
-Block #0: hotelreservation2.FrontEndService.SearchHandler.entry
-			00: t0 = &f.searchService [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.Nearby(ctx, lat, lon, inDate, outDate)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: hotelreservation2.FrontEndService.SearchHandler.if.then
-			00: t6 = new [0]HotelProfile (slicelit)
-			01: t7 = slice t6[:]
-			02: return t7, t4
-Block #2: hotelreservation2.FrontEndService.SearchHandler.if.done
-			00: t8 = locale == "":string
-			01: if t8 goto 3 else 4
-Block #3: hotelreservation2.FrontEndService.SearchHandler.if.then
-			00: jump 4
-Block #4: hotelreservation2.FrontEndService.SearchHandler.if.done
-			00: t9 = phi [2: locale, 3: "en":string] #locale
-			01: t10 = &f.reservationService [#4]
-			02: t11 = *t10
-			03: t12 = invoke t11.CheckAvailability(ctx, "":string, t3, inDate, outDate, 1:int64)
-			04: t13 = extract t12 #0
-			05: t14 = extract t12 #1
-			06: t15 = t14 != nil:error
-			07: if t15 goto 5 else 6
-Block #5: hotelreservation2.FrontEndService.SearchHandler.if.then
-			00: t16 = new [0]HotelProfile (slicelit)
-			01: t17 = slice t16[:]
-			02: return t17, nil:error
-Block #6: hotelreservation2.FrontEndService.SearchHandler.if.done
-			00: t18 = &f.profileService [#1]
-			01: t19 = *t18
-			02: t20 = invoke t19.GetProfiles(ctx, t13, t9)
-			03: t21 = extract t20 #0
-			04: t22 = extract t20 #1
-			05: t23 = t22 != nil:error
-			06: if t23 goto 7 else 8
-Block #7: hotelreservation2.FrontEndService.SearchHandler.if.then
-			00: t24 = new [0]HotelProfile (slicelit)
-			01: t25 = slice t24[:]
-			02: return t25, t22
-Block #8: hotelreservation2.FrontEndService.SearchHandler.if.done
-			00: return t21, nil:error
-	Method: func(ctx context.Context, username string, password string) (string, error)
-		Parameters:
-			f = parameter f : *FrontEndServiceImpl
-			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			password = parameter password : string
-Function: hotelreservation2.FrontEndService.UserHandler
-Block #0: hotelreservation2.FrontEndService.UserHandler.entry
-			00: t0 = username == "":string
-			01: if t0 goto 1 else 3
-Block #1: hotelreservation2.FrontEndService.UserHandler.if.then
-			00: t1 = errors.New("Please specify us...":string)
-			01: return "":string, t1
-Block #2: hotelreservation2.FrontEndService.UserHandler.if.done
-			00: t2 = &f.userService [#3]
-			01: t3 = *t2
-			02: t4 = invoke t3.CheckUser(ctx, username, password)
-			03: t5 = extract t4 #0
-			04: t6 = extract t4 #1
-			05: t7 = t6 != nil:error
-			06: if t7 goto 4 else 6
-Block #3: hotelreservation2.FrontEndService.UserHandler.cond.false
-			00: t8 = password == "":string
-			01: if t8 goto 1 else 2
-Block #4: hotelreservation2.FrontEndService.UserHandler.if.then
-			00: t9 = errors.New("Invalid Credentials":string)
-			01: return "Invalid Credentials":string, t9
-Block #5: hotelreservation2.FrontEndService.UserHandler.if.done
-			00: return "Login successful":string, nil:error
-Block #6: hotelreservation2.FrontEndService.UserHandler.cond.false
-			00: if t5 goto 5 else 4
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileService
-	Method: func(ctx context.Context, hotelIds []string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileServiceImpl
-	Method: func(ctx context.Context, hotelIds []string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
-		Parameters:
-			p = parameter p : *ProfileServiceImpl
-			ctx = parameter ctx : context.Context
-			hotelIds = parameter hotelIds : []string
-			locale = parameter locale : string
-Function: hotelreservation2.ProfileService.GetProfiles
-Block #0: hotelreservation2.ProfileService.GetProfiles.entry
-			00: t0 = len(hotelIds)
-			01: jump 1
-Block #1: hotelreservation2.ProfileService.GetProfiles.rangeindex.loop
-			00: t1 = phi [0: nil:[]HotelProfile, 7: t25] #profiles
-			01: t2 = phi [0: -1:int, 7: t3]
-			02: t3 = t2 + 1:int
-			03: t4 = t3 < t0
-			04: if t4 goto 2 else 3
-Block #2: hotelreservation2.ProfileService.GetProfiles.rangeindex.body
-			00: t5 = &hotelIds[t3]
-			01: t6 = *t5
-			02: t7 = new HotelProfile (profile)
-			03: t8 = &p.profileCache [#0]
-			04: t9 = *t8
-			05: t10 = make interface{} <- *HotelProfile (t7)
-			06: t11 = invoke t9.Get(ctx, t6, t10)
-			07: t12 = extract t11 #0
-			08: t13 = extract t11 #1
-			09: t14 = t13 != nil:error
-			10: if t14 goto 4 else 5
-Block #3: hotelreservation2.ProfileService.GetProfiles.rangeindex.done
-			00: return t1, nil:error
-Block #4: hotelreservation2.ProfileService.GetProfiles.if.then
-			00: return t1, t13
-Block #5: hotelreservation2.ProfileService.GetProfiles.if.done
-			00: if t12 goto 7 else 6
-Block #6: hotelreservation2.ProfileService.GetProfiles.if.then
-			00: t15 = &p.profileDB [#1]
-			01: t16 = *t15
-			02: t17 = invoke t16.GetCollection(ctx, "profile_db":string, "hotels":string)
-			03: t18 = extract t17 #0
-			04: t19 = extract t17 #1
-			05: t20 = t19 != nil:error
-			06: if t20 goto 8 else 9
-Block #7: hotelreservation2.ProfileService.GetProfiles.if.done
-			00: t21 = *t7
-			01: t22 = new [1]HotelProfile (varargs)
-			02: t23 = &t22[0:int]
-			03: *t23 = t21
-			04: t24 = slice t22[:]
-			05: t25 = append(t1, t24...)
-			06: jump 1
-Block #8: hotelreservation2.ProfileService.GetProfiles.if.then
-			00: t26 = new [0]HotelProfile (slicelit)
-			01: t27 = slice t26[:]
-			02: return t27, t19
-Block #9: hotelreservation2.ProfileService.GetProfiles.if.done
-			00: t28 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			01: t29 = &t28[0:int]
-			02: t30 = &t29.Key [#0]
-			03: t31 = &t29.Value [#1]
-			04: *t30 = "ID":string
-			05: t32 = make interface{} <- string (t6)
-			06: *t31 = t32
-			07: t33 = slice t28[:]
-			08: t34 = invoke t18.FindOne(ctx, t33, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			09: t35 = extract t34 #0
-			10: t36 = extract t34 #1
-			11: t37 = t36 != nil:error
-			12: if t37 goto 10 else 11
-Block #10: hotelreservation2.ProfileService.GetProfiles.if.then
-			00: return t1, t36
-Block #11: hotelreservation2.ProfileService.GetProfiles.if.done
-			00: t38 = make interface{} <- *HotelProfile (t7)
-			01: t39 = invoke t35.One(ctx, t38)
-			02: t40 = &p.profileCache [#0]
-			03: t41 = *t40
-			04: t42 = *t7
-			05: t43 = make interface{} <- HotelProfile (t42)
-			06: t44 = invoke t41.Put(ctx, t6, t43)
-			07: jump 7
-		Parameters:
-			ctx = parameter ctx : context.Context
-			profileCache = parameter profileCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			profileDB = parameter profileDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: hotelreservation2.NewProfileServiceImpl
-Block #0: hotelreservation2.NewProfileServiceImpl.entry
-			00: t0 = new ProfileServiceImpl (complit)
-			01: t1 = &t0.profileCache [#0]
-			02: t2 = &t0.profileDB [#1]
-			03: *t1 = profileCache
-			04: *t2 = profileDB
-			05: t3 = make ProfileService <- *ProfileServiceImpl (t0)
-			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationService
-	Method: func(ctx context.Context, require string, lat float64, lon float64) ([]string, error)
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.SearchServiceImpl
 	Method: func(ctx context.Context, lat float64, lon float64, inDate string, outDate string) ([]string, error)
 		Parameters:
@@ -598,94 +95,6 @@ Block #6: hotelreservation2.SearchService.Nearby.rangeindex.body
 			10: jump 5
 Block #7: hotelreservation2.SearchService.Nearby.rangeindex.done
 			00: return t14, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserService
-	Method: func(ctx context.Context, username string, password string) (bool, error)
-		Parameters:
-			ctx = parameter ctx : context.Context
-			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: hotelreservation2.NewUserServiceImpl
-Block #0: hotelreservation2.NewUserServiceImpl.entry
-			00: t0 = new UserServiceImpl (complit)
-			01: t1 = &t0.userDB [#1]
-			02: t2 = &t0.users [#0]
-			03: t3 = make map[string]string 
-			04: *t1 = userDB
-			05: *t2 = t3
-			06: t4 = context.Background()
-			07: t5 = (*UserServiceImpl).LoadUsers(t0, t4)
-			08: t6 = t5 != nil:error
-			09: if t6 goto 1 else 2
-Block #1: hotelreservation2.NewUserServiceImpl.if.then
-			00: return nil:UserService, t5
-Block #2: hotelreservation2.NewUserServiceImpl.if.done
-			00: t7 = make UserService <- *UserServiceImpl (t0)
-			01: return t7, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RoomType
-	Method: func()
-		Parameters:
-			rt = parameter rt : RoomType
-Function: hotelreservation2.RoomType.remote
-Block #0: hotelreservation2.RoomType.remote.entry
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Reservation
-	Method: func()
-		Parameters:
-			r = parameter r : Reservation
-Function: hotelreservation2.Reservation.remote
-Block #0: hotelreservation2.Reservation.remote.entry
-			00: return
-		Parameters:
-			ctx = parameter ctx : context.Context
-			geoDB = parameter geoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: hotelreservation2.NewGeoServiceImpl
-Block #0: hotelreservation2.NewGeoServiceImpl.entry
-			00: t0 = new GeoServiceImpl (complit)
-			01: t1 = &t0.geoDB [#0]
-			02: *t1 = geoDB
-			03: t2 = (*GeoServiceImpl).newGeoIndex(t0, ctx)
-			04: t3 = make GeoService <- *GeoServiceImpl (t0)
-			05: return t3, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			rateCache = parameter rateCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
-			rateDB = parameter rateDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: hotelreservation2.NewRateServiceImpl
-Block #0: hotelreservation2.NewRateServiceImpl.entry
-			00: t0 = new RateServiceImpl (complit)
-			01: t1 = &t0.rateCache [#0]
-			02: t2 = &t0.rateDB [#1]
-			03: *t1 = rateCache
-			04: *t2 = rateDB
-			05: t3 = make RateService <- *RateServiceImpl (t0)
-			06: return t3, nil:error
-		Parameters:
-			ctx = parameter ctx : context.Context
-			recommendDB = parameter recommendDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
-Function: hotelreservation2.NewRecommendationServiceImpl
-Block #0: hotelreservation2.NewRecommendationServiceImpl.entry
-			00: t0 = new RecommendationServiceImpl (complit)
-			01: t1 = &t0.recommendDB [#0]
-			02: t2 = &t0.hotels [#1]
-			03: t3 = make map[string]Hotel 
-			04: *t1 = recommendDB
-			05: *t2 = t3
-			06: t4 = context.Background()
-			07: t5 = (*RecommendationServiceImpl).LoadRecommendations(t0, t4)
-			08: t6 = t5 != nil:error
-			09: if t6 goto 1 else 2
-Block #1: hotelreservation2.NewRecommendationServiceImpl.if.then
-			00: return nil:RecommendationService, t5
-Block #2: hotelreservation2.NewRecommendationServiceImpl.if.done
-			00: t7 = make RecommendationService <- *RecommendationServiceImpl (t0)
-			01: return t7, nil:error
-	Global: init$guard, Type: *bool
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile
-	Method: func()
-		Parameters:
-			hp = parameter hp : HotelProfile
-Function: hotelreservation2.HotelProfile.remote
-Block #0: hotelreservation2.HotelProfile.remote.entry
-			00: return
 		Parameters:
 			ctx = parameter ctx : context.Context
 			geoService = parameter geoService : GeoService
@@ -699,123 +108,20 @@ Block #0: hotelreservation2.NewSearchServiceImpl.entry
 			04: *t2 = rateService
 			05: t3 = make SearchService <- *SearchServiceImpl (t0)
 			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Point
-	Method: func() string
-		Parameters:
-			p = parameter p : Point
-Function: hotelreservation2.Point.Id
-Block #0: hotelreservation2.Point.Id.entry
-			00: t0 = local Point (p)
-			01: *t0 = p
-			02: t1 = &t0.Pid [#0]
-			03: t2 = *t1
-			04: return t2
-	Method: func() float64
-		Parameters:
-			p = parameter p : Point
-Function: hotelreservation2.Point.Lat
-Block #0: hotelreservation2.Point.Lat.entry
-			00: t0 = local Point (p)
-			01: *t0 = p
-			02: t1 = &t0.Plat [#1]
-			03: t2 = *t1
-			04: return t2
-	Method: func() float64
-		Parameters:
-			p = parameter p : Point
-Function: hotelreservation2.Point.Lon
-Block #0: hotelreservation2.Point.Lon.entry
-			00: t0 = local Point (p)
-			01: *t0 = p
-			02: t1 = &t0.Plon [#2]
-			03: t2 = *t1
-			04: return t2
-	Method: func()
-		Parameters:
-			p = parameter p : Point
-Function: hotelreservation2.Point.remote
-Block #0: hotelreservation2.Point.remote.entry
-			00: return
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoServiceImpl
-	Method: func(ctx context.Context, lat float64, lon float64) ([]string, error)
-		Parameters:
-			g = parameter g : *GeoServiceImpl
-			ctx = parameter ctx : context.Context
-			lat = parameter lat : float64
-			lon = parameter lon : float64
-Function: hotelreservation2.GeoService.Nearby
-Block #0: hotelreservation2.GeoService.Nearby.entry
-			00: t0 = len(nil:[]github.com/hailocab/go-geoindex.Point)
-			01: jump 1
-Block #1: hotelreservation2.GeoService.Nearby.rangeindex.loop
-			00: t1 = phi [0: nil:[]string, 2: t11] #hotelIds
-			01: t2 = phi [0: -1:int, 2: t3]
-			02: t3 = t2 + 1:int
-			03: t4 = t3 < t0
-			04: if t4 goto 2 else 3
-Block #2: hotelreservation2.GeoService.Nearby.rangeindex.body
-			00: t5 = &nil:[]github.com/hailocab/go-geoindex.Point[t3]
-			01: t6 = *t5
-			02: t7 = invoke t6.Id()
-			03: t8 = new [1]string (varargs)
-			04: t9 = &t8[0:int]
-			05: *t9 = t7
-			06: t10 = slice t8[:]
-			07: t11 = append(t1, t10...)
-			08: jump 1
-Block #3: hotelreservation2.GeoService.Nearby.rangeindex.done
-			00: return t1, nil:error
-	Method: func(ctx context.Context) error
-		Parameters:
-			g = parameter g : *GeoServiceImpl
-			ctx = parameter ctx : context.Context
-Function: hotelreservation2.GeoService.newGeoIndex
-Block #0: hotelreservation2.GeoService.newGeoIndex.entry
-			00: t0 = &g.geoDB [#0]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "geo_db":string, "geo":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: hotelreservation2.GeoService.newGeoIndex.if.then
-			00: return t4
-Block #2: hotelreservation2.GeoService.newGeoIndex.if.done
-			00: t6 = new []Point (points)
-			01: t7 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			02: t8 = slice t7[:]
-			03: t9 = invoke t3.FindMany(ctx, t8, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			04: t10 = extract t9 #0
-			05: t11 = extract t9 #1
-			06: t12 = t11 != nil:error
-			07: if t12 goto 3 else 4
-Block #3: hotelreservation2.GeoService.newGeoIndex.if.then
-			00: return t11
-Block #4: hotelreservation2.GeoService.newGeoIndex.if.done
-			00: t13 = make interface{} <- *[]Point (t6)
-			01: t14 = invoke t10.All(ctx, t13)
-			02: t15 = github.com/hailocab/go-geoindex.NewClusteringIndex()
-			03: t16 = &g.index [#1]
-			04: *t16 = t15
-			05: t17 = *t6
-			06: t18 = len(t17)
-			07: jump 5
-Block #5: hotelreservation2.GeoService.newGeoIndex.rangeindex.loop
-			00: t19 = phi [4: -1:int, 6: t20]
-			01: t20 = t19 + 1:int
-			02: t21 = t20 < t18
-			03: if t21 goto 6 else 7
-Block #6: hotelreservation2.GeoService.newGeoIndex.rangeindex.body
-			00: t22 = &t17[t20]
-			01: t23 = *t22
-			02: t24 = &g.index [#1]
-			03: t25 = *t24
-			04: t26 = make github.com/hailocab/go-geoindex.Point <- Point (t23)
-			05: t27 = (*github.com/hailocab/go-geoindex.ClusteringIndex).Add(t25, t26)
-			06: jump 5
-Block #7: hotelreservation2.GeoService.newGeoIndex.rangeindex.done
-			00: return nil:error
 	Unknown member type: *ssa.NamedConst
+		Parameters:
+			ctx = parameter ctx : context.Context
+			rateCache = parameter rateCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			rateDB = parameter rateDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: hotelreservation2.NewRateServiceImpl
+Block #0: hotelreservation2.NewRateServiceImpl.entry
+			00: t0 = new RateServiceImpl (complit)
+			01: t1 = &t0.rateCache [#0]
+			02: t2 = &t0.rateDB [#1]
+			03: *t1 = rateCache
+			04: *t2 = rateDB
+			05: t3 = make RateService <- *RateServiceImpl (t0)
+			06: return t3, nil:error
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationServiceImpl
 	Method: func(ctx context.Context, require string, lat float64, lon float64) ([]string, error)
 		Parameters:
@@ -1074,6 +380,639 @@ Block #6: hotelreservation2.RecommendationService.LoadRecommendations.rangeindex
 			09: jump 5
 Block #7: hotelreservation2.RecommendationService.LoadRecommendations.rangeindex.done
 			00: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationService
+	Method: func(ctx context.Context, customerName string, hotelIDs []string, inDate string, outDate string, roomNumber int64) ([]string, error)
+	Method: func(ctx context.Context, customerName string, hotelIds []string, inDate string, outDate string, roomNumber int64) ([]string, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Reservation
+	Method: func()
+		Parameters:
+			r = parameter r : Reservation
+Function: hotelreservation2.Reservation.remote
+Block #0: hotelreservation2.Reservation.remote.entry
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndServiceImpl
+	Method: func(ctx context.Context, lat float64, lon float64, require string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
+		Parameters:
+			f = parameter f : *FrontEndServiceImpl
+			ctx = parameter ctx : context.Context
+			lat = parameter lat : float64
+			lon = parameter lon : float64
+			require = parameter require : string
+			locale = parameter locale : string
+Function: hotelreservation2.FrontEndService.RecommendHandler
+Block #0: hotelreservation2.FrontEndService.RecommendHandler.entry
+			00: t0 = require != "dis":string
+			01: if t0 goto 4 else 2
+Block #1: hotelreservation2.FrontEndService.RecommendHandler.if.then
+			00: t1 = new [0]HotelProfile (slicelit)
+			01: t2 = slice t1[:]
+			02: t3 = "Invalid require p...":string + require
+			03: t4 = errors.New(t3)
+			04: return t2, t4
+Block #2: hotelreservation2.FrontEndService.RecommendHandler.if.done
+			00: t5 = &f.recommendationService [#2]
+			01: t6 = *t5
+			02: t7 = invoke t6.GetRecommendations(ctx, require, lat, lon)
+			03: t8 = extract t7 #0
+			04: t9 = extract t7 #1
+			05: t10 = t9 != nil:error
+			06: if t10 goto 5 else 6
+Block #3: hotelreservation2.FrontEndService.RecommendHandler.cond.true
+			00: t11 = require != "price":string
+			01: if t11 goto 1 else 2
+Block #4: hotelreservation2.FrontEndService.RecommendHandler.cond.true
+			00: t12 = require != "rate":string
+			01: if t12 goto 3 else 2
+Block #5: hotelreservation2.FrontEndService.RecommendHandler.if.then
+			00: t13 = new [0]HotelProfile (slicelit)
+			01: t14 = slice t13[:]
+			02: return t14, t9
+Block #6: hotelreservation2.FrontEndService.RecommendHandler.if.done
+			00: t15 = locale == "":string
+			01: if t15 goto 7 else 8
+Block #7: hotelreservation2.FrontEndService.RecommendHandler.if.then
+			00: jump 8
+Block #8: hotelreservation2.FrontEndService.RecommendHandler.if.done
+			00: t16 = phi [6: locale, 7: "en":string] #locale
+			01: t17 = &f.profileService [#1]
+			02: t18 = *t17
+			03: t19 = invoke t18.GetProfiles(ctx, t8, t16)
+			04: t20 = extract t19 #0
+			05: t21 = extract t19 #1
+			06: t22 = t21 != nil:error
+			07: if t22 goto 9 else 10
+Block #9: hotelreservation2.FrontEndService.RecommendHandler.if.then
+			00: t23 = new [0]HotelProfile (slicelit)
+			01: t24 = slice t23[:]
+			02: return t24, t21
+Block #10: hotelreservation2.FrontEndService.RecommendHandler.if.done
+			00: return t20, nil:error
+	Method: func(ctx context.Context, inDate string, outDate string, hotelId string, customerName string, username string, password string, roomNumber int64) (string, error)
+		Parameters:
+			f = parameter f : *FrontEndServiceImpl
+			ctx = parameter ctx : context.Context
+			inDate = parameter inDate : string
+			outDate = parameter outDate : string
+			hotelId = parameter hotelId : string
+			customerName = parameter customerName : string
+			username = parameter username : string
+			password = parameter password : string
+			roomNumber = parameter roomNumber : int64
+Function: hotelreservation2.FrontEndService.ReservationHandler
+Block #0: hotelreservation2.FrontEndService.ReservationHandler.entry
+			00: t0 = inDate == "":string
+			01: if t0 goto 1 else 3
+Block #1: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t1 = errors.New("Please specify in...":string)
+			01: return "":string, t1
+Block #2: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t2 = checkDataFormat(inDate)
+			01: if t2 goto 6 else 4
+Block #3: hotelreservation2.FrontEndService.ReservationHandler.cond.false
+			00: t3 = outDate == "":string
+			01: if t3 goto 1 else 2
+Block #4: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t4 = errors.New("Please check inDa...":string)
+			01: return "":string, t4
+Block #5: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t5 = hotelId == "":string
+			01: if t5 goto 7 else 8
+Block #6: hotelreservation2.FrontEndService.ReservationHandler.cond.false
+			00: t6 = checkDataFormat(outDate)
+			01: if t6 goto 5 else 4
+Block #7: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t7 = errors.New("Please specify ho...":string)
+			01: return "":string, t7
+Block #8: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t8 = customerName == "":string
+			01: if t8 goto 9 else 10
+Block #9: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t9 = errors.New("Please specify cu...":string)
+			01: return "":string, t9
+Block #10: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t10 = username == "":string
+			01: if t10 goto 11 else 13
+Block #11: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t11 = errors.New("Please specify us...":string)
+			01: return "":string, t11
+Block #12: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t12 = &f.userService [#3]
+			01: t13 = *t12
+			02: t14 = invoke t13.CheckUser(ctx, username, password)
+			03: t15 = extract t14 #0
+			04: t16 = extract t14 #1
+			05: t17 = t16 != nil:error
+			06: if t17 goto 14 else 15
+Block #13: hotelreservation2.FrontEndService.ReservationHandler.cond.false
+			00: t18 = password == "":string
+			01: if t18 goto 11 else 12
+Block #14: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: return "":string, t16
+Block #15: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: if t15 goto 17 else 16
+Block #16: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t19 = errors.New("Invalid credentials":string)
+			01: return "Invalid credentials":string, t19
+Block #17: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t20 = &f.reservationService [#4]
+			01: t21 = *t20
+			02: t22 = new [1]string (slicelit)
+			03: t23 = &t22[0:int]
+			04: *t23 = hotelId
+			05: t24 = slice t22[:]
+			06: t25 = invoke t21.MakeReservation(ctx, customerName, t24, inDate, outDate, roomNumber)
+			07: t26 = extract t25 #0
+			08: t27 = extract t25 #1
+			09: t28 = t27 != nil:error
+			10: if t28 goto 18 else 19
+Block #18: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: return "":string, t27
+Block #19: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: t29 = len(t26)
+			01: t30 = t29 == 0:int
+			02: if t30 goto 20 else 21
+Block #20: hotelreservation2.FrontEndService.ReservationHandler.if.then
+			00: t31 = errors.New("Failed to make re...":string)
+			01: return "Failed to make re...":string, t31
+Block #21: hotelreservation2.FrontEndService.ReservationHandler.if.done
+			00: return "Reservation succe...":string, nil:error
+	Method: func(ctx context.Context, customerName string, inDate string, outDate string, lat float64, lon float64, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
+		Parameters:
+			f = parameter f : *FrontEndServiceImpl
+			ctx = parameter ctx : context.Context
+			customerName = parameter customerName : string
+			inDate = parameter inDate : string
+			outDate = parameter outDate : string
+			lat = parameter lat : float64
+			lon = parameter lon : float64
+			locale = parameter locale : string
+Function: hotelreservation2.FrontEndService.SearchHandler
+Block #0: hotelreservation2.FrontEndService.SearchHandler.entry
+			00: t0 = &f.searchService [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.Nearby(ctx, lat, lon, inDate, outDate)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: hotelreservation2.FrontEndService.SearchHandler.if.then
+			00: t6 = new [0]HotelProfile (slicelit)
+			01: t7 = slice t6[:]
+			02: return t7, t4
+Block #2: hotelreservation2.FrontEndService.SearchHandler.if.done
+			00: t8 = locale == "":string
+			01: if t8 goto 3 else 4
+Block #3: hotelreservation2.FrontEndService.SearchHandler.if.then
+			00: jump 4
+Block #4: hotelreservation2.FrontEndService.SearchHandler.if.done
+			00: t9 = phi [2: locale, 3: "en":string] #locale
+			01: t10 = &f.reservationService [#4]
+			02: t11 = *t10
+			03: t12 = invoke t11.CheckAvailability(ctx, "":string, t3, inDate, outDate, 1:int64)
+			04: t13 = extract t12 #0
+			05: t14 = extract t12 #1
+			06: t15 = t14 != nil:error
+			07: if t15 goto 5 else 6
+Block #5: hotelreservation2.FrontEndService.SearchHandler.if.then
+			00: t16 = new [0]HotelProfile (slicelit)
+			01: t17 = slice t16[:]
+			02: return t17, nil:error
+Block #6: hotelreservation2.FrontEndService.SearchHandler.if.done
+			00: t18 = &f.profileService [#1]
+			01: t19 = *t18
+			02: t20 = invoke t19.GetProfiles(ctx, t13, t9)
+			03: t21 = extract t20 #0
+			04: t22 = extract t20 #1
+			05: t23 = t22 != nil:error
+			06: if t23 goto 7 else 8
+Block #7: hotelreservation2.FrontEndService.SearchHandler.if.then
+			00: t24 = new [0]HotelProfile (slicelit)
+			01: t25 = slice t24[:]
+			02: return t25, t22
+Block #8: hotelreservation2.FrontEndService.SearchHandler.if.done
+			00: return t21, nil:error
+	Method: func(ctx context.Context, username string, password string) (string, error)
+		Parameters:
+			f = parameter f : *FrontEndServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			password = parameter password : string
+Function: hotelreservation2.FrontEndService.UserHandler
+Block #0: hotelreservation2.FrontEndService.UserHandler.entry
+			00: t0 = username == "":string
+			01: if t0 goto 1 else 3
+Block #1: hotelreservation2.FrontEndService.UserHandler.if.then
+			00: t1 = errors.New("Please specify us...":string)
+			01: return "":string, t1
+Block #2: hotelreservation2.FrontEndService.UserHandler.if.done
+			00: t2 = &f.userService [#3]
+			01: t3 = *t2
+			02: t4 = invoke t3.CheckUser(ctx, username, password)
+			03: t5 = extract t4 #0
+			04: t6 = extract t4 #1
+			05: t7 = t6 != nil:error
+			06: if t7 goto 4 else 6
+Block #3: hotelreservation2.FrontEndService.UserHandler.cond.false
+			00: t8 = password == "":string
+			01: if t8 goto 1 else 2
+Block #4: hotelreservation2.FrontEndService.UserHandler.if.then
+			00: t9 = errors.New("Invalid Credentials":string)
+			01: return "Invalid Credentials":string, t9
+Block #5: hotelreservation2.FrontEndService.UserHandler.if.done
+			00: return "Login successful":string, nil:error
+Block #6: hotelreservation2.FrontEndService.UserHandler.cond.false
+			00: if t5 goto 5 else 4
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoServiceImpl
+	Method: func(ctx context.Context, lat float64, lon float64) ([]string, error)
+		Parameters:
+			g = parameter g : *GeoServiceImpl
+			ctx = parameter ctx : context.Context
+			lat = parameter lat : float64
+			lon = parameter lon : float64
+Function: hotelreservation2.GeoService.Nearby
+Block #0: hotelreservation2.GeoService.Nearby.entry
+			00: t0 = len(nil:[]github.com/hailocab/go-geoindex.Point)
+			01: jump 1
+Block #1: hotelreservation2.GeoService.Nearby.rangeindex.loop
+			00: t1 = phi [0: nil:[]string, 2: t11] #hotelIds
+			01: t2 = phi [0: -1:int, 2: t3]
+			02: t3 = t2 + 1:int
+			03: t4 = t3 < t0
+			04: if t4 goto 2 else 3
+Block #2: hotelreservation2.GeoService.Nearby.rangeindex.body
+			00: t5 = &nil:[]github.com/hailocab/go-geoindex.Point[t3]
+			01: t6 = *t5
+			02: t7 = invoke t6.Id()
+			03: t8 = new [1]string (varargs)
+			04: t9 = &t8[0:int]
+			05: *t9 = t7
+			06: t10 = slice t8[:]
+			07: t11 = append(t1, t10...)
+			08: jump 1
+Block #3: hotelreservation2.GeoService.Nearby.rangeindex.done
+			00: return t1, nil:error
+	Method: func(ctx context.Context) error
+		Parameters:
+			g = parameter g : *GeoServiceImpl
+			ctx = parameter ctx : context.Context
+Function: hotelreservation2.GeoService.newGeoIndex
+Block #0: hotelreservation2.GeoService.newGeoIndex.entry
+			00: t0 = &g.geoDB [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "geo_db":string, "geo":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: hotelreservation2.GeoService.newGeoIndex.if.then
+			00: return t4
+Block #2: hotelreservation2.GeoService.newGeoIndex.if.done
+			00: t6 = new []Point (points)
+			01: t7 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			02: t8 = slice t7[:]
+			03: t9 = invoke t3.FindMany(ctx, t8, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			04: t10 = extract t9 #0
+			05: t11 = extract t9 #1
+			06: t12 = t11 != nil:error
+			07: if t12 goto 3 else 4
+Block #3: hotelreservation2.GeoService.newGeoIndex.if.then
+			00: return t11
+Block #4: hotelreservation2.GeoService.newGeoIndex.if.done
+			00: t13 = make interface{} <- *[]Point (t6)
+			01: t14 = invoke t10.All(ctx, t13)
+			02: t15 = github.com/hailocab/go-geoindex.NewClusteringIndex()
+			03: t16 = &g.index [#1]
+			04: *t16 = t15
+			05: t17 = *t6
+			06: t18 = len(t17)
+			07: jump 5
+Block #5: hotelreservation2.GeoService.newGeoIndex.rangeindex.loop
+			00: t19 = phi [4: -1:int, 6: t20]
+			01: t20 = t19 + 1:int
+			02: t21 = t20 < t18
+			03: if t21 goto 6 else 7
+Block #6: hotelreservation2.GeoService.newGeoIndex.rangeindex.body
+			00: t22 = &t17[t20]
+			01: t23 = *t22
+			02: t24 = &g.index [#1]
+			03: t25 = *t24
+			04: t26 = make github.com/hailocab/go-geoindex.Point <- Point (t23)
+			05: t27 = (*github.com/hailocab/go-geoindex.ClusteringIndex).Add(t25, t26)
+			06: jump 5
+Block #7: hotelreservation2.GeoService.newGeoIndex.rangeindex.done
+			00: return nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			geoDB = parameter geoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: hotelreservation2.NewGeoServiceImpl
+Block #0: hotelreservation2.NewGeoServiceImpl.entry
+			00: t0 = new GeoServiceImpl (complit)
+			01: t1 = &t0.geoDB [#0]
+			02: *t1 = geoDB
+			03: t2 = (*GeoServiceImpl).newGeoIndex(t0, ctx)
+			04: t3 = make GeoService <- *GeoServiceImpl (t0)
+			05: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RateServiceImpl
+	Method: func(ctx context.Context, hotelIDs []string, inDate string, outDate string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan, error)
+		Parameters:
+			r = parameter r : *RateServiceImpl
+			ctx = parameter ctx : context.Context
+			hotelIDs = parameter hotelIDs : []string
+			inDate = parameter inDate : string
+			outDate = parameter outDate : string
+Function: hotelreservation2.RateService.GetRates
+Block #0: hotelreservation2.RateService.GetRates.entry
+			00: t0 = len(hotelIDs)
+			01: jump 1
+Block #1: hotelreservation2.RateService.GetRates.rangeindex.loop
+			00: t1 = phi [0: nil:[]RatePlan, 7: t22] #rate_plans
+			01: t2 = phi [0: -1:int, 7: t3]
+			02: t3 = t2 + 1:int
+			03: t4 = t3 < t0
+			04: if t4 goto 2 else 3
+Block #2: hotelreservation2.RateService.GetRates.rangeindex.body
+			00: t5 = &hotelIDs[t3]
+			01: t6 = *t5
+			02: t7 = new []RatePlan (hotel_rate_plans)
+			03: t8 = &r.rateCache [#0]
+			04: t9 = *t8
+			05: t10 = make interface{} <- *[]RatePlan (t7)
+			06: t11 = invoke t9.Get(ctx, t6, t10)
+			07: t12 = extract t11 #0
+			08: t13 = extract t11 #1
+			09: t14 = t13 != nil:error
+			10: if t14 goto 4 else 5
+Block #3: hotelreservation2.RateService.GetRates.rangeindex.done
+			00: return t1, nil:error
+Block #4: hotelreservation2.RateService.GetRates.if.then
+			00: return t1, t13
+Block #5: hotelreservation2.RateService.GetRates.if.done
+			00: if t12 goto 7 else 6
+Block #6: hotelreservation2.RateService.GetRates.if.then
+			00: t15 = &r.rateDB [#1]
+			01: t16 = *t15
+			02: t17 = invoke t16.GetCollection(ctx, "rate_db":string, "inventory":string)
+			03: t18 = extract t17 #0
+			04: t19 = extract t17 #1
+			05: t20 = t19 != nil:error
+			06: if t20 goto 8 else 9
+Block #7: hotelreservation2.RateService.GetRates.if.done
+			00: t21 = *t7
+			01: t22 = append(t1, t21...)
+			02: jump 1
+Block #8: hotelreservation2.RateService.GetRates.if.then
+			00: t23 = new [0]RatePlan (slicelit)
+			01: t24 = slice t23[:]
+			02: return t24, t19
+Block #9: hotelreservation2.RateService.GetRates.if.done
+			00: t25 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t26 = &t25[0:int]
+			02: t27 = &t26.Key [#0]
+			03: t28 = &t26.Value [#1]
+			04: *t27 = "HotelID":string
+			05: t29 = make interface{} <- string (t6)
+			06: *t28 = t29
+			07: t30 = slice t25[:]
+			08: t31 = invoke t18.FindMany(ctx, t30, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t32 = extract t31 #0
+			10: t33 = extract t31 #1
+			11: t34 = t33 != nil:error
+			12: if t34 goto 10 else 11
+Block #10: hotelreservation2.RateService.GetRates.if.then
+			00: return t1, t33
+Block #11: hotelreservation2.RateService.GetRates.if.done
+			00: t35 = make interface{} <- *[]RatePlan (t7)
+			01: t36 = invoke t32.All(ctx, t35)
+			02: t37 = &r.rateCache [#0]
+			03: t38 = *t37
+			04: t39 = *t7
+			05: t40 = make interface{} <- []RatePlan (t39)
+			06: t41 = invoke t38.Put(ctx, t6, t40)
+			07: jump 7
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserServiceImpl
+	Method: func(ctx context.Context, username string, password string) (bool, error)
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			password = parameter password : string
+Function: hotelreservation2.UserService.CheckUser
+Block #0: hotelreservation2.UserService.CheckUser.entry
+			00: t0 = convert []byte <- string (password)
+			01: t1 = crypto/sha256.Sum256(t0)
+			02: t2 = new [1]any (varargs)
+			03: t3 = &t2[0:int]
+			04: t4 = make any <- [32]byte (t1)
+			05: *t3 = t4
+			06: t5 = slice t2[:]
+			07: t6 = fmt.Sprintf("%x":string, t5...)
+			08: t7 = &u.users [#0]
+			09: t8 = *t7
+			10: t9 = t8[username],ok
+			11: t10 = extract t9 #0
+			12: t11 = extract t9 #1
+			13: if t11 goto 1 else 2
+Block #1: hotelreservation2.UserService.CheckUser.if.then
+			00: t12 = t6 == t10
+			01: jump 2
+Block #2: hotelreservation2.UserService.CheckUser.if.done
+			00: t13 = phi [0: false:bool, 1: t12] #result
+			01: return t13, nil:error
+	Method: func(ctx context.Context) error
+		Parameters:
+			u = parameter u : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+Function: hotelreservation2.UserService.LoadUsers
+Block #0: hotelreservation2.UserService.LoadUsers.entry
+			00: t0 = &u.userDB [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: hotelreservation2.UserService.LoadUsers.if.then
+			00: return t4
+Block #2: hotelreservation2.UserService.LoadUsers.if.done
+			00: t6 = new []User (users)
+			01: t7 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			02: t8 = slice t7[:]
+			03: t9 = invoke t3.FindMany(ctx, t8, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			04: t10 = extract t9 #0
+			05: t11 = extract t9 #1
+			06: t12 = t11 != nil:error
+			07: if t12 goto 3 else 4
+Block #3: hotelreservation2.UserService.LoadUsers.if.then
+			00: return t11
+Block #4: hotelreservation2.UserService.LoadUsers.if.done
+			00: t13 = make interface{} <- *[]User (t6)
+			01: t14 = invoke t10.All(ctx, t13)
+			02: t15 = local User (user)
+			03: t16 = *t6
+			04: t17 = len(t16)
+			05: jump 5
+Block #5: hotelreservation2.UserService.LoadUsers.rangeindex.loop
+			00: t18 = phi [4: -1:int, 6: t19]
+			01: t19 = t18 + 1:int
+			02: t20 = t19 < t17
+			03: if t20 goto 6 else 7
+Block #6: hotelreservation2.UserService.LoadUsers.rangeindex.body
+			00: t21 = &t16[t19]
+			01: t22 = *t21
+			02: *t15 = t22
+			03: t23 = &u.users [#0]
+			04: t24 = *t23
+			05: t25 = &t15.Username [#0]
+			06: t26 = *t25
+			07: t27 = &t15.Password [#1]
+			08: t28 = *t27
+			09: t24[t26] = t28
+			10: jump 5
+Block #7: hotelreservation2.UserService.LoadUsers.rangeindex.done
+			00: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.User
+	Method: func()
+		Parameters:
+			u = parameter u : User
+Function: hotelreservation2.User.remote
+Block #0: hotelreservation2.User.remote.entry
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan
+	Method: func()
+		Parameters:
+			rp = parameter rp : RatePlan
+Function: hotelreservation2.RatePlan.remote
+Block #0: hotelreservation2.RatePlan.remote.entry
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.FrontEndService
+	Method: func(ctx context.Context, lat float64, lon float64, require string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
+	Method: func(ctx context.Context, inDate string, outDate string, hotelId string, customerName string, username string, password string, roomNumber int64) (string, error)
+	Method: func(ctx context.Context, customerName string, inDate string, outDate string, lat float64, lon float64, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
+	Method: func(ctx context.Context, username string, password string) (string, error)
+		Parameters:
+			date = parameter date : string
+Function: hotelreservation2.checkDataFormat
+Block #0: hotelreservation2.checkDataFormat.entry
+			00: t0 = len(date)
+			01: t1 = t0 != 10:int
+			02: if t1 goto 1 else 2
+Block #1: hotelreservation2.checkDataFormat.if.then
+			00: return false:bool
+Block #2: hotelreservation2.checkDataFormat.if.done
+			00: jump 5
+Block #3: hotelreservation2.checkDataFormat.for.body
+			00: t2 = t3 == 4:int
+			01: if t2 goto 6 else 9
+Block #4: hotelreservation2.checkDataFormat.for.done
+			00: return true:bool
+Block #5: hotelreservation2.checkDataFormat.for.loop
+			00: t3 = phi [2: 0:int, 7: t7] #i
+			01: t4 = t3 < 10:int
+			02: if t4 goto 3 else 4
+Block #6: hotelreservation2.checkDataFormat.if.then
+			00: t5 = date[t3]
+			01: t6 = t5 != 45:byte
+			02: if t6 goto 10 else 7
+Block #7: hotelreservation2.checkDataFormat.if.done
+			00: t7 = t3 + 1:int
+			01: jump 5
+Block #8: hotelreservation2.checkDataFormat.if.else
+			00: t8 = date[t3]
+			01: t9 = t8 < 48:byte
+			02: if t9 goto 11 else 12
+Block #9: hotelreservation2.checkDataFormat.cond.false
+			00: t10 = t3 == 7:int
+			01: if t10 goto 6 else 8
+Block #10: hotelreservation2.checkDataFormat.if.then
+			00: return false:bool
+Block #11: hotelreservation2.checkDataFormat.if.then
+			00: return false:bool
+Block #12: hotelreservation2.checkDataFormat.cond.false
+			00: t11 = date[t3]
+			01: t12 = t11 > 57:byte
+			02: if t12 goto 11 else 7
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelNumber
+	Method: func()
+		Parameters:
+			h = parameter h : HotelNumber
+Function: hotelreservation2.HotelNumber.remote
+Block #0: hotelreservation2.HotelNumber.remote.entry
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RateService
+	Method: func(ctx context.Context, hotelIDs []string, inDate string, outDate string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			recommendDB = parameter recommendDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: hotelreservation2.NewRecommendationServiceImpl
+Block #0: hotelreservation2.NewRecommendationServiceImpl.entry
+			00: t0 = new RecommendationServiceImpl (complit)
+			01: t1 = &t0.recommendDB [#0]
+			02: t2 = &t0.hotels [#1]
+			03: t3 = make map[string]Hotel 
+			04: *t1 = recommendDB
+			05: *t2 = t3
+			06: t4 = context.Background()
+			07: t5 = (*RecommendationServiceImpl).LoadRecommendations(t0, t4)
+			08: t6 = t5 != nil:error
+			09: if t6 goto 1 else 2
+Block #1: hotelreservation2.NewRecommendationServiceImpl.if.then
+			00: return nil:RecommendationService, t5
+Block #2: hotelreservation2.NewRecommendationServiceImpl.if.done
+			00: t7 = make RecommendationService <- *RecommendationServiceImpl (t0)
+			01: return t7, nil:error
+		Parameters:
+Function: hotelreservation2.main
+Block #0: hotelreservation2.main.entry
+			00: t0 = context.Background()
+			01: t1 = NewGeoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = invoke t2.Nearby(t0, 0:float64, 0:float64)
+			05: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Point
+	Method: func() string
+		Parameters:
+			p = parameter p : Point
+Function: hotelreservation2.Point.Id
+Block #0: hotelreservation2.Point.Id.entry
+			00: t0 = local Point (p)
+			01: *t0 = p
+			02: t1 = &t0.Pid [#0]
+			03: t2 = *t1
+			04: return t2
+	Method: func() float64
+		Parameters:
+			p = parameter p : Point
+Function: hotelreservation2.Point.Lat
+Block #0: hotelreservation2.Point.Lat.entry
+			00: t0 = local Point (p)
+			01: *t0 = p
+			02: t1 = &t0.Plat [#1]
+			03: t2 = *t1
+			04: return t2
+	Method: func() float64
+		Parameters:
+			p = parameter p : Point
+Function: hotelreservation2.Point.Lon
+Block #0: hotelreservation2.Point.Lon.entry
+			00: t0 = local Point (p)
+			01: *t0 = p
+			02: t1 = &t0.Plon [#2]
+			03: t2 = *t1
+			04: return t2
+	Method: func()
+		Parameters:
+			p = parameter p : Point
+Function: hotelreservation2.Point.remote
+Block #0: hotelreservation2.Point.remote.entry
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RoomType
+	Method: func()
+		Parameters:
+			rt = parameter rt : RoomType
+Function: hotelreservation2.RoomType.remote
+Block #0: hotelreservation2.RoomType.remote.entry
+			00: return
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.GeoService
 	Method: func(ctx context.Context, lat float64, lon float64) ([]string, error)
 	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ReservationServiceImpl
@@ -1586,6 +1525,16 @@ Block #32: hotelreservation2.ReservationService.MakeReservation.if.then
 			00: t166 = new [0]string (slicelit)
 			01: t167 = slice t166[:]
 			02: return t167, t161
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileService
+	Method: func(ctx context.Context, hotelIds []string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Address
+	Method: func()
+		Parameters:
+			a = parameter a : Address
+Function: hotelreservation2.Address.remote
+Block #0: hotelreservation2.Address.remote.entry
+			00: return
 		Parameters:
 			ctx = parameter ctx : context.Context
 			reserveCache = parameter reserveCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
@@ -1599,84 +1548,135 @@ Block #0: hotelreservation2.NewReservationServiceImpl.entry
 			04: *t2 = reserveDB
 			05: t3 = make ReservationService <- *ReservationServiceImpl (t0)
 			06: return t3, nil:error
-	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.UserServiceImpl
-	Method: func(ctx context.Context, username string, password string) (bool, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.SearchService
+	Method: func(ctx context.Context, lat float64, lon float64, inDate string, outDate string) ([]string, error)
 		Parameters:
-			u = parameter u : *UserServiceImpl
 			ctx = parameter ctx : context.Context
-			username = parameter username : string
-			password = parameter password : string
-Function: hotelreservation2.UserService.CheckUser
-Block #0: hotelreservation2.UserService.CheckUser.entry
-			00: t0 = convert []byte <- string (password)
-			01: t1 = crypto/sha256.Sum256(t0)
-			02: t2 = new [1]any (varargs)
-			03: t3 = &t2[0:int]
-			04: t4 = make any <- [32]byte (t1)
-			05: *t3 = t4
-			06: t5 = slice t2[:]
-			07: t6 = fmt.Sprintf("%x":string, t5...)
-			08: t7 = &u.users [#0]
-			09: t8 = *t7
-			10: t9 = t8[username],ok
-			11: t10 = extract t9 #0
-			12: t11 = extract t9 #1
-			13: if t11 goto 1 else 2
-Block #1: hotelreservation2.UserService.CheckUser.if.then
-			00: t12 = t6 == t10
-			01: jump 2
-Block #2: hotelreservation2.UserService.CheckUser.if.done
-			00: t13 = phi [0: false:bool, 1: t12] #result
-			01: return t13, nil:error
-	Method: func(ctx context.Context) error
+			userDB = parameter userDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: hotelreservation2.NewUserServiceImpl
+Block #0: hotelreservation2.NewUserServiceImpl.entry
+			00: t0 = new UserServiceImpl (complit)
+			01: t1 = &t0.userDB [#1]
+			02: t2 = &t0.users [#0]
+			03: t3 = make map[string]string 
+			04: *t1 = userDB
+			05: *t2 = t3
+			06: t4 = context.Background()
+			07: t5 = (*UserServiceImpl).LoadUsers(t0, t4)
+			08: t6 = t5 != nil:error
+			09: if t6 goto 1 else 2
+Block #1: hotelreservation2.NewUserServiceImpl.if.then
+			00: return nil:UserService, t5
+Block #2: hotelreservation2.NewUserServiceImpl.if.done
+			00: t7 = make UserService <- *UserServiceImpl (t0)
+			01: return t7, nil:error
 		Parameters:
-			u = parameter u : *UserServiceImpl
 			ctx = parameter ctx : context.Context
-Function: hotelreservation2.UserService.LoadUsers
-Block #0: hotelreservation2.UserService.LoadUsers.entry
-			00: t0 = &u.userDB [#1]
-			01: t1 = *t0
-			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
-			03: t3 = extract t2 #0
-			04: t4 = extract t2 #1
-			05: t5 = t4 != nil:error
-			06: if t5 goto 1 else 2
-Block #1: hotelreservation2.UserService.LoadUsers.if.then
-			00: return t4
-Block #2: hotelreservation2.UserService.LoadUsers.if.done
-			00: t6 = new []User (users)
-			01: t7 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
-			02: t8 = slice t7[:]
-			03: t9 = invoke t3.FindMany(ctx, t8, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
-			04: t10 = extract t9 #0
-			05: t11 = extract t9 #1
-			06: t12 = t11 != nil:error
-			07: if t12 goto 3 else 4
-Block #3: hotelreservation2.UserService.LoadUsers.if.then
-			00: return t11
-Block #4: hotelreservation2.UserService.LoadUsers.if.done
-			00: t13 = make interface{} <- *[]User (t6)
-			01: t14 = invoke t10.All(ctx, t13)
-			02: t15 = local User (user)
-			03: t16 = *t6
-			04: t17 = len(t16)
-			05: jump 5
-Block #5: hotelreservation2.UserService.LoadUsers.rangeindex.loop
-			00: t18 = phi [4: -1:int, 6: t19]
-			01: t19 = t18 + 1:int
-			02: t20 = t19 < t17
-			03: if t20 goto 6 else 7
-Block #6: hotelreservation2.UserService.LoadUsers.rangeindex.body
-			00: t21 = &t16[t19]
-			01: t22 = *t21
-			02: *t15 = t22
-			03: t23 = &u.users [#0]
-			04: t24 = *t23
-			05: t25 = &t15.Username [#0]
-			06: t26 = *t25
-			07: t27 = &t15.Password [#1]
-			08: t28 = *t27
-			09: t24[t26] = t28
-			10: jump 5
-Block #7: hotelreservation2.UserService.LoadUsers.rangeindex.done
-			00: return nil:error
+			profileCache = parameter profileCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			profileDB = parameter profileDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: hotelreservation2.NewProfileServiceImpl
+Block #0: hotelreservation2.NewProfileServiceImpl.entry
+			00: t0 = new ProfileServiceImpl (complit)
+			01: t1 = &t0.profileCache [#0]
+			02: t2 = &t0.profileDB [#1]
+			03: *t1 = profileCache
+			04: *t2 = profileDB
+			05: t3 = make ProfileService <- *ProfileServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RecommendationService
+	Method: func(ctx context.Context, require string, lat float64, lon float64) ([]string, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.Hotel
+	Method: func()
+		Parameters:
+			h = parameter h : Hotel
+Function: hotelreservation2.Hotel.remote
+Block #0: hotelreservation2.Hotel.remote.entry
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile
+	Method: func()
+		Parameters:
+			hp = parameter hp : HotelProfile
+Function: hotelreservation2.HotelProfile.remote
+Block #0: hotelreservation2.HotelProfile.remote.entry
+			00: return
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.ProfileServiceImpl
+	Method: func(ctx context.Context, hotelIds []string, locale string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile, error)
+		Parameters:
+			p = parameter p : *ProfileServiceImpl
+			ctx = parameter ctx : context.Context
+			hotelIds = parameter hotelIds : []string
+			locale = parameter locale : string
+Function: hotelreservation2.ProfileService.GetProfiles
+Block #0: hotelreservation2.ProfileService.GetProfiles.entry
+			00: t0 = len(hotelIds)
+			01: jump 1
+Block #1: hotelreservation2.ProfileService.GetProfiles.rangeindex.loop
+			00: t1 = phi [0: nil:[]HotelProfile, 7: t25] #profiles
+			01: t2 = phi [0: -1:int, 7: t3]
+			02: t3 = t2 + 1:int
+			03: t4 = t3 < t0
+			04: if t4 goto 2 else 3
+Block #2: hotelreservation2.ProfileService.GetProfiles.rangeindex.body
+			00: t5 = &hotelIds[t3]
+			01: t6 = *t5
+			02: t7 = new HotelProfile (profile)
+			03: t8 = &p.profileCache [#0]
+			04: t9 = *t8
+			05: t10 = make interface{} <- *HotelProfile (t7)
+			06: t11 = invoke t9.Get(ctx, t6, t10)
+			07: t12 = extract t11 #0
+			08: t13 = extract t11 #1
+			09: t14 = t13 != nil:error
+			10: if t14 goto 4 else 5
+Block #3: hotelreservation2.ProfileService.GetProfiles.rangeindex.done
+			00: return t1, nil:error
+Block #4: hotelreservation2.ProfileService.GetProfiles.if.then
+			00: return t1, t13
+Block #5: hotelreservation2.ProfileService.GetProfiles.if.done
+			00: if t12 goto 7 else 6
+Block #6: hotelreservation2.ProfileService.GetProfiles.if.then
+			00: t15 = &p.profileDB [#1]
+			01: t16 = *t15
+			02: t17 = invoke t16.GetCollection(ctx, "profile_db":string, "hotels":string)
+			03: t18 = extract t17 #0
+			04: t19 = extract t17 #1
+			05: t20 = t19 != nil:error
+			06: if t20 goto 8 else 9
+Block #7: hotelreservation2.ProfileService.GetProfiles.if.done
+			00: t21 = *t7
+			01: t22 = new [1]HotelProfile (varargs)
+			02: t23 = &t22[0:int]
+			03: *t23 = t21
+			04: t24 = slice t22[:]
+			05: t25 = append(t1, t24...)
+			06: jump 1
+Block #8: hotelreservation2.ProfileService.GetProfiles.if.then
+			00: t26 = new [0]HotelProfile (slicelit)
+			01: t27 = slice t26[:]
+			02: return t27, t19
+Block #9: hotelreservation2.ProfileService.GetProfiles.if.done
+			00: t28 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t29 = &t28[0:int]
+			02: t30 = &t29.Key [#0]
+			03: t31 = &t29.Value [#1]
+			04: *t30 = "ID":string
+			05: t32 = make interface{} <- string (t6)
+			06: *t31 = t32
+			07: t33 = slice t28[:]
+			08: t34 = invoke t18.FindOne(ctx, t33, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)
+			09: t35 = extract t34 #0
+			10: t36 = extract t34 #1
+			11: t37 = t36 != nil:error
+			12: if t37 goto 10 else 11
+Block #10: hotelreservation2.ProfileService.GetProfiles.if.then
+			00: return t1, t36
+Block #11: hotelreservation2.ProfileService.GetProfiles.if.done
+			00: t38 = make interface{} <- *HotelProfile (t7)
+			01: t39 = invoke t35.One(ctx, t38)
+			02: t40 = &p.profileCache [#0]
+			03: t41 = *t40
+			04: t42 = *t7
+			05: t43 = make interface{} <- HotelProfile (t42)
+			06: t44 = invoke t41.Put(ctx, t6, t43)
+			07: jump 7

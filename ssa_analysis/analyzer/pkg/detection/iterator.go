@@ -13,6 +13,7 @@ type Iterator struct {
 	app       *app.App
 	graph     *abstractgraph.AbstractCallGraph
 	detectors []Detector
+	reqIdx    int
 }
 
 func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detectors ...Detector) *Iterator {
@@ -49,6 +50,7 @@ func (iterator *Iterator) Run() {
 		for _, detector := range iterator.detectors {
 			detector.OnEndRequest(iterator.app)
 		}
+		iterator.reqIdx++
 
 		iterator.clean(toNode)
 	}
@@ -97,7 +99,7 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			abstractgraph.PropagateNewTaintsToTracedObjects(iterator.graph, toNode, nil, nil, true)
 
 			// finalize phase by propagating to database schemas
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, taintMapping)
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, iterator.reqIdx, taintMapping)
 
 			// --------------------------
 			// PHASE 2: transverse caller
@@ -126,7 +128,7 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			}
 
 			abstractgraph.PropagateNewTaintsToTracedObjects(iterator.graph, node, taintMapping, edge, false)
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, taintMapping)
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, iterator.reqIdx, taintMapping)
 		}
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
@@ -173,7 +175,7 @@ func (iterator *Iterator) transverseQueue(node *abstractgraph.AbstractNode, curr
 				}
 
 				abstractgraph.PropagateNewTaintsToTracedObjects(iterator.graph, node, taintMapping, queueReadEdge, true)
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, taintMapping)
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, iterator.reqIdx, taintMapping)
 
 				callerNode := queueReadEdge.GetFromNode()
 				iterator.transverse(callerNode)

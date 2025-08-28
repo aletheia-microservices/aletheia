@@ -234,7 +234,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), true, false)
 				taintMapping.Merge(taintMappingTmp)
 			}
-			PropagateNewTaintsToDatabaseSchemas(graph, taintMapping)
+			PropagateNewTaintsToDatabaseSchemas(graph, -1, taintMapping)
 
 			edges = append(edges, edge)
 		}

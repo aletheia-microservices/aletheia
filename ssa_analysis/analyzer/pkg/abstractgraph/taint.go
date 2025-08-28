@@ -43,6 +43,10 @@ func (taint *AbstractTaint) IsWrite() bool {
 	return taint.dbOpType == common.OP_WRITE
 }
 
+func (taint *AbstractTaint) IsWriteOrUpdate() bool {
+	return taint.dbOpType == common.OP_WRITE || taint.dbOpType == common.OP_UPDATE
+}
+
 func (taint *AbstractTaint) IsUpdate() bool {
 	return taint.dbOpType == common.OP_UPDATE
 }

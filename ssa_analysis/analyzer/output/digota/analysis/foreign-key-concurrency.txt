@@ -4,5 +4,4 @@
 entry request: ProductService.Delete()
 	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
 		CONCURRENT WRITE: OrderService.New() --> orders_db.orders.InsertOne()
-		- written field: orders_db.orders.Items[*].Parent
-			- affected constraint #0: FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus.Id
+		- written fields: {orders_db.orders.Items[*].Parent}

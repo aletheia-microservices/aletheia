@@ -8,7 +8,7 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, taintMapping *TaintMapping) {
+func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping) {
 	for currTaint, otherTaintsLst := range taintMapping.mapping {
 		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetDatabasePath()))
 		currField := currDb.GetLastSchema().GetOrCreateField(currDb, currTaint.GetDatabasePath())
@@ -23,29 +23,55 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, taintMapping 
 			}
 			otherField := otherDb.GetLastSchema().GetOrCreateField(otherDb, otherTaint.GetDatabasePath())
 
-			if otherTaint.IsWrite() && currTaint.IsWrite() {
-				if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
+			if otherTaint.IsWriteOrUpdate() && currTaint.IsWriteOrUpdate() {
+				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
+					if otherTaint.IsWrite() && currTaint.IsWrite() {
+						if ok := constraint.EnableMandatory(reqIdx); ok {
+							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
+						}
+					}
+				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
+					if otherTaint.IsWrite() && currTaint.IsWrite() {
+						if ok := constraint.EnableMandatory(reqIdx); ok {
+							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
+						}
+					}
+				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
 					// 2nd condition is for sanity check
 					// may happen when iterating queue.Push() --> queue.Pop()
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
-					constraint.EnableMandatory()
+					if otherTaint.IsWrite() && currTaint.IsWrite() {
+						constraint.EnableMandatory(reqIdx)
+					}
 					currField.AddConstraint(constraint)
 					currDb.GetLastSchema().AddConstraint(constraint)
 					fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 				}
-			} else if otherTaint.IsRead() && currTaint.IsWrite() {
-				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil && constraint.IsMandatory() {
-					constraint.DisableMandatory()
-					fmt.Printf("\t\t[ITERATOR] [WRITE-READ] disabled mandatory: %s\n", constraint)
+			} else if otherTaint.IsRead() && currTaint.IsWriteOrUpdate() {
+				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
+					if currTaint.IsWrite() {
+						if ok := constraint.DisableMandatory(reqIdx); ok {
+							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
+						}
+					}
+				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
+					if currTaint.IsWrite() {
+						if ok := constraint.DisableMandatory(reqIdx); ok {
+							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
+						}
+					}
 				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
 					// 2nd condition is for sanity check
 					// may happen when iterating queue.Push() --> queue.Pop()
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 					currField.AddConstraint(constraint)
 					currDb.GetLastSchema().AddConstraint(constraint)
+					if currTaint.IsWrite() {
+						constraint.DisableMandatory(reqIdx)
+					}
 					fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 				}
-			} else if otherTaint.IsWrite() && currTaint.IsRead() {
+			} else if otherTaint.IsWriteOrUpdate() && currTaint.IsRead() {
 				// e.g.,
 				// postnotification: TODO
 				// 		=> FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID [MANDATORY]
@@ -59,12 +85,27 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, taintMapping 
 
 				// NOTE: verify this
 				// not sure if we shoud leave the following conditions ahead with "nothing to do"
-				// to also capture foreign keys for other combinations of operatiions
-				if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
+				// to also capture foreign keys for other combinations of operations
+				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
+					if otherTaint.IsWrite() {
+						if ok := constraint.DisableMandatory(reqIdx); ok {
+							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (A) disabled mandatory: %s\n", constraint)
+						}
+					}
+				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
+					if otherTaint.IsWrite() {
+						if ok := constraint.DisableMandatory(reqIdx); ok {
+							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (B) disabled mandatory: %s\n", constraint)
+						}
+					}
+				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
 					// 2nd condition is for sanity check
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
 					otherField.AddConstraint(constraint)
 					otherDb.GetLastSchema().AddConstraint(constraint)
+					if otherTaint.IsWrite() {
+						constraint.DisableMandatory(reqIdx)
+					}
 					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsRead() && currTaint.IsRead() {
@@ -72,6 +113,8 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, taintMapping 
 			} else if otherTaint.IsDelete() && (currTaint.IsRead() || currTaint.IsWrite() || currTaint.IsDelete()) {
 				// nothing to do
 			} else if (otherTaint.IsRead() || otherTaint.IsWrite() || otherTaint.IsDelete()) && currTaint.IsDelete() {
+				// nothing to do
+			} else if currTaint.IsUpdate() || otherTaint.IsUpdate() {
 				// nothing to do
 			} else {
 				log.Fatalf("\t\t[ABSTRACTGRAPH] unexpected taint mapping:\nOTHER TAINT: %s\nCURR TAINT:%s", otherTaint.LongString(), currTaint.LongString())

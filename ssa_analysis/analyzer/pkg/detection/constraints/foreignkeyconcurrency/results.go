@@ -25,15 +25,25 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 			} */
 			for _, write := range dangerousDelete.concurrentWrites {
 				results += fmt.Sprintf("\t\tCONCURRENT WRITE: %s\n", write.write.call.String())
-				for _, field := range write.affectedFields {
-					results += fmt.Sprintf("\t\t- written field: %s\n", field.GetPath())
-					for i, constraint := range field.GetConstraints() {
-						/* if !constraint.IsMandatory() {
-							results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
-						} */
-						results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
+				var fieldspaths string
+				for i, field := range write.affectedFields {
+					fieldspaths += field.GetPath()
+					if i < len(write.affectedFields) - 1 {
+						fieldspaths += ", "
 					}
 				}
+				fieldspaths = "{" + fieldspaths + "}"
+				results += fmt.Sprintf("\t\t- written fields: %s\n", fieldspaths)
+
+				/* for _, field := range write.affectedFields {
+					results += fmt.Sprintf("\t\t- written fields: %s\n", strings.field.GetPath())
+					for i, constraint := range field.GetConstraints() {
+						if !constraint.IsMandatory() {
+							results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
+						}
+						//results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
+					}
+				} */
 			}
 		}
 	}

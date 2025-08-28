@@ -32,11 +32,12 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 				continue
 			}
 			results += fmt.Sprintf("\tDELETE: %s\n", cascadeDelete.op.call.String())
+			results += fmt.Sprintln("\t\tMISSING CASCADE DELETE on:")
 			for _, pendingField := range cascadeDelete.pendingFields {
-				results += fmt.Sprintf("\t\tMISSING DELETE on field: %s\n", pendingField.GetPath())
-				for i, constraint := range pendingField.GetConstraints() {
+				results += fmt.Sprintf("\t\t- %s\n", pendingField.GetPath())
+				/* for i, constraint := range pendingField.GetConstraints() {
 					results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
-				}
+				} */
 			}
 		}
 		results += "\n"
