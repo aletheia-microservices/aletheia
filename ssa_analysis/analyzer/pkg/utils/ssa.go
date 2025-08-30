@@ -15,17 +15,17 @@ func ExtractStringFromValue(val ssa.Value) (string, bool) {
 	return "", false
 }
 
-func SSAValueIsBuiltinFuncCall(val ssa.Value) (bool, *ssa.Builtin) {
-	if call, ok := val.(*ssa.Call); ok && !call.Call.IsInvoke() {
-		if builtin, ok := call.Call.Value.(*ssa.Builtin); ok {
-			return true, builtin
-		}
-	}
-	return false, nil
-}
+type FUNC_TYPE int
+
+const (
+	FUNC_TYPE_IGNORE FUNC_TYPE = iota
+	FUNC_TYPE_APPEND
+	FUNC_TYPE_TRANSFER
+	FUNC_TYPE_MAP_ELEMS
+)
 
 // direct => can be tainted
-func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, int, string) {
+func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, FUNC_TYPE, string) {
 	// append(slice []Type, elems ...Type) []Type
 	// -----------------------------------
 	// copy(dst, src []Type) int
@@ -48,11 +48,11 @@ func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, int, string) {
 	// error
 	switch builtin.Name() {
 	case "append":
-		return true, 1, builtin.Name()
+		return true, FUNC_TYPE_APPEND, builtin.Name()
 	case "copy":
-		return true, 2, builtin.Name()
+		return true, FUNC_TYPE_TRANSFER, builtin.Name()
 	case "delete":
-		return true, 3, builtin.Name()
+		return true, FUNC_TYPE_MAP_ELEMS, builtin.Name()
 	}
-	return false, -1, ""
+	return false, FUNC_TYPE_IGNORE, ""
 }

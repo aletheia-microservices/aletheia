@@ -1,42 +1,42 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2872074 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2872074 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2872103 [label="t2: invoke t1.Create(ctx, config)
+	N_instr_ret_4508811 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4508811 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4508840 [label="t2: invoke t1.Create(ctx, config)
 
 ==== tainted ====
 _obj
 [rpc] @ ConfigService.Create.t2
 ", style=bold, shape=box, color="yellow"];
-	N_val_field_2872083 [label="t0: &a.configService [#2]
+	N_val_field_4508820 [label="t0: &a.configService [#2]
 
 ==== tainted ====
 _obj
 [rpc] @ ConfigService.Create.t2
 ", style=bold, shape=box, color="green"];
-	N_val_param_2871989 [label="a: parameter a : *AdminBasicInfoServiceImpl
+	N_val_param_4508726 [label="a: parameter a : *AdminBasicInfoServiceImpl
 
 ==== tainted ====
 _obj.configService
 [rpc] @ ConfigService.Create.t2
 ", style=bold, shape=box, color="black"];
-	N_val_param_2872029 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2872050 [label="config: parameter config : Config
+	N_val_param_4508766 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4508787 [label="config: parameter config : Config
 
 ==== tainted ====
 _obj
 [rpc] @ ConfigService.Create.config
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2872083 [label="t1: *t0
+	N_val_unary_4508820 [label="t1: *t0
 
 ==== tainted ====
 _obj
 [rpc] @ ConfigService.Create.t2
 ", style=bold, shape=box, color="red"];
-	N_val_param_2871989 -> N_val_field_2872083;
-	N_val_field_2872083 -> N_val_unary_2872083;
-	N_val_param_2872029 -> N_val_call_2872103;
-	N_val_param_2872050 -> N_val_call_2872103;
-	N_val_unary_2872083 -> N_val_call_2872103;
-	N_val_call_2872103 -> N_instr_ret_2872074;
+	N_val_param_4508726 -> N_val_field_4508820;
+	N_val_field_4508820 -> N_val_unary_4508820;
+	N_val_param_4508766 -> N_val_call_4508840;
+	N_val_param_4508787 -> N_val_call_4508840;
+	N_val_unary_4508820 -> N_val_call_4508840;
+	N_val_call_4508840 -> N_instr_ret_4508811;
 }

@@ -1,3 +1,42 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
+entry request: Wrk2APIService.ReadHomeTimeline()
+	FOREIGN KEY READS #1:
+		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
+			- read field: post_db.post.PostID
+		READ 2: HomeTimelineService.ReadHomeTimeline() --> hometimeline_cache.*.Get()
+			- read field: hometimeline_cache.*.Value[*].PostID
+				- constraint: FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+entry request: Wrk2APIService.ReadUserTimeline()
+	FOREIGN KEY READS #2:
+		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
+			- read field: post_db.post.PostID
+		READ 2: UserTimelineService.ReadUserTimeline() --> usertimeline_cache.*.Get()
+			- read field: usertimeline_cache.*.Value[*].PostID
+				- constraint: FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+	FOREIGN KEY READS #3:
+		READ 1: PostStorageService.ReadPosts() --> post_db.post.FindMany()
+			- read field: post_db.post.PostID
+		READ 2: UserTimelineService.ReadUserTimeline() --> usertimeline_db.usertimeline.FindOne()
+			- read field: usertimeline_db.usertimeline.Posts[*].PostID
+				- constraint: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+entry request: Wrk2APIService.ComposePost()
+	FOREIGN KEY READS #4:
+		READ 1: HomeTimelineService.WriteHomeTimeline() --> hometimeline_cache.*.Get()
+			- read field: hometimeline_cache.*.Value[*].PostID
+				- constraint: FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]
+		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_cache.*.Get()
+			- read field: usertimeline_cache.*.Value[*].PostID
+	FOREIGN KEY READS #5:
+		READ 1: SocialGraphService.GetFollowers() --> socialgraph_cache.followers.Get()
+			- read field: socialgraph_cache.followers.Key
+		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_db.usertimeline.FindMany()
+			- read field: usertimeline_db.usertimeline.UserID
+				- constraint: FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES socialgraph_cache.followers.Key [MANDATORY]
+	FOREIGN KEY READS #6:
+		READ 1: SocialGraphService.GetFollowers() --> socialgraph_cache.followers.Get()
+			- read field: socialgraph_cache.followers.Key
+		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_cache.*.Get()
+			- read field: usertimeline_cache.*.Key
+				- constraint: FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_cache.followers.Key [MANDATORY]

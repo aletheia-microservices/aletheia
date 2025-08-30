@@ -4,7 +4,4 @@
 entry request: Frontend.DeleteSock()
 	DELETE: CatalogueService.DeleteSock() --> catalogue_db.catalogue.DeleteOne()
 		CONCURRENT WRITE: CartService.AddItem() --> cart_db.carts.InsertOne()
-		- written field: cart_db.carts.Items[*].ID
-			- affected constraint #0: FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.catalogue.ID
-		- written field: cart_db.carts.Items[*].UnitPrice
-			- affected constraint #0: FOREIGN_KEY cart_db.carts.Items[*].UnitPrice REFERENCES catalogue_db.catalogue.Price
+		- written fields: {cart_db.carts.Items[*].ID, cart_db.carts.Items[*].UnitPrice}

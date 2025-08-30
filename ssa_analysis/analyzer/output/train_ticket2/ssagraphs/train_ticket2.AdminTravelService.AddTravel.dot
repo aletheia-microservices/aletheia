@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2885106 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2885106 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2885139 [label="t2: invoke t1.CreateTrip(ctx, travelInfo)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4518964 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4518964 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4518997 [label="t2: invoke t1.CreateTrip(ctx, travelInfo)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,23 +15,23 @@ _obj
 _obj
 [rpc] @ TravelService.CreateTrip.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_2885115 [label="t0: &a.travelService [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2885008 [label="a: parameter a : *AdminTravelServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2885045 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2885066 [label="travelInfo: parameter travelInfo : TravelInfo
+	N_val_field_4518973 [label="t0: &a.travelService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4518866 [label="a: parameter a : *AdminTravelServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4518903 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4518924 [label="travelInfo: parameter travelInfo : TravelInfo
 
 ==== tainted ====
 _obj
 [rpc] @ TravelService.CreateTrip.travelInfo
 ", style=bold, shape=box, color="black"];
-	N_val_unary_2885115 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2885008 -> N_val_field_2885115;
-	N_val_field_2885115 -> N_val_unary_2885115;
-	N_val_param_2885045 -> N_val_call_2885139;
-	N_val_param_2885066 -> N_val_call_2885139;
-	N_val_unary_2885115 -> N_val_call_2885139;
-	N_val_call_2885139 -> N_val_extrt3;
-	N_val_call_2885139 -> N_val_extrt4;
-	N_val_extrt3 -> N_instr_ret_2885106;
-	N_val_extrt4 -> N_instr_ret_2885106;
+	N_val_unary_4518973 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4518866 -> N_val_field_4518973;
+	N_val_field_4518973 -> N_val_unary_4518973;
+	N_val_param_4518903 -> N_val_call_4518997;
+	N_val_param_4518924 -> N_val_call_4518997;
+	N_val_unary_4518973 -> N_val_call_4518997;
+	N_val_call_4518997 -> N_val_extrt3;
+	N_val_call_4518997 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_4518964;
+	N_val_extrt4 -> N_instr_ret_4518964;
 }

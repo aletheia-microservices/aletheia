@@ -1,20 +1,20 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2726790 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2726790 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2726816 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2726816 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
-	N_nil_1300719932 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2726813 [label="t0: new UserServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
-	N_val_field_2726816 [label="t1: &t0.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_instr_ret_14870 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_14870 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_14896 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_14896 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
+	N_nil_1308771353 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_14893 [label="t0: new UserServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_14896 [label="t1: &t0.db [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet2 [label="t2: make UserService <- *UserServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
-	N_val_param_2726719 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2726740 [label="db: parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
-	N_val_alloc_2726813 -> N_val_field_2726816;
-	N_val_field_2726816 -> N_instr_store_2726816;
-	N_val_param_2726740 -> N_instr_store_2726816;
-	N_val_alloc_2726813 -> N_val_ifacet2;
-	N_val_ifacet2 -> N_instr_ret_2726790;
-	N_nil_1300719932 -> N_instr_ret_2726790;
-	N_val_field_2726816 -> N_val_alloc_2726813 [label=".db", style=dashed, color=blue];
+	N_val_param_14799 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_14820 [label="db: parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_14893 -> N_val_field_14896;
+	N_val_field_14896 -> N_instr_store_14896;
+	N_val_param_14820 -> N_instr_store_14896;
+	N_val_alloc_14893 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_14870;
+	N_nil_1308771353 -> N_instr_ret_14870;
+	N_val_field_14896 -> N_val_alloc_14893 [label=".db", style=dashed, color=blue];
 }

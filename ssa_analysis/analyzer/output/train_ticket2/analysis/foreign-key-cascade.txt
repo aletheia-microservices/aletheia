@@ -1,32 +1,32 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
+entry request: AdminOrderService.DeleteOrder()
+	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
+		MISSING CASCADE DELETE on:
+		- food_db.food_order.OrderID
+		- consign_db.consign_record.OrderID
+		- consign_db.consign_record.AccountID
+		- consign_db.consign_record.FromPlace
+		- consign_db.consign_record.TargetDate
+		- consign_db.consign_record.ToPlace
+		- delivery_db.delivery.OrderID
+		- assurance_db.assurance.OrderID
+
 entry request: AdminUserService.DeleteUser()
 	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
 		MISSING CASCADE DELETE on:
 		- order_db.order.AccountID
 
-entry request: AdminOrderService.DeleteOrder()
-	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
+entry request: AdminBasicInfoService.DeleteContact()
+	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
 		MISSING CASCADE DELETE on:
-		- food_db.food_order.OrderID
-		- assurance_db.assurance.OrderID
-		- delivery_db.delivery.OrderID
-		- consign_db.consign_record.AccountID
-		- consign_db.consign_record.ToPlace
-		- consign_db.consign_record.TargetDate
-		- consign_db.consign_record.FromPlace
-		- consign_db.consign_record.OrderID
+		- order_db.order.ContactsDocumentNumber
+		- order_db.order.DocumentType
+		- order_db.order.ContactsName
 
 entry request: AdminTravelService.DeleteTravel()
 	DELETE: TravelService.DeleteTrip() --> travel_db.trip.DeleteOne()
 		MISSING CASCADE DELETE on:
 		- order_db.order.TrainNumber
-
-entry request: AdminBasicInfoService.DeleteContact()
-	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
-		MISSING CASCADE DELETE on:
-		- order_db.order.ContactsName
-		- order_db.order.ContactsDocumentNumber
-		- order_db.order.DocumentType
 

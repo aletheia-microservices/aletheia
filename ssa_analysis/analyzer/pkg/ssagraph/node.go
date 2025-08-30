@@ -103,7 +103,7 @@ func (node *SSANode) GetTaints() map[string][]*SSATaint {
 func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, dbcall *DatabaseCall) bool {
 	lstTaints := node.taints[objpath]
 	for _, taint := range lstTaints {
-		if taint.dbpath == dbpath {
+		if taint.dbpath == dbpath && taint.dbcall.opType == dbcall.opType {
 			return false // already exists
 		}
 	}
