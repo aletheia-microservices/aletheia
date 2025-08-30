@@ -20,6 +20,7 @@ type KeyCoordinationDetector struct {
 	keyType      DetectionType
 	requests     []*Request
 	results      string
+	restrictive  bool
 	foreignReads map[*Request][]*ForeignRead
 }
 
@@ -27,6 +28,7 @@ func NewDetector(keyType DetectionType) *KeyCoordinationDetector {
 	detector := &KeyCoordinationDetector{
 		keyType:      keyType,
 		foreignReads: make(map[*Request][]*ForeignRead),
+		restrictive: true,
 	}
 	fmt.Println()
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
@@ -34,6 +36,10 @@ func NewDetector(keyType DetectionType) *KeyCoordinationDetector {
 	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
 	fmt.Println()
 	return detector
+}
+
+func (detector *KeyCoordinationDetector) isRestrictive() bool {
+	return detector.restrictive
 }
 
 func (detector *KeyCoordinationDetector) isTypePrimaryKey() bool {
@@ -50,7 +56,11 @@ func (detector *KeyCoordinationDetector) addForeignRead(req *Request, foreignrea
 
 func (detector *KeyCoordinationDetector) hasForeignRead(req *Request, op1 *ReadOperation, op2 *ReadOperation) bool {
 	for _, foreignRead := range detector.foreignReads[req] {
-		if foreignRead.op1 == op1 && foreignRead.op2 == op2 {
+		if foreignRead.op1 == op1 && foreignRead.op2 == op2 || foreignRead.op1 == op2 && foreignRead.op2 == op1 {
+			return true
+		}
+
+		if foreignRead.op1.call == op1.call && foreignRead.op2.call == op2.call || foreignRead.op1.call == op2.call && foreignRead.op2.call == op1.call {
 			return true
 		}
 	}
@@ -105,7 +115,7 @@ func (detector *KeyCoordinationDetector) OnRead(app *app.App, edge *abstractgrap
 	read := NewReadOperation(edge, edge.GetArguments())
 	request := detector.getCurrentRequest()
 	request.AddOperation(read)
-	fmt.Printf("[FOREIGN KEY COORDINATION | DETECTOR] added new read: %v\n", detector.GetTypeStringUpper(), read)
+	fmt.Printf("[%s | DETECTOR] added new read: %v\n", detector.GetTypeStringUpper(), read)
 }
 
 func (detector *KeyCoordinationDetector) OnWrite(app *app.App, edge *abstractgraph.AbstractEdge) {

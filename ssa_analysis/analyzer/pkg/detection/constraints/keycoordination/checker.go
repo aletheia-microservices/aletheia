@@ -2,17 +2,21 @@ package keycoordination
 
 import (
 	"fmt"
+	"slices"
 
+	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/utils"
 )
 
 type ForeignRead struct {
-	op1    *ReadOperation // read1 has the secondary taint referencing read2
-	op2    *ReadOperation
-	field1 *backends.Field
-	field2 *backends.Field // field used as foreign key in op2
+	op1         *ReadOperation // read1 has the secondary taint referencing read2
+	op2         *ReadOperation
+	field1      *backends.Field
+	field2      *backends.Field // field used as foreign key in op2
+	constraint1 *backends.Constraint
+	constraint2 *backends.Constraint
 }
 
 func (detector *KeyCoordinationDetector) checkInconsistency(app *app.App, request *Request) {
@@ -32,53 +36,87 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 	for _, arg := range currOp.arguments {
 		fmt.Printf("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
 		fmt.Printf("\t[%s | CHECKER] arg (%s) w/ all taints: %v\n", arg.String(), detector.GetTypeStringUpper(), arg.GetAllTaints())
-		for _, secondaryTaint := range arg.GetSecondaryTaintsFlatList() {
-			fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %v\n", detector.GetTypeStringUpper(), arg.String(), secondaryTaint.LongString())
 
-			if secondaryTaint.GetDatabaseCallID() != currOp.GetCallID() && secondaryTaint.IsRead() {
-				otherOp := request.FindOperationByCallID(secondaryTaint.GetDatabaseCallID())
+		for objpath, taintLst := range arg.GetAllTaints() {
+			var currTaint *abstractgraph.AbstractTaint
+			var otherTaints []*abstractgraph.AbstractTaint
 
-				if currOp == otherOp || otherOp == nil {
-					continue
+			for _, taint := range taintLst {
+				if taint.IsPrimary() && taint.GetDatabaseCallID() == currOp.GetCallID() {
+					fmt.Printf("\t[%s | CHECKER] objpath={%s} // currTaint={%s}\n", detector.GetTypeStringUpper(), objpath, taint.String())
+					currTaint = taint
+				} else if !taint.IsPrimary() && taint.GetDatabaseCallID() != currOp.GetCallID() && !slices.Contains(otherTaints, taint) {
+					fmt.Printf("\t[%s | CHECKER] objpath={%s} // otherTaint={%s}\n", detector.GetTypeStringUpper(), objpath, taint.String())
+					otherTaints = append(otherTaints, taint)
 				}
+			}
 
-				if currOp.call.GetToNode().GetDatabaseName() == otherOp.call.GetToNode().GetDatabaseName() {
+			if currTaint == nil {
+				fmt.Printf("\t[%s | CHECKER] skipping currTaint with otherTaints: %v\n", detector.GetTypeStringUpper(), otherTaints)
+				continue
+			}
+
+			currFieldPath := currTaint.GetDatabasePath()
+			currDatabase := app.GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currFieldPath))
+			currField := app.ComputeDatabaseFieldFromPath(currDatabase, currFieldPath)
+
+			for _, otherTaint := range otherTaints {
+				fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %v\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+				otherOp := request.FindOperationByCallID(otherTaint.GetDatabaseCallID())
+
+				// sanity checks
+				if currOp == otherOp || otherOp == nil || currOp.call.GetToNode().GetDatabaseName() == otherOp.call.GetToNode().GetDatabaseName() {
+					fmt.Printf("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 					continue
 				}
 
 				if !detector.hasForeignRead(request, currOp, otherOp) {
-					otherFieldpath := secondaryTaint.GetDatabasePath()
+					otherFieldpath := otherTaint.GetDatabasePath()
 					otherDatabase := app.GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherFieldpath))
 					otherField := app.ComputeDatabaseFieldFromPath(otherDatabase, otherFieldpath)
 
-					// [TO BE IMPROVED]
-					// this is a bit hardcoded for now but for the future
-					// we should associate the schema to the call before the analysis
-					var field *backends.Field
-					if constraints := otherField.GetConstraintForeignKey(); constraints != nil {
-						field = constraints[0].GetFieldAt(1)
-					} else if fields := app.GetAllFieldsReferencingCurrent(otherField); fields != nil {
-						field = fields[0]
+					fmt.Printf("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
+
+					foreignRead := &ForeignRead{
+						op1:    currOp,
+						op2:    otherOp,
+						field1: currField,
+						field2: otherField,
 					}
-
-					if field == nil {
-						//log.Panicf("[%s | CHECKER] nil field! other field = %s\n", detector.GetTypeStringUpper(), otherField.String())
-						if (detector.isTypePrimaryKey() && otherField.IsPrimaryKey()) ||
-							(detector.isTypeForeignKey() && !otherField.IsPrimaryKey()) {
-							foreignRead := &ForeignRead{op1: currOp, op2: otherOp, field2: otherField}
-							detector.addForeignRead(request, foreignRead)
-						}
-					} else {
-						if (detector.isTypePrimaryKey() && field.IsPrimaryKey() && otherField.IsPrimaryKey()) ||
-							(detector.isTypeForeignKey() && (!field.IsPrimaryKey() || !otherField.IsPrimaryKey())) {
-							foreignRead := &ForeignRead{op1: currOp, op2: otherOp, field1: field, field2: otherField}
-							detector.addForeignRead(request, foreignRead)
-						}
-					}
-
-
+					detector.addForeignRead(request, foreignRead)
 				}
 			}
 		}
 	}
+}
+
+func (detector *KeyCoordinationDetector) updateForeignReadConstraints(fread *ForeignRead) {
+	if detector.isTypeForeignKey() {
+		fread.constraint1 = fread.field1.GetConstraintForeignKeyToField(fread.field2)
+		fread.constraint2 = fread.field2.GetConstraintForeignKeyToField(fread.field1)
+	} else if detector.isTypePrimaryKey() {
+		fread.constraint1 = fread.field1.GetConstraintPrimaryKey()
+		fread.constraint2 = fread.field2.GetConstraintPrimaryKey()
+	}
+}
+
+// this information is only accurate after the entire schema is built at the end of the iteration
+func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) bool {
+	if detector.isTypePrimaryKey() && (!fread.field1.IsPrimaryKey() || !fread.field2.IsPrimaryKey()) {
+		return false
+	}
+	if detector.isTypeForeignKey() && fread.field1.IsPrimaryKey() && fread.field2.IsPrimaryKey() {
+		return false
+	}
+
+	if detector.isTypeForeignKey() && detector.isRestrictive() {
+		if fread.constraint1 != nil && fread.constraint1.IsMandatory() {
+			return true
+		} else if fread.constraint2 != nil && fread.constraint2.IsMandatory() {
+			return true
+		}
+	} else {
+		return true
+	}
+	return false
 }

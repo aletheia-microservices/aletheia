@@ -8,21 +8,16 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_StorageService_StorePost [label="StorageService.StorePost
-
-==== param 0 (reqID) tainted ====
-_obj
-[write, primary] @ posts_db.post.ReqID
-
+		N_UploadService_UploadPost [label="UploadService.UploadPost
 
 ==== param 1 (text) tainted ====
 _obj
-[write, primary] @ posts_db.post.Text
+[rpc] @ StorageService.StorePost.text
 
 
 ==== ret 0 (int64) tainted ====
 _obj
-[write, primary] @ posts_db.post.PostID
+[write, primary] @ notifications_queue.notification.PostID
 ", style=bold, shape=box, color="blue"];
 		N_UploadService_DeletePost [label="UploadService.DeletePost
 
@@ -59,22 +54,27 @@ _obj
 _obj
 [read, primary] @ posts_db.post
 ", style=bold, shape=box, color="blue"];
-		N_UploadService_UploadPost [label="UploadService.UploadPost
+		N_StorageService_StorePost [label="StorageService.StorePost
+
+==== param 0 (reqID) tainted ====
+_obj
+[write, primary] @ posts_db.post.ReqID
+
 
 ==== param 1 (text) tainted ====
 _obj
-[rpc] @ StorageService.StorePost.text
+[write, primary] @ posts_db.post.Text
 
 
 ==== ret 0 (int64) tainted ====
 _obj
-[write, primary] @ notifications_queue.notification.PostID
+[write, primary] @ posts_db.post.PostID
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
+		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()

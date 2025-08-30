@@ -23,8 +23,21 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 	var results string
 	total := 0
 	for request, foreignreads := range detector.foreignReads {
-		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
-		for _, foreignread := range foreignreads {
+		var printedEntry = false
+		for _, fread := range foreignreads {
+			//detector.restrictive = false
+
+			// this information is only accurate after the entire schema is built at the end of the iteration
+			detector.updateForeignReadConstraints(fread)
+			if !detector.isValidForeignRead(fread) {
+				continue
+			}
+
+			if !printedEntry {
+				results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
+				printedEntry = true
+			}
+
 			total++
 			if detector.isTypePrimaryKey() {
 				results += fmt.Sprintf("\tPRIMARY KEY READS #%d:\n", total)
@@ -33,27 +46,15 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 			} else {
 				log.Fatalf("unexpected")
 			}
-			results += fmt.Sprintf("\t\tREAD 1: %s\n", foreignread.op1.call.String())
-			var shift = 0
-			if detector.isTypePrimaryKey() {
-				shift = 1
+			results += fmt.Sprintf("\t\tREAD 1: %s\n", fread.op1.call.String())
+			results += fmt.Sprintf("\t\t\t- read field: %s\n", fread.field1.GetPath())
+			if fread.constraint1 != nil {
+				results += fmt.Sprintf("\t\t\t\t- constraint: %s\n", fread.constraint1.String())
 			}
-			if foreignread.field1 != nil {
-				results += fmt.Sprintf("\t\t\t- read field: %s\n", foreignread.field1.GetPath())
-				if detector.isTypePrimaryKey() {
-					results += fmt.Sprintf("\t\t\t\t- constraint #0: PRIMARY KEY %s\n", foreignread.field1.GetName())
-				}
-				for i, constraint := range foreignread.field1.GetConstraintForeignKey() {
-					results += fmt.Sprintf("\t\t\t\t- constraint #%d: %s\n", i+shift, constraint.String())
-				}
-			}
-			results += fmt.Sprintf("\t\tREAD 2: %s\n", foreignread.op2.call.String())
-			results += fmt.Sprintf("\t\t\t- read field: %s\n", foreignread.field2.GetPath())
-			if detector.isTypePrimaryKey() {
-				results += fmt.Sprintf("\t\t\t\t- constraint #0: PRIMARY KEY %s\n", foreignread.field2.GetName())
-			}
-			for i, constraint := range foreignread.field2.GetConstraintForeignKey() {
-				results += fmt.Sprintf("\t\t\t\t- constraint #%d: %s\n", i+shift, constraint.String())
+			results += fmt.Sprintf("\t\tREAD 2: %s\n", fread.op2.call.String())
+			results += fmt.Sprintf("\t\t\t- read field: %s\n", fread.field2.GetPath())
+			if fread.constraint2 != nil {
+				results += fmt.Sprintf("\t\t\t\t- constraint: %s\n", fread.constraint2.String())
 			}
 		}
 	}

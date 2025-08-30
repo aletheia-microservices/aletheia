@@ -121,10 +121,10 @@
         ],
         "constraints": [
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES usertimeline_cache.*.Value[*].Timestamp",
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID",
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp"
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID",
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp",
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID"
         ]
       }
     ]

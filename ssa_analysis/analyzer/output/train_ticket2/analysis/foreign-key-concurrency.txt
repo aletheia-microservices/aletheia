@@ -1,17 +1,21 @@
 ---------------------------------------------------------------------
 ----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
 ---------------------------------------------------------------------
+entry request: AdminOrderService.DeleteOrder()
+	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
+		CONCURRENT WRITE: CancelService.CancelOrder() --> email_queue.notification.Push()
+		- written fields: {email_queue.notification.EndPlace, email_queue.notification.StartPlace, email_queue.notification.StartTime, email_queue.notification.Price, email_queue.notification.SeatNumber, email_queue.notification.OrderNumber}
+		CONCURRENT WRITE: PreserveService.Preserve() --> email_queue.notification.Push()
+		- written fields: {email_queue.notification.SeatNumber, email_queue.notification.Price, email_queue.notification.OrderNumber, email_queue.notification.StartTime, email_queue.notification.EndPlace, email_queue.notification.StartPlace}
+entry request: AdminTravelService.DeleteTravel()
+	DELETE: TravelService.DeleteTrip() --> travel_db.trip.DeleteOne()
+		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
+		- written fields: {order_db.order.TrainNumber}
+entry request: AdminBasicInfoService.DeleteContact()
+	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
+		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
+		- written fields: {order_db.order.DocumentType, order_db.order.ContactsName, order_db.order.ContactsDocumentNumber}
 entry request: AdminUserService.DeleteUser()
 	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
 		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
 		- written fields: {order_db.order.AccountID}
-entry request: AdminOrderService.DeleteOrder()
-	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
-		CONCURRENT WRITE: CancelService.CancelOrder() --> email_queue.notification.Push()
-		- written fields: {email_queue.notification.OrderNumber, email_queue.notification.StartTime, email_queue.notification.EndPlace, email_queue.notification.Price, email_queue.notification.StartPlace, email_queue.notification.SeatNumber}
-		CONCURRENT WRITE: PreserveService.Preserve() --> email_queue.notification.Push()
-		- written fields: {email_queue.notification.SeatNumber, email_queue.notification.Price, email_queue.notification.StartTime, email_queue.notification.StartPlace, email_queue.notification.EndPlace, email_queue.notification.OrderNumber}
-entry request: AdminBasicInfoService.DeleteContact()
-	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
-		CONCURRENT WRITE: OrderService.Create() --> order_db.order.InsertOne()
-		- written fields: {order_db.order.ContactsDocumentNumber, order_db.order.ContactsName, order_db.order.DocumentType}

@@ -1,42 +1,42 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_4179333 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4179333 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_4179367 [label="t2: invoke t1.DeletePost(ctx, postID)
+	N_instr_ret_2815817 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2815817 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2815851 [label="t2: invoke t1.DeletePost(ctx, postID)
 
 ==== tainted ====
 _obj
 [rpc] @ StorageService.DeletePost.t2
 ", style=bold, shape=box, color="yellow"];
-	N_val_field_4179342 [label="t0: &u.storageService [#0]
+	N_val_field_2815826 [label="t0: &u.storageService [#0]
 
 ==== tainted ====
 _obj
 [rpc] @ StorageService.DeletePost.t2
 ", style=bold, shape=box, color="green"];
-	N_val_param_4179256 [label="u: parameter u : *UploadServiceImpl
+	N_val_param_2815740 [label="u: parameter u : *UploadServiceImpl
 
 ==== tainted ====
 _obj.storageService
 [rpc] @ StorageService.DeletePost.t2
 ", style=bold, shape=box, color="black"];
-	N_val_param_4179289 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_4179310 [label="postID: parameter postID : int64
+	N_val_param_2815773 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2815794 [label="postID: parameter postID : int64
 
 ==== tainted ====
 _obj
 [rpc] @ StorageService.DeletePost.postID
 ", style=bold, shape=box, color="black"];
-	N_val_unary_4179342 [label="t1: *t0
+	N_val_unary_2815826 [label="t1: *t0
 
 ==== tainted ====
 _obj
 [rpc] @ StorageService.DeletePost.t2
 ", style=bold, shape=box, color="red"];
-	N_val_param_4179256 -> N_val_field_4179342;
-	N_val_field_4179342 -> N_val_unary_4179342;
-	N_val_param_4179289 -> N_val_call_4179367;
-	N_val_param_4179310 -> N_val_call_4179367;
-	N_val_unary_4179342 -> N_val_call_4179367;
-	N_val_call_4179367 -> N_instr_ret_4179333;
+	N_val_param_2815740 -> N_val_field_2815826;
+	N_val_field_2815826 -> N_val_unary_2815826;
+	N_val_param_2815773 -> N_val_call_2815851;
+	N_val_param_2815794 -> N_val_call_2815851;
+	N_val_unary_2815826 -> N_val_call_2815851;
+	N_val_call_2815851 -> N_instr_ret_2815817;
 }

@@ -1,20 +1,20 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_4220541 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4220541 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_4220531 [label="*t1 = barDb", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_4220531 [label="*t1 = barDb", style=bold, shape=ellipse, color="blue"];
-	N_nil_136021271 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_4220525 [label="t0: new BarServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
-	N_val_field_4220531 [label="t1: &t0.barDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_instr_ret_4075 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4075 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_4065 [label="*t1 = barDb", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4065 [label="*t1 = barDb", style=bold, shape=ellipse, color="blue"];
+	N_nil_2071092213 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4059 [label="t0: new BarServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_4065 [label="t1: &t0.barDb [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet2 [label="t2: make BarService <- *BarServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
-	N_val_param_4220432 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_4220453 [label="barDb: parameter barDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
-	N_val_alloc_4220525 -> N_val_field_4220531;
-	N_val_field_4220531 -> N_instr_store_4220531;
-	N_val_param_4220453 -> N_instr_store_4220531;
-	N_val_alloc_4220525 -> N_val_ifacet2;
-	N_val_ifacet2 -> N_instr_ret_4220541;
-	N_nil_136021271 -> N_instr_ret_4220541;
-	N_val_field_4220531 -> N_val_alloc_4220525 [label=".barDb", style=dashed, color=blue];
+	N_val_param_3966 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3987 [label="barDb: parameter barDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_4059 -> N_val_field_4065;
+	N_val_field_4065 -> N_instr_store_4065;
+	N_val_param_3987 -> N_instr_store_4065;
+	N_val_alloc_4059 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_4075;
+	N_nil_2071092213 -> N_instr_ret_4075;
+	N_val_field_4065 -> N_val_alloc_4059 [label=".barDb", style=dashed, color=blue];
 }

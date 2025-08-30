@@ -93,6 +93,15 @@ func (field *Field) GetConstraintForeignKey() []*Constraint {
 	return constraints
 }
 
+func (field *Field) GetConstraintPrimaryKey() *Constraint {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_PRIMARY && len(constraint.fields) == 1 {
+			return constraint
+		}
+	}
+	return nil
+}
+
 func (field *Field) GetConstraintForeignKeyToField(otherField *Field) *Constraint {
 	for _, constraint := range field.constraints {
 		if constraint.t == CONSTRAINT_FOREIGN_KEY && constraint.fields[1] == otherField {
