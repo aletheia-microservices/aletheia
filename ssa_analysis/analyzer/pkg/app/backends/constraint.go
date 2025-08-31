@@ -11,8 +11,8 @@ const (
 type Constraint struct {
 	t ConstraintType
 	// for foreign key constraint, index 0 is for field referencing and index 1 is for field being referenced
-	fields            []*Field
-	mandatory         bool         // for foreign key constraints
+	fields    []*Field
+	mandatory bool // for foreign key constraints
 
 	// 1. applies to foreign key only
 	// 2. the entire constraint is non-mandatory if any keyvalue is non-mandatory
@@ -26,8 +26,8 @@ type Constraint struct {
 
 func NewConstraint(t ConstraintType, fields ...*Field) *Constraint {
 	return &Constraint{
-		t:      t,
-		fields: fields,
+		t:                 t,
+		fields:            fields,
 		reqIdxToMandatory: make(map[int]bool),
 	}
 }
@@ -39,6 +39,16 @@ func (constraint *Constraint) IsMandatory() bool {
 		}
 	}
 	return true
+}
+
+func (constraint *Constraint) GetRequestsIndexesOnMandatoryFlags() []int {
+	var reqIdxs []int
+	for idx, m := range constraint.reqIdxToMandatory {
+		if m {
+			reqIdxs = append(reqIdxs, idx)
+		}
+	}
+	return reqIdxs
 }
 
 func (constraint *Constraint) EnableMandatory(reqIdx int) bool {

@@ -48,7 +48,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnEndRun(app *app.App) {
 	detector.checkInconsistencies()
 }
 
-func (detector *ForeignKeyConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode) {
+func (detector *ForeignKeyConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
 	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] on new request\n")
@@ -66,11 +66,11 @@ func (detector *ForeignKeyConcurrencyDetector) OnEndNode(app *app.App, node *abs
 	// nothing to do
 }
 
-func (detector *ForeignKeyConcurrencyDetector) OnRead(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyConcurrencyDetector) OnRead(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	database := app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
 	write := NewWriteOperation(edge, database)
 	request := detector.getCurrentRequest()
@@ -78,11 +78,11 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, edge *abstr
 	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new write: %v\n", write)
 }
 
-func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	database := app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
 	delete := NewDeleteOperation(edge, database)
 	request := detector.getCurrentRequest()

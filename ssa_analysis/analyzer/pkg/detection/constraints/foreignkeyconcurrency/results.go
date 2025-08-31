@@ -16,6 +16,7 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 	header += "---------------------------------------------------------------------\n"
 
 	var results string
+	var numWarnings int
 	for request, dangerousDeleteLst := range detector.dangerousDeletes {
 		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for _, dangerousDelete := range dangerousDeleteLst {
@@ -24,7 +25,8 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 				results += fmt.Sprintf("\t- deleted field: %s\n", field.GetPath())
 			} */
 			for _, write := range dangerousDelete.concurrentWrites {
-				results += fmt.Sprintf("\t\tCONCURRENT WRITE: %s\n", write.write.call.String())
+				numWarnings++
+				results += fmt.Sprintf("\t\tCONCURRENT WRITE #%d: %s\n", numWarnings, write.write.call.String())
 				var fieldspaths string
 				for i, field := range write.affectedFields {
 					fieldspaths += field.GetPath()

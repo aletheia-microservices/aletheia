@@ -7,12 +7,14 @@ import (
 type ReadOperation struct {
 	call      *abstractgraph.AbstractEdge
 	arguments []*abstractgraph.AbstractObject
+	reqIdx    int
 }
 
-func NewReadOperation(call *abstractgraph.AbstractEdge, arguments []*abstractgraph.AbstractObject) *ReadOperation {
+func NewReadOperation(call *abstractgraph.AbstractEdge, arguments []*abstractgraph.AbstractObject, reqIdx int) *ReadOperation {
 	return &ReadOperation{
 		call:      call,
 		arguments: arguments,
+		reqIdx:    reqIdx,
 	}
 }
 

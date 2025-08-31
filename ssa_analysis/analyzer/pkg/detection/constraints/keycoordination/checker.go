@@ -110,10 +110,35 @@ func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) 
 	}
 
 	if detector.isTypeForeignKey() && detector.isRestrictive() {
+		// 1. restrict detection warnings to mandatory constraints
+		// 2. filter out constraints that were created in the current request
+		// meaning that this foreign read was either before the write (e.g., to check if exists cache)
+		// or after the write, so they cannot be considered as inconsistencies
+		//
+		// REMINDER: this prevents false positives in e.g., dsb_sn2 on Wrk2APIService.ComposePost():
+		// - FOREIGN KEY READ #1:
+		// 		READ 1: SocialGraphService.GetFollowers() --> socialgraph_cache.followers.Get()				@ socialgraph_cache.followers.Key
+		// 		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_db.usertimeline.FindMany() @ usertimeline_db.usertimeline.UserID
+		// - FOREIGN KEY READ #2:
+		// 		READ 1: SocialGraphService.GetFollowers() --> socialgraph_cache.followers.Get() @ socialgraph_cache.followers.Key
+		// 		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_cache.*.Get() 	@ usertimeline_cache.*.Key
+		// - FOREIGN KEY READ #3:
+		// 		READ 1: HomeTimelineService.WriteHomeTimeline() --> hometimeline_cache.*.Get() @ hometimeline_cache.*.Value[*].PostID
+		// 		READ 2: UserTimelineService.WriteUserTimeline() --> usertimeline_cache.*.Get() @ usertimeline_cache.*.Value[*].PostID
+		//
+		// WARNING: scenarios like those in foreign key read (#3) are problematic and may still occur in other apps
+		// CAUSE: problem related to taint propagation:
+		// 		- merging old posts (cache key is UserID and never uses exchanged PostID) with new posts (cache values containing exchanged PostID across services) causes the new posts' PostID to "accidently" taint the old posts' PostID
+		// 		- the tool then assumes that the PostID was used to read the old posts from their resp. cache
+		
 		if fread.constraint1 != nil && fread.constraint1.IsMandatory() {
-			return true
+			if !slices.Contains(fread.constraint1.GetRequestsIndexesOnMandatoryFlags(), fread.op1.reqIdx) {
+				return true
+			}
 		} else if fread.constraint2 != nil && fread.constraint2.IsMandatory() {
-			return true
+			if !slices.Contains(fread.constraint2.GetRequestsIndexesOnMandatoryFlags(), fread.op2.reqIdx) {
+				return true
+			}
 		}
 	} else {
 		return true

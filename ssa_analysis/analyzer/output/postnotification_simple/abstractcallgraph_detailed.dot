@@ -8,29 +8,24 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_StorageService_StorePost [label="StorageService.StorePost
+		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
+		N_StorageService_ReadPost [label="StorageService.ReadPost
 
 ==== param 0 (reqID) tainted ====
 _obj
-[write, primary] @ posts_db.post.ReqID
+[read, secondary] @ notifications_queue.notification.ReqID
 
 
-==== param 1 (text) tainted ====
+==== param 1 (postID) tainted ====
 _obj
-[write, primary] @ posts_db.post.Text
+[read, primary] @ posts_db.post.PostID
+[read, secondary] @ notifications_queue.notification.PostID
 
 
-==== ret 0 (int64) tainted ====
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post) tainted ====
 _obj
-[write, primary] @ posts_db.post.PostID
+[read, primary] @ posts_db.post
 ", style=bold, shape=box, color="blue"];
-		N_StorageService_DeletePost [label="StorageService.DeletePost
-
-==== param 0 (postID) tainted ====
-_obj
-[delete, primary] @ posts_db.post.PostID
-", style=bold, shape=box, color="blue"];
-		N_NotifyService_Run [label="NotifyService.Run", style=bold, shape=box, color="blue"];
 		N_UploadService_UploadPost [label="UploadService.UploadPost
 
 ==== param 1 (text) tainted ====
@@ -53,28 +48,33 @@ _obj
 _obj
 [rpc] @ StorageService.DeletePost.t2
 ", style=bold, shape=box, color="blue"];
-		N_StorageService_ReadPost [label="StorageService.ReadPost
+		N_StorageService_DeletePost [label="StorageService.DeletePost
+
+==== param 0 (postID) tainted ====
+_obj
+[delete, primary] @ posts_db.post.PostID
+", style=bold, shape=box, color="blue"];
+		N_StorageService_StorePost [label="StorageService.StorePost
 
 ==== param 0 (reqID) tainted ====
 _obj
-[read, secondary] @ notifications_queue.notification.ReqID
+[write, primary] @ posts_db.post.ReqID
 
 
-==== param 1 (postID) tainted ====
+==== param 1 (text) tainted ====
 _obj
-[read, primary] @ posts_db.post.PostID
-[read, secondary] @ notifications_queue.notification.PostID
+[write, primary] @ posts_db.post.Text
 
 
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.Post) tainted ====
+==== ret 0 (int64) tainted ====
 _obj
-[read, primary] @ posts_db.post
+[write, primary] @ posts_db.post.PostID
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 		N_posts_db_post [label="posts_db.post", style=bold, shape=cylinder, color="green"];
+		N_notifications_queue_notification [label="notifications_queue.notification", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_UploadService_UploadPost [label="UploadPost()", color=orange];
 	N_UploadService_UploadPost -> N_StorageService_StorePost [label="StorePost()

@@ -93,7 +93,7 @@ func (detector *KeyCoordinationDetector) OnEndRun(app *app.App) {
 	// nothing to do
 }
 
-func (detector *KeyCoordinationDetector) OnNewRequest(node *abstractgraph.AbstractNode) {
+func (detector *KeyCoordinationDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
 	fmt.Printf("[%s | DETECTOR] on new request\n", detector.GetTypeStringUpper())
@@ -111,21 +111,21 @@ func (detector *KeyCoordinationDetector) OnEndNode(app *app.App, node *abstractg
 	// nothing to do
 }
 
-func (detector *KeyCoordinationDetector) OnRead(app *app.App, edge *abstractgraph.AbstractEdge) {
-	read := NewReadOperation(edge, edge.GetArguments())
+func (detector *KeyCoordinationDetector) OnRead(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
+	read := NewReadOperation(edge, edge.GetArguments(), reqIdx)
 	request := detector.getCurrentRequest()
 	request.AddOperation(read)
 	fmt.Printf("[%s | DETECTOR] added new read: %v\n", detector.GetTypeStringUpper(), read)
 }
 
-func (detector *KeyCoordinationDetector) OnWrite(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *KeyCoordinationDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *KeyCoordinationDetector) OnUpdate(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *KeyCoordinationDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *KeyCoordinationDetector) OnDelete(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *KeyCoordinationDetector) OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }

@@ -19,16 +19,16 @@ type Detector interface {
 
 	OnNewRun(app *app.App)
 	OnEndRun(app *app.App)
-	OnNewRequest(node *abstractgraph.AbstractNode)
+	OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int)
 	OnEndRequest(app *app.App)
 	OnNewNode(app *app.App, node *abstractgraph.AbstractNode)
 	OnEndNode(app *app.App, node *abstractgraph.AbstractNode)
 
 	// database calls
-	OnRead(app *app.App, edge *abstractgraph.AbstractEdge)
-	OnWrite(app *app.App, edge *abstractgraph.AbstractEdge)
-	OnUpdate(app *app.App, edge *abstractgraph.AbstractEdge)
-	OnDelete(app *app.App, edge *abstractgraph.AbstractEdge)
+	OnRead(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+	OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+	OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+	OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
 }
 
 const TEXT_BOLD_LIGHT_YELLOW = "\033[1;38;5;179m"

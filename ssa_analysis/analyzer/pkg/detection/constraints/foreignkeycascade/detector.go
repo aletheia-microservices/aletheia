@@ -50,7 +50,7 @@ func (detector *ForeignKeyCascadeDetector) OnEndRun(app *app.App) {
 	detector.checkInconsistencies(app)
 }
 
-func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode) {
+func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
 	fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] on new request\n")
@@ -68,19 +68,19 @@ func (detector *ForeignKeyCascadeDetector) OnEndNode(app *app.App, node *abstrac
 	// nothing to do
 }
 
-func (detector *ForeignKeyCascadeDetector) OnRead(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyCascadeDetector) OnRead(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *ForeignKeyCascadeDetector) OnWrite(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyCascadeDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *ForeignKeyCascadeDetector) OnUpdate(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyCascadeDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	op := NewDeleteOperation(edge, edge.GetArguments())
 	request := detector.getCurrentRequest()
 	request.AddOperation(op)

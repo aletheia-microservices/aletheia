@@ -3,5 +3,5 @@
 ---------------------------------------------------------------------
 entry request: ProductService.Delete()
 	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
-		CONCURRENT WRITE: OrderService.New() --> orders_db.orders.InsertOne()
+		CONCURRENT WRITE #1: OrderService.New() --> orders_db.orders.InsertOne()
 		- written fields: {orders_db.orders.Items[*].Parent}

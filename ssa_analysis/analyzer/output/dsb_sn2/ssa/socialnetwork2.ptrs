@@ -687,10 +687,10 @@ t31 (@Follow): (*ssa.UnOp) (*t18)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).FollowWithUsername ###
-s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
-
 t0 (@FollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@FollowWithUsername): (*ssa.Alloc)
+
+s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@FollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1846,12 +1846,12 @@ t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
 t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
 	 → t8 (@Sum): (*ssa.Call)
 	 → t10 (@Sum): (*ssa.Call)
+	 → t6 (@Sum): (*ssa.Call)
 	 → t5 (@Sum): (*ssa.Call)
 	 → t15 (@Sum): (*ssa.Call)
 	 → t17 (@Sum): (*ssa.Call)
 	 → t20 (@Sum): (*ssa.Call)
 	 → t23 (@Sum): (*ssa.Call)
-	 → t6 (@Sum): (*ssa.Call)
 	 → t31 (@sign): (*ssa.Alloc)
 	 → t58 (@sign): (*ssa.Alloc)
 	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice)

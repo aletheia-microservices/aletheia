@@ -2,6 +2,7 @@ package foreignkeycascade
 
 import (
 	"fmt"
+	"strings"
 
 	"analyzer/pkg/app"
 )
@@ -16,6 +17,7 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 	header += "---------------------------------------------------------------------\n"
 
 	var results string
+	var numWarnings int
 	for request, cascadeDeletes := range detector.cascadeDeletes {
 		var found bool
 		for _, cascadeDelete := range cascadeDeletes {
@@ -32,12 +34,17 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 				continue
 			}
 			results += fmt.Sprintf("\tDELETE: %s\n", cascadeDelete.op.call.String())
-			results += fmt.Sprintln("\t\tMISSING CASCADE DELETE on:")
+
+			var dbToPendingField = make(map[string][]string)
 			for _, pendingField := range cascadeDelete.pendingFields {
-				results += fmt.Sprintf("\t\t- %s\n", pendingField.GetPath())
-				/* for i, constraint := range pendingField.GetConstraints() {
-					results += fmt.Sprintf("\t\t\t- affected constraint #%d: %s\n", i, constraint.String())
-				} */
+				dbname := pendingField.GetDatabase().GetName()
+				fieldname := pendingField.GetName()
+				dbToPendingField[dbname] = append(dbToPendingField[dbname], fieldname)
+			}
+
+			for db, fieldsLst := range dbToPendingField {
+				numWarnings++
+				results += fmt.Sprintf("\t\tMISSING CASCADE DELETE #%d: database={%s}, pending fields={%s}\n", numWarnings, db, strings.Join(fieldsLst, ", "))
 			}
 		}
 		results += "\n"

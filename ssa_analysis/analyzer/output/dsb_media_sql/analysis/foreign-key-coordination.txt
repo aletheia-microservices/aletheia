@@ -3,14 +3,14 @@
 ---------------------------------------------------------------------
 entry request: APIService.ReadPage()
 	FOREIGN KEY READS #1:
-		READ 1: PlotService.ReadPlot() --> plot_db.plot.Select()
-			- read field: plot_db.plot.plotid
-				- constraint: FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]
-		READ 2: MovieInfoService.ReadMovieInfo() --> movieinfo_db.movieinfo.Select()
-			- read field: movieinfo_db.movieinfo.plotid
+		READ (ORIGIN): MovieInfoService.ReadMovieInfo() --> movieinfo_db.movieinfo.Select()
+			- field: movieinfo_db.movieinfo.plotid
+		READ (FOREIGN KEY): PlotService.ReadPlot() --> plot_db.plot.Select()
+			- field: plot_db.plot.plotid
+			- constraint: FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]
 	FOREIGN KEY READS #2:
-		READ 1: CastInfoService.ReadCastInfo() --> castinfo_db.castinfo.Select()
-			- read field: castinfo_db.castinfo.castinfoid
-				- constraint: FOREIGN_KEY castinfo_db.castinfo.castinfoid REFERENCES movieinfo_db.movieinfo.castid [MANDATORY]
-		READ 2: MovieInfoService.ReadMovieInfo() --> movieinfo_db.movieinfo.Select()
-			- read field: movieinfo_db.movieinfo.castid
+		READ (ORIGIN): MovieInfoService.ReadMovieInfo() --> movieinfo_db.movieinfo.Select()
+			- field: movieinfo_db.movieinfo.castid
+		READ (FOREIGN KEY): CastInfoService.ReadCastInfo() --> castinfo_db.castinfo.Select()
+			- field: castinfo_db.castinfo.castinfoid
+			- constraint: FOREIGN_KEY castinfo_db.castinfo.castinfoid REFERENCES movieinfo_db.movieinfo.castid [MANDATORY]

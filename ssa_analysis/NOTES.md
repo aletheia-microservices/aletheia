@@ -18,13 +18,11 @@
 
 ### 1.3. MINOR FIXES
 1. (detection): fix existence of duplicated foreign key reads -- temporary fix now concerns adding an additional condition that verifies if op calls are equal in the KeyCoordinationDetector's `hasForeignRead` method 
+2. (detection): improve precision about affected fields/constraints in results
 
 ### 1.4. CRITICAL FIXES
-1. (detection): add lineage info to remove false-positive on ref. integrity uncoord. repl. when reading before/after inserting the record (check trainticket)
-2. (detection): fix false-positive on ref. integrity uncoord. repl. (check trainticket) by restricting to MANDATORY constraints on CancelOrder w/ READ_1=UserService.FindByUserID and READ_2=OrderService.Find
-3. (detection): fix false-positive on ref. integrity uncoord. repl. (check dsb_socialnetwork) when there's a read to cache before read/write to database
-4. (detection): improve precision about affected fields/constraints in results
-5. (tainter): fix missing foreign keys (check trainticket on PreserveService when `order.TrainNumber` is set to `oti.TripID` instead of `gtdi.TripID`)
+1. (tainter): fix missing foreign keys (check trainticket on PreserveService when `order.TrainNumber` is set to `oti.TripID` instead of `gtdi.TripID`)
+2. (tainter) fix propagation to distinguish between keys used for reads and values retrived from reads (check socialnetwork on `HomeTimelineService.WriteHomeTimeline` where tainter is assuming that the `postID` method parameter was used to read the cache in `h.homeTimelineCache.Get(ctx, id_str, &posts)` due to the append afterwards `posts = append(posts, PostInfo{PostID: postID, Timestamp: timestamp})` that includes the `postID`)
 
 ## 2. CURRENT ASSUMPTIONS
 - inline functions or go routines are ignored by parser

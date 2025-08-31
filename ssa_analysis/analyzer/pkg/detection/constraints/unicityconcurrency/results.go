@@ -15,13 +15,14 @@ func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 	header += "------------------- ANALYSIS: UNICITY CONCURRENCY -------------------\n"
 	header += "---------------------------------------------------------------------\n"
 
+	var numWarnings int
 	var results string
 	for request, vulnerableWriteSets := range detector.vulnerableWriteSets {
 		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
-		for i, writeSet := range vulnerableWriteSets {
-			results += fmt.Sprintf("\twrite (constrained) #%d: %s\n", i, writeSet.constrainedOp.call.String())
+		for _, writeSet := range vulnerableWriteSets {
+			results += fmt.Sprintf("\tWRITE (ORIGIN): %s\n", writeSet.constrainedOp.call.String())
 			for _, field := range writeSet.constrainedFields {
-				results += fmt.Sprintf("\t\tfield (constrained): %s", field.GetPath())
+				results += fmt.Sprintf("\t\t- field (constrained): %s", field.GetPath())
 				if field.IsPrimaryKey() {
 					results += " (PRIMARY KEY)"
 				} else if field.IsUnique() {
@@ -30,7 +31,8 @@ func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 				results += "\n"
 			}
 			for _, op := range writeSet.otherOps {
-				results += fmt.Sprintf("\t\tAFFECTED WRITE: %s\n", op.call.String())
+				numWarnings++
+				results += fmt.Sprintf("\t\t- AFFECTED WRITE #%d: %s\n", numWarnings, op.call.String())
 			}
 		}
 		results += "\n"

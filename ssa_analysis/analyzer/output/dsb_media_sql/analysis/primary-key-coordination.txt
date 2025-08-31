@@ -3,9 +3,9 @@
 ---------------------------------------------------------------------
 entry request: APIService.ReadPage()
 	PRIMARY KEY READS #1:
-		READ 1: MovieInfoService.ReadMovieInfo() --> movieinfo_db.movieinfo.Select()
-			- read field: movieinfo_db.movieinfo.movieid
-				- constraint: PRIMARY KEY (movieinfo_db.movieinfo.movieid)
-		READ 2: MovieIdService.ReadMovieId() --> movieid_db.movieid.Select()
-			- read field: movieid_db.movieid.movieid
-				- constraint: PRIMARY KEY (movieid_db.movieid.movieid)
+		READ: MovieInfoService.ReadMovieInfo() --> movieinfo_db.movieinfo.Select()
+			- field: movieinfo_db.movieinfo.movieid
+			- constraint: PRIMARY KEY (movieinfo_db.movieinfo.movieid)
+		READ: MovieIdService.ReadMovieId() --> movieid_db.movieid.Select()
+			- field: movieid_db.movieid.movieid
+			- constraint: PRIMARY KEY (movieid_db.movieid.movieid)

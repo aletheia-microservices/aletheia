@@ -55,7 +55,7 @@ func (detector *UnicityConcurrencyDetector) OnEndRun(app *app.App) {
 	// nothing to do
 }
 
-func (detector *UnicityConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode) {
+func (detector *UnicityConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
 	fmt.Printf("[DETECTOR - UNICITY CONCURRENCY] on new request\n")
@@ -73,11 +73,11 @@ func (detector *UnicityConcurrencyDetector) OnEndNode(app *app.App, node *abstra
 	// nothing to do
 }
 
-func (detector *UnicityConcurrencyDetector) OnRead(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *UnicityConcurrencyDetector) OnRead(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *UnicityConcurrencyDetector) OnWrite(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *UnicityConcurrencyDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	op := NewWriteOperation(edge, edge.GetArguments())
 	request := detector.getCurrentRequest()
 
@@ -87,10 +87,10 @@ func (detector *UnicityConcurrencyDetector) OnWrite(app *app.App, edge *abstract
 	fmt.Printf("[DETECTOR - UNICITY CONCURRENCY] added new write: %v\n", op)
 }
 
-func (detector *UnicityConcurrencyDetector) OnUpdate(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *UnicityConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }
 
-func (detector *UnicityConcurrencyDetector) OnDelete(app *app.App, edge *abstractgraph.AbstractEdge) {
+func (detector *UnicityConcurrencyDetector) OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	// nothing to do
 }

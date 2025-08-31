@@ -10,10 +10,12 @@ import (
 )
 
 type Iterator struct {
-	app       *app.App
-	graph     *abstractgraph.AbstractCallGraph
-	detectors []Detector
-	reqIdx    int
+	app         *app.App
+	graph       *abstractgraph.AbstractCallGraph
+	detectors   []Detector
+	// need to simulate stack because of queue writes triggering new requests
+	reqIdxStack []int
+	nextReqIdx  int
 }
 
 func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detectors ...Detector) *Iterator {
@@ -24,18 +26,40 @@ func NewIterator(app *app.App, graph *abstractgraph.AbstractCallGraph, detectors
 	}
 }
 
-func (iterator *Iterator) Run() {
-	for _, detector := range iterator.detectors {
-		detector.OnNewRun(iterator.app)
+func (it *Iterator) newReqIdx() {
+	it.reqIdxStack = append(it.reqIdxStack, it.nextReqIdx)
+	it.nextReqIdx++
+}
+
+func (it *Iterator) popReqIdx() int {
+	if len(it.reqIdxStack) == 0 {
+		return -1
+	}
+	top := it.reqIdxStack[len(it.reqIdxStack)-1]
+	it.reqIdxStack = it.reqIdxStack[:len(it.reqIdxStack)-1]
+	return top
+}
+
+func (it *Iterator) currentReqIdx() int {
+	if len(it.reqIdxStack) == 0 {
+		return -1
+	}
+	return it.reqIdxStack[len(it.reqIdxStack)-1]
+}
+
+func (it *Iterator) Run() {
+	for _, detector := range it.detectors {
+		detector.OnNewRun(it.app)
 	}
 
-	clientNode := iterator.graph.GetNodeByName("client")
+	clientNode := it.graph.GetNodeByName("client")
 
-	for _, edge := range iterator.graph.GetEdgesFromNode(clientNode) {
+	for _, edge := range it.graph.GetEdgesFromNode(clientNode) {
 		toNode := edge.GetToNode()
 
-		for _, detector := range iterator.detectors {
-			detector.OnNewRequest(toNode)
+		it.newReqIdx()
+		for _, detector := range it.detectors {
+			detector.OnNewRequest(toNode, it.currentReqIdx())
 		}
 
 		// FIXME: skip for now
@@ -45,36 +69,36 @@ func (iterator *Iterator) Run() {
 			continue
 		}
 
-		iterator.transverse(toNode)
+		it.transverse(toNode)
 
-		for _, detector := range iterator.detectors {
-			detector.OnEndRequest(iterator.app)
+		for _, detector := range it.detectors {
+			detector.OnEndRequest(it.app)
 		}
-		iterator.reqIdx++
+		it.popReqIdx()
 
-		iterator.clean(toNode)
+		it.clean(toNode)
 	}
 
-	for _, detector := range iterator.detectors {
-		detector.OnEndRun(iterator.app)
+	for _, detector := range it.detectors {
+		detector.OnEndRun(it.app)
 	}
 }
 
-func (iterator *Iterator) clean(node *abstractgraph.AbstractNode) {
+func (it *Iterator) clean(node *abstractgraph.AbstractNode) {
 	for _, param := range node.GetParams() {
 		param.CleanSecondaryTaints()
 	}
-	for _, edge := range iterator.graph.GetEdgesFromNode(node) {
-		iterator.clean(edge.GetToNode())
+	for _, edge := range it.graph.GetEdgesFromNode(node) {
+		it.clean(edge.GetToNode())
 	}
 }
 
-func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
-	for _, detector := range iterator.detectors {
-		detector.OnNewNode(iterator.app, node)
+func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
+	for _, detector := range it.detectors {
+		detector.OnNewNode(it.app, node)
 	}
 
-	for _, edge := range iterator.graph.GetEdgesFromNode(node) {
+	for _, edge := range it.graph.GetEdgesFromNode(node) {
 		if edge.GetEdgeType() == abstractgraph.EDGE_SERVICE_RPC {
 			// ============
 			// SERVICE RPCs
@@ -95,17 +119,17 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			}
 
 			// update future propagation with taints received from caller args to current params
-			abstractgraph.PropagateNewTaintsToDatabaseCallObjects(iterator.graph, toNode, taintMapping)
-			abstractgraph.PropagateNewTaintsToTracedObjects(iterator.graph, toNode, nil, nil, true)
+			abstractgraph.PropagateNewTaintsToDatabaseCallObjects(it.graph, toNode, taintMapping)
+			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, toNode, nil, nil, true)
 
 			// finalize phase by propagating to database schemas
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, iterator.reqIdx, taintMapping)
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
 
 			// --------------------------
 			// PHASE 2: transverse caller
 			// --------------------------
 
-			iterator.transverse(edge.GetToNode())
+			it.transverse(edge.GetToNode())
 
 			// -----------------------------------
 			// PHASE 3: propagate taints to callee
@@ -127,44 +151,44 @@ func (iterator *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				taintMapping.Merge(taintMappingTmp)
 			}
 
-			abstractgraph.PropagateNewTaintsToTracedObjects(iterator.graph, node, taintMapping, edge, false)
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, iterator.reqIdx, taintMapping)
+			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, edge, false)
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
 		}
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
 			// ===================
 			// DATABASE OPERATIONS
 			// ===================
-			for _, detector := range iterator.detectors {
+			for _, detector := range it.detectors {
 				switch edge.GetOpType() {
 				case common.OP_READ, common.OP_READ_MANY:
-					detector.OnRead(iterator.app, edge)
+					detector.OnRead(it.app, it.currentReqIdx(), edge)
 				case common.OP_WRITE:
-					detector.OnWrite(iterator.app, edge)
+					detector.OnWrite(it.app, it.currentReqIdx(), edge)
 				case common.OP_UPDATE:
-					detector.OnUpdate(iterator.app, edge)
+					detector.OnUpdate(it.app, it.currentReqIdx(), edge)
 				case common.OP_DELETE:
-					detector.OnDelete(iterator.app, edge)
+					detector.OnDelete(it.app, it.currentReqIdx(), edge)
 				}
 			}
 			// FIXME: this is a bit hardcoded for now
-			currDB := iterator.app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
+			currDB := it.app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
 			if currDB.IsQueue() && edge.GetOpType() == common.OP_WRITE {
-				iterator.transverseQueue(node, currDB, edge)
+				it.transverseQueue(node, currDB, edge)
 			}
 		}
 	}
 
-	for _, detector := range iterator.detectors {
-		detector.OnEndNode(iterator.app, node)
+	for _, detector := range it.detectors {
+		detector.OnEndNode(it.app, node)
 	}
 
 }
 
-func (iterator *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *backends.Database, edge *abstractgraph.AbstractEdge) {
-	for _, queueReadEdge := range iterator.graph.GetEdges() {
+func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *backends.Database, edge *abstractgraph.AbstractEdge) {
+	for _, queueReadEdge := range it.graph.GetEdges() {
 		if queueReadEdge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL && queueReadEdge.GetOpType() == common.OP_READ {
-			otherDB := iterator.app.GetDatabaseByName(queueReadEdge.GetToNode().GetDatabaseName())
+			otherDB := it.app.GetDatabaseByName(queueReadEdge.GetToNode().GetDatabaseName())
 			if otherDB == currDB {
 				taintMapping := abstractgraph.NewTaintMapping()
 				for i, arg := range edge.GetArguments() {
@@ -174,11 +198,13 @@ func (iterator *Iterator) transverseQueue(node *abstractgraph.AbstractNode, curr
 					taintMapping.Merge(taintMappingTmp)
 				}
 
-				abstractgraph.PropagateNewTaintsToTracedObjects(iterator.graph, node, taintMapping, queueReadEdge, true)
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(iterator.graph, iterator.reqIdx, taintMapping)
+				abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, queueReadEdge, true)
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
 
 				callerNode := queueReadEdge.GetFromNode()
-				iterator.transverse(callerNode)
+				it.newReqIdx()
+				it.transverse(callerNode)
+				it.popReqIdx()
 			}
 		}
 	}

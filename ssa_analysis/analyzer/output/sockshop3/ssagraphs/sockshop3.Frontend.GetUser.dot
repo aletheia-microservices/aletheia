@@ -1,25 +1,25 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_23605 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_23605 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1330452670 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_23590 [label="t2: invoke t1.GetUsers(ctx, userID)", style=bold, shape=ellipse, color="yellow"];
-	N_val_field_23577 [label="t0: &f.user [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_param_23497 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_23522 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_23543 [label="userID: parameter userID : string
+	N_instr_ret_2815286 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2815286 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1930936689 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2815271 [label="t2: invoke t1.GetUsers(ctx, userID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2815258 [label="t0: &f.user [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2815178 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2815203 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2815224 [label="userID: parameter userID : string
 
 ==== tainted ====
 _obj
 [rpc] @ UserService.GetUsers.userID
 ", style=bold, shape=box, color="black"];
 	N_val_struct_FirstName_string__LastName_string__Email_string__Username_string__Password_string__Addresses_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Cards_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__UserID_string__Salt_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User [label="struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address; Cards github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card; UserID string; Salt string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User: struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address; Cards github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card; UserID string; Salt string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User", style=bold, shape=ellipse, color="yellow"];
-	N_val_unary_23577 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_23497 -> N_val_field_23577;
-	N_val_field_23577 -> N_val_unary_23577;
-	N_val_param_23522 -> N_val_call_23590;
-	N_val_param_23543 -> N_val_call_23590;
-	N_val_unary_23577 -> N_val_call_23590;
-	N_val_struct_FirstName_string__LastName_string__Email_string__Username_string__Password_string__Addresses_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Cards_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__UserID_string__Salt_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User -> N_instr_ret_23605;
-	N_nil_1330452670 -> N_instr_ret_23605;
+	N_val_unary_2815258 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2815178 -> N_val_field_2815258;
+	N_val_field_2815258 -> N_val_unary_2815258;
+	N_val_param_2815203 -> N_val_call_2815271;
+	N_val_param_2815224 -> N_val_call_2815271;
+	N_val_unary_2815258 -> N_val_call_2815271;
+	N_val_struct_FirstName_string__LastName_string__Email_string__Username_string__Password_string__Addresses_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Address__Cards_github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card__UserID_string__Salt_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_User -> N_instr_ret_2815286;
+	N_nil_1930936689 -> N_instr_ret_2815286;
 }
