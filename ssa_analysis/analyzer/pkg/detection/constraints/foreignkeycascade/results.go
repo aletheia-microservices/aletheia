@@ -2,6 +2,7 @@ package foreignkeycascade
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"analyzer/pkg/app"
@@ -18,7 +19,17 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 
 	var results string
 	var numWarnings int
-	for request, cascadeDeletes := range detector.cascadeDeletes {
+
+	var sortedRequests []*Request
+	for request := range detector.cascadeDeletes {
+		sortedRequests = append(sortedRequests, request)
+	}
+	sort.Slice(sortedRequests, func(i, j int) bool {
+		return sortedRequests[i].entry.String() < sortedRequests[j].entry.String()
+	})
+
+	for _, request := range sortedRequests {
+		cascadeDeletes := detector.cascadeDeletes[request]
 		var found bool
 		for _, cascadeDelete := range cascadeDeletes {
 			if len(cascadeDelete.pendingFields) != 0 {
@@ -42,7 +53,15 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 				dbToPendingField[dbname] = append(dbToPendingField[dbname], fieldname)
 			}
 
-			for db, fieldsLst := range dbToPendingField {
+			var sortedDbs []string
+			for db := range dbToPendingField {
+				sortedDbs = append(sortedDbs, db)
+			}
+			sort.Strings(sortedDbs)
+
+			for _, db := range sortedDbs {
+				fieldsLst := dbToPendingField[db]
+				sort.Strings(fieldsLst)
 				numWarnings++
 				results += fmt.Sprintf("\t\tMISSING CASCADE DELETE #%d: database={%s}, pending fields={%s}\n", numWarnings, db, strings.Join(fieldsLst, ", "))
 			}

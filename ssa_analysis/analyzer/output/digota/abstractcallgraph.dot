@@ -8,28 +8,23 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_ProductService_Get [label="ProductService.Get", style=bold, shape=box, color="blue"];
-		N_OrderService_New [label="OrderService.New", style=bold, shape=box, color="blue"];
-		N_OrderService_Run [label="OrderService.Run", style=bold, shape=box, color="blue"];
+		N_SkuService_Delete [label="SkuService.Delete", style=bold, shape=box, color="blue"];
 		N_SkuService_New [label="SkuService.New", style=bold, shape=box, color="blue"];
-		N_ProductService_Delete [label="ProductService.Delete", style=bold, shape=box, color="blue"];
-		N_ProductService_Update [label="ProductService.Update", style=bold, shape=box, color="blue"];
 		N_SkuService_Get [label="SkuService.Get", style=bold, shape=box, color="blue"];
 		N_ProductService_New [label="ProductService.New", style=bold, shape=box, color="blue"];
+		N_ProductService_Get [label="ProductService.Get", style=bold, shape=box, color="blue"];
 		N_ProductService_List [label="ProductService.List", style=bold, shape=box, color="blue"];
-		N_SkuService_Delete [label="SkuService.Delete", style=bold, shape=box, color="blue"];
+		N_ProductService_Update [label="ProductService.Update", style=bold, shape=box, color="blue"];
+		N_ProductService_Delete [label="ProductService.Delete", style=bold, shape=box, color="blue"];
+		N_OrderService_New [label="OrderService.New", style=bold, shape=box, color="blue"];
+		N_OrderService_Run [label="OrderService.Run", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
 		N_skus_db_skus [label="skus_db.skus", style=bold, shape=cylinder, color="green"];
-		N_products_db_products [label="products_db.products", style=bold, shape=cylinder, color="green"];
 		N_orders_db_orders [label="orders_db.orders", style=bold, shape=cylinder, color="green"];
+		N_products_db_products [label="products_db.products", style=bold, shape=cylinder, color="green"];
 	}
-	N_client -> N_OrderService_New [label="New()", color=orange];
-	N_OrderService_New -> N_SkuService_Get [label="Get()", color=blue];
-	N_OrderService_New -> N_orders_db_orders [label="InsertOne()", color=green];
-	N_SkuService_Get -> N_skus_db_skus [label="FindOne()", color=green];
-	N_client -> N_OrderService_Run [label="Run()", color=orange];
 	N_client -> N_ProductService_New [label="New()", color=orange];
 	N_ProductService_New -> N_products_db_products [label="InsertOne()", color=green];
 	N_ProductService_New -> N_SkuService_New [label="New()", color=blue];
@@ -45,4 +40,9 @@ digraph G {
 	N_ProductService_Delete -> N_products_db_products [label="DeleteOne()", color=green];
 	N_ProductService_Delete -> N_SkuService_Delete [label="Delete()", color=blue];
 	N_SkuService_Delete -> N_skus_db_skus [label="DeleteOne()", color=green];
+	N_client -> N_OrderService_New [label="New()", color=orange];
+	N_OrderService_New -> N_SkuService_Get [label="Get()", color=blue];
+	N_OrderService_New -> N_orders_db_orders [label="InsertOne()", color=green];
+	N_SkuService_Get -> N_skus_db_skus [label="FindOne()", color=green];
+	N_client -> N_OrderService_Run [label="Run()", color=orange];
 }

@@ -96,6 +96,10 @@ func (edge *AbstractEdge) GetArgumentAt(i int) *AbstractObject {
 	return edge.args[i]
 }
 
+func (edge *AbstractEdge) SetArguments(args []*AbstractObject) {
+	edge.args = args
+}
+
 func (edge *AbstractEdge) AddArgument(arg *AbstractObject) {
 	edge.args = append(edge.args, arg)
 }

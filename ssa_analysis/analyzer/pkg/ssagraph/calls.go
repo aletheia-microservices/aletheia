@@ -3,7 +3,7 @@ package ssagraph
 import "analyzer/pkg/common"
 
 func ComputeCallID(graph *SSAGraph, node *SSANode) string {
-	return graph.GetService() + "." + graph.GetMethodName() + "." + node.GetName()
+	return graph.GetServiceWithMethod() + "." + node.GetName()
 }
 
 type ServiceCall struct {
@@ -62,10 +62,6 @@ func (call *ServiceCall) GetArguments() []*SSANode {
 }
 
 func (call *ServiceCall) String() string {
-	return call.GetService() + "." + call.GetMethod() + "(...)"
-}
-
-func (call *ServiceCall) String2() string {
 	return call.GetService() + "." + call.GetMethod()
 }
 

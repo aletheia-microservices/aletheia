@@ -1,25 +1,25 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2815655 [label="return struct{LongNum string; Expires string; CCV string; ID string}{}:Card, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2815655 [label="return struct{LongNum string; Expires string; CCV string; ID string}{}:Card, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1198901069 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2815640 [label="t2: invoke t1.GetCards(ctx, cardID)", style=bold, shape=ellipse, color="yellow"];
-	N_val_field_2815627 [label="t0: &f.user [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2815547 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2815572 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2815593 [label="cardID: parameter cardID : string
+	N_instr_ret_2801344 [label="return struct{LongNum string; Expires string; CCV string; ID string}{}:Card, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2801344 [label="return struct{LongNum string; Expires string; CCV string; ID string}{}:Card, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1012029433 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2801329 [label="t2: invoke t1.GetCards(ctx, cardID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2801316 [label="t0: &f.user [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2801236 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2801261 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2801282 [label="cardID: parameter cardID : string
 
 ==== tainted ====
 _obj
 [rpc] @ UserService.GetCards.cardID
 ", style=bold, shape=box, color="black"];
 	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card [label="struct{LongNum string; Expires string; CCV string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card: struct{LongNum string; Expires string; CCV string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card", style=bold, shape=ellipse, color="yellow"];
-	N_val_unary_2815627 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2815547 -> N_val_field_2815627;
-	N_val_field_2815627 -> N_val_unary_2815627;
-	N_val_param_2815572 -> N_val_call_2815640;
-	N_val_param_2815593 -> N_val_call_2815640;
-	N_val_unary_2815627 -> N_val_call_2815640;
-	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card -> N_instr_ret_2815655;
-	N_nil_1198901069 -> N_instr_ret_2815655;
+	N_val_unary_2801316 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2801236 -> N_val_field_2801316;
+	N_val_field_2801316 -> N_val_unary_2801316;
+	N_val_param_2801261 -> N_val_call_2801329;
+	N_val_param_2801282 -> N_val_call_2801329;
+	N_val_unary_2801316 -> N_val_call_2801329;
+	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card -> N_instr_ret_2801344;
+	N_nil_1012029433 -> N_instr_ret_2801344;
 }

@@ -25,6 +25,10 @@ type AbstractNode struct {
 	dbname string
 }
 
+func (node *AbstractNode) GetServiceWithMethod() string {
+	return node.service + "." + node.method
+}
+
 func (node *AbstractNode) String() string {
 	return node.name
 }

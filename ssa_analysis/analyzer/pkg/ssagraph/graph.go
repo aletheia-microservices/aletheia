@@ -22,10 +22,11 @@ type SSAGraph struct {
 	edges []*SSAEdge
 	defs  map[string]*SSANode
 
-	svcCalls []*ServiceCall
-	dbCalls  []*DatabaseCall
-	params   []*SSANode
-	returns  [][]*SSANode // can have multiple return tuples depending on controlflow
+	methodCall *ServiceCall
+	svcCalls   []*ServiceCall
+	dbCalls    []*DatabaseCall
+	params     []*SSANode
+	returns    [][]*SSANode // can have multiple return tuples depending on controlflow
 }
 
 func (graph *SSAGraph) String() string {
@@ -99,6 +100,10 @@ func (graph *SSAGraph) GetEdges() []*SSAEdge {
 
 func (graph *SSAGraph) AddServiceCall(call *ServiceCall) {
 	graph.svcCalls = append(graph.svcCalls, call)
+}
+
+func (graph *SSAGraph) SetMethodCall(call *ServiceCall) {
+	graph.methodCall = call
 }
 
 func (graph *SSAGraph) HasServiceCalls() bool {
@@ -265,16 +270,16 @@ func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType 
 }
 
 func safeLabel(s string) string {
-    s = strings.ReplaceAll(s, `\`, `\\`)
-    s = strings.ReplaceAll(s, `"`, `\"`)
-    s = strings.ReplaceAll(s, "\n", `\n`)
-    return s
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, "\n", `\n`)
+	return s
 }
 
 func safeID(id string) string {
-    // replace anything that's not a letter, number, or underscore with underscore
-    re := regexp.MustCompile(`[^a-zA-Z0-9_]`)
-    return re.ReplaceAllString(id, "_")
+	// replace anything that's not a letter, number, or underscore with underscore
+	re := regexp.MustCompile(`[^a-zA-Z0-9_]`)
+	return re.ReplaceAllString(id, "_")
 }
 
 func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {

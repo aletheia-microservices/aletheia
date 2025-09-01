@@ -1,15 +1,15 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1223623263 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__1223623263 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__1394303199 [label="if t19 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1394303199 [label="if t19 goto 2 else 3", style=bold, shape=ellipse, color="black"];
-	N_instr__1512175846 [label="if t35 goto 6 else 7", style=bold, shape=ellipse, color="black"];
-	N_instr__1512175846 [label="if t35 goto 6 else 7", style=bold, shape=ellipse, color="black"];
-	N_instr__1618715375 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__1618715375 [label="jump 1", style=bold, shape=ellipse, color="black"];
-	N_instr__934202328 [label="if t32 goto 4 else 5", style=bold, shape=ellipse, color="black"];
-	N_instr__934202328 [label="if t32 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__1386719442 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__1386719442 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__2012050087 [label="if t32 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__2012050087 [label="if t32 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__2108024690 [label="if t19 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__2108024690 [label="if t19 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__798018157 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__798018157 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__917149063 [label="if t35 goto 6 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__917149063 [label="if t35 goto 6 else 7", style=bold, shape=ellipse, color="black"];
 	N_instr_ret_2813522 [label="return -1:int64, t31", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_2813522 [label="return -1:int64, t31", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_2813598 [label="return -1:int64, t34", style=bold, shape=ellipse, color="yellow"];
@@ -34,13 +34,13 @@ digraph G {
 	N_instr_store_2813269 [label="*t13 = \"some username\":string", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_2813421 [label="*t24 = t21", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_2813421 [label="*t24 = t21", style=bold, shape=ellipse, color="blue"];
-	N_nil_503121398 [label="nil:[]string: nil:[]string
+	N_nil_1284268060 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_167505508 [label="nil:[]string: nil:[]string
 
 ==== tainted ====
 _obj[*]
 [write] @ posts_db.post.Mentions[*]
 ", style=bold, shape=box, color="black"];
-	N_nil_985960881 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
 	N_val__alice__string [label="\"alice\":string: \"alice\":string
 
 ==== tainted ====
@@ -312,7 +312,7 @@ _obj
 	N_val_phi_2813298 -> N_val_binary_2813374;
 	N_val_binaryt18 -> N_val_binary_2813374;
 	N_val_binary_2813374 -> N_val_phi_2813298;
-	N_nil_503121398 -> N_val_phi_2813314;
+	N_nil_167505508 -> N_val_phi_2813314;
 	N_val_phi_2813314 -> N_val_call_2813408;
 	N_val_alloc_2813428 -> N_val_slicet25;
 	N_val_slicet25 -> N_val_call_2813408;
@@ -333,7 +333,7 @@ _obj
 	N_val_call_2813477 -> N_val_extrt30;
 	N_val_call_2813477 -> N_val_extrt31;
 	N_val_extrt31 -> N_val_binary_2813511;
-	N_nil_985960881 -> N_val_binary_2813511;
+	N_nil_1284268060 -> N_val_binary_2813511;
 	N_val__1_int64 -> N_instr_ret_2813522;
 	N_val_extrt31 -> N_instr_ret_2813522;
 	N_val_alloc_2813117 -> N_val_ifacet33;
@@ -341,25 +341,25 @@ _obj
 	N_val_ifacet33 -> N_val_call_2813567;
 	N_val_extrt30 -> N_val_call_2813567;
 	N_val_call_2813567 -> N_val_binary_2813587;
-	N_nil_985960881 -> N_val_binary_2813587;
+	N_nil_1284268060 -> N_val_binary_2813587;
 	N_val__1_int64 -> N_instr_ret_2813598;
 	N_val_call_2813567 -> N_instr_ret_2813598;
 	N_val_alloc_2813117 -> N_val_field_2813829;
 	N_val_field_2813829 -> N_val_unary_2813829;
 	N_val_unary_2813829 -> N_instr_ret_2813817;
 	N_val_call_2813567 -> N_instr_ret_2813817;
-	N_val_indext3 -> N_val_alloc_2813085 [label="[*]", style=dashed, color=blue];
-	N_val_field_2813829 -> N_val_alloc_2813117 [label=".PostID", style=dashed, color=blue];
-	N_val_indext24 -> N_val_alloc_2813428 [label="[*]", style=dashed, color=blue];
-	N_val_indext4 -> N_val_alloc_2813085 [label="[*]", style=dashed, color=blue];
-	N_val_field_2813126 -> N_val_alloc_2813117 [label=".ReqID", style=dashed, color=blue];
-	N_val_field_2813247 -> N_val_alloc_2813117 [label=".Creator", style=dashed, color=blue];
-	N_val_field_2813178 -> N_val_alloc_2813117 [label=".Text", style=dashed, color=blue];
-	N_val_index_2813361 -> N_val_alloc_2813085 [label="[*]", style=dashed, color=blue];
-	N_val_field_2813147 -> N_val_alloc_2813117 [label=".PostID", style=dashed, color=blue];
-	N_val_field_2813201 -> N_val_alloc_2813117 [label=".Mentions", style=dashed, color=blue];
-	N_val_field_2813225 -> N_val_alloc_2813117 [label=".Timestamp", style=dashed, color=blue];
 	N_val_slice_2813085 -> N_val_alloc_2813085 [label="", style=dashed, color=blue];
-	N_val_field_2813269 -> N_val_alloc_2813117 [label=".Creator.Username", style=dashed, color=blue];
+	N_val_field_2813126 -> N_val_alloc_2813117 [label=".ReqID", style=dashed, color=blue];
+	N_val_indext3 -> N_val_alloc_2813085 [label="[*]", style=dashed, color=blue];
+	N_val_field_2813178 -> N_val_alloc_2813117 [label=".Text", style=dashed, color=blue];
+	N_val_indext24 -> N_val_alloc_2813428 [label="[*]", style=dashed, color=blue];
+	N_val_field_2813247 -> N_val_alloc_2813117 [label=".Creator", style=dashed, color=blue];
+	N_val_field_2813225 -> N_val_alloc_2813117 [label=".Timestamp", style=dashed, color=blue];
 	N_val_slicet25 -> N_val_alloc_2813428 [label="", style=dashed, color=blue];
+	N_val_field_2813147 -> N_val_alloc_2813117 [label=".PostID", style=dashed, color=blue];
+	N_val_indext4 -> N_val_alloc_2813085 [label="[*]", style=dashed, color=blue];
+	N_val_field_2813201 -> N_val_alloc_2813117 [label=".Mentions", style=dashed, color=blue];
+	N_val_index_2813361 -> N_val_alloc_2813085 [label="[*]", style=dashed, color=blue];
+	N_val_field_2813829 -> N_val_alloc_2813117 [label=".PostID", style=dashed, color=blue];
+	N_val_field_2813269 -> N_val_alloc_2813117 [label=".Creator.Username", style=dashed, color=blue];
 }

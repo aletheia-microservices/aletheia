@@ -3,20 +3,21 @@
 ---------------------------------------------------------------------
 entry request: AdminBasicInfoService.DeleteContact()
 	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
-		MISSING CASCADE DELETE #1: database={order_db}, pending fields={ContactsName, ContactsDocumentNumber, DocumentType}
-
-entry request: AdminUserService.DeleteUser()
-	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
-		MISSING CASCADE DELETE #2: database={order_db}, pending fields={AccountID}
+		MISSING CASCADE DELETE #1: database={order_db}, pending fields={ContactsDocumentNumber, ContactsName, DocumentType}
 
 entry request: AdminOrderService.DeleteOrder()
 	DELETE: OrderService.Delete() --> order_db.order.DeleteOne()
-		MISSING CASCADE DELETE #3: database={delivery_db}, pending fields={OrderID}
-		MISSING CASCADE DELETE #4: database={consign_db}, pending fields={OrderID, TargetDate, FromPlace, AccountID, ToPlace}
-		MISSING CASCADE DELETE #5: database={assurance_db}, pending fields={OrderID}
-		MISSING CASCADE DELETE #6: database={food_db}, pending fields={OrderID}
+		MISSING CASCADE DELETE #2: database={assurance_db}, pending fields={OrderID}
+		MISSING CASCADE DELETE #3: database={consign_db}, pending fields={AccountID, FromPlace, OrderID, TargetDate, ToPlace}
+		MISSING CASCADE DELETE #4: database={delivery_db}, pending fields={OrderID}
+		MISSING CASCADE DELETE #5: database={food_db}, pending fields={OrderID}
 
 entry request: AdminTravelService.DeleteTravel()
 	DELETE: TravelService.DeleteTrip() --> travel_db.trip.DeleteOne()
-		MISSING CASCADE DELETE #7: database={order_db}, pending fields={TrainNumber}
+		MISSING CASCADE DELETE #6: database={order_db}, pending fields={TrainNumber}
+
+entry request: AdminUserService.DeleteUser()
+	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
+		MISSING CASCADE DELETE #7: database={consign_db}, pending fields={AccountID}
+		MISSING CASCADE DELETE #8: database={order_db}, pending fields={AccountID}
 

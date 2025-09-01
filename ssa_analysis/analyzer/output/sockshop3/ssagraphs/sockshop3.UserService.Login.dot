@@ -1,7 +1,7 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1636975408 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__1636975408 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__2007665091 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__2007665091 [label="if t28 goto 1 else 2", style=bold, shape=ellipse, color="black"];
 	N_instr_ret_2821937 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_2821937 [label="return struct{FirstName string; LastName string; Email string; Username string; Password string; Addresses Address; Cards Card; UserID string; Salt string}{}:User, t29", style=bold, shape=ellipse, color="yellow"];
 	N_instr_ret_2821983 [label="return t30, nil:error", style=bold, shape=ellipse, color="yellow"];
@@ -16,7 +16,7 @@ digraph G {
 	N_instr_store_2821774 [label="*t14 = t15", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_2821843 [label="*t19 = t16", style=bold, shape=ellipse, color="blue"];
 	N_instr_store_2821843 [label="*t19 = t16", style=bold, shape=ellipse, color="blue"];
-	N_nil_180640006 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1377910161 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val__Unauthorized__string [label="\"Unauthorized\":string: \"Unauthorized\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__password__string [label="\"password\":string: \"password\":string", style=bold, shape=ellipse, color="blue"];
 	N_val__user_db__string [label="\"user_db\":string: \"user_db\":string", style=bold, shape=ellipse, color="yellow"];
@@ -154,16 +154,16 @@ _obj.Password
 	N_val_call_2821962 -> N_instr_ret_2821937;
 	N_val_alloc_2821788 -> N_val_unary_2821990;
 	N_val_unary_2821990 -> N_instr_ret_2821983;
-	N_nil_180640006 -> N_instr_ret_2821983;
-	N_val_field_2821755 -> N_val_alloc_2821750 [label="[*].Key", style=dashed, color=blue];
+	N_nil_1377910161 -> N_instr_ret_2821983;
+	N_val_indext19 -> N_val_alloc_2821853 [label="[*]", style=dashed, color=blue];
+	N_val_slicet20 -> N_val_alloc_2821853 [label="", style=dashed, color=blue];
+	N_val_slice_2821692 -> N_val_alloc_2821692 [label="", style=dashed, color=blue];
+	N_val_indext6 -> N_val_alloc_2821692 [label="[*]", style=dashed, color=blue];
 	N_val_field_2821774 -> N_val_alloc_2821750 [label="[*].Value", style=dashed, color=blue];
 	N_val_field_2821697 -> N_val_alloc_2821692 [label="[*].Key", style=dashed, color=blue];
-	N_val_slice_2821692 -> N_val_alloc_2821692 [label="", style=dashed, color=blue];
-	N_val_slicet20 -> N_val_alloc_2821853 [label="", style=dashed, color=blue];
-	N_val_indext12 -> N_val_alloc_2821750 [label="[*]", style=dashed, color=blue];
-	N_val_field_2821716 -> N_val_alloc_2821692 [label="[*].Value", style=dashed, color=blue];
-	N_val_indext6 -> N_val_alloc_2821692 [label="[*]", style=dashed, color=blue];
-	N_val_indext19 -> N_val_alloc_2821853 [label="[*]", style=dashed, color=blue];
 	N_val_slice_2821750 -> N_val_alloc_2821750 [label="", style=dashed, color=blue];
+	N_val_field_2821716 -> N_val_alloc_2821692 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext12 -> N_val_alloc_2821750 [label="[*]", style=dashed, color=blue];
+	N_val_field_2821755 -> N_val_alloc_2821750 [label="[*].Key", style=dashed, color=blue];
 	N_val_field_2821912 -> N_val_alloc_2821788 [label=".Password", style=dashed, color=blue];
 }

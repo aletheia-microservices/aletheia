@@ -16,7 +16,8 @@ type WriteOperation struct {
 	database *backends.Database
 
 	// fields in current database with constraint foreign key + mandatory
-	fields []*backends.Field
+	fields  []*backends.Field
+	request *Request
 }
 
 func NewDeleteOperation(call *abstractgraph.AbstractEdge, database *backends.Database) *DeleteOperation {
@@ -30,10 +31,11 @@ func (delete *DeleteOperation) setSchema(schema *backends.Schema) {
 	delete.schema = schema
 }
 
-func NewWriteOperation(call *abstractgraph.AbstractEdge, database *backends.Database) *WriteOperation {
+func NewWriteOperation(call *abstractgraph.AbstractEdge, database *backends.Database, entry *Request) *WriteOperation {
 	return &WriteOperation{
 		call:     call,
 		database: database,
+		request:  entry,
 	}
 }
 

@@ -3,6 +3,7 @@ package keycoordination
 import (
 	"fmt"
 	"log"
+	"sort"
 
 	"analyzer/pkg/app"
 )
@@ -22,7 +23,17 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 
 	var results string
 	numWarnings := 0
-	for request, foreignreads := range detector.foreignReads {
+
+	var sortedRequests []*Request
+	for request := range detector.foreignReads {
+		sortedRequests = append(sortedRequests, request)
+	}
+	sort.Slice(sortedRequests, func(i, j int) bool {
+		return sortedRequests[i].entry.String() < sortedRequests[j].entry.String()
+	})
+
+	for _, request := range sortedRequests {
+		foreignreads := detector.foreignReads[request]
 		var printedEntry = false
 		for _, fread := range foreignreads {
 			//detector.restrictive = false

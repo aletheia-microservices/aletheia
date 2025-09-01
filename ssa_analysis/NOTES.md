@@ -22,6 +22,11 @@
 
 ### 1.4. CRITICAL FIXES
 1. (tainter): fix missing foreign keys (check trainticket on PreserveService when `order.TrainNumber` is set to `oti.TripID` instead of `gtdi.TripID`)
+
+```sql
+FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID
+````
+
 2. (tainter) fix propagation to distinguish between keys used for reads and values retrived from reads (check socialnetwork on `HomeTimelineService.WriteHomeTimeline` where tainter is assuming that the `postID` method parameter was used to read the cache in `h.homeTimelineCache.Get(ctx, id_str, &posts)` due to the append afterwards `posts = append(posts, PostInfo{PostID: postID, Timestamp: timestamp})` that includes the `postID`)
 
 ## 2. CURRENT ASSUMPTIONS

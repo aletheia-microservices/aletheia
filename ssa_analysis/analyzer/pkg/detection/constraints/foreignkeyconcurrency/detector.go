@@ -72,8 +72,8 @@ func (detector *ForeignKeyConcurrencyDetector) OnRead(app *app.App, reqIdx int, 
 
 func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
 	database := app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
-	write := NewWriteOperation(edge, database)
 	request := detector.getCurrentRequest()
+	write := NewWriteOperation(edge, database, request)
 	request.addWriteOperation(write)
 	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new write: %v\n", write)
 }

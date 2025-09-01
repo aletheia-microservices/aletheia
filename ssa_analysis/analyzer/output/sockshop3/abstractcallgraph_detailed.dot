@@ -8,39 +8,51 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_UserService_GetUsers [label="UserService.GetUsers
+		N_CatalogueService_Get [label="CatalogueService.Get
 
-==== param 0 (userid) tainted ====
+==== param 0 (id) tainted ====
 _obj
-[read, primary] @ user_db.users.UserID
+[read, primary] @ catalogue_db.catalogue.ID
 
 
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User) tainted ====
-_obj[*]
-[read, primary] @ user_db.users
-", style=bold, shape=box, color="blue"];
-		N_QueueMaster_Run [label="QueueMaster.Run", style=bold, shape=box, color="blue"];
-		N_CartService_UpdateItem [label="CartService.UpdateItem", style=bold, shape=box, color="blue"];
-		N_ShippingService_PostShipping [label="ShippingService.PostShipping
-
-==== param 0 (shipment) tainted ====
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
 _obj
-[write, primary] @ ship_queue.notification
-[write, primary] @ ship_db.shipments
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment) tainted ====
-_obj
-[write, primary] @ ship_queue.notification
-[write, primary] @ ship_db.shipments
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_List [label="CatalogueService.List
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
-_obj[*]
 [read, primary] @ catalogue_db.catalogue
-_obj[*].Tags
+_obj.ImageURL
+[read, primary] @ catalogue_db.catalogue.ImageURL
+_obj.ImageURL[*]
+[read, primary] @ catalogue_db.catalogue.ImageURL_1
+[read, primary] @ catalogue_db.catalogue.ImageURL_2
+_obj.ImageURL_1
+[read, primary] @ catalogue_db.catalogue.ImageURL_1
+_obj.ImageURL_2
+[read, primary] @ catalogue_db.catalogue.ImageURL_1
+[read, primary] @ catalogue_db.catalogue.ImageURL_2
+_obj.TagString
+[read, primary] @ catalogue_db.catalogue.TagString
+_obj.Tags
 [read, primary] @ catalogue_db.catalogue.Tags
+", style=bold, shape=box, color="blue"];
+		N_CartService_UpdateItem [label="CartService.UpdateItem", style=bold, shape=box, color="blue"];
+		N_CatalogueService_Tags [label="CatalogueService.Tags", style=bold, shape=box, color="blue"];
+		N_Frontend_GetCard [label="Frontend.GetCard
+
+==== param 0 (cardID) tainted ====
+_obj
+[rpc] @ UserService.GetCards.cardID
+", style=bold, shape=box, color="blue"];
+		N_ShippingService_UpdateStatus [label="ShippingService.UpdateStatus
+
+==== param 0 (id) tainted ====
+_obj
+[update, primary] @ ship_db.shipments.ID
+[read, secondary] @ ship_queue.notification.ID
+", style=bold, shape=box, color="blue"];
+		N_Frontend_DeleteCart [label="Frontend.DeleteCart
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.DeleteCart.sessionID
 ", style=bold, shape=box, color="blue"];
 		N_Frontend_ListTags [label="Frontend.ListTags
 
@@ -53,85 +65,52 @@ _obj
 _obj
 [rpc] @ CatalogueService.Tags.t4
 ", style=bold, shape=box, color="blue"];
-		N_OrderService_GetOrders [label="OrderService.GetOrders
+		N_Frontend_NewOrder [label="Frontend.NewOrder
 
-==== param 0 (customerID) tainted ====
+==== param 0 (userID) tainted ====
 _obj
-[read, primary] @ order_db.orders.CustomerID
+[rpc] @ OrderService.NewOrder.userID
 
 
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
-_obj[*]
-[read, primary] @ order_db.orders
+==== param 1 (addressID) tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.addressID
+
+
+==== param 2 (cardID) tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.cardID
+
+
+==== param 3 (cartID) tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.cartID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.t4
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_Login [label="Frontend.Login
+		N_Frontend_GetOrder [label="Frontend.GetOrder
 
-==== param 0 (sessionID) tainted ====
+==== param 0 (orderID) tainted ====
 _obj
-[rpc] @ CartService.MergeCarts.sessionID
+[rpc] @ OrderService.GetOrder.orderID
 
 
-==== param 1 (username) tainted ====
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
 _obj
-[rpc] @ UserService.Login.username
+[rpc] @ OrderService.GetOrder.t3
 
 
-==== param 2 (password) tainted ====
+==== ret 1 (error) tainted ====
 _obj
-[rpc] @ UserService.Login.password
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ CartService.MergeCarts.sessionID
-
-
-==== ret 2 (error) tainted ====
-_obj
-[rpc] @ UserService.Login.t5
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_AddSock [label="CatalogueService.AddSock
-
-==== param 0 (sock) tainted ====
-_obj
-[write, primary] @ catalogue_db.catalogue
-_obj.ID
-[write, primary] @ catalogue_db.catalogue.ID
-
-
-==== ret 0 (string) tainted ====
-_obj
-[write, primary] @ catalogue_db.catalogue.ID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_DeleteSock [label="Frontend.DeleteSock
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ CatalogueService.DeleteSock.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.DeleteSock.t2
-", style=bold, shape=box, color="blue"];
-		N_CartService_RemoveItem [label="CartService.RemoveItem
-
-==== param 0 (customerID) tainted ====
-_obj
-[update, primary] @ cart_db.carts.ID
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_DeleteSock [label="CatalogueService.DeleteSock
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ catalogue_db.catalogue.ID
-", style=bold, shape=box, color="blue"];
-		N_ShippingService_UpdateStatus [label="ShippingService.UpdateStatus
-
-==== param 0 (id) tainted ====
-_obj
-[update, primary] @ ship_db.shipments.ID
-[read, secondary] @ ship_queue.notification.ID
+[rpc] @ OrderService.GetOrder.t4
 ", style=bold, shape=box, color="blue"];
 		N_Frontend_Register [label="Frontend.Register
 
@@ -174,76 +153,283 @@ _obj
 _obj
 [rpc] @ UserService.Register.t4
 ", style=bold, shape=box, color="blue"];
+		N_UserService_Register [label="UserService.Register
+
+==== param 0 (username) tainted ====
+_obj
+[write, primary] @ user_db.users.Username
+
+
+==== param 1 (password) tainted ====
+_obj
+[write, primary] @ user_db.users.Password
+
+
+==== param 2 (email) tainted ====
+_obj
+[write, primary] @ user_db.users.Email
+
+
+==== param 3 (first) tainted ====
+_obj
+[write, primary] @ user_db.users.FirstName
+
+
+==== param 4 (last) tainted ====
+_obj
+[write, primary] @ user_db.users.LastName
+
+
+==== ret 0 (string) tainted ====
+_obj
+[write, primary] @ user_db.users.UserID
+", style=bold, shape=box, color="blue"];
+		N_UserService_GetUsers [label="UserService.GetUsers
+
+==== param 0 (userid) tainted ====
+_obj
+[read, primary] @ user_db.users.UserID
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.User) tainted ====
+_obj[*]
+[read, primary] @ user_db.users
+", style=bold, shape=box, color="blue"];
+		N_Frontend_GetAddress [label="Frontend.GetAddress
+
+==== param 0 (addressID) tainted ====
+_obj
+[rpc] @ UserService.GetAddresses.addressID
+", style=bold, shape=box, color="blue"];
+		N_Frontend_DeleteSock [label="Frontend.DeleteSock
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ CatalogueService.DeleteSock.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.DeleteSock.t2
+", style=bold, shape=box, color="blue"];
+		N_CatalogueService_DeleteSock [label="CatalogueService.DeleteSock
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ catalogue_db.catalogue.ID
+", style=bold, shape=box, color="blue"];
+		N_OrderService_GetOrders [label="OrderService.GetOrders
+
+==== param 0 (customerID) tainted ====
+_obj
+[read, primary] @ order_db.orders.CustomerID
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
+_obj[*]
+[read, primary] @ order_db.orders
+", style=bold, shape=box, color="blue"];
 		N_UserService_PostAddress [label="UserService.PostAddress", style=bold, shape=box, color="blue"];
-		N_UserService_PostCard [label="UserService.PostCard", style=bold, shape=box, color="blue"];
-		N_Frontend_DeleteCart [label="Frontend.DeleteCart
+		N_Frontend_AddItem [label="Frontend.AddItem
 
 ==== param 0 (sessionID) tainted ====
 _obj
-[rpc] @ CartService.DeleteCart.sessionID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_ListItems [label="Frontend.ListItems
+[rpc] @ CartService.AddItem.t2
 
-==== param 0 (tags) tainted ====
+
+==== param 1 (itemID) tainted ====
 _obj
-[rpc] @ CatalogueService.List.tags
+[rpc] @ CatalogueService.Get.itemID
 
 
-==== param 1 (order) tainted ====
+==== ret 0 (string) tainted ====
 _obj
-[rpc] @ CatalogueService.List.order
-
-
-==== param 2 (pageNum) tainted ====
-_obj
-[rpc] @ CatalogueService.List.pageNum
-
-
-==== param 3 (pageSize) tainted ====
-_obj
-[rpc] @ CatalogueService.List.pageSize
-
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
-_obj
-[rpc] @ CatalogueService.List.t3
+[rpc] @ CartService.AddItem.t2
 
 
 ==== ret 1 (error) tainted ====
 _obj
-[rpc] @ CatalogueService.List.t4
+[rpc] @ CatalogueService.Get.t8
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_NewOrder [label="Frontend.NewOrder
+		N_CartService_RemoveItem [label="CartService.RemoveItem
+
+==== param 0 (customerID) tainted ====
+_obj
+[update, primary] @ cart_db.carts.ID
+", style=bold, shape=box, color="blue"];
+		N_Frontend_GetSock [label="Frontend.GetSock
+
+==== param 0 (itemID) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.itemID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t4
+", style=bold, shape=box, color="blue"];
+		N_Frontend_GetUser [label="Frontend.GetUser
 
 ==== param 0 (userID) tainted ====
 _obj
-[rpc] @ OrderService.NewOrder.userID
+[rpc] @ UserService.GetUsers.userID
+", style=bold, shape=box, color="blue"];
+		N_UserService_GetAddresses [label="UserService.GetAddresses
 
-
-==== param 1 (addressID) tainted ====
+==== param 0 (addressid) tainted ====
 _obj
-[rpc] @ OrderService.NewOrder.addressID
+[read, primary] @ user_db.users.Addresses
 
 
-==== param 2 (cardID) tainted ====
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) tainted ====
+_obj[*]
+[read, primary] @ user_db.users
+", style=bold, shape=box, color="blue"];
+		N_Frontend_PostAddress [label="Frontend.PostAddress
+
+==== param 0 (userID) tainted ====
 _obj
-[rpc] @ OrderService.NewOrder.cardID
+[rpc] @ UserService.PostAddress.userID
 
 
-==== param 3 (cartID) tainted ====
+==== param 1 (address) tainted ====
 _obj
-[rpc] @ OrderService.NewOrder.cartID
+[rpc] @ UserService.PostAddress.address
+
+
+==== ret 0 (string) tainted ====
+_obj
+[rpc] @ UserService.PostAddress.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ UserService.PostAddress.t4
+", style=bold, shape=box, color="blue"];
+		N_Frontend_UpdateItem [label="Frontend.UpdateItem
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.UpdateItem.sessionID
+
+
+==== param 1 (itemID) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.itemID
+
+
+==== param 2 (quantity) tainted ====
+_obj
+[rpc] @ CartService.UpdateItem.t17.Quantity
+
+
+==== ret 0 (string) tainted ====
+_obj
+[rpc] @ CartService.UpdateItem.sessionID
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t5
+", style=bold, shape=box, color="blue"];
+		N_ShippingService_PostShipping [label="ShippingService.PostShipping
+
+==== param 0 (shipment) tainted ====
+_obj
+[write, primary] @ ship_queue.notification
+[write, primary] @ ship_db.shipments
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Shipment) tainted ====
+_obj
+[write, primary] @ ship_queue.notification
+[write, primary] @ ship_db.shipments
+", style=bold, shape=box, color="blue"];
+		N_OrderService_GetOrder [label="OrderService.GetOrder
+
+==== param 0 (orderID) tainted ====
+_obj
+[read, primary] @ order_db.orders.ID
 
 
 ==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
 _obj
-[rpc] @ OrderService.NewOrder.t3
+[read, primary] @ order_db.orders
+", style=bold, shape=box, color="blue"];
+		N_UserService_GetCards [label="UserService.GetCards
+
+==== param 0 (cardid) tainted ====
+_obj
+[read, primary] @ user_db.users.Cards
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) tainted ====
+_obj[*]
+[read, primary] @ user_db.users
+", style=bold, shape=box, color="blue"];
+		N_Frontend_RemoveItem [label="Frontend.RemoveItem
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.RemoveItem.sessionID
+
+
+==== param 1 (itemID) tainted ====
+_obj
+[rpc] @ CartService.RemoveItem.itemID
+", style=bold, shape=box, color="blue"];
+		N_CatalogueService_List [label="CatalogueService.List
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
+_obj[*]
+[read, primary] @ catalogue_db.catalogue
+_obj[*].Tags
+[read, primary] @ catalogue_db.catalogue.Tags
+", style=bold, shape=box, color="blue"];
+		N_Frontend_GetOrders [label="Frontend.GetOrders
+
+==== param 0 (userID) tainted ====
+_obj
+[rpc] @ OrderService.GetOrders.userID
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
+_obj
+[rpc] @ OrderService.GetOrders.t3
 
 
 ==== ret 1 (error) tainted ====
 _obj
-[rpc] @ OrderService.NewOrder.t4
+[rpc] @ OrderService.GetOrders.t4
 ", style=bold, shape=box, color="blue"];
+		N_Frontend_PostCard [label="Frontend.PostCard
+
+==== param 0 (userID) tainted ====
+_obj
+[rpc] @ UserService.PostCard.userID
+
+
+==== param 1 (card) tainted ====
+_obj
+[rpc] @ UserService.PostCard.card
+
+
+==== ret 0 (string) tainted ====
+_obj
+[rpc] @ UserService.PostCard.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ UserService.PostCard.t4
+", style=bold, shape=box, color="blue"];
+		N_UserService_PostCard [label="UserService.PostCard", style=bold, shape=box, color="blue"];
+		N_QueueMaster_Run [label="QueueMaster.Run", style=bold, shape=box, color="blue"];
 		N_OrderService_NewOrder [label="OrderService.NewOrder
 
 ==== param 0 (customerID) tainted ====
@@ -286,197 +472,6 @@ _obj.Total
 _obj
 [rpc] @ ShippingService.PostShipping.t34
 ", style=bold, shape=box, color="blue"];
-		N_Frontend_GetUser [label="Frontend.GetUser
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ UserService.GetUsers.userID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_PostCard [label="Frontend.PostCard
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ UserService.PostCard.userID
-
-
-==== param 1 (card) tainted ====
-_obj
-[rpc] @ UserService.PostCard.card
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ UserService.PostCard.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ UserService.PostCard.t4
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_Get [label="CatalogueService.Get
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ catalogue_db.catalogue.ID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
-_obj
-[read, primary] @ catalogue_db.catalogue
-_obj.ImageURL
-[read, primary] @ catalogue_db.catalogue.ImageURL
-_obj.ImageURL[*]
-[read, primary] @ catalogue_db.catalogue.ImageURL_1
-[read, primary] @ catalogue_db.catalogue.ImageURL_2
-_obj.ImageURL_1
-[read, primary] @ catalogue_db.catalogue.ImageURL_1
-_obj.ImageURL_2
-[read, primary] @ catalogue_db.catalogue.ImageURL_2
-_obj.TagString
-[read, primary] @ catalogue_db.catalogue.TagString
-_obj.Tags
-[read, primary] @ catalogue_db.catalogue.Tags
-", style=bold, shape=box, color="blue"];
-		N_CartService_MergeCarts [label="CartService.MergeCarts
-
-==== param 1 (sessionID) tainted ====
-_obj
-[delete, primary] @ cart_db.carts.ID
-", style=bold, shape=box, color="blue"];
-		N_UserService_Register [label="UserService.Register
-
-==== param 0 (username) tainted ====
-_obj
-[write, primary] @ user_db.users.Username
-
-
-==== param 1 (password) tainted ====
-_obj
-[write, primary] @ user_db.users.Password
-
-
-==== param 2 (email) tainted ====
-_obj
-[write, primary] @ user_db.users.Email
-
-
-==== param 3 (first) tainted ====
-_obj
-[write, primary] @ user_db.users.FirstName
-
-
-==== param 4 (last) tainted ====
-_obj
-[write, primary] @ user_db.users.LastName
-
-
-==== ret 0 (string) tainted ====
-_obj
-[write, primary] @ user_db.users.UserID
-", style=bold, shape=box, color="blue"];
-		N_UserService_GetAddresses [label="UserService.GetAddresses
-
-==== param 0 (addressid) tainted ====
-_obj
-[read, primary] @ user_db.users.Addresses
-
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Address) tainted ====
-_obj[*]
-[read, primary] @ user_db.users
-", style=bold, shape=box, color="blue"];
-		N_Frontend_PostAddress [label="Frontend.PostAddress
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ UserService.PostAddress.userID
-
-
-==== param 1 (address) tainted ====
-_obj
-[rpc] @ UserService.PostAddress.address
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ UserService.PostAddress.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ UserService.PostAddress.t4
-", style=bold, shape=box, color="blue"];
-		N_Frontend_GetCard [label="Frontend.GetCard
-
-==== param 0 (cardID) tainted ====
-_obj
-[rpc] @ UserService.GetCards.cardID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_LoadCatalogue [label="Frontend.LoadCatalogue", style=bold, shape=box, color="blue"];
-		N_Frontend_GetOrders [label="Frontend.GetOrders
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ OrderService.GetOrders.userID
-
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
-_obj
-[rpc] @ OrderService.GetOrders.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ OrderService.GetOrders.t4
-", style=bold, shape=box, color="blue"];
-		N_OrderService_GetOrder [label="OrderService.GetOrder
-
-==== param 0 (orderID) tainted ====
-_obj
-[read, primary] @ order_db.orders.ID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
-_obj
-[read, primary] @ order_db.orders
-", style=bold, shape=box, color="blue"];
-		N_Frontend_RemoveItem [label="Frontend.RemoveItem
-
-==== param 0 (sessionID) tainted ====
-_obj
-[rpc] @ CartService.RemoveItem.sessionID
-
-
-==== param 1 (itemID) tainted ====
-_obj
-[rpc] @ CartService.RemoveItem.itemID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_UpdateItem [label="Frontend.UpdateItem
-
-==== param 0 (sessionID) tainted ====
-_obj
-[rpc] @ CartService.UpdateItem.sessionID
-
-
-==== param 1 (itemID) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.itemID
-
-
-==== param 2 (quantity) tainted ====
-_obj
-[rpc] @ CartService.UpdateItem.t17.Quantity
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ CartService.UpdateItem.sessionID
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.t5
-", style=bold, shape=box, color="blue"];
 		N_UserService_Login [label="UserService.Login
 
 ==== param 0 (username) tainted ====
@@ -490,16 +485,84 @@ _obj
 _obj.Password
 [read, primary] @ user_db.users.Password
 ", style=bold, shape=box, color="blue"];
-		N_UserService_GetCards [label="UserService.GetCards
+		N_CartService_MergeCarts [label="CartService.MergeCarts
 
-==== param 0 (cardid) tainted ====
+==== param 1 (sessionID) tainted ====
 _obj
-[read, primary] @ user_db.users.Cards
+[delete, primary] @ cart_db.carts.ID
+", style=bold, shape=box, color="blue"];
+		N_Frontend_LoadCatalogue [label="Frontend.LoadCatalogue", style=bold, shape=box, color="blue"];
+		N_CatalogueService_AddSock [label="CatalogueService.AddSock
+
+==== param 0 (sock) tainted ====
+_obj
+[write, primary] @ catalogue_db.catalogue
+_obj.ID
+[write, primary] @ catalogue_db.catalogue.ID
 
 
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card) tainted ====
-_obj[*]
-[read, primary] @ user_db.users
+==== ret 0 (string) tainted ====
+_obj
+[write, primary] @ catalogue_db.catalogue.ID
+", style=bold, shape=box, color="blue"];
+		N_CartService_DeleteCart [label="CartService.DeleteCart", style=bold, shape=box, color="blue"];
+		N_Frontend_ListItems [label="Frontend.ListItems
+
+==== param 0 (tags) tainted ====
+_obj
+[rpc] @ CatalogueService.List.tags
+
+
+==== param 1 (order) tainted ====
+_obj
+[rpc] @ CatalogueService.List.order
+
+
+==== param 2 (pageNum) tainted ====
+_obj
+[rpc] @ CatalogueService.List.pageNum
+
+
+==== param 3 (pageSize) tainted ====
+_obj
+[rpc] @ CatalogueService.List.pageSize
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
+_obj
+[rpc] @ CatalogueService.List.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ CatalogueService.List.t4
+", style=bold, shape=box, color="blue"];
+		N_PaymentService_Authorise [label="PaymentService.Authorise", style=bold, shape=box, color="blue"];
+		N_Frontend_Login [label="Frontend.Login
+
+==== param 0 (sessionID) tainted ====
+_obj
+[rpc] @ CartService.MergeCarts.sessionID
+
+
+==== param 1 (username) tainted ====
+_obj
+[rpc] @ UserService.Login.username
+
+
+==== param 2 (password) tainted ====
+_obj
+[rpc] @ UserService.Login.password
+
+
+==== ret 0 (string) tainted ====
+_obj
+[rpc] @ CartService.MergeCarts.sessionID
+
+
+==== ret 2 (error) tainted ====
+_obj
+[rpc] @ UserService.Login.t5
 ", style=bold, shape=box, color="blue"];
 		N_CartService_AddItem [label="CartService.AddItem
 
@@ -517,77 +580,15 @@ _obj
 _obj
 [write, primary] @ cart_db.carts.Items[*]
 ", style=bold, shape=box, color="blue"];
-		N_CartService_DeleteCart [label="CartService.DeleteCart", style=bold, shape=box, color="blue"];
-		N_PaymentService_Authorise [label="PaymentService.Authorise", style=bold, shape=box, color="blue"];
-		N_Frontend_GetOrder [label="Frontend.GetOrder
-
-==== param 0 (orderID) tainted ====
-_obj
-[rpc] @ OrderService.GetOrder.orderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order) tainted ====
-_obj
-[rpc] @ OrderService.GetOrder.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ OrderService.GetOrder.t4
-", style=bold, shape=box, color="blue"];
-		N_Frontend_GetAddress [label="Frontend.GetAddress
-
-==== param 0 (addressID) tainted ====
-_obj
-[rpc] @ UserService.GetAddresses.addressID
-", style=bold, shape=box, color="blue"];
-		N_Frontend_AddItem [label="Frontend.AddItem
-
-==== param 0 (sessionID) tainted ====
-_obj
-[rpc] @ CartService.AddItem.t2
-
-
-==== param 1 (itemID) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.itemID
-
-
-==== ret 0 (string) tainted ====
-_obj
-[rpc] @ CartService.AddItem.t2
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.t8
-", style=bold, shape=box, color="blue"];
-		N_Frontend_GetSock [label="Frontend.GetSock
-
-==== param 0 (itemID) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.itemID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Sock) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ CatalogueService.Get.t4
-", style=bold, shape=box, color="blue"];
-		N_CatalogueService_Tags [label="CatalogueService.Tags", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
+		N_order_db_orders [label="order_db.orders", style=bold, shape=cylinder, color="green"];
 		N_ship_queue_notification [label="ship_queue.notification", style=bold, shape=cylinder, color="green"];
 		N_catalogue_db_catalogue [label="catalogue_db.catalogue", style=bold, shape=cylinder, color="green"];
-		N_ship_db_shipments [label="ship_db.shipments", style=bold, shape=cylinder, color="green"];
-		N_order_db_orders [label="order_db.orders", style=bold, shape=cylinder, color="green"];
-		N_user_db_users [label="user_db.users", style=bold, shape=cylinder, color="green"];
 		N_cart_db_carts [label="cart_db.carts", style=bold, shape=cylinder, color="green"];
+		N_ship_db_shipments [label="ship_db.shipments", style=bold, shape=cylinder, color="green"];
+		N_user_db_users [label="user_db.users", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Frontend_DeleteCart [label="DeleteCart()", color=orange];
 	N_Frontend_DeleteCart -> N_CartService_DeleteCart [label="DeleteCart()
@@ -661,6 +662,7 @@ _obj.ImageURL[*]
 _obj.ImageURL_1
 [read, secondary] @ catalogue_db.catalogue.ImageURL_1
 _obj.ImageURL_2
+[read, secondary] @ catalogue_db.catalogue.ImageURL_1
 [read, secondary] @ catalogue_db.catalogue.ImageURL_2
 _obj.Price
 [rpc] @ CatalogueService.Get.t4.Price
@@ -724,6 +726,7 @@ _obj.ImageURL[*]
 _obj.ImageURL_1
 [read, primary] @ catalogue_db.catalogue.ImageURL_1
 _obj.ImageURL_2
+[read, primary] @ catalogue_db.catalogue.ImageURL_1
 [read, primary] @ catalogue_db.catalogue.ImageURL_2
 _obj.TagString
 [read, primary] @ catalogue_db.catalogue.TagString
@@ -795,6 +798,7 @@ _obj.ImageURL[*]
 _obj.ImageURL_1
 [read, secondary] @ catalogue_db.catalogue.ImageURL_1
 _obj.ImageURL_2
+[read, secondary] @ catalogue_db.catalogue.ImageURL_1
 [read, secondary] @ catalogue_db.catalogue.ImageURL_2
 _obj.TagString
 [read, secondary] @ catalogue_db.catalogue.TagString
@@ -1407,6 +1411,7 @@ _obj.ImageURL[*]
 _obj.ImageURL_1
 [read, secondary] @ catalogue_db.catalogue.ImageURL_1
 _obj.ImageURL_2
+[read, secondary] @ catalogue_db.catalogue.ImageURL_1
 [read, secondary] @ catalogue_db.catalogue.ImageURL_2
 _obj.Price
 [rpc] @ CatalogueService.Get.t7.Price
