@@ -7,7 +7,7 @@ import (
 )
 
 func (detector *UnicityConcurrencyDetector) GetResults() string {
-	return detector.summary
+	return detector.results
 }
 
 func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
@@ -37,5 +37,6 @@ func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 		}
 		results += "\n"
 	}
-	detector.summary = header + results
+	detector.results = header + fmt.Sprintf("[NUM_WARNINGS = %d]\n", numWarnings) + results
+
 }

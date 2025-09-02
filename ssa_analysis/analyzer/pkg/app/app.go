@@ -91,6 +91,11 @@ func (app *App) GetName() string {
 	return app.name
 }
 
+func (app *App) SetServiceEntrypoints(service *services.Service, methods []string) {
+	sort.Strings(methods)
+	app.entrypoints[service] = methods
+}
+
 func (app *App) AddEntrypoint(service *services.Service, method string) {
 	app.entrypoints[service] = append(app.entrypoints[service], method)
 }
@@ -228,6 +233,7 @@ func (app *App) MarshalJSON() ([]byte, error) {
 		databasesLst[i] = db.GetName()
 		i++
 	}
+	// sort databases
 	sort.Strings(databasesLst)
 
 	servicesLst := make([]*services.Service, len(app.services))
@@ -237,6 +243,7 @@ func (app *App) MarshalJSON() ([]byte, error) {
 		i++
 	}
 
+	// sort services
 	sort.Slice(servicesLst, func(i, j int) bool {
 		return servicesLst[i].GetName() < servicesLst[j].GetName()
 	})
@@ -277,7 +284,15 @@ func (app *App) WriteSchemaToJSON() error {
 	defer file.Close()
 
 	dbJSONMap := make(map[string]json.RawMessage, len(app.databases))
+	var sortedDbs []*backends.Database
 	for _, db := range app.databases {
+		sortedDbs = append(sortedDbs, db)
+	}
+	sort.Slice(sortedDbs, func(i, j int) bool {
+		return sortedDbs[i].GetName() < sortedDbs[j].GetName()
+	})
+
+	for _, db := range sortedDbs {
 		data, err := json.Marshal(db)
 		if err != nil {
 			return fmt.Errorf("failed to marshal database %s: %w", db.GetName(), err)

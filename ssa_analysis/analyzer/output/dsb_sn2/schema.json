@@ -22,8 +22,7 @@
         "name": "*",
         "fields": [
           "post_cache.*.Key",
-          "post_cache.*.Value",
-          "post_cache.*.Value.PostID"
+          "post_cache.*.Value"
         ],
         "constraints": []
       }
@@ -41,8 +40,8 @@
           "post_db.post.ReqID"
         ],
         "constraints": [
-          "FOREIGN_KEY post_db.post.PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]",
-          "FOREIGN_KEY post_db.post.PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]"
+          "FOREIGN_KEY post_db.post.PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
+          "FOREIGN_KEY post_db.post.PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]"
         ]
       }
     ]
@@ -59,8 +58,8 @@
           "socialgraph_cache.followers.Value[*].FollowerID"
         ],
         "constraints": [
-          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_db.usertimeline.UserID [MANDATORY]",
-          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_cache.*.Key [MANDATORY]"
+          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_cache.*.Key [MANDATORY]",
+          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_db.usertimeline.UserID [MANDATORY]"
         ]
       }
     ]
@@ -101,17 +100,15 @@
           "usertimeline_cache.*.Key",
           "usertimeline_cache.*.Value",
           "usertimeline_cache.*.Value[*]",
-          "usertimeline_cache.*.Value[*].Key",
           "usertimeline_cache.*.Value[*].PostID",
-          "usertimeline_cache.*.Value[*].PostID.Key",
           "usertimeline_cache.*.Value[*].Timestamp"
         ],
         "constraints": [
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_db.post.PostID",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].Key REFERENCES usertimeline_db.usertimeline.Posts[*].PostID.Key",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES usertimeline_db.usertimeline.Posts[*].PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]"
+          "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES usertimeline_db.usertimeline.Posts[*].PostID [MANDATORY]",
+          "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]",
+          "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES usertimeline_db.usertimeline.Posts[*].Timestamp [MANDATORY]"
         ]
       }
     ]
@@ -126,17 +123,14 @@
           "usertimeline_db.usertimeline.Posts",
           "usertimeline_db.usertimeline.Posts[*]",
           "usertimeline_db.usertimeline.Posts[*].PostID",
-          "usertimeline_db.usertimeline.Posts[*].PostID.Key",
-          "usertimeline_db.usertimeline.Posts[*].PostID.Key.Key",
           "usertimeline_db.usertimeline.Posts[*].Timestamp",
           "usertimeline_db.usertimeline.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES usertimeline_cache.*.Value[*].Timestamp [MANDATORY]",
-          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]"
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]",
+          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key [MANDATORY]"
         ]
       }
     ]

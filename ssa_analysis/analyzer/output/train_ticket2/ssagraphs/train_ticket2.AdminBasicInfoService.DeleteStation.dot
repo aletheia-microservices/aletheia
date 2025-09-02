@@ -1,42 +1,42 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_3687377 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_3687377 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_3687414 [label="t2: invoke t1.DeleteStation(ctx, id)
+	N_instr_ret_5243657 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_5243657 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_5243694 [label="t2: invoke t1.DeleteStation(ctx, id)
 
 ==== tainted ====
 _obj
 [rpc] @ StationService.DeleteStation.t2
 ", style=bold, shape=box, color="yellow"];
-	N_val_field_3687386 [label="t0: &a.stationService [#0]
+	N_val_field_5243666 [label="t0: &a.stationService [#0]
 
 ==== tainted ====
 _obj
 [rpc] @ StationService.DeleteStation.t2
 ", style=bold, shape=box, color="green"];
-	N_val_param_3687292 [label="a: parameter a : *AdminBasicInfoServiceImpl
+	N_val_param_5243572 [label="a: parameter a : *AdminBasicInfoServiceImpl
 
 ==== tainted ====
 _obj.stationService
 [rpc] @ StationService.DeleteStation.t2
 ", style=bold, shape=box, color="black"];
-	N_val_param_3687336 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_3687357 [label="id: parameter id : string
+	N_val_param_5243616 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_5243637 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [rpc] @ StationService.DeleteStation.id
 ", style=bold, shape=box, color="black"];
-	N_val_unary_3687386 [label="t1: *t0
+	N_val_unary_5243666 [label="t1: *t0
 
 ==== tainted ====
 _obj
 [rpc] @ StationService.DeleteStation.t2
 ", style=bold, shape=box, color="red"];
-	N_val_param_3687292 -> N_val_field_3687386;
-	N_val_field_3687386 -> N_val_unary_3687386;
-	N_val_param_3687336 -> N_val_call_3687414;
-	N_val_param_3687357 -> N_val_call_3687414;
-	N_val_unary_3687386 -> N_val_call_3687414;
-	N_val_call_3687414 -> N_instr_ret_3687377;
+	N_val_param_5243572 -> N_val_field_5243666;
+	N_val_field_5243666 -> N_val_unary_5243666;
+	N_val_param_5243616 -> N_val_call_5243694;
+	N_val_param_5243637 -> N_val_call_5243694;
+	N_val_unary_5243666 -> N_val_call_5243694;
+	N_val_call_5243694 -> N_instr_ret_5243657;
 }

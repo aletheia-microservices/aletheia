@@ -2,6 +2,7 @@ package backends
 
 import (
 	"encoding/json"
+	"sort"
 )
 
 type Database struct {
@@ -19,12 +20,16 @@ func NewDatabase(name string, typeString string, schemas ...*Schema) *Database {
 }
 
 func (database *Database) MarshalJSON() ([]byte, error) {
+	sortedSchemas := database.schemas
+	sort.Slice(sortedSchemas, func(i, j int) bool {
+		return sortedSchemas[i].GetName() < sortedSchemas[j].GetName()
+	})
 	return json.Marshal(&struct {
 		Name   string    `json:"name"`
 		Schema []*Schema `json:"schemas"`
 	}{
 		Name:   database.name,
-		Schema: database.schemas,
+		Schema: sortedSchemas,
 	})
 }
 

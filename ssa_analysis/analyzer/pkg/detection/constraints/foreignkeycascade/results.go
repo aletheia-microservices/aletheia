@@ -9,7 +9,7 @@ import (
 )
 
 func (detector *ForeignKeyCascadeDetector) GetResults() string {
-	return detector.summary
+	return detector.results
 }
 
 func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
@@ -68,5 +68,5 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 		}
 		results += "\n"
 	}
-	detector.summary = header + results
+	detector.results = header + fmt.Sprintf("[NUM_WARNINGS = %d]\n", numWarnings) + results
 }

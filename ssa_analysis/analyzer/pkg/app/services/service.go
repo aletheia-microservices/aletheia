@@ -153,13 +153,14 @@ func (service *Service) MarshalJSON() ([]byte, error) {
 	for i, dep := range service.deps {
 		depNames[i] = dep.GetName()
 	}
+	// sort dependencies
+	sort.Strings(depNames)
 
 	dbNames := make([]string, len(service.dbs))
 	for i, db := range service.dbs {
 		dbNames[i] = db.GetName()
 	}
-
-	sort.Strings(depNames)
+	// sort databases
 	sort.Strings(dbNames)
 
 	// do not sort these because they are already sorted by idx in the service struct

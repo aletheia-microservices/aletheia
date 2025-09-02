@@ -14,6 +14,8 @@ type DangerousDelete struct {
 type ConcurrentWrite struct {
 	write          *WriteOperation
 	affectedFields []*backends.Field
+	database       *backends.Database
+	schema         *backends.Schema
 }
 
 func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
@@ -55,6 +57,8 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 						write:          write,
 						affectedFields: affectedFields,
 					}
+					concurrentWrite.database = affectedFields[0].GetDatabase()
+					concurrentWrite.schema = affectedFields[0].GetSchema()
 					dangerousDelete.concurrentWrites = append(dangerousDelete.concurrentWrites, concurrentWrite)
 				}
 				detector.addDangerousDelete(request, dangerousDelete)

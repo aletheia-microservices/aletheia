@@ -41,7 +41,7 @@ func (schema *Schema) MarshalJSON() ([]byte, error) {
 		i++
 	}
 
-	// sort by field path
+	// sort fields
 	sort.Slice(fieldsLst, func(i, j int) bool {
 		return fieldsLst[i] < fieldsLst[j]
 	})
@@ -52,6 +52,9 @@ func (schema *Schema) MarshalJSON() ([]byte, error) {
 		constraintsLst[i] = constraint.String()
 		i++
 	}
+
+	// sort constraints
+	sort.Strings(constraintsLst)
 
 	return json.Marshal(&struct {
 		Name        string   `json:"name"`

@@ -89,5 +89,5 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 			}
 		}
 	}
-	detector.results = header + results
+	detector.results = header + fmt.Sprintf("[NUM_WARNINGS = %d]\n", numWarnings) + results
 }

@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
+[NUM_WARNINGS = 1]
 entry request: ProductService.Delete()
 	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
-		MISSING CASCADE DELETE #1: database={orders_db}, pending fields={Parent}
+		MISSING CASCADE DELETE #1: database={orders_db}, pending fields={Items[*].Parent}
 

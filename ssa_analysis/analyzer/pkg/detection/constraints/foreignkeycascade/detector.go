@@ -11,7 +11,7 @@ import (
 type ForeignKeyCascadeDetector struct {
 	detection.Detector
 	requests       []*Request
-	summary        string
+	results        string
 	cascadeDeletes map[*Request][]*CascadeDelete
 }
 

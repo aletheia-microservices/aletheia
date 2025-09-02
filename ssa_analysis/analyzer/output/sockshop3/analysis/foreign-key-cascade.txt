@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
+[NUM_WARNINGS = 1]
 entry request: Frontend.DeleteSock()
 	DELETE: CatalogueService.DeleteSock() --> catalogue_db.catalogue.DeleteOne()
-		MISSING CASCADE DELETE #1: database={cart_db}, pending fields={ID, UnitPrice}
+		MISSING CASCADE DELETE #1: database={cart_db}, pending fields={Items[*].ID, Items[*].UnitPrice}
 

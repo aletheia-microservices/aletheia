@@ -1,22 +1,22 @@
 digraph G {
 	rankdir=TD;
-	N_instr__1288488722 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__1288488722 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
-	N_instr__586082682 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr__586082682 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
-	N_instr_ret_2806889 [label="return nil:[]Order, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806889 [label="return nil:[]Order, t13", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806980 [label="return nil:[]Order, t17", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2806980 [label="return nil:[]Order, t17", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2807000 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2807000 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2806721 [label="*t2 = \"CustomerID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2806721 [label="*t2 = \"CustomerID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2806742 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2806742 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
-	N_nil_1047407028 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
-	N_nil_1251674413 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
-	N_nil_1640040444 [label="nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order: nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order", style=bold, shape=ellipse, color="yellow"];
+	N_instr__1791479314 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1791479314 [label="if t18 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__791397686 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__791397686 [label="if t14 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2823069 [label="return nil:[]Order, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2823069 [label="return nil:[]Order, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2823160 [label="return nil:[]Order, t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2823160 [label="return nil:[]Order, t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2823180 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2823180 [label="return t19, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2822901 [label="*t2 = \"CustomerID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2822901 [label="*t2 = \"CustomerID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2822922 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2822922 [label="*t3 = t4", style=bold, shape=ellipse, color="blue"];
+	N_nil_1272754583 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_34646361 [label="nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order: nil:[]github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Order", style=bold, shape=ellipse, color="yellow"];
+	N_nil_89991144 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
 	N_val__CustomerID__string [label="\"CustomerID\":string: \"CustomerID\":string
 
 ==== tainted ====
@@ -25,25 +25,25 @@ _obj
 ", style=bold, shape=box, color="blue"];
 	N_val__order_db__string [label="\"order_db\":string: \"order_db\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__orders__string [label="\"orders\":string: \"orders\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2806716 [label="t0: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_alloc_2806913 [label="t15: new []Order (orders)
+	N_val_alloc_2822896 [label="t0: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2823093 [label="t15: new []Order (orders)
 
 ==== tainted ====
 _obj[*]
 [read] @ order_db.orders
 ", style=bold, shape=box, color="orange"];
-	N_val_binary_2806878 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_binary_2806969 [label="t18: t17 != nil:error", style=bold, shape=ellipse, color="black"];
-	N_val_call_2806793 [label="t8: invoke t7.GetCollection(ctx, \"order_db\":string, \"orders\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2806856 [label="t11: invoke t9.FindMany(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2806949 [label="t17: invoke t12.All(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_2823058 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2823149 [label="t18: t17 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2822973 [label="t8: invoke t7.GetCollection(ctx, \"order_db\":string, \"orders\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2823036 [label="t11: invoke t9.FindMany(ctx, t5, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2823129 [label="t17: invoke t12.All(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt10 [label="t10: extract t8 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt9 [label="t9: extract t8 #0", style=bold, shape=ellipse, color="black"];
-	N_val_field_2806721 [label="t2: &t1.Key [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2806742 [label="t3: &t1.Value [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2806777 [label="t6: &s.db [#4]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2822901 [label="t2: &t1.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2822922 [label="t3: &t1.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2822957 [label="t6: &s.db [#4]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet16 [label="t16: make interface{} <- *[]Order (t15)
 
 ==== tainted ====
@@ -57,62 +57,62 @@ _obj
 [read] @ order_db.orders.CustomerID
 ", style=bold, shape=box, color="black"];
 	N_val_indext1 [label="t1: &t0[0:int]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2806609 [label="s: parameter s : *OrderServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2806640 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2806661 [label="customerID: parameter customerID : string
+	N_val_param_2822789 [label="s: parameter s : *OrderServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2822820 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2822841 [label="customerID: parameter customerID : string
 
 ==== tainted ====
 _obj
 [read] @ order_db.orders.CustomerID
 ", style=bold, shape=box, color="black"];
-	N_val_slice_2806716 [label="t5: slice t0[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2806777 [label="t7: *t6", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2807007 [label="t19: *t15
+	N_val_slice_2822896 [label="t5: slice t0[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2822957 [label="t7: *t6", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2823187 [label="t19: *t15
 
 ==== tainted ====
 _obj[*]
 [read] @ order_db.orders
 ", style=bold, shape=box, color="red"];
-	N_val_alloc_2806716 -> N_val_indext1;
-	N_val_indext1 -> N_val_field_2806721;
-	N_val_indext1 -> N_val_field_2806742;
-	N_val_field_2806721 -> N_instr_store_2806721;
-	N_val__CustomerID__string -> N_instr_store_2806721;
-	N_val_param_2806661 -> N_val_ifacet4;
-	N_val_field_2806742 -> N_instr_store_2806742;
-	N_val_ifacet4 -> N_instr_store_2806742;
-	N_val_alloc_2806716 -> N_val_slice_2806716;
-	N_val_param_2806609 -> N_val_field_2806777;
-	N_val_field_2806777 -> N_val_unary_2806777;
-	N_val_param_2806640 -> N_val_call_2806793;
-	N_val__order_db__string -> N_val_call_2806793;
-	N_val__orders__string -> N_val_call_2806793;
-	N_val_unary_2806777 -> N_val_call_2806793;
-	N_val_call_2806793 -> N_val_extrt9;
-	N_val_call_2806793 -> N_val_extrt10;
-	N_val_param_2806640 -> N_val_call_2806856;
-	N_val_slice_2806716 -> N_val_call_2806856;
-	N_nil_1047407028 -> N_val_call_2806856;
-	N_val_extrt9 -> N_val_call_2806856;
-	N_val_call_2806856 -> N_val_extrt12;
-	N_val_call_2806856 -> N_val_extrt13;
-	N_val_extrt13 -> N_val_binary_2806878;
-	N_nil_1251674413 -> N_val_binary_2806878;
-	N_nil_1640040444 -> N_instr_ret_2806889;
-	N_val_extrt13 -> N_instr_ret_2806889;
-	N_val_alloc_2806913 -> N_val_ifacet16;
-	N_val_param_2806640 -> N_val_call_2806949;
-	N_val_ifacet16 -> N_val_call_2806949;
-	N_val_extrt12 -> N_val_call_2806949;
-	N_val_call_2806949 -> N_val_binary_2806969;
-	N_nil_1251674413 -> N_val_binary_2806969;
-	N_nil_1640040444 -> N_instr_ret_2806980;
-	N_val_call_2806949 -> N_instr_ret_2806980;
-	N_val_alloc_2806913 -> N_val_unary_2807007;
-	N_val_unary_2807007 -> N_instr_ret_2807000;
-	N_nil_1251674413 -> N_instr_ret_2807000;
-	N_val_indext1 -> N_val_alloc_2806716 [label="[*]", style=dashed, color=blue];
-	N_val_slice_2806716 -> N_val_alloc_2806716 [label="", style=dashed, color=blue];
-	N_val_field_2806742 -> N_val_alloc_2806716 [label="[*].Value", style=dashed, color=blue];
-	N_val_field_2806721 -> N_val_alloc_2806716 [label="[*].Key", style=dashed, color=blue];
+	N_val_alloc_2822896 -> N_val_indext1;
+	N_val_indext1 -> N_val_field_2822901;
+	N_val_indext1 -> N_val_field_2822922;
+	N_val_field_2822901 -> N_instr_store_2822901;
+	N_val__CustomerID__string -> N_instr_store_2822901;
+	N_val_param_2822841 -> N_val_ifacet4;
+	N_val_field_2822922 -> N_instr_store_2822922;
+	N_val_ifacet4 -> N_instr_store_2822922;
+	N_val_alloc_2822896 -> N_val_slice_2822896;
+	N_val_param_2822789 -> N_val_field_2822957;
+	N_val_field_2822957 -> N_val_unary_2822957;
+	N_val_param_2822820 -> N_val_call_2822973;
+	N_val__order_db__string -> N_val_call_2822973;
+	N_val__orders__string -> N_val_call_2822973;
+	N_val_unary_2822957 -> N_val_call_2822973;
+	N_val_call_2822973 -> N_val_extrt9;
+	N_val_call_2822973 -> N_val_extrt10;
+	N_val_param_2822820 -> N_val_call_2823036;
+	N_val_slice_2822896 -> N_val_call_2823036;
+	N_nil_89991144 -> N_val_call_2823036;
+	N_val_extrt9 -> N_val_call_2823036;
+	N_val_call_2823036 -> N_val_extrt12;
+	N_val_call_2823036 -> N_val_extrt13;
+	N_val_extrt13 -> N_val_binary_2823058;
+	N_nil_1272754583 -> N_val_binary_2823058;
+	N_nil_34646361 -> N_instr_ret_2823069;
+	N_val_extrt13 -> N_instr_ret_2823069;
+	N_val_alloc_2823093 -> N_val_ifacet16;
+	N_val_param_2822820 -> N_val_call_2823129;
+	N_val_ifacet16 -> N_val_call_2823129;
+	N_val_extrt12 -> N_val_call_2823129;
+	N_val_call_2823129 -> N_val_binary_2823149;
+	N_nil_1272754583 -> N_val_binary_2823149;
+	N_nil_34646361 -> N_instr_ret_2823160;
+	N_val_call_2823129 -> N_instr_ret_2823160;
+	N_val_alloc_2823093 -> N_val_unary_2823187;
+	N_val_unary_2823187 -> N_instr_ret_2823180;
+	N_nil_1272754583 -> N_instr_ret_2823180;
+	N_val_indext1 -> N_val_alloc_2822896 [label="[*]", style=dashed, color=blue];
+	N_val_field_2822901 -> N_val_alloc_2822896 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_2822896 -> N_val_alloc_2822896 [label="", style=dashed, color=blue];
+	N_val_field_2822922 -> N_val_alloc_2822896 [label="[*].Value", style=dashed, color=blue];
 }

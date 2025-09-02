@@ -12,9 +12,8 @@
           "castinfo_db.castinfo.name"
         ],
         "constraints": [
-          "PRIMARY KEY (castinfo_db.castinfo.castinfoid)",
-          "FOREIGN_KEY castinfo_db.castinfo.castinfoid REFERENCES movieinfo_db.movieinfo.movieid [MANDATORY]",
-          "FOREIGN_KEY castinfo_db.castinfo.castinfoid REFERENCES movieinfo_db.movieinfo.castid [MANDATORY]"
+          "FOREIGN_KEY castinfo_db.castinfo.castinfoid REFERENCES movieinfo_db.movieinfo.castid [MANDATORY]",
+          "PRIMARY KEY (castinfo_db.castinfo.castinfoid)"
         ]
       }
     ]
@@ -30,8 +29,8 @@
           "movieid_db.movieid.title"
         ],
         "constraints": [
-          "UNIQUE (movieid_db.movieid.title)",
-          "PRIMARY KEY (movieid_db.movieid.movieid)"
+          "PRIMARY KEY (movieid_db.movieid.movieid)",
+          "UNIQUE (movieid_db.movieid.title)"
         ]
       }
     ]
@@ -49,11 +48,9 @@
           "movieinfo_db.movieinfo.title"
         ],
         "constraints": [
-          "PRIMARY KEY (movieinfo_db.movieinfo.movieid)",
           "FOREIGN_KEY movieinfo_db.movieinfo.movieid REFERENCES movieid_db.movieid.movieid [MANDATORY]",
-          "FOREIGN_KEY movieinfo_db.movieinfo.movieid REFERENCES movieid_db.movieid.title [MANDATORY]",
-          "FOREIGN_KEY movieinfo_db.movieinfo.title REFERENCES movieid_db.movieid.movieid [MANDATORY]",
-          "FOREIGN_KEY movieinfo_db.movieinfo.title REFERENCES movieid_db.movieid.title [MANDATORY]"
+          "FOREIGN_KEY movieinfo_db.movieinfo.title REFERENCES movieid_db.movieid.title [MANDATORY]",
+          "PRIMARY KEY (movieinfo_db.movieinfo.movieid)"
         ]
       }
     ]
@@ -69,9 +66,8 @@
           "plot_db.plot.plotid"
         ],
         "constraints": [
-          "PRIMARY KEY (plot_db.plot.plotid)",
-          "FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.movieid [MANDATORY]",
-          "FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]"
+          "FOREIGN_KEY plot_db.plot.plotid REFERENCES movieinfo_db.movieinfo.plotid [MANDATORY]",
+          "PRIMARY KEY (plot_db.plot.plotid)"
         ]
       }
     ]

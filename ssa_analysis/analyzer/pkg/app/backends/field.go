@@ -27,8 +27,9 @@ func (field *Field) GetConstraints() []*Constraint {
 
 // extract <name> from <db>.<schema>.<name
 func (field *Field) GetName() string {
-	if idx := strings.LastIndex(field.path, "."); idx != -1 {
-		return field.path[idx+1:]
+	parts := strings.SplitN(field.path, ".", 3)
+	if len(parts) == 3 {
+		return parts[2]
 	}
 	return field.path
 }

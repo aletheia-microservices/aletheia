@@ -11,7 +11,7 @@ import (
 type UnicityConcurrencyDetector struct {
 	detection.Detector
 	requests            []*Request
-	summary             string
+	results             string
 	vulnerableWriteSets map[*Request][]*VulnerableWriteSet
 }
 

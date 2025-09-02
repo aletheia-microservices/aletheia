@@ -877,14 +877,17 @@ t70 (@CancelOrder): (*ssa.FieldAddr) (&t42.StartTime [#5])
 t71 (@CancelOrder): (*ssa.FieldAddr) (&t0.TravelTime [#3])
 	 → t0 (@CancelOrder): (*ssa.Alloc)
 
-t73 (@CancelOrder): (*ssa.FieldAddr) (&c.emailQueue [#3])
+t74 (@CancelOrder): (*ssa.Alloc) (new [1]any (varargs))
+	 → t74 (@CancelOrder): (*ssa.Alloc)
 
-t74 (@CancelOrder): (*ssa.UnOp) (*t73)
+t75 (@CancelOrder): (*ssa.IndexAddr) (&t74[0:int])
+	 → t74 (@CancelOrder): (*ssa.Alloc)
 
-t76 (@CancelOrder): (*ssa.MakeInterface) (make interface{} <- NotifyInfo (t75))
+t76 (@CancelOrder): (*ssa.MakeInterface) (make any <- NotifyInfo (t73))
 	 → t76 (@CancelOrder): (*ssa.MakeInterface)
 
-t79 (@CancelOrder): (*ssa.Extract) (extract t77 #1)
+t77 (@CancelOrder): (*ssa.Slice) (slice t74[:])
+	 → t74 (@CancelOrder): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConfigServiceImpl).Create ###
@@ -3277,14 +3280,17 @@ t258 (@Preserve): (*ssa.FieldAddr) (&t236.StartTime [#5])
 t259 (@Preserve): (*ssa.FieldAddr) (&t136.TravelTime [#3])
 	 → t136 (@Preserve): (*ssa.Alloc)
 
-t261 (@Preserve): (*ssa.FieldAddr) (&p.emailQueue [#10])
+t262 (@Preserve): (*ssa.Alloc) (new [1]any (varargs))
+	 → t262 (@Preserve): (*ssa.Alloc)
 
-t262 (@Preserve): (*ssa.UnOp) (*t261)
+t263 (@Preserve): (*ssa.IndexAddr) (&t262[0:int])
+	 → t262 (@Preserve): (*ssa.Alloc)
 
-t264 (@Preserve): (*ssa.MakeInterface) (make interface{} <- NotifyInfo (t263))
+t264 (@Preserve): (*ssa.MakeInterface) (make any <- NotifyInfo (t261))
 	 → t264 (@Preserve): (*ssa.MakeInterface)
 
-t267 (@Preserve): (*ssa.Extract) (extract t265 #1)
+t265 (@Preserve): (*ssa.Slice) (slice t262[:])
+	 → t262 (@Preserve): (*ssa.Alloc)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceServiceImpl).CreateNewPriceConfig ###

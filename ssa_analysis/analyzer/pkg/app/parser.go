@@ -5,6 +5,7 @@ import (
 	"go/types"
 	"log"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/auxten/postgresql-parser/pkg/sql/parser"
@@ -21,6 +22,7 @@ import (
 
 func (app *App) Init() {
 	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName())
+	sort.Strings(frontends)
 
 	// parse services
 	for _, svcInfo := range servicesInfo {
@@ -59,9 +61,7 @@ func (app *App) Init() {
 	// parse entrypoints
 	for _, serviceName := range frontends {
 		service := app.GetServiceByName(serviceName)
-		for _, method := range service.GetMethods() {
-			app.AddEntrypoint(service, method)
-		}
+		app.SetServiceEntrypoints(service, service.GetMethods())
 	}
 	for _, service := range app.GetAllServices() {
 		if service.HasInitializerMethod() {

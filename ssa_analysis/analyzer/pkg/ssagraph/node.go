@@ -1,6 +1,7 @@
 package ssagraph
 
 import (
+	"log"
 	"sort"
 	"strings"
 
@@ -83,6 +84,14 @@ func (node *SSANode) GetInstruction() ssa.Instruction {
 
 func (node *SSANode) GetValue() ssa.Value {
 	return node.val
+}
+
+func (node *SSANode) GetValueLookup() *ssa.Lookup {
+	lookup, ok := node.val.(*ssa.Lookup)
+	if !ok {
+		log.Panicf("[SSA NODE] unexpected type for node value: [%T] %v\n", node.val, node.val)
+	}
+	return lookup
 }
 
 func (node *SSANode) IsTainted() bool {

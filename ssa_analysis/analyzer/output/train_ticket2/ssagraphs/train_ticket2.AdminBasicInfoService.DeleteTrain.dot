@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_3687558 [label="return t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_3687558 [label="return t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_3687547 [label="t2: invoke t1.Delete(ctx, id)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_5243838 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_5243838 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_5243827 [label="t2: invoke t1.Delete(ctx, id)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,22 +15,22 @@ _obj
 _obj
 [rpc] @ TrainService.Delete.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_3687528 [label="t0: &a.trainService [#1]", style=bold, shape=ellipse, color="green"];
-	N_val_param_3687433 [label="a: parameter a : *AdminBasicInfoServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_3687475 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_3687496 [label="id: parameter id : string
+	N_val_field_5243808 [label="t0: &a.trainService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_5243713 [label="a: parameter a : *AdminBasicInfoServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_5243755 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_5243776 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [rpc] @ TrainService.Delete.id
 ", style=bold, shape=box, color="black"];
-	N_val_unary_3687528 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_3687433 -> N_val_field_3687528;
-	N_val_field_3687528 -> N_val_unary_3687528;
-	N_val_param_3687475 -> N_val_call_3687547;
-	N_val_param_3687496 -> N_val_call_3687547;
-	N_val_unary_3687528 -> N_val_call_3687547;
-	N_val_call_3687547 -> N_val_extrt3;
-	N_val_call_3687547 -> N_val_extrt4;
-	N_val_extrt4 -> N_instr_ret_3687558;
+	N_val_unary_5243808 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_5243713 -> N_val_field_5243808;
+	N_val_field_5243808 -> N_val_unary_5243808;
+	N_val_param_5243755 -> N_val_call_5243827;
+	N_val_param_5243776 -> N_val_call_5243827;
+	N_val_unary_5243808 -> N_val_call_5243827;
+	N_val_call_5243827 -> N_val_extrt3;
+	N_val_call_5243827 -> N_val_extrt4;
+	N_val_extrt4 -> N_instr_ret_5243838;
 }
