@@ -33,9 +33,16 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 	})
 
 	for _, request := range sortedRequests {
-		foreignreads := detector.foreignReads[request]
+		sortedForeignReads := detector.foreignReads[request]
+		sort.Slice(sortedForeignReads, func(i, j int) bool {
+			if sortedForeignReads[i].FirstCallString() != sortedForeignReads[j].FirstCallString() {
+				return sortedForeignReads[i].FirstCallString() < sortedForeignReads[j].FirstCallString()
+			}
+			return sortedForeignReads[i].SecondCallString() < sortedForeignReads[j].SecondCallString()
+		})
+
 		var printedEntry = false
-		for _, fread := range foreignreads {
+		for _, fread := range sortedForeignReads {
 			//detector.restrictive = false
 
 			// this information is only accurate after the entire schema is built at the end of the iteration
@@ -59,20 +66,20 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 			}
 
 			if fread.constraint1 == nil {
-				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.op1.call.String())
+				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.FirstCallString())
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field1.GetPath())
 			}
 			
 			if fread.constraint2 == nil {
-				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.op2.call.String())
+				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.SecondCallString())
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field2.GetPath())
 			}
 
 			if fread.constraint1 != nil {
 				if detector.isTypePrimaryKey() {
-					results += fmt.Sprintf("\t\tREAD: %s\n", fread.op1.call.String())
+					results += fmt.Sprintf("\t\tREAD: %s\n", fread.FirstCallString())
 				} else if detector.isTypeForeignKey() {
-					results += fmt.Sprintf("\t\tREAD (FOREIGN KEY): %s\n", fread.op1.call.String())
+					results += fmt.Sprintf("\t\tREAD (FOREIGN KEY): %s\n", fread.FirstCallString())
 				}
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field1.GetPath())
 				results += fmt.Sprintf("\t\t\t- constraint: %s\n", fread.constraint1.String())
@@ -80,9 +87,9 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 
 			if fread.constraint2 != nil {
 				if detector.isTypePrimaryKey() {
-					results += fmt.Sprintf("\t\tREAD: %s\n", fread.op2.call.String())
+					results += fmt.Sprintf("\t\tREAD: %s\n", fread.SecondCallString())
 				} else if detector.isTypeForeignKey() {
-					results += fmt.Sprintf("\t\tREAD (FOREIGN KEY): %s\n", fread.op2.call.String())
+					results += fmt.Sprintf("\t\tREAD (FOREIGN KEY): %s\n", fread.SecondCallString())
 				}
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field2.GetPath())
 				results += fmt.Sprintf("\t\t\t- constraint: %s\n", fread.constraint2.String())

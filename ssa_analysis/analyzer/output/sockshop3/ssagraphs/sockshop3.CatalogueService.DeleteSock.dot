@@ -1,12 +1,12 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2800395 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2800395 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_store_2800340 [label="*t7 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2800340 [label="*t7 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2800353 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_instr_store_2800353 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
-	N_nil_54905460 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2475810 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2475810 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2475755 [label="*t7 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2475755 [label="*t7 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2475768 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2475768 [label="*t8 = t9", style=bold, shape=ellipse, color="blue"];
+	N_nil_1726651344 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
 	N_val__ID__string [label="\"ID\":string: \"ID\":string
 
 ==== tainted ====
@@ -15,14 +15,14 @@ _obj
 ", style=bold, shape=box, color="blue"];
 	N_val__catalogue__string [label="\"catalogue\":string: \"catalogue\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__catalogue_db__string [label="\"catalogue_db\":string: \"catalogue_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2800335 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_call_2800284 [label="t2: invoke t1.GetCollection(ctx, \"catalogue_db\":string, \"catalogue\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2800381 [label="t11: invoke t3.DeleteOne(ctx, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2475750 [label="t5: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2475699 [label="t2: invoke t1.GetCollection(ctx, \"catalogue_db\":string, \"catalogue\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2475796 [label="t11: invoke t3.DeleteOne(ctx, t10)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
-	N_val_field_2800258 [label="t0: &s.catalogue_db [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2800340 [label="t7: &t6.Key [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_field_2800353 [label="t8: &t6.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2475673 [label="t0: &s.catalogue_db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2475755 [label="t7: &t6.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2475768 [label="t8: &t6.Value [#1]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet9 [label="t9: make interface{} <- string (id)
 
 ==== tainted ====
@@ -30,39 +30,39 @@ _obj
 [delete] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="black"];
 	N_val_indext6 [label="t6: &t5[0:int]", style=bold, shape=ellipse, color="green"];
-	N_val_param_2800162 [label="s: parameter s : *CatalogueServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2800198 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2800219 [label="id: parameter id : string
+	N_val_param_2475577 [label="s: parameter s : *CatalogueServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2475613 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2475634 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [delete] @ catalogue_db.catalogue.ID
 ", style=bold, shape=box, color="black"];
-	N_val_slice_2800335 [label="t10: slice t5[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2800258 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_2800162 -> N_val_field_2800258;
-	N_val_field_2800258 -> N_val_unary_2800258;
-	N_val_param_2800198 -> N_val_call_2800284;
-	N_val__catalogue_db__string -> N_val_call_2800284;
-	N_val__catalogue__string -> N_val_call_2800284;
-	N_val_unary_2800258 -> N_val_call_2800284;
-	N_val_call_2800284 -> N_val_extrt3;
-	N_val_call_2800284 -> N_val_extrt4;
-	N_val_alloc_2800335 -> N_val_indext6;
-	N_val_indext6 -> N_val_field_2800340;
-	N_val_indext6 -> N_val_field_2800353;
-	N_val_field_2800340 -> N_instr_store_2800340;
-	N_val__ID__string -> N_instr_store_2800340;
-	N_val_param_2800219 -> N_val_ifacet9;
-	N_val_field_2800353 -> N_instr_store_2800353;
-	N_val_ifacet9 -> N_instr_store_2800353;
-	N_val_alloc_2800335 -> N_val_slice_2800335;
-	N_val_param_2800198 -> N_val_call_2800381;
-	N_val_slice_2800335 -> N_val_call_2800381;
-	N_val_extrt3 -> N_val_call_2800381;
-	N_nil_54905460 -> N_instr_ret_2800395;
-	N_val_indext6 -> N_val_alloc_2800335 [label="[*]", style=dashed, color=blue];
-	N_val_field_2800353 -> N_val_alloc_2800335 [label="[*].Value", style=dashed, color=blue];
-	N_val_slice_2800335 -> N_val_alloc_2800335 [label="", style=dashed, color=blue];
-	N_val_field_2800340 -> N_val_alloc_2800335 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_2475750 [label="t10: slice t5[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2475673 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2475577 -> N_val_field_2475673;
+	N_val_field_2475673 -> N_val_unary_2475673;
+	N_val_param_2475613 -> N_val_call_2475699;
+	N_val__catalogue_db__string -> N_val_call_2475699;
+	N_val__catalogue__string -> N_val_call_2475699;
+	N_val_unary_2475673 -> N_val_call_2475699;
+	N_val_call_2475699 -> N_val_extrt3;
+	N_val_call_2475699 -> N_val_extrt4;
+	N_val_alloc_2475750 -> N_val_indext6;
+	N_val_indext6 -> N_val_field_2475755;
+	N_val_indext6 -> N_val_field_2475768;
+	N_val_field_2475755 -> N_instr_store_2475755;
+	N_val__ID__string -> N_instr_store_2475755;
+	N_val_param_2475634 -> N_val_ifacet9;
+	N_val_field_2475768 -> N_instr_store_2475768;
+	N_val_ifacet9 -> N_instr_store_2475768;
+	N_val_alloc_2475750 -> N_val_slice_2475750;
+	N_val_param_2475613 -> N_val_call_2475796;
+	N_val_slice_2475750 -> N_val_call_2475796;
+	N_val_extrt3 -> N_val_call_2475796;
+	N_nil_1726651344 -> N_instr_ret_2475810;
+	N_val_slice_2475750 -> N_val_alloc_2475750 [label="", style=dashed, color=blue];
+	N_val_field_2475768 -> N_val_alloc_2475750 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext6 -> N_val_alloc_2475750 [label="[*]", style=dashed, color=blue];
+	N_val_field_2475755 -> N_val_alloc_2475750 [label="[*].Key", style=dashed, color=blue];
 }

@@ -1,17 +1,4 @@
 		Parameters:
-Function: main.init
-Block #0: main.init.entry
-			00: t0 = *init$guard
-			01: if t0 goto 2 else 1
-Block #1: main.init.init.start
-			00: *init$guard = true:bool
-			01: t1 = context.init()
-			02: t2 = github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.init()
-			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
-			04: jump 2
-Block #2: main.init.init.done
-			00: return
-		Parameters:
 Function: main.main
 Block #0: main.main.entry
 			00: t0 = context.Background()
@@ -33,3 +20,16 @@ Block #0: main.main.entry
 			16: t16 = invoke t14.ReadPage(t0, 0:int64, "":string)
 			17: return
 	Global: init$guard, Type: *bool
+		Parameters:
+Function: main.init
+Block #0: main.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: main.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: jump 2
+Block #2: main.init.init.done
+			00: return

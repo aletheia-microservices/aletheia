@@ -11,11 +11,23 @@ type DangerousDelete struct {
 	concurrentWrites []*ConcurrentWrite
 }
 
+func (dd *DangerousDelete) CallString() string {
+	return dd.delete.call.String()
+}
+
 type ConcurrentWrite struct {
 	write          *WriteOperation
 	affectedFields []*backends.Field
 	database       *backends.Database
 	schema         *backends.Schema
+}
+
+func (cw *ConcurrentWrite) CallString() string {
+	return cw.write.call.String()
+}
+
+func (cw *ConcurrentWrite) EntryString() string {
+	return cw.write.request.entry.String()
 }
 
 func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
@@ -30,7 +42,7 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 					continue
 				}
 				for _, otherWrite := range otherRequest.getAllWriteOperations() {
-					fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] other write = %s\n", otherWrite.call.String())
+					fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] other_write={%s}, entry={%s}\n", otherWrite.call.String(), otherWrite.request.entry.String())
 					for _, otherField := range otherWrite.fields {
 						fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
 
@@ -52,9 +64,9 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 				dangerousDelete := &DangerousDelete{
 					delete: delete,
 				}
-				for write, affectedFields := range concurrentWrites {
+				for concurrentWrite, affectedFields := range concurrentWrites {
 					concurrentWrite := &ConcurrentWrite{
-						write:          write,
+						write:          concurrentWrite,
 						affectedFields: affectedFields,
 					}
 					concurrentWrite.database = affectedFields[0].GetDatabase()

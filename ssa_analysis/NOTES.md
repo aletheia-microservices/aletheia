@@ -21,12 +21,11 @@
 2. (detection): improve precision about affected fields/constraints in results
 
 ### 1.4. CRITICAL FIXES
-1. (tainter): fix missing foreign keys (check trainticket on PreserveService when `order.TrainNumber` is set to `oti.TripID` instead of `gtdi.TripID`)
-
+1. (iterator) figure out why trainticket needs 2 passes on first phase to build schema in order to get following foreign keys:
 ```sql
-FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID
-````
-
+"FOREIGN_KEY order_db.order.FromStation REFERENCES station_db.station.Name",
+"FOREIGN_KEY order_db.order.ToStation REFERENCES station_db.station.Name",
+```
 2. (tainter) fix propagation to distinguish between keys used for reads and values retrived from reads (check socialnetwork on `HomeTimelineService.WriteHomeTimeline` where tainter is assuming that the `postID` method parameter was used to read the cache in `h.homeTimelineCache.Get(ctx, id_str, &posts)` due to the append afterwards `posts = append(posts, PostInfo{PostID: postID, Timestamp: timestamp})` that includes the `postID`)
 
 ## 2. CURRENT ASSUMPTIONS
@@ -34,3 +33,6 @@ FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID
 - for mongodb, the name in blueprint wiring must match the database name used in `GetCollection()`
 - the service structure name that implements exposed methods must be `<service_interface_name>Impl`
 - the service constructor must return the service interface and not the service struct
+
+
+	[FOREIGN KEY CONCURRENCY | CHECKER] delete = ContactsService.Delete() --> contacts_db.contacts.DeleteOne()

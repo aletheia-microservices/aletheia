@@ -159,7 +159,11 @@ func main() {
 	detector4 := foreignkeyconcurrency.NewDetector()
 	detector5 := unicityconcurrency.NewDetector()
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
-	iterator.Run()
+	// phase 1: two passes
+	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
+	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
+	// phase 2: one pass
+	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
 
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)

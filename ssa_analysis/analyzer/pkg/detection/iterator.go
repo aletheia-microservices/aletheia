@@ -9,10 +9,18 @@ import (
 	"analyzer/pkg/common"
 )
 
+type IterationPhase int
+
+const (
+	PHASE_1_SCHEMA_BUILDER IterationPhase = iota
+	PHASE_2_PATTERN_DETECTOR
+)
+
 type Iterator struct {
-	app         *app.App
-	graph       *abstractgraph.AbstractCallGraph
-	detectors   []Detector
+	app       *app.App
+	graph     *abstractgraph.AbstractCallGraph
+	detectors []Detector
+	mode      IterationPhase
 	// need to simulate stack because of queue writes triggering new requests
 	reqIdxStack []int
 	nextReqIdx  int
@@ -47,7 +55,12 @@ func (it *Iterator) currentReqIdx() int {
 	return it.reqIdxStack[len(it.reqIdxStack)-1]
 }
 
-func (it *Iterator) Run() {
+func (it *Iterator) Run(mode IterationPhase) {
+	it.mode = mode
+	// reset for the next phase (at the end the indexes will be the same)
+	it.nextReqIdx = 0
+	it.reqIdxStack = []int{}
+
 	for _, detector := range it.detectors {
 		detector.OnNewRun(it.app)
 	}
@@ -123,7 +136,13 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, toNode, nil, nil, true)
 
 			// finalize phase by propagating to database schemas
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			if it.mode == PHASE_1_SCHEMA_BUILDER {
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			}
+			/* modified := abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			if it.mode == PHASE_2_PATTERN_DETECTOR && modified {
+				log.Fatalf("HERE!")
+			} */
 
 			// --------------------------
 			// PHASE 2: transverse caller
@@ -152,23 +171,28 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			}
 
 			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, edge, false)
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+
+			if it.mode == PHASE_1_SCHEMA_BUILDER {
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			}
 		}
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
 			// ===================
 			// DATABASE OPERATIONS
 			// ===================
-			for _, detector := range it.detectors {
-				switch edge.GetOpType() {
-				case common.OP_READ, common.OP_READ_MANY:
-					detector.OnRead(it.app, it.currentReqIdx(), edge)
-				case common.OP_WRITE:
-					detector.OnWrite(it.app, it.currentReqIdx(), edge)
-				case common.OP_UPDATE:
-					detector.OnUpdate(it.app, it.currentReqIdx(), edge)
-				case common.OP_DELETE:
-					detector.OnDelete(it.app, it.currentReqIdx(), edge)
+			if it.mode == PHASE_2_PATTERN_DETECTOR {
+				for _, detector := range it.detectors {
+					switch edge.GetOpType() {
+					case common.OP_READ, common.OP_READ_MANY:
+						detector.OnRead(it.app, it.currentReqIdx(), edge)
+					case common.OP_WRITE:
+						detector.OnWrite(it.app, it.currentReqIdx(), edge)
+					case common.OP_UPDATE:
+						detector.OnUpdate(it.app, it.currentReqIdx(), edge)
+					case common.OP_DELETE:
+						detector.OnDelete(it.app, it.currentReqIdx(), edge)
+					}
 				}
 			}
 			// FIXME: this is a bit hardcoded for now
@@ -199,7 +223,10 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 				}
 
 				abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, queueReadEdge, true)
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+
+				if it.mode == PHASE_1_SCHEMA_BUILDER {
+					abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+				}
 
 				callerNode := queueReadEdge.GetFromNode()
 				it.newReqIdx()

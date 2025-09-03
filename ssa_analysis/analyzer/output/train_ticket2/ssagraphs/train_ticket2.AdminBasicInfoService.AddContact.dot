@@ -1,42 +1,42 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_5243355 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_5243355 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_5243394 [label="t2: invoke t1.CreateContacts(ctx, contact)
+	N_instr_ret_3938284 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3938284 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3938323 [label="t2: invoke t1.CreateContacts(ctx, contact)
 
 ==== tainted ====
 _obj
 [rpc] @ ContactsService.CreateContacts.t2
 ", style=bold, shape=box, color="yellow"];
-	N_val_field_5243364 [label="t0: &a.contactsService [#3]
+	N_val_field_3938293 [label="t0: &a.contactsService [#3]
 
 ==== tainted ====
 _obj
 [rpc] @ ContactsService.CreateContacts.t2
 ", style=bold, shape=box, color="green"];
-	N_val_param_5243267 [label="a: parameter a : *AdminBasicInfoServiceImpl
+	N_val_param_3938196 [label="a: parameter a : *AdminBasicInfoServiceImpl
 
 ==== tainted ====
 _obj.contactsService
 [rpc] @ ContactsService.CreateContacts.t2
 ", style=bold, shape=box, color="black"];
-	N_val_param_5243308 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_5243329 [label="contact: parameter contact : Contact
+	N_val_param_3938237 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3938258 [label="contact: parameter contact : Contact
 
 ==== tainted ====
 _obj
 [rpc] @ ContactsService.CreateContacts.contact
 ", style=bold, shape=box, color="black"];
-	N_val_unary_5243364 [label="t1: *t0
+	N_val_unary_3938293 [label="t1: *t0
 
 ==== tainted ====
 _obj
 [rpc] @ ContactsService.CreateContacts.t2
 ", style=bold, shape=box, color="red"];
-	N_val_param_5243267 -> N_val_field_5243364;
-	N_val_field_5243364 -> N_val_unary_5243364;
-	N_val_param_5243308 -> N_val_call_5243394;
-	N_val_param_5243329 -> N_val_call_5243394;
-	N_val_unary_5243364 -> N_val_call_5243394;
-	N_val_call_5243394 -> N_instr_ret_5243355;
+	N_val_param_3938196 -> N_val_field_3938293;
+	N_val_field_3938293 -> N_val_unary_3938293;
+	N_val_param_3938237 -> N_val_call_3938323;
+	N_val_param_3938258 -> N_val_call_3938323;
+	N_val_unary_3938293 -> N_val_call_3938323;
+	N_val_call_3938323 -> N_instr_ret_3938284;
 }

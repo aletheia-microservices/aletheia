@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_5334126 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_5334126 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_5334158 [label="t2: invoke t1.Create(ctx, typeIndex, orderID)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3980666 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3980666 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3980698 [label="t2: invoke t1.Create(ctx, typeIndex, orderID)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,30 +15,30 @@ _obj
 _obj
 [rpc] @ AssuranceService.Create.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_5334135 [label="t0: &d.assuranceService [#0]", style=bold, shape=ellipse, color="green"];
-	N_val_param_5334021 [label="d: parameter d : *DashboardImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_5334052 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_5334073 [label="typeIndex: parameter typeIndex : int
+	N_val_field_3980675 [label="t0: &d.assuranceService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3980561 [label="d: parameter d : *DashboardImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3980592 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3980613 [label="typeIndex: parameter typeIndex : int
 
 ==== tainted ====
 _obj
 [rpc] @ AssuranceService.Create.typeIndex
 ", style=bold, shape=box, color="black"];
-	N_val_param_5334088 [label="orderID: parameter orderID : string
+	N_val_param_3980628 [label="orderID: parameter orderID : string
 
 ==== tainted ====
 _obj
 [rpc] @ AssuranceService.Create.orderID
 ", style=bold, shape=box, color="black"];
-	N_val_unary_5334135 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_5334021 -> N_val_field_5334135;
-	N_val_field_5334135 -> N_val_unary_5334135;
-	N_val_param_5334052 -> N_val_call_5334158;
-	N_val_param_5334073 -> N_val_call_5334158;
-	N_val_param_5334088 -> N_val_call_5334158;
-	N_val_unary_5334135 -> N_val_call_5334158;
-	N_val_call_5334158 -> N_val_extrt3;
-	N_val_call_5334158 -> N_val_extrt4;
-	N_val_extrt3 -> N_instr_ret_5334126;
-	N_val_extrt4 -> N_instr_ret_5334126;
+	N_val_unary_3980675 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_3980561 -> N_val_field_3980675;
+	N_val_field_3980675 -> N_val_unary_3980675;
+	N_val_param_3980592 -> N_val_call_3980698;
+	N_val_param_3980613 -> N_val_call_3980698;
+	N_val_param_3980628 -> N_val_call_3980698;
+	N_val_unary_3980675 -> N_val_call_3980698;
+	N_val_call_3980698 -> N_val_extrt3;
+	N_val_call_3980698 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_3980666;
+	N_val_extrt4 -> N_instr_ret_3980666;
 }

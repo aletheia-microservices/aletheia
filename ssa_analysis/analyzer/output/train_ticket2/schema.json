@@ -100,6 +100,7 @@
           "FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES delivery_queue.notification.FoodName [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES food_db.food_order.FoodName [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]",
+          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES consign_db.consign_record.OrderID [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES food_db.food_order.OrderID [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID [MANDATORY]",
@@ -202,6 +203,8 @@
           "FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contacts.DocumentNumber",
           "FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name",
           "FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType",
+          "FOREIGN_KEY order_db.order.FromStation REFERENCES station_db.station.Name",
+          "FOREIGN_KEY order_db.order.ToStation REFERENCES station_db.station.Name",
           "FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID"
         ]
       }

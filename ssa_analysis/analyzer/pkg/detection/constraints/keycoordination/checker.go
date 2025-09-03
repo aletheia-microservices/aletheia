@@ -19,6 +19,14 @@ type ForeignRead struct {
 	constraint2 *backends.Constraint
 }
 
+func (fr *ForeignRead) FirstCallString() string {
+	return fr.op1.call.String()
+}
+
+func (fr *ForeignRead) SecondCallString() string {
+	return fr.op2.call.String()
+}
+
 func (detector *KeyCoordinationDetector) checkInconsistency(app *app.App, request *Request) {
 	allOps := request.GetAllOperations()
 	// check in reverse
@@ -130,7 +138,7 @@ func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) 
 		// CAUSE: problem related to taint propagation:
 		// 		- merging old posts (cache key is UserID and never uses exchanged PostID) with new posts (cache values containing exchanged PostID across services) causes the new posts' PostID to "accidently" taint the old posts' PostID
 		// 		- the tool then assumes that the PostID was used to read the old posts from their resp. cache
-		
+
 		if fread.constraint1 != nil && fread.constraint1.IsMandatory() {
 			if !slices.Contains(fread.constraint1.GetRequestsIndexesOnMandatoryFlags(), fread.op1.reqIdx) {
 				return true

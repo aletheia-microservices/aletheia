@@ -8,7 +8,8 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping) {
+func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping) bool {
+	var modified bool
 	for currTaint, otherTaintsLst := range taintMapping.mapping {
 		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetDatabasePath()))
 		currField := currDb.GetLastSchema().GetOrCreateField(currDb, currTaint.GetDatabasePath())
@@ -27,12 +28,14 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
 					if otherTaint.IsWrite() && currTaint.IsWrite() {
 						if ok := constraint.EnableMandatory(reqIdx); ok {
+							modified = true
 							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
 					if otherTaint.IsWrite() && currTaint.IsWrite() {
 						if ok := constraint.EnableMandatory(reqIdx); ok {
+							modified = true
 							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
 						}
 					}
@@ -45,18 +48,21 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					}
 					currField.AddConstraint(constraint)
 					currDb.GetLastSchema().AddConstraint(constraint)
+					modified = true
 					fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsRead() && currTaint.IsWriteOrUpdate() {
 				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
 					if currTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
+							modified = true
 							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
 					if currTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
+							modified = true
 							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
 						}
 					}
@@ -69,6 +75,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					if currTaint.IsWrite() {
 						constraint.DisableMandatory(reqIdx)
 					}
+					modified = true
 					fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsWriteOrUpdate() && currTaint.IsRead() {
@@ -89,12 +96,14 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
 					if otherTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
+							modified = true
 							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (A) disabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
 					if otherTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
+							modified = true
 							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (B) disabled mandatory: %s\n", constraint)
 						}
 					}
@@ -106,6 +115,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					if otherTaint.IsWrite() {
 						constraint.DisableMandatory(reqIdx)
 					}
+					modified = true
 					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsRead() && currTaint.IsRead() {
@@ -121,6 +131,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 			}
 		}
 	}
+	return modified
 }
 
 func PropagateNewTaintsToDatabaseCallObjects(graph *AbstractCallGraph, node *AbstractNode, taintMapping *TaintMapping) {

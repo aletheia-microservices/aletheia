@@ -1,8 +1,8 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_5334671 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_5334671 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_5334710 [label="t2: invoke t1.GetAllContacts(ctx)", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3981211 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3981211 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3981250 [label="t2: invoke t1.GetAllContacts(ctx)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt3 [label="t3: extract t2 #0
 
 ==== tainted ====
@@ -15,16 +15,16 @@ _obj
 _obj
 [rpc] @ ContactsService.GetAllContacts.t4
 ", style=bold, shape=box, color="black"];
-	N_val_field_5334680 [label="t0: &d.contactsService [#3]", style=bold, shape=ellipse, color="green"];
-	N_val_param_5334595 [label="d: parameter d : *DashboardImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_5334628 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_unary_5334680 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_param_5334595 -> N_val_field_5334680;
-	N_val_field_5334680 -> N_val_unary_5334680;
-	N_val_param_5334628 -> N_val_call_5334710;
-	N_val_unary_5334680 -> N_val_call_5334710;
-	N_val_call_5334710 -> N_val_extrt3;
-	N_val_call_5334710 -> N_val_extrt4;
-	N_val_extrt3 -> N_instr_ret_5334671;
-	N_val_extrt4 -> N_instr_ret_5334671;
+	N_val_field_3981220 [label="t0: &d.contactsService [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3981135 [label="d: parameter d : *DashboardImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3981168 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3981220 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_3981135 -> N_val_field_3981220;
+	N_val_field_3981220 -> N_val_unary_3981220;
+	N_val_param_3981168 -> N_val_call_3981250;
+	N_val_unary_3981220 -> N_val_call_3981250;
+	N_val_call_3981250 -> N_val_extrt3;
+	N_val_call_3981250 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_3981211;
+	N_val_extrt4 -> N_instr_ret_3981211;
 }

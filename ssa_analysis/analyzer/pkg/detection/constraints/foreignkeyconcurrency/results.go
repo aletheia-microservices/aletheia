@@ -29,16 +29,25 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 	})
 
 	for _, request := range sortedRequests {
-		dangerousDeleteLst := detector.dangerousDeletes[request]
+		sortedDangerousDeleteLst := detector.dangerousDeletes[request]
+		sort.Slice(sortedDangerousDeleteLst, func(i, j int) bool {
+			return sortedDangerousDeleteLst[i].CallString() < sortedDangerousDeleteLst[j].CallString()
+		})
+
 		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
-		for _, dangerousDelete := range dangerousDeleteLst {
-			results += fmt.Sprintf("\tDELETE: %s\n", dangerousDelete.delete.call.String())
-			/* for _, field := range dangerousDelete.delete.schema.GetAllFieldsLst() {
-				results += fmt.Sprintf("\t- deleted field: %s\n", field.GetPath())
-			} */
+		for _, dangerousDelete := range sortedDangerousDeleteLst {
+			results += fmt.Sprintf("\tDELETE: %s\n", dangerousDelete.CallString())
+			var sortedConcurrentWrites []*ConcurrentWrite = dangerousDelete.concurrentWrites
+			sort.Slice(sortedConcurrentWrites, func(i, j int) bool {
+				if sortedConcurrentWrites[i].CallString() != sortedConcurrentWrites[j].CallString() {
+					return sortedConcurrentWrites[i].CallString() < sortedConcurrentWrites[j].CallString()
+				}
+				return sortedConcurrentWrites[i].EntryString() < sortedConcurrentWrites[j].EntryString()
+			})
+
 			for _, concurrentWrite := range dangerousDelete.concurrentWrites {
 				numWarnings++
-				results += fmt.Sprintf("\t\tCONCURRENT WRITE #%d: %s\n", numWarnings, concurrentWrite.write.call.String())
+				results += fmt.Sprintf("\t\tCONCURRENT WRITE #%d: %s\n", numWarnings, concurrentWrite.CallString())
 				var orderedFieldNames []string
 
 				for _, field := range concurrentWrite.affectedFields {
@@ -46,7 +55,7 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 				}
 				sort.Strings(orderedFieldNames)
 				results += fmt.Sprintf("\t\t- entry={%s}, database={%s}, written fields={%s}\n", 
-					concurrentWrite.write.request.entry.String(), 
+					concurrentWrite.EntryString(), 
 					concurrentWrite.database.GetName(), 
 					strings.Join(orderedFieldNames, ", "),
 				)

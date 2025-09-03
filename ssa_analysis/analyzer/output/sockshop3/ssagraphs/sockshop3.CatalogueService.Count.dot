@@ -1,66 +1,66 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_2798595 [label="return t14, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_2798595 [label="return t14, nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_608139898 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
-	N_nil_657808164 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2474010 [label="return t14, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2474010 [label="return t14, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1095171398 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_580452223 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
 	N_val__catalogue__string [label="\"catalogue\":string: \"catalogue\":string", style=bold, shape=ellipse, color="yellow"];
 	N_val__catalogue_db__string [label="\"catalogue_db\":string: \"catalogue_db\":string", style=bold, shape=ellipse, color="yellow"];
-	N_val_alloc_2798489 [label="t5: new []Sock (socks)
+	N_val_alloc_2473904 [label="t5: new []Sock (socks)
 
 ==== tainted ====
 _obj[*]
 [read] @ catalogue_db.catalogue
 ", style=bold, shape=box, color="orange"];
-	N_val_alloc_2798519 [label="t6: new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
-	N_val_call_2798449 [label="t2: invoke t1.GetCollection(ctx, \"catalogue_db\":string, \"catalogue\":string)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2798555 [label="t8: invoke t3.FindMany(ctx, t7, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2798580 [label="t12: invoke t9.All(ctx, t11)", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_2798605 [label="t14: len(t13)", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2473934 [label="t6: new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2473864 [label="t2: invoke t1.GetCollection(ctx, \"catalogue_db\":string, \"catalogue\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2473970 [label="t8: invoke t3.FindMany(ctx, t7, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2473995 [label="t12: invoke t9.All(ctx, t11)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2474020 [label="t14: len(t13)", style=bold, shape=ellipse, color="yellow"];
 	N_val_extrt10 [label="t10: extract t8 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
 	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
 	N_val_extrt9 [label="t9: extract t8 #0", style=bold, shape=ellipse, color="black"];
-	N_val_field_2798423 [label="t0: &s.catalogue_db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2473838 [label="t0: &s.catalogue_db [#0]", style=bold, shape=ellipse, color="green"];
 	N_val_ifacet11 [label="t11: make interface{} <- *[]Sock (t5)
 
 ==== tainted ====
 _obj[*]
 [read] @ catalogue_db.catalogue
 ", style=bold, shape=box, color="black"];
-	N_val_param_2798321 [label="s: parameter s : *CatalogueServiceImpl", style=bold, shape=ellipse, color="black"];
-	N_val_param_2798352 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_2798373 [label="tags: parameter tags : []string", style=bold, shape=ellipse, color="black"];
-	N_val_slice_2798519 [label="t7: slice t6[:]", style=bold, shape=ellipse, color="black"];
-	N_val_unary_2798423 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
-	N_val_unary_2798606 [label="t13: *t5
+	N_val_param_2473736 [label="s: parameter s : *CatalogueServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2473767 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2473788 [label="tags: parameter tags : []string", style=bold, shape=ellipse, color="black"];
+	N_val_slice_2473934 [label="t7: slice t6[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2473838 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2474021 [label="t13: *t5
 
 ==== tainted ====
 _obj[*]
 [read] @ catalogue_db.catalogue
 ", style=bold, shape=box, color="red"];
-	N_val_param_2798321 -> N_val_field_2798423;
-	N_val_field_2798423 -> N_val_unary_2798423;
-	N_val_param_2798352 -> N_val_call_2798449;
-	N_val__catalogue_db__string -> N_val_call_2798449;
-	N_val__catalogue__string -> N_val_call_2798449;
-	N_val_unary_2798423 -> N_val_call_2798449;
-	N_val_call_2798449 -> N_val_extrt3;
-	N_val_call_2798449 -> N_val_extrt4;
-	N_val_alloc_2798519 -> N_val_slice_2798519;
-	N_val_param_2798352 -> N_val_call_2798555;
-	N_val_slice_2798519 -> N_val_call_2798555;
-	N_nil_657808164 -> N_val_call_2798555;
-	N_val_extrt3 -> N_val_call_2798555;
-	N_val_call_2798555 -> N_val_extrt9;
-	N_val_call_2798555 -> N_val_extrt10;
-	N_val_alloc_2798489 -> N_val_ifacet11;
-	N_val_param_2798352 -> N_val_call_2798580;
-	N_val_ifacet11 -> N_val_call_2798580;
-	N_val_extrt9 -> N_val_call_2798580;
-	N_val_alloc_2798489 -> N_val_unary_2798606;
-	N_val_unary_2798606 -> N_val_call_2798605;
-	N_val_call_2798605 -> N_instr_ret_2798595;
-	N_nil_608139898 -> N_instr_ret_2798595;
-	N_val_slice_2798519 -> N_val_alloc_2798519 [label="", style=dashed, color=blue];
+	N_val_param_2473736 -> N_val_field_2473838;
+	N_val_field_2473838 -> N_val_unary_2473838;
+	N_val_param_2473767 -> N_val_call_2473864;
+	N_val__catalogue_db__string -> N_val_call_2473864;
+	N_val__catalogue__string -> N_val_call_2473864;
+	N_val_unary_2473838 -> N_val_call_2473864;
+	N_val_call_2473864 -> N_val_extrt3;
+	N_val_call_2473864 -> N_val_extrt4;
+	N_val_alloc_2473934 -> N_val_slice_2473934;
+	N_val_param_2473767 -> N_val_call_2473970;
+	N_val_slice_2473934 -> N_val_call_2473970;
+	N_nil_580452223 -> N_val_call_2473970;
+	N_val_extrt3 -> N_val_call_2473970;
+	N_val_call_2473970 -> N_val_extrt9;
+	N_val_call_2473970 -> N_val_extrt10;
+	N_val_alloc_2473904 -> N_val_ifacet11;
+	N_val_param_2473767 -> N_val_call_2473995;
+	N_val_ifacet11 -> N_val_call_2473995;
+	N_val_extrt9 -> N_val_call_2473995;
+	N_val_alloc_2473904 -> N_val_unary_2474021;
+	N_val_unary_2474021 -> N_val_call_2474020;
+	N_val_call_2474020 -> N_instr_ret_2474010;
+	N_nil_1095171398 -> N_instr_ret_2474010;
+	N_val_slice_2473934 -> N_val_alloc_2473934 [label="", style=dashed, color=blue];
 }
