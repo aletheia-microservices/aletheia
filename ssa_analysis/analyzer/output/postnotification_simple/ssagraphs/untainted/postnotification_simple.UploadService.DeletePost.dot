@@ -1,0 +1,17 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3969186 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3969186 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3969220 [label="t2: invoke t1.DeletePost(ctx, postID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_3969195 [label="t0: &u.storageService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3969109 [label="u: parameter u : *UploadServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3969142 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3969163 [label="postID: parameter postID : int64", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3969195 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_3969109 -> N_val_field_3969195;
+	N_val_field_3969195 -> N_val_unary_3969195;
+	N_val_param_3969142 -> N_val_call_3969220;
+	N_val_param_3969163 -> N_val_call_3969220;
+	N_val_unary_3969195 -> N_val_call_3969220;
+	N_val_call_3969220 -> N_instr_ret_3969186;
+}

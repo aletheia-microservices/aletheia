@@ -8,71 +8,6 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_ProfileService_GetProfiles [label="ProfileService.GetProfiles
-
-==== param 0 (hotelIds) tainted ====
-_obj[*]
-[read, primary] @ profile_cache.*.Key
-[read, primary] @ profile_db.hotels.ID
-[write, primary] @ profile_cache.*.Key
-
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile) tainted ====
-_obj[*]
-[read, primary] @ profile_cache.*.Value
-[read, primary] @ profile_db.hotels
-[write, primary] @ profile_cache.*.Value
-", style=bold, shape=box, color="blue"];
-		N_RateService_GetRates [label="RateService.GetRates
-
-==== param 0 (hotelIDs) tainted ====
-_obj[*]
-[read, primary] @ rate_cache.*.Key
-[read, primary] @ rate_db.inventory.HotelID
-[write, primary] @ rate_cache.*.Key
-
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan) tainted ====
-_obj
-[read, primary] @ rate_cache.*.Value
-[write, primary] @ rate_cache.*.Value
-_obj[*]
-[read, primary] @ rate_db.inventory
-", style=bold, shape=box, color="blue"];
-		N_FrontEndService_UserHandler [label="FrontEndService.UserHandler
-
-==== param 0 (username) tainted ====
-_obj
-[rpc] @ UserService.CheckUser.username
-
-
-==== param 1 (password) tainted ====
-_obj
-[rpc] @ UserService.CheckUser.password
-", style=bold, shape=box, color="blue"];
-		N_FrontEndService_RecommendHandler [label="FrontEndService.RecommendHandler
-
-==== param 0 (lat) tainted ====
-_obj
-[rpc] @ RecommendationService.GetRecommendations.lat
-
-
-==== param 1 (lon) tainted ====
-_obj
-[rpc] @ RecommendationService.GetRecommendations.lon
-
-
-==== param 2 (require) tainted ====
-_obj
-[rpc] @ RecommendationService.GetRecommendations.require
-
-
-==== param 3 (locale) tainted ====
-_obj
-[rpc] @ ProfileService.GetProfiles.t16
-", style=bold, shape=box, color="blue"];
-		N_RecommendationService_GetRecommendations [label="RecommendationService.GetRecommendations", style=bold, shape=box, color="blue"];
-		N_UserService_CheckUser [label="UserService.CheckUser", style=bold, shape=box, color="blue"];
 		N_ReservationService_CheckAvailability [label="ReservationService.CheckAvailability
 
 ==== param 1 (hotelIds) tainted ====
@@ -100,6 +35,99 @@ _obj[*]
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
+", style=bold, shape=box, color="blue"];
+		N_RateService_GetRates [label="RateService.GetRates
+
+==== param 0 (hotelIDs) tainted ====
+_obj[*]
+[read, primary] @ rate_cache.*.Key
+[read, primary] @ rate_db.inventory.HotelID
+[write, primary] @ rate_cache.*.Key
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.RatePlan) tainted ====
+_obj
+[read, primary] @ rate_cache.*.Value
+[write, primary] @ rate_cache.*.Value
+_obj[*]
+[read, primary] @ rate_db.inventory
+", style=bold, shape=box, color="blue"];
+		N_SearchService_Nearby [label="SearchService.Nearby
+
+==== param 0 (lat) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.lat
+
+
+==== param 1 (lon) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.lon
+
+
+==== param 2 (inDate) tainted ====
+_obj
+[rpc] @ RateService.GetRates.inDate
+
+
+==== param 3 (outDate) tainted ====
+_obj
+[rpc] @ RateService.GetRates.outDate
+
+
+==== ret 0 ([]string) tainted ====
+_obj[*]
+[rpc] @ RateService.GetRates.t9[*].HotelID
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ GeoService.Nearby.t4
+", style=bold, shape=box, color="blue"];
+		N_FrontEndService_UserHandler [label="FrontEndService.UserHandler
+
+==== param 0 (username) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.username
+
+
+==== param 1 (password) tainted ====
+_obj
+[rpc] @ UserService.CheckUser.password
+", style=bold, shape=box, color="blue"];
+		N_RecommendationService_GetRecommendations [label="RecommendationService.GetRecommendations", style=bold, shape=box, color="blue"];
+		N_UserService_CheckUser [label="UserService.CheckUser", style=bold, shape=box, color="blue"];
+		N_ReservationService_MakeReservation [label="ReservationService.MakeReservation
+
+==== param 0 (customerName) tainted ====
+_obj
+[write, primary] @ reservation_db.reservation.CustomerName
+
+
+==== param 1 (hotelIds) tainted ====
+_obj[*]
+[read, primary] @ reservation_cache.*.Key
+[read, primary] @ reservation_db.reservation.HotelId
+[read, primary] @ reservation_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelId
+[write, primary] @ reservation_cache._cap.Key
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== param 4 (roomNumber) tainted ====
+_obj
+[read, primary] @ reservation_cache.*.Value
+[read, primary] @ reservation_db.reservation.Number
+[write, primary] @ reservation_db.reservation.Number
+
+
+==== ret 0 ([]string) tainted ====
+_obj[*]
+[read, primary] @ reservation_cache.*.Key
+[read, primary] @ reservation_db.reservation.HotelId
+[read, primary] @ reservation_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelId
+[write, primary] @ reservation_cache._cap.Key
+[write, primary] @ reservation_db.reservation.HotelId
 ", style=bold, shape=box, color="blue"];
 		N_FrontEndService_ReservationHandler [label="FrontEndService.ReservationHandler
 
@@ -137,6 +165,42 @@ _obj
 _obj
 [rpc] @ ReservationService.MakeReservation.roomNumber
 ", style=bold, shape=box, color="blue"];
+		N_FrontEndService_RecommendHandler [label="FrontEndService.RecommendHandler
+
+==== param 0 (lat) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.lat
+
+
+==== param 1 (lon) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.lon
+
+
+==== param 2 (require) tainted ====
+_obj
+[rpc] @ RecommendationService.GetRecommendations.require
+
+
+==== param 3 (locale) tainted ====
+_obj
+[rpc] @ ProfileService.GetProfiles.t16
+", style=bold, shape=box, color="blue"];
+		N_ProfileService_GetProfiles [label="ProfileService.GetProfiles
+
+==== param 0 (hotelIds) tainted ====
+_obj[*]
+[read, primary] @ profile_cache.*.Key
+[read, primary] @ profile_db.hotels.ID
+[write, primary] @ profile_cache.*.Key
+
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile) tainted ====
+_obj[*]
+[read, primary] @ profile_cache.*.Value
+[read, primary] @ profile_db.hotels
+[write, primary] @ profile_cache.*.Value
+", style=bold, shape=box, color="blue"];
 		N_FrontEndService_SearchHandler [label="FrontEndService.SearchHandler
 
 ==== param 1 (inDate) tainted ====
@@ -170,82 +234,18 @@ _obj
 _obj
 [rpc] @ SearchService.Nearby.t4
 ", style=bold, shape=box, color="blue"];
-		N_SearchService_Nearby [label="SearchService.Nearby
-
-==== param 0 (lat) tainted ====
-_obj
-[rpc] @ GeoService.Nearby.lat
-
-
-==== param 1 (lon) tainted ====
-_obj
-[rpc] @ GeoService.Nearby.lon
-
-
-==== param 2 (inDate) tainted ====
-_obj
-[rpc] @ RateService.GetRates.inDate
-
-
-==== param 3 (outDate) tainted ====
-_obj
-[rpc] @ RateService.GetRates.outDate
-
-
-==== ret 0 ([]string) tainted ====
-_obj[*]
-[rpc] @ RateService.GetRates.t9[*].HotelID
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ GeoService.Nearby.t4
-", style=bold, shape=box, color="blue"];
 		N_GeoService_Nearby [label="GeoService.Nearby", style=bold, shape=box, color="blue"];
-		N_ReservationService_MakeReservation [label="ReservationService.MakeReservation
-
-==== param 0 (customerName) tainted ====
-_obj
-[write, primary] @ reservation_db.reservation.CustomerName
-
-
-==== param 1 (hotelIds) tainted ====
-_obj[*]
-[read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
-[read, primary] @ reservation_cache._cap.Key
-[read, primary] @ reservation_db.number.HotelId
-[write, primary] @ reservation_cache._cap.Key
-[write, primary] @ reservation_db.reservation.HotelId
-
-
-==== param 4 (roomNumber) tainted ====
-_obj
-[read, primary] @ reservation_cache.*.Value
-[read, primary] @ reservation_db.reservation.Number
-[write, primary] @ reservation_db.reservation.Number
-
-
-==== ret 0 ([]string) tainted ====
-_obj[*]
-[read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
-[read, primary] @ reservation_cache._cap.Key
-[read, primary] @ reservation_db.number.HotelId
-[write, primary] @ reservation_cache._cap.Key
-[write, primary] @ reservation_db.reservation.HotelId
-", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
+		N_profile_cache_* [label="profile_cache.*", style=bold, shape=cylinder, color="green"];
+		N_reservation_cache__cap [label="reservation_cache._cap", style=bold, shape=cylinder, color="green"];
+		N_rate_db_inventory [label="rate_db.inventory", style=bold, shape=cylinder, color="green"];
 		N_profile_db_hotels [label="profile_db.hotels", style=bold, shape=cylinder, color="green"];
 		N_reservation_db_reservation [label="reservation_db.reservation", style=bold, shape=cylinder, color="green"];
-		N_reservation_cache__cap [label="reservation_cache._cap", style=bold, shape=cylinder, color="green"];
-		N_rate_cache_* [label="rate_cache.*", style=bold, shape=cylinder, color="green"];
 		N_reservation_cache_* [label="reservation_cache.*", style=bold, shape=cylinder, color="green"];
 		N_reservation_db_number [label="reservation_db.number", style=bold, shape=cylinder, color="green"];
-		N_profile_cache_* [label="profile_cache.*", style=bold, shape=cylinder, color="green"];
-		N_rate_db_inventory [label="rate_db.inventory", style=bold, shape=cylinder, color="green"];
+		N_rate_cache_* [label="rate_cache.*", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_FrontEndService_RecommendHandler [label="RecommendHandler()", color=orange];
 	N_FrontEndService_RecommendHandler -> N_RecommendationService_GetRecommendations [label="GetRecommendations()
@@ -390,7 +390,7 @@ _obj
 [rpc] @ ReservationService.MakeReservation.t24
 _obj[*]
 [read, secondary] @ reservation_cache.*.Key
-[read, secondary] @ reservation_db.reservation.OutDate
+[read, secondary] @ reservation_db.reservation.HotelId
 [read, secondary] @ reservation_cache._cap.Key
 [read, secondary] @ reservation_db.number.HotelId
 [write, secondary] @ reservation_cache._cap.Key
@@ -421,7 +421,7 @@ _obj
 [rpc] @ ReservationService.MakeReservation.t26
 _obj[*]
 [read, secondary] @ reservation_cache.*.Key
-[read, secondary] @ reservation_db.reservation.OutDate
+[read, secondary] @ reservation_db.reservation.HotelId
 [read, secondary] @ reservation_cache._cap.Key
 [read, secondary] @ reservation_db.number.HotelId
 [write, secondary] @ reservation_cache._cap.Key
@@ -437,7 +437,7 @@ _obj
 ==== arg 0 (t37) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
@@ -452,46 +452,46 @@ _obj
 ", color=green];
 	N_ReservationService_MakeReservation -> N_reservation_db_reservation [label="FindMany()
 
-==== arg 0 (\"OutDate\":string) tainted ====
-_obj
-[read, primary] @ reservation_db.reservation.OutDate
-
-
-==== arg 1 (t70) tainted ====
-_obj
-[read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
-[read, primary] @ reservation_cache._cap.Key
-[read, primary] @ reservation_db.number.HotelId
-[write, primary] @ reservation_cache._cap.Key
-[write, primary] @ reservation_db.reservation.HotelId
-
-
-==== arg 2 (\"HotelId\":string) tainted ====
+==== arg 0 (\"HotelId\":string) tainted ====
 _obj
 [read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_db.number.HotelId
 
 
-==== arg 3 (t62) tainted ====
+==== arg 1 (t62) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
 [write, primary] @ reservation_db.reservation.HotelId
 
 
-==== arg 4 (\"InDate\":string) tainted ====
+==== arg 2 (\"InDate\":string) tainted ====
 _obj
 [read, primary] @ reservation_db.reservation.InDate
 
 
-==== arg 5 (t66) tainted ====
+==== arg 3 (t66) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
+[read, primary] @ reservation_db.reservation.HotelId
+[read, primary] @ reservation_cache._cap.Key
+[read, primary] @ reservation_db.number.HotelId
+[write, primary] @ reservation_cache._cap.Key
+[write, primary] @ reservation_db.reservation.HotelId
+
+
+==== arg 4 (\"OutDate\":string) tainted ====
+_obj
 [read, primary] @ reservation_db.reservation.OutDate
+
+
+==== arg 5 (t70) tainted ====
+_obj
+[read, primary] @ reservation_cache.*.Key
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
@@ -511,7 +511,7 @@ _obj[*].Number
 ==== arg 0 (t25) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
@@ -535,7 +535,7 @@ _obj
 ==== arg 1 (t110) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
@@ -555,7 +555,7 @@ _obj.Number
 ==== arg 0 (t25) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
@@ -577,7 +577,7 @@ _obj.CustomerName
 [write, primary] @ reservation_db.reservation.CustomerName
 _obj.HotelId
 [read, primary] @ reservation_cache.*.Key
-[read, primary] @ reservation_db.reservation.OutDate
+[read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
@@ -857,13 +857,23 @@ _obj
 ", color=green];
 	N_ReservationService_CheckAvailability -> N_reservation_db_reservation [label="FindMany()
 
-==== arg 0 (\"HotelId\":string) tainted ====
+==== arg 0 (\"InDate\":string) tainted ====
+_obj
+[read, primary] @ reservation_db.reservation.InDate
+
+
+==== arg 1 (t68) tainted ====
+_obj
+[read, primary] @ reservation_db.reservation.InDate
+
+
+==== arg 2 (\"HotelId\":string) tainted ====
 _obj
 [read, primary] @ reservation_db.reservation.HotelId
 [read, primary] @ reservation_db.number.HotelId
 
 
-==== arg 1 (t64) tainted ====
+==== arg 3 (t64) tainted ====
 _obj
 [read, primary] @ reservation_cache.*.Key
 [read, primary] @ reservation_db.reservation.HotelId
@@ -871,16 +881,6 @@ _obj
 [read, primary] @ reservation_cache._cap.Key
 [read, primary] @ reservation_db.number.HotelId
 [write, primary] @ reservation_cache._cap.Key
-
-
-==== arg 2 (\"InDate\":string) tainted ====
-_obj
-[read, primary] @ reservation_db.reservation.InDate
-
-
-==== arg 3 (t68) tainted ====
-_obj
-[read, primary] @ reservation_db.reservation.InDate
 
 
 ==== arg 4 (\"OutDate\":string) tainted ====

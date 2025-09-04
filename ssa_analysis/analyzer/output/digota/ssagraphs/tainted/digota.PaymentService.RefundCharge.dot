@@ -1,0 +1,168 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1276528898 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1276528898 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1352974883 [label="if t18 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1352974883 [label="if t18 goto 8 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1978752837 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1978752837 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__675510614 [label="if t20 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__675510614 [label="if t20 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2712571 [label="return nil:*Charge, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712571 [label="return nil:*Charge, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712698 [label="return nil:*Charge, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712698 [label="return nil:*Charge, t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712796 [label="return nil:*Charge, t19", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712796 [label="return nil:*Charge, t19", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712830 [label="return nil:*Charge, t25", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712830 [label="return nil:*Charge, t25", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712894 [label="return nil:*Charge, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2712894 [label="return nil:*Charge, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2712612 [label="*t8 = \"Id\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2712612 [label="*t8 = \"Id\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2712625 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2712625 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2712885 [label="*t22 = t23", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2712885 [label="*t22 = t23", style=bold, shape=ellipse, color="blue"];
+	N_nil_1615768176 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_1794972856 [label="nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge: nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.Charge
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments
+", style=bold, shape=box, color="yellow"];
+	N_nil_962166518 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_val__Id__string [label="\"Id\":string: \"Id\":string
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="blue"];
+	N_val__charge_not_found______string [label="\"charge not found ...\":string: \"charge not found ...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__payments__string [label="\"payments\":string: \"payments\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__payments_db__string [label="\"payments_db\":string: \"payments_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2712607 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2712887 [label="t21: new [1]any (varargs)
+
+==== tainted ====
+_obj[*]
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="orange"];
+	N_val_binary_2712560 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2712687 [label="t15: t14 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2712785 [label="t20: t19 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2712519 [label="t2: invoke t1.GetCollection(ctx, \"payments_db\":string, \"payments\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2712666 [label="t12: invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2712763 [label="t17: invoke t13.One(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2712852 [label="t25: fmt.Errorf(\"charge not found ...\":string, t24...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt13 [label="t13: extract t12 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt14 [label="t14: extract t12 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt18 [label="t18: extract t17 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t17 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2712503 [label="t0: &s.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2712612 [label="t8: &t7.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2712625 [label="t9: &t7.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- string (id)
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="black"];
+	N_val_ifacet16 [label="t16: make interface{} <- *Charge (nil:*Charge)
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments
+", style=bold, shape=box, color="black"];
+	N_val_ifacet23 [label="t23: make any <- string (id)
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="black"];
+	N_val_indext22 [label="t22: &t21[0:int]
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="green"];
+	N_val_indext7 [label="t7: &t6[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2712365 [label="s: parameter s : *PaymentServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2712401 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2712422 [label="id: parameter id : string
+
+==== tainted ====
+_obj
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="black"];
+	N_val_param_2712433 [label="amount: parameter amount : uint64", style=bold, shape=ellipse, color="black"];
+	N_val_param_2712448 [label="reason: parameter reason : int32", style=bold, shape=ellipse, color="black"];
+	N_val_slice_2712607 [label="t11: slice t6[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slicet24 [label="t24: slice t21[:]
+
+==== tainted ====
+_obj[*]
+[read] @ payments_db.payments.Id
+", style=bold, shape=box, color="black"];
+	N_val_unary_2712503 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2712365 -> N_val_field_2712503;
+	N_val_field_2712503 -> N_val_unary_2712503;
+	N_val_param_2712401 -> N_val_call_2712519;
+	N_val__payments_db__string -> N_val_call_2712519;
+	N_val__payments__string -> N_val_call_2712519;
+	N_val_unary_2712503 -> N_val_call_2712519;
+	N_val_call_2712519 -> N_val_extrt3;
+	N_val_call_2712519 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_2712560;
+	N_nil_1615768176 -> N_val_binary_2712560;
+	N_nil_1794972856 -> N_instr_ret_2712571;
+	N_val_extrt4 -> N_instr_ret_2712571;
+	N_val_alloc_2712607 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_2712612;
+	N_val_indext7 -> N_val_field_2712625;
+	N_val_field_2712612 -> N_instr_store_2712612;
+	N_val__Id__string -> N_instr_store_2712612;
+	N_val_param_2712422 -> N_val_ifacet10;
+	N_val_field_2712625 -> N_instr_store_2712625;
+	N_val_ifacet10 -> N_instr_store_2712625;
+	N_val_alloc_2712607 -> N_val_slice_2712607;
+	N_val_param_2712401 -> N_val_call_2712666;
+	N_val_slice_2712607 -> N_val_call_2712666;
+	N_nil_962166518 -> N_val_call_2712666;
+	N_val_extrt3 -> N_val_call_2712666;
+	N_val_call_2712666 -> N_val_extrt13;
+	N_val_call_2712666 -> N_val_extrt14;
+	N_val_extrt14 -> N_val_binary_2712687;
+	N_nil_1615768176 -> N_val_binary_2712687;
+	N_nil_1794972856 -> N_instr_ret_2712698;
+	N_val_extrt14 -> N_instr_ret_2712698;
+	N_nil_1794972856 -> N_val_ifacet16;
+	N_val_param_2712401 -> N_val_call_2712763;
+	N_val_ifacet16 -> N_val_call_2712763;
+	N_val_extrt13 -> N_val_call_2712763;
+	N_val_call_2712763 -> N_val_extrt18;
+	N_val_call_2712763 -> N_val_extrt19;
+	N_val_extrt19 -> N_val_binary_2712785;
+	N_nil_1615768176 -> N_val_binary_2712785;
+	N_nil_1794972856 -> N_instr_ret_2712796;
+	N_val_extrt19 -> N_instr_ret_2712796;
+	N_val_alloc_2712887 -> N_val_indext22;
+	N_val_param_2712422 -> N_val_ifacet23;
+	N_val_indext22 -> N_instr_store_2712885;
+	N_val_ifacet23 -> N_instr_store_2712885;
+	N_val_alloc_2712887 -> N_val_slicet24;
+	N_val__charge_not_found______string -> N_val_call_2712852;
+	N_val_slicet24 -> N_val_call_2712852;
+	N_nil_1794972856 -> N_instr_ret_2712830;
+	N_val_call_2712852 -> N_instr_ret_2712830;
+	N_nil_1794972856 -> N_instr_ret_2712894;
+	N_nil_1615768176 -> N_instr_ret_2712894;
+	N_val_field_2712625 -> N_val_alloc_2712607 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext22 -> N_val_alloc_2712887 [label="[*]", style=dashed, color=blue];
+	N_val_field_2712612 -> N_val_alloc_2712607 [label="[*].Key", style=dashed, color=blue];
+	N_val_indext7 -> N_val_alloc_2712607 [label="[*]", style=dashed, color=blue];
+	N_val_slicet24 -> N_val_alloc_2712887 [label="", style=dashed, color=blue];
+	N_val_slice_2712607 -> N_val_alloc_2712607 [label="", style=dashed, color=blue];
+}

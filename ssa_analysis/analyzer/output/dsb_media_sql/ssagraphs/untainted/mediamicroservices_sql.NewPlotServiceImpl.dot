@@ -1,0 +1,20 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2799069 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2799069 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2799058 [label="*t1 = PlotDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2799058 [label="*t1 = PlotDB", style=bold, shape=ellipse, color="blue"];
+	N_nil_1231018837 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2799051 [label="t0: new PlotServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2799058 [label="t1: &t0.PlotDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet2 [label="t2: make PlotService <- *PlotServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2798956 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2798977 [label="PlotDB: parameter PlotDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2799051 -> N_val_field_2799058;
+	N_val_field_2799058 -> N_instr_store_2799058;
+	N_val_param_2798977 -> N_instr_store_2799058;
+	N_val_alloc_2799051 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_2799069;
+	N_nil_1231018837 -> N_instr_ret_2799069;
+	N_val_field_2799058 -> N_val_alloc_2799051 [label=".PlotDB", style=dashed, color=blue];
+}

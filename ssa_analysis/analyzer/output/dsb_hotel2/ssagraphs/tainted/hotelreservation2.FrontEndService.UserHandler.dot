@@ -1,0 +1,78 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1273203947 [label="if t7 goto 4 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1273203947 [label="if t7 goto 4 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1346939853 [label="if t5 goto 5 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1346939853 [label="if t5 goto 5 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1429100255 [label="if t8 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1429100255 [label="if t8 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__387410323 [label="if t0 goto 1 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__387410323 [label="if t0 goto 1 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3198584 [label="return \"\":string, t1", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3198584 [label="return \"\":string, t1", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3198744 [label="return \"Invalid Credentials\":string, t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3198744 [label="return \"Invalid Credentials\":string, t9", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3198812 [label="return \"Login successful\":string, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3198812 [label="return \"Login successful\":string, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1921191147 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val____string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val__Invalid_Credentials__string [label="\"Invalid Credentials\":string: \"Invalid Credentials\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__Login_successful__string [label="\"Login successful\":string: \"Login successful\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__Please_specify_us_____string [label="\"Please specify us...\":string: \"Please specify us...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_binary_3198556 [label="t0: username == \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3198574 [label="t8: password == \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3198722 [label="t7: t6 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_3198605 [label="t1: errors.New(\"Please specify us...\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3198688 [label="t4: invoke t3.CheckUser(ctx, username, password)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3198784 [label="t9: errors.New(\"Invalid Credentials\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt5 [label="t5: extract t4 #0
+
+==== tainted ====
+_obj
+[rpc] @ UserService.CheckUser.t5
+", style=bold, shape=box, color="black"];
+	N_val_extrt6 [label="t6: extract t4 #1
+
+==== tainted ====
+_obj
+[rpc] @ UserService.CheckUser.t6
+", style=bold, shape=box, color="black"];
+	N_val_field_3198667 [label="t2: &f.userService [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3198434 [label="f: parameter f : *FrontEndServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3198470 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3198491 [label="username: parameter username : string
+
+==== tainted ====
+_obj
+[rpc] @ UserService.CheckUser.username
+", style=bold, shape=box, color="black"];
+	N_val_param_3198508 [label="password: parameter password : string
+
+==== tainted ====
+_obj
+[rpc] @ UserService.CheckUser.password
+", style=bold, shape=box, color="black"];
+	N_val_unary_3198667 [label="t3: *t2", style=bold, shape=ellipse, color="red"];
+	N_val_param_3198491 -> N_val_binary_3198556;
+	N_val____string -> N_val_binary_3198556;
+	N_val__Please_specify_us_____string -> N_val_call_3198605;
+	N_val____string -> N_instr_ret_3198584;
+	N_val_call_3198605 -> N_instr_ret_3198584;
+	N_val_param_3198434 -> N_val_field_3198667;
+	N_val_field_3198667 -> N_val_unary_3198667;
+	N_val_param_3198470 -> N_val_call_3198688;
+	N_val_param_3198491 -> N_val_call_3198688;
+	N_val_param_3198508 -> N_val_call_3198688;
+	N_val_unary_3198667 -> N_val_call_3198688;
+	N_val_call_3198688 -> N_val_extrt5;
+	N_val_call_3198688 -> N_val_extrt6;
+	N_val_extrt6 -> N_val_binary_3198722;
+	N_nil_1921191147 -> N_val_binary_3198722;
+	N_val_param_3198508 -> N_val_binary_3198574;
+	N_val____string -> N_val_binary_3198574;
+	N_val__Invalid_Credentials__string -> N_val_call_3198784;
+	N_val__Invalid_Credentials__string -> N_instr_ret_3198744;
+	N_val_call_3198784 -> N_instr_ret_3198744;
+	N_val__Login_successful__string -> N_instr_ret_3198812;
+	N_nil_1921191147 -> N_instr_ret_3198812;
+}

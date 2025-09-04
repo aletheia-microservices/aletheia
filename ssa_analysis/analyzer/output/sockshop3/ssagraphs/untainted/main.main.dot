@@ -1,0 +1,19 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_978168939 [label="return", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_978168939 [label="return", style=bold, shape=ellipse, color="yellow"];
+	N_nil_690619542 [label="nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase: nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="yellow"];
+	N_val____string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_226 [label="t0: context.Background()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_311 [label="t1: github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.NewUserServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_375 [label="t4: invoke t2.Login(t0, \"\":string, \"\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt2 [label="t2: extract t1 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t1 #1", style=bold, shape=ellipse, color="black"];
+	N_val_call_226 -> N_val_call_311;
+	N_nil_690619542 -> N_val_call_311;
+	N_val_call_311 -> N_val_extrt2;
+	N_val_call_311 -> N_val_extrt3;
+	N_val_call_226 -> N_val_call_375;
+	N_val____string -> N_val_call_375;
+	N_val_extrt2 -> N_val_call_375;
+}

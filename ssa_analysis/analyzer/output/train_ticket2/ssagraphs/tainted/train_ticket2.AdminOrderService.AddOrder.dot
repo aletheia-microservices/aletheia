@@ -1,0 +1,37 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4412292 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4412292 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4412320 [label="t2: invoke t1.Create(ctx, order)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Create.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Create.t4
+", style=bold, shape=box, color="black"];
+	N_val_field_4412301 [label="t0: &a.orderService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4412205 [label="a: parameter a : *AdminOrderServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4412240 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4412261 [label="order: parameter order : Order
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.Create.order
+", style=bold, shape=box, color="black"];
+	N_val_unary_4412301 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4412205 -> N_val_field_4412301;
+	N_val_field_4412301 -> N_val_unary_4412301;
+	N_val_param_4412240 -> N_val_call_4412320;
+	N_val_param_4412261 -> N_val_call_4412320;
+	N_val_unary_4412301 -> N_val_call_4412320;
+	N_val_call_4412320 -> N_val_extrt3;
+	N_val_call_4412320 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_4412292;
+	N_val_extrt4 -> N_instr_ret_4412292;
+}

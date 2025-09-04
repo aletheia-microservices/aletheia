@@ -1,0 +1,132 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1442743590 [label="jump 5", style=bold, shape=ellipse, color="black"];
+	N_instr__1442743590 [label="jump 5", style=bold, shape=ellipse, color="black"];
+	N_instr__2023751552 [label="if t12 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__2023751552 [label="if t12 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__747171788 [label="if t21 goto 6 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__747171788 [label="if t21 goto 6 else 7", style=bold, shape=ellipse, color="black"];
+	N_instr__762150170 [label="jump 5", style=bold, shape=ellipse, color="black"];
+	N_instr__762150170 [label="jump 5", style=bold, shape=ellipse, color="black"];
+	N_instr__861048800 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__861048800 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3201360 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3201360 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3201479 [label="return t11", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3201479 [label="return t11", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3201614 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3201614 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3201519 [label="*t16 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3201519 [label="*t16 = t15", style=bold, shape=ellipse, color="blue"];
+	N_nil_1037551469 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1461464313 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__geo__string [label="\"geo\":string: \"geo\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__geo_db__string [label="\"geo_db\":string: \"geo_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__1_int [label="-1:int: -1:int", style=bold, shape=ellipse, color="black"];
+	N_val_1_int [label="1:int: 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3201379 [label="t6: new []Point (points)
+
+==== tainted ====
+_obj[*]
+[read] @ geo_db.geo
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3201411 [label="t7: new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_3201349 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3201468 [label="t12: t11 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt20 [label="t20: t19 + 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt21 [label="t21: t20 < t18", style=bold, shape=ellipse, color="black"];
+	N_val_call_3201318 [label="t2: invoke t1.GetCollection(ctx, \"geo_db\":string, \"geo\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3201446 [label="t9: invoke t3.FindMany(ctx, t8, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3201501 [label="t14: invoke t10.All(ctx, t13)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3201554 [label="t15: github.com/hailocab/go-geoindex.NewClusteringIndex()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3201602 [label="t27: (*github.com/hailocab/go-geoindex.ClusteringIndex).Add(t25, t26)", style=bold, shape=ellipse, color="yellow"];
+	N_val_callt18 [label="t18: len(t17)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt10 [label="t10: extract t9 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt11 [label="t11: extract t9 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3201299 [label="t0: &g.geoDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3201519 [label="t16: &g.index [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3201593 [label="t24: &g.index [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet13 [label="t13: make interface{} <- *[]Point (t6)
+
+==== tainted ====
+_obj[*]
+[read] @ geo_db.geo
+", style=bold, shape=box, color="black"];
+	N_val_ifacet26 [label="t26: make github.com/hailocab/go-geoindex.Point <- Point (t23)
+
+==== tainted ====
+_obj
+[read] @ geo_db.geo
+", style=bold, shape=box, color="black"];
+	N_val_index_3201580 [label="t22: &t17[t20]
+
+==== tainted ====
+_obj
+[read] @ geo_db.geo
+", style=bold, shape=box, color="green"];
+	N_val_param_3201217 [label="g: parameter g : *GeoServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3201248 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_phit19 [label="t19: phi [4: -1:int, 6: t20]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3201411 [label="t8: slice t7[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_3201299 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3201580 [label="t17: *t6
+
+==== tainted ====
+_obj[*]
+[read] @ geo_db.geo
+", style=bold, shape=box, color="red"];
+	N_val_unary_3201593 [label="t25: *t24", style=bold, shape=ellipse, color="red"];
+	N_val_unaryt23 [label="t23: *t22
+
+==== tainted ====
+_obj
+[read] @ geo_db.geo
+", style=bold, shape=box, color="red"];
+	N_val_param_3201217 -> N_val_field_3201299;
+	N_val_field_3201299 -> N_val_unary_3201299;
+	N_val_param_3201248 -> N_val_call_3201318;
+	N_val__geo_db__string -> N_val_call_3201318;
+	N_val__geo__string -> N_val_call_3201318;
+	N_val_unary_3201299 -> N_val_call_3201318;
+	N_val_call_3201318 -> N_val_extrt3;
+	N_val_call_3201318 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_3201349;
+	N_nil_1461464313 -> N_val_binary_3201349;
+	N_val_extrt4 -> N_instr_ret_3201360;
+	N_val_alloc_3201411 -> N_val_slice_3201411;
+	N_val_param_3201248 -> N_val_call_3201446;
+	N_val_slice_3201411 -> N_val_call_3201446;
+	N_nil_1037551469 -> N_val_call_3201446;
+	N_val_extrt3 -> N_val_call_3201446;
+	N_val_call_3201446 -> N_val_extrt10;
+	N_val_call_3201446 -> N_val_extrt11;
+	N_val_extrt11 -> N_val_binary_3201468;
+	N_nil_1461464313 -> N_val_binary_3201468;
+	N_val_extrt11 -> N_instr_ret_3201479;
+	N_val_alloc_3201379 -> N_val_ifacet13;
+	N_val_param_3201248 -> N_val_call_3201501;
+	N_val_ifacet13 -> N_val_call_3201501;
+	N_val_extrt10 -> N_val_call_3201501;
+	N_val_param_3201217 -> N_val_field_3201519;
+	N_val_field_3201519 -> N_instr_store_3201519;
+	N_val_call_3201554 -> N_instr_store_3201519;
+	N_val_alloc_3201379 -> N_val_unary_3201580;
+	N_val_unary_3201580 -> N_val_callt18;
+	N_val__1_int -> N_val_phit19;
+	N_val_phit19 -> N_val_binaryt20;
+	N_val_1_int -> N_val_binaryt20;
+	N_val_binaryt20 -> N_val_phit19;
+	N_val_binaryt20 -> N_val_binaryt21;
+	N_val_callt18 -> N_val_binaryt21;
+	N_val_unary_3201580 -> N_val_index_3201580;
+	N_val_index_3201580 -> N_val_unaryt23;
+	N_val_param_3201217 -> N_val_field_3201593;
+	N_val_field_3201593 -> N_val_unary_3201593;
+	N_val_unaryt23 -> N_val_ifacet26;
+	N_val_unary_3201593 -> N_val_call_3201602;
+	N_val_ifacet26 -> N_val_call_3201602;
+	N_nil_1461464313 -> N_instr_ret_3201614;
+	N_val_slice_3201411 -> N_val_alloc_3201411 [label="", style=dashed, color=blue];
+}

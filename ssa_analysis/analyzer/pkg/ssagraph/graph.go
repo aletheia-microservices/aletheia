@@ -282,8 +282,13 @@ func safeID(id string) string {
 	return re.ReplaceAllString(id, "_")
 }
 
-func (graph *SSAGraph) WriteToDOTFile(appname string, fn string) error {
-	filename := fmt.Sprintf("output/%s/ssagraphs/%s.dot", appname, fn)
+func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) error {
+	stage := "untainted"
+	if tainted {
+		stage = "tainted"
+	}
+	filename := fmt.Sprintf("output/%s/ssagraphs/%s/%s.dot", appname, stage, fn)
+
 	file, err := os.Create(filename)
 	if err != nil {
 		return err

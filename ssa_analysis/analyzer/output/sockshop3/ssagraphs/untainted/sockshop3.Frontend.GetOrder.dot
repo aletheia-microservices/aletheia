@@ -1,0 +1,22 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2586256 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2586256 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2586279 [label="t2: invoke t1.GetOrder(ctx, orderID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2586265 [label="t0: &f.order [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2586175 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2586201 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2586222 [label="orderID: parameter orderID : string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2586265 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2586175 -> N_val_field_2586265;
+	N_val_field_2586265 -> N_val_unary_2586265;
+	N_val_param_2586201 -> N_val_call_2586279;
+	N_val_param_2586222 -> N_val_call_2586279;
+	N_val_unary_2586265 -> N_val_call_2586279;
+	N_val_call_2586279 -> N_val_extrt3;
+	N_val_call_2586279 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_2586256;
+	N_val_extrt4 -> N_instr_ret_2586256;
+}

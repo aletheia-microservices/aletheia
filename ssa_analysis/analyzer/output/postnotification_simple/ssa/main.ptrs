@@ -1,50 +1,50 @@
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl).Run ###
 n (@Run): (*ssa.Parameter) (parameter n : *NotifyServiceImpl)
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=]
 
 ctx (@Run): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 t0 (@Run): (*ssa.Call) (github.com/blueprint-uservices/blueprint/runtime/core/backend.GetLogger())
-	 → t1 (@init#1): (*ssa.MakeInterface)
+	 → t1 (@init#1): (*ssa.MakeInterface) [path=]
 
 t1 (@Run): (*ssa.FieldAddr) (&n.num_workers [#2])
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=.num_workers]
 
 t3 (@Run): (*ssa.Alloc) (new [1]any (varargs))
-	 → t3 (@Run): (*ssa.Alloc)
+	 → t3 (@Run): (*ssa.Alloc) [path=]
 
 t4 (@Run): (*ssa.IndexAddr) (&t3[0:int])
-	 → t3 (@Run): (*ssa.Alloc)
+	 → t3 (@Run): (*ssa.Alloc) [path=[*]]
 
 t5 (@Run): (*ssa.MakeInterface) (make any <- int (t2))
-	 → t5 (@Run): (*ssa.MakeInterface)
+	 → t5 (@Run): (*ssa.MakeInterface) [path=]
 
 t6 (@Run): (*ssa.Slice) (slice t3[:])
-	 → t3 (@Run): (*ssa.Alloc)
+	 → t3 (@Run): (*ssa.Alloc) [path=]
 
 t8 (@Run): (*ssa.Alloc) (new Message (workerMessage))
-	 → t8 (@Run): (*ssa.Alloc)
+	 → t8 (@Run): (*ssa.Alloc) [path=]
 
 t9 (@Run): (*ssa.FieldAddr) (&n.notificationsQueue [#1])
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=.notificationsQueue]
 
 t10 (@Run): (*ssa.UnOp) (*t9)
 
 t11 (@Run): (*ssa.MakeInterface) (make interface{} <- *Message (t8))
-	 → t11 (@Run): (*ssa.MakeInterface)
+	 → t11 (@Run): (*ssa.MakeInterface) [path=]
 
 t13 (@Run): (*ssa.FieldAddr) (&n.storageService [#0])
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=.storageService]
 
 t14 (@Run): (*ssa.UnOp) (*t13)
-	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) [path=]
 
 t15 (@Run): (*ssa.FieldAddr) (&t8.ReqID [#0])
-	 → t8 (@Run): (*ssa.Alloc)
+	 → t8 (@Run): (*ssa.Alloc) [path=.ReqID]
 
 t17 (@Run): (*ssa.FieldAddr) (&t8.PostID [#1])
-	 → t8 (@Run): (*ssa.Alloc)
+	 → t8 (@Run): (*ssa.Alloc) [path=.PostID]
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).DeletePost ###
@@ -61,38 +61,38 @@ t3 (@DeletePost): (*ssa.Extract) (extract t2 #0)
 t4 (@DeletePost): (*ssa.Extract) (extract t2 #1)
 
 t6 (@DeletePost): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
-	 → t6 (@DeletePost): (*ssa.Alloc)
+	 → t6 (@DeletePost): (*ssa.Alloc) [path=]
 
 t7 (@DeletePost): (*ssa.IndexAddr) (&t6[0:int])
-	 → t6 (@DeletePost): (*ssa.Alloc)
+	 → t6 (@DeletePost): (*ssa.Alloc) [path=[*]]
 
 t8 (@DeletePost): (*ssa.FieldAddr) (&t7.Key [#0])
-	 → t6 (@DeletePost): (*ssa.Alloc)
+	 → t6 (@DeletePost): (*ssa.Alloc) [path=[*].Key]
 
 t9 (@DeletePost): (*ssa.FieldAddr) (&t7.Value [#1])
-	 → t6 (@DeletePost): (*ssa.Alloc)
+	 → t6 (@DeletePost): (*ssa.Alloc) [path=[*].Value]
 
 t10 (@DeletePost): (*ssa.MakeInterface) (make interface{} <- int64 (postID))
-	 → t10 (@DeletePost): (*ssa.MakeInterface)
+	 → t10 (@DeletePost): (*ssa.MakeInterface) [path=]
 
 t11 (@DeletePost): (*ssa.Slice) (slice t6[:])
-	 → t6 (@DeletePost): (*ssa.Alloc)
+	 → t6 (@DeletePost): (*ssa.Alloc) [path=]
 
 t12 (@DeletePost): (*ssa.Call) (invoke t3.DeleteOne(ctx, t11))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).ReadPost ###
 s (@ReadPost): (*ssa.Parameter) (parameter s : *StorageServiceImpl)
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=]
 
 ctx (@ReadPost): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 t0 (@ReadPost): (*ssa.Alloc) (new Post (post))
-	 → t0 (@ReadPost): (*ssa.Alloc)
+	 → t0 (@ReadPost): (*ssa.Alloc) [path=]
 
 t1 (@ReadPost): (*ssa.FieldAddr) (&s.postsDb [#0])
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=.postsDb]
 
 t2 (@ReadPost): (*ssa.UnOp) (*t1)
 
@@ -101,96 +101,96 @@ t4 (@ReadPost): (*ssa.Extract) (extract t3 #0)
 t5 (@ReadPost): (*ssa.Extract) (extract t3 #1)
 
 t8 (@ReadPost): (*ssa.Alloc) (new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit))
-	 → t8 (@ReadPost): (*ssa.Alloc)
+	 → t8 (@ReadPost): (*ssa.Alloc) [path=]
 
 t9 (@ReadPost): (*ssa.IndexAddr) (&t8[0:int])
-	 → t8 (@ReadPost): (*ssa.Alloc)
+	 → t8 (@ReadPost): (*ssa.Alloc) [path=[*]]
 
 t10 (@ReadPost): (*ssa.FieldAddr) (&t9.Key [#0])
-	 → t8 (@ReadPost): (*ssa.Alloc)
+	 → t8 (@ReadPost): (*ssa.Alloc) [path=[*].Key]
 
 t11 (@ReadPost): (*ssa.FieldAddr) (&t9.Value [#1])
-	 → t8 (@ReadPost): (*ssa.Alloc)
+	 → t8 (@ReadPost): (*ssa.Alloc) [path=[*].Value]
 
 t12 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- int64 (postID))
-	 → t12 (@ReadPost): (*ssa.MakeInterface)
+	 → t12 (@ReadPost): (*ssa.MakeInterface) [path=]
 
 t13 (@ReadPost): (*ssa.Slice) (slice t8[:])
-	 → t8 (@ReadPost): (*ssa.Alloc)
+	 → t8 (@ReadPost): (*ssa.Alloc) [path=]
 
 t15 (@ReadPost): (*ssa.Extract) (extract t14 #0)
 
 t16 (@ReadPost): (*ssa.Extract) (extract t14 #1)
 
 t19 (@ReadPost): (*ssa.MakeInterface) (make interface{} <- *Post (t0))
-	 → t19 (@ReadPost): (*ssa.MakeInterface)
+	 → t19 (@ReadPost): (*ssa.MakeInterface) [path=]
 
 t22 (@ReadPost): (*ssa.Extract) (extract t20 #1)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.StorageServiceImpl).StorePost ###
 s (@StorePost): (*ssa.Parameter) (parameter s : *StorageServiceImpl)
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=]
 
 ctx (@StorePost): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 t2 (@StorePost): (*ssa.Alloc) (new [2]string (slicelit))
-	 → t2 (@StorePost): (*ssa.Alloc)
+	 → t2 (@StorePost): (*ssa.Alloc) [path=]
 
 t3 (@StorePost): (*ssa.IndexAddr) (&t2[0:int])
-	 → t2 (@StorePost): (*ssa.Alloc)
+	 → t2 (@StorePost): (*ssa.Alloc) [path=[*]]
 
 t4 (@StorePost): (*ssa.IndexAddr) (&t2[1:int])
-	 → t2 (@StorePost): (*ssa.Alloc)
+	 → t2 (@StorePost): (*ssa.Alloc) [path=[*]]
 
 t5 (@StorePost): (*ssa.Slice) (slice t2[:])
-	 → t2 (@StorePost): (*ssa.Alloc)
+	 → t2 (@StorePost): (*ssa.Alloc) [path=]
 
 t6 (@StorePost): (*ssa.Alloc) (new Post (complit))
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=]
 
 t7 (@StorePost): (*ssa.FieldAddr) (&t6.ReqID [#0])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.ReqID]
 
 t8 (@StorePost): (*ssa.FieldAddr) (&t6.PostID [#1])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.PostID]
 
 t9 (@StorePost): (*ssa.FieldAddr) (&t6.Text [#3])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.Text]
 
 t10 (@StorePost): (*ssa.FieldAddr) (&t6.Mentions [#4])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.Mentions]
 
 t11 (@StorePost): (*ssa.FieldAddr) (&t6.Timestamp [#5])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.Timestamp]
 
 t12 (@StorePost): (*ssa.FieldAddr) (&t6.Creator [#6])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.Creator]
 
 t13 (@StorePost): (*ssa.FieldAddr) (&t12.Username [#0])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.Creator.Username]
 
 t16 (@StorePost): (*ssa.Phi) (phi [0: nil:[]string, 2: t26] #mymentions)
-	 → t26 (@StorePost): (*ssa.Call)
+	 → t26 (@StorePost): (*ssa.Call) [path=]
 
 t20 (@StorePost): (*ssa.IndexAddr) (&t5[t18])
-	 → t2 (@StorePost): (*ssa.Alloc)
+	 → t2 (@StorePost): (*ssa.Alloc) [path=[*]]
 
 t23 (@StorePost): (*ssa.Alloc) (new [1]string (varargs))
-	 → t23 (@StorePost): (*ssa.Alloc)
+	 → t23 (@StorePost): (*ssa.Alloc) [path=]
 
 t24 (@StorePost): (*ssa.IndexAddr) (&t23[0:int])
-	 → t23 (@StorePost): (*ssa.Alloc)
+	 → t23 (@StorePost): (*ssa.Alloc) [path=[*]]
 
 t25 (@StorePost): (*ssa.Slice) (slice t23[:])
-	 → t23 (@StorePost): (*ssa.Alloc)
+	 → t23 (@StorePost): (*ssa.Alloc) [path=]
 
 t26 (@StorePost): (*ssa.Call) (append(t16, t25...))
-	 → t26 (@StorePost): (*ssa.Call)
+	 → t26 (@StorePost): (*ssa.Call) [path=]
 
 t27 (@StorePost): (*ssa.FieldAddr) (&s.postsDb [#0])
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=.postsDb]
 
 t28 (@StorePost): (*ssa.UnOp) (*t27)
 
@@ -199,12 +199,12 @@ t30 (@StorePost): (*ssa.Extract) (extract t29 #0)
 t31 (@StorePost): (*ssa.Extract) (extract t29 #1)
 
 t33 (@StorePost): (*ssa.MakeInterface) (make interface{} <- *Post (t6))
-	 → t33 (@StorePost): (*ssa.MakeInterface)
+	 → t33 (@StorePost): (*ssa.MakeInterface) [path=]
 
 t34 (@StorePost): (*ssa.Call) (invoke t30.InsertOne(ctx, t33))
 
 t36 (@StorePost): (*ssa.FieldAddr) (&t6.PostID [#1])
-	 → t6 (@StorePost): (*ssa.Alloc)
+	 → t6 (@StorePost): (*ssa.Alloc) [path=.PostID]
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.UploadServiceImpl).DeletePost ###
@@ -231,90 +231,90 @@ t3 (@UploadPost): (*ssa.UnOp) (*t2)
 t6 (@UploadPost): (*ssa.Extract) (extract t4 #1)
 
 t7 (@UploadPost): (*ssa.Alloc) (local Message (message))
-	 → t7 (@UploadPost): (*ssa.Alloc)
+	 → t7 (@UploadPost): (*ssa.Alloc) [path=]
 
 t8 (@UploadPost): (*ssa.FieldAddr) (&t7.ReqID [#0])
-	 → t7 (@UploadPost): (*ssa.Alloc)
+	 → t7 (@UploadPost): (*ssa.Alloc) [path=.ReqID]
 
 t9 (@UploadPost): (*ssa.FieldAddr) (&t7.PostID [#1])
-	 → t7 (@UploadPost): (*ssa.Alloc)
+	 → t7 (@UploadPost): (*ssa.Alloc) [path=.PostID]
 
 t10 (@UploadPost): (*ssa.FieldAddr) (&u.notificationsQueue [#1])
 
 t11 (@UploadPost): (*ssa.UnOp) (*t10)
 
 t13 (@UploadPost): (*ssa.MakeInterface) (make interface{} <- Message (t12))
-	 → t13 (@UploadPost): (*ssa.MakeInterface)
+	 → t13 (@UploadPost): (*ssa.MakeInterface) [path=]
 
 t16 (@UploadPost): (*ssa.Extract) (extract t14 #1)
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NewNotifyServiceImpl ###
 ctx (@NewNotifyServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 storageService (@NewNotifyServiceImpl): (*ssa.Parameter) (parameter storageService : StorageService)
-	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) [path=]
 
 notificationsQueue (@NewNotifyServiceImpl): (*ssa.Parameter) (parameter notificationsQueue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue)
 
 t0 (@NewNotifyServiceImpl): (*ssa.Alloc) (new NotifyServiceImpl (complit))
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=]
 
 t1 (@NewNotifyServiceImpl): (*ssa.FieldAddr) (&t0.storageService [#0])
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=.storageService]
 
 t2 (@NewNotifyServiceImpl): (*ssa.FieldAddr) (&t0.notificationsQueue [#1])
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=.notificationsQueue]
 
 t3 (@NewNotifyServiceImpl): (*ssa.FieldAddr) (&t0.num_workers [#2])
-	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewNotifyServiceImpl): (*ssa.Alloc) [path=.num_workers]
 
 t4 (@NewNotifyServiceImpl): (*ssa.MakeInterface) (make NotifyService <- *NotifyServiceImpl (t0))
-	 → t4 (@NewNotifyServiceImpl): (*ssa.MakeInterface)
+	 → t4 (@NewNotifyServiceImpl): (*ssa.MakeInterface) [path=]
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NewStorageServiceImpl ###
 ctx (@NewStorageServiceImpl): (*ssa.Parameter) (parameter ctx : context.Context)
-	 → t0 (@Background): (*ssa.MakeInterface)
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 postsDb (@NewStorageServiceImpl): (*ssa.Parameter) (parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)
 
 t0 (@NewStorageServiceImpl): (*ssa.Alloc) (new StorageServiceImpl (complit))
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=]
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=]
 
 t1 (@NewStorageServiceImpl): (*ssa.FieldAddr) (&t0.postsDb [#0])
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
-	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc)
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=.postsDb]
+	 → t0 (@NewStorageServiceImpl): (*ssa.Alloc) [path=.postsDb]
 
 t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) (make StorageService <- *StorageServiceImpl (t0))
-	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
-	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) [path=]
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) [path=]
 
 
 ### Function: github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.main ###
 t0 (@main): (*ssa.Call) (context.Background())
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 t2 (@main): (*ssa.Extract) (extract t1 #0)
-	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) [path=]
 
 t3 (@main): (*ssa.Extract) (extract t1 #1)
 
 
 ### Function: main.main ###
 t0 (@main): (*ssa.Call) (context.Background())
-	 → t0 (@Background): (*ssa.MakeInterface)
+	 → t0 (@Background): (*ssa.MakeInterface) [path=]
 
 t2 (@main): (*ssa.Extract) (extract t1 #0)
-	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface)
+	 → t2 (@NewStorageServiceImpl): (*ssa.MakeInterface) [path=]
 
 t3 (@main): (*ssa.Extract) (extract t1 #1)
 
 t5 (@main): (*ssa.Extract) (extract t4 #0)
-	 → t4 (@NewNotifyServiceImpl): (*ssa.MakeInterface)
+	 → t4 (@NewNotifyServiceImpl): (*ssa.MakeInterface) [path=]
 
 t6 (@main): (*ssa.Extract) (extract t4 #1)
 

@@ -1,0 +1,16 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4531731 [label="return t1, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4531731 [label="return t1, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_2064187550 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val____n____________________string [label="\"[\\n               ...\":string: \"[\\n               ...\":string", style=bold, shape=ellipse, color="black"];
+	N_val_conv_4531489 [label="t0: convert []byte <- string (\"[\\n               ...\":string)", style=bold, shape=ellipse, color="black"];
+	N_val_conv_4531744 [label="t1: convert string <- []byte (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_4531395 [label="n: parameter n : *NewsServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4531421 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4531442 [label="val: parameter val : string", style=bold, shape=ellipse, color="black"];
+	N_val____n____________________string -> N_val_conv_4531489;
+	N_val_conv_4531489 -> N_val_conv_4531744;
+	N_val_conv_4531744 -> N_instr_ret_4531731;
+	N_nil_2064187550 -> N_instr_ret_4531731;
+}

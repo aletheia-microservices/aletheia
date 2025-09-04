@@ -1,0 +1,19 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_302064486 [label="return", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_302064486 [label="return", style=bold, shape=ellipse, color="yellow"];
+	N_nil_287393745 [label="nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase: nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="yellow"];
+	N_val_0_float64 [label="0:float64: 0:float64", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_235 [label="t0: context.Background()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_326 [label="t1: github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.NewGeoServiceImpl(t0, nil:github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_380 [label="t4: invoke t2.Nearby(t0, 0:float64, 0:float64)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt2 [label="t2: extract t1 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t1 #1", style=bold, shape=ellipse, color="black"];
+	N_val_call_235 -> N_val_call_326;
+	N_nil_287393745 -> N_val_call_326;
+	N_val_call_326 -> N_val_extrt2;
+	N_val_call_326 -> N_val_extrt3;
+	N_val_call_235 -> N_val_call_380;
+	N_val_0_float64 -> N_val_call_380;
+	N_val_extrt2 -> N_val_call_380;
+}

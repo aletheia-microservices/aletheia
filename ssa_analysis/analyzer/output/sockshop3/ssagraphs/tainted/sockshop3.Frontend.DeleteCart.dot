@@ -1,0 +1,52 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1158868426 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1158868426 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2585531 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2585531 [label="return nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2585547 [label="return t3", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2585547 [label="return t3", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1388230863 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val____string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2585521 [label="t0: sessionID == \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_call_2585571 [label="t3: invoke t2.DeleteCart(ctx, sessionID)
+
+==== tainted ====
+_obj
+[rpc] @ CartService.DeleteCart.t3
+", style=bold, shape=box, color="yellow"];
+	N_val_field_2585556 [label="t1: &f.cart [#2]
+
+==== tainted ====
+_obj
+[rpc] @ CartService.DeleteCart.t3
+", style=bold, shape=box, color="green"];
+	N_val_param_2585432 [label="f: parameter f : *FrontendImpl
+
+==== tainted ====
+_obj.cart
+[rpc] @ CartService.DeleteCart.t3
+", style=bold, shape=box, color="black"];
+	N_val_param_2585460 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2585481 [label="sessionID: parameter sessionID : string
+
+==== tainted ====
+_obj
+[rpc] @ CartService.DeleteCart.sessionID
+", style=bold, shape=box, color="black"];
+	N_val_unary_2585556 [label="t2: *t1
+
+==== tainted ====
+_obj
+[rpc] @ CartService.DeleteCart.t3
+", style=bold, shape=box, color="red"];
+	N_val_param_2585481 -> N_val_binary_2585521;
+	N_val____string -> N_val_binary_2585521;
+	N_nil_1388230863 -> N_instr_ret_2585531;
+	N_val_param_2585432 -> N_val_field_2585556;
+	N_val_field_2585556 -> N_val_unary_2585556;
+	N_val_param_2585460 -> N_val_call_2585571;
+	N_val_param_2585481 -> N_val_call_2585571;
+	N_val_unary_2585556 -> N_val_call_2585571;
+	N_val_call_2585571 -> N_instr_ret_2585547;
+}

@@ -1,0 +1,38 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4825589 [label="return t8, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4825589 [label="return t8, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_4825583 [label="*t6 = t3", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4825583 [label="*t6 = t3", style=bold, shape=ellipse, color="blue"];
+	N_nil_548519652 [label="nil:[]string: nil:[]string", style=bold, shape=ellipse, color="yellow"];
+	N_nil_605536300 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4825585 [label="t5: new [1]string (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_4825548 [label="t2: (*StationServiceImpl).FindID(s, ctx, t1)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4825577 [label="t8: append(nil:[]string, t7...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_index_4825559 [label="t0: &names[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_indext6 [label="t6: &t5[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4825120 [label="s: parameter s : *StationServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4825151 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4825172 [label="names: parameter names : []string", style=bold, shape=ellipse, color="black"];
+	N_val_slicet7 [label="t7: slice t5[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4825559 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4825172 -> N_val_index_4825559;
+	N_val_index_4825559 -> N_val_unary_4825559;
+	N_val_param_4825120 -> N_val_call_4825548;
+	N_val_param_4825151 -> N_val_call_4825548;
+	N_val_unary_4825559 -> N_val_call_4825548;
+	N_val_call_4825548 -> N_val_extrt3;
+	N_val_call_4825548 -> N_val_extrt4;
+	N_val_alloc_4825585 -> N_val_indext6;
+	N_val_indext6 -> N_instr_store_4825583;
+	N_val_extrt3 -> N_instr_store_4825583;
+	N_val_alloc_4825585 -> N_val_slicet7;
+	N_nil_548519652 -> N_val_call_4825577;
+	N_val_slicet7 -> N_val_call_4825577;
+	N_val_call_4825577 -> N_instr_ret_4825589;
+	N_nil_605536300 -> N_instr_ret_4825589;
+	N_val_indext6 -> N_val_alloc_4825585 [label="[*]", style=dashed, color=blue];
+	N_val_slicet7 -> N_val_alloc_4825585 [label="", style=dashed, color=blue];
+}

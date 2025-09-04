@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3253443 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3253443 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3253479 [label="*t1 = geoService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3253479 [label="*t1 = geoService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3253504 [label="*t2 = rateService", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3253504 [label="*t2 = rateService", style=bold, shape=ellipse, color="blue"];
+	N_nil_60636654 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3253468 [label="t0: new SearchServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_3253479 [label="t1: &t0.geoService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3253504 [label="t2: &t0.rateService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make SearchService <- *SearchServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_3253348 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3253369 [label="geoService: parameter geoService : GeoService", style=bold, shape=ellipse, color="black"];
+	N_val_param_3253392 [label="rateService: parameter rateService : RateService", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3253468 -> N_val_field_3253479;
+	N_val_alloc_3253468 -> N_val_field_3253504;
+	N_val_field_3253479 -> N_instr_store_3253479;
+	N_val_param_3253369 -> N_instr_store_3253479;
+	N_val_field_3253504 -> N_instr_store_3253504;
+	N_val_param_3253392 -> N_instr_store_3253504;
+	N_val_alloc_3253468 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_3253443;
+	N_nil_60636654 -> N_instr_ret_3253443;
+}

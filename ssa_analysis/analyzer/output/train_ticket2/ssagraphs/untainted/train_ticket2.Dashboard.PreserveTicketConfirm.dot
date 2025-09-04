@@ -1,0 +1,22 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4523267 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4523267 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4523300 [label="t2: invoke t1.Preserve(ctx, oti)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_4523276 [label="t0: &d.preserveService [#5]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4523166 [label="d: parameter d : *DashboardImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4523206 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4523227 [label="oti: parameter oti : OrderTicketsInfo", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4523276 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4523166 -> N_val_field_4523276;
+	N_val_field_4523276 -> N_val_unary_4523276;
+	N_val_param_4523206 -> N_val_call_4523300;
+	N_val_param_4523227 -> N_val_call_4523300;
+	N_val_unary_4523276 -> N_val_call_4523300;
+	N_val_call_4523300 -> N_val_extrt3;
+	N_val_call_4523300 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_4523267;
+	N_val_extrt4 -> N_instr_ret_4523267;
+}

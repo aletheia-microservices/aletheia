@@ -1,0 +1,108 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1070007498 [label="if t18 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1070007498 [label="if t18 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__14536781 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__14536781 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__391277732 [label="if t14 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__391277732 [label="if t14 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_4505532 [label="return t7, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505532 [label="return t7, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505641 [label="return t15, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505641 [label="return t15, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505713 [label="return t19, t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505713 [label="return t19, t17", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505737 [label="return t20, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4505737 [label="return t20, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1016518583 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_666430206 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__config__string [label="\"config\":string: \"config\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__config_db__string [label="\"config_db\":string: \"config_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4505547 [label="t6: new [0]Config (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_4505563 [label="t8: new []Config (configs)
+
+==== tainted ====
+_obj[*]
+[read] @ config_db.config
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_4505618 [label="t9: new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_binary_4505521 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_4505630 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_4505702 [label="t18: t17 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_4505484 [label="t2: invoke t1.GetCollection(ctx, \"config_db\":string, \"config\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4505606 [label="t11: invoke t3.FindMany(ctx, t10, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4505678 [label="t17: invoke t12.All(ctx, t16)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_4505468 [label="t0: &c.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet16 [label="t16: make interface{} <- *[]Config (t8)
+
+==== tainted ====
+_obj[*]
+[read] @ config_db.config
+", style=bold, shape=box, color="black"];
+	N_val_param_4505381 [label="c: parameter c : *ConfigServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4505411 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_slice_4505547 [label="t7: slice t6[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_4505618 [label="t10: slice t9[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4505468 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_4505648 [label="t15: *t8
+
+==== tainted ====
+_obj[*]
+[read] @ config_db.config
+", style=bold, shape=box, color="red"];
+	N_val_unary_4505720 [label="t19: *t8
+
+==== tainted ====
+_obj[*]
+[read] @ config_db.config
+", style=bold, shape=box, color="red"];
+	N_val_unary_4505744 [label="t20: *t8
+
+==== tainted ====
+_obj[*]
+[read] @ config_db.config
+", style=bold, shape=box, color="red"];
+	N_val_param_4505381 -> N_val_field_4505468;
+	N_val_field_4505468 -> N_val_unary_4505468;
+	N_val_param_4505411 -> N_val_call_4505484;
+	N_val__config_db__string -> N_val_call_4505484;
+	N_val__config__string -> N_val_call_4505484;
+	N_val_unary_4505468 -> N_val_call_4505484;
+	N_val_call_4505484 -> N_val_extrt3;
+	N_val_call_4505484 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_4505521;
+	N_nil_666430206 -> N_val_binary_4505521;
+	N_val_alloc_4505547 -> N_val_slice_4505547;
+	N_val_slice_4505547 -> N_instr_ret_4505532;
+	N_val_extrt4 -> N_instr_ret_4505532;
+	N_val_alloc_4505618 -> N_val_slice_4505618;
+	N_val_param_4505411 -> N_val_call_4505606;
+	N_val_slice_4505618 -> N_val_call_4505606;
+	N_nil_1016518583 -> N_val_call_4505606;
+	N_val_extrt3 -> N_val_call_4505606;
+	N_val_call_4505606 -> N_val_extrt12;
+	N_val_call_4505606 -> N_val_extrt13;
+	N_val_extrt13 -> N_val_binary_4505630;
+	N_nil_666430206 -> N_val_binary_4505630;
+	N_val_alloc_4505563 -> N_val_unary_4505648;
+	N_val_unary_4505648 -> N_instr_ret_4505641;
+	N_val_extrt13 -> N_instr_ret_4505641;
+	N_val_alloc_4505563 -> N_val_ifacet16;
+	N_val_param_4505411 -> N_val_call_4505678;
+	N_val_ifacet16 -> N_val_call_4505678;
+	N_val_extrt12 -> N_val_call_4505678;
+	N_val_call_4505678 -> N_val_binary_4505702;
+	N_nil_666430206 -> N_val_binary_4505702;
+	N_val_alloc_4505563 -> N_val_unary_4505720;
+	N_val_unary_4505720 -> N_instr_ret_4505713;
+	N_val_call_4505678 -> N_instr_ret_4505713;
+	N_val_alloc_4505563 -> N_val_unary_4505744;
+	N_val_unary_4505744 -> N_instr_ret_4505737;
+	N_nil_666430206 -> N_instr_ret_4505737;
+	N_val_slice_4505547 -> N_val_alloc_4505547 [label="", style=dashed, color=blue];
+	N_val_slice_4505618 -> N_val_alloc_4505618 [label="", style=dashed, color=blue];
+}

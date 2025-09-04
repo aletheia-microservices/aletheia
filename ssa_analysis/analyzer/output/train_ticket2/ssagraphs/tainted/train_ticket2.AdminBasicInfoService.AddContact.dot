@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4374826 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4374826 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4374865 [label="t2: invoke t1.CreateContacts(ctx, contact)
+
+==== tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_4374835 [label="t0: &a.contactsService [#3]
+
+==== tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_4374738 [label="a: parameter a : *AdminBasicInfoServiceImpl
+
+==== tainted ====
+_obj.contactsService
+[rpc] @ ContactsService.CreateContacts.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_4374779 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4374800 [label="contact: parameter contact : Contact
+
+==== tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.contact
+", style=bold, shape=box, color="black"];
+	N_val_unary_4374835 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_4374738 -> N_val_field_4374835;
+	N_val_field_4374835 -> N_val_unary_4374835;
+	N_val_param_4374779 -> N_val_call_4374865;
+	N_val_param_4374800 -> N_val_call_4374865;
+	N_val_unary_4374835 -> N_val_call_4374865;
+	N_val_call_4374865 -> N_instr_ret_4374826;
+}

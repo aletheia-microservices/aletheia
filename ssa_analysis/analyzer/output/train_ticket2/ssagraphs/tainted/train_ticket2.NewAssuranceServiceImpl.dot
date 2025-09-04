@@ -1,0 +1,20 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4453544 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4453544 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_4453575 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4453575 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
+	N_nil_585813285 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4453572 [label="t0: new AssuranceServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_4453575 [label="t1: &t0.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet2 [label="t2: make AssuranceService <- *AssuranceServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_4453468 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4453489 [label="db: parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_4453572 -> N_val_field_4453575;
+	N_val_field_4453575 -> N_instr_store_4453575;
+	N_val_param_4453489 -> N_instr_store_4453575;
+	N_val_alloc_4453572 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_4453544;
+	N_nil_585813285 -> N_instr_ret_4453544;
+	N_val_field_4453575 -> N_val_alloc_4453572 [label=".db", style=dashed, color=blue];
+}

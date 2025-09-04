@@ -1,0 +1,17 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4414431 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4414431 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4414460 [label="t2: invoke t1.SaveUser(ctx, user)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_4414440 [label="t0: &a.userService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4414357 [label="a: parameter a : *AdminUserServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4414390 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4414411 [label="user: parameter user : User", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4414440 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4414357 -> N_val_field_4414440;
+	N_val_field_4414440 -> N_val_unary_4414440;
+	N_val_param_4414390 -> N_val_call_4414460;
+	N_val_param_4414411 -> N_val_call_4414460;
+	N_val_unary_4414440 -> N_val_call_4414460;
+	N_val_call_4414460 -> N_instr_ret_4414431;
+}

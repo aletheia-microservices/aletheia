@@ -1,0 +1,20 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3952205 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3952205 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3952193 [label="*t1 = postsDb", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3952193 [label="*t1 = postsDb", style=bold, shape=ellipse, color="blue"];
+	N_nil_1175282685 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3952185 [label="t0: new StorageServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_3952193 [label="t1: &t0.postsDb [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet2 [label="t2: make StorageService <- *StorageServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_3952082 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3952103 [label="postsDb: parameter postsDb : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3952185 -> N_val_field_3952193;
+	N_val_field_3952193 -> N_instr_store_3952193;
+	N_val_param_3952103 -> N_instr_store_3952193;
+	N_val_alloc_3952185 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_3952205;
+	N_nil_1175282685 -> N_instr_ret_3952205;
+	N_val_field_3952193 -> N_val_alloc_3952185 [label=".postsDb", style=dashed, color=blue];
+}

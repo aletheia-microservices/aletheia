@@ -1,0 +1,30 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2613642 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2613642 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2613579 [label="*t1 = false:bool", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2613579 [label="*t1 = false:bool", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2613597 [label="*t2 = \"Payment declined:...\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2613597 [label="*t2 = \"Payment declined:...\":string", style=bold, shape=ellipse, color="blue"];
+	N_nil_1061403853 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val__Payment_declined______string [label="\"Payment declined:...\":string: \"Payment declined:...\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_2613535 [label="t0: local Authorisation (authorization)", style=bold, shape=ellipse, color="orange"];
+	N_val_false_bool [label="false:bool: false:bool", style=bold, shape=ellipse, color="blue"];
+	N_val_field_2613579 [label="t1: &t0.Authorised [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2613597 [label="t2: &t0.Message [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2613439 [label="s: parameter s : *PaymentServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2613472 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2613493 [label="amount: parameter amount : float32", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2613649 [label="t3: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_alloc_2613535 -> N_val_field_2613579;
+	N_val_alloc_2613535 -> N_val_field_2613597;
+	N_val_field_2613579 -> N_instr_store_2613579;
+	N_val_false_bool -> N_instr_store_2613579;
+	N_val_field_2613597 -> N_instr_store_2613597;
+	N_val__Payment_declined______string -> N_instr_store_2613597;
+	N_val_alloc_2613535 -> N_val_unary_2613649;
+	N_val_unary_2613649 -> N_instr_ret_2613642;
+	N_nil_1061403853 -> N_instr_ret_2613642;
+	N_val_field_2613579 -> N_val_alloc_2613535 [label=".Authorised", style=dashed, color=blue];
+	N_val_field_2613597 -> N_val_alloc_2613535 [label=".Message", style=dashed, color=blue];
+}

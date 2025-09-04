@@ -1,0 +1,58 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2587645 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2587645 [label="return t3, t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2587668 [label="t2: invoke t1.NewOrder(ctx, userID, addressID, cardID, cartID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.t4
+", style=bold, shape=box, color="black"];
+	N_val_field_2587654 [label="t0: &f.order [#3]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2587517 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2587543 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2587564 [label="userID: parameter userID : string
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.userID
+", style=bold, shape=box, color="black"];
+	N_val_param_2587579 [label="addressID: parameter addressID : string
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.addressID
+", style=bold, shape=box, color="black"];
+	N_val_param_2587597 [label="cardID: parameter cardID : string
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.cardID
+", style=bold, shape=box, color="black"];
+	N_val_param_2587612 [label="cartID: parameter cartID : string
+
+==== tainted ====
+_obj
+[rpc] @ OrderService.NewOrder.cartID
+", style=bold, shape=box, color="black"];
+	N_val_unary_2587654 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2587517 -> N_val_field_2587654;
+	N_val_field_2587654 -> N_val_unary_2587654;
+	N_val_param_2587543 -> N_val_call_2587668;
+	N_val_param_2587564 -> N_val_call_2587668;
+	N_val_param_2587579 -> N_val_call_2587668;
+	N_val_param_2587597 -> N_val_call_2587668;
+	N_val_param_2587612 -> N_val_call_2587668;
+	N_val_unary_2587654 -> N_val_call_2587668;
+	N_val_call_2587668 -> N_val_extrt3;
+	N_val_call_2587668 -> N_val_extrt4;
+	N_val_extrt3 -> N_instr_ret_2587645;
+	N_val_extrt4 -> N_instr_ret_2587645;
+}

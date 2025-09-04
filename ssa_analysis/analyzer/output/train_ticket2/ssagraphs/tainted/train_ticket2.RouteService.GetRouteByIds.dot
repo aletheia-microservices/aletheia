@@ -1,0 +1,38 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4613662 [label="return t8, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4613662 [label="return t8, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_4613653 [label="*t6 = t3", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4613653 [label="*t6 = t3", style=bold, shape=ellipse, color="blue"];
+	N_nil_2117707087 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_841229264 [label="nil:[]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route: nil:[]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4613658 [label="t5: new [1]Route (varargs)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_4613614 [label="t2: (*RouteServiceImpl).GetRouteById(r, ctx, t1)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4613644 [label="t8: append(nil:[]Route, t7...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_index_4613623 [label="t0: &ids[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_indext6 [label="t6: &t5[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4613231 [label="r: parameter r : *RouteServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4613266 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4613287 [label="ids: parameter ids : []string", style=bold, shape=ellipse, color="black"];
+	N_val_slicet7 [label="t7: slice t5[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4613623 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4613287 -> N_val_index_4613623;
+	N_val_index_4613623 -> N_val_unary_4613623;
+	N_val_param_4613231 -> N_val_call_4613614;
+	N_val_param_4613266 -> N_val_call_4613614;
+	N_val_unary_4613623 -> N_val_call_4613614;
+	N_val_call_4613614 -> N_val_extrt3;
+	N_val_call_4613614 -> N_val_extrt4;
+	N_val_alloc_4613658 -> N_val_indext6;
+	N_val_indext6 -> N_instr_store_4613653;
+	N_val_extrt3 -> N_instr_store_4613653;
+	N_val_alloc_4613658 -> N_val_slicet7;
+	N_nil_841229264 -> N_val_call_4613644;
+	N_val_slicet7 -> N_val_call_4613644;
+	N_val_call_4613644 -> N_instr_ret_4613662;
+	N_nil_2117707087 -> N_instr_ret_4613662;
+	N_val_indext6 -> N_val_alloc_4613658 [label="[*]", style=dashed, color=blue];
+	N_val_slicet7 -> N_val_alloc_4613658 [label="", style=dashed, color=blue];
+}

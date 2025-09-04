@@ -1,0 +1,36 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4375309 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4375309 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4375298 [label="t2: invoke t1.Delete(ctx, id)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt3 [label="t3: extract t2 #0
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Delete.t3
+", style=bold, shape=box, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Delete.t4
+", style=bold, shape=box, color="black"];
+	N_val_field_4375279 [label="t0: &a.trainService [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4375184 [label="a: parameter a : *AdminBasicInfoServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4375226 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4375247 [label="id: parameter id : string
+
+==== tainted ====
+_obj
+[rpc] @ TrainService.Delete.id
+", style=bold, shape=box, color="black"];
+	N_val_unary_4375279 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4375184 -> N_val_field_4375279;
+	N_val_field_4375279 -> N_val_unary_4375279;
+	N_val_param_4375226 -> N_val_call_4375298;
+	N_val_param_4375247 -> N_val_call_4375298;
+	N_val_unary_4375279 -> N_val_call_4375298;
+	N_val_call_4375298 -> N_val_extrt3;
+	N_val_call_4375298 -> N_val_extrt4;
+	N_val_extrt4 -> N_instr_ret_4375309;
+}

@@ -1,0 +1,17 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4375128 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4375128 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4375165 [label="t2: invoke t1.DeleteStation(ctx, id)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_4375137 [label="t0: &a.stationService [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_4375043 [label="a: parameter a : *AdminBasicInfoServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_4375087 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4375108 [label="id: parameter id : string", style=bold, shape=ellipse, color="black"];
+	N_val_unary_4375137 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_4375043 -> N_val_field_4375137;
+	N_val_field_4375137 -> N_val_unary_4375137;
+	N_val_param_4375087 -> N_val_call_4375165;
+	N_val_param_4375108 -> N_val_call_4375165;
+	N_val_unary_4375137 -> N_val_call_4375165;
+	N_val_call_4375165 -> N_instr_ret_4375128;
+}

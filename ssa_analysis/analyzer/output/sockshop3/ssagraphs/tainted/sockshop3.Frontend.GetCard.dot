@@ -1,0 +1,25 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2586110 [label="return struct{LongNum string; Expires string; CCV string; ID string}{}:Card, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2586110 [label="return struct{LongNum string; Expires string; CCV string; ID string}{}:Card, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_nil_441441598 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2586095 [label="t2: invoke t1.GetCards(ctx, cardID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2586082 [label="t0: &f.user [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2586002 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2586027 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2586048 [label="cardID: parameter cardID : string
+
+==== tainted ====
+_obj
+[rpc] @ UserService.GetCards.cardID
+", style=bold, shape=box, color="black"];
+	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card [label="struct{LongNum string; Expires string; CCV string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card: struct{LongNum string; Expires string; CCV string; ID string}{}:github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow/sockshop3.Card", style=bold, shape=ellipse, color="yellow"];
+	N_val_unary_2586082 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_param_2586002 -> N_val_field_2586082;
+	N_val_field_2586082 -> N_val_unary_2586082;
+	N_val_param_2586027 -> N_val_call_2586095;
+	N_val_param_2586048 -> N_val_call_2586095;
+	N_val_unary_2586082 -> N_val_call_2586095;
+	N_val_struct_LongNum_string__Expires_string__CCV_string__ID_string____github_com_blueprint_uservices_blueprint_examples_sockshop3_workflow_sockshop3_Card -> N_instr_ret_2586110;
+	N_nil_441441598 -> N_instr_ret_2586110;
+}

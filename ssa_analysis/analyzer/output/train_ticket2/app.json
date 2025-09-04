@@ -67,7 +67,8 @@
       ],
       "methods": [
         "AddOrder",
-        "DeleteOrder"
+        "DeleteOrder",
+        "GetAllOrders"
       ],
       "services": [
         "OrderService"
@@ -155,12 +156,23 @@
         "stationService #0 (station_service)",
         "trainService #1 (train_service)",
         "routeService #2 (route_service)",
-        "priceService #3 (price_service)"
+        "priceService #3 (price_service)",
+        "orderService #4 (order_service)",
+        "foodService #5 (food_service)",
+        "assuranceService #6 (assurance_service)",
+        "consignService #7 (consign_price_service)",
+        "deliveryService #8 (delivery_service)"
       ],
       "methods": [
-        "QueryForTravel"
+        "QueryForTravel",
+        "QueryOrderWithAllInfo"
       ],
       "services": [
+        "AssuranceService",
+        "ConsignService",
+        "DeliveryService",
+        "FoodService",
+        "OrderService",
         "PriceService",
         "RouteService",
         "StationService",
@@ -235,7 +247,8 @@
         "consignDB #1 (consign_db)"
       ],
       "methods": [
-        "InsertConsign"
+        "InsertConsign",
+        "FindConsign"
       ],
       "services": [
         "ConsignPriceService"
@@ -306,7 +319,8 @@
         "delQ #1 (delivery_queue)"
       ],
       "methods": [
-        "Run"
+        "Run",
+        "FindDelivery"
       ],
       "services": [],
       "databases": []
@@ -338,7 +352,8 @@
         "deliveryQueue #1 (delivery_queue)"
       ],
       "methods": [
-        "CreateFoodOrder"
+        "CreateFoodOrder",
+        "FindFoodOrder"
       ],
       "services": [],
       "databases": []

@@ -8,33 +8,33 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
-		N_Wrk2APIService_ReadHomeTimeline [label="Wrk2APIService.ReadHomeTimeline", style=bold, shape=box, color="blue"];
 		N_UserTimelineService_ReadUserTimeline [label="UserTimelineService.ReadUserTimeline", style=bold, shape=box, color="blue"];
 		N_ComposePostService_ComposePost [label="ComposePostService.ComposePost", style=bold, shape=box, color="blue"];
 		N_UniqueIdService_ComposeUniqueId [label="UniqueIdService.ComposeUniqueId", style=bold, shape=box, color="blue"];
-		N_Wrk2APIService_ReadUserTimeline [label="Wrk2APIService.ReadUserTimeline", style=bold, shape=box, color="blue"];
-		N_Wrk2APIService_ComposePost [label="Wrk2APIService.ComposePost", style=bold, shape=box, color="blue"];
-		N_SocialGraphService_GetFollowers [label="SocialGraphService.GetFollowers", style=bold, shape=box, color="blue"];
-		N_UserTimelineService_WriteUserTimeline [label="UserTimelineService.WriteUserTimeline", style=bold, shape=box, color="blue"];
-		N_HomeTimelineService_WriteHomeTimeline [label="HomeTimelineService.WriteHomeTimeline", style=bold, shape=box, color="blue"];
-		N_UrlShortenService_ComposeUrls [label="UrlShortenService.ComposeUrls", style=bold, shape=box, color="blue"];
+		N_UserService_ComposeCreatorWithUserId [label="UserService.ComposeCreatorWithUserId", style=bold, shape=box, color="blue"];
+		N_PostStorageService_StorePost [label="PostStorageService.StorePost", style=bold, shape=box, color="blue"];
 		N_UserMentionService_ComposeUserMentions [label="UserMentionService.ComposeUserMentions", style=bold, shape=box, color="blue"];
+		N_PostStorageService_ReadPosts [label="PostStorageService.ReadPosts", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_ReadUserTimeline [label="Wrk2APIService.ReadUserTimeline", style=bold, shape=box, color="blue"];
+		N_HomeTimelineService_WriteHomeTimeline [label="HomeTimelineService.WriteHomeTimeline", style=bold, shape=box, color="blue"];
 		N_TextService_ComposeText [label="TextService.ComposeText", style=bold, shape=box, color="blue"];
 		N_MediaService_ComposeMedia [label="MediaService.ComposeMedia", style=bold, shape=box, color="blue"];
-		N_PostStorageService_StorePost [label="PostStorageService.StorePost", style=bold, shape=box, color="blue"];
+		N_UrlShortenService_ComposeUrls [label="UrlShortenService.ComposeUrls", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_ComposePost [label="Wrk2APIService.ComposePost", style=bold, shape=box, color="blue"];
+		N_UserTimelineService_WriteUserTimeline [label="UserTimelineService.WriteUserTimeline", style=bold, shape=box, color="blue"];
+		N_SocialGraphService_GetFollowers [label="SocialGraphService.GetFollowers", style=bold, shape=box, color="blue"];
+		N_Wrk2APIService_ReadHomeTimeline [label="Wrk2APIService.ReadHomeTimeline", style=bold, shape=box, color="blue"];
 		N_HomeTimelineService_ReadHomeTimeline [label="HomeTimelineService.ReadHomeTimeline", style=bold, shape=box, color="blue"];
-		N_PostStorageService_ReadPosts [label="PostStorageService.ReadPosts", style=bold, shape=box, color="blue"];
-		N_UserService_ComposeCreatorWithUserId [label="UserService.ComposeCreatorWithUserId", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
 		N_usertimeline_cache_* [label="usertimeline_cache.*", style=bold, shape=cylinder, color="green"];
-		N_post_db_post [label="post_db.post", style=bold, shape=cylinder, color="green"];
-		N_socialgraph_cache_followers [label="socialgraph_cache.followers", style=bold, shape=cylinder, color="green"];
 		N_hometimeline_cache_* [label="hometimeline_cache.*", style=bold, shape=cylinder, color="green"];
-		N_socialgraph_db_socialgraph [label="socialgraph_db.socialgraph", style=bold, shape=cylinder, color="green"];
-		N_post_cache_* [label="post_cache.*", style=bold, shape=cylinder, color="green"];
 		N_usertimeline_db_usertimeline [label="usertimeline_db.usertimeline", style=bold, shape=cylinder, color="green"];
+		N_socialgraph_cache_followers [label="socialgraph_cache.followers", style=bold, shape=cylinder, color="green"];
+		N_socialgraph_db_socialgraph [label="socialgraph_db.socialgraph", style=bold, shape=cylinder, color="green"];
+		N_post_db_post [label="post_db.post", style=bold, shape=cylinder, color="green"];
+		N_post_cache_* [label="post_cache.*", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_Wrk2APIService_ComposePost [label="ComposePost()", color=orange];
 	N_Wrk2APIService_ComposePost -> N_ComposePostService_ComposePost [label="ComposePost()", color=blue];

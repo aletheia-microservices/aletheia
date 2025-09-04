@@ -52,7 +52,11 @@ func main() {
 	}
 
 	// ensure output sub directory for graphs exists
-	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs", appname), os.ModePerm)
+	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/tainted", appname), os.ModePerm)
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
+	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/untainted", appname), os.ModePerm)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
@@ -103,6 +107,10 @@ func main() {
 	registry.RegisterFields(app, graphsLst)
 	app.WriteAppToJSON()
 
+	for fn, ssagraph := range funcGraphs {
+		ssagraph.WriteToDOTFile(appname, fn, false)
+	}
+
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
@@ -143,7 +151,7 @@ func main() {
 	}
 
 	for fn, ssagraph := range funcGraphs {
-		ssagraph.WriteToDOTFile(appname, fn)
+		ssagraph.WriteToDOTFile(appname, fn, true)
 	}
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")

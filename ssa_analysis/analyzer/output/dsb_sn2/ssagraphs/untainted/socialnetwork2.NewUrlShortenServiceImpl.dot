@@ -1,0 +1,31 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2822117 [label="return t6, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2822117 [label="return t6, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2822159 [label="*t4 = urlShortenDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2822159 [label="*t4 = urlShortenDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2822183 [label="*t5 = \"http://short-url/\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2822183 [label="*t5 = \"http://short-url/\":string", style=bold, shape=ellipse, color="blue"];
+	N_nil_1803901169 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val__http___short_url___string [label="\"http://short-url/\":string: \"http://short-url/\":string", style=bold, shape=ellipse, color="blue"];
+	N_val_alloc_2822146 [label="t3: new UrlShortenServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_call_2822092 [label="t2: math/rand.Seed(t1)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2822101 [label="t0: time.Now()", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2822112 [label="t1: (time.Time).UnixNano(t0)", style=bold, shape=ellipse, color="yellow"];
+	N_val_field_2822159 [label="t4: &t3.urlShortenDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2822183 [label="t5: &t3.hostname [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet6 [label="t6: make UrlShortenService <- *UrlShortenServiceImpl (t3)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2821996 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2822017 [label="urlShortenDB: parameter urlShortenDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_call_2822101 -> N_val_call_2822112;
+	N_val_call_2822112 -> N_val_call_2822092;
+	N_val_alloc_2822146 -> N_val_field_2822159;
+	N_val_alloc_2822146 -> N_val_field_2822183;
+	N_val_field_2822159 -> N_instr_store_2822159;
+	N_val_param_2822017 -> N_instr_store_2822159;
+	N_val_field_2822183 -> N_instr_store_2822183;
+	N_val__http___short_url___string -> N_instr_store_2822183;
+	N_val_alloc_2822146 -> N_val_ifacet6;
+	N_val_ifacet6 -> N_instr_ret_2822117;
+	N_nil_1803901169 -> N_instr_ret_2822117;
+}

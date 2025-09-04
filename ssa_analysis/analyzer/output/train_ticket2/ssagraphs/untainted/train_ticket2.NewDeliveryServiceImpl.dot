@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4524241 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4524241 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_4524271 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4524271 [label="*t1 = db", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4524281 [label="*t2 = queue", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_4524281 [label="*t2 = queue", style=bold, shape=ellipse, color="blue"];
+	N_nil_1024273064 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_4524268 [label="t0: new DeliveryServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_4524271 [label="t1: &t0.db [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_4524281 [label="t2: &t0.delQ [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make DeliveryService <- *DeliveryServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_4524145 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4524166 [label="queue: parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue", style=bold, shape=ellipse, color="black"];
+	N_val_param_4524187 [label="db: parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_4524268 -> N_val_field_4524271;
+	N_val_alloc_4524268 -> N_val_field_4524281;
+	N_val_field_4524271 -> N_instr_store_4524271;
+	N_val_param_4524187 -> N_instr_store_4524271;
+	N_val_field_4524281 -> N_instr_store_4524281;
+	N_val_param_4524166 -> N_instr_store_4524281;
+	N_val_alloc_4524268 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_4524241;
+	N_nil_1024273064 -> N_instr_ret_4524241;
+}

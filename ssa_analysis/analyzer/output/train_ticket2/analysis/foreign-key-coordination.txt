@@ -1,4 +1,65 @@
 ---------------------------------------------------------------------
 ---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
 ---------------------------------------------------------------------
-[NUM_WARNINGS = 0]
+[NUM_WARNINGS = 10]
+entry request: BasicService.QueryOrderWithAllInfo()
+	FOREIGN KEY READS #1:
+		READ (ORIGIN): AssuranceService.FindAssuranceByOrderId() --> assurance_db.assurance.FindOne()
+			- field: assurance_db.assurance.OrderID
+		READ (FOREIGN KEY): FoodService.FindFoodOrder() --> food_db.food_order.FindOne()
+			- field: food_db.food_order.OrderID
+			- constraint: FOREIGN_KEY food_db.food_order.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]
+	FOREIGN KEY READS #2:
+		READ (ORIGIN): OrderService.Find() --> order_db.order.FindOne()
+			- field: order_db.order.ID
+		READ (FOREIGN KEY): AssuranceService.FindAssuranceByOrderId() --> assurance_db.assurance.FindOne()
+			- field: assurance_db.assurance.OrderID
+			- constraint: FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES order_db.order.ID [MANDATORY]
+	FOREIGN KEY READS #3:
+		READ (ORIGIN): AssuranceService.FindAssuranceByOrderId() --> assurance_db.assurance.FindOne()
+			- field: assurance_db.assurance.OrderID
+		READ (FOREIGN KEY): ConsignService.FindConsign() --> consign_db.consign_record.FindOne()
+			- field: consign_db.consign_record.OrderID
+			- constraint: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]
+	FOREIGN KEY READS #4:
+		READ (ORIGIN): FoodService.FindFoodOrder() --> food_db.food_order.FindOne()
+			- field: food_db.food_order.OrderID
+		READ (FOREIGN KEY): ConsignService.FindConsign() --> consign_db.consign_record.FindOne()
+			- field: consign_db.consign_record.OrderID
+			- constraint: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES food_db.food_order.OrderID [MANDATORY]
+	FOREIGN KEY READS #5:
+		READ (ORIGIN): OrderService.Find() --> order_db.order.FindOne()
+			- field: order_db.order.ID
+		READ (FOREIGN KEY): ConsignService.FindConsign() --> consign_db.consign_record.FindOne()
+			- field: consign_db.consign_record.OrderID
+			- constraint: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]
+	FOREIGN KEY READS #6:
+		READ (ORIGIN): AssuranceService.FindAssuranceByOrderId() --> assurance_db.assurance.FindOne()
+			- field: assurance_db.assurance.OrderID
+		READ (FOREIGN KEY): DeliveryService.FindDelivery() --> delivery_db.delivery.FindOne()
+			- field: delivery_db.delivery.OrderID
+			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]
+	FOREIGN KEY READS #7:
+		READ (ORIGIN): ConsignService.FindConsign() --> consign_db.consign_record.FindOne()
+			- field: consign_db.consign_record.OrderID
+		READ (FOREIGN KEY): DeliveryService.FindDelivery() --> delivery_db.delivery.FindOne()
+			- field: delivery_db.delivery.OrderID
+			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES consign_db.consign_record.OrderID [MANDATORY]
+	FOREIGN KEY READS #8:
+		READ (ORIGIN): FoodService.FindFoodOrder() --> food_db.food_order.FindOne()
+			- field: food_db.food_order.OrderID
+		READ (FOREIGN KEY): DeliveryService.FindDelivery() --> delivery_db.delivery.FindOne()
+			- field: delivery_db.delivery.OrderID
+			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES food_db.food_order.OrderID [MANDATORY]
+	FOREIGN KEY READS #9:
+		READ (ORIGIN): OrderService.Find() --> order_db.order.FindOne()
+			- field: order_db.order.ID
+		READ (FOREIGN KEY): DeliveryService.FindDelivery() --> delivery_db.delivery.FindOne()
+			- field: delivery_db.delivery.OrderID
+			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID [MANDATORY]
+	FOREIGN KEY READS #10:
+		READ (ORIGIN): OrderService.Find() --> order_db.order.FindOne()
+			- field: order_db.order.ID
+		READ (FOREIGN KEY): FoodService.FindFoodOrder() --> food_db.food_order.FindOne()
+			- field: food_db.food_order.OrderID
+			- constraint: FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID [MANDATORY]

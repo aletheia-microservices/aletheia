@@ -1,0 +1,42 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_4523115 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_4523115 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_4523142 [label="t2: invoke t1.Pay(ctx, payment)
+
+==== tainted ====
+_obj
+[rpc] @ PaymentService.Pay.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_field_4523124 [label="t0: &d.paymentService [#4]
+
+==== tainted ====
+_obj
+[rpc] @ PaymentService.Pay.t2
+", style=bold, shape=box, color="green"];
+	N_val_param_4523046 [label="d: parameter d : *DashboardImpl
+
+==== tainted ====
+_obj.paymentService
+[rpc] @ PaymentService.Pay.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_4523068 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_4523089 [label="payment: parameter payment : Payment
+
+==== tainted ====
+_obj
+[rpc] @ PaymentService.Pay.payment
+", style=bold, shape=box, color="black"];
+	N_val_unary_4523124 [label="t1: *t0
+
+==== tainted ====
+_obj
+[rpc] @ PaymentService.Pay.t2
+", style=bold, shape=box, color="red"];
+	N_val_param_4523046 -> N_val_field_4523124;
+	N_val_field_4523124 -> N_val_unary_4523124;
+	N_val_param_4523068 -> N_val_call_4523142;
+	N_val_param_4523089 -> N_val_call_4523142;
+	N_val_unary_4523124 -> N_val_call_4523142;
+	N_val_call_4523142 -> N_instr_ret_4523115;
+}

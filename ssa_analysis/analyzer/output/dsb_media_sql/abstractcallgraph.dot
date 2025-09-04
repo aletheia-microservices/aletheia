@@ -8,23 +8,23 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
+		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo", style=bold, shape=box, color="blue"];
+		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId", style=bold, shape=box, color="blue"];
+		N_CastInfoService_ReadCastInfo [label="CastInfoService.ReadCastInfo", style=bold, shape=box, color="blue"];
 		N_PlotService_ReadPlot [label="PlotService.ReadPlot", style=bold, shape=box, color="blue"];
 		N_APIService_RegisterMovie [label="APIService.RegisterMovie", style=bold, shape=box, color="blue"];
-		N_PlotService_WritePlot [label="PlotService.WritePlot", style=bold, shape=box, color="blue"];
+		N_APIService_ReadPage [label="APIService.ReadPage", style=bold, shape=box, color="blue"];
 		N_MovieIdService_ReadMovieId [label="MovieIdService.ReadMovieId", style=bold, shape=box, color="blue"];
-		N_MovieIdService_RegisterMovieId [label="MovieIdService.RegisterMovieId", style=bold, shape=box, color="blue"];
 		N_MovieInfoService_WriteMovieInfo [label="MovieInfoService.WriteMovieInfo", style=bold, shape=box, color="blue"];
 		N_CastInfoService_WriteCastInfo [label="CastInfoService.WriteCastInfo", style=bold, shape=box, color="blue"];
-		N_APIService_ReadPage [label="APIService.ReadPage", style=bold, shape=box, color="blue"];
-		N_MovieInfoService_ReadMovieInfo [label="MovieInfoService.ReadMovieInfo", style=bold, shape=box, color="blue"];
-		N_CastInfoService_ReadCastInfo [label="CastInfoService.ReadCastInfo", style=bold, shape=box, color="blue"];
+		N_PlotService_WritePlot [label="PlotService.WritePlot", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
 		N_movieid_db_movieid [label="movieid_db.movieid", style=bold, shape=cylinder, color="green"];
+		N_castinfo_db_castinfo [label="castinfo_db.castinfo", style=bold, shape=cylinder, color="green"];
 		N_movieinfo_db_movieinfo [label="movieinfo_db.movieinfo", style=bold, shape=cylinder, color="green"];
 		N_plot_db_plot [label="plot_db.plot", style=bold, shape=cylinder, color="green"];
-		N_castinfo_db_castinfo [label="castinfo_db.castinfo", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_APIService_ReadPage [label="ReadPage()", color=orange];
 	N_APIService_ReadPage -> N_MovieIdService_ReadMovieId [label="ReadMovieId()", color=blue];

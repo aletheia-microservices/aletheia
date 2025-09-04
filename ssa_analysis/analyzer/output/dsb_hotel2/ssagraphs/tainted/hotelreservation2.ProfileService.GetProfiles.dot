@@ -1,0 +1,291 @@
+digraph G {
+	rankdir=TD;
+	N_instr__164688846 [label="if t12 goto 7 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__164688846 [label="if t12 goto 7 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__1729669973 [label="if t4 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__1729669973 [label="if t4 goto 2 else 3", style=bold, shape=ellipse, color="black"];
+	N_instr__1786853678 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__1786853678 [label="jump 7", style=bold, shape=ellipse, color="black"];
+	N_instr__2084799033 [label="if t20 goto 8 else 9", style=bold, shape=ellipse, color="black"];
+	N_instr__2084799033 [label="if t20 goto 8 else 9", style=bold, shape=ellipse, color="black"];
+	N_instr__309772515 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__309772515 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__735429500 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__735429500 [label="jump 1", style=bold, shape=ellipse, color="black"];
+	N_instr__759951151 [label="if t14 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__759951151 [label="if t14 goto 4 else 5", style=bold, shape=ellipse, color="black"];
+	N_instr__779840324 [label="if t37 goto 10 else 11", style=bold, shape=ellipse, color="black"];
+	N_instr__779840324 [label="if t37 goto 10 else 11", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_3203315 [label="return t1, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203315 [label="return t1, t13", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203476 [label="return t27, t19", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203476 [label="return t27, t19", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203623 [label="return t1, t36", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203623 [label="return t1, t36", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203770 [label="return t1, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3203770 [label="return t1, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3203533 [label="*t30 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3203533 [label="*t30 = \"ID\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3203546 [label="*t31 = t32", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3203546 [label="*t31 = t32", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3203756 [label="*t23 = t21", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3203756 [label="*t23 = t21", style=bold, shape=ellipse, color="blue"];
+	N_nil_1836848209 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_1965327595 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_nil_851995961 [label="nil:[]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile: nil:[]github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow/hotelreservation2.HotelProfile
+
+==== tainted ====
+_obj[*]
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val__ID__string [label="\"ID\":string: \"ID\":string
+
+==== tainted ====
+_obj
+[read] @ profile_db.hotels.ID
+", style=bold, shape=box, color="blue"];
+	N_val__hotels__string [label="\"hotels\":string: \"hotels\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__profile_db__string [label="\"profile_db\":string: \"profile_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__1_int [label="-1:int: -1:int", style=bold, shape=ellipse, color="black"];
+	N_val_1_int [label="1:int: 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3203217 [label="t7: new HotelProfile (profile)
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_3203497 [label="t26: new [0]HotelProfile (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_3203528 [label="t28: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_3203763 [label="t22: new [1]HotelProfile (varargs)
+
+==== tainted ====
+_obj[*]
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_binary_3203303 [label="t14: t13 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3203463 [label="t20: t19 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_3203610 [label="t37: t36 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt3 [label="t3: t2 + 1:int", style=bold, shape=ellipse, color="black"];
+	N_val_binaryt4 [label="t4: t3 < t0", style=bold, shape=ellipse, color="black"];
+	N_val_call_3203273 [label="t11: invoke t9.Get(ctx, t6, t10)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3203423 [label="t17: invoke t16.GetCollection(ctx, \"profile_db\":string, \"hotels\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3203587 [label="t34: invoke t18.FindOne(ctx, t33, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3203659 [label="t39: invoke t35.One(ctx, t38)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3203702 [label="t44: invoke t41.Put(ctx, t6, t43)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_3203745 [label="t25: append(t1, t24...)
+
+==== tainted ====
+_obj[*]
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_callt0 [label="t0: len(hotelIds)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt12 [label="t12: extract t11 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt13 [label="t13: extract t11 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt18 [label="t18: extract t17 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t17 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt35 [label="t35: extract t34 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt36 [label="t36: extract t34 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_3203257 [label="t8: &p.profileCache [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3203400 [label="t15: &p.profileDB [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3203533 [label="t30: &t29.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3203546 [label="t31: &t29.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3203686 [label="t40: &p.profileCache [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- *HotelProfile (t7)
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_ifacet32 [label="t32: make interface{} <- string (t6)
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Key
+[read] @ profile_db.hotels.ID
+[write] @ profile_cache.*.Key
+", style=bold, shape=box, color="black"];
+	N_val_ifacet38 [label="t38: make interface{} <- *HotelProfile (t7)
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_ifacet43 [label="t43: make interface{} <- HotelProfile (t42)
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_index_3203200 [label="t5: &hotelIds[t3]
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Key
+[read] @ profile_db.hotels.ID
+[write] @ profile_cache.*.Key
+", style=bold, shape=box, color="green"];
+	N_val_indext23 [label="t23: &t22[0:int]
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="green"];
+	N_val_indext29 [label="t29: &t28[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_3203033 [label="p: parameter p : *ProfileServiceImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_3203068 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3203089 [label="hotelIds: parameter hotelIds : []string
+
+==== tainted ====
+_obj[*]
+[read] @ profile_cache.*.Key
+[read] @ profile_db.hotels.ID
+[write] @ profile_cache.*.Key
+", style=bold, shape=box, color="black"];
+	N_val_param_3203108 [label="locale: parameter locale : string", style=bold, shape=ellipse, color="black"];
+	N_val_phi_3203154 [label="t1: phi [0: nil:[]HotelProfile, 7: t25] #profiles
+
+==== tainted ====
+_obj[*]
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_phit2 [label="t2: phi [0: -1:int, 7: t3]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3203497 [label="t27: slice t26[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slice_3203528 [label="t33: slice t28[:]", style=bold, shape=ellipse, color="black"];
+	N_val_slicet24 [label="t24: slice t22[:]
+
+==== tainted ====
+_obj[*]
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="black"];
+	N_val_unary_3203257 [label="t9: *t8", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3203400 [label="t16: *t15", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3203686 [label="t41: *t40", style=bold, shape=ellipse, color="red"];
+	N_val_unary_3203713 [label="t42: *t7
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="red"];
+	N_val_unary_3203756 [label="t21: *t7
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Value
+[read] @ profile_db.hotels
+[write] @ profile_cache.*.Value
+", style=bold, shape=box, color="red"];
+	N_val_unaryt6 [label="t6: *t5
+
+==== tainted ====
+_obj
+[read] @ profile_cache.*.Key
+[read] @ profile_db.hotels.ID
+[write] @ profile_cache.*.Key
+", style=bold, shape=box, color="red"];
+	N_val_param_3203089 -> N_val_callt0;
+	N_nil_851995961 -> N_val_phi_3203154;
+	N_val_phi_3203154 -> N_val_call_3203745;
+	N_val_alloc_3203763 -> N_val_slicet24;
+	N_val_slicet24 -> N_val_call_3203745;
+	N_val_call_3203745 -> N_val_phi_3203154;
+	N_val__1_int -> N_val_phit2;
+	N_val_phit2 -> N_val_binaryt3;
+	N_val_1_int -> N_val_binaryt3;
+	N_val_binaryt3 -> N_val_phit2;
+	N_val_binaryt3 -> N_val_binaryt4;
+	N_val_callt0 -> N_val_binaryt4;
+	N_val_param_3203089 -> N_val_index_3203200;
+	N_val_index_3203200 -> N_val_unaryt6;
+	N_val_param_3203033 -> N_val_field_3203257;
+	N_val_field_3203257 -> N_val_unary_3203257;
+	N_val_alloc_3203217 -> N_val_ifacet10;
+	N_val_param_3203068 -> N_val_call_3203273;
+	N_val_unaryt6 -> N_val_call_3203273;
+	N_val_ifacet10 -> N_val_call_3203273;
+	N_val_unary_3203257 -> N_val_call_3203273;
+	N_val_call_3203273 -> N_val_extrt12;
+	N_val_call_3203273 -> N_val_extrt13;
+	N_val_extrt13 -> N_val_binary_3203303;
+	N_nil_1965327595 -> N_val_binary_3203303;
+	N_val_phi_3203154 -> N_instr_ret_3203770;
+	N_nil_1965327595 -> N_instr_ret_3203770;
+	N_val_phi_3203154 -> N_instr_ret_3203315;
+	N_val_extrt13 -> N_instr_ret_3203315;
+	N_val_param_3203033 -> N_val_field_3203400;
+	N_val_field_3203400 -> N_val_unary_3203400;
+	N_val_param_3203068 -> N_val_call_3203423;
+	N_val__profile_db__string -> N_val_call_3203423;
+	N_val__hotels__string -> N_val_call_3203423;
+	N_val_unary_3203400 -> N_val_call_3203423;
+	N_val_call_3203423 -> N_val_extrt18;
+	N_val_call_3203423 -> N_val_extrt19;
+	N_val_extrt19 -> N_val_binary_3203463;
+	N_nil_1965327595 -> N_val_binary_3203463;
+	N_val_alloc_3203217 -> N_val_unary_3203756;
+	N_val_alloc_3203763 -> N_val_indext23;
+	N_val_indext23 -> N_instr_store_3203756;
+	N_val_unary_3203756 -> N_instr_store_3203756;
+	N_val_alloc_3203497 -> N_val_slice_3203497;
+	N_val_slice_3203497 -> N_instr_ret_3203476;
+	N_val_extrt19 -> N_instr_ret_3203476;
+	N_val_alloc_3203528 -> N_val_indext29;
+	N_val_indext29 -> N_val_field_3203533;
+	N_val_indext29 -> N_val_field_3203546;
+	N_val_field_3203533 -> N_instr_store_3203533;
+	N_val__ID__string -> N_instr_store_3203533;
+	N_val_unaryt6 -> N_val_ifacet32;
+	N_val_field_3203546 -> N_instr_store_3203546;
+	N_val_ifacet32 -> N_instr_store_3203546;
+	N_val_alloc_3203528 -> N_val_slice_3203528;
+	N_val_param_3203068 -> N_val_call_3203587;
+	N_val_slice_3203528 -> N_val_call_3203587;
+	N_nil_1836848209 -> N_val_call_3203587;
+	N_val_extrt18 -> N_val_call_3203587;
+	N_val_call_3203587 -> N_val_extrt35;
+	N_val_call_3203587 -> N_val_extrt36;
+	N_val_extrt36 -> N_val_binary_3203610;
+	N_nil_1965327595 -> N_val_binary_3203610;
+	N_val_phi_3203154 -> N_instr_ret_3203623;
+	N_val_extrt36 -> N_instr_ret_3203623;
+	N_val_alloc_3203217 -> N_val_ifacet38;
+	N_val_param_3203068 -> N_val_call_3203659;
+	N_val_ifacet38 -> N_val_call_3203659;
+	N_val_extrt35 -> N_val_call_3203659;
+	N_val_param_3203033 -> N_val_field_3203686;
+	N_val_field_3203686 -> N_val_unary_3203686;
+	N_val_alloc_3203217 -> N_val_unary_3203713;
+	N_val_unary_3203713 -> N_val_ifacet43;
+	N_val_param_3203068 -> N_val_call_3203702;
+	N_val_unaryt6 -> N_val_call_3203702;
+	N_val_ifacet43 -> N_val_call_3203702;
+	N_val_unary_3203686 -> N_val_call_3203702;
+	N_val_indext23 -> N_val_alloc_3203763 [label="[*]", style=dashed, color=blue];
+	N_val_indext29 -> N_val_alloc_3203528 [label="[*]", style=dashed, color=blue];
+	N_val_field_3203533 -> N_val_alloc_3203528 [label="[*].Key", style=dashed, color=blue];
+	N_val_slice_3203528 -> N_val_alloc_3203528 [label="", style=dashed, color=blue];
+	N_val_field_3203546 -> N_val_alloc_3203528 [label="[*].Value", style=dashed, color=blue];
+	N_val_slicet24 -> N_val_alloc_3203763 [label="", style=dashed, color=blue];
+	N_val_slice_3203497 -> N_val_alloc_3203497 [label="", style=dashed, color=blue];
+}

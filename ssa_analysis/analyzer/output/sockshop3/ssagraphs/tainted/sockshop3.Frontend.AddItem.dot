@@ -1,0 +1,227 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1481688436 [label="if t9 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1481688436 [label="if t9 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1892085959 [label="jump 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1892085959 [label="jump 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1962149326 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__1962149326 [label="if t0 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2584683 [label="return t2, t8", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2584683 [label="return t2, t8", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2584925 [label="return t2, t23", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2584925 [label="return t2, t23", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2584622 [label="*t3 = t7", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584622 [label="*t3 = t7", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584876 [label="*t13 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584876 [label="*t13 = t15", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584895 [label="*t16 = 1:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584895 [label="*t16 = 1:int", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584909 [label="*t17 = t19", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2584909 [label="*t17 = t19", style=bold, shape=ellipse, color="blue"];
+	N_nil_836095055 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val____string [label="\"\":string: \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_1_int [label="1:int: 1:int
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t20.Quantity
+", style=bold, shape=box, color="blue"];
+	N_val_alloc_2584622 [label="t3: local Sock (sock)
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7
+_obj.ID
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+_obj.Price
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="orange"];
+	N_val_alloc_2584873 [label="t12: local Item (complit)
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t20
+_obj.ID
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+_obj.Quantity
+[rpc] @ CartService.AddItem.t20.Quantity
+_obj.UnitPrice
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="orange"];
+	N_val_binary_2584578 [label="t0: sessionID == \"\":string", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2584672 [label="t9: t8 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2584614 [label="t1: github.com/google/uuid.NewString()
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t2
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2584650 [label="t6: invoke t5.Get(ctx, itemID)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2584852 [label="t21: invoke t11.AddItem(ctx, t2, t20)", style=bold, shape=ellipse, color="yellow"];
+	N_val_extrt22 [label="t22: extract t21 #0
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t22
+", style=bold, shape=box, color="black"];
+	N_val_extrt23 [label="t23: extract t21 #1
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t23
+", style=bold, shape=box, color="black"];
+	N_val_extrt7 [label="t7: extract t6 #0
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7
+_obj.ID
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+_obj.Price
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="black"];
+	N_val_extrt8 [label="t8: extract t6 #1
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t8
+", style=bold, shape=box, color="black"];
+	N_val_field_2584637 [label="t4: &f.catalogue [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2584840 [label="t10: &f.cart [#2]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2584876 [label="t13: &t12.ID [#0]
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+", style=bold, shape=box, color="green"];
+	N_val_field_2584883 [label="t14: &t3.ID [#0]
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+", style=bold, shape=box, color="green"];
+	N_val_field_2584895 [label="t16: &t12.Quantity [#1]
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t20.Quantity
+", style=bold, shape=box, color="green"];
+	N_val_field_2584909 [label="t17: &t12.UnitPrice [#2]
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="green"];
+	N_val_field_2584916 [label="t18: &t3.Price [#6]
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="green"];
+	N_val_param_2584467 [label="f: parameter f : *FrontendImpl", style=bold, shape=ellipse, color="black"];
+	N_val_param_2584492 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2584513 [label="sessionID: parameter sessionID : string
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t2
+", style=bold, shape=box, color="black"];
+	N_val_param_2584531 [label="itemID: parameter itemID : string
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.itemID
+", style=bold, shape=box, color="black"];
+	N_val_phi_2584513 [label="t2: phi [0: sessionID, 1: t1] #sessionID
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t2
+", style=bold, shape=box, color="black"];
+	N_val_unary_2584637 [label="t5: *t4", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2584840 [label="t11: *t10", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2584873 [label="t20: *t12
+
+==== tainted ====
+_obj
+[rpc] @ CartService.AddItem.t20
+_obj.ID
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+_obj.Quantity
+[rpc] @ CartService.AddItem.t20.Quantity
+_obj.UnitPrice
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="red"];
+	N_val_unary_2584883 [label="t15: *t14
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7.ID
+[rpc] @ CartService.AddItem.t20.ID
+", style=bold, shape=box, color="red"];
+	N_val_unary_2584916 [label="t19: *t18
+
+==== tainted ====
+_obj
+[rpc] @ CatalogueService.Get.t7.Price
+[rpc] @ CartService.AddItem.t20.UnitPrice
+", style=bold, shape=box, color="red"];
+	N_val_param_2584513 -> N_val_binary_2584578;
+	N_val____string -> N_val_binary_2584578;
+	N_val_param_2584513 -> N_val_phi_2584513;
+	N_val_call_2584614 -> N_val_phi_2584513;
+	N_val_param_2584467 -> N_val_field_2584637;
+	N_val_field_2584637 -> N_val_unary_2584637;
+	N_val_param_2584492 -> N_val_call_2584650;
+	N_val_param_2584531 -> N_val_call_2584650;
+	N_val_unary_2584637 -> N_val_call_2584650;
+	N_val_call_2584650 -> N_val_extrt7;
+	N_val_alloc_2584622 -> N_instr_store_2584622;
+	N_val_extrt7 -> N_instr_store_2584622;
+	N_val_call_2584650 -> N_val_extrt8;
+	N_val_extrt8 -> N_val_binary_2584672;
+	N_nil_836095055 -> N_val_binary_2584672;
+	N_val_phi_2584513 -> N_instr_ret_2584683;
+	N_val_extrt8 -> N_instr_ret_2584683;
+	N_val_param_2584467 -> N_val_field_2584840;
+	N_val_field_2584840 -> N_val_unary_2584840;
+	N_val_alloc_2584873 -> N_val_field_2584876;
+	N_val_alloc_2584622 -> N_val_field_2584883;
+	N_val_field_2584883 -> N_val_unary_2584883;
+	N_val_alloc_2584873 -> N_val_field_2584895;
+	N_val_alloc_2584873 -> N_val_field_2584909;
+	N_val_alloc_2584622 -> N_val_field_2584916;
+	N_val_field_2584916 -> N_val_unary_2584916;
+	N_val_field_2584876 -> N_instr_store_2584876;
+	N_val_unary_2584883 -> N_instr_store_2584876;
+	N_val_field_2584895 -> N_instr_store_2584895;
+	N_val_1_int -> N_instr_store_2584895;
+	N_val_field_2584909 -> N_instr_store_2584909;
+	N_val_unary_2584916 -> N_instr_store_2584909;
+	N_val_alloc_2584873 -> N_val_unary_2584873;
+	N_val_param_2584492 -> N_val_call_2584852;
+	N_val_phi_2584513 -> N_val_call_2584852;
+	N_val_unary_2584873 -> N_val_call_2584852;
+	N_val_unary_2584840 -> N_val_call_2584852;
+	N_val_call_2584852 -> N_val_extrt22;
+	N_val_call_2584852 -> N_val_extrt23;
+	N_val_phi_2584513 -> N_instr_ret_2584925;
+	N_val_extrt23 -> N_instr_ret_2584925;
+	N_val_field_2584883 -> N_val_alloc_2584622 [label=".ID", style=dashed, color=blue];
+	N_val_field_2584876 -> N_val_alloc_2584873 [label=".ID", style=dashed, color=blue];
+	N_val_field_2584916 -> N_val_alloc_2584622 [label=".Price", style=dashed, color=blue];
+	N_val_field_2584909 -> N_val_alloc_2584873 [label=".UnitPrice", style=dashed, color=blue];
+	N_val_field_2584895 -> N_val_alloc_2584873 [label=".Quantity", style=dashed, color=blue];
+}

@@ -1,0 +1,20 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_2800360 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2800360 [label="return t2, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2800344 [label="*t1 = movieInfoDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2800344 [label="*t1 = movieInfoDB", style=bold, shape=ellipse, color="blue"];
+	N_nil_956813754 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2800332 [label="t0: new MovieInfoServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_2800344 [label="t1: &t0.movieInfoDB [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet2 [label="t2: make MovieInfoService <- *MovieInfoServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_2800222 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2800243 [label="movieInfoDB: parameter movieInfoDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_2800332 -> N_val_field_2800344;
+	N_val_field_2800344 -> N_instr_store_2800344;
+	N_val_param_2800243 -> N_instr_store_2800344;
+	N_val_alloc_2800332 -> N_val_ifacet2;
+	N_val_ifacet2 -> N_instr_ret_2800360;
+	N_nil_956813754 -> N_instr_ret_2800360;
+	N_val_field_2800344 -> N_val_alloc_2800332 [label=".movieInfoDB", style=dashed, color=blue];
+}

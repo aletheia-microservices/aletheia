@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=TD;
+	N_instr_ret_3204564 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_3204564 [label="return t3, nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_3204597 [label="*t1 = rateCache", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3204597 [label="*t1 = rateCache", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3204616 [label="*t2 = rateDB", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_3204616 [label="*t2 = rateDB", style=bold, shape=ellipse, color="blue"];
+	N_nil_437439119 [label="nil:error: nil:error", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_3204587 [label="t0: new RateServiceImpl (complit)", style=bold, shape=ellipse, color="orange"];
+	N_val_field_3204597 [label="t1: &t0.rateCache [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_3204616 [label="t2: &t0.rateDB [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_ifacet3 [label="t3: make RateService <- *RateServiceImpl (t0)", style=bold, shape=ellipse, color="black"];
+	N_val_param_3204464 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_3204485 [label="rateCache: parameter rateCache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache", style=bold, shape=ellipse, color="black"];
+	N_val_param_3204510 [label="rateDB: parameter rateDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase", style=bold, shape=ellipse, color="black"];
+	N_val_alloc_3204587 -> N_val_field_3204597;
+	N_val_alloc_3204587 -> N_val_field_3204616;
+	N_val_field_3204597 -> N_instr_store_3204597;
+	N_val_param_3204485 -> N_instr_store_3204597;
+	N_val_field_3204616 -> N_instr_store_3204616;
+	N_val_param_3204510 -> N_instr_store_3204616;
+	N_val_alloc_3204587 -> N_val_ifacet3;
+	N_val_ifacet3 -> N_instr_ret_3204564;
+	N_nil_437439119 -> N_instr_ret_3204564;
+}

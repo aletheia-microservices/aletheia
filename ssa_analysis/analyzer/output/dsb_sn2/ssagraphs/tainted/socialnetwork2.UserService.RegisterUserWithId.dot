@@ -1,0 +1,414 @@
+digraph G {
+	rankdir=TD;
+	N_instr__1099694671 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1099694671 [label="if t15 goto 3 else 4", style=bold, shape=ellipse, color="black"];
+	N_instr__1715028991 [label="if t19 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__1715028991 [label="if t19 goto 7 else 8", style=bold, shape=ellipse, color="black"];
+	N_instr__326108408 [label="if t36 goto 9 else 10", style=bold, shape=ellipse, color="black"];
+	N_instr__326108408 [label="if t36 goto 9 else 10", style=bold, shape=ellipse, color="black"];
+	N_instr__551996506 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__551996506 [label="if t5 goto 1 else 2", style=bold, shape=ellipse, color="black"];
+	N_instr__822710438 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr__822710438 [label="if t21 goto 5 else 6", style=bold, shape=ellipse, color="black"];
+	N_instr_ret_2834085 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834085 [label="return t4", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834215 [label="return t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834215 [label="return t14", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834299 [label="return t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834299 [label="return t20", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834328 [label="return t22", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834328 [label="return t22", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834642 [label="return t35", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834642 [label="return t35", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834657 [label="return t39", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2834657 [label="return t39", style=bold, shape=ellipse, color="yellow"];
+	N_instr_store_2834120 [label="*t8 = \"Username\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834120 [label="*t8 = \"Username\":string", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834139 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834139 [label="*t9 = t10", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834477 [label="*t27 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834477 [label="*t27 = userID", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834496 [label="*t28 = firstName", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834496 [label="*t28 = firstName", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834517 [label="*t29 = lastName", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834517 [label="*t29 = lastName", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834538 [label="*t30 = t26", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834538 [label="*t30 = t26", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834556 [label="*t31 = t23", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834556 [label="*t31 = t23", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834572 [label="*t32 = username", style=bold, shape=ellipse, color="blue"];
+	N_instr_store_2834572 [label="*t32 = username", style=bold, shape=ellipse, color="blue"];
+	N_nil_373492554 [label="nil:[]go.mongodb.org/mongo-driver/bson/primitive.D: nil:[]go.mongodb.org/mongo-driver/bson/primitive.D", style=bold, shape=ellipse, color="yellow"];
+	N_nil_526473964 [label="nil:error: nil:error", style=bold, shape=ellipse, color="black"];
+	N_val__Username_already______string [label="\"Username already ...\":string: \"Username already ...\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__Username__string [label="\"Username\":string: \"Username\":string
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Username
+", style=bold, shape=box, color="blue"];
+	N_val__user__string [label="\"user\":string: \"user\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val__user_db__string [label="\"user_db\":string: \"user_db\":string", style=bold, shape=ellipse, color="yellow"];
+	N_val_32_int [label="32:int: 32:int", style=bold, shape=ellipse, color="yellow"];
+	N_val_alloc_2834115 [label="t6: new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)", style=bold, shape=ellipse, color="orange"];
+	N_val_alloc_2834234 [label="t16: new User (user)
+
+==== tainted ====
+_obj
+[read] @ user_db.user
+[write] @ user_db.user
+_obj.FirstName
+[read] @ user_db.user.FirstName
+[write] @ user_db.user.FirstName
+_obj.LastName
+[read] @ user_db.user.LastName
+[write] @ user_db.user.LastName
+_obj.PwdHashed
+[read] @ user_db.user.PwdHashed
+[write] @ user_db.user.PwdHashed
+_obj.Salt
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+_obj.UserID
+[read] @ user_db.user.UserID
+[write] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+_obj.Username
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="orange"];
+	N_val_binary_2834074 [label="t5: t4 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2834204 [label="t15: t14 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2834288 [label="t21: t20 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_binary_2834449 [label="t24: password + t23
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+", style=bold, shape=box, color="black"];
+	N_val_binary_2834631 [label="t36: t35 != nil:error", style=bold, shape=ellipse, color="black"];
+	N_val_call_2834041 [label="t2: invoke t1.GetCollection(ctx, \"user_db\":string, \"user\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2834183 [label="t12: invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson/primitive.D...)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2834267 [label="t18: invoke t13.One(ctx, t17)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2834345 [label="t22: errors.New(\"Username already ...\":string)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2834403 [label="t23: (*UserServiceImpl).genRandomStr(u, 32:int)
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2834432 [label="t26: (*UserServiceImpl).hashPwd(u, t25)
+
+==== tainted ====
+_obj
+[read] @ user_db.user.PwdHashed
+[write] @ user_db.user.PwdHashed
+", style=bold, shape=box, color="yellow"];
+	N_val_call_2834611 [label="t35: invoke t3.InsertOne(ctx, t34)", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2834695 [label="t39: invoke t38.InsertUser(ctx, reqID, userID)
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.InsertUser.t39
+", style=bold, shape=box, color="yellow"];
+	N_val_conv_2834439 [label="t25: convert []byte <- string (t24)
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+", style=bold, shape=box, color="black"];
+	N_val_extrt13 [label="t13: extract t12 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt14 [label="t14: extract t12 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt19 [label="t19: extract t18 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt20 [label="t20: extract t18 #1", style=bold, shape=ellipse, color="black"];
+	N_val_extrt3 [label="t3: extract t2 #0", style=bold, shape=ellipse, color="black"];
+	N_val_extrt4 [label="t4: extract t2 #1", style=bold, shape=ellipse, color="black"];
+	N_val_field_2834021 [label="t0: &u.userDB [#5]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2834120 [label="t8: &t7.Key [#0]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2834139 [label="t9: &t7.Value [#1]", style=bold, shape=ellipse, color="green"];
+	N_val_field_2834477 [label="t27: &t16.UserID [#0]
+
+==== tainted ====
+_obj
+[read] @ user_db.user.UserID
+[write] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+", style=bold, shape=box, color="green"];
+	N_val_field_2834496 [label="t28: &t16.FirstName [#1]
+
+==== tainted ====
+_obj
+[read] @ user_db.user.FirstName
+[write] @ user_db.user.FirstName
+", style=bold, shape=box, color="green"];
+	N_val_field_2834517 [label="t29: &t16.LastName [#2]
+
+==== tainted ====
+_obj
+[read] @ user_db.user.LastName
+[write] @ user_db.user.LastName
+", style=bold, shape=box, color="green"];
+	N_val_field_2834538 [label="t30: &t16.PwdHashed [#4]
+
+==== tainted ====
+_obj
+[read] @ user_db.user.PwdHashed
+[write] @ user_db.user.PwdHashed
+", style=bold, shape=box, color="green"];
+	N_val_field_2834556 [label="t31: &t16.Salt [#5]
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+", style=bold, shape=box, color="green"];
+	N_val_field_2834572 [label="t32: &t16.Username [#3]
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="green"];
+	N_val_field_2834666 [label="t37: &u.socialGraphService [#6]
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.InsertUser.t39
+", style=bold, shape=box, color="green"];
+	N_val_ifacet10 [label="t10: make interface{} <- string (username)
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="black"];
+	N_val_ifacet17 [label="t17: make interface{} <- *User (t16)
+
+==== tainted ====
+_obj
+[read] @ user_db.user
+[write] @ user_db.user
+_obj.FirstName
+[read] @ user_db.user.FirstName
+[write] @ user_db.user.FirstName
+_obj.LastName
+[read] @ user_db.user.LastName
+[write] @ user_db.user.LastName
+_obj.PwdHashed
+[read] @ user_db.user.PwdHashed
+[write] @ user_db.user.PwdHashed
+_obj.Salt
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+_obj.UserID
+[read] @ user_db.user.UserID
+[write] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+_obj.Username
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="black"];
+	N_val_ifacet34 [label="t34: make interface{} <- User (t33)
+
+==== tainted ====
+_obj
+[read] @ user_db.user
+[write] @ user_db.user
+_obj.FirstName
+[read] @ user_db.user.FirstName
+[write] @ user_db.user.FirstName
+_obj.LastName
+[read] @ user_db.user.LastName
+[write] @ user_db.user.LastName
+_obj.PwdHashed
+[read] @ user_db.user.PwdHashed
+[write] @ user_db.user.PwdHashed
+_obj.Salt
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+_obj.UserID
+[read] @ user_db.user.UserID
+[write] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+_obj.Username
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="black"];
+	N_val_indext7 [label="t7: &t6[0:int]", style=bold, shape=ellipse, color="green"];
+	N_val_param_2833835 [label="u: parameter u : *UserServiceImpl
+
+==== tainted ====
+_obj.socialGraphService
+[rpc] @ SocialGraphService.InsertUser.t39
+", style=bold, shape=box, color="black"];
+	N_val_param_2833874 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2833895 [label="reqID: parameter reqID : int64
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.InsertUser.reqID
+", style=bold, shape=box, color="black"];
+	N_val_param_2833908 [label="firstName: parameter firstName : string
+
+==== tainted ====
+_obj
+[read] @ user_db.user.FirstName
+[write] @ user_db.user.FirstName
+", style=bold, shape=box, color="black"];
+	N_val_param_2833926 [label="lastName: parameter lastName : string
+
+==== tainted ====
+_obj
+[read] @ user_db.user.LastName
+[write] @ user_db.user.LastName
+", style=bold, shape=box, color="black"];
+	N_val_param_2833943 [label="username: parameter username : string
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="black"];
+	N_val_param_2833960 [label="password: parameter password : string
+
+==== tainted ====
+_obj
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+", style=bold, shape=box, color="black"];
+	N_val_param_2833977 [label="userID: parameter userID : int64
+
+==== tainted ====
+_obj
+[read] @ user_db.user.UserID
+[write] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+", style=bold, shape=box, color="black"];
+	N_val_slice_2834115 [label="t11: slice t6[:]", style=bold, shape=ellipse, color="black"];
+	N_val_unary_2834021 [label="t1: *t0", style=bold, shape=ellipse, color="red"];
+	N_val_unary_2834617 [label="t33: *t16
+
+==== tainted ====
+_obj
+[read] @ user_db.user
+[write] @ user_db.user
+_obj.FirstName
+[read] @ user_db.user.FirstName
+[write] @ user_db.user.FirstName
+_obj.LastName
+[read] @ user_db.user.LastName
+[write] @ user_db.user.LastName
+_obj.PwdHashed
+[read] @ user_db.user.PwdHashed
+[write] @ user_db.user.PwdHashed
+_obj.Salt
+[read] @ user_db.user.Salt
+[write] @ user_db.user.Salt
+_obj.UserID
+[read] @ user_db.user.UserID
+[write] @ user_db.user.UserID
+[rpc] @ SocialGraphService.InsertUser.userID
+_obj.Username
+[read] @ user_db.user.Username
+[write] @ user_db.user.Username
+", style=bold, shape=box, color="red"];
+	N_val_unary_2834666 [label="t38: *t37
+
+==== tainted ====
+_obj
+[rpc] @ SocialGraphService.InsertUser.t39
+", style=bold, shape=box, color="red"];
+	N_val_param_2833835 -> N_val_field_2834021;
+	N_val_field_2834021 -> N_val_unary_2834021;
+	N_val_param_2833874 -> N_val_call_2834041;
+	N_val__user_db__string -> N_val_call_2834041;
+	N_val__user__string -> N_val_call_2834041;
+	N_val_unary_2834021 -> N_val_call_2834041;
+	N_val_call_2834041 -> N_val_extrt3;
+	N_val_call_2834041 -> N_val_extrt4;
+	N_val_extrt4 -> N_val_binary_2834074;
+	N_nil_526473964 -> N_val_binary_2834074;
+	N_val_extrt4 -> N_instr_ret_2834085;
+	N_val_alloc_2834115 -> N_val_indext7;
+	N_val_indext7 -> N_val_field_2834120;
+	N_val_indext7 -> N_val_field_2834139;
+	N_val_field_2834120 -> N_instr_store_2834120;
+	N_val__Username__string -> N_instr_store_2834120;
+	N_val_param_2833943 -> N_val_ifacet10;
+	N_val_field_2834139 -> N_instr_store_2834139;
+	N_val_ifacet10 -> N_instr_store_2834139;
+	N_val_alloc_2834115 -> N_val_slice_2834115;
+	N_val_param_2833874 -> N_val_call_2834183;
+	N_val_slice_2834115 -> N_val_call_2834183;
+	N_nil_373492554 -> N_val_call_2834183;
+	N_val_extrt3 -> N_val_call_2834183;
+	N_val_call_2834183 -> N_val_extrt13;
+	N_val_call_2834183 -> N_val_extrt14;
+	N_val_extrt14 -> N_val_binary_2834204;
+	N_nil_526473964 -> N_val_binary_2834204;
+	N_val_extrt14 -> N_instr_ret_2834215;
+	N_val_alloc_2834234 -> N_val_ifacet17;
+	N_val_param_2833874 -> N_val_call_2834267;
+	N_val_ifacet17 -> N_val_call_2834267;
+	N_val_extrt13 -> N_val_call_2834267;
+	N_val_call_2834267 -> N_val_extrt19;
+	N_val_call_2834267 -> N_val_extrt20;
+	N_val_extrt20 -> N_val_binary_2834288;
+	N_nil_526473964 -> N_val_binary_2834288;
+	N_val_extrt20 -> N_instr_ret_2834299;
+	N_val__Username_already______string -> N_val_call_2834345;
+	N_val_call_2834345 -> N_instr_ret_2834328;
+	N_val_param_2833835 -> N_val_call_2834403;
+	N_val_32_int -> N_val_call_2834403;
+	N_val_param_2833960 -> N_val_binary_2834449;
+	N_val_call_2834403 -> N_val_binary_2834449;
+	N_val_binary_2834449 -> N_val_conv_2834439;
+	N_val_param_2833835 -> N_val_call_2834432;
+	N_val_conv_2834439 -> N_val_call_2834432;
+	N_val_alloc_2834234 -> N_val_field_2834477;
+	N_val_alloc_2834234 -> N_val_field_2834496;
+	N_val_alloc_2834234 -> N_val_field_2834517;
+	N_val_alloc_2834234 -> N_val_field_2834538;
+	N_val_alloc_2834234 -> N_val_field_2834556;
+	N_val_alloc_2834234 -> N_val_field_2834572;
+	N_val_field_2834477 -> N_instr_store_2834477;
+	N_val_param_2833977 -> N_instr_store_2834477;
+	N_val_field_2834496 -> N_instr_store_2834496;
+	N_val_param_2833908 -> N_instr_store_2834496;
+	N_val_field_2834517 -> N_instr_store_2834517;
+	N_val_param_2833926 -> N_instr_store_2834517;
+	N_val_field_2834538 -> N_instr_store_2834538;
+	N_val_call_2834432 -> N_instr_store_2834538;
+	N_val_field_2834556 -> N_instr_store_2834556;
+	N_val_call_2834403 -> N_instr_store_2834556;
+	N_val_field_2834572 -> N_instr_store_2834572;
+	N_val_param_2833943 -> N_instr_store_2834572;
+	N_val_alloc_2834234 -> N_val_unary_2834617;
+	N_val_unary_2834617 -> N_val_ifacet34;
+	N_val_param_2833874 -> N_val_call_2834611;
+	N_val_ifacet34 -> N_val_call_2834611;
+	N_val_extrt3 -> N_val_call_2834611;
+	N_val_call_2834611 -> N_val_binary_2834631;
+	N_nil_526473964 -> N_val_binary_2834631;
+	N_val_call_2834611 -> N_instr_ret_2834642;
+	N_val_param_2833835 -> N_val_field_2834666;
+	N_val_field_2834666 -> N_val_unary_2834666;
+	N_val_param_2833874 -> N_val_call_2834695;
+	N_val_param_2833895 -> N_val_call_2834695;
+	N_val_param_2833977 -> N_val_call_2834695;
+	N_val_unary_2834666 -> N_val_call_2834695;
+	N_val_call_2834695 -> N_instr_ret_2834657;
+	N_val_field_2834556 -> N_val_alloc_2834234 [label=".Salt", style=dashed, color=blue];
+	N_val_field_2834572 -> N_val_alloc_2834234 [label=".Username", style=dashed, color=blue];
+	N_val_field_2834477 -> N_val_alloc_2834234 [label=".UserID", style=dashed, color=blue];
+	N_val_field_2834496 -> N_val_alloc_2834234 [label=".FirstName", style=dashed, color=blue];
+	N_val_field_2834120 -> N_val_alloc_2834115 [label="[*].Key", style=dashed, color=blue];
+	N_val_field_2834139 -> N_val_alloc_2834115 [label="[*].Value", style=dashed, color=blue];
+	N_val_indext7 -> N_val_alloc_2834115 [label="[*]", style=dashed, color=blue];
+	N_val_field_2834517 -> N_val_alloc_2834234 [label=".LastName", style=dashed, color=blue];
+	N_val_slice_2834115 -> N_val_alloc_2834115 [label="", style=dashed, color=blue];
+	N_val_field_2834538 -> N_val_alloc_2834234 [label=".PwdHashed", style=dashed, color=blue];
+}
