@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"log"
 	"os"
+	"time"
 
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
@@ -67,6 +68,8 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
+	start := time.Now()
+
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
@@ -76,9 +79,9 @@ func main() {
 	app.ParseSchemaFromUserFile()
 
 	fmt.Println("[INFO] running analysis for packages:")
-	for _, pkg := range pkgs {
+	/* for _, pkg := range pkgs {
 		fmt.Printf("\t- %s\n", pkg.String())
-	}
+	} */
 
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
@@ -105,17 +108,17 @@ func main() {
 	}
 
 	registry.RegisterFields(app, graphsLst)
-	app.WriteAppToJSON()
+	/* app.WriteAppToJSON() */
 
-	for fn, ssagraph := range funcGraphs {
+	/* for fn, ssagraph := range funcGraphs {
 		ssagraph.WriteToDOTFile(appname, fn, false)
-	}
+	} */
 
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
 
-	fmt.Print("\n\n ========== NODES ========== \n\n")
+	/* fmt.Print("\n\n ========== NODES ========== \n\n")
 	for fn, ssagraph := range funcGraphs {
 		for _, node := range ssagraph.GetNodes() {
 			var prefix string
@@ -130,13 +133,13 @@ func main() {
 				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetValue(), prefix, node.GetValue().String())
 			}
 		}
-	}
+	} */
 
-	for fn, ssagraph := range funcGraphs {
+	/* for fn, ssagraph := range funcGraphs {
 		fmt.Printf("[MAIN] go ssa graph for (%s): %v\n", fn, ssagraph)
-	}
+	} */
 
-	fmt.Print("\n\n ========== TAINTS ========== \n\n")
+	/* fmt.Print("\n\n ========== TAINTS ========== \n\n")
 	for fn, ssagraph := range funcGraphs {
 		for _, node := range ssagraph.GetNodes() {
 			if node.IsTainted() {
@@ -148,18 +151,20 @@ func main() {
 				}
 			}
 		}
-	}
+	} */
 
-	for fn, ssagraph := range funcGraphs {
+	/* for fn, ssagraph := range funcGraphs {
 		ssagraph.WriteToDOTFile(appname, fn, true)
-	}
+	} */
 
 	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
-
+	
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
+
+	elapsed_parsing := time.Since(start)
 
 	detector1 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_PRIMARY_KEY)
 	detector2 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_FOREIGN_KEY)
@@ -167,18 +172,24 @@ func main() {
 	detector4 := foreignkeyconcurrency.NewDetector()
 	detector5 := unicityconcurrency.NewDetector()
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
+
+	start_schema := time.Now()
 	// phase 1: two passes
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
+
+	elapsed_schema := time.Since(start_schema)
+	start_detection := time.Now()
+
 	// phase 2: one pass
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
 
-	absgraph.WriteToDOTFile(appname, true)
+	/* absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
 	app.WriteAppToJSON()
-	app.WriteSchemaToJSON()
+	app.WriteSchemaToJSON() */
 
-	fmt.Print("\n\n ========== SERVICE CALLS ========== \n\n")
+	/* fmt.Print("\n\n ========== SERVICE CALLS ========== \n\n")
 	for _, node := range absgraph.GetNodes() {
 		if node.GetNodeType() == abstractgraph.NODE_SERVICE {
 			for _, edge := range absgraph.GetEdgesToNode(node) {
@@ -201,9 +212,9 @@ func main() {
 				fmt.Println()
 			}
 		}
-	}
+	} */
 
-	fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
+	/* fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
 	for _, node := range absgraph.GetNodes() {
 		if node.GetNodeType() == abstractgraph.NODE_DATABASE {
 			for _, edge := range absgraph.GetEdgesToNode(node) {
@@ -214,7 +225,10 @@ func main() {
 				fmt.Println()
 			}
 		}
-	}
+	} */
+
+	elapsed_total := time.Since(start)
+	elapsed_detection := time.Since(start_detection)
 
 	fmt.Print("\n\n ========== APP ========== \n\n")
 	fmt.Println(app.String())
@@ -223,6 +237,11 @@ func main() {
 	for _, result := range results {
 		fmt.Println(result)
 	}
+
+	fmt.Printf("Execution time (TOTAL): %.3f s\n", elapsed_total.Seconds())
+	fmt.Printf("Execution time (PARSING): %.3f s\n", elapsed_parsing.Seconds())
+	fmt.Printf("Execution time (SCHEMA): %.3f s\n", elapsed_schema.Seconds())
+	fmt.Printf("Execution time (DETECTION): %.3f s\n", elapsed_detection.Seconds())
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
