@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"analyzer/pkg/common"
 	"analyzer/pkg/utils"
 )
 
@@ -96,7 +95,7 @@ func (tm *TaintMapping) String() string {
 } */
 
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool, traced bool) *TaintMapping {
-	fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
+	//EVAL - fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
 	var taintMapping *TaintMapping
 
 	if !primary {
@@ -104,7 +103,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 	}
 
 	for objpath, otherTaints := range otherTaintsMap {
-		fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
+		//EVAL - fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
 		existingTaints := obj.taints[objpath]
 
 		exists := func(otherTaint *AbstractTaint) (string, bool) {
@@ -112,7 +111,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 				if existingTaint.Equals(otherTaint) {
 					return objpath, true
 				}
-				fmt.Printf("[TAINTMAPPING] checking if upper path (%s) vs (%s)\n", existingTaint.fieldpath, otherTaint.fieldpath)
+				//EVAL - fmt.Printf("[TAINTMAPPING] checking if upper path (%s) vs (%s)\n", existingTaint.fieldpath, otherTaint.fieldpath)
 				if ok, subpath := existingTaint.IsUpperPath(otherTaint); ok {
 					return objpath + subpath, false
 				}
@@ -131,7 +130,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 					primary, traced,
 				)
 
-				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
+				//EVAL - fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
 				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
 
 				// NOTE: explores all upper paths
@@ -139,7 +138,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 				// trace info for arguments and (especially) returns
 				// can still lead to secondary taints that we still want to track
 				if !primary {
-					fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding mapping for objpath={%s} // taint={%s} // traced={%t}\n", obj.String(), objpath, newTaint.LongString(), traced)
+					//EVAL - fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding mapping for objpath={%s} // taint={%s} // traced={%t}\n", obj.String(), objpath, newTaint.LongString(), traced)
 					var ok = true
 					var subpath = ""
 					for ok {
@@ -148,7 +147,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 							if existingTaint.IsPrimary() && !traced {
 								if subpath == "" {
 									taintMapping.AddIfNotExists(*existingTaint, *newTaint)
-									fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
+									//EVAL - fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
 								} else {
 									lowerTaint := existingTaint.Copy()
 									// TODO: verify if this is needed (can't recall now)
@@ -156,7 +155,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 									taintMapping.AddIfNotExists(*lowerTaint, *newTaint)
 								}
 							} else if traced {
-								fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [3] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
+								//EVAL - fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [3] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
 								if subpath == "" {
 									taintMapping.AddIfNotExists(*newTaint, *existingTaint)
 								} else {

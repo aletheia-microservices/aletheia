@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"math/rand"
 )
 
@@ -13,7 +12,7 @@ type MongoInserter interface {
 type MongoDB struct{}
 
 func (m *MongoDB) Insert(ctx context.Context, document interface{}) error {
-	fmt.Printf("[INFO] inserted document: %v\n", document)
+	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 
@@ -24,7 +23,7 @@ type RabbitMQPusher interface {
 type RabbitMQ struct{}
 
 func (r *RabbitMQ) Push(ctx context.Context, message interface{}) error {
-	fmt.Printf("[INFO] pushed message: %v\n", message)
+	//EVAL - fmt.Printf("[INFO] pushed message: %v\n", message)
 	return nil
 }
 

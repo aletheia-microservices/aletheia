@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 )
 
 type Inventory struct {
@@ -19,7 +18,7 @@ type Product struct {
 type ShippingService struct{}
 
 func (s *ShippingService) NewShipment(ctx context.Context, shipping Shipping) error {
-	fmt.Printf("[INFO] inserted document: %v\n", shipping)
+	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", shipping)
 	return nil
 }
 
@@ -32,12 +31,12 @@ func (s *SkuService) GetSku(ctx context.Context, id string) (*Sku, error) {
 type MongoDB struct{}
 
 func (m *MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error {
-	fmt.Printf("[INFO] inserted document: %v\n", document)
+	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 
 func (m *MongoDB) Find(ctx context.Context, database string, collection string, id string) Sku {
-	fmt.Printf("[INFO] found document for id: %v\n", id)
+	//EVAL - fmt.Printf("[INFO] found document for id: %v\n", id)
 	return Sku{}
 }
 
@@ -48,7 +47,7 @@ type RabbitMQPusher interface {
 type RabbitMQ struct{}
 
 func (r *RabbitMQ) Push(ctx context.Context, message interface{}) error {
-	fmt.Printf("[INFO] pushed message: %v\n", message)
+	//EVAL - fmt.Printf("[INFO] pushed message: %v\n", message)
 	return nil
 }
 

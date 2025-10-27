@@ -78,9 +78,9 @@ func main() {
 	app.InitServiceFields(pkgs)
 	app.ParseSchemaFromUserFile()
 
-	fmt.Println("[INFO] running analysis for packages:")
+	//EVAL - fmt.Println("[INFO] running analysis for packages:")
 	/* for _, pkg := range pkgs {
-		fmt.Printf("\t- %s\n", pkg.String())
+		//EVAL - fmt.Printf("\t- %s\n", pkg.String())
 	} */
 
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
@@ -118,7 +118,7 @@ func main() {
 		tainter.RunTainter(ssagraph)
 	}
 
-	/* fmt.Print("\n\n ========== NODES ========== \n\n")
+	/* //EVAL - fmt.Print("\n\n ========== NODES ========== \n\n")
 	for fn, ssagraph := range funcGraphs {
 		for _, node := range ssagraph.GetNodes() {
 			var prefix string
@@ -128,25 +128,25 @@ func main() {
 				prefix = "\t"
 			}
 			if node.GetInstruction() != nil {
-				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetInstruction(), prefix, node.GetInstruction().String())
+				//EVAL - fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetInstruction(), prefix, node.GetInstruction().String())
 			} else {
-				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetValue(), prefix, node.GetValue().String())
+				//EVAL - fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetValue(), prefix, node.GetValue().String())
 			}
 		}
 	} */
 
 	/* for fn, ssagraph := range funcGraphs {
-		fmt.Printf("[MAIN] go ssa graph for (%s): %v\n", fn, ssagraph)
+		//EVAL - fmt.Printf("[MAIN] go ssa graph for (%s): %v\n", fn, ssagraph)
 	} */
 
-	/* fmt.Print("\n\n ========== TAINTS ========== \n\n")
+	/* //EVAL - fmt.Print("\n\n ========== TAINTS ========== \n\n")
 	for fn, ssagraph := range funcGraphs {
 		for _, node := range ssagraph.GetNodes() {
 			if node.IsTainted() {
 				for obj, taints := range node.GetTaints() {
-					fmt.Printf("[%s] %s [%s]: %s\n", fn, node.String(), node.GetName(), obj)
+					//EVAL - fmt.Printf("[%s] %s [%s]: %s\n", fn, node.String(), node.GetName(), obj)
 					for _, taint := range taints {
-						fmt.Printf("\t\t |--> %s\n", taint.String())
+						//EVAL - fmt.Printf("\t\t |--> %s\n", taint.String())
 					}
 				}
 			}
@@ -157,8 +157,8 @@ func main() {
 		ssagraph.WriteToDOTFile(appname, fn, true)
 	} */
 
-	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
-	
+	//EVAL - fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
+
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
@@ -189,40 +189,40 @@ func main() {
 	app.WriteAppToJSON()
 	app.WriteSchemaToJSON() */
 
-	/* fmt.Print("\n\n ========== SERVICE CALLS ========== \n\n")
+	/* //EVAL - fmt.Print("\n\n ========== SERVICE CALLS ========== \n\n")
 	for _, node := range absgraph.GetNodes() {
 		if node.GetNodeType() == abstractgraph.NODE_SERVICE {
 			for _, edge := range absgraph.GetEdgesToNode(node) {
-				fmt.Printf("SERVICE CALL: %s\n", edge.String())
+				//EVAL - fmt.Printf("SERVICE CALL: %s\n", edge.String())
 				for i, arg := range edge.GetArguments() {
-					fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
+					//EVAL - fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
 				}
-				fmt.Println("--")
+				//EVAL - fmt.Println("--")
 				for i, param := range edge.GetToNode().GetParams() {
-					fmt.Printf("PARAM %d (%s) w/ TAINTS:\n%s", i, param.String(), param.TaintLongString())
+					//EVAL - fmt.Printf("PARAM %d (%s) w/ TAINTS:\n%s", i, param.String(), param.TaintLongString())
 				}
-				fmt.Println("--")
+				//EVAL - fmt.Println("--")
 				for i, ret := range edge.GetReturns() {
-					fmt.Printf("RET (EDGE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
+					//EVAL - fmt.Printf("RET (EDGE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
 				}
-				fmt.Println("--")
+				//EVAL - fmt.Println("--")
 				for i, ret := range edge.GetToNode().GetReturns() {
-					fmt.Printf("RET (NODE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
+					//EVAL - fmt.Printf("RET (NODE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
 				}
-				fmt.Println()
+				//EVAL - fmt.Println()
 			}
 		}
 	} */
 
-	/* fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
+	/* //EVAL - fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
 	for _, node := range absgraph.GetNodes() {
 		if node.GetNodeType() == abstractgraph.NODE_DATABASE {
 			for _, edge := range absgraph.GetEdgesToNode(node) {
-				fmt.Printf("DATABASE CALL: %s\n", edge.String())
+				//EVAL - fmt.Printf("DATABASE CALL: %s\n", edge.String())
 				for i, arg := range edge.GetArguments() {
-					fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
+					//EVAL - fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
 				}
-				fmt.Println()
+				//EVAL - fmt.Println()
 			}
 		}
 	} */
@@ -230,18 +230,18 @@ func main() {
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
 
-	fmt.Print("\n\n ========== APP ========== \n\n")
-	fmt.Println(app.String())
+	//EVAL - fmt.Print("\n\n ========== APP ========== \n\n")
+	//EVAL - fmt.Println(app.String())
 
 	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
 	}
 
-	fmt.Printf("Execution time (TOTAL): %.3f s\n", elapsed_total.Seconds())
-	fmt.Printf("Execution time (PARSING): %.3f s\n", elapsed_parsing.Seconds())
-	fmt.Printf("Execution time (SCHEMA): %.3f s\n", elapsed_schema.Seconds())
-	fmt.Printf("Execution time (DETECTION): %.3f s\n", elapsed_detection.Seconds())
+	fmt.Printf("Execution time (TOTAL): %.4f s\n", elapsed_total.Seconds())
+	fmt.Printf("Execution time (PARSING): %.4f s\n", elapsed_parsing.Seconds())
+	fmt.Printf("Execution time (SCHEMA): %.4f s\n", elapsed_schema.Seconds())
+	fmt.Printf("Execution time (DETECTION): %.4f s\n", elapsed_detection.Seconds())
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
@@ -259,14 +259,14 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 	conf.Fset = fset
 	file, err := conf.ParseFile(filepath, string(source))
 	if err != nil {
-		fmt.Println("parse error:", err)
+		//EVAL - fmt.Println("parse error:", err)
 		return nil, nil, err
 	}
 	conf.CreateFromFiles("main", file)
 
 	iprog, err := conf.Load()
 	if err != nil {
-		fmt.Println("type error:", err)
+		//EVAL - fmt.Println("type error:", err)
 		return nil, nil, err
 	}
 
@@ -282,7 +282,7 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 			if utils.IsAppPackagePath(pkg.Pkg.Path()) {
 				pkgs = append(pkgs, pkg)
 			} else {
-				fmt.Printf("skipping... %s\n", pkg.Pkg.Path())
+				//EVAL - fmt.Printf("skipping... %s\n", pkg.Pkg.Path())
 			}
 		}
 	}

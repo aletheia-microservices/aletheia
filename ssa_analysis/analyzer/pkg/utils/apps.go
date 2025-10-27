@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"slices"
@@ -18,6 +17,7 @@ const (
 	APP_PATH_FOO_BAR                 = "foobar/workflow/foobar"
 	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
+	APP_PATH_LARGE_SCALE_APP         = "large_scale_app/workflow/large_scale_app"
 )
 
 var APPS_PACKAGE_PATHS = []string{
@@ -29,6 +29,7 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP,
 }
 
 var APPS_ENTRYPOINTS_PATHS = map[string]string{
@@ -41,6 +42,7 @@ var APPS_ENTRYPOINTS_PATHS = map[string]string{
 	"dsb_sn2":                 "blueprint/dsb_sn2/poststorageservice_storepost",
 	"dsb_hotel2":              "blueprint/dsb_hotel2/geoservice_nearby",
 	"train_ticket2":           "blueprint/train_ticket2/assuranceservice_deletebyid",
+	"large_scale_app":         "blueprint/large_scale_app/service100_method100",
 }
 
 var APPS_SQL_TABLES = map[string][]string{
@@ -74,7 +76,7 @@ func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {
 		return false, ""
 	}
 
-	fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
+	//EVAL - fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {

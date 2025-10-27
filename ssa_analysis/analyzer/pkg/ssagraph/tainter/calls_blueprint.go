@@ -1,7 +1,6 @@
 package tainter
 
 import (
-	"fmt"
 	"go/types"
 	"log"
 	"slices"
@@ -36,7 +35,7 @@ type ValFieldPath struct {
 
 func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
 	if call, ok := val.(*ssa.Call); ok {
-		fmt.Printf("[CALLS BLUEPRINT] [SVC] checking for service call: %s\n", val.String())
+		//EVAL - fmt.Printf("[CALLS BLUEPRINT] [SVC] checking for service call: %s\n", val.String())
 
 		// --------------
 		// blueprint apps
@@ -70,7 +69,7 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 	}
 
 	if call, ok := val.(*ssa.Call); ok {
-		fmt.Printf("[CALLS BLUEPRINT] [DB] checking for database call: %s\n", val.String())
+		//EVAL - fmt.Printf("[CALLS BLUEPRINT] [DB] checking for database call: %s\n", val.String())
 
 		// --------------
 		// blueprint apps
@@ -123,7 +122,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_RELATIONALDB, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
-			fmt.Printf("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
+			//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
 
 			switch call.Call.Method.Name() {
 			case "Select":
@@ -155,7 +154,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 			var argVals []ssa.Value
 			if slice, ok := sliceArgsVal.(*ssa.Slice); ok {
-				fmt.Printf("[CALLS BLUEPRINT] [RELDB] on ssa slice: %v\n", slice)
+				//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] on ssa slice: %v\n", slice)
 				if alloc, ok := slice.X.(*ssa.Alloc); ok {
 					// example:
 					// t5 = new [2]any (varargs)
@@ -167,15 +166,15 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					// TODO: also need to consider case when slice is declared earlier and
 					// reused for another write in possbly another DB
 					allocNode := graph.GetNodeByName(alloc.Name())
-					fmt.Printf("[CALLS BLUEPRINT] [RELDB] on alloc node: %v\n", allocNode)
+					//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] on alloc node: %v\n", allocNode)
 					for _, edge := range graph.GetEdgesFromNode(allocNode) {
 						if edge.GetType() == ssagraph.EDGE_INDEX {
 							idxNode := edge.GetToNode()
-							fmt.Printf("[CALLS BLUEPRINT] [RELDB] on idx node: %v\n", idxNode)
+							//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] on idx node: %v\n", idxNode)
 							for _, edge := range graph.GetEdgesFromNode(idxNode) {
 								if edge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
 									storeNode := edge.GetToNode()
-									fmt.Printf("[CALLS BLUEPRINT] [RELDB] on store node: %v\n", storeNode)
+									//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] on store node: %v\n", storeNode)
 									storeInstr, _ := storeNode.GetInstruction().(*ssa.Store)
 									argVals = append(argVals, storeInstr.Val)
 								}
@@ -192,11 +191,11 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			if opType == common.OP_READ {
 				var tables []string
 				readFields, fields, tables = app.ParseSQLRead(database, stmt)
-				fmt.Printf("[CALLS BLUEPRINT] [RELDB] got filter fields: %v\n", fields)
+				//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] got filter fields: %v\n", fields)
 				tableName = tables[0]
 			} else if opType == common.OP_WRITE {
 				fields, _, tableName = app.ParseSQLWrite(database, stmt)
-				fmt.Printf("[CALLS BLUEPRINT] [RELDB] got written fields: %v\n", fields)
+				//EVAL - fmt.Printf("[CALLS BLUEPRINT] [RELDB] got written fields: %v\n", fields)
 			}
 
 			if len(argVals) != len(fields) {
@@ -285,8 +284,8 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				var valFieldPathLst []ValFieldPath
 				cacheKeyVal := call.Call.Args[1]
 				cacheValueVal := call.Call.Args[2]
-				fmt.Printf("[CALLS BLUEPRINT] [CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
-				fmt.Printf("[CALLS BLUEPRINT] [CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
+				//EVAL - fmt.Printf("[CALLS BLUEPRINT] [CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
+				//EVAL - fmt.Printf("[CALLS BLUEPRINT] [CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
 
 				// track cache key
 				if _, ok := utils.ExtractStringFromValue(cacheKeyVal); ok {
@@ -306,7 +305,7 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				if valFieldPathLst == nil {
 					// [TO BE IMPROVED]
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheKeyVal, fieldpath: database + "." + namespace + ".Key"})
-					fmt.Printf("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
+					//EVAL - fmt.Printf("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
 				}
 
 				// track cache value
@@ -448,9 +447,9 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					}
 
 					/* if database == "reservation_db" && call.Call.Method.Name() == "FindMany" {
-						fmt.Printf("CALL: %s\n", call.Name())
+						//EVAL - fmt.Printf("CALL: %s\n", call.Name())
 						for _, val := range valFieldPathLst {
-							fmt.Printf("(%s) --> (%s)\n", val.fieldpath, val.val.String())
+							//EVAL - fmt.Printf("(%s) --> (%s)\n", val.fieldpath, val.val.String())
 						}
 						log.Fatalf("HERE!")
 					} */
@@ -550,7 +549,7 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonVal ssa.Value) 
 			}
 		}
 	}
-	fmt.Printf("[CALLS BLUEPRINT] [NOSQL FILTER] returning lst: %v\n", filterKeyToValues)
+	//EVAL - fmt.Printf("[CALLS BLUEPRINT] [NOSQL FILTER] returning lst: %v\n", filterKeyToValues)
 	return filterKeyToValues
 }
 
@@ -630,17 +629,17 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) bo
 // it cannot be used for NoSQLDatabase calls because the collection is extracted beforehand
 func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (string, bool) {
 	if ssaFieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
-		fmt.Printf("[CALLS BLUEPRINT] [QUEUE] ssa field addr (field=%d): %s\n", ssaFieldAddr.Field, ssaFieldAddr.String())
+		//EVAL - fmt.Printf("[CALLS BLUEPRINT] [QUEUE] ssa field addr (field=%d): %s\n", ssaFieldAddr.Field, ssaFieldAddr.String())
 		if ssaParam, ok := ssaFieldAddr.X.(*ssa.Parameter); ok {
-			fmt.Printf("[CALLS BLUEPRINT] [QUEUE] queue loaded from parameter (%d)\n", ssaFieldAddr.Field)
+			//EVAL - fmt.Printf("[CALLS BLUEPRINT] [QUEUE] queue loaded from parameter (%d)\n", ssaFieldAddr.Field)
 			if typesPointer, ok := ssaParam.Type().(*types.Pointer); ok {
 				if typeNamed, ok := typesPointer.Elem().(*types.Named); ok {
 					// e.g., github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
 					serviceImplPath := typeNamed.String()
 					service := graph.GetApp().GetServiceWithImplPath(serviceImplPath)
-					fmt.Printf("[CALLS BLUEPRINT] [QUEUE] service fields: %v\n", service.GetAllFields())
+					//EVAL - fmt.Printf("[CALLS BLUEPRINT] [QUEUE] service fields: %v\n", service.GetAllFields())
 					field := service.GetFieldAt(ssaFieldAddr.Field)
-					fmt.Printf("[CALLS BLUEPRINT] [QUEUE] field: %s\n", field.String())
+					//EVAL - fmt.Printf("[CALLS BLUEPRINT] [QUEUE] field: %s\n", field.String())
 
 					database := field.GetWiringName()
 

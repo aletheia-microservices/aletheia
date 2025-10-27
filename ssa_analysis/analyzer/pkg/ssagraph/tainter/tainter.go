@@ -1,7 +1,6 @@
 package tainter
 
 import (
-	"fmt"
 	"go/token"
 	"log"
 	"strings"
@@ -14,10 +13,10 @@ import (
 
 // REMINDER:
 // sometimes there are can be taints such as: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
-// this may happen when any[] type is using, for example, fmt.Print calls
+// this may happen when any[] type is using, for example, //EVAL - fmt.Print calls
 // e.g., dsb_sn2 at UserTimelineService.ReadUserTimeline:
 // > post_ids = append(new_post_ids, post_ids...)
-// > fmt.Println(post_ids)
+// > //EVAL - fmt.Println(post_ids)
 // ----------------------------
 // t56: append(t55, t31...)
 // t59: make any <- []int64 (t56)
@@ -25,7 +24,7 @@ import (
 // t58: &t57[0:int]
 // t57: new [1]any (vargs)
 // t60: slice t57[:]
-// t61: fmt.Println(t60...)
+// t61: //EVAL - fmt.Println(t60...)
 // ----------------------------
 // t56 taint is:		 _obj[*], usertimeline_db.usertimeline.Posts[*].PostID
 // t57 taint becomes: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
@@ -46,12 +45,12 @@ func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMod
 
 	if taintInfo.isTypeDatabase() && taintInfo.getDatabaseCall() == nil {
 		// FIXME: verify this
-		fmt.Printf("[TAINT] [4] nil db call for taint info: %v\n", taintInfo)
+		//EVAL - fmt.Printf("[TAINT] [4] nil db call for taint info: %v\n", taintInfo)
 		return
 	}
 	if taintInfo.isTypeService() && taintInfo.getServiceCall() == nil {
 		// FIXME: verify this
-		fmt.Printf("[TAINT] [4] nil sv call for taint info: %v\n", taintInfo)
+		//EVAL - fmt.Printf("[TAINT] [4] nil sv call for taint info: %v\n", taintInfo)
 		return
 	}
 
@@ -59,23 +58,23 @@ func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMod
 	switch taintMode {
 	case TAINT_MODE_NEARBY:
 		if taintInfo.isTypeDatabase() {
-			fmt.Printf("[TAINT NEARBY] [DATABASE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
+			//EVAL - fmt.Printf("[TAINT NEARBY] [DATABASE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
 			ok = node.AddDatabaseTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabasePath(), taintInfo.getDatabaseCall())
 		} else if taintInfo.isTypeService() {
-			fmt.Printf("[TAINT NEARBY] [SERVICE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
+			//EVAL - fmt.Printf("[TAINT NEARBY] [SERVICE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
 			ok = node.AddServiceTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getServicePath(), taintInfo.getServiceCall())
 		}
 	case TAINT_MODE_FETCH_UPWARDS:
 		if taintInfo.isTypeDatabase() {
-			fmt.Printf("[TAINT FETCH] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath()+taintInfo.getObjectPath())
+			//EVAL - fmt.Printf("[TAINT FETCH] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath()+taintInfo.getObjectPath())
 			ok = node.AddDatabaseTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabasePath()+taintInfo.getObjectPath(), taintInfo.getDatabaseCall())
 		} else if taintInfo.isTypeService() {
-			fmt.Printf("[TAINT FETCH] [SERVICE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
+			//EVAL - fmt.Printf("[TAINT FETCH] [SERVICE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
 			ok = node.AddServiceTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getServicePath(), taintInfo.getServiceCall())
 		}
 	}
 	if ok {
-		fmt.Printf("\t[TAINT] OK!\n")
+		//EVAL - fmt.Printf("\t[TAINT] OK!\n")
 	}
 }
 
@@ -112,7 +111,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		log.Panicf("[TAINT NEARBY] unexpected nil val // TAINT INFO (_obj%s, %s)\n", taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 	}
 
-	//var prevVal ssa.Value
+	/* //var prevVal ssa.Value
 	var prevValName string
 	if taintInfo.prevval == nil {
 		//prevVal = nil
@@ -121,13 +120,13 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 	} else {
 		//prevVal = taintInfo.prevval
 		prevValName = taintInfo.prevval.Name()
-	}
+	} */
 
 	taintInfo = taintInfo.updateValue(val)
 
-	fmt.Printf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+	//EVAL - fmt.Printf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 	if visited[val] {
-		fmt.Printf("\t[TAINT NEARBY] skipping value %s: %s\n", val.Name(), val.String())
+		//EVAL - fmt.Printf("\t[TAINT NEARBY] skipping value %s: %s\n", val.Name(), val.String())
 		return
 	}
 	visited[val] = true
@@ -139,18 +138,18 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 	node := graph.GetNodeByName(val.Name())
 
 	// avoid infinite recursion
-	if nodeHasTaintInfo(node, "_obj" + taintInfo.objpath, taintInfo) {
+	if nodeHasTaintInfo(node, "_obj"+taintInfo.objpath, taintInfo) {
 		return
 	}
 
 	doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
 
-	fmt.Printf("[TAINT NEARBY] [PART_1] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
+	//EVAL - fmt.Printf("[TAINT NEARBY] [PART_1] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
 	taintInfo.prevval = node.GetValue()
 
 	for _, edge := range graph.GetEdgesFromNode(node) {
 		toNode := edge.GetToNode()
-		fmt.Printf("\t[TAINT NEARBY] [PART_1] [r=%t] [FromNode %s] edge (%s) to node: %v\n", recurse, node.GetValue().Name(), edge.GetTypeString(), toNode)
+		//EVAL - fmt.Printf("\t[TAINT NEARBY] [PART_1] [r=%t] [FromNode %s] edge (%s) to node: %v\n", recurse, node.GetValue().Name(), edge.GetTypeString(), toNode)
 
 		switch edge.GetType() {
 
@@ -194,7 +193,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				taintInfoTmp = taintInfo.enableObjectRoot()
 				taintInfoTmp.dbTaint.dbpath, _ = strings.CutSuffix(taintInfoTmp.objpath, taintInfo.objpath)
 			} else {
-				fmt.Printf("[TAINT NEARBY] [PART_1] [FIELD] unexpected conditions // FROM_NODE=%s // TAINT INFO (_obj%s, %s)\n", toNode.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+				//EVAL - fmt.Printf("[TAINT NEARBY] [PART_1] [FIELD] unexpected conditions // FROM_NODE=%s // TAINT INFO (_obj%s, %s)\n", toNode.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 				continue
 			}
 
@@ -391,10 +390,10 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 								log.Fatalf("[TAINT NEARBY] [PART_1] skipping function (%s) for call: [%T] %s\n", fn.Name(), call.Call.Value, call.Call.Value)
 							}
 						} else {
-							fmt.Printf("[TAINT NEARBY] [PART_1] skipping package (%s) for call: [%T] %s\n", fn.Package().Pkg.Name(), call.Call.Value, call.Call.Value)
+							//EVAL - fmt.Printf("[TAINT NEARBY] [PART_1] skipping package (%s) for call: [%T] %s\n", fn.Package().Pkg.Name(), call.Call.Value, call.Call.Value)
 						}
 					} else {
-						fmt.Printf("[TAINT NEARBY] [PART_1] skipping nil package for call: [%T] %s\n", call.Call.Value, call.Call.Value)
+						//EVAL - fmt.Printf("[TAINT NEARBY] [PART_1] skipping nil package for call: [%T] %s\n", call.Call.Value, call.Call.Value)
 					}
 				} else {
 					log.Fatalf("[TAINT NEARBY] [PART_1] unexpected type for call value: [%T] %s\n", call.Call.Value, call.Call.Value)
@@ -425,10 +424,10 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		}
 	}
 
-	fmt.Printf("[TAINT NEARBY] [PART_2] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
+	//EVAL - fmt.Printf("[TAINT NEARBY] [PART_2] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
 	for _, edge := range graph.GetEdgesToNode(node) {
 		fromNode := edge.GetFromNode()
-		fmt.Printf("\t[TAINT NEARBY] [PART_2] [r=%t] [ToNode %s] edge (%s) from node: %v\n", recurse, node.GetValue().Name(), edge.GetTypeString(), fromNode)
+		//EVAL - fmt.Printf("\t[TAINT NEARBY] [PART_2] [r=%t] [ToNode %s] edge (%s) from node: %v\n", recurse, node.GetValue().Name(), edge.GetTypeString(), fromNode)
 
 		if ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
 			continue // skip
@@ -459,7 +458,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			} else if edge.GetParam() == taintInfo.objpath { // FIXME: NOT SURE ABOUT THIS!
 				taintInfoTmp = taintInfo.enableObjectRoot()
 			} else {
-				fmt.Printf("[TAINT NEARBY] [PART_2] [FIELD] unexpected conditions // FROM_NODE=%s // TAINT INFO (_obj%s, %s)\n", fromNode.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+				//EVAL - fmt.Printf("[TAINT NEARBY] [PART_2] [FIELD] unexpected conditions // FROM_NODE=%s // TAINT INFO (_obj%s, %s)\n", fromNode.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 				continue
 			}
 
@@ -565,10 +564,10 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 								log.Fatalf("[TAINT NEARBY] [PART_2] skipping function (%s) for call: [%T] %s\n", fn.Name(), call.Call.Value, call.Call.Value)
 							}
 						} else {
-							fmt.Printf("[TAINT NEARBY] [PART_2] skipping nil package for call: [%T] %s\n", call.Call.Value, call.Call.Value)
+							//EVAL - fmt.Printf("[TAINT NEARBY] [PART_2] skipping nil package for call: [%T] %s\n", call.Call.Value, call.Call.Value)
 						}
 					} else {
-						fmt.Printf("[TAINT NEARBY] [PART_2] skipping package (%s) for call: [%T] %s\n", fn.Package().Pkg.Name(), call.Call.Value, call.Call.Value)
+						//EVAL - fmt.Printf("[TAINT NEARBY] [PART_2] skipping package (%s) for call: [%T] %s\n", fn.Package().Pkg.Name(), call.Call.Value, call.Call.Value)
 					}
 				} else {
 					log.Fatalf("[TAINT NEARBY] [PART_2] unexpected type for call value: [%T] %s\n", call.Call.Value, call.Call.Value)
@@ -582,21 +581,21 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 		}
 	}
-	fmt.Printf("\t[TAINT NEARBY] [PART_2] exiting %s: %s\n", val.Name(), val.String())
+	//EVAL - fmt.Printf("\t[TAINT NEARBY] [PART_2] exiting %s: %s\n", val.Name(), val.String())
 }
 
 func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
 	taintInfo = taintInfo.updateValue(val)
 
-	fmt.Printf("[TAINT FETCH] visiting %s: %s // TAINT INFO (%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+	//EVAL - fmt.Printf("[TAINT FETCH] visiting %s: %s // TAINT INFO (%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 	if visited[val] {
-		fmt.Printf("\t[TAINT FETCH] skipping value %s: %s\n", val.Name(), val.String())
+		//EVAL - fmt.Printf("\t[TAINT FETCH] skipping value %s: %s\n", val.Name(), val.String())
 		return
 	}
 	visited[val] = true
 
 	node := graph.GetNodeByName(val.Name())
-	fmt.Printf("\t[TAINT FETCH] checking upper taints: %v\n", node.GetTaints())
+	//EVAL - fmt.Printf("\t[TAINT FETCH] checking upper taints: %v\n", node.GetTaints())
 
 	if ssaValueIsUsedInMongoBsonFilter(graph, val) {
 		return // skip
@@ -605,7 +604,7 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 	// 1. taint "subpaths" for current variable and save to later taint the corresponding "subobjects" that requested the upper taint
 	for objPath, taints := range node.GetTaints() {
 
-		fmt.Printf("\t[TAINT FETCH] comparing prefixes:\n\t - tainted obj path:\t %s\n\t - bottom to upper:\t %s\n", objPath, taintInfo.getObjectFullPath())
+		//EVAL - fmt.Printf("\t[TAINT FETCH] comparing prefixes:\n\t - tainted obj path:\t %s\n\t - bottom to upper:\t %s\n", objPath, taintInfo.getObjectFullPath())
 
 		if strings.HasPrefix(taintInfo.getObjectFullPath(), objPath) && taintInfo.getObjectFullPath() != objPath {
 			// e.graph.,
@@ -628,7 +627,7 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 				dbFieldIndirect := taintInfoTmp.getDatabasePath() + taintInfo.getObjectPath()
 				if taintInfoTmp.getDatabaseCall() == nil {
 					// FIXME: verify this
-					fmt.Printf("[TAINT FETCH] [4] nil db call for taint info tmp: %v\n", taintInfoTmp)
+					//EVAL - fmt.Printf("[TAINT FETCH] [4] nil db call for taint info tmp: %v\n", taintInfoTmp)
 				} else {
 					checkTaintInfo.addToIndirectTaints(dbFieldIndirect, taintInfoTmp.getDatabaseCall())
 				}
@@ -664,7 +663,7 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 
 	}
 
-	fmt.Printf("\t[TAINT FETCH] exiting %s: %s\n", val.Name(), val.String())
+	//EVAL - fmt.Printf("\t[TAINT FETCH] exiting %s: %s\n", val.Name(), val.String())
 }
 
 func RunTainter(graph *ssagraph.SSAGraph) {
@@ -783,10 +782,10 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 		if service, method, funcShortPath, args, call, ok := isServiceCall(graph, node.GetValue()); ok {
 			// keep track of objects passed as arguments
 			var argNodes []*ssagraph.SSANode
-			fmt.Printf("[TAINT] added service call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
+			//EVAL - fmt.Printf("[TAINT] added service call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
 			for _, arg := range args {
 				argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
-				fmt.Printf("[TAINT] checking taint for service call with arg: %s\n", arg.String())
+				//EVAL - fmt.Printf("[TAINT] checking taint for service call with arg: %s\n", arg.String())
 				node := graph.GetNodeByName(arg.Name())
 				nodesToVisit = append(nodesToVisit, node)
 			}
@@ -808,7 +807,7 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 				nodesToVisit = append(nodesToVisit, callNode)
 				retNodes = append(retNodes, callNode)
 			}
-			fmt.Printf("[TAINT] [%s] got ret nodes: %v\n", node.String(), retNodes)
+			//EVAL - fmt.Printf("[TAINT] [%s] got ret nodes: %v\n", node.String(), retNodes)
 
 			callId := ssagraph.ComputeCallID(graph, node)
 			svcCall := ssagraph.NewServiceCall(callId, node, argNodes, retNodes, service, method, funcShortPath)
@@ -830,7 +829,7 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 				propagateTaintNearby(graph, false, ret, taintInfo, visited, nil, false)
 			}
 
-			fmt.Printf("[TAINT] visiting nodes for call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
+			//EVAL - fmt.Printf("[TAINT] visiting nodes for call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
 			checkUpperTaintsForObjects(graph, nodesToVisit)
 		}
 
@@ -840,8 +839,8 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagraph.SSANode) {
 	// check for upper taints affecting the current database/service calls objects
 	for _, originNode := range nodesToVisit {
-		fmt.Println()
-		fmt.Printf("[TAINT] check upper taints for node: %v\n", originNode.String())
+		//EVAL - fmt.Println()
+		//EVAL - fmt.Printf("[TAINT] check upper taints for node: %v\n", originNode.String())
 		visited := make(map[ssa.Value]bool)
 		taintInfo := NewTaintInfoDatabase("", "", nil, nil)
 		checkTaintInfo := NewCheckTaintInfo()
@@ -859,11 +858,11 @@ func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagra
 
 		// inherited taints
 		for objpath, taints := range checkTaintInfo.inheritedTaints {
-			fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, taints)
+			//EVAL - fmt.Printf("[TAINT] check inherited taints for objpath (%s): %v\n", objpath, taints)
 			for _, taint := range taints {
 				if taint.dbcall == nil {
 					// FIXME: verify this
-					fmt.Printf("[2] nil db call for taint: %v\n", taint)
+					//EVAL - fmt.Printf("[2] nil db call for taint: %v\n", taint)
 				} else {
 					taintInfo := NewTaintInfoDatabase(taint.dbpath, objpath, originNode.GetValue(), taint.dbcall)
 					doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)

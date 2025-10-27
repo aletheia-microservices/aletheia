@@ -30,4 +30,6 @@ go run main.go dsb_media_sql
 # reservation
 go run main.go dsb_hotel2
 go run main.go train_ticket2
+# eval
+go run main.go large_scale_app
 ```

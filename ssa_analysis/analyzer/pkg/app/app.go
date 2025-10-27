@@ -59,7 +59,7 @@ func (app *App) ComputeDatabaseFieldFromPath(database *backends.Database, fieldp
 			log.Panicf("[APP] nil schema (%s) for fieldpath (%s)\n", utils.ExtractSchemaNameFromFieldPath(fieldpath), fieldpath)
 		}
 	}
-	fmt.Printf("[APP] get field for (%s) in schema (%s)\n", fieldpath, schema.GetName())
+	//EVAL - fmt.Printf("[APP] get field for (%s) in schema (%s)\n", fieldpath, schema.GetName())
 	// [TO BE IMPROVED]
 	field := schema.GetFieldByPathIfExists(fieldpath)
 
@@ -102,11 +102,11 @@ func (app *App) AddEntrypoint(service *services.Service, method string) {
 
 // e.g., postnotification.UploadService.UploadPost
 func (app *App) GetEntrypointsShortPaths() []string {
-	fmt.Printf("[APP] getting entrypoint short paths...\n")
+	//EVAL - fmt.Printf("[APP] getting entrypoint short paths...\n")
 	var entrypoints []string
 	for service, serviceEntrypoints := range app.entrypoints {
 		for _, method := range serviceEntrypoints {
-			fmt.Printf("\t[APP] found (%s)\n", service.GetPackage()+"."+service.GetName()+"."+method)
+			//EVAL - fmt.Printf("\t[APP] found (%s)\n", service.GetPackage()+"."+service.GetName()+"."+method)
 			entrypoints = append(entrypoints, service.GetPackage()+"."+service.GetName()+"."+method)
 		}
 	}
@@ -128,9 +128,9 @@ func (app *App) GetServiceWithImplPath(implpath string) *services.Service {
 			return service
 		}
 	}
-	for _, service := range app.services {
-		fmt.Printf("pkg path = (%s) // impl = (%s)\n", service.GetPackagePath(), service.GetImpl())
-	}
+	/* for _, service := range app.services {
+		//EVAL - fmt.Printf("pkg path = (%s) // impl = (%s)\n", service.GetPackagePath(), service.GetImpl())
+	} */
 	log.Fatalf("could not find service for impl path (%s)", implpath)
 	return nil
 }

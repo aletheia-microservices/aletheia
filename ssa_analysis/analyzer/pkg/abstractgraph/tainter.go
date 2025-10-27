@@ -1,7 +1,6 @@
 package abstractgraph
 
 import (
-	"fmt"
 	"log"
 
 	"analyzer/pkg/app/backends"
@@ -29,14 +28,14 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					if otherTaint.IsWrite() && currTaint.IsWrite() {
 						if ok := constraint.EnableMandatory(reqIdx); ok {
 							modified = true
-							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
+							//EVAL - fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
 					if otherTaint.IsWrite() && currTaint.IsWrite() {
 						if ok := constraint.EnableMandatory(reqIdx); ok {
 							modified = true
-							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
+							//EVAL - fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
@@ -49,21 +48,21 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					currField.AddConstraint(constraint)
 					currDb.GetLastSchema().AddConstraint(constraint)
 					modified = true
-					fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
+					//EVAL - fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsRead() && currTaint.IsWriteOrUpdate() {
 				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
 					if currTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
 							modified = true
-							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
+							//EVAL - fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
 					if currTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
 							modified = true
-							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
+							//EVAL - fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
@@ -76,7 +75,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 						constraint.DisableMandatory(reqIdx)
 					}
 					modified = true
-					fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
+					//EVAL - fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsWriteOrUpdate() && currTaint.IsRead() {
 				// e.g.,
@@ -97,14 +96,14 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					if otherTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
 							modified = true
-							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (A) disabled mandatory: %s\n", constraint)
+							//EVAL - fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (A) disabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
 					if otherTaint.IsWrite() {
 						if ok := constraint.DisableMandatory(reqIdx); ok {
 							modified = true
-							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (B) disabled mandatory: %s\n", constraint)
+							//EVAL - fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (B) disabled mandatory: %s\n", constraint)
 						}
 					}
 				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
@@ -116,7 +115,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 						constraint.DisableMandatory(reqIdx)
 					}
 					modified = true
-					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
+					//EVAL - fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 				}
 			} else if otherTaint.IsRead() && currTaint.IsRead() {
 				// nothing to do
@@ -157,7 +156,7 @@ func PropagateNewTaintsToTracedObjects(graph *AbstractCallGraph, node *AbstractN
 	if propagateFromParams {
 		for _, otherEdge := range graph.GetEdgesFromNode(node) {
 			for _, param := range node.GetParams() {
-				fmt.Printf("[TRACE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", node.String(), param.String(), otherEdge.String())
+				//EVAL - fmt.Printf("[TRACE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", node.String(), param.String(), otherEdge.String())
 				taintTracedObjects(param, otherEdge, taintMapping)
 			}
 		}
@@ -167,11 +166,11 @@ func PropagateNewTaintsToTracedObjects(graph *AbstractCallGraph, node *AbstractN
 				continue
 			}
 			for _, arg := range currEdge.GetArguments() {
-				fmt.Printf("[TRACE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+				//EVAL - fmt.Printf("[TRACE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
 				taintTracedObjects(arg, otherEdge, taintMapping)
 			}
 			for _, ret := range currEdge.GetReturns() {
-				fmt.Printf("[TRACE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+				//EVAL - fmt.Printf("[TRACE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
 				taintTracedObjects(ret, otherEdge, taintMapping)
 			}
 		}
@@ -223,11 +222,11 @@ func taintTracedObjects(obj *AbstractObject, otherEdge *AbstractEdge, taintMappi
 			//
 			// we want to get the taints of t13 at _obj and propagate them to t18 on _obj.ID
 			// REMINDER: we just simply associate the SAME dbfield to t18 on _obj.ID
-			fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
+			//EVAL - fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
 			tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName())
 			if tracedObj != nil {
 				tracedObjPath := trace.GetArgumentPath()
-				fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", obj.String(), objpath, tracedObjPath, tracedObj.String())
+				//EVAL - fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", obj.String(), objpath, tracedObjPath, tracedObj.String())
 				var selectedTaints = make(map[string][]*AbstractTaint)
 
 				var ok = true
@@ -260,7 +259,7 @@ func taintTracedObjects(obj *AbstractObject, otherEdge *AbstractEdge, taintMappi
 				}
 
 				taintMappingTmp := MergeTaints(tracedObj, selectedTaints, false, true)
-				fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
+				//EVAL - fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
 
 				if taintMapping != nil {
 					taintMapping.Merge(taintMappingTmp)

@@ -8,6 +8,7 @@ import (
 	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
 	specs_dsb_sn2 "github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring/specs"
 	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
+	specs_largescaleapp "github.com/blueprint-uservices/blueprint/examples/large_scale_app/wiring/specs"
 	specs_postnotification_simple "github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring/specs"
 	specs_sockshop3 "github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring/specs"
 	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/train_ticket2/wiring/specs"
@@ -31,6 +32,7 @@ var APPS_INFO = map[string]AppInfo{
 	"dsb_sn2":                 {utils.APP_PATH_DSB_SN2, specs_dsb_sn2.Docker},
 	"dsb_hotel2":              {utils.APP_PATH_DSB_HOTEL2, specs_dsb_hotel2.Original},
 	"train_ticket2":           {utils.APP_PATH_TRAIN_TICKET2, specs_trainticket.Docker},
+	"large_scale_app":           {utils.APP_PATH_LARGE_SCALE_APP, specs_largescaleapp.Docker},
 	"foobar":                  {utils.APP_PATH_FOO_BAR, specs_foobar.Docker},
 }
 

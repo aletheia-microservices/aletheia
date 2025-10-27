@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 )
 
 type Inventory struct {
@@ -26,7 +25,7 @@ type MongoInserter interface {
 type MongoDB struct{}
 
 func (m *MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error {
-	fmt.Printf("[INFO] inserted document: %v\n", document)
+	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 
@@ -78,13 +77,12 @@ func Test(ctx context.Context, postid int, metadata map[string]string) {
 	db.Insert(ctx, "db2", "inventory", prod1.InventoryVal)
 	db.Insert(ctx, "db3", "product", prod1)
 
-	
 	prod2 := prod1
 	prod2.Name = "MyName"
 	db.Insert(ctx, "db3", "product", prod2)
-	
+
 	prod1.Metadata["alice2"] = "bob2"
-	
+
 	nested1 := Nested1{
 		Val1: 1,
 		Nested2: Nested2{

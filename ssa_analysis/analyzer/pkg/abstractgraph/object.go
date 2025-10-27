@@ -1,7 +1,6 @@
 package abstractgraph
 
 import (
-	"fmt"
 	"slices"
 	"sort"
 	"strings"
@@ -235,7 +234,7 @@ func (obj *AbstractObject) CleanSecondaryTaints() {
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
 func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTaint) (string, bool) {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	//EVAL - fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
 	for objpath, taintLst := range obj.GetAllTaints() {
 		for _, taint := range taintLst {
 			if taint.Equals(&other) {
@@ -253,7 +252,7 @@ func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTai
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
 func (obj *AbstractObject) HasEqualTaint(other AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	//EVAL - fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
 	for _, taintLst := range obj.GetAllTaints() {
 		for _, taint := range taintLst {
 			if taint.Equals(&other) {
@@ -266,7 +265,7 @@ func (obj *AbstractObject) HasEqualTaint(other AbstractTaint) bool {
 
 // argument 'newtaint' must not be a pointer because the objective is is to compare taints with the same content
 func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint AbstractTaint) {
-	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
+	//EVAL - fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
 	exists := obj.HasEqualTaint(newtaint)
 	if !exists {
 		taint := &AbstractTaint{
@@ -276,6 +275,6 @@ func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint Abstract
 			dbOpType:  newtaint.dbOpType,
 		}
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
-		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)
+		//EVAL - fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)
 	}
 }

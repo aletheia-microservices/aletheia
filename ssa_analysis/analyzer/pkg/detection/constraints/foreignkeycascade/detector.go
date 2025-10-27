@@ -1,8 +1,6 @@
 package foreignkeycascade
 
 import (
-	"fmt"
-
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
@@ -16,11 +14,11 @@ type ForeignKeyCascadeDetector struct {
 }
 
 func NewDetector() *ForeignKeyCascadeDetector {
-	fmt.Println()
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" ------------------------------------ INITIALIZING FOREIGN KEY CASCADE DETECTOR ----------------------------------- ")
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println()
+	//EVAL - fmt.Println()
+	//EVAL - fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	//EVAL - fmt.Println(" ------------------------------------ INITIALIZING FOREIGN KEY CASCADE DETECTOR ----------------------------------- ")
+	//EVAL - fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	//EVAL - fmt.Println()
 	return &ForeignKeyCascadeDetector{
 		cascadeDeletes: make(map[*Request][]*CascadeDelete),
 	}
@@ -53,7 +51,7 @@ func (detector *ForeignKeyCascadeDetector) OnEndRun(app *app.App) {
 func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] on new request\n")
+	//EVAL - fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] on new request\n")
 }
 
 func (detector *ForeignKeyCascadeDetector) OnEndRequest(app *app.App) {
@@ -84,5 +82,5 @@ func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, reqIdx int, ed
 	op := NewDeleteOperation(edge, edge.GetArguments())
 	request := detector.getCurrentRequest()
 	request.AddOperation(op)
-	fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op)
+	//EVAL - fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op)
 }
