@@ -1,42 +1,42 @@
 digraph G {
 	rankdir=TD;
-	N_instr_ret_4412421 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_instr_ret_4412421 [label="return t2", style=bold, shape=ellipse, color="yellow"];
-	N_val_call_4412449 [label="t2: invoke t1.Delete(ctx, id)
+	N_instr_ret_2863357 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_instr_ret_2863357 [label="return t2", style=bold, shape=ellipse, color="yellow"];
+	N_val_call_2863385 [label="t2: invoke t1.Delete(ctx, id)
 
 ==== tainted ====
 _obj
 [rpc] @ OrderService.Delete.t2
 ", style=bold, shape=box, color="yellow"];
-	N_val_field_4412430 [label="t0: &a.orderService [#0]
+	N_val_field_2863366 [label="t0: &a.orderService [#0]
 
 ==== tainted ====
 _obj
 [rpc] @ OrderService.Delete.t2
 ", style=bold, shape=box, color="green"];
-	N_val_param_4412342 [label="a: parameter a : *AdminOrderServiceImpl
+	N_val_param_2863278 [label="a: parameter a : *AdminOrderServiceImpl
 
 ==== tainted ====
 _obj.orderService
 [rpc] @ OrderService.Delete.t2
 ", style=bold, shape=box, color="black"];
-	N_val_param_4412380 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
-	N_val_param_4412401 [label="id: parameter id : string
+	N_val_param_2863316 [label="ctx: parameter ctx : context.Context", style=bold, shape=ellipse, color="black"];
+	N_val_param_2863337 [label="id: parameter id : string
 
 ==== tainted ====
 _obj
 [rpc] @ OrderService.Delete.id
 ", style=bold, shape=box, color="black"];
-	N_val_unary_4412430 [label="t1: *t0
+	N_val_unary_2863366 [label="t1: *t0
 
 ==== tainted ====
 _obj
 [rpc] @ OrderService.Delete.t2
 ", style=bold, shape=box, color="red"];
-	N_val_param_4412342 -> N_val_field_4412430;
-	N_val_field_4412430 -> N_val_unary_4412430;
-	N_val_param_4412380 -> N_val_call_4412449;
-	N_val_param_4412401 -> N_val_call_4412449;
-	N_val_unary_4412430 -> N_val_call_4412449;
-	N_val_call_4412449 -> N_instr_ret_4412421;
+	N_val_param_2863278 -> N_val_field_2863366;
+	N_val_field_2863366 -> N_val_unary_2863366;
+	N_val_param_2863316 -> N_val_call_2863385;
+	N_val_param_2863337 -> N_val_call_2863385;
+	N_val_unary_2863366 -> N_val_call_2863385;
+	N_val_call_2863385 -> N_instr_ret_2863357;
 }

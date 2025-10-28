@@ -1,8 +1,9 @@
 package blueprint
 
 import (
+	"fmt"
 	"log"
-	/* "reflect" */
+	"reflect"
 
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/blueprint/logging"
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/coreplugins/address"
@@ -62,8 +63,8 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 	databases := make(map[string]ir.IRNode)
 	args := make(map[*workflowspec.Service][]ir.IRNode)
 	var frontends []string
-	//EVAL - fmt.Printf("[IR] inspecting ir %v\n", builder.IR)
-	//EVAL - fmt.Println()
+	fmt.Printf("[IR] inspecting ir %v\n", builder.IR)
+	fmt.Println()
 	for _, node := range builder.IR.Children {
 		if n, ok := node.(*address.Address[*http.GolangHttpServer]); ok {
 			if httpService, ok := n.GetDestination().(*http.GolangHttpServer); ok {
@@ -75,19 +76,19 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 		if n, ok := node.(namespaceutil.IRNamespace); ok {
 			if nn, ok := n.(ir.IRNode); ok {
 				if nnn, ok := nn.(*linuxcontainer.Container); ok {
-					//EVAL - fmt.Println("--------------------------------------------")
-					//EVAL - fmt.Println()
-					//EVAL - fmt.Println(nnn.String())
-					//EVAL - fmt.Println()
+					fmt.Println("--------------------------------------------")
+					fmt.Println()
+					fmt.Println(nnn.String())
+					fmt.Println()
 					for _, child := range nnn.Nodes {
 						if nnnn, ok := child.(*goproc.Process); ok {
 							/* for _, child := range nnnn.Edges { */
-								/* t := reflect.TypeOf(child).Elem().Name() */
-								//EVAL - fmt.Printf("[IR EDGE] got edge %s with type %s\n", child.Name(), t)
+							t := reflect.TypeOf(child).Elem().Name()
+							fmt.Printf("[IR EDGE] got edge %s with type %s\n", child.Name(), t)
 							/* } */
 							for _, child := range nnnn.Nodes {
 								if workflowHandler, ok := child.(*workflow.WorkflowHandler); ok {
-									//EVAL - fmt.Printf("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
+									fmt.Printf("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
 
 									if workflowHandler.ServiceType == "Runnable" {
 										log.Fatalf("[IR NODE] found Runnable service type for service (%s) -- cannot analyze application", workflowHandler.Name())
@@ -97,7 +98,7 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 									services[workflowHandler.ServiceInfo] = nil
 
 									for _, arg := range workflowHandler.Args {
-										//EVAL - fmt.Printf("[IR HANDLER ARG] [%T] got node: %s\n", arg, arg)
+										fmt.Printf("[IR HANDLER ARG] [%T] got node: %s\n", arg, arg)
 										switch t := arg.(type) {
 										case *redis.RedisGoClient, *memcached.MemcachedGoClient, *rabbitmq.RabbitmqGoClient, *mongodb.MongoDBGoClient, *mysql.MySQLDBGoClient:
 											databases[arg.Name()] = arg
@@ -113,22 +114,22 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 								}
 							}
 						} else {
-							//EVAL - fmt.Printf("unknown node type: [%T] %v\n", child, child)
+							fmt.Printf("unknown node type: [%T] %v\n", child, child)
 						}
 					}
-					//EVAL - fmt.Println()
+					fmt.Println()
 				}
 			}
 		} /* else if redisContainer, ok := node.(*redis.RedisContainer); ok {
-			//EVAL - fmt.Printf("[IR INFO] ignoring redis.RedisContainer for node %s, interface %s\n", redisContainer.Name(), redisContainer.Iface)
+			fmt.Printf("[IR INFO] ignoring redis.RedisContainer for node %s, interface %s\n", redisContainer.Name(), redisContainer.Iface)
 		} else if memachedContainer, ok := node.(*memcached.MemcachedContainer); ok {
-			//EVAL - fmt.Printf("[IR INFO] ignoring memcached.MemcachedContainer for node %s, interface %s\n", memachedContainer.Name(), memachedContainer.Iface)
+			fmt.Printf("[IR INFO] ignoring memcached.MemcachedContainer for node %s, interface %s\n", memachedContainer.Name(), memachedContainer.Iface)
 		} else if rabbitContainer, ok := node.(*rabbitmq.RabbitmqContainer); ok {
-			//EVAL - fmt.Printf("[IR INFO] ignoring rabbitmq.RabbitmqContainer for node %s, interface %s\n", rabbitContainer.Name(), rabbitContainer.Iface)
+			fmt.Printf("[IR INFO] ignoring rabbitmq.RabbitmqContainer for node %s, interface %s\n", rabbitContainer.Name(), rabbitContainer.Iface)
 		} else if mongoDbContainer, ok := node.(*mongodb.MongoDBContainer); ok {
-			//EVAL - fmt.Printf("[IR INFO] ignoring mongodb.MongoDBContainer for node %s, interface %s\n", mongoDbContainer.Name(), mongoDbContainer.Iface)
+			fmt.Printf("[IR INFO] ignoring mongodb.MongoDBContainer for node %s, interface %s\n", mongoDbContainer.Name(), mongoDbContainer.Iface)
 		} else if mysqlContainer, ok := node.(*mysql.MySQLDBContainer); ok {
-			//EVAL - fmt.Printf("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s\n", mysqlContainer.Name(), mysqlContainer.Iface)
+			fmt.Printf("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s\n", mysqlContainer.Name(), mysqlContainer.Iface)
 		} */
 	}
 	return services, databases, args, frontends

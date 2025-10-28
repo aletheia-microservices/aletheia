@@ -36,7 +36,7 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 }
 
 func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
-	//EVAL - fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
+	fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
 }
 
@@ -210,9 +210,9 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 	}
 
 	/* for _, node := range graph.GetNodes() {
-		//EVAL - fmt.Printf("on node: %v\n", node)
+		fmt.Printf("on node: %v\n", node)
 		for _, edge := range graph.GetEdgesFromNode(node) {
-			//EVAL - fmt.Printf("\t on edge: %v\n", edge)
+			fmt.Printf("\t on edge: %v\n", edge)
 		}
 	} */
 

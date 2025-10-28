@@ -1,6 +1,7 @@
 package abstractgraph
 
 import (
+	"fmt"
 	"log"
 	"sort"
 
@@ -39,7 +40,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 					true, false,
 				)
 				abstractTaints = append(abstractTaints, taint)
-				//EVAL - fmt.Printf("[SSA TO ABSTRACT TAINT] new taint on object path (%s): %s\n", objPath, taint.LongString())
+				fmt.Printf("[SSA TO ABSTRACT TAINT] new taint on object path (%s): %s\n", objPath, taint.LongString())
 			}
 		}
 		if abstractTaints != nil {
@@ -60,7 +61,7 @@ func ssaTaintServiceToAbstractTrace(graph *AbstractCallGraph, ssaTaintsMap map[s
 					ssaTaint.GetServiceCall().GetID(),
 				)
 				abstractTraces = append(abstractTraces, trace)
-				//EVAL - fmt.Printf("[SSA TO ABSTRACT TRACE] new trace on object path (%s): %s\n", objPath, trace.LongString())
+				fmt.Printf("[SSA TO ABSTRACT TRACE] new trace on object path (%s): %s\n", objPath, trace.LongString())
 			}
 		}
 		if abstractTraces != nil {
@@ -79,13 +80,13 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	}
 
 	ssaGraph := funcGraphs[funcshortpath]
-	//EVAL - fmt.Printf("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
+	fmt.Printf("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
 
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)
 
 	if node != nil && node.IsParsed() {
-		//EVAL - fmt.Printf("[ABSTRACTGRAPH] ignoring node already visited: %s\n", node.String())
+		fmt.Printf("[ABSTRACTGRAPH] ignoring node already visited: %s\n", node.String())
 		return
 	}
 
@@ -93,10 +94,10 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "")
 		graph.AddNode(name, node)
 
-		//EVAL - fmt.Printf("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
+		fmt.Printf("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 			obj := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
-			//EVAL - fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
+			fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
 			node.AddParam(obj)
 		}
 	}
@@ -104,15 +105,15 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	node.SetParsed()
 
 	// finalize parsing
-	//EVAL - fmt.Printf("[ABSTRACTGRAPH] parsing returns for node: %s\n", node.String())
+	fmt.Printf("[ABSTRACTGRAPH] parsing returns for node: %s\n", node.String())
 	retsLst := ssaGraph.GetReturnsLst()
 	var retsObjs []*AbstractObject
 	// first, just create new abstract objects using the first set of returns (could be any other)
-	for _, ret := range retsLst[0] {
+	for i, ret := range retsLst[0] {
 		obj := NewAbstractObject(ret.GetValue().Type().String(), ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
 		node.AddReturn(obj)
 		retsObjs = append(retsObjs, obj)
-		//EVAL - fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", i, obj.String())
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", i, obj.String())
 	}
 	// then, merge taints with corresponding object in the remaining set of returns
 	if len(retsLst) > 1 {
@@ -120,13 +121,13 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			for i, ret := range rets {
 				obj := retsObjs[i]
 				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), true, false)
-				//EVAL - fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
+				fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
 		}
 	}
 	// debug
 	/* for i, obj := range node.GetReturns() {
-		//EVAL - fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.TaintLongString())
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.TaintLongString())
 	} */
 
 	// build dummy edges for entrypoints
@@ -143,14 +144,14 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 	// build edges for service/database RPCs/calls
 	if ssaGraph.HasServiceCalls() {
-		//EVAL - fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
+		fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
 		for _, call := range ssaGraph.GetServiceCalls() {
 			toName := call.GetServiceWithMethod()
 			toNode := graph.GetNodeByNameIfExists(toName)
 
 			/* if len(ssaGraph.GetServiceCalls()) > 2 {
 				for _, call := range ssaGraph.GetServiceCalls() {
-					//EVAL - fmt.Printf("call: %v\n", call.String())
+					fmt.Printf("call: %v\n", call.String())
 				}
 				log.Fatalf("EXIT!")
 			} */
@@ -165,11 +166,11 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				toNode = NewAbstractNode(toName, NODE_SERVICE, call.GetService(), call.GetMethod(), "")
 				graph.AddNode(toName, toNode)
 
-				//EVAL - fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
+				fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
 				for _, funcParam := range toSSAGraph.GetFuncParametersExceptMemberAndContext() {
 					param := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
 					toNode.AddParam(param)
-					//EVAL - fmt.Printf("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
+					fmt.Printf("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
 				}
 			}
 
@@ -184,18 +185,18 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			// create call returns
 			for _, callRet := range call.GetReturns() {
 				ret := NewAbstractObject(callRet.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callRet.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callRet.GetTaints()))
-				//EVAL - fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
+				fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
 				edge.AddReturn(ret)
 			}
 
 			edges = append(edges, edge)
-			//EVAL - fmt.Printf("[ABSTRACT GRAPH] added edge: %v\n", edge)
+			fmt.Printf("[ABSTRACT GRAPH] added edge: %v\n", edge)
 		}
-		//EVAL - fmt.Println()
+		fmt.Println()
 	}
 
 	if ssaGraph.HasDatabaseCalls() {
-		//EVAL - fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
+		fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
 
 		for _, call := range ssaGraph.GetDatabaseCalls() {
 			toDatabasePath := call.GetDatabasePath()
@@ -237,7 +238,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 			edges = append(edges, edge)
 		}
-		//EVAL - fmt.Println()
+		fmt.Println()
 
 		// at the end, we need to sort edges by ID (which also includes original ssa ID)
 		// this is because the tainter first checks database calls and then service calls

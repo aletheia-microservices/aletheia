@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"go/types"
 	"log"
 	"os"
@@ -73,14 +74,14 @@ func (app *App) Init() {
 
 func (app *App) InitServiceFields(pkgs []*ssa.Package) {
 	for _, pkg := range pkgs {
-		//EVAL - fmt.Printf("[APP PARSER] analyzing package: %s\n", pkg.String())
+		fmt.Printf("[APP PARSER] analyzing package: %s\n", pkg.String())
 		for _, member := range pkg.Members {
 			if ssaType, ok := member.(*ssa.Type); ok {
 				service := app.GetServiceWithImplPathIfExists(ssaType.String())
 				if service == nil {
 					continue
 				}
-				//EVAL - fmt.Printf("\t[APP PARSER] found service impl: %s\n", service.GetImpl())
+				fmt.Printf("\t[APP PARSER] found service impl: %s\n", service.GetImpl())
 				if typeNamed, ok := ssaType.Type().(*types.Named); ok {
 					if typeStruct, ok := typeNamed.Underlying().(*types.Struct); ok {
 						i := 0
@@ -88,7 +89,7 @@ func (app *App) InitServiceFields(pkgs []*ssa.Package) {
 							typeVar := typeStruct.Field(i)
 							field := services.NewField(i, typeVar.Name())
 							service.AddField(field)
-							//EVAL - fmt.Printf("\t\t[APP PARSER] created new field: %s\n", field.String())
+							fmt.Printf("\t\t[APP PARSER] created new field: %s\n", field.String())
 							i++
 						}
 					}
@@ -154,7 +155,7 @@ func parseSQLStatementsFromInput(input string) []sqlDbStmt {
 }
 
 func parseSQLStatement(database *backends.Database, sql string) {
-	//EVAL - fmt.Printf("[APP SQL PARSER] parsing statement: %s\n", sql)
+	fmt.Printf("[APP SQL PARSER] parsing statement: %s\n", sql)
 
 	sql = strings.ReplaceAll(sql, "\n", " ")
 	sql = strings.ReplaceAll(sql, "\t", " ")
@@ -165,7 +166,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 
 	w := &walk.AstWalker{
 		Fn: func(ctx interface{}, node interface{}) (stop bool) {
-			//EVAL - fmt.Printf("[APP SQL PARSER] visiting node (%T): %v\n", node, node)
+			fmt.Printf("[APP SQL PARSER] visiting node (%T): %v\n", node, node)
 
 			switch stmt := node.(type) {
 			case *tree.CreateTable:
@@ -187,7 +188,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 				if field == nil {
 					field = backends.NewField(fieldPath, database, schema)
 					schema.AddField(field)
-					//EVAL - fmt.Printf("[APP SQL PARSER] added new database field: %s\n", field.GetPath())
+					fmt.Printf("[APP SQL PARSER] added new database field: %s\n", field.GetPath())
 				}
 				fields[columnName] = field
 
@@ -200,7 +201,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 				if constraint != nil {
 					field.AddConstraint(constraint)
 					schema.AddConstraint(constraint)
-					//EVAL - fmt.Printf("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
+					fmt.Printf("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
 				}
 
 			case *tree.UniqueConstraintTableDef:
@@ -224,7 +225,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 				}
 
 				schema.AddConstraint(constraint)
-				//EVAL - fmt.Printf("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
+				fmt.Printf("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
 
 			}
 			return false
@@ -260,7 +261,7 @@ type tableNameAlias struct {
 // NOTE: for SQL Selects on all fields (i.e., '*') the readFields length is 1
 // and the readField has format <database>.<table>
 func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
-	//EVAL - fmt.Printf("[APP SQL PARSER] parsing sql read for database (%s): %s\n", db, stmtStr)
+	fmt.Printf("[APP SQL PARSER] parsing sql read for database (%s): %s\n", db, stmtStr)
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
 		log.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
@@ -276,23 +277,23 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 	case *sqlparser.Select:
 		tableNameAliasLst = parseSQLTableExprs(stmt.From)
 
-		/* var readAllFields bool */
+		var readAllFields bool
 		for _, expr := range stmt.SelectExprs {
 			if _, ok := expr.(*sqlparser.StarExpr); ok {
-				/* readAllFields = true */
+				readAllFields = true
 				fieldpath := db + "." + tableNameAliasLst[0].name // + ".*"
 				selectedFields = append(selectedFields, fieldpath)
-				//EVAL - fmt.Printf("[APP SQL PARSER] found sqlparser.StarExpr (%t)\n", readAllFields)
+				fmt.Printf("[APP SQL PARSER] found sqlparser.StarExpr (%t)\n", readAllFields)
 			} else if aliasedExpr, ok := expr.(*sqlparser.AliasedExpr); ok {
 				if valTuple, ok := aliasedExpr.Expr.(sqlparser.ValTuple); ok {
-					for _, expr := range valTuple {
+					for rowIdx, expr := range valTuple {
 						if col, ok := expr.(*sqlparser.ColName); ok {
 							prefixTableName, columnName := parseColumnName(string(col.Name.CompliantName()))
 							tableName := parseTableName(prefixTableName, tableNameAliasLst)
 							fieldpath := db + "." + tableName + "." + columnName
 
 							selectedFields = append(selectedFields, fieldpath)
-							//EVAL - fmt.Printf("[APP SQL PARSER] [SELECT record %d/%d]: %s\n", rowIdx+1, len(valTuple), fieldpath)
+							fmt.Printf("[APP SQL PARSER] [SELECT record %d/%d]: %s\n", rowIdx+1, len(valTuple), fieldpath)
 						}
 					}
 				}
@@ -323,7 +324,7 @@ func parseSQLWhere(db string, stmtWhere *sqlparser.Where, tableNameAliasLst []ta
 			leftFieldName = db + "." + tableName + "." + columnName
 		}
 		filterFields = append(filterFields, leftFieldName)
-		//EVAL - fmt.Printf("[APP SQL PARSER] [WHERE]: %s -> <SOME OBJECT TBD>\n", leftFieldName)
+		fmt.Printf("[APP SQL PARSER] [WHERE]: %s -> <SOME OBJECT TBD>\n", leftFieldName)
 	}
 	return filterFields
 }
@@ -331,7 +332,7 @@ func parseSQLWhere(db string, stmtWhere *sqlparser.Where, tableNameAliasLst []ta
 // ParseSQLWrite returns two slices, one for written fields and another for filter fields
 // where each field return has format <table>.<field>
 func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
-	//EVAL - fmt.Printf("[APP SQL PARSER] parsing sql write for database (%s): %s\n", db, stmtStr)
+	fmt.Printf("[APP SQL PARSER] parsing sql write for database (%s): %s\n", db, stmtStr)
 
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
@@ -345,15 +346,15 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 	switch stmt := stmt.(type) {
 	case *sqlparser.Insert:
 		if values, ok := stmt.Rows.(sqlparser.Values); ok {
-			for _, tuple := range values {
+			for rowIdx, tuple := range values {
 				for colIdx, expr := range tuple {
 					if sqlVal, ok := expr.(*sqlparser.SQLVal); ok {
 						tableName = stmt.Table.Name.CompliantName()
 						if sqlVal.Type == sqlparser.ValArg { // placeholder (e.g., '?' that is then parsed into ':v1', ':v2', etc.)
 							fieldpath := db + "." + tableName + "." + stmt.Columns[colIdx].CompliantName()
-							/* placeholderVal := string(sqlVal.Val) */
+							placeholderVal := string(sqlVal.Val)
 							writtenFields = append(writtenFields, fieldpath)
-							//EVAL - fmt.Printf("[APP SQL PARSER] (record %d/%d) INSERT %s = (%s) -> <SOME OBJECT TBD>\n", rowIdx+1, len(values), fieldpath, placeholderVal)
+							fmt.Printf("[APP SQL PARSER] (record %d/%d) INSERT %s = (%s) -> <SOME OBJECT TBD>\n", rowIdx+1, len(values), fieldpath, placeholderVal)
 						}
 					}
 				}
@@ -374,9 +375,9 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 			if sqlVal, ok := expr.Expr.(*sqlparser.SQLVal); ok {
 				if sqlVal.Type == sqlparser.ValArg { // placeholder (e.g., '?', parsed as ':v1', ':v2')
 					//fieldObj := args[argIdx]
-					/* placeholderVal := string(sqlVal.Val) */
+					placeholderVal := string(sqlVal.Val)
 					writtenFields = append(writtenFields, fieldpath)
-					//EVAL - fmt.Printf("[APP SQL PARSER] SET %s = (%s) -> <SOME OBJECT TBD>\n", fieldpath, placeholderVal)
+					fmt.Printf("[APP SQL PARSER] SET %s = (%s) -> <SOME OBJECT TBD>\n", fieldpath, placeholderVal)
 					argIdx++
 				}
 			}

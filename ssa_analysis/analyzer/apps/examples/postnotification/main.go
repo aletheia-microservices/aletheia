@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 )
 
 type Post struct {
@@ -40,19 +41,19 @@ func (s *AnalyticsService) UpdateAnalytics(ctx context.Context, reqID string, po
 type MongoDB struct{}
 
 func (m *MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error {
-	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", document)
+	fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 
 func (m *MongoDB) Find(ctx context.Context, database string, collection string, id string) interface{} {
-	//EVAL - fmt.Printf("[INFO] found document for id: %v\n", id)
+	fmt.Printf("[INFO] found document for id: %v\n", id)
 	return nil
 }
 
 type RabbitMQ struct{}
 
 func (r *RabbitMQ) Push(ctx context.Context, database string, topic string, message interface{}) error {
-	//EVAL - fmt.Printf("[INFO] pushed message: %v\n", message)
+	fmt.Printf("[INFO] pushed message: %v\n", message)
 	return nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
+	"fmt"
 )
 
 type IterationPhase int
@@ -114,7 +115,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// ============
 			// SERVICE RPCs
 			// ============
-			//EVAL - fmt.Printf("[TRANSVERSE] edge=%s\n", edge.String())
+			fmt.Printf("[TRANSVERSE] edge=%s\n", edge.String())
 			toNode := edge.GetToNode()
 
 			// -----------------------------------
@@ -124,7 +125,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// propagate taints across services (forward): args (from) >>> params (to)
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				//EVAL - fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
+				fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
 				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetPrimaryTaints(), false, false)
 				taintMapping.Merge(taintMappingTmp)
 			}
@@ -156,14 +157,14 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// propagate taints across services (backwards): args (from) <<< params (to)
 			for i, fromArg := range edge.GetArguments() {
 				toParam := toNode.GetParamAt(i)
-				//EVAL - fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
+				fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
 				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetPrimaryTaints(), false, false)
 				taintMapping.Merge(taintMappingTmp)
 			}
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			for i, fromRet := range edge.GetReturns() {
 				toRet := toNode.GetReturnAt(i)
-				//EVAL - fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
+				fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
 				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetPrimaryTaints(), false, false)
 				taintMapping.Merge(taintMappingTmp)
 			}

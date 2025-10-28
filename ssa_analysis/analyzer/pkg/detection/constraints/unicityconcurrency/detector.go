@@ -4,6 +4,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
+	"fmt"
 )
 
 type UnicityConcurrencyDetector struct {
@@ -14,11 +15,11 @@ type UnicityConcurrencyDetector struct {
 }
 
 func NewDetector() *UnicityConcurrencyDetector {
-	//EVAL - fmt.Println()
-	//EVAL - fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	//EVAL - fmt.Println(" ------------------------------------ INITIALIZING UNICITY CONCURRENCY DETECTOR ----------------------------------- ")
-	//EVAL - fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	//EVAL - fmt.Println()
+	fmt.Println()
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println(" ------------------------------------ INITIALIZING UNICITY CONCURRENCY DETECTOR ----------------------------------- ")
+	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	fmt.Println()
 	return &UnicityConcurrencyDetector{
 		vulnerableWriteSets: make(map[*Request][]*VulnerableWriteSet),
 	}
@@ -56,7 +57,7 @@ func (detector *UnicityConcurrencyDetector) OnEndRun(app *app.App) {
 func (detector *UnicityConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	//EVAL - fmt.Printf("[DETECTOR - UNICITY CONCURRENCY] on new request\n")
+	fmt.Printf("[DETECTOR - UNICITY CONCURRENCY] on new request\n")
 }
 
 func (detector *UnicityConcurrencyDetector) OnEndRequest(app *app.App) {
@@ -82,7 +83,7 @@ func (detector *UnicityConcurrencyDetector) OnWrite(app *app.App, reqIdx int, ed
 	// must check inconsistency before adding read to request
 	detector.checkInconsistency(app, request, op)
 	request.AddOperation(op)
-	//EVAL - fmt.Printf("[DETECTOR - UNICITY CONCURRENCY] added new write: %v\n", op)
+	fmt.Printf("[DETECTOR - UNICITY CONCURRENCY] added new write: %v\n", op)
 }
 
 func (detector *UnicityConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {

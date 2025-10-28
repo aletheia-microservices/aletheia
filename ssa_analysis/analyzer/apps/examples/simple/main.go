@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 )
 
 func main() {
@@ -18,7 +19,7 @@ type DB interface {
 type InMemoryDB struct{}
 
 func (db *InMemoryDB) Save(ctx context.Context, data interface{}) error {
-	//EVAL - fmt.Printf("[DB] Saved: %+v\n", data)
+	fmt.Printf("[DB] Saved: %+v\n", data)
 	return nil
 }
 

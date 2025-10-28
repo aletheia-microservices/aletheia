@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"fmt"
 	"go/types"
 
 	"golang.org/x/tools/go/ssa"
@@ -26,7 +27,7 @@ func registerFieldsFromAlloc(app *app.App, graph *ssagraph.SSAGraph, service *se
 								valNode := storeEdge.GetFromNode()
 								if _, ok := valNode.GetValue().(*ssa.Parameter); ok {
 									paramIdx := graph.GetIndexOfParameter(valNode)
-									//EVAL - fmt.Printf("[REGISTRY] [%s] val node (index=%d): %v\n", service.GetName(), paramIdx, valNode.String())
+									fmt.Printf("[REGISTRY] [%s] val node (index=%d): %v\n", service.GetName(), paramIdx, valNode.String())
 									wiringName := service.GetWiringNameAt(paramIdx)
 									field := service.GetFieldAt(fieldIdx)
 									field.SetWiringName(wiringName)
@@ -47,21 +48,21 @@ func RegisterFields(app *app.App, graphs []*ssagraph.SSAGraph) {
 			continue
 		}
 		lastNode := graph.GetNodes()[0]
-		//EVAL - fmt.Printf("lastNode instr: [%T] %s\n", lastNode.GetInstruction(), lastNode.GetInstruction())
+		fmt.Printf("lastNode instr: [%T] %s\n", lastNode.GetInstruction(), lastNode.GetInstruction())
 		if _, ok := lastNode.GetInstruction().(*ssa.Return); ok {
 			for _, edge := range graph.GetEdgesToNode(lastNode) {
 				fromNode := edge.GetFromNode()
-				//EVAL - fmt.Printf("fromNode instr: [%T] %s\n", fromNode.GetInstruction(), fromNode.GetInstruction())
+				fmt.Printf("fromNode instr: [%T] %s\n", fromNode.GetInstruction(), fromNode.GetInstruction())
 				if iface, ok := fromNode.GetInstruction().(*ssa.MakeInterface); ok {
-					//EVAL - fmt.Printf("iface: %s\n", iface)
-					//EVAL - fmt.Printf("iface X: [%T] %s\n", iface.X, iface.X)
+					fmt.Printf("iface: %s\n", iface)
+					fmt.Printf("iface X: [%T] %s\n", iface.X, iface.X)
 					if alloc, ok := iface.X.(*ssa.Alloc); ok {
-						//EVAL - fmt.Printf("alloc: %s\n", alloc)
-						//EVAL - fmt.Printf("alloc type: [%T] %s\n", alloc.Type(), alloc.Type())
+						fmt.Printf("alloc: %s\n", alloc)
+						fmt.Printf("alloc type: [%T] %s\n", alloc.Type(), alloc.Type())
 						if typesPointer, ok := alloc.Type().(*types.Pointer); ok {
 							if typesNamed, ok := typesPointer.Elem().(*types.Named); ok {
 								returnedService := app.GetServiceWithImplPathIfExists(typesNamed.String())
-								//EVAL - fmt.Printf("returned service: %s\n", returnedService)
+								fmt.Printf("returned service: %s\n", returnedService)
 								if returnedService == service {
 									allocNode := graph.GetNodeByName(alloc.Name())
 									registerFieldsFromAlloc(app, graph, service, allocNode)

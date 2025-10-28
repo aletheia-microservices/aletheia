@@ -2,6 +2,7 @@ package foreignkeyconcurrency
 
 import (
 	"analyzer/pkg/app/backends"
+	"fmt"
 )
 
 type DangerousDelete struct {
@@ -29,10 +30,10 @@ func (cw *ConcurrentWrite) EntryString() string {
 }
 
 func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
-	//EVAL - fmt.Printf("[FOREIGN KEY CONCURRENCY | CHECKER] checking inconsistencies\n")
+	fmt.Printf("[FOREIGN KEY CONCURRENCY | CHECKER] checking inconsistencies\n")
 	for _, request := range detector.requests {
 		for _, delete := range request.getAllDeleteOperations() {
-			//EVAL - fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] delete = %s\n", delete.call.String())
+			fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] delete = %s\n", delete.call.String())
 			var concurrentWrites map[*WriteOperation][]*backends.Field
 
 			for _, otherRequest := range detector.requests {
@@ -40,18 +41,18 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 					continue
 				}
 				for _, otherWrite := range otherRequest.getAllWriteOperations() {
-					//EVAL - fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] other_write={%s}, entry={%s}\n", otherWrite.call.String(), otherWrite.request.entry.String())
+					fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] other_write={%s}, entry={%s}\n", otherWrite.call.String(), otherWrite.request.entry.String())
 					for _, otherField := range otherWrite.fields {
-						//EVAL - fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
+						fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
 
 						for _, deletedField := range delete.schema.GetAllFieldsLst() {
-							//EVAL - fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] deleted field = %s\n", deletedField.String())
+							fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] deleted field = %s\n", deletedField.String())
 							if otherField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {
 								if concurrentWrites == nil {
 									concurrentWrites = make(map[*WriteOperation][]*backends.Field)
 								}
 								concurrentWrites[otherWrite] = append(concurrentWrites[otherWrite], otherField)
-								//EVAL - fmt.Printf("\t\t\t[FOREIGN KEY CONCURRENCY | CHECKER] OK!\n")
+								fmt.Printf("\t\t\t[FOREIGN KEY CONCURRENCY | CHECKER] OK!\n")
 							}
 						}
 					}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 )
 
 type Inventory struct {
@@ -23,12 +24,12 @@ type MongoInserter interface {
 type MongoDB struct{}
 
 func (m *MongoDB) Insert(ctx context.Context, database string, collection string, document interface{}) error {
-	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", document)
+	fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 
 func (m *MongoDB) Find(ctx context.Context, database string, collection string, id string) Sku {
-	//EVAL - fmt.Printf("[INFO] found document for id: %v\n", id)
+	fmt.Printf("[INFO] found document for id: %v\n", id)
 	return Sku{}
 }
 
@@ -39,7 +40,7 @@ type RabbitMQPusher interface {
 type RabbitMQ struct{}
 
 func (r *RabbitMQ) Push(ctx context.Context, message interface{}) error {
-	//EVAL - fmt.Printf("[INFO] pushed message: %v\n", message)
+	fmt.Printf("[INFO] pushed message: %v\n", message)
 	return nil
 }
 

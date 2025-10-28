@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 )
 
 type Inventory struct {
@@ -22,7 +23,7 @@ type MongoInserter interface {
 type MongoDB struct{}
 
 func (m *MongoDB) Insert(ctx context.Context, document interface{}) error {
-	//EVAL - fmt.Printf("[INFO] inserted document: %v\n", document)
+	fmt.Printf("[INFO] inserted document: %v\n", document)
 	return nil
 }
 

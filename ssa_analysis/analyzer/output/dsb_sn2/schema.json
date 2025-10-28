@@ -104,8 +104,7 @@
           "FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_cache.followers.Key [MANDATORY]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_db.post.PostID",
           "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES usertimeline_db.usertimeline.Posts[*].Timestamp [MANDATORY]"
+          "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]"
         ]
       }
     ]
@@ -128,6 +127,7 @@
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]",
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES usertimeline_cache.*.Value[*].Timestamp [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES socialgraph_cache.followers.Key [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES usertimeline_cache.*.Key [MANDATORY]"
         ]

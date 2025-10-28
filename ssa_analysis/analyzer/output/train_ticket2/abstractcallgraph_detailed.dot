@@ -8,6 +8,736 @@ digraph G {
 	}
 	subgraph cluster_services {
 		style=invis;
+		N_AdminOrderService_GetAllOrders [label="AdminOrderService.GetAllOrders
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj
+[rpc] @ OrderService.FindAll.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ OrderService.FindAll.t4
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_Create [label="ConfigService.Create
+
+==== param 0 (conf) tainted ====
+_obj
+[write, primary] @ config_db.config
+_obj.Name
+[read, primary] @ config_db.config.Name
+[write, primary] @ config_db.config.Name
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_Delete [label="ConfigService.Delete
+
+==== param 0 (name) tainted ====
+_obj
+[delete, primary] @ config_db.config.name
+", style=bold, shape=box, color="blue"];
+		N_CancelService_CalculateRefund [label="CancelService.CalculateRefund
+
+==== param 0 (orderID) tainted ====
+_obj
+[rpc] @ OrderService.Find.orderID
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", style=bold, shape=box, color="blue"];
+		N_InsidePaymentService_Drawback [label="InsidePaymentService.Drawback
+
+==== param 0 (userID) tainted ====
+_obj
+[update, primary] @ inside_payment_db.inside_money.UserID
+", style=bold, shape=box, color="blue"];
+		N_AssuranceService_Create [label="AssuranceService.Create
+
+==== param 1 (orderid) tainted ====
+_obj
+[write, primary] @ assurance_db.assurance.OrderID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
+_obj
+[write, primary] @ assurance_db.assurance
+_obj.AT
+[write, primary] @ assurance_db.assurance.AT
+_obj.ID
+[write, primary] @ assurance_db.assurance.ID
+_obj.OrderID
+[write, primary] @ assurance_db.assurance.OrderID
+", style=bold, shape=box, color="blue"];
+		N_BasicService_QueryOrderWithAllInfo [label="BasicService.QueryOrderWithAllInfo
+
+==== param 0 (orderID) tainted ====
+_obj
+[rpc] @ OrderService.Find.orderID
+", style=bold, shape=box, color="blue"];
+		N_CancelService_CancelOrder [label="CancelService.CancelOrder
+
+==== param 0 (orderID) tainted ====
+_obj
+[rpc] @ OrderService.Find.orderID
+
+
+==== param 1 (loginID) tainted ====
+_obj
+[rpc] @ InsidePaymentService.Drawback.loginID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", style=bold, shape=box, color="blue"];
+		N_Dashboard_GetAllContacts [label="Dashboard.GetAllContacts
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
+_obj
+[rpc] @ ContactsService.GetAllContacts.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ ContactsService.GetAllContacts.t4
+", style=bold, shape=box, color="blue"];
+		N_PreserveService_Preserve [label="PreserveService.Preserve
+
+==== param 0 (oti) tainted ====
+_obj.AccountID
+[rpc] @ OrderService.Create.t139.AccountID
+_obj.Assurance
+[rpc] @ AssuranceService.Create.t150
+_obj.ConsigneeName
+[rpc] @ ConsignService.InsertConsign.t225.Consignee
+_obj.ConsigneePhone
+[rpc] @ ConsignService.InsertConsign.t225.Phone
+_obj.ConsigneeWeight
+[rpc] @ ConsignService.InsertConsign.t225.Weight
+_obj.ContactsID
+[rpc] @ ContactsService.FindContactsById.t5
+_obj.Date
+[rpc] @ TravelService.GetTripAllDetailInfo.t26.TravelDate
+[rpc] @ SeatService.DistributeSeat.t93.TravelDate
+[rpc] @ OrderService.Create.t139.TravelDate
+_obj.FoodName
+[rpc] @ FoodService.CreateFoodOrder.t187.FoodName
+_obj.FoodPrice
+[rpc] @ FoodService.CreateFoodOrder.t187.Price
+_obj.FoodType
+[rpc] @ FoodService.CreateFoodOrder.t187.FoodType
+_obj.From
+[rpc] @ TravelService.GetTripAllDetailInfo.t26.From
+[rpc] @ BasicService.QueryForTravel.t53.StartPlace
+[rpc] @ SeatService.DistributeSeat.t93.StartStation
+[rpc] @ OrderService.Create.t139.FromStation
+_obj.HandleDate
+[rpc] @ ConsignService.InsertConsign.t225.HandleDate
+_obj.IsWithin
+[rpc] @ ConsignService.InsertConsign.t225.IsWithin
+_obj.SeatType
+[rpc] @ SeatService.DistributeSeat.t93.SeatType
+[rpc] @ OrderService.Create.t139.SeatClass
+_obj.StationName
+[rpc] @ FoodService.CreateFoodOrder.t187.StationName
+_obj.StoreName
+[rpc] @ FoodService.CreateFoodOrder.t187.StoreName
+_obj.To
+[rpc] @ TravelService.GetTripAllDetailInfo.t26.To
+[rpc] @ BasicService.QueryForTravel.t53.EndPlace
+[rpc] @ SeatService.DistributeSeat.t93.DestStation
+[rpc] @ OrderService.Create.t139.ToStation
+_obj.TripID
+[rpc] @ TravelService.GetTripAllDetailInfo.t26.TripID
+[rpc] @ SeatService.DistributeSeat.t93.TrainNumber
+[rpc] @ OrderService.Create.t139.TrainNumber
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ ContactsService.FindContactsById.t8
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_Find [label="ConfigService.Find
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ config_db.config.Name
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Config) tainted ====
+_obj
+[read, primary] @ config_db.config
+", style=bold, shape=box, color="blue"];
+		N_AdminRouteService_AddRoute [label="AdminRouteService.AddRoute
+
+==== param 0 (info) tainted ====
+_obj
+[rpc] @ RouteService.CreateAndModify.info
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
+_obj
+[rpc] @ RouteService.CreateAndModify.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ RouteService.CreateAndModify.t4
+", style=bold, shape=box, color="blue"];
+		N_ExecuteService_TicketExecute [label="ExecuteService.TicketExecute
+
+==== param 0 (orderID) tainted ====
+_obj
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_AddConfig [label="AdminBasicInfoService.AddConfig
+
+==== param 0 (config) tainted ====
+_obj
+[rpc] @ ConfigService.Create.config
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ ConfigService.Create.t2
+", style=bold, shape=box, color="blue"];
+		N_AdminUserService_AddUser [label="AdminUserService.AddUser
+
+==== param 0 (user) tainted ====
+_obj
+[rpc] @ UserService.SaveUser.user
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ UserService.SaveUser.t2
+", style=bold, shape=box, color="blue"];
+		N_TrainService_RetrieveByName [label="TrainService.RetrieveByName
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainType) tainted ====
+_obj
+[read, primary] @ train_db.train
+", style=bold, shape=box, color="blue"];
+		N_SeatService_DistributeSeat [label="SeatService.DistributeSeat
+
+==== param 0 (seatRequest) tainted ====
+_obj
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t4
+_obj.DestStation
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.DestStation
+_obj.StartStation
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.StartStation
+_obj.Stations
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.Stations
+_obj.TotalNum
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.TotalNum
+", style=bold, shape=box, color="blue"];
+		N_AdminOrderService_DeleteOrder [label="AdminOrderService.DeleteOrder
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ OrderService.Delete.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ OrderService.Delete.t2
+", style=bold, shape=box, color="blue"];
+		N_PriceService_DeletePriceConfig [label="PriceService.DeletePriceConfig
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ price_db.priceConfig.ID
+", style=bold, shape=box, color="blue"];
+		N_AdminUserService_DeleteUser [label="AdminUserService.DeleteUser
+
+==== param 0 (userID) tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.userID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.t2
+", style=bold, shape=box, color="blue"];
+		N_TrainService_Create [label="TrainService.Create
+
+==== param 0 (tt) tainted ====
+_obj
+[write, primary] @ train_db.train
+_obj.Name
+[read, primary] @ train_db.train.Name
+[write, primary] @ train_db.train.Name
+", style=bold, shape=box, color="blue"];
+		N_Dashboard_GetAllConfigs [label="Dashboard.GetAllConfigs
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Config) tainted ====
+_obj
+[rpc] @ ConfigService.FindAll.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ ConfigService.FindAll.t4
+", style=bold, shape=box, color="blue"];
+		N_Dashboard_PreserveTicketConfirm [label="Dashboard.PreserveTicketConfirm
+
+==== param 0 (oti) tainted ====
+_obj
+[rpc] @ PreserveService.Preserve.oti
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj
+[rpc] @ PreserveService.Preserve.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ PreserveService.Preserve.t4
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_AddStation [label="AdminBasicInfoService.AddStation
+
+==== param 0 (station) tainted ====
+_obj
+[rpc] @ StationService.CreateStation.station
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ StationService.CreateStation.t2
+", style=bold, shape=box, color="blue"];
+		N_AdminRouteService_DeleteRoute [label="AdminRouteService.DeleteRoute
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ RouteService.DeleteRoute.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ RouteService.DeleteRoute.t2
+", style=bold, shape=box, color="blue"];
+		N_ExecuteService_TicketCollect [label="ExecuteService.TicketCollect
+
+==== param 0 (orderID) tainted ====
+_obj
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", style=bold, shape=box, color="blue"];
+		N_PriceService_FindByRouteIDAndTrainType [label="PriceService.FindByRouteIDAndTrainType
+
+==== param 0 (routeID) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.RouteID
+
+
+==== param 1 (trainType) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.RouteID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceConfig) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_AddPrice [label="AdminBasicInfoService.AddPrice
+
+==== param 0 (config) tainted ====
+_obj
+[rpc] @ PriceService.CreateNewPriceConfig.config
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ PriceService.CreateNewPriceConfig.t2
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_Delete [label="ContactsService.Delete
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ contacts_db.contacts.ID
+", style=bold, shape=box, color="blue"];
+		N_AdminTravelService_AddTravel [label="AdminTravelService.AddTravel
+
+==== param 0 (travelInfo) tainted ====
+_obj
+[rpc] @ TravelService.CreateTrip.travelInfo
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Trip) tainted ====
+_obj
+[rpc] @ TravelService.CreateTrip.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ TravelService.CreateTrip.t4
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_GetAllContacts [label="ContactsService.GetAllContacts
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
+_obj[*]
+[read, primary] @ contacts_db.contacts
+", style=bold, shape=box, color="blue"];
+		N_Dashboard_GetTravel [label="Dashboard.GetTravel
+
+==== param 0 (info) tainted ====
+_obj
+[rpc] @ BasicService.QueryForTravel.info
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TravelResult) tainted ====
+_obj
+[rpc] @ BasicService.QueryForTravel.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ BasicService.QueryForTravel.t4
+", style=bold, shape=box, color="blue"];
+		N_RouteService_GetRouteById [label="RouteService.GetRouteById
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
+_obj
+[read, primary] @ route_db.route
+", style=bold, shape=box, color="blue"];
+		N_ConsignService_InsertConsign [label="ConsignService.InsertConsign
+
+==== param 0 (consignRequest) tainted ====
+_obj.AccountID
+[write, primary] @ consign_db.consign_record.AccountID
+_obj.Consignee
+[write, primary] @ consign_db.consign_record.Consignee
+_obj.From
+[write, primary] @ consign_db.consign_record.FromPlace
+_obj.HandleDate
+[write, primary] @ consign_db.consign_record.HandleDate
+_obj.IsWithin
+[rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t6
+_obj.OrderID
+[write, primary] @ consign_db.consign_record.OrderID
+_obj.Phone
+[write, primary] @ consign_db.consign_record.Phone
+_obj.TargetDate
+[write, primary] @ consign_db.consign_record.TargetDate
+_obj.To
+[write, primary] @ consign_db.consign_record.ToPlace
+_obj.Weight
+[write, primary] @ consign_db.consign_record.Weight
+[rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t4
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignRecord) tainted ====
+_obj
+[write, primary] @ consign_db.consign_record
+_obj.AccountID
+[write, primary] @ consign_db.consign_record.AccountID
+_obj.Consignee
+[write, primary] @ consign_db.consign_record.Consignee
+_obj.FromPlace
+[write, primary] @ consign_db.consign_record.FromPlace
+_obj.HandleDate
+[write, primary] @ consign_db.consign_record.HandleDate
+_obj.OrderID
+[write, primary] @ consign_db.consign_record.OrderID
+_obj.Phone
+[write, primary] @ consign_db.consign_record.Phone
+_obj.Price
+[write, primary] @ consign_db.consign_record.Price
+_obj.TargetDate
+[write, primary] @ consign_db.consign_record.TargetDate
+_obj.ToPlace
+[write, primary] @ consign_db.consign_record.ToPlace
+_obj.Weight
+[write, primary] @ consign_db.consign_record.Weight
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t9
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_FindContactsById [label="ContactsService.FindContactsById
+
+==== param 0 (id) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.ID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts
+", style=bold, shape=box, color="blue"];
+		N_ContactsService_CreateContacts [label="ContactsService.CreateContacts
+
+==== param 0 (contact) tainted ====
+_obj
+[write, primary] @ contacts_db.contacts
+_obj.AccountID
+[read, primary] @ contacts_db.contacts.AccountID
+[write, primary] @ contacts_db.contacts.AccountID
+_obj.DocumentNumber
+[read, primary] @ contacts_db.contacts.DocumentNumber
+[write, primary] @ contacts_db.contacts.DocumentNumber
+_obj.DocumentType
+[read, primary] @ contacts_db.contacts.DocumentType
+[write, primary] @ contacts_db.contacts.DocumentType
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_AddTrain [label="AdminBasicInfoService.AddTrain
+
+==== param 0 (trainType) tainted ====
+_obj
+[rpc] @ TrainService.Create.trainType
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ TrainService.Create.t2
+", style=bold, shape=box, color="blue"];
+		N_AdminTravelService_DeleteTravel [label="AdminTravelService.DeleteTravel
+
+==== param 0 (tripID) tainted ====
+_obj
+[rpc] @ TravelService.DeleteTrip.tripID
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ TravelService.DeleteTrip.t2
+", style=bold, shape=box, color="blue"];
+		N_Dashboard_AddContact [label="Dashboard.AddContact
+
+==== param 0 (contact) tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.contact
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.t2
+", style=bold, shape=box, color="blue"];
+		N_BasicService_QueryForTravel [label="BasicService.QueryForTravel
+
+==== param 0 (info) tainted ====
+_obj.EndPlace
+[rpc] @ StationService.Exists.t15
+_obj.StartPlace
+[rpc] @ StationService.Exists.t2
+_obj.Trip.ID
+[rpc] @ RouteService.GetRouteById.t39
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t39
+_obj.Trip.TrainTypeName
+[rpc] @ TrainService.RetrieveByName.t32
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ StationService.Exists.t7
+", style=bold, shape=box, color="blue"];
+		N_StationService_Exists [label="StationService.Exists
+
+==== param 0 (name) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+", style=bold, shape=box, color="blue"];
+		N_OrderService_Create [label="OrderService.Create
+
+==== param 0 (order) tainted ====
+_obj
+[write, primary] @ order_db.order
+_obj.ID
+[read, primary] @ order_db.order.ID
+[write, primary] @ order_db.order.ID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj
+[write, primary] @ order_db.order
+_obj.ID
+[read, primary] @ order_db.order.ID
+[write, primary] @ order_db.order.ID
+", style=bold, shape=box, color="blue"];
+		N_FoodService_FindFoodOrder [label="FoodService.FindFoodOrder
+
+==== param 0 (orderID) tainted ====
+_obj
+[read, primary] @ food_db.food_order.OrderID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.FoodOrder) tainted ====
+_obj
+[read, primary] @ food_db.food_order
+", style=bold, shape=box, color="blue"];
+		N_TravelService_DeleteTrip [label="TravelService.DeleteTrip
+
+==== param 0 (tripID) tainted ====
+_obj
+[delete, primary] @ travel_db.trip.TripID
+", style=bold, shape=box, color="blue"];
+		N_OrderService_FindAll [label="OrderService.FindAll
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj[*]
+[read, primary] @ order_db.order
+", style=bold, shape=box, color="blue"];
+		N_RouteService_DeleteRoute [label="RouteService.DeleteRoute
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ route_db.route.ID
+", style=bold, shape=box, color="blue"];
+		N_AssuranceService_FindAssuranceByOrderId [label="AssuranceService.FindAssuranceByOrderId
+
+==== param 0 (order_id) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance
+", style=bold, shape=box, color="blue"];
+		N_AdminOrderService_AddOrder [label="AdminOrderService.AddOrder
+
+==== param 0 (order) tainted ====
+_obj
+[rpc] @ OrderService.Create.order
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj
+[rpc] @ OrderService.Create.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ OrderService.Create.t4
+", style=bold, shape=box, color="blue"];
+		N_StationService_CreateStation [label="StationService.CreateStation
+
+==== param 0 (station) tainted ====
+_obj
+[write, primary] @ station_db.station
+_obj.ID
+[read, primary] @ station_db.station.ID
+[write, primary] @ station_db.station.ID
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_DeleteConfig [label="AdminBasicInfoService.DeleteConfig
+
+==== param 0 (name) tainted ====
+_obj
+[rpc] @ ConfigService.Delete.name
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ ConfigService.Delete.t2
+", style=bold, shape=box, color="blue"];
+		N_UserService_SaveUser [label="UserService.SaveUser
+
+==== param 0 (user) tainted ====
+_obj
+[write, primary] @ user_db.user
+", style=bold, shape=box, color="blue"];
+		N_Dashboard_AddAssurance [label="Dashboard.AddAssurance
+
+==== param 0 (typeIndex) tainted ====
+_obj
+[rpc] @ AssuranceService.Create.typeIndex
+
+
+==== param 1 (orderID) tainted ====
+_obj
+[rpc] @ AssuranceService.Create.orderID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
+_obj
+[rpc] @ AssuranceService.Create.t3
+
+
+==== ret 1 (error) tainted ====
+_obj
+[rpc] @ AssuranceService.Create.t4
+", style=bold, shape=box, color="blue"];
+		N_SeatService_GetLeftTicketOfInterval [label="SeatService.GetLeftTicketOfInterval
+
+==== param 0 (seatRequest) tainted ====
+_obj
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7
+_obj.DestStation
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.DestStation
+_obj.StartStation
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.StartStation
+_obj.Stations
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.Stations
+_obj.Stations[*]
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.Stations[*]
+_obj.TotalNum
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.TotalNum
+_obj.TrainNumber
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.TrainNumber
+
+
+==== ret 0 (int) tainted ====
+_obj
+[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.TotalNum
+", style=bold, shape=box, color="blue"];
+		N_OrderService_Delete [label="OrderService.Delete
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ order_db.order.ID
+", style=bold, shape=box, color="blue"];
+		N_DeliveryService_FindDelivery [label="DeliveryService.FindDelivery
+
+==== param 0 (orderID) tainted ====
+_obj
+[read, primary] @ delivery_db.delivery.OrderID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Delivery) tainted ====
+_obj
+[read, primary] @ delivery_db.delivery
+", style=bold, shape=box, color="blue"];
+		N_StationService_DeleteStation [label="StationService.DeleteStation
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ station_db.station.ID
+", style=bold, shape=box, color="blue"];
+		N_OrderService_Find [label="OrderService.Find
+
+==== param 0 (orderID) tainted ====
+_obj
+[read, primary] @ order_db.order.ID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj
+[read, primary] @ order_db.order
+", style=bold, shape=box, color="blue"];
 		N_Dashboard_GetAllOrders [label="Dashboard.GetAllOrders
 
 ==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
@@ -18,6 +748,169 @@ _obj
 ==== ret 1 (error) tainted ====
 _obj
 [rpc] @ OrderService.FindAll.t4
+", style=bold, shape=box, color="blue"];
+		N_OrderService_GetTicketListByDateAndTripID [label="OrderService.GetTicketListByDateAndTripID
+
+==== param 0 (seatRequest) tainted ====
+_obj.TrainNumber
+[read, primary] @ order_db.order.TrainNumber
+_obj.TravelDate
+[read, primary] @ order_db.order.TravelDate
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.LeftTicketInfo) tainted ====
+_obj.SoldTickets[*].DestStation
+[read, primary] @ order_db.order.ToStation
+_obj.SoldTickets[*].StartStation
+[read, primary] @ order_db.order.FromStation
+", style=bold, shape=box, color="blue"];
+		N_RouteService_CreateAndModify [label="RouteService.CreateAndModify
+
+==== param 0 (info) tainted ====
+_obj.EndStation
+[write, primary] @ route_db.route.EndStation
+_obj.ID
+[read, primary] @ route_db.route.ID
+[write, primary] @ route_db.route.ID
+_obj.StartStation
+[write, primary] @ route_db.route.StartStation
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
+_obj
+[write, primary] @ route_db.route
+_obj.Distances
+[write, primary] @ route_db.route.Distances
+_obj.EndStation
+[write, primary] @ route_db.route.EndStation
+_obj.ID
+[read, primary] @ route_db.route.ID
+[write, primary] @ route_db.route.ID
+_obj.StartStation
+[write, primary] @ route_db.route.StartStation
+_obj.Stations
+[write, primary] @ route_db.route.Stations
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_AddContact [label="AdminBasicInfoService.AddContact
+
+==== param 0 (contact) tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.contact
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ ContactsService.CreateContacts.t2
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_DeleteTrain [label="AdminBasicInfoService.DeleteTrain
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ TrainService.Delete.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ TrainService.Delete.t4
+", style=bold, shape=box, color="blue"];
+		N_TrainService_Delete [label="TrainService.Delete
+
+==== param 0 (id) tainted ====
+_obj
+[delete, primary] @ train_db.train.ID
+", style=bold, shape=box, color="blue"];
+		N_ConfigService_FindAll [label="ConfigService.FindAll
+
+==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Config) tainted ====
+_obj[*]
+[read, primary] @ config_db.config
+", style=bold, shape=box, color="blue"];
+		N_TravelService_GetTripAllDetailInfo [label="TravelService.GetTripAllDetailInfo
+
+==== param 0 (gtdi) tainted ====
+_obj.From
+[rpc] @ BasicService.QueryForTravel.t53.StartPlace
+[rpc] @ SeatService.GetLeftTicketOfInterval.t81.StartStation
+[rpc] @ SeatService.GetLeftTicketOfInterval.t98.StartStation
+_obj.To
+[rpc] @ BasicService.QueryForTravel.t53.EndPlace
+[rpc] @ SeatService.GetLeftTicketOfInterval.t81.DestStation
+[rpc] @ SeatService.GetLeftTicketOfInterval.t98.DestStation
+_obj.TravelDate
+[rpc] @ BasicService.QueryForTravel.t53.DepartureTime
+[rpc] @ SeatService.GetLeftTicketOfInterval.t81.TravelDate
+[rpc] @ SeatService.GetLeftTicketOfInterval.t98.TravelDate
+_obj.TripID
+[read, primary] @ travel_db.trip.TripID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TripAllDetail) tainted ====
+_obj.trip
+[read, primary] @ travel_db.trip
+_obj.trip.StartTime
+[read, primary] @ travel_db.trip.StartTime
+_obj.trip.TrainTypeName
+[read, primary] @ travel_db.trip.TrainTypeName
+_obj.trip.TripID
+[read, primary] @ travel_db.trip.TripID
+_obj.tripResponse.TrainTypeName
+[read, primary] @ travel_db.trip.TrainTypeName
+_obj.tripResponse.TripID
+[read, primary] @ travel_db.trip.TripID
+", style=bold, shape=box, color="blue"];
+		N_ConsignPriceService_GetPriceByWeightAndRegion [label="ConsignPriceService.GetPriceByWeightAndRegion", style=bold, shape=box, color="blue"];
+		N_OrderService_ModifyOrder [label="OrderService.ModifyOrder
+
+==== param 0 (id) tainted ====
+_obj
+[update, primary] @ order_db.order.ID
+", style=bold, shape=box, color="blue"];
+		N_PriceService_CreateNewPriceConfig [label="PriceService.CreateNewPriceConfig
+
+==== param 0 (pc) tainted ====
+_obj
+[write, primary] @ price_db.priceConfig
+_obj.ID
+[write, primary] @ price_db.priceConfig.ID
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_DeletePrice [label="AdminBasicInfoService.DeletePrice
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ PriceService.DeletePriceConfig.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ PriceService.DeletePriceConfig.t2
+", style=bold, shape=box, color="blue"];
+		N_AdminBasicInfoService_DeleteStation [label="AdminBasicInfoService.DeleteStation
+
+==== param 0 (id) tainted ====
+_obj
+[rpc] @ StationService.DeleteStation.id
+
+
+==== ret 0 (error) tainted ====
+_obj
+[rpc] @ StationService.DeleteStation.t2
+", style=bold, shape=box, color="blue"];
+		N_OrderService_UpdateStatus [label="OrderService.UpdateStatus
+
+==== param 0 (order) tainted ====
+_obj
+[update, primary] @ order_db.order
+_obj.ID
+[read, primary] @ order_db.order.ID
+[update, primary] @ order_db.order.ID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+_obj
+[update, primary] @ order_db.order
+_obj.ID
+[read, primary] @ order_db.order.ID
+[update, primary] @ order_db.order.ID
 ", style=bold, shape=box, color="blue"];
 		N_FoodService_CreateFoodOrder [label="FoodService.CreateFoodOrder
 
@@ -60,234 +953,16 @@ _obj.StoreName
 [write, primary] @ food_db.food_order.StoreName
 [write, primary] @ delivery_queue.notification.StoreName
 ", style=bold, shape=box, color="blue"];
-		N_PriceService_CreateNewPriceConfig [label="PriceService.CreateNewPriceConfig
-
-==== param 0 (pc) tainted ====
-_obj
-[write, primary] @ price_db.priceConfig
-_obj.ID
-[write, primary] @ price_db.priceConfig.ID
-", style=bold, shape=box, color="blue"];
-		N_TrainService_Delete [label="TrainService.Delete
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ train_db.train.ID
-", style=bold, shape=box, color="blue"];
-		N_TrainService_RetrieveByName [label="TrainService.RetrieveByName
-
-==== param 0 (name) tainted ====
-_obj
-[read, primary] @ train_db.train.Name
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TrainType) tainted ====
-_obj
-[read, primary] @ train_db.train
-", style=bold, shape=box, color="blue"];
-		N_ContactsService_GetAllContacts [label="ContactsService.GetAllContacts
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
-_obj[*]
-[read, primary] @ contacts_db.contacts
-", style=bold, shape=box, color="blue"];
-		N_ConfigService_Create [label="ConfigService.Create
-
-==== param 0 (conf) tainted ====
-_obj
-[write, primary] @ config_db.config
-_obj.Name
-[read, primary] @ config_db.config.Name
-[write, primary] @ config_db.config.Name
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_DeleteConfig [label="AdminBasicInfoService.DeleteConfig
-
-==== param 0 (name) tainted ====
-_obj
-[rpc] @ ConfigService.Delete.name
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ ConfigService.Delete.t2
-", style=bold, shape=box, color="blue"];
-		N_ConfigService_FindAll [label="ConfigService.FindAll
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Config) tainted ====
-_obj[*]
-[read, primary] @ config_db.config
-", style=bold, shape=box, color="blue"];
-		N_ConsignPriceService_GetPriceByWeightAndRegion [label="ConsignPriceService.GetPriceByWeightAndRegion", style=bold, shape=box, color="blue"];
-		N_AdminOrderService_DeleteOrder [label="AdminOrderService.DeleteOrder
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ OrderService.Delete.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ OrderService.Delete.t2
-", style=bold, shape=box, color="blue"];
-		N_AdminRouteService_AddRoute [label="AdminRouteService.AddRoute
-
-==== param 0 (info) tainted ====
-_obj
-[rpc] @ RouteService.CreateAndModify.info
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
-_obj
-[rpc] @ RouteService.CreateAndModify.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ RouteService.CreateAndModify.t4
-", style=bold, shape=box, color="blue"];
-		N_AdminTravelService_DeleteTravel [label="AdminTravelService.DeleteTravel
-
-==== param 0 (tripID) tainted ====
-_obj
-[rpc] @ TravelService.DeleteTrip.tripID
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ TravelService.DeleteTrip.t2
-", style=bold, shape=box, color="blue"];
-		N_Dashboard_AddContact [label="Dashboard.AddContact
-
-==== param 0 (contact) tainted ====
-_obj
-[rpc] @ ContactsService.CreateContacts.contact
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ ContactsService.CreateContacts.t2
-", style=bold, shape=box, color="blue"];
-		N_RouteService_GetRouteById [label="RouteService.GetRouteById
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ route_db.route.ID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
-_obj
-[read, primary] @ route_db.route
-", style=bold, shape=box, color="blue"];
-		N_ContactsService_FindContactsById [label="ContactsService.FindContactsById
-
-==== param 0 (id) tainted ====
-_obj
-[read, primary] @ contacts_db.contacts.ID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
-_obj
-[read, primary] @ contacts_db.contacts
-", style=bold, shape=box, color="blue"];
-		N_SeatService_GetLeftTicketOfInterval [label="SeatService.GetLeftTicketOfInterval
-
-==== param 0 (seatRequest) tainted ====
-_obj
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7
-_obj.DestStation
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.DestStation
-_obj.StartStation
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.StartStation
-_obj.Stations
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.Stations
-_obj.Stations[*]
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.Stations[*]
-_obj.TotalNum
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.TotalNum
-_obj.TrainNumber
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.TrainNumber
-
-
-==== ret 0 (int) tainted ====
-_obj
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t7.TotalNum
-", style=bold, shape=box, color="blue"];
-		N_RouteService_CreateAndModify [label="RouteService.CreateAndModify
-
-==== param 0 (info) tainted ====
-_obj.EndStation
-[write, primary] @ route_db.route.EndStation
-_obj.ID
-[read, primary] @ route_db.route.ID
-[write, primary] @ route_db.route.ID
-_obj.StartStation
-[write, primary] @ route_db.route.StartStation
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Route) tainted ====
-_obj
-[write, primary] @ route_db.route
-_obj.Distances
-[write, primary] @ route_db.route.Distances
-_obj.EndStation
-[write, primary] @ route_db.route.EndStation
-_obj.ID
-[read, primary] @ route_db.route.ID
-[write, primary] @ route_db.route.ID
-_obj.StartStation
-[write, primary] @ route_db.route.StartStation
-_obj.Stations
-[write, primary] @ route_db.route.Stations
-", style=bold, shape=box, color="blue"];
-		N_TrainService_Create [label="TrainService.Create
-
-==== param 0 (tt) tainted ====
-_obj
-[write, primary] @ train_db.train
-_obj.Name
-[read, primary] @ train_db.train.Name
-[write, primary] @ train_db.train.Name
-", style=bold, shape=box, color="blue"];
-		N_TravelService_DeleteTrip [label="TravelService.DeleteTrip
-
-==== param 0 (tripID) tainted ====
-_obj
-[delete, primary] @ travel_db.trip.TripID
-", style=bold, shape=box, color="blue"];
-		N_InsidePaymentService_Drawback [label="InsidePaymentService.Drawback
-
-==== param 0 (userID) tainted ====
-_obj
-[update, primary] @ inside_payment_db.inside_money.UserID
-", style=bold, shape=box, color="blue"];
-		N_ExecuteService_TicketExecute [label="ExecuteService.TicketExecute
+		N_ConsignService_FindConsign [label="ConsignService.FindConsign
 
 ==== param 0 (orderID) tainted ====
 _obj
-[rpc] @ OrderService.Find.orderID
-[rpc] @ OrderService.ModifyOrder.orderID
+[read, primary] @ consign_db.consign_record.OrderID
 
 
-==== ret 0 (error) tainted ====
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignRecord) tainted ====
 _obj
-[rpc] @ OrderService.Find.t5
-", style=bold, shape=box, color="blue"];
-		N_PriceService_DeletePriceConfig [label="PriceService.DeletePriceConfig
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ price_db.priceConfig.ID
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_DeleteTrain [label="AdminBasicInfoService.DeleteTrain
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ TrainService.Delete.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ TrainService.Delete.t4
+[read, primary] @ consign_db.consign_record
 ", style=bold, shape=box, color="blue"];
 		N_TravelService_CreateTrip [label="TravelService.CreateTrip
 
@@ -347,205 +1022,6 @@ _obj.TripID
 [read, primary] @ travel_db.trip.TripID
 [write, primary] @ travel_db.trip.TripID
 ", style=bold, shape=box, color="blue"];
-		N_OrderService_UpdateStatus [label="OrderService.UpdateStatus
-
-==== param 0 (order) tainted ====
-_obj
-[update, primary] @ order_db.order
-_obj.ID
-[read, primary] @ order_db.order.ID
-[update, primary] @ order_db.order.ID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
-_obj
-[update, primary] @ order_db.order
-_obj.ID
-[read, primary] @ order_db.order.ID
-[update, primary] @ order_db.order.ID
-", style=bold, shape=box, color="blue"];
-		N_BasicService_QueryOrderWithAllInfo [label="BasicService.QueryOrderWithAllInfo
-
-==== param 0 (orderID) tainted ====
-_obj
-[rpc] @ OrderService.Find.orderID
-", style=bold, shape=box, color="blue"];
-		N_AdminOrderService_GetAllOrders [label="AdminOrderService.GetAllOrders
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
-_obj
-[rpc] @ OrderService.FindAll.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ OrderService.FindAll.t4
-", style=bold, shape=box, color="blue"];
-		N_AdminRouteService_DeleteRoute [label="AdminRouteService.DeleteRoute
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ RouteService.DeleteRoute.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ RouteService.DeleteRoute.t2
-", style=bold, shape=box, color="blue"];
-		N_StationService_DeleteStation [label="StationService.DeleteStation
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ station_db.station.ID
-", style=bold, shape=box, color="blue"];
-		N_DeliveryService_FindDelivery [label="DeliveryService.FindDelivery
-
-==== param 0 (orderID) tainted ====
-_obj
-[read, primary] @ delivery_db.delivery.OrderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Delivery) tainted ====
-_obj
-[read, primary] @ delivery_db.delivery
-", style=bold, shape=box, color="blue"];
-		N_DeliveryService_Run [label="DeliveryService.Run", style=bold, shape=box, color="blue"];
-		N_UserService_DeleteUser [label="UserService.DeleteUser
-
-==== param 0 (userID) tainted ====
-_obj
-[delete, primary] @ user_db.user.UserID
-", style=bold, shape=box, color="blue"];
-		N_CancelService_CalculateRefund [label="CancelService.CalculateRefund
-
-==== param 0 (orderID) tainted ====
-_obj
-[rpc] @ OrderService.Find.orderID
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ OrderService.Find.t5
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_DeleteStation [label="AdminBasicInfoService.DeleteStation
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ StationService.DeleteStation.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ StationService.DeleteStation.t2
-", style=bold, shape=box, color="blue"];
-		N_BasicService_QueryForTravel [label="BasicService.QueryForTravel
-
-==== param 0 (info) tainted ====
-_obj.EndPlace
-[rpc] @ StationService.Exists.t15
-_obj.StartPlace
-[rpc] @ StationService.Exists.t2
-_obj.Trip.ID
-[rpc] @ RouteService.GetRouteById.t39
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t39
-_obj.Trip.TrainTypeName
-[rpc] @ TrainService.RetrieveByName.t32
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ StationService.Exists.t7
-", style=bold, shape=box, color="blue"];
-		N_ConsignService_InsertConsign [label="ConsignService.InsertConsign
-
-==== param 0 (consignRequest) tainted ====
-_obj.AccountID
-[write, primary] @ consign_db.consign_record.AccountID
-_obj.Consignee
-[write, primary] @ consign_db.consign_record.Consignee
-_obj.From
-[write, primary] @ consign_db.consign_record.FromPlace
-_obj.HandleDate
-[write, primary] @ consign_db.consign_record.HandleDate
-_obj.IsWithin
-[rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t6
-_obj.OrderID
-[write, primary] @ consign_db.consign_record.OrderID
-_obj.Phone
-[write, primary] @ consign_db.consign_record.Phone
-_obj.TargetDate
-[write, primary] @ consign_db.consign_record.TargetDate
-_obj.To
-[write, primary] @ consign_db.consign_record.ToPlace
-_obj.Weight
-[write, primary] @ consign_db.consign_record.Weight
-[rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t4
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignRecord) tainted ====
-_obj
-[write, primary] @ consign_db.consign_record
-_obj.AccountID
-[write, primary] @ consign_db.consign_record.AccountID
-_obj.Consignee
-[write, primary] @ consign_db.consign_record.Consignee
-_obj.FromPlace
-[write, primary] @ consign_db.consign_record.FromPlace
-_obj.HandleDate
-[write, primary] @ consign_db.consign_record.HandleDate
-_obj.OrderID
-[write, primary] @ consign_db.consign_record.OrderID
-_obj.Phone
-[write, primary] @ consign_db.consign_record.Phone
-_obj.Price
-[write, primary] @ consign_db.consign_record.Price
-_obj.TargetDate
-[write, primary] @ consign_db.consign_record.TargetDate
-_obj.ToPlace
-[write, primary] @ consign_db.consign_record.ToPlace
-_obj.Weight
-[write, primary] @ consign_db.consign_record.Weight
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t9
-", style=bold, shape=box, color="blue"];
-		N_ExecuteService_TicketCollect [label="ExecuteService.TicketCollect
-
-==== param 0 (orderID) tainted ====
-_obj
-[rpc] @ OrderService.Find.orderID
-[rpc] @ OrderService.ModifyOrder.orderID
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ OrderService.Find.t5
-", style=bold, shape=box, color="blue"];
-		N_RouteService_DeleteRoute [label="RouteService.DeleteRoute
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ route_db.route.ID
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_AddPrice [label="AdminBasicInfoService.AddPrice
-
-==== param 0 (config) tainted ====
-_obj
-[rpc] @ PriceService.CreateNewPriceConfig.config
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ PriceService.CreateNewPriceConfig.t2
-", style=bold, shape=box, color="blue"];
-		N_ContactsService_Delete [label="ContactsService.Delete
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ contacts_db.contacts.ID
-", style=bold, shape=box, color="blue"];
 		N_Dashboard_Pay [label="Dashboard.Pay
 
 ==== param 0 (payment) tainted ====
@@ -557,480 +1033,7 @@ _obj
 _obj
 [rpc] @ PaymentService.Pay.t2
 ", style=bold, shape=box, color="blue"];
-		N_AdminOrderService_AddOrder [label="AdminOrderService.AddOrder
-
-==== param 0 (order) tainted ====
-_obj
-[rpc] @ OrderService.Create.order
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
-_obj
-[rpc] @ OrderService.Create.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ OrderService.Create.t4
-", style=bold, shape=box, color="blue"];
-		N_AdminUserService_DeleteUser [label="AdminUserService.DeleteUser
-
-==== param 0 (userID) tainted ====
-_obj
-[rpc] @ UserService.DeleteUser.userID
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ UserService.DeleteUser.t2
-", style=bold, shape=box, color="blue"];
-		N_StationService_Exists [label="StationService.Exists
-
-==== param 0 (name) tainted ====
-_obj
-[read, primary] @ station_db.station.Name
-", style=bold, shape=box, color="blue"];
-		N_AssuranceService_Create [label="AssuranceService.Create
-
-==== param 1 (orderid) tainted ====
-_obj
-[write, primary] @ assurance_db.assurance.OrderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
-_obj
-[write, primary] @ assurance_db.assurance
-_obj.AT
-[write, primary] @ assurance_db.assurance.AT
-_obj.ID
-[write, primary] @ assurance_db.assurance.ID
-_obj.OrderID
-[write, primary] @ assurance_db.assurance.OrderID
-", style=bold, shape=box, color="blue"];
-		N_PriceService_FindByRouteIDAndTrainType [label="PriceService.FindByRouteIDAndTrainType
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.PriceConfig) tainted ====
-_obj
-[read, primary] @ price_db.priceConfig
-", style=bold, shape=box, color="blue"];
-		N_OrderService_FindAll [label="OrderService.FindAll
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
-_obj[*]
-[read, primary] @ order_db.order
-", style=bold, shape=box, color="blue"];
-		N_Dashboard_GetAllConfigs [label="Dashboard.GetAllConfigs
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Config) tainted ====
-_obj
-[rpc] @ ConfigService.FindAll.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ ConfigService.FindAll.t4
-", style=bold, shape=box, color="blue"];
-		N_Dashboard_PreserveTicketConfirm [label="Dashboard.PreserveTicketConfirm
-
-==== param 0 (oti) tainted ====
-_obj
-[rpc] @ PreserveService.Preserve.oti
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
-_obj
-[rpc] @ PreserveService.Preserve.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ PreserveService.Preserve.t4
-", style=bold, shape=box, color="blue"];
-		N_PreserveService_Preserve [label="PreserveService.Preserve
-
-==== param 0 (oti) tainted ====
-_obj.AccountID
-[rpc] @ OrderService.Create.t139.AccountID
-_obj.Assurance
-[rpc] @ AssuranceService.Create.t150
-_obj.ConsigneeName
-[rpc] @ ConsignService.InsertConsign.t225.Consignee
-_obj.ConsigneePhone
-[rpc] @ ConsignService.InsertConsign.t225.Phone
-_obj.ConsigneeWeight
-[rpc] @ ConsignService.InsertConsign.t225.Weight
-_obj.ContactsID
-[rpc] @ ContactsService.FindContactsById.t5
-_obj.Date
-[rpc] @ TravelService.GetTripAllDetailInfo.t26.TravelDate
-[rpc] @ SeatService.DistributeSeat.t93.TravelDate
-[rpc] @ OrderService.Create.t139.TravelDate
-_obj.FoodName
-[rpc] @ FoodService.CreateFoodOrder.t187.FoodName
-_obj.FoodPrice
-[rpc] @ FoodService.CreateFoodOrder.t187.Price
-_obj.FoodType
-[rpc] @ FoodService.CreateFoodOrder.t187.FoodType
-_obj.From
-[rpc] @ TravelService.GetTripAllDetailInfo.t26.From
-[rpc] @ BasicService.QueryForTravel.t53.StartPlace
-[rpc] @ SeatService.DistributeSeat.t93.StartStation
-[rpc] @ OrderService.Create.t139.FromStation
-_obj.HandleDate
-[rpc] @ ConsignService.InsertConsign.t225.HandleDate
-_obj.IsWithin
-[rpc] @ ConsignService.InsertConsign.t225.IsWithin
-_obj.SeatType
-[rpc] @ SeatService.DistributeSeat.t93.SeatType
-[rpc] @ OrderService.Create.t139.SeatClass
-_obj.StationName
-[rpc] @ FoodService.CreateFoodOrder.t187.StationName
-_obj.StoreName
-[rpc] @ FoodService.CreateFoodOrder.t187.StoreName
-_obj.To
-[rpc] @ TravelService.GetTripAllDetailInfo.t26.To
-[rpc] @ BasicService.QueryForTravel.t53.EndPlace
-[rpc] @ SeatService.DistributeSeat.t93.DestStation
-[rpc] @ OrderService.Create.t139.ToStation
-_obj.TripID
-[rpc] @ TravelService.GetTripAllDetailInfo.t26.TripID
-[rpc] @ SeatService.DistributeSeat.t93.TrainNumber
-[rpc] @ OrderService.Create.t139.TrainNumber
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ ContactsService.FindContactsById.t8
-", style=bold, shape=box, color="blue"];
-		N_SeatService_DistributeSeat [label="SeatService.DistributeSeat
-
-==== param 0 (seatRequest) tainted ====
-_obj
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t4
-_obj.DestStation
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.DestStation
-_obj.StartStation
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.StartStation
-_obj.Stations
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.Stations
-_obj.TotalNum
-[rpc] @ OrderService.GetTicketListByDateAndTripID.t4.TotalNum
-", style=bold, shape=box, color="blue"];
-		N_OrderService_Delete [label="OrderService.Delete
-
-==== param 0 (id) tainted ====
-_obj
-[delete, primary] @ order_db.order.ID
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_AddContact [label="AdminBasicInfoService.AddContact
-
-==== param 0 (contact) tainted ====
-_obj
-[rpc] @ ContactsService.CreateContacts.contact
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ ContactsService.CreateContacts.t2
-", style=bold, shape=box, color="blue"];
-		N_CancelService_CancelOrder [label="CancelService.CancelOrder
-
-==== param 0 (orderID) tainted ====
-_obj
-[rpc] @ OrderService.Find.orderID
-
-
-==== param 1 (loginID) tainted ====
-_obj
-[rpc] @ InsidePaymentService.Drawback.loginID
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ OrderService.Find.t5
-", style=bold, shape=box, color="blue"];
-		N_AssuranceService_FindAssuranceByOrderId [label="AssuranceService.FindAssuranceByOrderId
-
-==== param 0 (order_id) tainted ====
-_obj
-[read, primary] @ assurance_db.assurance.OrderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
-_obj
-[read, primary] @ assurance_db.assurance
-", style=bold, shape=box, color="blue"];
-		N_OrderService_ModifyOrder [label="OrderService.ModifyOrder
-
-==== param 0 (id) tainted ====
-_obj
-[update, primary] @ order_db.order.ID
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_AddConfig [label="AdminBasicInfoService.AddConfig
-
-==== param 0 (config) tainted ====
-_obj
-[rpc] @ ConfigService.Create.config
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ ConfigService.Create.t2
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_DeletePrice [label="AdminBasicInfoService.DeletePrice
-
-==== param 0 (id) tainted ====
-_obj
-[rpc] @ PriceService.DeletePriceConfig.id
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ PriceService.DeletePriceConfig.t2
-", style=bold, shape=box, color="blue"];
-		N_ConfigService_Delete [label="ConfigService.Delete
-
-==== param 0 (name) tainted ====
-_obj
-[delete, primary] @ config_db.config.name
-", style=bold, shape=box, color="blue"];
-		N_ConsignService_FindConsign [label="ConsignService.FindConsign
-
-==== param 0 (orderID) tainted ====
-_obj
-[read, primary] @ consign_db.consign_record.OrderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.ConsignRecord) tainted ====
-_obj
-[read, primary] @ consign_db.consign_record
-", style=bold, shape=box, color="blue"];
 		N_PaymentService_Pay [label="PaymentService.Pay", style=bold, shape=box, color="blue"];
-		N_OrderService_Create [label="OrderService.Create
-
-==== param 0 (order) tainted ====
-_obj
-[write, primary] @ order_db.order
-_obj.ID
-[read, primary] @ order_db.order.ID
-[write, primary] @ order_db.order.ID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
-_obj
-[write, primary] @ order_db.order
-_obj.ID
-[read, primary] @ order_db.order.ID
-[write, primary] @ order_db.order.ID
-", style=bold, shape=box, color="blue"];
-		N_StationService_CreateStation [label="StationService.CreateStation
-
-==== param 0 (station) tainted ====
-_obj
-[write, primary] @ station_db.station
-_obj.ID
-[read, primary] @ station_db.station.ID
-[write, primary] @ station_db.station.ID
-", style=bold, shape=box, color="blue"];
-		N_ConfigService_Find [label="ConfigService.Find
-
-==== param 0 (name) tainted ====
-_obj
-[read, primary] @ config_db.config.Name
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Config) tainted ====
-_obj
-[read, primary] @ config_db.config
-", style=bold, shape=box, color="blue"];
-		N_Dashboard_GetTravel [label="Dashboard.GetTravel
-
-==== param 0 (info) tainted ====
-_obj
-[rpc] @ BasicService.QueryForTravel.info
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TravelResult) tainted ====
-_obj
-[rpc] @ BasicService.QueryForTravel.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ BasicService.QueryForTravel.t4
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_AddStation [label="AdminBasicInfoService.AddStation
-
-==== param 0 (station) tainted ====
-_obj
-[rpc] @ StationService.CreateStation.station
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ StationService.CreateStation.t2
-", style=bold, shape=box, color="blue"];
-		N_AdminTravelService_AddTravel [label="AdminTravelService.AddTravel
-
-==== param 0 (travelInfo) tainted ====
-_obj
-[rpc] @ TravelService.CreateTrip.travelInfo
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Trip) tainted ====
-_obj
-[rpc] @ TravelService.CreateTrip.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ TravelService.CreateTrip.t4
-", style=bold, shape=box, color="blue"];
-		N_UserService_FindByUserID [label="UserService.FindByUserID
-
-==== param 0 (userID) tainted ====
-_obj
-[read, primary] @ user_db.user.UserID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.User) tainted ====
-_obj
-[read, primary] @ user_db.user
-", style=bold, shape=box, color="blue"];
-		N_Dashboard_AddAssurance [label="Dashboard.AddAssurance
-
-==== param 0 (typeIndex) tainted ====
-_obj
-[rpc] @ AssuranceService.Create.typeIndex
-
-
-==== param 1 (orderID) tainted ====
-_obj
-[rpc] @ AssuranceService.Create.orderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Assurance) tainted ====
-_obj
-[rpc] @ AssuranceService.Create.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ AssuranceService.Create.t4
-", style=bold, shape=box, color="blue"];
-		N_OrderService_GetTicketListByDateAndTripID [label="OrderService.GetTicketListByDateAndTripID
-
-==== param 0 (seatRequest) tainted ====
-_obj.TrainNumber
-[read, primary] @ order_db.order.TrainNumber
-_obj.TravelDate
-[read, primary] @ order_db.order.TravelDate
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.LeftTicketInfo) tainted ====
-_obj.SoldTickets[*].DestStation
-[read, primary] @ order_db.order.ToStation
-_obj.SoldTickets[*].StartStation
-[read, primary] @ order_db.order.FromStation
-", style=bold, shape=box, color="blue"];
-		N_ContactsService_CreateContacts [label="ContactsService.CreateContacts
-
-==== param 0 (contact) tainted ====
-_obj
-[write, primary] @ contacts_db.contacts
-_obj.AccountID
-[read, primary] @ contacts_db.contacts.AccountID
-[write, primary] @ contacts_db.contacts.AccountID
-_obj.DocumentNumber
-[read, primary] @ contacts_db.contacts.DocumentNumber
-[write, primary] @ contacts_db.contacts.DocumentNumber
-_obj.DocumentType
-[read, primary] @ contacts_db.contacts.DocumentType
-[write, primary] @ contacts_db.contacts.DocumentType
-", style=bold, shape=box, color="blue"];
-		N_AdminBasicInfoService_AddTrain [label="AdminBasicInfoService.AddTrain
-
-==== param 0 (trainType) tainted ====
-_obj
-[rpc] @ TrainService.Create.trainType
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ TrainService.Create.t2
-", style=bold, shape=box, color="blue"];
-		N_FoodService_FindFoodOrder [label="FoodService.FindFoodOrder
-
-==== param 0 (orderID) tainted ====
-_obj
-[read, primary] @ food_db.food_order.OrderID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.FoodOrder) tainted ====
-_obj
-[read, primary] @ food_db.food_order
-", style=bold, shape=box, color="blue"];
-		N_Dashboard_GetAllContacts [label="Dashboard.GetAllContacts
-
-==== ret 0 ([]github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
-_obj
-[rpc] @ ContactsService.GetAllContacts.t3
-
-
-==== ret 1 (error) tainted ====
-_obj
-[rpc] @ ContactsService.GetAllContacts.t4
-", style=bold, shape=box, color="blue"];
-		N_TravelService_GetTripAllDetailInfo [label="TravelService.GetTripAllDetailInfo
-
-==== param 0 (gtdi) tainted ====
-_obj.From
-[rpc] @ BasicService.QueryForTravel.t53.StartPlace
-[rpc] @ SeatService.GetLeftTicketOfInterval.t81.StartStation
-[rpc] @ SeatService.GetLeftTicketOfInterval.t98.StartStation
-_obj.To
-[rpc] @ BasicService.QueryForTravel.t53.EndPlace
-[rpc] @ SeatService.GetLeftTicketOfInterval.t81.DestStation
-[rpc] @ SeatService.GetLeftTicketOfInterval.t98.DestStation
-_obj.TravelDate
-[rpc] @ BasicService.QueryForTravel.t53.DepartureTime
-[rpc] @ SeatService.GetLeftTicketOfInterval.t81.TravelDate
-[rpc] @ SeatService.GetLeftTicketOfInterval.t98.TravelDate
-_obj.TripID
-[read, primary] @ travel_db.trip.TripID
-
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.TripAllDetail) tainted ====
-_obj.trip
-[read, primary] @ travel_db.trip
-_obj.trip.StartTime
-[read, primary] @ travel_db.trip.StartTime
-_obj.trip.TrainTypeName
-[read, primary] @ travel_db.trip.TrainTypeName
-_obj.trip.TripID
-[read, primary] @ travel_db.trip.TripID
-_obj.tripResponse.TrainTypeName
-[read, primary] @ travel_db.trip.TrainTypeName
-_obj.tripResponse.TripID
-[read, primary] @ travel_db.trip.TripID
-", style=bold, shape=box, color="blue"];
-		N_AdminUserService_AddUser [label="AdminUserService.AddUser
-
-==== param 0 (user) tainted ====
-_obj
-[rpc] @ UserService.SaveUser.user
-
-
-==== ret 0 (error) tainted ====
-_obj
-[rpc] @ UserService.SaveUser.t2
-", style=bold, shape=box, color="blue"];
-		N_UserService_SaveUser [label="UserService.SaveUser
-
-==== param 0 (user) tainted ====
-_obj
-[write, primary] @ user_db.user
-", style=bold, shape=box, color="blue"];
 		N_AdminBasicInfoService_DeleteContact [label="AdminBasicInfoService.DeleteContact
 
 ==== param 0 (id) tainted ====
@@ -1042,35 +1045,42 @@ _obj
 _obj
 [rpc] @ ContactsService.Delete.t2
 ", style=bold, shape=box, color="blue"];
-		N_OrderService_Find [label="OrderService.Find
+		N_UserService_DeleteUser [label="UserService.DeleteUser
 
-==== param 0 (orderID) tainted ====
+==== param 0 (userID) tainted ====
 _obj
-[read, primary] @ order_db.order.ID
+[delete, primary] @ user_db.user.UserID
+", style=bold, shape=box, color="blue"];
+		N_DeliveryService_Run [label="DeliveryService.Run", style=bold, shape=box, color="blue"];
+		N_UserService_FindByUserID [label="UserService.FindByUserID
 
-
-==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Order) tainted ====
+==== param 0 (userID) tainted ====
 _obj
-[read, primary] @ order_db.order
+[read, primary] @ user_db.user.UserID
+
+
+==== ret 0 (github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.User) tainted ====
+_obj
+[read, primary] @ user_db.user
 ", style=bold, shape=box, color="blue"];
 	}
 	subgraph cluster_databases {
 		style=invis;
-		N_travel_db_trip [label="travel_db.trip", style=bold, shape=cylinder, color="green"];
-		N_config_db_config [label="config_db.config", style=bold, shape=cylinder, color="green"];
-		N_station_db_station [label="station_db.station", style=bold, shape=cylinder, color="green"];
-		N_contacts_db_contacts [label="contacts_db.contacts", style=bold, shape=cylinder, color="green"];
-		N_train_db_train [label="train_db.train", style=bold, shape=cylinder, color="green"];
+		N_price_db_priceConfig [label="price_db.priceConfig", style=bold, shape=cylinder, color="green"];
 		N_inside_payment_db_inside_money [label="inside_payment_db.inside_money", style=bold, shape=cylinder, color="green"];
-		N_user_db_user [label="user_db.user", style=bold, shape=cylinder, color="green"];
-		N_order_db_order [label="order_db.order", style=bold, shape=cylinder, color="green"];
 		N_delivery_queue_notification [label="delivery_queue.notification", style=bold, shape=cylinder, color="green"];
+		N_train_db_train [label="train_db.train", style=bold, shape=cylinder, color="green"];
+		N_assurance_db_assurance [label="assurance_db.assurance", style=bold, shape=cylinder, color="green"];
+		N_contacts_db_contacts [label="contacts_db.contacts", style=bold, shape=cylinder, color="green"];
 		N_food_db_food_order [label="food_db.food_order", style=bold, shape=cylinder, color="green"];
 		N_consign_db_consign_record [label="consign_db.consign_record", style=bold, shape=cylinder, color="green"];
-		N_price_db_priceConfig [label="price_db.priceConfig", style=bold, shape=cylinder, color="green"];
-		N_assurance_db_assurance [label="assurance_db.assurance", style=bold, shape=cylinder, color="green"];
-		N_delivery_db_delivery [label="delivery_db.delivery", style=bold, shape=cylinder, color="green"];
+		N_travel_db_trip [label="travel_db.trip", style=bold, shape=cylinder, color="green"];
+		N_config_db_config [label="config_db.config", style=bold, shape=cylinder, color="green"];
 		N_route_db_route [label="route_db.route", style=bold, shape=cylinder, color="green"];
+		N_delivery_db_delivery [label="delivery_db.delivery", style=bold, shape=cylinder, color="green"];
+		N_order_db_order [label="order_db.order", style=bold, shape=cylinder, color="green"];
+		N_user_db_user [label="user_db.user", style=bold, shape=cylinder, color="green"];
+		N_station_db_station [label="station_db.station", style=bold, shape=cylinder, color="green"];
 	}
 	N_client -> N_AdminBasicInfoService_AddConfig [label="AddConfig()", color=orange];
 	N_AdminBasicInfoService_AddConfig -> N_ConfigService_Create [label="Create()
@@ -1138,37 +1148,37 @@ _obj
 ", color=blue];
 	N_ContactsService_CreateContacts -> N_contacts_db_contacts [label="FindOne()
 
-==== arg 0 (\"DocumentNumber\":string) tainted ====
+==== arg 0 (\"DocumentType\":string) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentType
+
+
+==== arg 1 (t25) tainted ====
+_obj
+[read, primary] @ contacts_db.contacts.DocumentType
+[write, primary] @ contacts_db.contacts.DocumentType
+
+
+==== arg 2 (\"DocumentNumber\":string) tainted ====
 _obj
 [read, primary] @ contacts_db.contacts.DocumentNumber
 
 
-==== arg 1 (t19) tainted ====
+==== arg 3 (t19) tainted ====
 _obj
 [read, primary] @ contacts_db.contacts.DocumentNumber
 [write, primary] @ contacts_db.contacts.DocumentNumber
 
 
-==== arg 2 (\"AccountID\":string) tainted ====
+==== arg 4 (\"AccountID\":string) tainted ====
 _obj
 [read, primary] @ contacts_db.contacts.AccountID
 
 
-==== arg 3 (t13) tainted ====
+==== arg 5 (t13) tainted ====
 _obj
 [read, primary] @ contacts_db.contacts.AccountID
 [write, primary] @ contacts_db.contacts.AccountID
-
-
-==== arg 4 (\"DocumentType\":string) tainted ====
-_obj
-[read, primary] @ contacts_db.contacts.DocumentType
-
-
-==== arg 5 (t25) tainted ====
-_obj
-[read, primary] @ contacts_db.contacts.DocumentType
-[write, primary] @ contacts_db.contacts.DocumentType
 
 
 ==== arg 6 (struct{ID string; AccountID string; Name string; DocumentType int; DocumentNumber string; PhoneNumber string}{}:github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.Contact) tainted ====
@@ -1586,6 +1596,49 @@ _obj
 _obj
 [delete, primary] @ travel_db.trip.TripID
 ", color=green];
+	N_client -> N_AdminUserService_AddUser [label="AddUser()", color=orange];
+	N_AdminUserService_AddUser -> N_UserService_SaveUser [label="SaveUser()
+
+==== arg 0 (user) tainted ====
+_obj
+[write, secondary] @ user_db.user
+[rpc] @ UserService.SaveUser.user
+
+
+==== ret 0 (t2) tainted ====
+_obj
+[rpc] @ UserService.SaveUser.t2
+", color=blue];
+	N_UserService_SaveUser -> N_user_db_user [label="InsertOne()
+
+==== arg 0 (t6) tainted ====
+_obj
+[write, primary] @ user_db.user
+", color=green];
+	N_client -> N_AdminUserService_DeleteUser [label="DeleteUser()", color=orange];
+	N_AdminUserService_DeleteUser -> N_UserService_DeleteUser [label="DeleteUser()
+
+==== arg 0 (userID) tainted ====
+_obj
+[delete, secondary] @ user_db.user.UserID
+[rpc] @ UserService.DeleteUser.userID
+
+
+==== ret 0 (t2) tainted ====
+_obj
+[rpc] @ UserService.DeleteUser.t2
+", color=blue];
+	N_UserService_DeleteUser -> N_user_db_user [label="DeleteOne()
+
+==== arg 0 (\"UserID\":string) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[delete, primary] @ user_db.user.UserID
+", color=green];
 	N_client -> N_CancelService_CalculateRefund [label="CalculateRefund()", color=orange];
 	N_CancelService_CalculateRefund -> N_OrderService_Find [label="Find()
 
@@ -1897,454 +1950,6 @@ _obj.UserID
 [write, secondary] @ order_db.order.AccountID
 [write, secondary] @ consign_db.consign_record.AccountID
 ", color=green];
-	N_client -> N_BasicService_QueryForTravel [label="QueryForTravel()", color=orange];
-	N_BasicService_QueryForTravel -> N_StationService_Exists [label="Exists()
-
-==== arg 0 (t2) tainted ====
-_obj
-[read, secondary] @ station_db.station.Name
-[write, traced] @ order_db.order.FromStation
-[write, secondary] @ order_db.order.ToStation
-[rpc] @ StationService.Exists.t2
-
-
-==== ret 0 (t6) tainted ====
-_obj
-[rpc] @ StationService.Exists.t6
-
-
-==== ret 1 (t7) tainted ====
-_obj
-[rpc] @ StationService.Exists.t7
-", color=blue];
-	N_BasicService_QueryForTravel -> N_StationService_Exists [label="Exists()
-
-==== arg 0 (t15) tainted ====
-_obj
-[read, secondary] @ station_db.station.Name
-[write, traced] @ order_db.order.ToStation
-[write, secondary] @ order_db.order.FromStation
-[rpc] @ StationService.Exists.t15
-
-
-==== ret 0 (t19) tainted ====
-_obj
-[rpc] @ StationService.Exists.t19
-
-
-==== ret 1 (t20) tainted ====
-_obj
-[rpc] @ StationService.Exists.t20
-", color=blue];
-	N_BasicService_QueryForTravel -> N_TrainService_RetrieveByName [label="RetrieveByName()
-
-==== arg 0 (t32) tainted ====
-_obj
-[read, secondary] @ train_db.train.Name
-[read, traced] @ travel_db.trip.TrainTypeName
-[read, traced] @ travel_db.trip.TrainTypeName
-[rpc] @ TrainService.RetrieveByName.t32
-
-
-==== ret 0 (t34) tainted ====
-_obj
-[read, secondary] @ train_db.train
-[rpc] @ TrainService.RetrieveByName.t34
-_obj.Name
-[rpc] @ TrainService.RetrieveByName.t34.Name
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t60
-
-
-==== ret 1 (t35) tainted ====
-_obj
-[rpc] @ TrainService.RetrieveByName.t35
-", color=blue];
-	N_BasicService_QueryForTravel -> N_RouteService_GetRouteById [label="GetRouteById()
-
-==== arg 0 (t39) tainted ====
-_obj
-[read, secondary] @ route_db.route.ID
-[read, traced] @ travel_db.trip.ID
-[rpc] @ RouteService.GetRouteById.t39
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t39
-
-
-==== ret 0 (t44) tainted ====
-_obj
-[read, secondary] @ route_db.route
-[rpc] @ RouteService.GetRouteById.t44
-_obj.Distances
-[rpc] @ RouteService.GetRouteById.t44.Distances
-_obj.Distances[*]
-[rpc] @ RouteService.GetRouteById.t44.Distances[*]
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate
-_obj.Stations
-[rpc] @ RouteService.GetRouteById.t44.Stations
-
-
-==== ret 1 (t45) tainted ====
-_obj
-[rpc] @ RouteService.GetRouteById.t45
-", color=blue];
-	N_BasicService_QueryForTravel -> N_PriceService_FindByRouteIDAndTrainType [label="FindByRouteIDAndTrainType()
-
-==== arg 0 (t39) tainted ====
-_obj
-[read, traced] @ route_db.route.ID
-[read, traced] @ travel_db.trip.ID
-[rpc] @ RouteService.GetRouteById.t39
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t39
-
-
-==== arg 1 (t60) tainted ====
-_obj
-[read, traced] @ train_db.train.Name
-[rpc] @ TrainService.RetrieveByName.t34.Name
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t60
-
-
-==== ret 0 (t62) tainted ====
-_obj
-[read, secondary] @ price_db.priceConfig
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t62
-_obj.BasicPriceRate
-[rpc] @ RouteService.GetRouteById.t44.Distances[*]
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate
-_obj.FirstClassPriceRate
-[rpc] @ RouteService.GetRouteById.t44.Distances[*]
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate
-
-
-==== ret 1 (t63) tainted ====
-_obj
-[rpc] @ PriceService.FindByRouteIDAndTrainType.t63
-", color=blue];
-	N_StationService_Exists -> N_station_db_station [label="FindOne()
-
-==== arg 0 (\"Name\":string) tainted ====
-_obj
-[read, primary] @ station_db.station.Name
-[write, secondary] @ order_db.order.FromStation
-[write, secondary] @ order_db.order.ToStation
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ station_db.station.Name
-[write, secondary] @ order_db.order.FromStation
-[write, secondary] @ order_db.order.ToStation
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ station_db.station
-_obj.Name
-[write, secondary] @ order_db.order.FromStation
-[write, secondary] @ order_db.order.ToStation
-", color=green];
-	N_TrainService_RetrieveByName -> N_train_db_train [label="FindOne()
-
-==== arg 0 (\"Name\":string) tainted ====
-_obj
-[read, primary] @ train_db.train.Name
-[read, secondary] @ travel_db.trip.TrainTypeName
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ train_db.train.Name
-[read, secondary] @ travel_db.trip.TrainTypeName
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ train_db.train
-_obj.Name
-[read, secondary] @ travel_db.trip.TrainTypeName
-", color=green];
-	N_RouteService_GetRouteById -> N_route_db_route [label="FindOne()
-
-==== arg 0 (\"ID\":string) tainted ====
-_obj
-[read, primary] @ route_db.route.ID
-[read, secondary] @ travel_db.trip.ID
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ route_db.route.ID
-[read, secondary] @ travel_db.trip.ID
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ route_db.route
-_obj.ID
-[read, secondary] @ travel_db.trip.ID
-", color=green];
-	N_PriceService_FindByRouteIDAndTrainType -> N_price_db_priceConfig [label="FindOne()
-
-==== arg 0 (\"$and\":string) tainted ====
-_obj
-[read, primary] @ price_db.priceConfig.$and
-
-
-==== arg 1 (t28) tainted ====
-_obj
-[read, primary] @ price_db.priceConfig.$and
-_obj[*]
-[read, primary] @ price_db.priceConfig.$and[*]
-
-
-==== arg 2 (t34) tainted ====
-_obj
-[read, primary] @ price_db.priceConfig
-", color=green];
-	N_client -> N_BasicService_QueryOrderWithAllInfo [label="QueryOrderWithAllInfo()", color=orange];
-	N_BasicService_QueryOrderWithAllInfo -> N_OrderService_Find [label="Find()
-
-==== arg 0 (orderID) tainted ====
-_obj
-[read, secondary] @ order_db.order.ID
-[rpc] @ OrderService.Find.orderID
-
-
-==== ret 0 (t4) tainted ====
-_obj
-[read, secondary] @ order_db.order
-[rpc] @ OrderService.Find.t4
-_obj.ID
-[rpc] @ OrderService.Find.t4.ID
-[rpc] @ FoodService.FindFoodOrder.t10
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
-[rpc] @ ConsignService.FindConsign.t26
-[rpc] @ DeliveryService.FindDelivery.t34
-
-
-==== ret 1 (t5) tainted ====
-_obj
-[rpc] @ OrderService.Find.t5
-", color=blue];
-	N_BasicService_QueryOrderWithAllInfo -> N_FoodService_FindFoodOrder [label="FindFoodOrder()
-
-==== arg 0 (t10) tainted ====
-_obj
-[read, traced] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, traced] @ assurance_db.assurance.OrderID
-[read, traced] @ consign_db.consign_record.OrderID
-[read, traced] @ delivery_db.delivery.OrderID
-[rpc] @ OrderService.Find.t4.ID
-[rpc] @ FoodService.FindFoodOrder.t10
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
-[rpc] @ ConsignService.FindConsign.t26
-[rpc] @ DeliveryService.FindDelivery.t34
-
-
-==== ret 0 (t12) tainted ====
-_obj
-[read, secondary] @ food_db.food_order
-[rpc] @ FoodService.FindFoodOrder.t12
-
-
-==== ret 1 (t13) tainted ====
-_obj
-[rpc] @ FoodService.FindFoodOrder.t13
-", color=blue];
-	N_BasicService_QueryOrderWithAllInfo -> N_AssuranceService_FindAssuranceByOrderId [label="FindAssuranceByOrderId()
-
-==== arg 0 (t18) tainted ====
-_obj
-[read, traced] @ order_db.order.ID
-[read, traced] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, traced] @ consign_db.consign_record.OrderID
-[read, traced] @ delivery_db.delivery.OrderID
-[rpc] @ OrderService.Find.t4.ID
-[rpc] @ FoodService.FindFoodOrder.t10
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
-[rpc] @ ConsignService.FindConsign.t26
-[rpc] @ DeliveryService.FindDelivery.t34
-
-
-==== ret 0 (t20) tainted ====
-_obj
-[read, secondary] @ assurance_db.assurance
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t20
-
-
-==== ret 1 (t21) tainted ====
-_obj
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t21
-", color=blue];
-	N_BasicService_QueryOrderWithAllInfo -> N_ConsignService_FindConsign [label="FindConsign()
-
-==== arg 0 (t26) tainted ====
-_obj
-[read, traced] @ order_db.order.ID
-[read, traced] @ food_db.food_order.OrderID
-[read, traced] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, traced] @ delivery_db.delivery.OrderID
-[rpc] @ OrderService.Find.t4.ID
-[rpc] @ FoodService.FindFoodOrder.t10
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
-[rpc] @ ConsignService.FindConsign.t26
-[rpc] @ DeliveryService.FindDelivery.t34
-
-
-==== ret 0 (t28) tainted ====
-_obj
-[read, secondary] @ consign_db.consign_record
-[rpc] @ ConsignService.FindConsign.t28
-
-
-==== ret 1 (t29) tainted ====
-_obj
-[rpc] @ ConsignService.FindConsign.t29
-", color=blue];
-	N_BasicService_QueryOrderWithAllInfo -> N_DeliveryService_FindDelivery [label="FindDelivery()
-
-==== arg 0 (t34) tainted ====
-_obj
-[read, traced] @ order_db.order.ID
-[read, traced] @ food_db.food_order.OrderID
-[read, traced] @ assurance_db.assurance.OrderID
-[read, traced] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-[rpc] @ OrderService.Find.t4.ID
-[rpc] @ FoodService.FindFoodOrder.t10
-[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
-[rpc] @ ConsignService.FindConsign.t26
-[rpc] @ DeliveryService.FindDelivery.t34
-
-
-==== ret 0 (t36) tainted ====
-_obj
-[read, secondary] @ delivery_db.delivery
-[rpc] @ DeliveryService.FindDelivery.t36
-
-
-==== ret 1 (t37) tainted ====
-_obj
-[rpc] @ DeliveryService.FindDelivery.t37
-", color=blue];
-	N_FoodService_FindFoodOrder -> N_food_db_food_order [label="FindOne()
-
-==== arg 0 (\"OrderID\":string) tainted ====
-_obj
-[read, primary] @ food_db.food_order.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ food_db.food_order.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ food_db.food_order
-_obj.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-", color=green];
-	N_AssuranceService_FindAssuranceByOrderId -> N_assurance_db_assurance [label="FindOne()
-
-==== arg 0 (\"OrderID\":string) tainted ====
-_obj
-[read, primary] @ assurance_db.assurance.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ assurance_db.assurance.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ assurance_db.assurance
-_obj.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-", color=green];
-	N_ConsignService_FindConsign -> N_consign_db_consign_record [label="FindOne()
-
-==== arg 0 (\"OrderID\":string) tainted ====
-_obj
-[read, primary] @ consign_db.consign_record.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ consign_db.consign_record.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ consign_db.consign_record
-_obj.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ delivery_db.delivery.OrderID
-", color=green];
-	N_DeliveryService_FindDelivery -> N_delivery_db_delivery [label="FindOne()
-
-==== arg 0 (\"OrderID\":string) tainted ====
-_obj
-[read, primary] @ delivery_db.delivery.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[read, primary] @ delivery_db.delivery.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-
-
-==== arg 2 (t16) tainted ====
-_obj
-[read, primary] @ delivery_db.delivery
-_obj.OrderID
-[read, secondary] @ order_db.order.ID
-[read, secondary] @ food_db.food_order.OrderID
-[read, secondary] @ assurance_db.assurance.OrderID
-[read, secondary] @ consign_db.consign_record.OrderID
-", color=green];
 	N_client -> N_Dashboard_AddAssurance [label="AddAssurance()", color=orange];
 	N_Dashboard_AddAssurance -> N_AssuranceService_Create [label="Create()
 
@@ -2491,6 +2096,235 @@ _obj
 _obj
 [rpc] @ BasicService.QueryForTravel.t4
 ", color=blue];
+	N_BasicService_QueryForTravel -> N_StationService_Exists [label="Exists()
+
+==== arg 0 (t2) tainted ====
+_obj
+[read, secondary] @ station_db.station.Name
+[write, traced] @ order_db.order.FromStation
+[write, secondary] @ order_db.order.ToStation
+[rpc] @ StationService.Exists.t2
+
+
+==== ret 0 (t6) tainted ====
+_obj
+[rpc] @ StationService.Exists.t6
+
+
+==== ret 1 (t7) tainted ====
+_obj
+[rpc] @ StationService.Exists.t7
+", color=blue];
+	N_BasicService_QueryForTravel -> N_StationService_Exists [label="Exists()
+
+==== arg 0 (t15) tainted ====
+_obj
+[read, secondary] @ station_db.station.Name
+[write, traced] @ order_db.order.ToStation
+[write, secondary] @ order_db.order.FromStation
+[rpc] @ StationService.Exists.t15
+
+
+==== ret 0 (t19) tainted ====
+_obj
+[rpc] @ StationService.Exists.t19
+
+
+==== ret 1 (t20) tainted ====
+_obj
+[rpc] @ StationService.Exists.t20
+", color=blue];
+	N_BasicService_QueryForTravel -> N_TrainService_RetrieveByName [label="RetrieveByName()
+
+==== arg 0 (t32) tainted ====
+_obj
+[read, secondary] @ train_db.train.Name
+[read, traced] @ travel_db.trip.TrainTypeName
+[read, traced] @ travel_db.trip.TrainTypeName
+[rpc] @ TrainService.RetrieveByName.t32
+
+
+==== ret 0 (t34) tainted ====
+_obj
+[read, secondary] @ train_db.train
+[rpc] @ TrainService.RetrieveByName.t34
+_obj.Name
+[rpc] @ TrainService.RetrieveByName.t34.Name
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t60
+
+
+==== ret 1 (t35) tainted ====
+_obj
+[rpc] @ TrainService.RetrieveByName.t35
+", color=blue];
+	N_BasicService_QueryForTravel -> N_RouteService_GetRouteById [label="GetRouteById()
+
+==== arg 0 (t39) tainted ====
+_obj
+[read, secondary] @ route_db.route.ID
+[read, traced] @ price_db.priceConfig.RouteID
+[read, traced] @ travel_db.trip.ID
+[rpc] @ RouteService.GetRouteById.t39
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t39
+
+
+==== ret 0 (t44) tainted ====
+_obj
+[read, secondary] @ route_db.route
+[rpc] @ RouteService.GetRouteById.t44
+_obj.Distances
+[rpc] @ RouteService.GetRouteById.t44.Distances
+_obj.Distances[*]
+[rpc] @ RouteService.GetRouteById.t44.Distances[*]
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate
+_obj.Stations
+[rpc] @ RouteService.GetRouteById.t44.Stations
+
+
+==== ret 1 (t45) tainted ====
+_obj
+[rpc] @ RouteService.GetRouteById.t45
+", color=blue];
+	N_BasicService_QueryForTravel -> N_PriceService_FindByRouteIDAndTrainType [label="FindByRouteIDAndTrainType()
+
+==== arg 0 (t39) tainted ====
+_obj
+[read, traced] @ route_db.route.ID
+[read, secondary] @ price_db.priceConfig.RouteID
+[read, traced] @ travel_db.trip.ID
+[rpc] @ RouteService.GetRouteById.t39
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t39
+
+
+==== arg 1 (t60) tainted ====
+_obj
+[read, traced] @ train_db.train.Name
+[read, secondary] @ price_db.priceConfig.RouteID
+[rpc] @ TrainService.RetrieveByName.t34.Name
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t60
+
+
+==== ret 0 (t62) tainted ====
+_obj
+[read, secondary] @ price_db.priceConfig
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t62
+_obj.BasicPriceRate
+[rpc] @ RouteService.GetRouteById.t44.Distances[*]
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate
+_obj.FirstClassPriceRate
+[rpc] @ RouteService.GetRouteById.t44.Distances[*]
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate
+
+
+==== ret 1 (t63) tainted ====
+_obj
+[rpc] @ PriceService.FindByRouteIDAndTrainType.t63
+", color=blue];
+	N_StationService_Exists -> N_station_db_station [label="FindOne()
+
+==== arg 0 (\"Name\":string) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+[write, secondary] @ order_db.order.FromStation
+[write, secondary] @ order_db.order.ToStation
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ station_db.station.Name
+[write, secondary] @ order_db.order.FromStation
+[write, secondary] @ order_db.order.ToStation
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ station_db.station
+_obj.Name
+[write, secondary] @ order_db.order.FromStation
+[write, secondary] @ order_db.order.ToStation
+", color=green];
+	N_TrainService_RetrieveByName -> N_train_db_train [label="FindOne()
+
+==== arg 0 (\"Name\":string) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+[read, secondary] @ travel_db.trip.TrainTypeName
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ train_db.train.Name
+[read, secondary] @ travel_db.trip.TrainTypeName
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ train_db.train
+_obj.Name
+[read, secondary] @ travel_db.trip.TrainTypeName
+", color=green];
+	N_RouteService_GetRouteById -> N_route_db_route [label="FindOne()
+
+==== arg 0 (\"ID\":string) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+[read, secondary] @ price_db.priceConfig.RouteID
+[read, secondary] @ travel_db.trip.ID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ route_db.route.ID
+[read, secondary] @ price_db.priceConfig.RouteID
+[read, secondary] @ travel_db.trip.ID
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ route_db.route
+_obj.ID
+[read, secondary] @ price_db.priceConfig.RouteID
+[read, secondary] @ travel_db.trip.ID
+", color=green];
+	N_PriceService_FindByRouteIDAndTrainType -> N_price_db_priceConfig [label="FindOne()
+
+==== arg 0 (\"RouteID\":string) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.RouteID
+[read, secondary] @ route_db.route.ID
+[read, secondary] @ train_db.train.Name
+[read, secondary] @ travel_db.trip.ID
+
+
+==== arg 1 (t16) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.RouteID
+[read, secondary] @ route_db.route.ID
+[read, secondary] @ train_db.train.Name
+[read, secondary] @ travel_db.trip.ID
+
+
+==== arg 2 (\"TrainType\":string) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.TrainType
+
+
+==== arg 3 (t24) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig.RouteID
+[read, secondary] @ route_db.route.ID
+[read, secondary] @ train_db.train.Name
+[read, secondary] @ travel_db.trip.ID
+
+
+==== arg 4 (t34) tainted ====
+_obj
+[read, primary] @ price_db.priceConfig
+_obj.RouteID
+[read, secondary] @ route_db.route.ID
+[read, secondary] @ train_db.train.Name
+[read, secondary] @ travel_db.trip.ID
+", color=green];
 	N_client -> N_Dashboard_Pay [label="Pay()", color=orange];
 	N_Dashboard_Pay -> N_PaymentService_Pay [label="Pay()
 
@@ -3253,26 +3087,26 @@ _obj
 ", color=blue];
 	N_OrderService_GetTicketListByDateAndTripID -> N_order_db_order [label="FindMany()
 
-==== arg 0 (\"TravelDate\":string) tainted ====
-_obj
-[read, primary] @ order_db.order.TravelDate
-
-
-==== arg 1 (t13) tainted ====
-_obj
-[read, primary] @ order_db.order.TravelDate
-
-
-==== arg 2 (\"TrainNumber\":string) tainted ====
+==== arg 0 (\"TrainNumber\":string) tainted ====
 _obj
 [read, primary] @ order_db.order.TrainNumber
 [read, secondary] @ travel_db.trip.TripID
 
 
-==== arg 3 (t19) tainted ====
+==== arg 1 (t19) tainted ====
 _obj
 [read, primary] @ order_db.order.TrainNumber
 [read, secondary] @ travel_db.trip.TripID
+
+
+==== arg 2 (\"TravelDate\":string) tainted ====
+_obj
+[read, primary] @ order_db.order.TravelDate
+
+
+==== arg 3 (t13) tainted ====
+_obj
+[read, primary] @ order_db.order.TravelDate
 
 
 ==== arg 4 (t25) tainted ====
@@ -3495,147 +3329,6 @@ _obj.Weight
 [write, primary] @ consign_db.consign_record.Weight
 [rpc] @ ConsignPriceService.GetPriceByWeightAndRegion.t4
 ", color=green];
-	N_client -> N_ExecuteService_TicketCollect [label="TicketCollect()", color=orange];
-	N_ExecuteService_TicketCollect -> N_OrderService_Find [label="Find()
-
-==== arg 0 (orderID) tainted ====
-_obj
-[read, secondary] @ order_db.order.ID
-[update, traced] @ order_db.order.ID
-[rpc] @ OrderService.Find.orderID
-[rpc] @ OrderService.ModifyOrder.orderID
-
-
-==== ret 0 (t4) tainted ====
-_obj
-[read, secondary] @ order_db.order
-[rpc] @ OrderService.Find.t4
-_obj.Status
-[rpc] @ OrderService.Find.t4.Status
-
-
-==== ret 1 (t5) tainted ====
-_obj
-[rpc] @ OrderService.Find.t5
-", color=blue];
-	N_ExecuteService_TicketCollect -> N_OrderService_ModifyOrder [label="ModifyOrder()
-
-==== arg 0 (orderID) tainted ====
-_obj
-[read, traced] @ order_db.order.ID
-[update, secondary] @ order_db.order.ID
-[rpc] @ OrderService.Find.orderID
-[rpc] @ OrderService.ModifyOrder.orderID
-
-
-==== arg 1 (3:int) tainted ====
-_obj
-[rpc] @ OrderService.ModifyOrder.3:int
-
-
-==== ret 0 (t13) tainted ====
-_obj
-[rpc] @ OrderService.ModifyOrder.t13
-", color=blue];
-	N_OrderService_ModifyOrder -> N_order_db_order [label="UpdateOne()
-
-==== arg 0 (\"ID\":string) tainted ====
-_obj
-[update, primary] @ order_db.order.ID
-[read, secondary] @ order_db.order.ID
-
-
-==== arg 1 (t10) tainted ====
-_obj
-[update, primary] @ order_db.order.ID
-[read, secondary] @ order_db.order.ID
-
-
-==== arg 2 (\"ID\":string) tainted ====
-_obj
-[update, primary] @ order_db.order.ID
-[read, secondary] @ order_db.order.ID
-
-
-==== arg 3 (t10) tainted ====
-_obj
-[update, primary] @ order_db.order.ID
-[read, secondary] @ order_db.order.ID
-", color=green];
-	N_client -> N_ExecuteService_TicketExecute [label="TicketExecute()", color=orange];
-	N_ExecuteService_TicketExecute -> N_OrderService_Find [label="Find()
-
-==== arg 0 (orderID) tainted ====
-_obj
-[read, secondary] @ order_db.order.ID
-[update, traced] @ order_db.order.ID
-[rpc] @ OrderService.Find.orderID
-[rpc] @ OrderService.ModifyOrder.orderID
-
-
-==== ret 0 (t4) tainted ====
-_obj
-[read, secondary] @ order_db.order
-[rpc] @ OrderService.Find.t4
-_obj.Status
-[rpc] @ OrderService.Find.t4.Status
-
-
-==== ret 1 (t5) tainted ====
-_obj
-[rpc] @ OrderService.Find.t5
-", color=blue];
-	N_ExecuteService_TicketExecute -> N_OrderService_ModifyOrder [label="ModifyOrder()
-
-==== arg 0 (orderID) tainted ====
-_obj
-[read, traced] @ order_db.order.ID
-[update, secondary] @ order_db.order.ID
-[rpc] @ OrderService.Find.orderID
-[rpc] @ OrderService.ModifyOrder.orderID
-
-
-==== arg 1 (4:int) tainted ====
-_obj
-[rpc] @ OrderService.ModifyOrder.4:int
-
-
-==== ret 0 (t13) tainted ====
-_obj
-[rpc] @ OrderService.ModifyOrder.t13
-", color=blue];
-	N_client -> N_DeliveryService_Run [label="Run()", color=orange];
-	N_DeliveryService_Run -> N_delivery_queue_notification [label="Pop()
-
-==== arg 0 (t7) tainted ====
-_obj
-[read, primary] @ delivery_queue.notification
-[write, primary] @ delivery_db.delivery
-[write, secondary] @ delivery_queue.notification
-_obj.FoodName
-[write, secondary] @ food_db.food_order.FoodName
-[write, secondary] @ delivery_queue.notification.FoodName
-_obj.OrderID
-[write, secondary] @ food_db.food_order.OrderID
-[write, secondary] @ delivery_queue.notification.OrderID
-[read, secondary] @ order_db.order.ID
-[write, secondary] @ order_db.order.ID
-[write, secondary] @ assurance_db.assurance.OrderID
-[write, secondary] @ consign_db.consign_record.OrderID
-_obj.StationName
-[write, secondary] @ food_db.food_order.StationName
-[write, secondary] @ delivery_queue.notification.StationName
-_obj.StoreName
-[write, secondary] @ food_db.food_order.StoreName
-[write, secondary] @ delivery_queue.notification.StoreName
-", color=green];
-	N_DeliveryService_Run -> N_delivery_db_delivery [label="InsertOne()
-
-==== arg 0 (t31) tainted ====
-_obj
-[read, primary] @ delivery_queue.notification
-[write, primary] @ delivery_db.delivery
-", color=green];
 	N_client -> N_AdminOrderService_AddOrder [label="AddOrder()", color=orange];
 	N_AdminOrderService_AddOrder -> N_OrderService_Create [label="Create()
 
@@ -3796,47 +3489,390 @@ _obj
 _obj
 [delete, primary] @ route_db.route.ID
 ", color=green];
-	N_client -> N_AdminUserService_AddUser [label="AddUser()", color=orange];
-	N_AdminUserService_AddUser -> N_UserService_SaveUser [label="SaveUser()
+	N_client -> N_BasicService_QueryOrderWithAllInfo [label="QueryOrderWithAllInfo()", color=orange];
+	N_BasicService_QueryOrderWithAllInfo -> N_OrderService_Find [label="Find()
 
-==== arg 0 (user) tainted ====
+==== arg 0 (orderID) tainted ====
 _obj
-[write, secondary] @ user_db.user
-[rpc] @ UserService.SaveUser.user
+[read, secondary] @ order_db.order.ID
+[rpc] @ OrderService.Find.orderID
 
 
-==== ret 0 (t2) tainted ====
+==== ret 0 (t4) tainted ====
 _obj
-[rpc] @ UserService.SaveUser.t2
+[read, secondary] @ order_db.order
+[rpc] @ OrderService.Find.t4
+_obj.ID
+[rpc] @ OrderService.Find.t4.ID
+[rpc] @ FoodService.FindFoodOrder.t10
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
+[rpc] @ ConsignService.FindConsign.t26
+[rpc] @ DeliveryService.FindDelivery.t34
+
+
+==== ret 1 (t5) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
 ", color=blue];
-	N_UserService_SaveUser -> N_user_db_user [label="InsertOne()
+	N_BasicService_QueryOrderWithAllInfo -> N_FoodService_FindFoodOrder [label="FindFoodOrder()
 
-==== arg 0 (t6) tainted ====
+==== arg 0 (t10) tainted ====
 _obj
-[write, primary] @ user_db.user
-", color=green];
-	N_client -> N_AdminUserService_DeleteUser [label="DeleteUser()", color=orange];
-	N_AdminUserService_DeleteUser -> N_UserService_DeleteUser [label="DeleteUser()
+[read, traced] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, traced] @ assurance_db.assurance.OrderID
+[read, traced] @ consign_db.consign_record.OrderID
+[read, traced] @ delivery_db.delivery.OrderID
+[rpc] @ OrderService.Find.t4.ID
+[rpc] @ FoodService.FindFoodOrder.t10
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
+[rpc] @ ConsignService.FindConsign.t26
+[rpc] @ DeliveryService.FindDelivery.t34
 
-==== arg 0 (userID) tainted ====
+
+==== ret 0 (t12) tainted ====
 _obj
-[delete, secondary] @ user_db.user.UserID
-[rpc] @ UserService.DeleteUser.userID
+[read, secondary] @ food_db.food_order
+[rpc] @ FoodService.FindFoodOrder.t12
 
 
-==== ret 0 (t2) tainted ====
+==== ret 1 (t13) tainted ====
 _obj
-[rpc] @ UserService.DeleteUser.t2
+[rpc] @ FoodService.FindFoodOrder.t13
 ", color=blue];
-	N_UserService_DeleteUser -> N_user_db_user [label="DeleteOne()
+	N_BasicService_QueryOrderWithAllInfo -> N_AssuranceService_FindAssuranceByOrderId [label="FindAssuranceByOrderId()
 
-==== arg 0 (\"UserID\":string) tainted ====
+==== arg 0 (t18) tainted ====
 _obj
-[delete, primary] @ user_db.user.UserID
+[read, traced] @ order_db.order.ID
+[read, traced] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, traced] @ consign_db.consign_record.OrderID
+[read, traced] @ delivery_db.delivery.OrderID
+[rpc] @ OrderService.Find.t4.ID
+[rpc] @ FoodService.FindFoodOrder.t10
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
+[rpc] @ ConsignService.FindConsign.t26
+[rpc] @ DeliveryService.FindDelivery.t34
+
+
+==== ret 0 (t20) tainted ====
+_obj
+[read, secondary] @ assurance_db.assurance
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t20
+
+
+==== ret 1 (t21) tainted ====
+_obj
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t21
+", color=blue];
+	N_BasicService_QueryOrderWithAllInfo -> N_ConsignService_FindConsign [label="FindConsign()
+
+==== arg 0 (t26) tainted ====
+_obj
+[read, traced] @ order_db.order.ID
+[read, traced] @ food_db.food_order.OrderID
+[read, traced] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, traced] @ delivery_db.delivery.OrderID
+[rpc] @ OrderService.Find.t4.ID
+[rpc] @ FoodService.FindFoodOrder.t10
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
+[rpc] @ ConsignService.FindConsign.t26
+[rpc] @ DeliveryService.FindDelivery.t34
+
+
+==== ret 0 (t28) tainted ====
+_obj
+[read, secondary] @ consign_db.consign_record
+[rpc] @ ConsignService.FindConsign.t28
+
+
+==== ret 1 (t29) tainted ====
+_obj
+[rpc] @ ConsignService.FindConsign.t29
+", color=blue];
+	N_BasicService_QueryOrderWithAllInfo -> N_DeliveryService_FindDelivery [label="FindDelivery()
+
+==== arg 0 (t34) tainted ====
+_obj
+[read, traced] @ order_db.order.ID
+[read, traced] @ food_db.food_order.OrderID
+[read, traced] @ assurance_db.assurance.OrderID
+[read, traced] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+[rpc] @ OrderService.Find.t4.ID
+[rpc] @ FoodService.FindFoodOrder.t10
+[rpc] @ AssuranceService.FindAssuranceByOrderId.t18
+[rpc] @ ConsignService.FindConsign.t26
+[rpc] @ DeliveryService.FindDelivery.t34
+
+
+==== ret 0 (t36) tainted ====
+_obj
+[read, secondary] @ delivery_db.delivery
+[rpc] @ DeliveryService.FindDelivery.t36
+
+
+==== ret 1 (t37) tainted ====
+_obj
+[rpc] @ DeliveryService.FindDelivery.t37
+", color=blue];
+	N_FoodService_FindFoodOrder -> N_food_db_food_order [label="FindOne()
+
+==== arg 0 (\"OrderID\":string) tainted ====
+_obj
+[read, primary] @ food_db.food_order.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
 
 
 ==== arg 1 (t10) tainted ====
 _obj
-[delete, primary] @ user_db.user.UserID
+[read, primary] @ food_db.food_order.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ food_db.food_order
+_obj.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+", color=green];
+	N_AssuranceService_FindAssuranceByOrderId -> N_assurance_db_assurance [label="FindOne()
+
+==== arg 0 (\"OrderID\":string) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ assurance_db.assurance
+_obj.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+", color=green];
+	N_ConsignService_FindConsign -> N_consign_db_consign_record [label="FindOne()
+
+==== arg 0 (\"OrderID\":string) tainted ====
+_obj
+[read, primary] @ consign_db.consign_record.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ consign_db.consign_record.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ consign_db.consign_record
+_obj.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ delivery_db.delivery.OrderID
+", color=green];
+	N_DeliveryService_FindDelivery -> N_delivery_db_delivery [label="FindOne()
+
+==== arg 0 (\"OrderID\":string) tainted ====
+_obj
+[read, primary] @ delivery_db.delivery.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[read, primary] @ delivery_db.delivery.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+
+
+==== arg 2 (t16) tainted ====
+_obj
+[read, primary] @ delivery_db.delivery
+_obj.OrderID
+[read, secondary] @ order_db.order.ID
+[read, secondary] @ food_db.food_order.OrderID
+[read, secondary] @ assurance_db.assurance.OrderID
+[read, secondary] @ consign_db.consign_record.OrderID
+", color=green];
+	N_client -> N_ExecuteService_TicketCollect [label="TicketCollect()", color=orange];
+	N_ExecuteService_TicketCollect -> N_OrderService_Find [label="Find()
+
+==== arg 0 (orderID) tainted ====
+_obj
+[read, secondary] @ order_db.order.ID
+[update, traced] @ order_db.order.ID
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+
+
+==== ret 0 (t4) tainted ====
+_obj
+[read, secondary] @ order_db.order
+[rpc] @ OrderService.Find.t4
+_obj.Status
+[rpc] @ OrderService.Find.t4.Status
+
+
+==== ret 1 (t5) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", color=blue];
+	N_ExecuteService_TicketCollect -> N_OrderService_ModifyOrder [label="ModifyOrder()
+
+==== arg 0 (orderID) tainted ====
+_obj
+[read, traced] @ order_db.order.ID
+[update, secondary] @ order_db.order.ID
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+
+
+==== arg 1 (3:int) tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.3:int
+
+
+==== ret 0 (t13) tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.t13
+", color=blue];
+	N_OrderService_ModifyOrder -> N_order_db_order [label="UpdateOne()
+
+==== arg 0 (\"ID\":string) tainted ====
+_obj
+[update, primary] @ order_db.order.ID
+[read, secondary] @ order_db.order.ID
+
+
+==== arg 1 (t10) tainted ====
+_obj
+[update, primary] @ order_db.order.ID
+[read, secondary] @ order_db.order.ID
+
+
+==== arg 2 (\"ID\":string) tainted ====
+_obj
+[update, primary] @ order_db.order.ID
+[read, secondary] @ order_db.order.ID
+
+
+==== arg 3 (t10) tainted ====
+_obj
+[update, primary] @ order_db.order.ID
+[read, secondary] @ order_db.order.ID
+", color=green];
+	N_client -> N_ExecuteService_TicketExecute [label="TicketExecute()", color=orange];
+	N_ExecuteService_TicketExecute -> N_OrderService_Find [label="Find()
+
+==== arg 0 (orderID) tainted ====
+_obj
+[read, secondary] @ order_db.order.ID
+[update, traced] @ order_db.order.ID
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+
+
+==== ret 0 (t4) tainted ====
+_obj
+[read, secondary] @ order_db.order
+[rpc] @ OrderService.Find.t4
+_obj.Status
+[rpc] @ OrderService.Find.t4.Status
+
+
+==== ret 1 (t5) tainted ====
+_obj
+[rpc] @ OrderService.Find.t5
+", color=blue];
+	N_ExecuteService_TicketExecute -> N_OrderService_ModifyOrder [label="ModifyOrder()
+
+==== arg 0 (orderID) tainted ====
+_obj
+[read, traced] @ order_db.order.ID
+[update, secondary] @ order_db.order.ID
+[rpc] @ OrderService.Find.orderID
+[rpc] @ OrderService.ModifyOrder.orderID
+
+
+==== arg 1 (4:int) tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.4:int
+
+
+==== ret 0 (t13) tainted ====
+_obj
+[rpc] @ OrderService.ModifyOrder.t13
+", color=blue];
+	N_client -> N_DeliveryService_Run [label="Run()", color=orange];
+	N_DeliveryService_Run -> N_delivery_queue_notification [label="Pop()
+
+==== arg 0 (t7) tainted ====
+_obj
+[read, primary] @ delivery_queue.notification
+[write, primary] @ delivery_db.delivery
+[write, secondary] @ delivery_queue.notification
+_obj.FoodName
+[write, secondary] @ food_db.food_order.FoodName
+[write, secondary] @ delivery_queue.notification.FoodName
+_obj.OrderID
+[write, secondary] @ food_db.food_order.OrderID
+[write, secondary] @ delivery_queue.notification.OrderID
+[read, secondary] @ order_db.order.ID
+[write, secondary] @ order_db.order.ID
+[write, secondary] @ assurance_db.assurance.OrderID
+[write, secondary] @ consign_db.consign_record.OrderID
+_obj.StationName
+[write, secondary] @ food_db.food_order.StationName
+[write, secondary] @ delivery_queue.notification.StationName
+_obj.StoreName
+[write, secondary] @ food_db.food_order.StoreName
+[write, secondary] @ delivery_queue.notification.StoreName
+", color=green];
+	N_DeliveryService_Run -> N_delivery_db_delivery [label="InsertOne()
+
+==== arg 0 (t31) tainted ====
+_obj
+[read, primary] @ delivery_queue.notification
+[write, primary] @ delivery_db.delivery
 ", color=green];
 }

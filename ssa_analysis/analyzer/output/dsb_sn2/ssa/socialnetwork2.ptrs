@@ -626,10 +626,10 @@ t7 (@StorePost): (*ssa.Call) (invoke t3.InsertOne(ctx, t6))
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).Follow ###
-s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
-
 t0 (@Follow): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@Follow): (*ssa.Alloc) [path=]
+
+s (@Follow): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@Follow): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -687,10 +687,10 @@ t31 (@Follow): (*ssa.UnOp) (*t18)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).FollowWithUsername ###
-s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
-
 t0 (@FollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@FollowWithUsername): (*ssa.Alloc) [path=]
+
+s (@FollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@FollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1073,10 +1073,10 @@ t25 (@Unfollow): (*ssa.UnOp) (*t12)
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.SocialGraphServiceImpl).UnfollowWithUsername ###
+s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
+
 t0 (@UnfollowWithUsername): (*ssa.Alloc) (new *SocialGraphServiceImpl (s))
 	 → t0 (@UnfollowWithUsername): (*ssa.Alloc) [path=]
-
-s (@UnfollowWithUsername): (*ssa.Parameter) (parameter s : *SocialGraphServiceImpl)
 
 ctx (@UnfollowWithUsername): (*ssa.Parameter) (parameter ctx : context.Context)
 
@@ -1844,18 +1844,18 @@ t2 (@hashPwd): (*ssa.UnOp) (*encoding/base64.URLEncoding)
 	 → t3 (@NewEncoding): (*ssa.Alloc) [path=]
 
 t3 (@hashPwd): (*ssa.Call) (invoke t0.Sum(nil:[]byte))
+	 → t5 (@Sum): (*ssa.Call) [path=]
+	 → t8 (@Sum): (*ssa.Call) [path=]
+	 → t10 (@Sum): (*ssa.Call) [path=]
+	 → t6 (@Sum): (*ssa.Call) [path=]
 	 → t15 (@Sum): (*ssa.Call) [path=]
 	 → t17 (@Sum): (*ssa.Call) [path=]
 	 → t20 (@Sum): (*ssa.Call) [path=]
 	 → t23 (@Sum): (*ssa.Call) [path=]
-	 → t8 (@Sum): (*ssa.Call) [path=]
-	 → t10 (@Sum): (*ssa.Call) [path=]
-	 → t5 (@Sum): (*ssa.Call) [path=]
-	 → t6 (@Sum): (*ssa.Call) [path=]
 	 → t31 (@sign): (*ssa.Alloc) [path=]
 	 → t58 (@sign): (*ssa.Alloc) [path=]
-	 → t34 (@verify): (*ssa.Alloc) [path=]
 	 → t11 (@emsaPSSEncode): (*ssa.MakeSlice) [path=]
+	 → t34 (@verify): (*ssa.Alloc) [path=]
 
 
 ### Function: (*github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow/socialnetwork2.UserTimelineServiceImpl).ReadUserTimeline ###

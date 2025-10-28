@@ -127,7 +127,7 @@ func (graph *SSAGraph) GetReturnsLst() [][]*SSANode {
 }
 
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
-	//EVAL - fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
+	fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
 	if len(graph.params) <= 2 {
 		return nil
 	}
@@ -164,6 +164,25 @@ func (graph *SSAGraph) GetEdgesTypedFrom(node *SSANode, t EdgeType) []*SSAEdge {
 		}
 	}
 	return edges
+}
+
+
+func (graph *SSAGraph) GetFirstEdgeTypedFrom(node *SSANode, t EdgeType) *SSAEdge {
+	for _, edge := range graph.edges {
+		if edge.GetType() == t && edge.from == node {
+			return edge
+		}
+	}
+	return nil
+}
+
+func (graph *SSAGraph) GetFirstEdgeToNode(node *SSANode) *SSAEdge {
+	for _, edge := range graph.edges {
+		if edge.to == node {
+			return edge
+		}
+	}
+	return nil
 }
 
 func (graph *SSAGraph) GetEdgesFromNodeExceptPointerTo(node *SSANode) []*SSAEdge {
@@ -248,13 +267,13 @@ func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType 
 	}
 	for _, edge := range graph.GetEdgesFromNode(from) {
 		if edge.to == to /* && edge.edgeType == edgeType */ {
-			//EVAL - fmt.Printf("[GRAPH] [1] found existing edge with type: %v\n", edge.edgeType)
+			fmt.Printf("[GRAPH] [1] found existing edge with type: %v\n", edge.edgeType)
 			return edge, false
 		}
 	}
 	for _, edge := range graph.GetEdgesToNode(to) {
 		if edge.from == from /* && edge.edgeType == edgeType */ {
-			//EVAL - fmt.Printf("[GRAPH] [2] found existing edge with type: %v\n", edge.edgeType)
+			fmt.Printf("[GRAPH] [2] found existing edge with type: %v\n", edge.edgeType)
 			return edge, false
 		}
 	}
