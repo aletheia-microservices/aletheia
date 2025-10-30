@@ -1,33 +1,55 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import yaml
 
-apps = ["Digota", "Sockshop", "PostNotification", "SocialNetwork", "MediaMicroservices", "TrainTicket"]
-ms_weight = 1
-ds_weight = 1
-ms_counts = np.array([4, 7, 3, 10, 5, 30])
-ds_counts = np.array([5, 6, 2, 10, 4, 21])
+OUT_FILENAME = "plot-all.png"
+
+# load yaml data
+with open("results_apps.yaml", "r") as f1, open("results_dummies.yaml", "r") as f2:
+  data1 = yaml.safe_load(f1)
+  data2 = yaml.safe_load(f2)
+
+data = {
+  "apps": data1.get("apps", []) + data2.get("apps", []),
+  "weights": {**data1.get("weights", {}), **data2.get("weights", {})}
+}
+
+# weights
+ms_weight = data["weights"]["ms_weight"]
+ds_weight = data["weights"]["ds_weight"]
+
+# actual results
+apps = [app["name"] for app in data["apps"]]
+ms_counts = np.array([app["ms_count"] for app in data["apps"]])
+ds_counts = np.array([app["ds_count"] for app in data["apps"]])
+parsing_time_s = np.array([app["parsing_time_s"] for app in data["apps"]])
+schema_time_s = np.array([app["schema_time_s"] for app in data["apps"]])
+detection_time_s = np.array([app["detection_time_s"] for app in data["apps"]])
+
+# x and y values
 complexity = ms_weight * ms_counts + ds_weight * ds_counts
+total_time_s = parsing_time_s + schema_time_s + detection_time_s
+#total_time_s = parsing_time_s + schema_time_s / 1000 + detection_time_s / 1000
 
-parsing_time   = np.array([10.96, 10.69, 7.86, 17.40, 8.69, 30.95]) #s
-schema_time    = np.array([100, 90, 7, 237, 400, 371]) #ms
-detection_time = np.array([12, 61, 5, 142, 32, 376]) #ms
-total_time_s = parsing_time + schema_time/1000 + detection_time/1000
+print("Apps:", apps)
+print("Complexity:", complexity)
+print("Total time (s):", total_time_s)
 
 order = np.lexsort((ms_counts, complexity))
 
 apps_sorted      = [apps[i] for i in order]
-parsing_sorted   = parsing_time[order]
-schema_sorted    = schema_time[order]
-detection_sorted = detection_time[order]
+parsing_sorted   = parsing_time_s[order]
+schema_sorted    = schema_time_s[order]
+detection_sorted = detection_time_s[order]
 total_time_s = total_time_s[order]
 
-parsing_time = np.round(parsing_time).astype(int)
+parsing_time_s = np.round(parsing_time_s).astype(int)
 total_time_s = np.round(total_time_s).astype(int)
 
-spacing = 0.5  # smaller => bars closer horizontally
+spacing = 0.8  # smaller => bars closer horizontally
 x = np.arange(len(apps_sorted)) * spacing
-bar_width = 0.3
+bar_width = 0.6
 
 BASE_COLOR_PALETTE = sns.color_palette('deep', 12)
 COLORS = {
@@ -50,28 +72,28 @@ plt.rcParams['ytick.labelsize'] = 'xx-small'
 fig, axes = plt.subplots(4, 1, sharex=True)
 
 bars0 = axes[0].bar(x, total_time_s, color=COLORS['total'], width=bar_width)
-axes[0].bar_label(bars0, fmt="%ds", fontsize=6, padding=3)
+axes[0].set_yscale('log')
+axes[0].margins(y=0.3) # 20% vertical padding
+axes[0].bar_label(bars0, fmt="%ds", fontsize=5.5, padding=3)
 axes[0].set_title("Total", fontsize=8)
-axes[0].set_ylabel("Time (s)")
-axes[0].set_ylim(0, 40)
 
 bars1 = axes[1].bar(x, parsing_sorted, color=COLORS['parser'], width=bar_width)
-axes[1].bar_label(bars1, fmt="%ds", fontsize=6)
+axes[1].set_yscale('log')
+axes[1].margins(y=0.2) # 20% vertical padding
+axes[1].bar_label(bars1, fmt="%ds", fontsize=5.5)
 axes[1].set_title("Parsing", fontsize=8)
-axes[1].set_ylabel("Time (s)")
-axes[1].set_ylim(0, 40)
 
 bars2 = axes[2].bar(x, schema_sorted, color=COLORS['schema'], width=bar_width)
-axes[2].bar_label(bars2, fmt="%dms", fontsize=6)
+axes[2].set_yscale('log')
+axes[2].margins(y=0.2) # 20% vertical padding
+axes[2].bar_label(bars2, fmt="%.3fs", fontsize=5.5)
 axes[2].set_title("Schema Building", fontsize=8)
-axes[2].set_ylabel("Time (ms)")
-axes[2].set_ylim(0, 500)
 
 bars3 = axes[3].bar(x, detection_sorted, color=COLORS['detector'], width=bar_width)
-axes[3].bar_label(bars3, fmt="%dms", fontsize=6)
+axes[3].set_yscale('log')
+axes[3].margins(y=0.2) # 20% vertical padding
+axes[3].bar_label(bars3, fmt="%.3fs", fontsize=5.5)
 axes[3].set_title("Detection", fontsize=8)
-axes[3].set_ylabel("Time (ms)")
-axes[3].set_ylim(0, 500)
 
 for i, ax in enumerate(axes):
     if i != 0:
@@ -100,9 +122,12 @@ for i, ax in enumerate(axes):
     # one combined legend
     ax2.legend(loc='upper left', fontsize=6)
 
+# shared y-axis label
+fig.text(0.02, 0.5, "Time (s)", va='center', rotation='vertical', fontsize=8)
+
 # put labels only on the bottom subplot, rotated diagonally
 axes[-1].set_xticks(x)
-axes[-1].set_xticklabels(xtick_labels, rotation=25, ha="right", rotation_mode="anchor")
+axes[-1].set_xticklabels(xtick_labels, rotation=35, ha="right", rotation_mode="anchor")
 
 # hide x tick labels on upper subplots
 for ax in axes[:-1]:
@@ -113,4 +138,5 @@ plt.tight_layout()
 plt.subplots_adjust(left=0.12, hspace=0.40)
 # smaller left => left border
 plt.subplots_adjust(left=0.12)
-plt.savefig("plot-time-complexity_A.png")
+plt.savefig(OUT_FILENAME)
+print(f"[INFO] saved plot to {OUT_FILENAME}")

@@ -1,26 +1,40 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import yaml
 
-apps = ["(100 #ms, 1 req)", "(100 #ms, 3 reqs)", "(200 #ms, 1 reqs)", "(400 #ms, 1 req)"]
-ms_weight = 1
-reqs_weight = 1
-ms_counts = np.array([100, 100, 200, 400])
-reqs_counts = np.array([1, 3, 1, 1])
+OUT_FILENAME = "plot-dummies.png"
+
+# load yaml data
+with open("results_dummies.yaml", "r") as f:
+  data = yaml.safe_load(f)
+
+# weights
+ms_weight = data["weights"]["ms_weight"]
+reqs_weight = data["weights"]["reqs_weight"]
+
+# actual results
+apps = [app["name"] for app in data["apps"]]
+ms_counts = np.array([app["ms_count"] for app in data["apps"]])
+reqs_counts = np.array([app["reqs_count"] for app in data["apps"]])
+total_time_m = np.array([app["total_time_m"] for app in data["apps"]])
+parsing_time_s = np.array([app["parsing_time_s"] for app in data["apps"]])
+schema_time_s = np.array([app["schema_time_s"] for app in data["apps"]])
+detection_time_s = np.array([app["detection_time_s"] for app in data["apps"]])
+
+# x and y values
 complexity = ms_weight * ms_counts + reqs_weight * reqs_counts
-
-total_time     = np.array([0.58, 0.65, 1.21, 7.41]) #m
-parsing_time   = np.array([31.50, 31.54, 52.38, 107.79]) #s
-schema_time    = np.array([2.81, 5.25, 13.86, 186.15]) #s
-detection_time = np.array([0.70, 2.11, 6.43, 151.80]) #s
-
 order = np.lexsort((ms_counts, complexity))
 
+print("Apps:", apps)
+print("Complexity:", complexity)
+print("Total time (m):", total_time_m)
+
 apps_sorted      = [apps[i] for i in order]
-parsing_sorted   = parsing_time[order]
-schema_sorted    = schema_time[order]
-detection_sorted = detection_time[order]
-total_time     = total_time[order]
+parsing_sorted   = parsing_time_s[order]
+schema_sorted    = schema_time_s[order]
+detection_sorted = detection_time_s[order]
+total_time_m     = total_time_m[order]
 
 spacing = 0.5  # smaller => bars closer horizontally
 x = np.arange(len(apps_sorted)) * spacing
@@ -46,7 +60,7 @@ plt.rcParams['ytick.labelsize'] = 'xx-small'
 
 fig, axes = plt.subplots(4, 1, sharex=True)
 
-bars0 = axes[0].bar(x, total_time, color=COLORS['total'], width=bar_width)
+bars0 = axes[0].bar(x, total_time_m, color=COLORS['total'], width=bar_width)
 axes[0].bar_label(bars0, fmt="%0.2fmin", fontsize=6, padding=0)
 axes[0].set_title("Total", fontsize=8)
 axes[0].set_ylabel("Time (min)")
@@ -103,4 +117,5 @@ plt.tight_layout()
 plt.subplots_adjust(left=0.12, hspace=0.40)
 # smaller left => left border
 plt.subplots_adjust(left=0.12)
-plt.savefig("plot-time-complexity_B.png")
+plt.savefig(OUT_FILENAME)
+print(f"[INFO] saved plot to {OUT_FILENAME}")
