@@ -117,7 +117,17 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					}
 					modified = true
 					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
-				}
+				}/*  else if !otherField.HasConstraintForeignKeyToField(currField) && !currField.HasConstraintForeignKeyToField(otherField) {
+					// 2nd condition is for sanity check
+					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
+					currField.AddConstraint(constraint)
+					currDb.GetLastSchema().AddConstraint(constraint)
+					if otherTaint.IsWrite() {
+						constraint.DisableMandatory(reqIdx)
+					}
+					modified = true
+					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
+				} */
 			} else if otherTaint.IsRead() && currTaint.IsRead() {
 				// nothing to do
 			} else if otherTaint.IsDelete() && (currTaint.IsRead() || currTaint.IsWrite() || currTaint.IsDelete()) {

@@ -65,16 +65,6 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 				log.Fatalf("unexpected")
 			}
 
-			if fread.constraint1 == nil {
-				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.FirstCallString())
-				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field1.GetPath())
-			}
-			
-			if fread.constraint2 == nil {
-				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.SecondCallString())
-				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field2.GetPath())
-			}
-
 			if fread.constraint1 != nil {
 				if detector.isTypePrimaryKey() {
 					results += fmt.Sprintf("\t\tREAD: %s\n", fread.FirstCallString())
@@ -93,6 +83,16 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 				}
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field2.GetPath())
 				results += fmt.Sprintf("\t\t\t- constraint: %s\n", fread.constraint2.String())
+			}
+
+			if fread.constraint1 == nil {
+				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.FirstCallString())
+				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field1.GetPath())
+			}
+			
+			if fread.constraint2 == nil {
+				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.SecondCallString())
+				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field2.GetPath())
 			}
 		}
 	}

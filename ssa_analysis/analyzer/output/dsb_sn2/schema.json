@@ -11,7 +11,11 @@
           "hometimeline_cache.*.Value[*].PostID",
           "hometimeline_cache.*.Value[*].Timestamp"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
+          "FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]",
+          "FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES usertimeline_db.usertimeline.Posts[*].PostID [MANDATORY]"
+        ]
       }
     ]
   },
@@ -40,7 +44,6 @@
           "post_db.post.ReqID"
         ],
         "constraints": [
-          "FOREIGN_KEY post_db.post.PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
           "FOREIGN_KEY post_db.post.PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]"
         ]
       }
@@ -103,7 +106,6 @@
         "constraints": [
           "FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_cache.followers.Key [MANDATORY]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_db.post.PostID",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]"
         ]
       }
@@ -123,7 +125,6 @@
           "usertimeline_db.usertimeline.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]",
