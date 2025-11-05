@@ -4,11 +4,11 @@
 [NUM_WARNINGS = 3]
 entry request: Wrk2APIService.ReadHomeTimeline()
 	FOREIGN KEY READS #1:
-		READ (FOREIGN KEY): HomeTimelineService.ReadHomeTimeline() --> hometimeline_cache.*.Get()
-			- field: hometimeline_cache.*.Value[*].PostID
-			- constraint: FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
-		READ (ORIGIN): PostStorageService.ReadPosts() --> post_db.post.FindMany()
+		READ (FOREIGN KEY): PostStorageService.ReadPosts() --> post_db.post.FindMany()
 			- field: post_db.post.PostID
+			- constraint: FOREIGN_KEY post_db.post.PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]
+		READ (ORIGIN): HomeTimelineService.ReadHomeTimeline() --> hometimeline_cache.*.Get()
+			- field: hometimeline_cache.*.Value[*].PostID
 entry request: Wrk2APIService.ReadUserTimeline()
 	FOREIGN KEY READS #2:
 		READ (FOREIGN KEY): PostStorageService.ReadPosts() --> post_db.post.FindMany()

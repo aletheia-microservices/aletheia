@@ -22,11 +22,14 @@ var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne", "ReplaceOne"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
 var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select"}
-var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put"}
+var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
 
 type ValFieldPath struct {
 	val       ssa.Value
 	fieldpath string
+
+	// cache only
+	cacheMultiget bool
 
 	// nosql only
 	bsonFilterKey  string
@@ -273,6 +276,8 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 			switch call.Call.Method.Name() {
 			case "Get":
 				opType = common.OP_READ
+			case "Mget":
+				opType = common.OP_READ_MANY
 			case "Put":
 				opType = common.OP_WRITE
 			default:
@@ -288,29 +293,56 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				fmt.Printf("[CALLS BLUEPRINT] [CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
 				fmt.Printf("[CALLS BLUEPRINT] [CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
 
+				var keyField = "Key"
+				var valField = "Value"
+				if opType == common.OP_READ_MANY {
+					keyField += "[*]"
+					valField += "[*]"
+				}
+
 				// track cache key
 				if _, ok := utils.ExtractStringFromValue(cacheKeyVal); ok {
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheKeyVal, fieldpath: database + "." + namespace + ".Key"})
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+						val: cacheKeyVal, 
+						fieldpath: database + "." + namespace + "." + keyField,
+						cacheMultiget: opType == common.OP_READ_MANY,
+					})
 				} else if binOp, ok := cacheKeyVal.(*ssa.BinOp); ok {
 					if suffix, ok := utils.ExtractStringFromValue(binOp.Y); ok {
 						namespace, _ = strings.CutPrefix(suffix, ":")
 						// real cache key
-						valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: binOp.X, fieldpath: database + "." + namespace + ".Key"})
+						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+							val: binOp.X, 
+							fieldpath: database + "." + namespace + "." + keyField,
+							cacheMultiget: opType == common.OP_READ_MANY,
+						})
 					}
 				} else if call, ok := cacheKeyVal.(*ssa.Call); ok {
 					for _, arg := range call.Call.Args {
-						valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: arg, fieldpath: database + "." + namespace + ".Key"})
+						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+							val: arg, 
+							fieldpath: database + "." + namespace + "." + keyField,
+							cacheMultiget: opType == common.OP_READ_MANY,
+						})
 					}
 				}
 
 				if valFieldPathLst == nil {
 					// [TO BE IMPROVED]
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheKeyVal, fieldpath: database + "." + namespace + ".Key"})
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+						val: cacheKeyVal, 
+						fieldpath: database + "." + namespace + "." + keyField,
+						cacheMultiget: opType == common.OP_READ_MANY,
+					})
 					fmt.Printf("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
 				}
 
 				// track cache value
-				valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: cacheValueVal, fieldpath: database + "." + namespace + ".Value"})
+				valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+					val: cacheValueVal, 
+					fieldpath: database + "." + namespace + "." + valField,
+					cacheMultiget: opType == common.OP_READ_MANY,
+				})
 
 				return database, namespace, opType, valFieldPathLst, true
 			}
@@ -574,7 +606,7 @@ func computeNoSQLFilterKeyToValues_AND(graph *ssagraph.SSAGraph, bsonVal ssa.Val
 }
 
 // helper to process bson slice node
-func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode *ssagraph.SSANode, filterKeyToValues map[string][]ValFieldPath) (map[string][]ValFieldPath) {
+func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode *ssagraph.SSANode, filterKeyToValues map[string][]ValFieldPath) map[string][]ValFieldPath {
 	for _, edge := range graph.GetEdgesTypedTo(bsonSliceNode, ssagraph.EDGE_POINTS_TO) {
 		if edge.HasPath("[*]") {
 			var filterField string
@@ -628,7 +660,7 @@ func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode
 			if filterField == "" {
 				filterField = "*"
 			}
-			
+
 			for _, edge := range graph.GetEdgesTypedFrom(bsonElemNode, ssagraph.EDGE_FIELD) {
 				if edge.GetParam() == "Value" {
 					// track objects used as value in store instructions for current bson value

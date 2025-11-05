@@ -765,7 +765,7 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 				// cannot do default propagateTaintNearby (root=true) for read operations fetched
 				// into arrays/slices (e.g., FindMany) because the default taintinfo is the root path
 				// when propagating to other objects
-				if valFieldPath.bsonCursorMany || valFieldPath.bsonFilterIn {
+				if valFieldPath.bsonCursorMany || valFieldPath.bsonFilterIn || valFieldPath.cacheMultiget {
 					taintInfo.objpath += "[*]"
 					taintInfo.objroot = false
 				}
