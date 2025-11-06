@@ -25,6 +25,7 @@ type SSAGraph struct {
 	methodCall *ServiceCall
 	svcCalls   []*ServiceCall
 	dbCalls    []*DatabaseCall
+	allCalls   []interface{}
 	params     []*SSANode
 	returns    [][]*SSANode // can have multiple return tuples depending on controlflow
 }
@@ -98,6 +99,10 @@ func (graph *SSAGraph) GetEdges() []*SSAEdge {
 	return graph.edges
 }
 
+func (graph *SSAGraph) AddCall(call interface{}) {
+	graph.allCalls = append(graph.allCalls, call)
+}
+
 func (graph *SSAGraph) AddServiceCall(call *ServiceCall) {
 	graph.svcCalls = append(graph.svcCalls, call)
 }
@@ -108,6 +113,10 @@ func (graph *SSAGraph) SetMethodCall(call *ServiceCall) {
 
 func (graph *SSAGraph) HasServiceCalls() bool {
 	return len(graph.svcCalls) > 0
+}
+
+func (graph *SSAGraph) GetAllCalls() []interface{} {
+	return graph.allCalls
 }
 
 func (graph *SSAGraph) GetServiceCalls() []*ServiceCall {
@@ -165,7 +174,6 @@ func (graph *SSAGraph) GetEdgesTypedFrom(node *SSANode, t EdgeType) []*SSAEdge {
 	}
 	return edges
 }
-
 
 func (graph *SSAGraph) GetFirstEdgeTypedFrom(node *SSANode, t EdgeType) *SSAEdge {
 	for _, edge := range graph.edges {
@@ -235,7 +243,7 @@ func (graph *SSAGraph) GetEdgesToNode(node *SSANode) []*SSAEdge {
 	return edges
 }
 
-func (graph *SSAGraph) SortNodes() {
+func (graph *SSAGraph) Sort() {
 	sort.Slice(graph.nodes, func(i, j int) bool {
 		/* ni, err1 := strconv.Atoi(strings.TrimPrefix(graph.nodes[i].name, "t"))
 		nj, err2 := strconv.Atoi(strings.TrimPrefix(graph.nodes[j].name, "t"))
@@ -301,18 +309,24 @@ func safeID(id string) string {
 	return re.ReplaceAllString(id, "_")
 }
 
-func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) error {
+func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) {
 	stage := "untainted"
 	if tainted {
 		stage = "tainted"
 	}
-	filename := fmt.Sprintf("output/%s/ssagraphs/%s/%s.dot", appname, stage, fn)
+	dirname := fmt.Sprintf("output/%s/ssagraphs/%s", appname, stage)
+	filename := fmt.Sprintf("%s/%s.dot", dirname, fn)
+
+	err := os.MkdirAll(dirname, os.ModePerm)
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
 
 	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
 	defer file.Close()
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
 
 	fmt.Fprintln(file, "digraph G {")
 	fmt.Fprintln(file, "\trankdir=TD;")
@@ -347,5 +361,4 @@ func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) e
 	}
 
 	fmt.Fprintln(file, "}")
-	return nil
 }

@@ -3,7 +3,7 @@ package abstractgraph
 import (
 	"fmt"
 	"log"
-	"sort"
+	"os"
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
@@ -142,28 +142,20 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 	var edges []*AbstractEdge
 
-	// build edges for service/database RPCs/calls
-	if ssaGraph.HasServiceCalls() {
-		fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
-		for _, call := range ssaGraph.GetServiceCalls() {
-			toName := call.GetServiceWithMethod()
+	for _, call := range ssaGraph.GetAllCalls() {
+		if serviceCall, ok := call.(*ssagraph.ServiceCall); ok {
+			fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
+			toName := serviceCall.GetServiceWithMethod()
 			toNode := graph.GetNodeByNameIfExists(toName)
 
-			/* if len(ssaGraph.GetServiceCalls()) > 2 {
-				for _, call := range ssaGraph.GetServiceCalls() {
-					fmt.Printf("call: %v\n", call.String())
-				}
-				log.Fatalf("EXIT!")
-			} */
-
-			toSSAGraph := funcGraphs[call.GetFuncShortPath()]
+			toSSAGraph := funcGraphs[serviceCall.GetFuncShortPath()]
 			if toSSAGraph == nil {
-				log.Fatalf("could not find ssa graph for short func path (%s)", call.GetFuncShortPath())
+				log.Fatalf("could not find ssa graph for short func path (%s)", serviceCall.GetFuncShortPath())
 			}
 
 			// create node for the first time
 			if toNode == nil {
-				toNode = NewAbstractNode(toName, NODE_SERVICE, call.GetService(), call.GetMethod(), "")
+				toNode = NewAbstractNode(toName, NODE_SERVICE, serviceCall.GetService(), serviceCall.GetMethod(), "")
 				graph.AddNode(toName, toNode)
 
 				fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
@@ -174,38 +166,35 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				}
 			}
 
-			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
+			edge := NewAbstractEdge(serviceCall.GetID(), serviceCall.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
 
 			// create call arguments
-			for _, callArg := range call.GetArguments() {
+			for _, callArg := range serviceCall.GetArguments() {
 				arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
 				edge.AddArgument(arg)
 			}
 
 			// create call returns
-			for _, callRet := range call.GetReturns() {
+			for _, callRet := range serviceCall.GetReturns() {
 				ret := NewAbstractObject(callRet.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callRet.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callRet.GetTaints()))
 				fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
 				edge.AddReturn(ret)
 			}
 
 			edges = append(edges, edge)
-			fmt.Printf("[ABSTRACT GRAPH] added edge: %v\n", edge)
+			fmt.Printf("[ABSTRACT GRAPH] [SERVICE CALL] added edge: %v\n", edge)
 		}
-		fmt.Println()
-	}
 
-	if ssaGraph.HasDatabaseCalls() {
-		fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
+		if databaseCall, ok := call.(*ssagraph.DatabaseCall); ok {
+			fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
 
-		for _, call := range ssaGraph.GetDatabaseCalls() {
-			toDatabasePath := call.GetDatabasePath()
+			toDatabasePath := databaseCall.GetDatabasePath()
 			toNode := graph.GetNodeByNameIfExists(toDatabasePath)
-			dbname := call.GetDatabaseName()
+			dbname := databaseCall.GetDatabaseName()
 			if toNode == nil {
 				toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE, "", "", dbname)
 				graph.AddNode(toDatabasePath, toNode)
-				schemaName := call.GetSchemaName()
+				schemaName := databaseCall.GetSchemaName()
 
 				if !graph.GetApp().HasDatabase(dbname) {
 					log.Fatalf("database (%s) not found", dbname)
@@ -217,9 +206,9 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				}
 			}
 
-			edge := NewAbstractEdge(call.GetID(), call.GetMethod(), node, toNode, call.GetOpType(), EDGE_DATABASE_CALL)
+			edge := NewAbstractEdge(databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), EDGE_DATABASE_CALL)
 
-			for _, callArg := range call.GetArguments() {
+			for _, callArg := range databaseCall.GetArguments() {
 				arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
 				edge.AddArgument(arg)
 			}
@@ -232,20 +221,13 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
 				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), true, false)
-				taintMapping.Merge(taintMappingTmp)
+				taintMapping.Merge(taintMappingTmp, true)
 			}
 			PropagateNewTaintsToDatabaseSchemas(graph, -1, taintMapping)
 
 			edges = append(edges, edge)
+			fmt.Printf("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)
 		}
-		fmt.Println()
-
-		// at the end, we need to sort edges by ID (which also includes original ssa ID)
-		// this is because the tainter first checks database calls and then service calls
-		// so their order is not the real one after parsing them here
-		sort.Slice(edges, func(i, j int) bool {
-			return edges[i].GetIDNumber() < edges[j].GetIDNumber()
-		})
 	}
 
 	for _, edge := range edges {
@@ -270,4 +252,34 @@ func registerDatabaseFields(graph *AbstractCallGraph, args []*AbstractObject) {
 			}
 		}
 	}
+}
+
+func (graph *AbstractCallGraph) WriteVisited(appname string) {
+	filename := fmt.Sprintf("output/%s/abstractcallgraph.visited", appname)
+
+	file, err := os.Create(filename)
+	defer file.Close()
+	if err != nil {
+		log.Fatalf("error: %s", err.Error())
+	}
+
+	clientNode := graph.GetNodeByName("client")
+
+	fmt.Printf("starting...")
+	for i, edge := range graph.GetEdgesFromNode(clientNode) {
+		fmt.Fprintf(file, "\n\n%d: %s", i, edge.to.String())
+		for _, edge2 := range graph.GetEdgesFromNode(edge.to) {
+			fmt.Fprintf(file, "\n\t-> "+edge2.to.String())
+			for _, edge3 := range graph.GetEdgesFromNode(edge2.to) {
+				fmt.Fprintf(file, "\n\t\t-> "+edge3.to.String())
+				for _, edge4 := range graph.GetEdgesFromNode(edge3.to) {
+					fmt.Fprintf(file, "\n\t\t\t-> "+edge4.to.String())
+					for _, edge5 := range graph.GetEdgesFromNode(edge4.to) {
+						fmt.Fprintf(file, "\n\t\t\t\t-> "+edge5.to.String())
+					}
+				}
+			}
+		}
+	}
+	fmt.Printf("end...")
 }

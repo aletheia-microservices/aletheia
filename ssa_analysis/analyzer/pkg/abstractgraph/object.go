@@ -36,8 +36,16 @@ func (obj *AbstractObject) GetTaintsForObjectPath(objpath string) []*AbstractTai
 	return obj.taints[objpath]
 }
 
+func (obj *AbstractObject) SetTaintsForObjectPath(objpath string, taints []*AbstractTaint) {
+	obj.taints[objpath] = taints
+}
+
 func (obj *AbstractObject) GetTraces() map[string][]*AbstractTrace {
 	return obj.traces
+}
+
+func (obj *AbstractObject) SetTracesForObjectPath(objpath string, traces []*AbstractTrace) {
+	obj.traces[objpath] = traces
 }
 
 func (obj *AbstractObject) GetTracesForObjectPath(objpath string) []*AbstractTrace {
@@ -102,10 +110,25 @@ func (obj *AbstractObject) TaintString() string {
 
 	var builder strings.Builder
 	for _, objpath := range objpaths {
-		taints := obj.GetTaintsForObjectPath(objpath)
 		builder.WriteString(objpath)
 		builder.WriteByte('\n')
-		for _, taint := range taints {
+		
+		sortedTaints := obj.GetTaintsForObjectPath(objpath)
+		/* sort.Slice(sortedTaints, func(i, j int) bool {
+			if sortedTaints[i].dbOpType != sortedTaints[j].dbOpType {
+				return sortedTaints[i].dbOpType < sortedTaints[j].dbOpType
+			}
+			if sortedTaints[i].IsTraced() && !sortedTaints[j].IsTraced() {
+				return true
+			}
+			if sortedTaints[i].IsPrimary() && !sortedTaints[j].IsPrimary() {
+				return true
+			}
+			return sortedTaints[i].String() < sortedTaints[j].String()
+		})
+		obj.SetTaintsForObjectPath(objpath, sortedTaints) */
+
+		for _, taint := range sortedTaints {
 			builder.WriteString("[")
 			builder.WriteString(common.OperationTypeToString(taint.dbOpType))
 
@@ -122,9 +145,15 @@ func (obj *AbstractObject) TaintString() string {
 			builder.WriteByte('\n')
 		}
 
-		for _, taint := range obj.GetTracesForObjectPath(objpath) {
+		sortedTraces := obj.GetTracesForObjectPath(objpath)
+		/* sort.Slice(sortedTraces, func(i, j int) bool {
+			return sortedTraces[i].String() < sortedTraces[j].String()
+		})
+		obj.SetTracesForObjectPath(objpath, sortedTraces) */
+
+		for _, trace := range sortedTraces {
 			builder.WriteString("[rpc] @ ")
-			builder.WriteString(taint.String())
+			builder.WriteString(trace.String())
 			builder.WriteByte('\n')
 		}
 	}

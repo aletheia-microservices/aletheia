@@ -13,8 +13,9 @@ const (
 type Constraint struct {
 	t ConstraintType
 	// for foreign key constraint, index 0 is for field referencing and index 1 is for field being referenced
-	fields    []*Field
-	mandatory bool // for foreign key constraints
+	fields     []*Field
+	mandatory  bool // for foreign key constraints
+	transitive bool
 
 	// 1. applies to foreign key only
 	// 2. the entire constraint is non-mandatory if any keyvalue is non-mandatory
@@ -32,6 +33,14 @@ func NewConstraint(t ConstraintType, fields ...*Field) *Constraint {
 		fields:            fields,
 		reqIdxToMandatory: make(map[int]bool),
 	}
+}
+
+func (constraint *Constraint) SetTransitive() {
+	constraint.transitive = true
+}
+
+func (constraint *Constraint) IsTransitive() bool {
+	return constraint.transitive
 }
 
 func (constraint *Constraint) IsMandatory() bool {
@@ -91,7 +100,7 @@ func (constraint *Constraint) GetFields() []*Field {
 }
 
 func (constraint *Constraint) GetFieldAt(idx int) *Field {
-	if idx > len(constraint.fields) - 1 {
+	if idx > len(constraint.fields)-1 {
 		log.Panicf("[CONSTRAINT] index (%d) out of bounds for constraint: %v\n", idx, constraint.String())
 	}
 	return constraint.fields[idx]
@@ -115,6 +124,9 @@ func (constraint *Constraint) String() string {
 		var suffix string
 		if constraint.IsMandatory() {
 			suffix = " [MANDATORY]"
+		}
+		if constraint.IsTransitive() {
+			suffix += " [T]"
 		}
 		return "FOREIGN_KEY " + constraint.fields[0].GetPath() + " REFERENCES " + constraint.fields[1].GetPath() + suffix
 	case CONSTRAINT_UNIQUE:

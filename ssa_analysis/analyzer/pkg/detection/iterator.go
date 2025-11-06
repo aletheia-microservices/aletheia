@@ -1,11 +1,12 @@
 package detection
 
 import (
+	"fmt"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
-	"fmt"
 )
 
 type IterationPhase int
@@ -127,7 +128,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				fromArg := edge.GetArgumentAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
 				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetPrimaryTaints(), false, false)
-				taintMapping.Merge(taintMappingTmp)
+				taintMapping.Merge(taintMappingTmp, true)
 			}
 
 			// update future propagation with taints received from caller args to current params
@@ -159,14 +160,14 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				toParam := toNode.GetParamAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
 				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetPrimaryTaints(), false, false)
-				taintMapping.Merge(taintMappingTmp)
+				taintMapping.Merge(taintMappingTmp, true)
 			}
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			for i, fromRet := range edge.GetReturns() {
 				toRet := toNode.GetReturnAt(i)
 				fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
 				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetPrimaryTaints(), false, false)
-				taintMapping.Merge(taintMappingTmp)
+				taintMapping.Merge(taintMappingTmp, true)
 			}
 
 			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, edge, false)
@@ -213,12 +214,13 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 		if queueReadEdge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL && queueReadEdge.GetOpType() == common.OP_READ {
 			otherDB := it.app.GetDatabaseByName(queueReadEdge.GetToNode().GetDatabaseName())
 			if otherDB == currDB {
+				//log.Fatalf("HERE!")
 				taintMapping := abstractgraph.NewTaintMapping()
 				for i, arg := range edge.GetArguments() {
 					otherArg := queueReadEdge.GetArgumentAt(i)
 					// FIXME: maybe we should also propagate secondary taints?
 					taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), false, false)
-					taintMapping.Merge(taintMappingTmp)
+					taintMapping.Merge(taintMappingTmp, true)
 				}
 
 				abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, queueReadEdge, true)

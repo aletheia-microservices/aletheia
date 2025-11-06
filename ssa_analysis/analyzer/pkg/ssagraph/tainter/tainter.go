@@ -745,6 +745,7 @@ func runTainterOnDatabaseCalls(graph *ssagraph.SSAGraph) {
 			callId := ssagraph.ComputeCallID(graph, node)
 			dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method, opType)
 			graph.AddDatabaseCall(dbCall)
+			graph.AddCall(dbCall)
 
 			for _, valFieldPath := range valFieldPathLst {
 				dbfield := valFieldPath.fieldpath
@@ -818,6 +819,7 @@ func runTainterOnServiceCalls(graph *ssagraph.SSAGraph) {
 			callId := ssagraph.ComputeCallID(graph, node)
 			svcCall := ssagraph.NewServiceCall(callId, node, argNodes, retNodes, service, method, funcShortPath)
 			graph.AddServiceCall(svcCall)
+			graph.AddCall(svcCall)
 
 			for _, argNode := range argNodes {
 				arg := argNode.GetValue()

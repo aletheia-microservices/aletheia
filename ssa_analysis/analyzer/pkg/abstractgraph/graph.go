@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
 
 	"analyzer/pkg/app"
@@ -106,8 +107,17 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 	databases := []string{}
 	clients := []string{}
 	others := []string{}
-
+	
+	var sortedNodes []*AbstractNode
 	for _, node := range graph.GetNodes() {
+		sortedNodes = append(sortedNodes, node)
+	}
+
+	sort.Slice(sortedNodes, func(i, j int) bool {
+		return sortedNodes[i].name < sortedNodes[j].name
+	})
+
+	for _, node := range sortedNodes {
 		nodeID := strings.ReplaceAll(node.GetName(), ".", "_")
 		label := node.GetName()
 

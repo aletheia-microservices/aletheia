@@ -95,7 +95,7 @@ func main() {
 	}
 
 	for _, ssagraph := range funcGraphs {
-		ssagraph.SortNodes()
+		ssagraph.Sort()
 	}
 
 	for _, pkg := range pkgs {
@@ -163,6 +163,8 @@ func main() {
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
+
+	absgraph.WriteVisited(appname)
 
 	elapsed_parsing := time.Since(start)
 

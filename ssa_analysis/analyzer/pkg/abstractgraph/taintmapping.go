@@ -16,34 +16,46 @@ import (
 // in practice, this means that all objects with primary taint will also inherit
 // the secondary taint and possibly originate a foreign key when written to the database
 type TaintMapping struct {
-	mapping map[AbstractTaint][]AbstractTaint // do not use pointers so that we can compare easily
+	mapping     map[AbstractTaint][]AbstractTaint // do not use pointers so that we can compare easily
+	mappingKeys []AbstractTaint                   // to track order of keys in "mapping" above
 }
 
 func NewTaintMapping() *TaintMapping {
 	return &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 }
 
-func (tm *TaintMapping) GetMapping() map[AbstractTaint][]AbstractTaint {
-	return tm.mapping
+func (tm *TaintMapping) GetMappingKeys() []AbstractTaint {
+	return tm.mappingKeys
 }
 
-func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint) {
-	if !slices.Contains(tm.mapping[key], valElem) {
-		tm.mapping[key] = append(tm.mapping[key], valElem)
-	}
-	/* if existingElems, exists := tm.mapping[key]; exists {
-		if !slices.Contains(existingElems, valElem) {
-			tm.mapping[key] = append(existingElems, valElem)
+func (tm *TaintMapping) GetMappingForKey(key AbstractTaint) []AbstractTaint {
+	return tm.mapping[key]
+}
+
+func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint, after bool) {
+	if mappingVal, ok := tm.mapping[key]; ok {
+		if !slices.Contains(mappingVal, valElem) {
+			if after {
+				tm.mapping[key] = append(mappingVal, valElem)
+			} else {
+				tm.mapping[key] = append([]AbstractTaint{valElem}, mappingVal...)
+			}
 		}
 	} else {
+		if after {
+			tm.mappingKeys = append(tm.mappingKeys, key)
+		} else {
+			tm.mappingKeys = append([]AbstractTaint{key}, tm.mappingKeys...)
+		}
 		tm.mapping[key] = []AbstractTaint{valElem}
-	} */
+	}
 }
 
-func (tm *TaintMapping) Merge(other *TaintMapping) {
-	for otherKey, otherValLst := range other.mapping {
+func (tm *TaintMapping) Merge(other *TaintMapping, after bool) {
+	for _, otherKey := range other.GetMappingKeys() {
+		otherValLst := other.GetMappingForKey(otherKey)
 		for _, otherValElem := range otherValLst {
-			tm.AddIfNotExists(otherKey, otherValElem)
+			tm.AddIfNotExists(otherKey, otherValElem, after)
 		}
 	}
 }
@@ -147,18 +159,18 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 							// filter by writes to reduce number of foreign keys for now
 							if existingTaint.IsPrimary() && !traced {
 								if subpath == "" {
-									taintMapping.AddIfNotExists(*existingTaint, *newTaint)
+									taintMapping.AddIfNotExists(*existingTaint, *newTaint, true)
 									fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
 								} else {
 									lowerTaint := existingTaint.Copy()
 									// TODO: verify if this is needed (can't recall now)
 									lowerTaint.AddSuffixToDatabasePath(subpath)
-									taintMapping.AddIfNotExists(*lowerTaint, *newTaint)
+									taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
 								}
 							} else if traced {
 								fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [3] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
 								if subpath == "" {
-									taintMapping.AddIfNotExists(*newTaint, *existingTaint)
+									taintMapping.AddIfNotExists(*newTaint, *existingTaint, true)
 								} else {
 									lowerTaint := *existingTaint
 									lowerTaint.fieldpath = lowerTaint.fieldpath + subpath
@@ -169,7 +181,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 									//
 									// i think this is because of the order
 									// when tainting primary vs. traced
-									taintMapping.AddIfNotExists(*newTaint, lowerTaint)
+									taintMapping.AddIfNotExists(*newTaint, lowerTaint, true)
 								}
 
 							}
