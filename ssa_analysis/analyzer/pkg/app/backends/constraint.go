@@ -1,5 +1,7 @@
 package backends
 
+import "log"
+
 type ConstraintType int
 
 const (
@@ -89,6 +91,9 @@ func (constraint *Constraint) GetFields() []*Field {
 }
 
 func (constraint *Constraint) GetFieldAt(idx int) *Field {
+	if idx > len(constraint.fields) - 1 {
+		log.Panicf("[CONSTRAINT] index (%d) out of bounds for constraint: %v\n", idx, constraint.String())
+	}
 	return constraint.fields[idx]
 }
 

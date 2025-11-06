@@ -5,8 +5,28 @@ import (
 	"log"
 
 	"analyzer/pkg/app/backends"
+	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
 )
+
+func isTransitiveReference(constraint *backends.Constraint) (bool, []*backends.Constraint) {
+	if !config.Global.EnableTransitiveReferences {
+		return false, nil
+	}
+
+	var transitiveConstraints []*backends.Constraint
+	field1 := constraint.GetFieldAt(0)
+	field2 := constraint.GetFieldAt(1)
+
+	for _, constraint2 := range field2.GetConstraintForeignKey() {
+		field3 := constraint2.GetFieldAt(1)
+		if field2 != field3 {
+			transitiveConstraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
+			transitiveConstraints = append(transitiveConstraints, transitiveConstraint)
+		}
+	}
+	return len(transitiveConstraints) > 0, transitiveConstraints
+}
 
 func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping) bool {
 	var modified bool
@@ -43,13 +63,29 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					// 2nd condition is for sanity check
 					// may happen when iterating queue.Push() --> queue.Pop()
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
-					if otherTaint.IsWrite() && currTaint.IsWrite() {
-						constraint.EnableMandatory(reqIdx)
+
+					if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
+						for _, constraint := range transitiveConstraints {
+							// must (un)set mandatory before calling GetSchema().AddConstraint()
+							if otherTaint.IsWrite() && currTaint.IsWrite() {
+								constraint.EnableMandatory(reqIdx)
+							}
+							field1 := constraint.GetFieldAt(0)
+							field1.GetSchema().AddConstraint(constraint)
+							modified = true
+							fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] [TRANSITIVE] added new constraint: %s\n", constraint)
+						}
+					} else {
+						// must (un)set mandatory before calling GetSchema().AddConstraint()
+						if otherTaint.IsWrite() && currTaint.IsWrite() {
+							constraint.EnableMandatory(reqIdx)
+						}
+						currField.AddConstraint(constraint)
+						currDb.GetLastSchema().AddConstraint(constraint)
+						modified = true
+						fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 					}
-					currField.AddConstraint(constraint)
-					currDb.GetLastSchema().AddConstraint(constraint)
-					modified = true
-					fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
+
 				}
 			} else if otherTaint.IsRead() && currTaint.IsWriteOrUpdate() {
 				if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
@@ -70,13 +106,29 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					// 2nd condition is for sanity check
 					// may happen when iterating queue.Push() --> queue.Pop()
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
-					currField.AddConstraint(constraint)
-					currDb.GetLastSchema().AddConstraint(constraint)
-					if currTaint.IsWrite() {
-						constraint.DisableMandatory(reqIdx)
+
+					if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
+						for _, constraint := range transitiveConstraints {
+							// must (un)set mandatory before calling GetSchema().AddConstraint()
+							if currTaint.IsWrite() {
+								constraint.DisableMandatory(reqIdx)
+							}
+							field1 := constraint.GetFieldAt(0)
+							field1.GetSchema().AddConstraint(constraint)
+							modified = true
+							fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [TRANSITIVE] added new constraint: %s\n", constraint)
+						}
+					} else {
+						// must (un)set mandatory before calling GetSchema().AddConstraint()
+						if currTaint.IsWrite() {
+							constraint.DisableMandatory(reqIdx)
+						}
+						currField.AddConstraint(constraint)
+						currDb.GetLastSchema().AddConstraint(constraint)
+						modified = true
+						fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 					}
-					modified = true
-					fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
+
 				}
 			} else if otherTaint.IsWriteOrUpdate() && currTaint.IsRead() {
 				// e.g.,
@@ -110,14 +162,31 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
 					// 2nd condition is for sanity check
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
-					otherField.AddConstraint(constraint)
-					otherDb.GetLastSchema().AddConstraint(constraint)
-					if otherTaint.IsWrite() {
-						constraint.DisableMandatory(reqIdx)
+
+					if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
+						for _, constraint := range transitiveConstraints {
+							// must (un)set mandatory before calling GetSchema().AddConstraint()
+							if currTaint.IsWrite() {
+								constraint.DisableMandatory(reqIdx)
+							}
+							field1 := constraint.GetFieldAt(0)
+							field1.GetSchema().AddConstraint(constraint)
+							modified = true
+							fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", constraint)
+						}
+					} else {
+						otherField.AddConstraint(constraint)
+						otherDb.GetLastSchema().AddConstraint(constraint)
+						if otherTaint.IsWrite() {
+							constraint.DisableMandatory(reqIdx)
+						}
+						modified = true
+						fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 					}
-					modified = true
-					fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
-				}/*  else if !otherField.HasConstraintForeignKeyToField(currField) && !currField.HasConstraintForeignKeyToField(otherField) {
+
+				} /*  else if !otherField.HasConstraintForeignKeyToField(currField) && !currField.HasConstraintForeignKeyToField(otherField) {
+					// CORRECTED VERSION
+				
 					// 2nd condition is for sanity check
 					constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 					currField.AddConstraint(constraint)

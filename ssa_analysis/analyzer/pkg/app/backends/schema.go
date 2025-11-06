@@ -19,6 +19,16 @@ func NewSchema(name string) *Schema {
 	}
 }
 
+func (schema *Schema) getConstraintsForeignKey() []*Constraint {
+	var constraints []*Constraint
+	for _, constraint := range schema.constraints {
+		if constraint.IsForeignKey() {
+			constraints = append(constraints, constraint)
+		}
+	}
+	return constraints
+}
+
 func (schema *Schema) GetAllFieldsLst() []*Field {
 	fieldsLst := make([]*Field, len(schema.fields))
 	i := 0
@@ -124,8 +134,31 @@ func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
 	return field
 }
 
-func (schema *Schema) AddConstraint(constraint *Constraint) {
-	schema.constraints = append(schema.constraints, constraint)
+func (schema *Schema) AddConstraint(newConstraint *Constraint) {
+	for _, existingConstraint := range schema.getConstraintsForeignKey() {
+		if existingConstraint.GetFieldAt(0) == newConstraint.GetFieldAt(0) && 
+			existingConstraint.GetFieldAt(1) == newConstraint.GetFieldAt(1) {
+
+				if existingConstraint.mandatory == newConstraint.mandatory {
+					// ignore if constraint already exists
+					return
+				} else {
+					for reqIdx, mandatory := range newConstraint.reqIdxToMandatory {
+						if ok, m := existingConstraint.reqIdxToMandatory[reqIdx]; ok {
+							// upgrade existing constraint to mandatory set to true
+							if !m {
+								existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
+							}
+						} else {
+							// add new entry with mandatory set to true
+							existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
+						}
+					}
+					return
+				}
+			}
+	}
+	schema.constraints = append(schema.constraints, newConstraint)
 }
 
 func (schema *Schema) GetAllConstraints() []*Constraint {

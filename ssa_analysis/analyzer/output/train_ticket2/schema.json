@@ -49,12 +49,8 @@
           "consign_db.consign_record.Weight"
         ],
         "constraints": [
-          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES order_db.order.AccountID [MANDATORY]",
-          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID",
+          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES order_db.order.FromStation [MANDATORY]",
-          "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]",
-          "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]",
-          "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES food_db.food_order.OrderID [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.TargetDate REFERENCES order_db.order.TravelDate [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES order_db.order.ToStation [MANDATORY]"
@@ -98,16 +94,9 @@
         "constraints": [
           "FOREIGN_KEY delivery_db.delivery REFERENCES delivery_queue.notification [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES delivery_queue.notification.FoodName [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES food_db.food_order.FoodName [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES consign_db.consign_record.OrderID [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES food_db.food_order.OrderID [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID [MANDATORY]",
           "FOREIGN_KEY delivery_db.delivery.StationName REFERENCES delivery_queue.notification.StationName [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.StationName REFERENCES food_db.food_order.StationName [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.StoreName REFERENCES delivery_queue.notification.StoreName [MANDATORY]",
-          "FOREIGN_KEY delivery_db.delivery.StoreName REFERENCES food_db.food_order.StoreName [MANDATORY]"
+          "FOREIGN_KEY delivery_db.delivery.StoreName REFERENCES delivery_queue.notification.StoreName [MANDATORY]"
         ]
       }
     ]
@@ -125,7 +114,6 @@
           "delivery_queue.notification.StoreName"
         ],
         "constraints": [
-          "FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]",
           "FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES order_db.order.ID [MANDATORY]"
         ]
       }
@@ -151,8 +139,6 @@
         ],
         "constraints": [
           "FOREIGN_KEY food_db.food_order.FoodName REFERENCES delivery_queue.notification.FoodName",
-          "FOREIGN_KEY food_db.food_order.OrderID REFERENCES assurance_db.assurance.OrderID [MANDATORY]",
-          "FOREIGN_KEY food_db.food_order.OrderID REFERENCES delivery_queue.notification.OrderID [MANDATORY]",
           "FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID [MANDATORY]",
           "FOREIGN_KEY food_db.food_order.StationName REFERENCES delivery_queue.notification.StationName",
           "FOREIGN_KEY food_db.food_order.StoreName REFERENCES delivery_queue.notification.StoreName"
