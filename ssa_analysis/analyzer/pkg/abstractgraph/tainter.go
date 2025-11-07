@@ -9,6 +9,39 @@ import (
 	"analyzer/pkg/utils"
 )
 
+func UpdateTransitiveReferences(database *backends.Database) {
+	if !config.Global.EnableTransitiveReferences {
+		return
+	}
+
+	for _, schema := range database.GetAllSchemas() {
+		var newConstraints []*backends.Constraint
+		var oldConstraints []*backends.Constraint
+
+		for _, constraint := range schema.GetAllConstraints() {
+			if constraint.IsForeignKey() {
+				ok, transitiveReferences := isTransitiveReference(constraint)
+				if ok {
+					newConstraints = append(newConstraints, transitiveReferences...)
+					oldConstraints = append(oldConstraints, constraint)
+
+					for _, newConstraint := range newConstraints {
+						newConstraint.CopyMandatory(constraint)
+					}
+				}
+			}
+		}
+
+		for _, constraint := range oldConstraints {
+			schema.RemoveConstraint(constraint)
+		}
+
+		for _, constraint := range newConstraints {
+			schema.AddConstraint(constraint)
+		}
+	}
+}
+
 func isTransitiveReference(constraint *backends.Constraint) (bool, []*backends.Constraint) {
 	if !config.Global.EnableTransitiveReferences {
 		return false, nil
@@ -38,16 +71,20 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 	var modified bool
 
 	mappingKeys := taintMapping.GetMappingKeys()
-	/* sort.Slice(mappingKeys, func(i, j int) bool {
-		return mappingKeys[i].LongString() < mappingKeys[j].LongString()
-	}) */
+
+	//[PROPAGATE DB OBJECTS] taint mapping: {
+	//	station_db.station.Name: [order_db.order.FromStation]
+	//	}
+	for _, key := range taintMapping.GetMappingKeys() {
+		for _, taint := range taintMapping.GetMappingForKey(key) {
+			if key.GetDatabasePath() == "station_db.station.Name" && taint.GetDatabasePath() == "order_db.order.FromStation" {
+				log.Fatalf("FOUND TAINT MAPPPING!!!!!")
+			}
+		}
+	}
 
 	for _, currTaint := range mappingKeys {
 		otherTaintsLst := taintMapping.GetMappingForKey(currTaint)
-		/* sort.Slice(otherTaintsLst, func(i, j int) bool {
-			return otherTaintsLst[i].LongString() < otherTaintsLst[j].LongString()
-		}) */
-
 		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetDatabasePath()))
 		currField := currDb.GetLastSchema().GetOrCreateField(currDb, currTaint.GetDatabasePath())
 
@@ -111,15 +148,16 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, currTai
 		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 
 		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, constraint := range transitiveConstraints {
+			for _, transitiveConstraint := range transitiveConstraints {
 				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				if otherTaint.IsWrite() && currTaint.IsWrite() {
-					constraint.EnableMandatory(reqIdx)
-				}
-				field1 := constraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(constraint)
+				/* if otherTaint.IsWrite() && currTaint.IsWrite() {
+					transitiveConstraint.EnableMandatory(reqIdx)
+				} */
+				transitiveConstraint.CopyMandatory(constraint)
+				field1 := transitiveConstraint.GetFieldAt(0)
+				field1.GetSchema().AddConstraint(transitiveConstraint)
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] [TRANSITIVE] added new constraint: %s\n", constraint)
+				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
 			}
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
@@ -157,15 +195,16 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, currTain
 		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 
 		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, constraint := range transitiveConstraints {
+			for _, transitiveConstraint := range transitiveConstraints {
 				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				if currTaint.IsWrite() {
-					constraint.DisableMandatory(reqIdx)
-				}
-				field1 := constraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(constraint)
+				/* if currTaint.IsWrite() {
+					transitiveConstraint.DisableMandatory(reqIdx)
+				} */
+				 transitiveConstraint.CopyMandatory(constraint)
+				field1 := transitiveConstraint.GetFieldAt(0)
+				field1.GetSchema().AddConstraint(transitiveConstraint)
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [TRANSITIVE] added new constraint: %s\n", constraint)
+				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
 			}
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
@@ -240,15 +279,16 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTain
 		}
 
 		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, constraint := range transitiveConstraints {
+			for _, transitiveConstraint := range transitiveConstraints {
 				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				if currTaint.IsWrite() {
-					constraint.DisableMandatory(reqIdx)
-				}
-				field1 := constraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(constraint)
+				/* if currTaint.IsWrite() {
+					transitiveConstraint.DisableMandatory(reqIdx)
+				} */
+				transitiveConstraint.CopyMandatory(constraint)
+				field1 := transitiveConstraint.GetFieldAt(0)
+				field1.GetSchema().AddConstraint(transitiveConstraint)
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", constraint)
+				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
 			}
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
@@ -288,15 +328,16 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTain
 		}
 
 		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, constraint := range transitiveConstraints {
+			for _, transitiveConstraint := range transitiveConstraints {
 				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				if currTaint.IsWrite() {
+				/* if currTaint.IsWrite() {
 					constraint.DisableMandatory(reqIdx)
-				}
-				field1 := constraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(constraint)
+				} */
+				transitiveConstraint.CopyMandatory(constraint)
+				field1 := transitiveConstraint.GetFieldAt(0)
+				field1.GetSchema().AddConstraint(transitiveConstraint)
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", constraint)
+				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
 			}
 		} else {
 			otherWriteField.AddConstraint(constraint)
@@ -317,6 +358,7 @@ func PropagateNewTaintsToDatabaseCallObjects(graph *AbstractCallGraph, node *Abs
 			for _, obj := range edge.GetArguments() {
 				for _, currTaint := range taintMapping.GetMappingKeys() {
 					otherTaintsLst := taintMapping.GetMappingForKey(currTaint)
+					fmt.Printf("[PROPAGATE DB OBJECTS] taint mapping: %s\n", taintMapping)
 					objpath, found := obj.FindObjectPathWithEqualOrUpperTaint(currTaint)
 					for _, otherTaint := range otherTaintsLst {
 						if found {
@@ -336,7 +378,7 @@ func PropagateNewTaintsToTracedObjects(graph *AbstractCallGraph, node *AbstractN
 		for _, otherEdge := range graph.GetEdgesFromNode(node) {
 			for _, param := range node.GetParams() {
 				fmt.Printf("[TRACE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", node.String(), param.String(), otherEdge.String())
-				taintTracedObjects(param, otherEdge, taintMapping, true)
+				taintTracedObjects(param, node, otherEdge, taintMapping, true, true)
 			}
 		}
 	} else {
@@ -348,17 +390,46 @@ func PropagateNewTaintsToTracedObjects(graph *AbstractCallGraph, node *AbstractN
 			}
 			for _, arg := range currEdge.GetArguments() {
 				fmt.Printf("[TRACE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
-				taintTracedObjects(arg, otherEdge, taintMapping, after)
+				taintTracedObjects(arg, node, otherEdge, taintMapping, true, after)
+				taintTracedObjects(arg, node, otherEdge, taintMapping, false, after)
+				/* for _, traceLst := range arg.GetAllTraces() {
+					for _, trace := range traceLst {
+						if trace.String() == "StationService.Exists.t2" {
+							log.Fatalf("here?")
+						}
+					}
+				} */
 			}
 			for _, ret := range currEdge.GetReturns() {
 				fmt.Printf("[TRACE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
-				taintTracedObjects(ret, otherEdge, taintMapping, after)
+				taintTracedObjects(ret, node, otherEdge, taintMapping, true, after)
+				//taintTracedObjects(ret, node, otherEdge, taintMapping, false, after)
 			}
 		}
 	}
 }
 
-func taintTracedObjects(obj *AbstractObject, otherEdge *AbstractEdge, taintMapping *TaintMapping, after bool) {
+/* func taintTracedObjects2(graph *AbstractCallGraph, node *AbstractNode, obj *AbstractObject, currEdge *AbstractEdge, taintMapping *TaintMapping, newTaints map[string][]*AbstractTaint) {
+	for _, otherEdge := range graph.GetEdgesFromNode(node) {
+		fmt.Printf("[TRACE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", node.String(), obj.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+		for objpath, tracesLst := range obj.GetTraces() {
+			for _, trace := range tracesLst {
+				if trace.GetServiceCallID() != otherEdge.GetID() {
+					continue
+				}
+				tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName())
+				if tracedObj == nil {
+					continue
+				}
+
+				tracedObjPath := trace.GetArgumentPath()
+			}
+		}
+	}
+} */
+
+// THIS MUST BE IMPROVED!!!!!
+func taintTracedObjects(obj *AbstractObject, currNode *AbstractNode, otherEdge *AbstractEdge, taintMapping *TaintMapping, onEdge bool, after bool) {
 	for objpath, tracesLst := range obj.GetTraces() {
 		// e.g.,
 		// MediaMicroservices in APIService.ReadPage(...)
@@ -371,8 +442,16 @@ func taintTracedObjects(obj *AbstractObject, otherEdge *AbstractEdge, taintMappi
 		//
 		// REMINDER: traceObjPath is simply the objpath of the traced object
 		for _, trace := range tracesLst {
-			if trace.GetServiceCallID() != otherEdge.GetID() {
-				continue
+			var tracedObjPaths []string
+			var tracedObjs []*AbstractObject
+			if onEdge {
+				if trace.GetServiceCallID() != otherEdge.GetID() {
+					continue
+				}
+				if tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName()); tracedObj != nil {
+					tracedObjs = []*AbstractObject{tracedObj}
+					tracedObjPaths = []string{trace.GetArgumentPath()}
+				}
 			}
 			// e.g., SockShop3 @ Frontend.AddItem
 			// AddItem(ctx, sessionID, Item{ID: itemID, Quantity: 1, UnitPrice: sock.Price})
@@ -404,49 +483,86 @@ func taintTracedObjects(obj *AbstractObject, otherEdge *AbstractEdge, taintMappi
 			// we want to get the taints of t13 at _obj and propagate them to t18 on _obj.ID
 			// REMINDER: we just simply associate the SAME dbfield to t18 on _obj.ID
 			fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
-			tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName())
-			if tracedObj != nil {
-				tracedObjPath := trace.GetArgumentPath()
-				fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", obj.String(), objpath, tracedObjPath, tracedObj.String())
-				var selectedTaints = make(map[string][]*AbstractTaint)
 
-				var ok = true
-				var subpath = ""
-				// if there is no taint for current objpath then it is possible that there are upper taints
-				// so we go up, create a new subtaint and save to the selected taints of the traced object
-				// e.g., MediaMicroservices: APIService.ReadPage():
-				//
-				// 				CURRENT OBJECT BELOW
-				// ------------------------------------------
-				// ==== arg 1 (movieID) tainted ====
-				// 			_obj
-				// [read, secondary] @ movieid_db.movieid
-				// 			_obj.ID
-				// [rpc] @ MovieIdService.ReadMovieId.movieID
-				// ------------------------------------------
-				// after going up, we get a new potential subtaint
-				// (that we don't save for the current obj but only for the traced obj)
-				// ------------------------------------------
-				// 			_obj.ID
-				// [read, secondary] @ movieid_db.movieid.ID
-				// ------------------------------------------
-				for ok {
-					for _, taint := range obj.GetTaintsForObjectPath(objpath) {
-						subTaint := taint.Copy()
-						subTaint.AddSuffixToDatabasePath(subpath)
-						selectedTaints[tracedObjPath] = append(selectedTaints[tracedObjPath], subTaint)
+			if !onEdge {
+				for _, param := range currNode.GetParams() {
+					for paramObjpath, paramTraceLst := range param.GetTraces() {
+						for _, paramTrace := range paramTraceLst {
+							if paramTrace.GetServiceCallID() == trace.GetServiceCallID() && paramTrace.GetServicePath() == trace.GetServicePath() {
+								/* if objpath == "_obj" && paramObjpath == "_obj.StartPlace" {
+									tracedObjs = append(tracedObjs, param)
+								} */
+								tracedObjs = append(tracedObjs, param)
+								tracedObjPaths = append(tracedObjPaths, paramObjpath)
+							}
+						}
 					}
-					objpath, subpath, ok = utils.ExtractUpperPath(objpath)
-				}
-
-				taintMappingTmp := MergeTaints(tracedObj, selectedTaints, false, true)
-				fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
-
-				if taintMapping != nil {
-					taintMapping.Merge(taintMappingTmp, after)
 				}
 			}
 
+			for i, tracedObj := range tracedObjs {
+				// REMINDER: traceObjPath is simply the objpath of the traced object
+				taintTracedObjectsHelper(objpath, tracedObjPaths[i], obj, tracedObj, trace, taintMapping, onEdge, after)
+
+			}
 		}
+	}
+}
+
+func taintTracedObjectsHelper(objpath string, tracedObjPath string, obj *AbstractObject, tracedObj *AbstractObject, trace *AbstractTrace, taintMapping *TaintMapping, onEdge bool, after bool) {
+	/* if onEdge == false && trace.String() == "StationService.Exists.t2" {
+		log.Fatalf("here? (traceObjPath=%v)", tracedObjPath)
+	} */
+	fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", obj.String(), objpath, tracedObjPath, tracedObj.String())
+	var selectedTaints = make(map[string][]*AbstractTaint)
+	var selectedTaintsKeys []string
+
+	/* for objpath, taintLst := range obj.GetAllTaints() {
+		for _, taint := range taintLst {
+			if taint.GetDatabasePath() == "station_db.station.Name" && taint.IsRead() && !taint.IsPrimary() {
+				log.Fatalf("im tired... (%s)", objpath)
+			}
+		}
+	} */
+
+	var ok = true
+	var subpath = ""
+	// if there is no taint for current objpath then it is possible that there are upper taints
+	// so we go up, create a new subtaint and save to the selected taints of the traced object
+	// e.g., MediaMicroservices: APIService.ReadPage():
+	//
+	// 				CURRENT OBJECT BELOW
+	// ------------------------------------------
+	// ==== arg 1 (movieID) tainted ====
+	// 			_obj
+	// [read, secondary] @ movieid_db.movieid
+	// 			_obj.ID
+	// [rpc] @ MovieIdService.ReadMovieId.movieID
+	// ------------------------------------------
+	// after going up, we get a new potential subtaint
+	// (that we don't save for the current obj but only for the traced obj)
+	// ------------------------------------------
+	// 			_obj.ID
+	// [read, secondary] @ movieid_db.movieid.ID
+	// ------------------------------------------
+	for ok {
+		for _, taint := range obj.GetTaintsForObjectPath(objpath) {
+			subTaint := taint.Copy()
+			subTaint.AddSuffixToDatabasePath(subpath)
+			selectedTaints[tracedObjPath] = append(selectedTaints[tracedObjPath], subTaint)
+			selectedTaintsKeys = append(selectedTaintsKeys, tracedObjPath)
+		}
+		if onEdge {
+			objpath, subpath, ok = utils.ExtractUpperPath(objpath)
+		} else {
+			ok = false
+		}
+	}
+
+	taintMappingTmp, _ := MergeTaints(tracedObj, selectedTaints, selectedTaintsKeys, false, true)
+	fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
+
+	if taintMapping != nil {
+		taintMapping.Merge(taintMappingTmp, after)
 	}
 }

@@ -2,6 +2,7 @@ package detection
 
 import (
 	"fmt"
+	"log"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
@@ -139,6 +140,18 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			fmt.Printf("[TRANSVERSE] edge=%s\n", edge.String())
 			toNode := edge.GetToNode()
 
+			/* if it.mode == PHASE_1_SCHEMA_BUILDER {
+				for _, arg := range edge.GetArguments() {
+					for objpath, taintLst := range arg.GetAllTaints() {
+						for _, taint := range taintLst {
+							if objpath == "_obj" && taint.IsRead() && !taint.IsPrimary() && taint.GetDatabasePath() == "station_db.station.Name" {
+								log.Fatalf("BEFORE hello there")
+							}
+						}
+					}
+				}
+			} */
+
 			// -----------------------------------
 			// PHASE 1: propagate taints to caller
 			// -----------------------------------
@@ -147,22 +160,44 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetPrimaryTaints(), false, false)
+				taintMappingTmp, _ := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaints(), nil, false, false)
 				taintMapping.Merge(taintMappingTmp, true)
+			}
+
+			//[PROPAGATE DB OBJECTS] taint mapping: {
+			//	station_db.station.Name: [order_db.order.FromStation]
+			//	}
+			if it.mode == PHASE_1_SCHEMA_BUILDER {
+				for _, key := range taintMapping.GetMappingKeys() {
+					for _, taint := range taintMapping.GetMappingForKey(key) {
+						if key.GetDatabasePath() == "station_db.station.Name" && taint.GetDatabasePath() == "order_db.order.FromStation" {
+							log.Fatalf("FOUND TAINT MAPPPING!!!!!")
+						}
+					}
+				}
 			}
 
 			// update future propagation with taints received from caller args to current params
 			abstractgraph.PropagateNewTaintsToDatabaseCallObjects(it.graph, toNode, taintMapping)
 			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, toNode, nil, nil, true)
+			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, edge.GetFromNode(), nil, nil, true)
+
+			/* if it.mode == PHASE_1_SCHEMA_BUILDER {
+				for _, arg := range edge.GetArguments() {
+					for objpath, taintLst := range arg.GetAllTaints() {
+						for _, taint := range taintLst {
+							if objpath == "_obj" && taint.IsRead() && !taint.IsPrimary() && taint.GetDatabasePath() == "station_db.station.Name" {
+								log.Fatalf("AFTER hello there")
+							}
+						}
+					}
+				}
+			} */
 
 			// finalize phase by propagating to database schemas
 			if it.mode == PHASE_1_SCHEMA_BUILDER {
 				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
 			}
-			/* modified := abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
-			if it.mode == PHASE_2_PATTERN_DETECTOR && modified {
-				log.Fatalf("HERE!")
-			} */
 
 			// --------------------------
 			// PHASE 2: transverse caller
@@ -177,24 +212,87 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			taintMapping = abstractgraph.NewTaintMapping()
 			// propagate taints across services (backwards): args (from) <<< params (to)
 			for i, fromArg := range edge.GetArguments() {
+
+				/* if it.mode == PHASE_1_SCHEMA_BUILDER {
+					for objpath, taintLst := range fromArg.GetAllTaints() {
+						for _, taint := range taintLst {
+							if objpath == "_obj" && taint.IsRead() && !taint.IsPrimary() && taint.GetDatabasePath() == "station_db.station.Name" {
+								log.Fatalf("wtfffffffffff???? SECONDARY BEFORE")
+							}
+						}
+					}
+				} */
+
 				toParam := toNode.GetParamAt(i)
+
+				/* if it.mode == PHASE_1_SCHEMA_BUILDER {
+					for objpath, taintLst := range toParam.GetAllTaints() {
+						for _, taint := range taintLst {
+							if objpath == "_obj" && taint.IsRead() && taint.IsPrimary() && taint.GetDatabasePath() == "station_db.station.Name" {
+								log.Fatalf("wtfffffffffff???? PRIMARY")
+							}
+						}
+					}
+				} */
+
 				fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetPrimaryTaints(), false, false)
+				taintMappingTmp, _ := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, false, false)
 				taintMapping.Merge(taintMappingTmp, true)
+
+				if it.mode == PHASE_1_SCHEMA_BUILDER {
+					for objpath, taintLst := range fromArg.GetAllTaints() {
+						for _, taint := range taintLst {
+							if objpath == "_obj" && taint.IsRead() && !taint.IsPrimary() && taint.GetDatabasePath() == "station_db.station.Name" {
+								fmt.Printf("TAINT MAPPING: %s\n", taintMapping.String())
+								fmt.Printf("TAINT LST: %v\n", fromArg.GetAllTaints())
+								fmt.Printf("TRACE LST: %v\n", fromArg.GetAllTraces())
+								for _, traceLst := range fromArg.GetAllTraces() {
+									for _, trace := range traceLst {
+										fmt.Printf("TRACE: %s\n", trace)
+									}
+								}
+								//log.Fatalf("wtfffffffffff???? SECONDARY AFTER")
+							}
+						}
+					}
+				}
 			}
+
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			for i, fromRet := range edge.GetReturns() {
 				toRet := toNode.GetReturnAt(i)
 				fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
-				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetPrimaryTaints(), false, false)
+				taintMappingTmp, _ := abstractgraph.MergeTaints(fromRet, toRet.GetAllTaints(), nil, false, false)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
 			abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, edge, false)
 
+
 			if it.mode == PHASE_1_SCHEMA_BUILDER {
 				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
 			}
+
+			fmt.Printf("TAINT MAPPING: %s\n", taintMapping.String())
+
+			/* for _, arg := range edge.GetArguments() {
+				for objpath, taintLst := range arg.GetAllTaints() {
+					if len(taintLst) <= 1 {
+						continue
+					}
+					fmt.Printf("ARG TAINT LONG STRING: %s\n", arg.TaintLongString())
+					if objpath == "_obj" {
+						for _, taint := range taintLst {
+							if !taint.IsPrimary() && taint.IsRead() && taint.GetDatabasePath() == "station_db.station.Name" {
+								log.Fatalf("AFTER | HERE 0.0!")
+							}
+							if taint.IsTraced() && taint.IsWrite() && taint.GetDatabasePath() == "order_db.order.ToStation" {
+								log.Fatalf("AFTER | HERE 0.1!")
+							}
+						}
+					}
+				}
+			} */
 		}
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
@@ -256,7 +354,7 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 	for i, arg := range edge.GetArguments() {
 		otherArg := queueReadEdge.GetArgumentAt(i)
 		// FIXME: maybe we should also propagate secondary taints?
-		taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), false, false)
+		taintMappingTmp, _ := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), nil, false, false)
 		taintMapping.Merge(taintMappingTmp, true)
 	}
 

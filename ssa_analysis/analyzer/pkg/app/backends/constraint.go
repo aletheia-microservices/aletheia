@@ -62,6 +62,11 @@ func (constraint *Constraint) GetRequestsIndexesOnMandatoryFlags() []int {
 	return reqIdxs
 }
 
+func (constraint *Constraint) CopyMandatory(other *Constraint) {
+	constraint.reqIdxToMandatory = other.reqIdxToMandatory
+	constraint.mandatory = other.mandatory
+}
+
 func (constraint *Constraint) EnableMandatory(reqIdx int) bool {
 	constraint.reqIdxToMandatory[reqIdx] = true
 	constraint.mandatory = true

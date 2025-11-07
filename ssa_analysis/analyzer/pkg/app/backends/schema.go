@@ -134,6 +134,15 @@ func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
 	return field
 }
 
+func (schema *Schema) RemoveConstraint(old *Constraint) {
+    for i, c := range schema.constraints {
+        if c == old {
+            schema.constraints = append(schema.constraints[:i], schema.constraints[i+1:]...)
+            return
+        }
+    }
+}
+
 func (schema *Schema) AddConstraint(newConstraint *Constraint) {
 	for _, existingConstraint := range schema.getConstraintsForeignKey() {
 		if existingConstraint.GetFieldAt(0) == newConstraint.GetFieldAt(0) && 

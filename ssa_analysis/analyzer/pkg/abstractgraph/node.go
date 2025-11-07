@@ -68,6 +68,15 @@ func (node *AbstractNode) GetParamAt(i int) *AbstractObject {
 	return node.params[i]
 }
 
+func (node *AbstractNode) GetParameterByNameIfExists(name string) *AbstractObject {
+	for _, param := range node.params {
+		if param.name == name {
+			return param
+		}
+	}
+	return nil
+}
+
 func (node *AbstractNode) AddParam(param *AbstractObject) {
 	node.params = append(node.params, param)
 }

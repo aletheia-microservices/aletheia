@@ -120,7 +120,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		for _, rets := range retsLst[1:] {
 			for i, ret := range rets {
 				obj := retsObjs[i]
-				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), true, false)
+				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, true, false)
 				fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
 		}
@@ -220,7 +220,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			taintMapping := NewTaintMapping()
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), true, false)
+				taintMappingTmp, _ := MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, true, false)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 			PropagateNewTaintsToDatabaseSchemas(graph, -1, taintMapping)

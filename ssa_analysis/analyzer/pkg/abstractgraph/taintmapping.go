@@ -2,6 +2,7 @@ package abstractgraph
 
 import (
 	"fmt"
+	"log"
 	"slices"
 	"sort"
 	"strings"
@@ -107,31 +108,44 @@ func (tm *TaintMapping) String() string {
 	return taintMapping
 } */
 
-func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, primary bool, traced bool) *TaintMapping {
+func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, primary bool, traced bool) (*TaintMapping, map[string][]*AbstractTaint) {
 	fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
 	var taintMapping *TaintMapping
+	var newTaints map[string][]*AbstractTaint = make(map[string][]*AbstractTaint)
 
 	if !primary {
 		taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 	}
 
-	for objpath, otherTaints := range otherTaintsMap {
+	// when it's not nil its because we want to maintain the order
+	if otherTaintsMapKeys == nil {
+		for key := range otherTaintsMap {
+			otherTaintsMapKeys = append(otherTaintsMapKeys, key)
+		}
+	}
+
+	for _, objpath := range otherTaintsMapKeys {
+		otherTaints := otherTaintsMap[objpath]
 		fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
 		existingTaints := obj.taints[objpath]
 
 		exists := func(otherTaint *AbstractTaint) (string, bool) {
 			for _, existingTaint := range existingTaints {
 				if existingTaint.Equals(otherTaint) {
+					fmt.Printf("[TAINTMAPPING] [EXISTS] returning true...\n")
 					return objpath, true
 				}
 				fmt.Printf("[TAINTMAPPING] checking if upper path (%s) vs (%s)\n", existingTaint.fieldpath, otherTaint.fieldpath)
 				if ok, subpath := existingTaint.IsUpperPath(otherTaint); ok {
+					fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
 					return objpath + subpath, false
 				}
 			}
+			fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
 			return objpath, false
 		}
 
+		fmt.Printf("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
 		for _, otherTaint := range otherTaints {
 			if objpath, equal := exists(otherTaint); !equal {
 				// need to create new AbstractTaint to avoid just
@@ -145,6 +159,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 
 				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
 				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
+				newTaints[objpath] = append(newTaints[objpath], newTaint)
 
 				// NOTE: explores all upper paths
 				//
@@ -183,14 +198,28 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 									// when tainting primary vs. traced
 									taintMapping.AddIfNotExists(*newTaint, lowerTaint, true)
 								}
-
+							} else {
+								if existingTaint.Equals(otherTaint) {
+									continue
+								}
+								if otherTaint.IsWrite() && otherTaint.IsTraced() && otherTaint.GetDatabasePath() == "order_db.order.FromStation" {
+									fmt.Printf("EXISTING TAINT: %s\n", existingTaint.LongString())
+									log.Fatalf("BUG???.... %s\n", otherTaint.LongString())
+								}
 							}
 						}
 						objpath, subpath, ok = utils.ExtractUpperPath(objpath)
 					}
 				}
 			}
+			/* if otherTaint.IsWrite() && otherTaint.IsTraced() && otherTaint.GetDatabasePath() == "order_db.order.FromStation" {
+				if len(existingTaints) != 1 {
+					existingTaints := obj.taints[objpath]
+					fmt.Printf("EXISTING TAINTS: %v\n", existingTaints)
+					log.Fatalf("HERE.... %s\n", otherTaint.LongString())
+				}
+			} */
 		}
 	}
-	return taintMapping
+	return taintMapping, newTaints
 }

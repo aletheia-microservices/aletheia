@@ -99,5 +99,6 @@ func (taint *AbstractTaint) IsUpperPath(other *AbstractTaint) (bool, string) {
 		fmt.Printf("got subpath: %s\n", diff)
 		return taint.dbcallID == other.dbcallID, diff
 	}
+	fmt.Printf("[ABSTRACT TAINT] [SUPER] returning false...\n")
 	return false, ""
 }

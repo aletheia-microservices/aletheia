@@ -164,6 +164,10 @@ func (obj *AbstractObject) GetAllTaints() map[string][]*AbstractTaint {
 	return obj.taints
 }
 
+func (obj *AbstractObject) GetAllTraces() map[string][]*AbstractTrace {
+	return obj.traces
+}
+
 func (obj *AbstractObject) GetWriteTaints() map[string][]*AbstractTaint {
 	writeTaints := make(map[string][]*AbstractTaint, 0)
 	for objpath, taints := range obj.taints {
@@ -273,10 +277,12 @@ func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTai
 			// taint.dbfield: notification
 			// other.dbfield: notification.PostID
 			if ok, subpath := taint.IsUpperPath(&other); ok {
+				fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning true...\n")
 				return objpath + subpath, true
 			}
 		}
 	}
+	fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning false...\n")
 	return "", false
 }
 
