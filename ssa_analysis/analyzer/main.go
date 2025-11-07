@@ -176,14 +176,13 @@ func main() {
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
 	start_schema := time.Now()
-	// phase 1: two passes
-	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
+	// phase 1: one pass
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 
 	elapsed_schema := time.Since(start_schema)
 	start_detection := time.Now()
 
-	// phase 2: one pass
+	// phase 2: one pass for all detectors
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
 
 	absgraph.WriteToDOTFile(appname, true)

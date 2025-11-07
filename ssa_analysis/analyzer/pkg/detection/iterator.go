@@ -101,8 +101,28 @@ func (it *Iterator) clean(node *abstractgraph.AbstractNode) {
 	for _, param := range node.GetParams() {
 		param.CleanSecondaryTaints()
 	}
+	for _, ret := range node.GetReturns() {
+		ret.CleanSecondaryTaints()
+	}
 	for _, edge := range it.graph.GetEdgesFromNode(node) {
+		for _, arg := range edge.GetArguments() {
+			arg.CleanSecondaryTaints()
+		}
+		for _, ret := range edge.GetReturns() {
+			ret.CleanSecondaryTaints()
+		}
 		it.clean(edge.GetToNode())
+
+		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
+			currDB := it.app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
+			if currDB.IsQueue() && edge.GetOpType() == common.OP_WRITE {
+				_, callerNode, ok := it.findMatchingQueuePop(node, currDB, edge)
+				if !ok {
+					continue
+				}
+				it.clean(callerNode)
+			}
+		}
 	}
 }
 
@@ -209,31 +229,44 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 }
 
-func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *backends.Database, edge *abstractgraph.AbstractEdge) {
-	for _, queueReadEdge := range it.graph.GetEdges() {
-		if queueReadEdge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL && queueReadEdge.GetOpType() == common.OP_READ {
-			otherDB := it.app.GetDatabaseByName(queueReadEdge.GetToNode().GetDatabaseName())
-			if otherDB == currDB {
-				//log.Fatalf("HERE!")
-				taintMapping := abstractgraph.NewTaintMapping()
-				for i, arg := range edge.GetArguments() {
-					otherArg := queueReadEdge.GetArgumentAt(i)
-					// FIXME: maybe we should also propagate secondary taints?
-					taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), false, false)
-					taintMapping.Merge(taintMappingTmp, true)
-				}
+func (it *Iterator) findMatchingQueuePop(node *abstractgraph.AbstractNode, currDB *backends.Database, edge *abstractgraph.AbstractEdge) (*abstractgraph.AbstractEdge, *abstractgraph.AbstractNode, bool) {
+	if !currDB.IsQueue() {
+		return nil, nil, false
+	}
 
-				abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, queueReadEdge, true)
-
-				if it.mode == PHASE_1_SCHEMA_BUILDER {
-					abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
-				}
-
-				callerNode := queueReadEdge.GetFromNode()
-				it.newReqIdx()
-				it.transverse(callerNode)
-				it.popReqIdx()
+	for _, edge := range it.graph.GetEdges() {
+		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL && edge.GetOpType() == common.OP_READ {
+			otherDB := it.app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
+			if otherDB.IsQueue() && otherDB == currDB {
+				callerNode := edge.GetFromNode()
+				return edge, callerNode, true
 			}
 		}
 	}
+	return nil, nil, false
+}
+
+func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *backends.Database, edge *abstractgraph.AbstractEdge) {
+	queueReadEdge, callerNode, ok := it.findMatchingQueuePop(node, currDB, edge)
+	if !ok {
+		return
+	}
+
+	taintMapping := abstractgraph.NewTaintMapping()
+	for i, arg := range edge.GetArguments() {
+		otherArg := queueReadEdge.GetArgumentAt(i)
+		// FIXME: maybe we should also propagate secondary taints?
+		taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), false, false)
+		taintMapping.Merge(taintMappingTmp, true)
+	}
+
+	abstractgraph.PropagateNewTaintsToTracedObjects(it.graph, node, taintMapping, queueReadEdge, true)
+
+	if it.mode == PHASE_1_SCHEMA_BUILDER {
+		abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+	}
+
+	it.newReqIdx()
+	it.transverse(callerNode)
+	it.popReqIdx()
 }

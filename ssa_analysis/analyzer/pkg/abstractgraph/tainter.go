@@ -184,6 +184,8 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, currTain
 
 func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTaint AbstractTaint, otherTaint AbstractTaint, currDb *backends.Database, otherDb *backends.Database, currField *backends.Field, otherField *backends.Field) bool {
 	if otherField.GetPath() == "order_db.order.FromStation" && currField.GetPath() == "station_db.station.Name" {
+		fmt.Printf("CURRENT TAINT: %s\n", currTaint.LongString())
+		fmt.Printf("OTHER TAINT: %s\n", otherTaint.LongString())
 		log.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
 	}
 	
