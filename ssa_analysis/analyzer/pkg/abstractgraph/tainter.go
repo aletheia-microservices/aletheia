@@ -9,62 +9,78 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func UpdateTransitiveReferences(database *backends.Database) {
+// updateTransitiveReferencesTriggeredByCurrent creates a new transitive reference according to the rule above,
+// where (b) is the **current** constraint received as parameter, and (a) is an **old** constraint
+// that we want to upgrade to (c)
+//
+// RULE:
+// (a) X references Y (OLD)
+// (b) Y references Z (CURRENT)
+//
+// if (a) and (b), then (c)
+// (c) X references Z (NEW)
+func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, current *backends.Constraint) {
 	if !config.Global.EnableTransitiveReferences {
 		return
 	}
 
-	for _, schema := range database.GetAllSchemas() {
-		var newConstraints []*backends.Constraint
-		var oldConstraints []*backends.Constraint
+	for _, db := range graph.app.GetAllDatabases() {
+		for _, schema := range db.GetAllSchemas() {
+			var toDelete []*backends.Constraint
+			var toAdd []*backends.Constraint
+			for _, old := range schema.GetAllForeignKeyConstraints() {
+				if old.GetFieldAt(1) == current.GetFieldAt(0) {
+					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, old.GetFieldAt(0), current.GetFieldAt(1))
+					new.SetTransitive()
+					new.CopyMandatory(current)
 
-		for _, constraint := range schema.GetAllConstraints() {
-			if constraint.IsForeignKey() {
-				ok, transitiveReferences := isTransitiveReference(constraint)
-				if ok {
-					newConstraints = append(newConstraints, transitiveReferences...)
-					oldConstraints = append(oldConstraints, constraint)
-
-					for _, newConstraint := range newConstraints {
-						newConstraint.CopyMandatory(constraint)
-					}
+					toDelete = append(toDelete, old)
+					toAdd = append(toAdd, new)
 				}
 			}
-		}
+			for _, constraint := range toDelete {
+				schema.RemoveConstraint(constraint)
+			}
 
-		for _, constraint := range oldConstraints {
-			schema.RemoveConstraint(constraint)
-		}
-
-		for _, constraint := range newConstraints {
-			schema.AddConstraint(constraint)
+			for _, constraint := range toAdd {
+				schema.AddConstraint(constraint)
+			}
 		}
 	}
 }
 
-func isTransitiveReference(constraint *backends.Constraint) (bool, []*backends.Constraint) {
+// RULE:
+// (a) X references Y (OLD)
+// (b) Y references Z (CURRENT)
+//
+// if (a) and (b), then (c)
+// (c) X references Z (NEW)
+func createTransitiveReferenceIfExists(old *backends.Constraint) bool {
 	if !config.Global.EnableTransitiveReferences {
-		return false, nil
+		return false
 	}
 
 	var transitiveConstraints []*backends.Constraint
-	field1 := constraint.GetFieldAt(0)
-	field2 := constraint.GetFieldAt(1)
+	field1 := old.GetFieldAt(0)
+	field2 := old.GetFieldAt(1)
 
-	for _, constraint2 := range field2.GetConstraintForeignKey() {
-		field3 := constraint2.GetFieldAt(1)
+	for _, current := range field2.GetConstraintForeignKey() {
+		field3 := current.GetFieldAt(1)
 		if field2 != field3 {
 			if c := field3.GetConstraintForeignKeyToField(field1); c != nil {
 				// skip since it already exists the other way around
 				continue
 			} else {
-				transitiveConstraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
-				transitiveConstraint.SetTransitive()
-				transitiveConstraints = append(transitiveConstraints, transitiveConstraint)
+				new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
+				new.SetTransitive()
+				new.CopyMandatory(current)
+				field1.GetSchema().AddConstraint(new)
+
+				transitiveConstraints = append(transitiveConstraints, new)
 			}
 		}
 	}
-	return len(transitiveConstraints) > 0, transitiveConstraints
+	return len(transitiveConstraints) > 0
 }
 
 func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping) bool {
@@ -98,6 +114,10 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 			}
 			otherField := otherDb.GetLastSchema().GetOrCreateField(otherDb, otherTaint.GetDatabasePath())
 
+			if otherField.GetDatabase() == currField.GetDatabase() {
+				continue
+			}
+
 			if otherTaint.IsWriteOrUpdate() && currTaint.IsWriteOrUpdate() {
 				if propagateTaintsWriteWritePair(graph, reqIdx, currTaint, otherTaint, currDb, otherDb, currField, otherField) {
 					modified = true
@@ -111,7 +131,9 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					modified = true
 				}
 			} else if otherTaint.IsRead() && currTaint.IsRead() {
-				// nothing to do
+				if propagateTaintsReadReadPair(graph, reqIdx, currTaint, otherTaint, currDb, otherDb, currField, otherField) {
+					modified = true
+				}
 			} else if otherTaint.IsDelete() && (currTaint.IsRead() || currTaint.IsWrite() || currTaint.IsDelete()) {
 				// nothing to do
 			} else if (otherTaint.IsRead() || otherTaint.IsWrite() || otherTaint.IsDelete()) && currTaint.IsDelete() {
@@ -147,18 +169,9 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, currTai
 		// may happen when iterating queue.Push() --> queue.Pop()
 		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 
-		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, transitiveConstraint := range transitiveConstraints {
-				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				/* if otherTaint.IsWrite() && currTaint.IsWrite() {
-					transitiveConstraint.EnableMandatory(reqIdx)
-				} */
-				transitiveConstraint.CopyMandatory(constraint)
-				field1 := transitiveConstraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(transitiveConstraint)
-				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
-			}
+		if ok := createTransitiveReferenceIfExists(constraint); ok {
+			modified = true
+			fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] [TRANSITIVE] added new transitive constraints\n")
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			if otherTaint.IsWrite() && currTaint.IsWrite() {
@@ -166,6 +179,7 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, currTai
 			}
 			currField.AddConstraint(constraint)
 			currDb.GetLastSchema().AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 		}
@@ -194,18 +208,9 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, currTain
 		// may happen when iterating queue.Push() --> queue.Pop()
 		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
 
-		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, transitiveConstraint := range transitiveConstraints {
-				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				/* if currTaint.IsWrite() {
-					transitiveConstraint.DisableMandatory(reqIdx)
-				} */
-				 transitiveConstraint.CopyMandatory(constraint)
-				field1 := transitiveConstraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(transitiveConstraint)
-				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
-			}
+		if ok := createTransitiveReferenceIfExists(constraint); ok {
+			modified = true
+			fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [TRANSITIVE] added new transitive constraints\n")
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			if currTaint.IsWrite() {
@@ -213,6 +218,7 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, currTain
 			}
 			currField.AddConstraint(constraint)
 			currDb.GetLastSchema().AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 		}
@@ -227,7 +233,7 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTain
 		fmt.Printf("OTHER TAINT: %s\n", otherTaint.LongString())
 		log.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
 	}
-	
+
 	var modified bool
 	currReadField := currField
 	otherWriteField := otherField
@@ -278,18 +284,9 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTain
 			//log.Fatalf("[2] HERE!")
 		}
 
-		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, transitiveConstraint := range transitiveConstraints {
-				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				/* if currTaint.IsWrite() {
-					transitiveConstraint.DisableMandatory(reqIdx)
-				} */
-				transitiveConstraint.CopyMandatory(constraint)
-				field1 := transitiveConstraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(transitiveConstraint)
-				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
-			}
+		if ok := createTransitiveReferenceIfExists(constraint); ok {
+			modified = true
+			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new transitive constraints\n")
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			if otherTaint.IsWrite() {
@@ -297,6 +294,7 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTain
 			}
 			currReadField.AddConstraint(constraint)
 			currDb.GetLastSchema().AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 		}
@@ -327,27 +325,45 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currTain
 			//log.Fatalf("[2] HERE USERTIMELINE!")
 		}
 
-		if isTransitive, transitiveConstraints := isTransitiveReference(constraint); isTransitive {
-			for _, transitiveConstraint := range transitiveConstraints {
-				// must (un)set mandatory before calling GetSchema().AddConstraint()
-				/* if currTaint.IsWrite() {
-					constraint.DisableMandatory(reqIdx)
-				} */
-				transitiveConstraint.CopyMandatory(constraint)
-				field1 := transitiveConstraint.GetFieldAt(0)
-				field1.GetSchema().AddConstraint(transitiveConstraint)
-				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new constraint: %s\n", transitiveConstraint)
-			}
+		if ok := createTransitiveReferenceIfExists(constraint); ok {
+			modified = true
+			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new transitive constraints\n")
 		} else {
 			otherWriteField.AddConstraint(constraint)
 			otherDb.GetLastSchema().AddConstraint(constraint)
 			if otherTaint.IsWrite() {
 				constraint.DisableMandatory(reqIdx)
 			}
+			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
 		}
+	}
+	return modified
+}
+
+func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, currTaint AbstractTaint, otherTaint AbstractTaint, currDb *backends.Database, otherDb *backends.Database, currField *backends.Field, otherField *backends.Field) bool {
+	if !config.Global.CreateReferencesFromReadReadPair {
+		return false
+	}
+	
+	var modified bool
+	if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
+		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
+
+		if ok := createTransitiveReferenceIfExists(constraint); ok {
+			modified = true
+			fmt.Printf("\t\t[ITERATOR] [READ-READ] [TRANSITIVE] added new transitive constraints\n")
+		} else {
+			// must (un)set mandatory before calling GetSchema().AddConstraint()
+			constraint.DisableMandatory(reqIdx)
+			otherField.AddConstraint(constraint)
+			otherDb.GetLastSchema().AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+			modified = true
+			fmt.Printf("\t\t[ITERATOR] [READ-READ] added new constraint: %s\n", constraint)
+		}
+
 	}
 	return modified
 }

@@ -179,10 +179,6 @@ func main() {
 	// phase 1: one pass
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 
-	for _, db := range app.GetAllDatabases() {
-		abstractgraph.UpdateTransitiveReferences(db)
-	}
-
 	elapsed_schema := time.Since(start_schema)
 	start_detection := time.Now()
 

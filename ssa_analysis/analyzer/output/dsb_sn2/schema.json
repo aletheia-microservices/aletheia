@@ -102,11 +102,11 @@
           "usertimeline_cache.*.Value[*].Timestamp"
         ],
         "constraints": [
-          "FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_cache.followers.Key [MANDATORY]",
+          "FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_cache.followers.Key [MANDATORY] [T]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY] [T]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_cache.*.Key[*]",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES usertimeline_db.usertimeline.Posts[*].PostID [MANDATORY] [T]",
-          "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
+          "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY] [T]",
+          "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY] [T]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]"
         ]
       }

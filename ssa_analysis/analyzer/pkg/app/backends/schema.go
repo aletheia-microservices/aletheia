@@ -173,3 +173,13 @@ func (schema *Schema) AddConstraint(newConstraint *Constraint) {
 func (schema *Schema) GetAllConstraints() []*Constraint {
 	return schema.constraints
 }
+
+func (schema *Schema) GetAllForeignKeyConstraints() []*Constraint {
+	var constraints []*Constraint
+	for _, constraint := range schema.constraints {
+		if constraint.IsForeignKey() {
+			constraints = append(constraints, constraint)
+		}
+	}
+	return constraints
+}
