@@ -43,6 +43,15 @@ type TaintInfo struct {
 	svTaint  SVTaint
 }
 
+func (ti TaintInfo) String() string {
+	if ti.getDatabasePath() != "" {
+		return fmt.Sprintf("(_obj%s, %s) (DB)\n", ti.getObjectPath(), ti.getDatabasePath())
+	} else if ti.getServicePath() != "" {
+		return fmt.Sprintf("(_obj%s, %s) (SV)\n", ti.getObjectPath(), ti.getServicePath())
+	}
+	return fmt.Sprintf("(_obj%s)", ti.getObjectPath())
+}
+
 func NewTaintInfoDatabase(dbpath string, path string, val ssa.Value, dbcall *ssagraph.DatabaseCall) TaintInfo {
 	return TaintInfo{
 		objpath:  path,
