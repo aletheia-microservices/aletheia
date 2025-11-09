@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"analyzer/pkg/common"
+	"analyzer/pkg/utils"
 )
 
 type AbstractObject struct {
@@ -39,6 +40,23 @@ func (obj *AbstractObject) GetTaints() map[string][]*AbstractTaint {
 
 func (obj *AbstractObject) GetTaintsForObjectPath(objpath string) []*AbstractTaint {
 	return obj.taints[objpath]
+}
+
+func (obj *AbstractObject) GetTaintsForCurrentAndLowerPaths(currPath string) (map[string][]*AbstractTaint, map[string]string) {
+	var taints map[string][]*AbstractTaint = make(map[string][]*AbstractTaint)
+	var pathsDiffs map[string]string = make(map[string]string)
+	for existingPath, taintsLst := range obj.taints {
+		if existingPath == currPath {
+			taints[existingPath] = append(taints[existingPath], taintsLst...)
+			pathsDiffs[existingPath] = ""
+		} else {
+			if ok, diff := utils.IsUpperPath(currPath, existingPath); ok {
+				taints[existingPath] = append(taints[existingPath], taintsLst...)
+				pathsDiffs[existingPath] = diff
+			}
+		}
+	}
+	return taints, pathsDiffs
 }
 
 func (obj *AbstractObject) SetTaintsForObjectPath(objpath string, taints []*AbstractTaint) {
@@ -173,6 +191,16 @@ func (obj *AbstractObject) GetAllTraces() map[string][]*AbstractTrace {
 	return obj.traces
 }
 
+func (obj *AbstractObject) GetAllAbstractLocationsWithTraces() []string {
+	var locations []string
+	for objpath := range obj.traces {
+		locations = append(locations, objpath)
+	}
+	// sort in reverse from lower locations (more specific) to upper locations (more general)
+	sort.Sort(sort.Reverse(sort.StringSlice(locations)))
+	return locations
+}
+
 func (obj *AbstractObject) GetWriteTaints() map[string][]*AbstractTaint {
 	writeTaints := make(map[string][]*AbstractTaint, 0)
 	for objpath, taints := range obj.taints {
@@ -276,12 +304,12 @@ func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTai
 	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
 	for objpath, taintLst := range obj.GetAllTaints() {
 		for _, taint := range taintLst {
-			if taint.Equals(&other) {
+			if taint.Similar(&other) {
 				return objpath, true
 			}
 			// taint.dbfield: notification
 			// other.dbfield: notification.PostID
-			if ok, subpath := taint.IsUpperPath(&other); ok {
+			if ok, subpath := taint.IsUpperTaint(&other); ok {
 				fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning true...\n")
 				return objpath + subpath, true
 			}
@@ -292,11 +320,11 @@ func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTai
 }
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
-func (obj *AbstractObject) HasEqualTaint(other AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+func (obj *AbstractObject) HasSimilarTaint(other AbstractTaint) bool {
+	fmt.Printf("[ABSTRACT OBJECT] finding object path with similar taint\n")
 	for _, taintLst := range obj.GetAllTaints() {
 		for _, taint := range taintLst {
-			if taint.Equals(&other) {
+			if taint.Similar(&other) {
 				return true
 			}
 		}
@@ -304,10 +332,32 @@ func (obj *AbstractObject) HasEqualTaint(other AbstractTaint) bool {
 	return false
 }
 
+// argument 'other' must not be a pointer because the objective is to compare taints with same content
+func (obj *AbstractObject) HasSimilarTaintOnObjectPath(objpath string, other AbstractTaint) bool {
+	fmt.Printf("[ABSTRACT OBJECT] finding object path with similar taint\n")
+	for _, taint := range obj.GetTaintsForObjectPath(objpath) {
+		if taint.Similar(&other) {
+			return true
+		}
+	}
+	return false
+}
+
+// argument 'other' must not be a pointer because the objective is to compare taints with same content
+func (obj *AbstractObject) HasEqualTaint(objpath string, other AbstractTaint) bool {
+	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	for _, taint := range obj.GetTaintsForObjectPath(objpath) {
+		if taint.Equal(&other) {
+			return true
+		}
+	}
+	return false
+}
+
 // argument 'newtaint' must not be a pointer because the objective is is to compare taints with the same content
-func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint AbstractTaint) {
+func (obj *AbstractObject) AddTaintIfSimilarNotExists(objpath string, newtaint AbstractTaint) {
 	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
-	exists := obj.HasEqualTaint(newtaint)
+	exists := obj.HasSimilarTaint(newtaint)
 	if !exists {
 		taint := &AbstractTaint{
 			fieldpath: newtaint.fieldpath,
@@ -317,5 +367,14 @@ func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint Abstract
 		}
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
 		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)
+	}
+}
+
+func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint *AbstractTaint) {
+	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
+	exists := obj.HasEqualTaint(objpath, *newtaint)
+	if !exists {
+		obj.taints[objpath] = append(obj.taints[objpath], newtaint)
+		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, newtaint)
 	}
 }

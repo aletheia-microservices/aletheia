@@ -13,10 +13,19 @@ git submodule update --init --recursive
 
 - [Golang](https://go.dev/doc/install) >= 1.22.2
 
+## Prepare Environment
+
+```zsh
+cd ms-consistency-anayzer
+vagrant up
+vagrant ssh
+```
 
 ## Running the Tool
 
 ```zsh
+cd ssa_analysis/analyzer/
+
 # testing purposes
 go run main.go foobar
 # e-commerce

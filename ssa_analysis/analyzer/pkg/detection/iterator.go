@@ -164,7 +164,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaints(), nil, false, false, false)
+				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
@@ -193,7 +193,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, fromArg := range edge.GetArguments() {
 				toParam := toNode.GetParamAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, false, false, false)
+				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
@@ -201,7 +201,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, fromRet := range edge.GetReturns() {
 				toRet := toNode.GetReturnAt(i)
 				fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
-				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetAllTaints(), nil, false, false, false)
+				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
@@ -278,7 +278,7 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 	for i, arg := range edge.GetArguments() {
 		otherArg := queueReadEdge.GetArgumentAt(i)
 		// FIXME: maybe we should also propagate secondary taints?
-		taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetAllTaints(), nil, false, false, false)
+		taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
 		taintMapping.Merge(taintMappingTmp, true)
 	}
 

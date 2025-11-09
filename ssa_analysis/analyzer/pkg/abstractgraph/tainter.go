@@ -10,12 +10,40 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, primary bool, traced bool, triggeredByTraces bool) (*TaintMapping) {
-	fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
+type MergeMode int
+
+// i.e., triggers for the merge
+const (
+	MERGE_MODE_PARSE MergeMode = iota
+	MERGE_MODE_TAINT
+	MERGE_MODE_TRACE
+)
+
+func mergeModeToString(mode MergeMode) string {
+	switch mode {
+	case MERGE_MODE_PARSE:
+		return "PARSE"
+	case MERGE_MODE_TAINT:
+		return "TAINT"
+	case MERGE_MODE_TRACE:
+		return "TRACE"
+	}
+	return ""
+}
+
+func mergeModeIsParsed(mode MergeMode) bool {
+	return mode == MERGE_MODE_PARSE
+}
+
+func mergeModeIsTraced(mode MergeMode) bool {
+	return mode == MERGE_MODE_TRACE
+}
+
+func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, mode MergeMode) *TaintMapping {
+	fmt.Printf("[TAINTMAPPING] merging taints (mode=%d): %v\n", mergeModeToString(mode), otherTaintsMap)
 	var taintMapping *TaintMapping
 
 	taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
-
 	// when it's not nil its because we want to maintain the order
 	if otherTaintsMapKeys == nil {
 		for key := range otherTaintsMap {
@@ -24,20 +52,14 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 	}
 
 	for _, objpath := range otherTaintsMapKeys {
-		otherTaints := otherTaintsMap[objpath]
 		fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
 		existingTaints := obj.taints[objpath]
 
-		exists := func(otherTaint *AbstractTaint) (string, bool) {
+		taintExists := func(otherTaint *AbstractTaint) (string, bool) {
 			for _, existingTaint := range existingTaints {
-				if existingTaint.Equals(otherTaint) {
+				if existingTaint.Similar(otherTaint) {
 					fmt.Printf("[TAINTMAPPING] [EXISTS] returning true...\n")
 					return objpath, true
-				}
-				fmt.Printf("[TAINTMAPPING] checking if upper path (%s) vs (%s)\n", existingTaint.fieldpath, otherTaint.fieldpath)
-				if ok, subpath := existingTaint.IsUpperPath(otherTaint); ok {
-					fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
-					return objpath + subpath, false
 				}
 			}
 			fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
@@ -45,96 +67,65 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		}
 
 		fmt.Printf("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
-		for _, otherTaint := range otherTaints {
-			if objpath, equal := exists(otherTaint); !equal {
-				// need to create new AbstractTaint to avoid just
-				// storing the pointer and modifying its fields
-				newTaint := NewAbstractTaint(
-					otherTaint.fieldpath,
-					otherTaint.dbcallID,
-					otherTaint.dbOpType,
-					primary, traced,
-				)
+		for _, otherTaint := range otherTaintsMap[objpath] {
+			if objpath, exists := taintExists(otherTaint); !exists {
+				// need to create new AbstractTaint to avoid just storing the pointer and modifying its fields
+				newTaint := NewAbstractTaint(otherTaint.fieldpath, otherTaint.dbcallID, otherTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE)
+				obj.AddTaintIfNotExists(objpath, newTaint)
+				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] added new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
 
-				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
-				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
-
-				if !primary {
-					// 1. explore all upper paths
-					//
-					// trace info for arguments and (especially) returns
-					// can still lead to secondary taints that we still want to track
-					fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding mapping for objpath={%s} // taint={%s} // traced={%t}\n", obj.String(), objpath, newTaint.LongString(), traced)
-					var ok = true
-					var subpath = ""
-					for ok {
-						for _, existingTaint := range obj.taints[objpath] {
-							// filter by writes to reduce number of foreign keys for now
-							if existingTaint.IsPrimary() && !traced {
-								if subpath == "" {
-									taintMapping.AddIfNotExists(*existingTaint, *newTaint, true)
-									fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
-								} else {
-									lowerTaint := existingTaint.Copy()
-									// TODO: verify if this is needed (can't recall now)
-									lowerTaint.AddSuffixToDatabasePath(subpath)
-									taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
-								}
-							} else if traced && !triggeredByTraces { // 2nd cond works on digota?
-								// NOTE:
-								// if we allow when checkTraces = false (i.e., when curr method is called by taintTracedObjectsHelper)
-								// then, it is creating a new FK such as e.g., Digota:
-								// > orders_db.orders.Items[*] --> skus_db.skus.ID
-								// note that the correct original FK is
-								// > orders_db.orders.Items[*].ParentID --> skus_db.skus.ID
-								fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [3] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
-								if subpath == "" {
-									taintMapping.AddIfNotExists(*newTaint, *existingTaint, true)
-								} else {
-									lowerTaint := *existingTaint
-									lowerTaint.fieldpath = lowerTaint.fieldpath + subpath
-									// [TO BE IMPROVED]
-									// for some reason it works better when we change the
-									// position between newTaint and lowerTaint in call args
-									// e.g., SockShop3: order_db.orders.ID REFERENCES ship_db.shipments.ID
-									//
-									// i think this is because of the order
-									// when tainting primary vs. traced
-									taintMapping.AddIfNotExists(*newTaint, lowerTaint, true)
-								}
-							}
-						}
-						objpath, subpath, ok = utils.ExtractUpperPath(objpath)
-					}
+				// 1. The logic below cannot be ran for MERGE_MODE_TRACE because they
+				// are not exact matches such as, for example, arg-params, which is necessary for computing upper taints
+				// and we already extracted the selected taints (inc. from lower paths) prior to calling MergeTaints
+				// 2. It is also not necessary to be ran for MERGE_MODE_PARSE
+				if mode == MERGE_MODE_PARSE || mode == MERGE_MODE_TRACE {
+					continue
 				}
-			}
-			// WARNING:
-			// THIS CAN ONLY BE APPLIED WHEN DOING
-			// ARG-PARAM or RET-RET MATCHING
-			// AND NOT WHEN MERGE TAINTS IS CALLED BY taintTracedObjectsHelper()
-			// this is because the latter func has the following condition such as
-			// paramTrace.GetServicePath() == trace.GetServicePath()
-			// so we expect dont want to mess up with the leftobjpath and rightobjpath
-			// because they are not related in this case ????
-			// (I ACTUALLY THINK THIS COND IS NOT NEEDED... needs some testing to figure it out)
-			//
-			// 2. explore all lower paths
-			// taint: left <-- right
-			if !triggeredByTraces { // cond works on trainticket?
-				rightObjpath := objpath
-				rightTaint := otherTaint
-				for leftObjpath, _ := range obj.GetAllTraces() {
-					fmt.Printf("\t rightObjpath: %s\n", rightObjpath)
-					fmt.Printf("\t leftObjpath: %s\n", leftObjpath)
-					if ok, diff := utils.IsUpperPath(rightObjpath, leftObjpath); ok {
-						fmt.Printf("DIFF = %s\n", diff)
 
-						dbpath := rightTaint.fieldpath + diff
-						newTaint := NewAbstractTaint(dbpath, rightTaint.dbcallID, rightTaint.dbOpType, primary, traced)
-
-						obj.AddTaintIfNotExists(leftObjpath, *newTaint)
-						//taintMapping.AddIfNotExists(*rightTaint, *newTaint, true)
+				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] attempting to add mapping for objpath={%s} // taint={%s} // mode={%t}\n", obj.String(), objpath, newTaint.LongString(), mergeModeToString(mode))
+				// explore all upper paths
+				var ok = true
+				var subpath = ""
+				for ok {
+					for _, existingTaint := range obj.taints[objpath] {
+						// filter by writes to reduce number of foreign keys for now
+						// TODO: remove IsPrimary() condition?
+						if existingTaint.IsPrimary() {
+							lowerTaint := existingTaint.Copy()
+							lowerTaint.AddSuffixToDatabasePath(subpath)
+							taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
+							fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+						}
 					}
+					objpath, subpath, ok = utils.ExtractUpperPath(objpath)
+				}
+
+				// TODO: explore all lower paths ??
+			}
+
+			// 1. The logic below cannot be ran for MERGE_MODE_TRACE because they
+			// are not exact matches such as, for example, arg-params, which is necessary for computing upper taints
+			// and we already extracted the selected taints (inc. from lower paths) prior to calling MergeTaints
+			// 2. It is also not necessary to be ran for MERGE_MODE_PARSE
+			if mode == MERGE_MODE_PARSE || mode == MERGE_MODE_TRACE {
+				continue
+			}
+
+			// 1. The goal here is not to propagate new traces, but to make sure
+			// the new taints are present in all abstract locations within the object,
+			// which may only be annotated by traces and not taints
+			// 2. This logic is needed, for example, in TrainTicket
+			// 3. No need to add to taint mapping
+			fromObjpath := objpath
+			fromTaint := otherTaint
+			for _, toLocation := range obj.GetAllAbstractLocationsWithTraces() {
+				// e.g.,
+				// from path: 	_obj 	=> taint: 			my_db.MyObject
+				// to path: 	_obj.ID => taint to add: 	my_db.MyObject.ID (diff = .ID)
+				if ok, diff := utils.IsUpperPath(fromObjpath, toLocation); ok {
+					newDbpath := fromTaint.GetDatabasePath() + diff
+					newTaint := NewAbstractTaint(newDbpath, fromTaint.dbcallID, fromTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE)
+					obj.AddTaintIfNotExists(toLocation, newTaint)
 				}
 			}
 		}
@@ -494,7 +485,7 @@ func PropagateNewTaintsToDatabaseCallObjects(graph *AbstractCallGraph, node *Abs
 					objpath, found := obj.FindObjectPathWithEqualOrUpperTaint(currTaint)
 					for _, otherTaint := range otherTaintsLst {
 						if found {
-							obj.AddTaintIfNotExists(objpath, otherTaint)
+							obj.AddTaintIfSimilarNotExists(objpath, otherTaint)
 						}
 					}
 				}
@@ -556,15 +547,15 @@ func PropagateTaintsToServiceCallObjects(graph *AbstractCallGraph, currNode *Abs
 }
 
 // taintTracedObjectsOnEdge checks traces on objects used for other calls (aka edge)
-func taintTracedObjectsOnEdge(obj *AbstractObject, currNode *AbstractNode, otherEdge *AbstractEdge, taintMapping *TaintMapping, doTaintAfter bool) {
-	for objpath, tracesLst := range obj.GetTraces() {
+func taintTracedObjectsOnEdge(currObj *AbstractObject, currNode *AbstractNode, otherEdge *AbstractEdge, taintMapping *TaintMapping, doTaintAfter bool) {
+	for currObjpath, tracesLst := range currObj.GetTraces() {
 		// e.g.,
 		// MediaMicroservices in APIService.ReadPage(...)
 		//
 		// movieId := movieIdService.ReadMovieId(title)
 		// movieInfo := movieInfoService.ReadMovieInfo(movieId.ID)
 		//
-		// t4 = ReadMovieId(..) => objpath 		 (@ t4.MovieID) = _obj.MovieID
+		// t4 = ReadMovieId(..) => currObjpath 	 (@ t4.MovieID) = _obj.MovieID
 		// ReadMovieInfo(t10) 	=> tracedObjPath (@ t10) 		= _obj
 		//
 		// REMINDER: traceObjPath is simply the objpath of the traced object
@@ -596,16 +587,17 @@ func taintTracedObjectsOnEdge(obj *AbstractObject, currNode *AbstractNode, other
 			// [rpc] @ CartService.AddItem.t18.ID
 			// ------------------------------------
 			//
-			// CURRENT OBJECT is t13 w/ objpath = _obj
-			// TRACED OBJECT is t18 w/ traceobjpath = _obj.ID
+			// CURRENT OBJECT is t13 w/ currObjpath = _obj
+			// TRACED OBJECT is t18 w/ tracedObjpath = _obj.ID
 			//
 			// we want to get the taints of t13 at _obj and propagate them to t18 on _obj.ID
 			// REMINDER: we just simply associate the SAME dbfield to t18 on _obj.ID
+
+			// we get exactly the matching object by looking for the trace argument name
 			if tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName()); tracedObj != nil {
-				fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
-				// REMINDER: traceObjPath is simply the objpath of the traced object
-				tracedObjPaths := trace.GetArgumentPath()
-				taintTracedObjectsHelper(objpath, tracedObjPaths, obj, tracedObj, trace, taintMapping, true, doTaintAfter)
+				fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", currObj.String(), currObjpath, trace.LongString())
+				tracedObjPath := trace.GetArgumentPath()
+				taintTracedObjectsHelper(currObj, tracedObj, currObjpath, tracedObjPath, trace, taintMapping, true, doTaintAfter)
 			}
 		}
 	}
@@ -617,7 +609,7 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 		for _, trace := range tracesLst {
 			var tracedObjPaths []string
 			var tracedObjs []*AbstractObject
-			
+
 			fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
 
 			for _, param := range currNode.GetParams() {
@@ -627,11 +619,9 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if paramTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, param)
 								tracedObjPaths = append(tracedObjPaths, paramObjpath)
-							} else {
-								//TODO?
-								fmt.Printf("param trace call ID: %s\n", paramTrace.GetServiceCallID())
-								fmt.Printf("param trace path: %s\n", paramTrace.GetServicePath())
-								fmt.Printf("trace path: %s\n", trace.GetServicePath())
+								fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
+								fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
+								fmt.Printf("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}
@@ -644,14 +634,9 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if retTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, ret)
 								tracedObjPaths = append(tracedObjPaths, retObjpath)
-								fmt.Printf("ret trace call ID: %s\n", retTrace.GetServiceCallID())
-								fmt.Printf("ret trace path: %s\n", retTrace.GetServicePath())
-								fmt.Printf("trace path: %s\n", trace.GetServicePath())
-							} else {
-								//TODO?
-								fmt.Printf("ret trace call ID: %s\n", retTrace.GetServiceCallID())
-								fmt.Printf("ret trace path: %s\n", retTrace.GetServicePath())
-								fmt.Printf("trace path: %s\n", trace.GetServicePath())
+								fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace call ID: %s\n", retTrace.GetServiceCallID())
+								fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace path: %s\n", retTrace.GetServicePath())
+								fmt.Printf("[TRACE] [ON_NODE] [RET] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}
@@ -660,20 +645,18 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 
 			for i, tracedObj := range tracedObjs {
 				// REMINDER: traceObjPath is simply the objpath of the traced object
-				taintTracedObjectsHelper(objpath, tracedObjPaths[i], obj, tracedObj, trace, taintMapping, false, doTaintAfter)
+				taintTracedObjectsHelper(obj, tracedObj, objpath, tracedObjPaths[i], trace, taintMapping, false, doTaintAfter)
 
 			}
 		}
 	}
 }
 
-func taintTracedObjectsHelper(objpath string, tracedObjPath string, obj *AbstractObject, tracedObj *AbstractObject, trace *AbstractTrace, taintMapping *TaintMapping, onEdge bool, after bool) {
-	fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", obj.String(), objpath, tracedObjPath, tracedObj.String())
+func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject, currObjPath string, tracedObjPath string, trace *AbstractTrace, taintMapping *TaintMapping, onEdge bool, after bool) {
+	fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
 	var selectedTaints = make(map[string][]*AbstractTaint)
 	var selectedTaintsKeys []string
 
-	var ok = true
-	var subpath = ""
 	// if there is no taint for current objpath then it is possible that there are upper taints
 	// so we go up, create a new subtaint and save to the selected taints of the traced object
 	// e.g., MediaMicroservices: APIService.ReadPage():
@@ -686,28 +669,39 @@ func taintTracedObjectsHelper(objpath string, tracedObjPath string, obj *Abstrac
 	// 			_obj.ID
 	// [rpc] @ MovieIdService.ReadMovieId.movieID
 	// ------------------------------------------
-	// after going up, we get a new potential subtaint
+	// after going up, we get a new potential subtaint (movieid_db.movieid)
 	// (that we don't save for the current obj but only for the traced obj)
 	// ------------------------------------------
 	// 			_obj.ID
 	// [read, secondary] @ movieid_db.movieid.ID
 	// ------------------------------------------
-	for ok {
-		for _, taint := range obj.GetTaintsForObjectPath(objpath) {
-			subTaint := taint.Copy()
-			subTaint.AddSuffixToDatabasePath(subpath)
-			selectedTaints[tracedObjPath] = append(selectedTaints[tracedObjPath], subTaint)
-			selectedTaintsKeys = append(selectedTaintsKeys, tracedObjPath)
+
+	// Example 1
+	// currObjpath = _obj
+	// tracedObjpath = _obj.ID
+
+	// Example 2
+	// currObjpath = _obj.ID
+	// tracedObjpath = _obj.Users.ID
+	//
+	// if we want to propagate taints from current obj to traced obj, then we can only, at most,
+	// propagate the taints from the lower paths from the current object but NEVER the upper paths
+	// because the two objects (current and traced) do not exactly match like, for example, args-parms
+	currTaints, pathsDiffs := currObj.GetTaintsForCurrentAndLowerPaths(currObjPath)
+	for path, taintLst := range currTaints {
+		// pathDiff can be empty when paths match when checking lower paths
+		selectedPath := tracedObjPath + pathsDiffs[path]
+
+		for _, taint := range taintLst {
+			selectedTaint := taint.Copy()
+			selectedTaints[selectedPath] = append(selectedTaints[selectedPath], selectedTaint)
 		}
-		if onEdge {
-			objpath, subpath, ok = utils.ExtractUpperPath(objpath)
-		} else {
-			// removing this is dangerous
-			ok = false
+		if len(taintLst) > 0 {
+			selectedTaintsKeys = append(selectedTaintsKeys, selectedPath)
 		}
 	}
 
-	taintMappingTmp := MergeTaints(tracedObj, selectedTaints, selectedTaintsKeys, false, true, true)
+	taintMappingTmp := MergeTaints(tracedObj, selectedTaints, selectedTaintsKeys, MERGE_MODE_TRACE)
 	fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
 
 	if taintMapping != nil {

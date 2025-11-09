@@ -83,17 +83,27 @@ func (taint *AbstractTaint) LongString() string {
 	return fmt.Sprintf("{%s, %s, %s, %t}", taint.fieldpath, taint.dbcallID, common.OperationTypeToString(taint.dbOpType), taint.primary)
 }
 
-func (taint *AbstractTaint) Equals(other *AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+func (taint *AbstractTaint) Similar(other *AbstractTaint) bool {
+	fmt.Printf("[ABSTRACT TAINT] [SIMILAR] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID /* &&
 		taint.primary == other.primary &&
 		taint.dbOpType == other.dbOpType */
 }
 
-// taint.dbfield: notification
-// other.dbfield: notification.PostID
-func (taint *AbstractTaint) IsUpperPath(other *AbstractTaint) (bool, string) {
+func (taint *AbstractTaint) Equal(other *AbstractTaint) bool {
+	fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	return taint.fieldpath == other.fieldpath &&
+		taint.dbcallID == other.dbcallID &&
+		taint.dbOpType == other.dbOpType &&
+		taint.primary == other.primary &&
+		taint.traced == other.traced
+}
+
+// e.g., 
+// - curr dbfield 	= notification
+// - other dbfield 	= notification.PostID
+func (taint *AbstractTaint) IsUpperTaint(other *AbstractTaint) (bool, string) {
 	fmt.Printf("[ABSTRACT TAINT] [SUPER] checking if taint is super path:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	if ok, diff := utils.IsUpperPath(taint.fieldpath, other.fieldpath); ok {
 		fmt.Printf("got subpath: %s\n", diff)
