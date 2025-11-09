@@ -2,13 +2,9 @@ package abstractgraph
 
 import (
 	"fmt"
-	"log"
 	"slices"
 	"sort"
 	"strings"
-
-	"analyzer/pkg/common"
-	"analyzer/pkg/utils"
 )
 
 // TaintMapping is a mapping between primary taint (key) that already existed
@@ -34,6 +30,10 @@ func (tm *TaintMapping) GetMappingForKey(key AbstractTaint) []AbstractTaint {
 }
 
 func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint, after bool) {
+	if key == valElem {
+		return
+	}
+	fmt.Printf("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
 	if mappingVal, ok := tm.mapping[key]; ok {
 		if !slices.Contains(mappingVal, valElem) {
 			if after {
@@ -91,135 +91,4 @@ func (tm *TaintMapping) String() string {
 
 	builder.WriteString("}")
 	return builder.String()
-}
-
-/* func ComputeTaintMapping(obj *AbstractObject) *TaintMapping {
-	taintMapping := &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
-
-	for objpath1, primaryTaintsLst := range obj.GetPrimaryTaints() {
-		for objpath2, secondaryTaintsLst := range obj.GetSecondaryTaints() {
-			if objpath1 == objpath2 {
-				for _, primaryTaint := range primaryTaintsLst {
-					taintMapping
-				}
-			}
-		}
-	}
-	return taintMapping
-} */
-
-func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, primary bool, traced bool) (*TaintMapping, map[string][]*AbstractTaint) {
-	fmt.Printf("[TAINTMAPPING] merging taints (primary=%t, traced=%t): %v\n", primary, traced, otherTaintsMap)
-	var taintMapping *TaintMapping
-	var newTaints map[string][]*AbstractTaint = make(map[string][]*AbstractTaint)
-
-	if !primary {
-		taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
-	}
-
-	// when it's not nil its because we want to maintain the order
-	if otherTaintsMapKeys == nil {
-		for key := range otherTaintsMap {
-			otherTaintsMapKeys = append(otherTaintsMapKeys, key)
-		}
-	}
-
-	for _, objpath := range otherTaintsMapKeys {
-		otherTaints := otherTaintsMap[objpath]
-		fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
-		existingTaints := obj.taints[objpath]
-
-		exists := func(otherTaint *AbstractTaint) (string, bool) {
-			for _, existingTaint := range existingTaints {
-				if existingTaint.Equals(otherTaint) {
-					fmt.Printf("[TAINTMAPPING] [EXISTS] returning true...\n")
-					return objpath, true
-				}
-				fmt.Printf("[TAINTMAPPING] checking if upper path (%s) vs (%s)\n", existingTaint.fieldpath, otherTaint.fieldpath)
-				if ok, subpath := existingTaint.IsUpperPath(otherTaint); ok {
-					fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
-					return objpath + subpath, false
-				}
-			}
-			fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
-			return objpath, false
-		}
-
-		fmt.Printf("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
-		for _, otherTaint := range otherTaints {
-			if objpath, equal := exists(otherTaint); !equal {
-				// need to create new AbstractTaint to avoid just
-				// storing the pointer and modifying its fields
-				newTaint := NewAbstractTaint(
-					otherTaint.fieldpath,
-					otherTaint.dbcallID,
-					otherTaint.dbOpType,
-					primary, traced,
-				)
-
-				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
-				obj.taints[objpath] = append(obj.taints[objpath], newTaint)
-				newTaints[objpath] = append(newTaints[objpath], newTaint)
-
-				// NOTE: explores all upper paths
-				//
-				// trace info for arguments and (especially) returns
-				// can still lead to secondary taints that we still want to track
-				if !primary {
-					fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] adding mapping for objpath={%s} // taint={%s} // traced={%t}\n", obj.String(), objpath, newTaint.LongString(), traced)
-					var ok = true
-					var subpath = ""
-					for ok {
-						for _, existingTaint := range obj.taints[objpath] {
-							// filter by writes to reduce number of foreign keys for now
-							if existingTaint.IsPrimary() && !traced {
-								if subpath == "" {
-									taintMapping.AddIfNotExists(*existingTaint, *newTaint, true)
-									fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
-								} else {
-									lowerTaint := existingTaint.Copy()
-									// TODO: verify if this is needed (can't recall now)
-									lowerTaint.AddSuffixToDatabasePath(subpath)
-									taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
-								}
-							} else if traced {
-								fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [3] upperpath={%s} // subpath={%s} // existingTaint={%s} // traced={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), traced)
-								if subpath == "" {
-									taintMapping.AddIfNotExists(*newTaint, *existingTaint, true)
-								} else {
-									lowerTaint := *existingTaint
-									lowerTaint.fieldpath = lowerTaint.fieldpath + subpath
-									// [TO BE IMPROVED]
-									// for some reason it works better when we change the
-									// position between newTaint and lowerTaint in call args
-									// e.g., SockShop3: order_db.orders.ID REFERENCES ship_db.shipments.ID
-									//
-									// i think this is because of the order
-									// when tainting primary vs. traced
-									taintMapping.AddIfNotExists(*newTaint, lowerTaint, true)
-								}
-							} else {
-								if existingTaint.Equals(otherTaint) {
-									continue
-								}
-								if otherTaint.IsWrite() && otherTaint.IsTraced() && otherTaint.GetDatabasePath() == "order_db.order.FromStation" {
-									fmt.Printf("EXISTING TAINT: %s\n", existingTaint.LongString())
-									log.Fatalf("BUG???.... %s\n", otherTaint.LongString())
-								}
-							}
-						}
-						objpath, subpath, ok = utils.ExtractUpperPath(objpath)
-					}
-				}
-			}
-			/* if otherTaint.IsWrite() && otherTaint.IsTraced() && otherTaint.GetDatabasePath() == "order_db.order.FromStation" {
-				if len(existingTaints) != 1 {
-					existingTaints := obj.taints[objpath]
-					fmt.Printf("EXISTING TAINTS: %v\n", existingTaints)
-					log.Fatalf("HERE.... %s\n", otherTaint.LongString())
-				}
-			} */
-		}
-	}
-	return taintMapping, newTaints
 }

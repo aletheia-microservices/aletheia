@@ -23,7 +23,3 @@ func IsUpperPath(objpath1 string, objpath2 string) (bool, string) {
 	}
 	return false, ""
 }
-
-// e.g.,
-// objpath1: movieinfo_db.movieinfo.movieid
-// objpath2: .movieid

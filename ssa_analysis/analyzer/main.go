@@ -185,8 +185,12 @@ func main() {
 	// phase 2: one pass for all detectors
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
 
+	// phase 0: dummy pass to generate dot files with taints for debugging
+	iterator.Run(detection.PHASE_0_DEBUG)
+
 	absgraph.WriteToDOTFile(appname, true)
 	absgraph.WriteToDOTFile(appname, false)
+
 	app.WriteAppToJSON()
 	app.WriteSchemaToJSON()
 

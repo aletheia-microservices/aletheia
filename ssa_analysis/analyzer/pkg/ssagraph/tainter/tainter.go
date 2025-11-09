@@ -318,7 +318,15 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			// t128: extract t126 #1
 			// ------------------------
 			lookupTarget := toNode.GetValueLookup().X
-			taintInfoTmp := taintInfo.updateObjectPathSuffix(".MapKey")
+			var suffix string
+			keyStr, ok := utils.ExtractStringFromValue(toNode.GetValueLookup().Index)
+			if !ok {
+				suffix = ".MapKey" // dynamic
+				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+			} else {
+				suffix = "." + keyStr
+			}
+			taintInfoTmp := taintInfo.updateObjectPathSuffix(suffix)
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
 			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 			// TODO: propagate to nodes that extract the current val
@@ -326,10 +334,16 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		case ssagraph.EDGE_LOOKUP_TARGET:
 			// PROPAGATE UPWARDS (to lookup index)
 			lookupIndex := toNode.GetValueLookup().Index
-			// ignore if it actually has the suffix or not:
-			// - if there is suffix then we propagate the corresponding taint
-			// - otherwise (meaning that the entire map was passed in the call), we just propagate the generic top taint
-			taintInfoTmp, _ := taintInfo.cutObjectPathSuffix(".MapKey")
+			var suffix string
+			keyStr, ok := utils.ExtractStringFromValue(toNode.GetValueLookup().Index)
+			if !ok {
+				suffix = ".MapKey" // dynamic
+				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+			} else {
+				suffix = "." + keyStr
+			}
+
+			taintInfoTmp, _ := taintInfo.cutObjectPathSuffix(suffix)
 			taintInfoTmp = taintInfoTmp.enableObjectRoot()
 			propagateTaintNearby(graph, true, lookupIndex, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 			// TODO: propagate to nodes that extract the current val
@@ -343,7 +357,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			keyStr, ok := utils.ExtractStringFromValue(instr.Key)
 			if !ok {
 				suffix = ".MapKey" // dynamic
-				log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
 				suffix = "." + keyStr
 			}
@@ -513,14 +527,30 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		case ssagraph.EDGE_LOOKUP_INDEX:
 			// (COPY PASTE FROM PART 1)
 			lookupTarget := node.GetValueLookup().X
-			taintInfoTmp := taintInfo.updateObjectPathSuffix(".MapKey")
+			var suffix string
+			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
+			if !ok {
+				suffix = ".MapKey" // dynamic
+				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+			} else {
+				suffix = "." + keyStr
+			}
+			taintInfoTmp := taintInfo.updateObjectPathSuffix(suffix)
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
 			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 
 		case ssagraph.EDGE_LOOKUP_TARGET:
 			// (COPY PASTE FROM PART 1)
 			lookupIndex := node.GetValueLookup().Index
-			taintInfoTmp, _ := taintInfo.cutObjectPathSuffix(".MapKey")
+			var suffix string
+			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
+			if !ok {
+				suffix = ".MapKey" // dynamic
+				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+			} else {
+				suffix = "." + keyStr
+			}
+			taintInfoTmp, _ := taintInfo.cutObjectPathSuffix(suffix)
 			taintInfoTmp = taintInfoTmp.enableObjectRoot()
 			propagateTaintNearby(graph, true, lookupIndex, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 

@@ -111,6 +111,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	// first, just create new abstract objects using the first set of returns (could be any other)
 	for i, ret := range retsLst[0] {
 		obj := NewAbstractObject(ret.GetValue().Type().String(), ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
+		obj.addToAllNames(ret.GetValue().Type().String())
 		node.AddReturn(obj)
 		retsObjs = append(retsObjs, obj)
 		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", i, obj.String())
@@ -120,7 +121,11 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		for _, rets := range retsLst[1:] {
 			for i, ret := range rets {
 				obj := retsObjs[i]
-				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, true, false)
+				obj.addToAllNames(ret.GetValue().Type().String())
+
+				fmt.Printf("\t\t[ABSTRACTGRAPH] ret = %s\n", ret.String())
+				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, true, false, false)
+				MergeTraces(obj, ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
 				fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
 		}
@@ -220,7 +225,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			taintMapping := NewTaintMapping()
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				taintMappingTmp, _ := MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, true, false)
+				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, true, false, false)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 			PropagateNewTaintsToDatabaseSchemas(graph, -1, taintMapping)

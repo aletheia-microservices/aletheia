@@ -52,7 +52,6 @@
           "order_db.orders.ID",
           "order_db.orders.Items",
           "order_db.orders.Shipment",
-          "order_db.orders.Shipment.Name",
           "order_db.orders.Shipment.Status",
           "order_db.orders.Total"
         ],
@@ -75,7 +74,6 @@
           "FOREIGN_KEY ship_db.shipments REFERENCES order_db.orders.Shipment [MANDATORY]",
           "FOREIGN_KEY ship_db.shipments.ID REFERENCES order_db.orders.ID [MANDATORY]",
           "FOREIGN_KEY ship_db.shipments.Name REFERENCES order_db.orders.CustomerID [MANDATORY]",
-          "FOREIGN_KEY ship_db.shipments.Name REFERENCES order_db.orders.Shipment.Name [MANDATORY]",
           "FOREIGN_KEY ship_db.shipments.Status REFERENCES order_db.orders.Shipment.Status [MANDATORY]"
         ]
       }
@@ -96,7 +94,6 @@
           "FOREIGN_KEY ship_queue.notification REFERENCES order_db.orders.Shipment [MANDATORY]",
           "FOREIGN_KEY ship_queue.notification.ID REFERENCES order_db.orders.ID [MANDATORY]",
           "FOREIGN_KEY ship_queue.notification.Name REFERENCES order_db.orders.CustomerID [MANDATORY]",
-          "FOREIGN_KEY ship_queue.notification.Name REFERENCES order_db.orders.Shipment.Name [MANDATORY]",
           "FOREIGN_KEY ship_queue.notification.Status REFERENCES order_db.orders.Shipment.Status [MANDATORY]"
         ]
       }

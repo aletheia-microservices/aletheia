@@ -10,9 +10,10 @@ import (
 )
 
 type AbstractObject struct {
-	name   string // ssa name
-	taints map[string][]*AbstractTaint
-	traces map[string][]*AbstractTrace
+	name     string   // ssa name
+	allNames []string // all ssa value names for debugging purposes
+	taints   map[string][]*AbstractTaint
+	traces   map[string][]*AbstractTrace
 }
 
 func NewAbstractObject(ssaStr string, directTaints map[string][]*AbstractTaint, traces map[string][]*AbstractTrace) *AbstractObject {
@@ -22,6 +23,10 @@ func NewAbstractObject(ssaStr string, directTaints map[string][]*AbstractTaint, 
 		traces: traces,
 	}
 	return obj
+}
+
+func (obj *AbstractObject) addToAllNames(name string) {
+	obj.allNames = append(obj.allNames, name)
 }
 
 func (obj *AbstractObject) GetName() string {
@@ -112,7 +117,7 @@ func (obj *AbstractObject) TaintString() string {
 	for _, objpath := range objpaths {
 		builder.WriteString(objpath)
 		builder.WriteByte('\n')
-		
+
 		sortedTaints := obj.GetTaintsForObjectPath(objpath)
 		/* sort.Slice(sortedTaints, func(i, j int) bool {
 			if sortedTaints[i].dbOpType != sortedTaints[j].dbOpType {

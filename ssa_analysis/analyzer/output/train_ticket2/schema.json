@@ -190,6 +190,8 @@
           "FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name",
           "FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType",
           "FOREIGN_KEY order_db.order.FromStation REFERENCES station_db.station.Name",
+          "FOREIGN_KEY order_db.order.Price REFERENCES price_db.priceConfig.BasicPriceRate",
+          "FOREIGN_KEY order_db.order.Price REFERENCES route_db.route.Distances[*]",
           "FOREIGN_KEY order_db.order.ToStation REFERENCES station_db.station.Name",
           "FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID"
         ]
@@ -207,6 +209,7 @@
         "name": "priceConfig",
         "fields": [
           "price_db.priceConfig",
+          "price_db.priceConfig.BasicPriceRate",
           "price_db.priceConfig.ID",
           "price_db.priceConfig.RouteID",
           "price_db.priceConfig.TrainType"
@@ -223,6 +226,7 @@
         "fields": [
           "route_db.route",
           "route_db.route.Distances",
+          "route_db.route.Distances[*]",
           "route_db.route.EndStation",
           "route_db.route.ID",
           "route_db.route.StartStation",
