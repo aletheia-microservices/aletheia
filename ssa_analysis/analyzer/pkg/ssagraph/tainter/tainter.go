@@ -12,6 +12,12 @@ import (
 	"analyzer/pkg/utils"
 )
 
+const (
+	DYNAMIC_MAP       = ".*"
+	DYNAMIC_MAP_KEY   = ".MapKey"
+	DYNAMIC_MAP_VALUE = ".MapVal"
+)
+
 // REMINDER:
 // sometimes there are can be taints such as: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
 // this may happen when any[] type is using, for example, fmt.Print calls
@@ -199,7 +205,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 							// (e.g., lower field propagating to upper struct)
 							// we need to avoid visiting it again otherwise we will have infinite recursion!
 							if !nodeHasTaintInfo(toNode, "_obj", taintInfoTmp) {
-								if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate")  {
+								if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
 									fmt.Printf("TAINT INFO: %s\n", taintInfo.String())
 									log.Fatalf("HERE????? UPWARDS=%t // ROOT=%t", upwards, taintInfo.objroot)
 								}
@@ -230,7 +236,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 			fmt.Println("HERE 10")
 
-			if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate")  {
+			if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
 				fmt.Printf("TAINT INFO: %s\n", taintInfo.String())
 				log.Fatalf("HERE????? UPWARDS=%t // ROOT=%t", upwards, taintInfo.objroot)
 			}
@@ -280,15 +286,15 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			var taintInfoTmpKey, taintInfoTmpVal TaintInfo
 			var keyOk, valOk bool
 			if taintInfo.isObjectRoot() {
-				taintInfoTmpKey = taintInfo.updateCallPathSuffix(".MapKey")
-				taintInfoTmpVal = taintInfo.updateCallPathSuffix(".MapVal")
+				taintInfoTmpKey = taintInfo.updateCallPathSuffix(DYNAMIC_MAP_KEY)
+				taintInfoTmpVal = taintInfo.updateCallPathSuffix(DYNAMIC_MAP_VALUE)
 				keyOk = true
 				valOk = true
 			} else {
 				taintInfoTmpKey = taintInfo.enableObjectRoot()
-				taintInfoTmpKey.objpath, keyOk = strings.CutSuffix(taintInfoTmpKey.objpath, ".MapKey")
+				taintInfoTmpKey.objpath, keyOk = strings.CutSuffix(taintInfoTmpKey.objpath, DYNAMIC_MAP_KEY)
 				taintInfoTmpVal = taintInfo.enableObjectRoot()
-				taintInfoTmpVal.objpath, valOk = strings.CutSuffix(taintInfoTmpKey.objpath, ".MapVal")
+				taintInfoTmpVal.objpath, valOk = strings.CutSuffix(taintInfoTmpKey.objpath, DYNAMIC_MAP_VALUE)
 			}
 
 			for _, edge := range graph.GetEdgesToNode(toNode) {
@@ -301,13 +307,14 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				}
 			}
 
-		case ssagraph.EDGE_LOOKUP_INDEX:
-			// PROPAGATE DOWNWARDS (to lookup target)
-			//
+		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
+			// propagate downwards (i.e., to lookup target)
+			// requires appending suffix
+
 			// e.g., in dsb_sn2 @ UserTimelineService.ReadUserTimeline
 			// seen_posts := make(map[int64]bool)
 			// [...]
-			// if _, ok := seen_posts[post.PostID]; ok {
+			// if mypost, ok := seen_posts[post.PostID]; ok {
 			// 	 continue
 			// }
 			// ------------------------
@@ -317,12 +324,18 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			// t127: extract t126 #0
 			// t128: extract t126 #1
 			// ------------------------
+			//
+			// e.g., mypost, ok := seen_posts[post.PostID]
+			// X is seen_posts
+			// index is post.PostID
+			// EDGE: 			fromNode, node, index (post.PostID) --> toNode (mypost)
+			// PROPAGATION 1: 	fromNode, node, index (post.PostID) --> X (seen_posts)
+			// PROPAGATION 2: 	fromNode, node, index (post.PostID) --> toNode (mypost)
 			lookupTarget := toNode.GetValueLookup().X
 			var suffix string
-			keyStr, ok := utils.ExtractStringFromValue(toNode.GetValueLookup().Index)
+			keyStr, ok := utils.ExtractStringFromValue(node.GetValue())
 			if !ok {
-				suffix = ".MapKey" // dynamic
-				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+				suffix = DYNAMIC_MAP_KEY // dynamic
 			} else {
 				suffix = "." + keyStr
 			}
@@ -331,14 +344,20 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 			// TODO: propagate to nodes that extract the current val
 
-		case ssagraph.EDGE_LOOKUP_TARGET:
-			// PROPAGATE UPWARDS (to lookup index)
+		case ssagraph.EDGE_LOOKUP_MAP:
+			// propagate upwards (i.e., to lookup index)
+			// requires cutting suffix
+
+			// e.g., mypost, ok := seen_posts[post.PostID]
+			// X is seen_posts
+			// index is post.PostID
+			// EDGE: 		fromNode, node, X (seen_posts) --> toNode (mypost)
+			// PROPAGATION: fromNode, node, X (seen_posts) --> index (post.PostID)
 			lookupIndex := toNode.GetValueLookup().Index
 			var suffix string
 			keyStr, ok := utils.ExtractStringFromValue(toNode.GetValueLookup().Index)
 			if !ok {
-				suffix = ".MapKey" // dynamic
-				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
+				suffix = DYNAMIC_MAP_KEY // dynamic
 			} else {
 				suffix = "." + keyStr
 			}
@@ -356,7 +375,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			instr := toNode.GetInstruction().(*ssa.MapUpdate)
 			keyStr, ok := utils.ExtractStringFromValue(instr.Key)
 			if !ok {
-				suffix = ".MapKey" // dynamic
+				suffix = DYNAMIC_MAP_KEY // dynamic
 				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
 				suffix = "." + keyStr
@@ -364,7 +383,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 			taintInfoTmp := taintInfo.updateObjectPathSuffix(suffix)
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
-			
+
 			/* if strings.Contains(taintInfoTmp.String(), "(_obj.confortClass, PriceService.FindByRouteIDAndTrainType.t62") {
 				//_obj.economyClass, RouteService.GetRouteById.t44.Distances[*]
 				log.Fatalf("HERE: %s\n", taintInfoTmp.String())
@@ -436,7 +455,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 								// TODO!!!!!
 								if idxToTaint == 0 {
-									taintInfoTmp := taintInfo.updateObjectPathSuffix(".MapKey")
+									taintInfoTmp := taintInfo.updateObjectPathSuffix(DYNAMIC_MAP_KEY)
 									taintInfoTmp = taintInfoTmp.disableObjectRoot()
 									propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
 								} else if idxToTaint == 1 {
@@ -507,7 +526,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		} */
 	}
 
-
 	fmt.Printf("[TAINT NEARBY] [PART_2] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
 	for _, edge := range graph.GetEdgesToNode(node) {
 		fromNode := edge.GetFromNode()
@@ -515,22 +533,28 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		fmt.Printf("\t[TAINT NEARBY] [PART_2] [r=%t] [ToNode %s] edge (%s) from node: %v\n", recurse, node.GetValue().Name(), edge.GetTypeString(), fromNode)
 
 		fmt.Printf("[BEFORE] EDGE TYPE: %s\n", edge.GetTypeString())
-		
+
 		if ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
 			continue // skip
 		}
-		
+
 		fmt.Printf("[AFTER] EDGE TYPE: %s\n", edge.GetTypeString())
 
 		switch edge.GetType() {
 
-		case ssagraph.EDGE_LOOKUP_INDEX:
-			// (COPY PASTE FROM PART 1)
+		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
+			// same logic as in part 1
+
+			// e.g., mypost, ok := seen_posts[post.PostID]
+			// X is seen_posts
+			// index is post.PostID
+			// EDGE: 		fromNode, index (post.PostID) --> toNode, node (mypost)
+			// PROPAGATION: toNode, node (mypost) --> X (seen_posts)
 			lookupTarget := node.GetValueLookup().X
 			var suffix string
 			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
 			if !ok {
-				suffix = ".MapKey" // dynamic
+				suffix = DYNAMIC_MAP_KEY // dynamic
 				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
 				suffix = "." + keyStr
@@ -539,13 +563,14 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
 			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 
-		case ssagraph.EDGE_LOOKUP_TARGET:
-			// (COPY PASTE FROM PART 1)
+		case ssagraph.EDGE_LOOKUP_MAP:
+			// same logic as in part 1, but inversed
+
 			lookupIndex := node.GetValueLookup().Index
 			var suffix string
 			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
 			if !ok {
-				suffix = ".MapKey" // dynamic
+				suffix = DYNAMIC_MAP_KEY // dynamic
 				// log.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
 				suffix = "." + keyStr

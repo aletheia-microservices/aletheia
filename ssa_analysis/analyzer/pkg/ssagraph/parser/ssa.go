@@ -327,8 +327,8 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 			index = val
 		}
 
-		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_TARGET, 0, index)
-		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_INDEX, 0, index)
+		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_MAP, 0, index)
+		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_MAP_INDEX, 0, index)
 
 	case *ssa.Range:
 		// e.g., dsb_sn2 at PostStorageService.ReadPosts:

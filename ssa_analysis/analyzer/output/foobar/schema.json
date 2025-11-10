@@ -1,16 +1,7 @@
 {
   "bar_db": {
     "name": "bar_db",
-    "schemas": [
-      {
-        "name": "bar",
-        "fields": [
-          "bar_db.bar",
-          "bar_db.bar.BarID"
-        ],
-        "constraints": []
-      }
-    ]
+    "schemas": null
   },
   "foo_db": {
     "name": "foo_db",
@@ -20,14 +11,12 @@
         "fields": [
           "foo_db.foo",
           "foo_db.foo.BarItems",
-          "foo_db.foo.BarItems[*]",
-          "foo_db.foo.BarItems[*].BarID",
           "foo_db.foo.FooID",
+          "foo_db.foo.FooMap",
+          "foo_db.foo.FooMap.MapVal",
           "foo_db.foo.Text"
         ],
-        "constraints": [
-          "FOREIGN_KEY foo_db.foo.BarItems[*].BarID REFERENCES bar_db.bar.BarID"
-        ]
+        "constraints": []
       }
     ]
   }
