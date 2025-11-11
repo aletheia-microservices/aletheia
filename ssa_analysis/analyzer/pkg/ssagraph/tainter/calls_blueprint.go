@@ -19,7 +19,7 @@ const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runt
 
 var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
-var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne", "ReplaceOne"}
+var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne", "Upsert", "ReplaceOne"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
 var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
@@ -408,7 +408,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 				opType = common.OP_READ_MANY
 			case "InsertOne":
 				opType = common.OP_WRITE
-			case "UpdateOne", "ReplaceOne":
+			case "UpdateOne", "ReplaceOne", "Upsert":
 				opType = common.OP_UPDATE
 			case "DeleteOne":
 				opType = common.OP_DELETE
@@ -458,7 +458,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 
 					if opType == common.OP_UPDATE {
 						if call.Call.Method.Name() == "UpdateOne" {
-							updateVal := call.Call.Args[1]
+							updateVal := call.Call.Args[2]
 							for filter, vals := range computeNoSQLFilterKeyToValues(graph, updateVal) {
 								for _, val := range vals {
 									// sanity check
@@ -470,7 +470,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 									valFieldPathLst = append(valFieldPathLst, val)
 								}
 							}
-						} else if call.Call.Method.Name() == "ReplaceOne" {
+						} else if call.Call.Method.Name() == "ReplaceOne" || call.Call.Method.Name() == "Upsert" {
 							docVal := call.Call.Args[2]
 							valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 								val:       docVal,
