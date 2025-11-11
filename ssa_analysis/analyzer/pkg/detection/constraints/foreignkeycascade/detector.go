@@ -1,10 +1,11 @@
 package foreignkeycascade
 
 import (
+	"fmt"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
-	"fmt"
 )
 
 type ForeignKeyCascadeDetector struct {

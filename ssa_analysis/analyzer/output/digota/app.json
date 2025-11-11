@@ -4,7 +4,6 @@
     "orders_db",
     "payments_db",
     "products_db",
-    "queue",
     "skus_db"
   ],
   "services": [
@@ -15,12 +14,14 @@
       "impl": "OrderServiceImpl",
       "fields": [
         "skuService #0 (sku_service)",
-        "db #1 (orders_db)",
-        "queue #2 (queue)"
+        "db #1 (orders_db)"
       ],
       "methods": [
+        "Get",
+        "List",
         "New",
-        "Run"
+        "Pay",
+        "Return"
       ],
       "services": [
         "SkuService"
@@ -36,9 +37,9 @@
         "db #0 (payments_db)"
       ],
       "methods": [
-        "NewCharge",
         "Get",
         "List",
+        "NewCharge",
         "RefundCharge"
       ],
       "services": [],
@@ -50,8 +51,7 @@
       "pkg": "digota",
       "impl": "ProductServiceImpl",
       "fields": [
-        "skuService #0 (sku_service)",
-        "db #1 (products_db)"
+        "db #0 (products_db)"
       ],
       "methods": [
         "Delete",
@@ -60,9 +60,7 @@
         "New",
         "Update"
       ],
-      "services": [
-        "SkuService"
-      ],
+      "services": [],
       "databases": []
     },
     {
@@ -72,14 +70,18 @@
       "impl": "SkuServiceImpl",
       "fields": [
         "db #0 (skus_db)",
-        "queue #1 (queue)"
+        "productService #1 (product_service)"
       ],
       "methods": [
-        "New",
+        "Delete",
         "Get",
-        "Delete"
+        "List",
+        "New",
+        "Update"
       ],
-      "services": [],
+      "services": [
+        "ProductService"
+      ],
       "databases": []
     }
   ]

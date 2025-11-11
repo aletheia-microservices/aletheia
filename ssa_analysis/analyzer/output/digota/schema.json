@@ -9,6 +9,7 @@
           "orders_db.orders.Amount",
           "orders_db.orders.Currency",
           "orders_db.orders.Email",
+          "orders_db.orders.Id",
           "orders_db.orders.Items",
           "orders_db.orders.Items[*]",
           "orders_db.orders.Items[*].Amount",
@@ -17,9 +18,7 @@
           "orders_db.orders.Items[*].Parent",
           "orders_db.orders.Items[*].Quantity",
           "orders_db.orders.Metadata",
-          "orders_db.orders.Shipping",
-          "orders_db.orders.Shipping.Address",
-          "orders_db.orders.Shipping.Address.City"
+          "orders_db.orders.Shipping"
         ],
         "constraints": [
           "FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus.Id"
@@ -29,7 +28,20 @@
   },
   "payments_db": {
     "name": "payments_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "payments",
+        "fields": [
+          "payments_db.payments",
+          "payments_db.payments.ChargeAmount",
+          "payments_db.payments.Currency",
+          "payments_db.payments.Email",
+          "payments_db.payments.Id",
+          "payments_db.payments.Statement"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "products_db": {
     "name": "products_db",
@@ -52,10 +64,6 @@
       }
     ]
   },
-  "queue": {
-    "name": "queue",
-    "schemas": null
-  },
   "skus_db": {
     "name": "skus_db",
     "schemas": [
@@ -65,8 +73,10 @@
           "skus_db.skus",
           "skus_db.skus.Active",
           "skus_db.skus.Attributes",
+          "skus_db.skus.Attributes.MapVal",
           "skus_db.skus.Currency",
           "skus_db.skus.Id",
+          "skus_db.skus.Image",
           "skus_db.skus.Inventory",
           "skus_db.skus.Metadata",
           "skus_db.skus.Name",
@@ -75,7 +85,7 @@
           "skus_db.skus.Price"
         ],
         "constraints": [
-          "FOREIGN_KEY skus_db.skus.Name REFERENCES products_db.products.Name [MANDATORY]"
+          "FOREIGN_KEY skus_db.skus.Parent REFERENCES products_db.products.Id"
         ]
       }
     ]

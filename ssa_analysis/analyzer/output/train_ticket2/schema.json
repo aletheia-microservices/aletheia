@@ -152,6 +152,8 @@
       {
         "name": "inside_money",
         "fields": [
+          "inside_payment_db.inside_money.Money",
+          "inside_payment_db.inside_money.Type",
           "inside_payment_db.inside_money.UserID"
         ],
         "constraints": []
@@ -200,7 +202,16 @@
   },
   "payment_db": {
     "name": "payment_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "payment",
+        "fields": [
+          "payment_db.payment",
+          "payment_db.payment.OrderID"
+        ],
+        "constraints": []
+      }
+    ]
   },
   "price_db": {
     "name": "price_db",

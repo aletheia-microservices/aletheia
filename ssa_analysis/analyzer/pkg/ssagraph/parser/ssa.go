@@ -186,6 +186,9 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 	case *ssa.If, *ssa.Jump:
 		// nothing to do
+	
+	case *ssa.Panic:
+		// ignore
 
 	case *ssa.Go:
 		// TODO

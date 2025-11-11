@@ -222,13 +222,10 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			registerDatabaseFields(graph, edge.GetArguments())
 
 			// propagate taints to databases (forward): args (from) >>> params (to)
-			taintMapping := NewTaintMapping()
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				taintMappingTmp := MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE)
-				taintMapping.Merge(taintMappingTmp, true)
+				MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE)
 			}
-			PropagateNewTaintsToDatabaseSchemas(graph, -1, taintMapping)
 
 			edges = append(edges, edge)
 			fmt.Printf("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)

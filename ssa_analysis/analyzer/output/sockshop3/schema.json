@@ -13,6 +13,7 @@
           "cart_db.carts.Items[*].UnitPrice"
         ],
         "constraints": [
+          "FOREIGN_KEY cart_db.carts.ID REFERENCES user_db.users.UserID [MANDATORY]",
           "FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.catalogue.ID",
           "FOREIGN_KEY cart_db.carts.Items[*].UnitPrice REFERENCES catalogue_db.catalogue.Price"
         ]

@@ -11,12 +11,13 @@ if [ "$#" -ne 2 ]; then
   echo "usage: $0 <appname> [schema|analysis]"
   echo "available apps:"
   echo "- foobar"
+  echo "- digota"
+  echo "- sockshop3"
   echo "- postnotification_simple"
   echo "- dsb_sn2"
-  echo "- sockshop3"
   echo "- dsb_media_sql"
-  echo "- dsb_hotel2"
   echo "- train_ticket2"
+  echo "- dsb_hotel2"
   exit 1
 fi
 

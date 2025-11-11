@@ -458,7 +458,8 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 
 					if opType == common.OP_UPDATE {
 						if call.Call.Method.Name() == "UpdateOne" {
-							updateVal := call.Call.Args[2]
+							//FIXME: change to call.Call.Args[2] (test with SockShop app)
+							updateVal := call.Call.Args[1]
 							for filter, vals := range computeNoSQLFilterKeyToValues(graph, updateVal) {
 								for _, val := range vals {
 									// sanity check

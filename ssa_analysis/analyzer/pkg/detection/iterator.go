@@ -7,6 +7,7 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
+	"analyzer/pkg/config"
 )
 
 type IterationPhase int
@@ -218,6 +219,26 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 		}
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
+			// make sure that data associations within same microservice
+			// from already existing taints on SSA are also detected
+			// REMINDER: we don't do this when parsing the SSA into abstract graph
+			// because we may not know all the underlying fields at that time
+			/* taintMapping := abstractgraph.NewTaintMapping()
+			for _, arg := range edge.GetArguments() {
+				for objpath, taintLst := range arg.GetAllTaints() {
+					for _, taint := range taintLst {
+						for _, otherTaint := range arg.GetTaintsForObjectPath(objpath) {
+							if otherTaint != taint {
+								taintMapping.AddIfNotExists(*taint, *otherTaint, true)
+							}
+						}
+					}
+				}
+			}
+			if it.mode == PHASE_1_SCHEMA_BUILDER {
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			} */
+
 			// ===================
 			// DATABASE OPERATIONS
 			// ===================
@@ -274,18 +295,18 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 		return
 	}
 
-	taintMapping := abstractgraph.NewTaintMapping()
-	for i, arg := range edge.GetArguments() {
-		otherArg := queueReadEdge.GetArgumentAt(i)
-		// FIXME: maybe we should also propagate secondary taints?
-		taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
-		taintMapping.Merge(taintMappingTmp, true)
-	}
-
-	abstractgraph.PropagateTaintsToServiceCallObjects(it.graph, node, taintMapping, queueReadEdge, true)
-
-	if it.mode == PHASE_1_SCHEMA_BUILDER {
-		abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+	if config.Global.PropagateTaintsAcrossQueueOperations {
+		taintMapping := abstractgraph.NewTaintMapping()
+		for i, arg := range edge.GetArguments() {
+			otherArg := queueReadEdge.GetArgumentAt(i)
+			taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
+			taintMapping.Merge(taintMappingTmp, true)
+		}
+		abstractgraph.PropagateTaintsToServiceCallObjects(it.graph, node, taintMapping, queueReadEdge, true)
+	
+		if it.mode == PHASE_1_SCHEMA_BUILDER {
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+		}
 	}
 
 	it.newReqIdx()

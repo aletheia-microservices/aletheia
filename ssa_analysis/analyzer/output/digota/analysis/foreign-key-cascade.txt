@@ -4,7 +4,9 @@
 [NUM_WARNINGS = 2]
 entry request: ProductService.Delete()
 	DELETE: ProductService.Delete() --> products_db.products.DeleteOne()
-		MISSING CASCADE DELETE #1: database={skus_db}, pending fields={Name}
+		MISSING CASCADE DELETE #1: database={skus_db}, pending fields={Parent}
+
+entry request: SkuService.Delete()
 	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
 		MISSING CASCADE DELETE #2: database={orders_db}, pending fields={Items[*].Parent}
 
