@@ -22,7 +22,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 				dbNode := graph.GetNodeByNameIfExists(dbPath)
 				schemaName := ssaTaint.GetDatabaseCall().GetSchemaName()
 				if dbNode == nil {
-					dbNode = NewAbstractNode(dbPath, NODE_DATABASE, "", "", dbname)
+					dbNode = NewAbstractNode(dbPath, NODE_DATABASE, "", "", dbname, schemaName)
 					graph.AddNode(dbPath, dbNode)
 
 					if !graph.GetApp().HasDatabase(dbname) {
@@ -75,7 +75,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	// dummy node
 	clientNode := graph.GetNodeByNameIfExists("client")
 	if clientNode == nil {
-		clientNode = NewAbstractNode("client", NODE_CLIENT, "", "", "")
+		clientNode = NewAbstractNode("client", NODE_CLIENT, "", "", "", "")
 		graph.AddNode("client", clientNode)
 	}
 
@@ -91,7 +91,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	}
 
 	if node == nil {
-		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "")
+		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "", "")
 		graph.AddNode(name, node)
 
 		fmt.Printf("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
@@ -160,7 +160,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 			// create node for the first time
 			if toNode == nil {
-				toNode = NewAbstractNode(toName, NODE_SERVICE, serviceCall.GetService(), serviceCall.GetMethod(), "")
+				toNode = NewAbstractNode(toName, NODE_SERVICE, serviceCall.GetService(), serviceCall.GetMethod(), "", "")
 				graph.AddNode(toName, toNode)
 
 				fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
@@ -196,9 +196,12 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			toDatabasePath := databaseCall.GetDatabasePath()
 			toNode := graph.GetNodeByNameIfExists(toDatabasePath)
 			dbname := databaseCall.GetDatabaseName()
+			schema := databaseCall.GetSchemaName()
+
 			if toNode == nil {
-				toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE, "", "", dbname)
+				toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE, "", "", dbname, schema)
 				graph.AddNode(toDatabasePath, toNode)
+
 				schemaName := databaseCall.GetSchemaName()
 
 				if !graph.GetApp().HasDatabase(dbname) {

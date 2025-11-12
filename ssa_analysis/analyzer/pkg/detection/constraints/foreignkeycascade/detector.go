@@ -81,7 +81,7 @@ func (detector *ForeignKeyCascadeDetector) OnUpdate(app *app.App, reqIdx int, ed
 }
 
 func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
-	op := NewDeleteOperation(edge, edge.GetArguments())
+	op := NewDeleteOperation(edge, edge.GetArguments(), edge.GetToNode().GetDatabaseName(), edge.GetToNode().GetSchemaName())
 	request := detector.getCurrentRequest()
 	request.AddOperation(op)
 	fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op)

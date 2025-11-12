@@ -23,6 +23,7 @@ type AbstractNode struct {
 
 	// for database nodes only
 	dbname string
+	schema string
 }
 
 func (node *AbstractNode) GetServiceWithMethod() string {
@@ -31,6 +32,13 @@ func (node *AbstractNode) GetServiceWithMethod() string {
 
 func (node *AbstractNode) String() string {
 	return node.name
+}
+
+func (node *AbstractNode) GetSchemaName() string {
+	if node.schema == "" {
+		log.Fatalf("empty schema name for node: %s\n", node.String())
+	}
+	return node.schema
 }
 
 func (node *AbstractNode) IsParsed() bool {
@@ -96,12 +104,13 @@ func (node *AbstractNode) GetReturnAt(i int) *AbstractObject {
 	return node.rets[i]
 }
 
-func NewAbstractNode(name string, t NodeType, service string, method string, dbname string) *AbstractNode {
+func NewAbstractNode(name string, t NodeType, service string, method string, dbname string, schema string) *AbstractNode {
 	return &AbstractNode{
 		name:    name,
 		t:       t,
 		service: service,
 		method:  method,
 		dbname:  dbname,
+		schema: schema,
 	}
 }

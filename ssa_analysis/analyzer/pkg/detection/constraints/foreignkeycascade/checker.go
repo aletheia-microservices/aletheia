@@ -45,7 +45,7 @@ func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.
 				if constraint.IsForeignKey() {
 					fmt.Printf("\t[FOREIGN KEY CASCADE | CHECKER] constraint (foreign key): %s\n", constraint.String())
 					currField := constraint.GetFieldAt(1)
-					if currField.GetDatabase() == currDB {
+					if currField.GetDatabase() == currDB && currField.GetSchema().GetName() == currOp.schema {
 						// found reference to current field
 						otherField := constraint.GetFieldAt(0)
 						fmt.Printf("\t[FOREIGN KEY CASCADE | CHECKER] pending field: %s\n", otherField.String())
