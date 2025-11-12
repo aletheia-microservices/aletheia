@@ -446,11 +446,12 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currRead
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new transitive constraints\n")
 		} else {
-			otherWriteField.AddConstraint(constraint)
-			otherDb.GetLastSchema().AddConstraint(constraint)
+			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			if otherWriteTaint.IsWrite() {
 				constraint.DisableMandatory(reqIdx)
 			}
+			otherWriteField.AddConstraint(constraint)
+			otherDb.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)

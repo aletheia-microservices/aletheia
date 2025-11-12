@@ -21,7 +21,7 @@ var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne", "Upsert", "ReplaceOne"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
-var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select"}
+var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select", "Get"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
 
 type ValFieldPath struct {
@@ -128,28 +128,36 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			}
 			fmt.Printf("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
 
-			switch call.Call.Method.Name() {
-			case "Select":
-				opType = common.OP_READ
-			case "Exec": // can also be update or read
-				opType = common.OP_WRITE
-			default:
-				log.Fatalf("[CALLS BLUEPRINT] [RELDB] unknown method name for queue call: %s\n", call.String())
-			}
-
 			var dstVal, stmtVal, sliceArgsVal ssa.Value
-			if opType == common.OP_READ {
+			if call.Call.Method.Name() == "Select" || call.Call.Method.Name() == "Get"  {
 				// e.g., Select(ctx, &movieId, "SELECT * FROM movieid WHERE movieid = ?", movieID)
+				// TODO: add support for more than 1 dst val
 				dstVal = call.Call.Args[1]
 				stmtVal = call.Call.Args[2]
 				sliceArgsVal = call.Call.Args[3]
-			} else if opType == common.OP_WRITE {
+			} else if call.Call.Method.Name() == "Exec" {
 				// e.g., Exec(ctx, "INSERT INTO movieid(movieid, title) VALUES (?, ?);", movieID, title)
+				// DELETE FROM sock_tag WHERE sock_tag.sock_id=?;
 				stmtVal = call.Call.Args[1]
 				sliceArgsVal = call.Call.Args[2]
 			}
 
 			stmt, _ := utils.ExtractStringFromValue(stmtVal)
+
+			switch call.Call.Method.Name() {
+			case "Select", "Get":
+				opType = common.OP_READ
+			case "Exec": // can also be update or read
+				if strings.HasPrefix(stmt, "INSERT") {
+					opType = common.OP_WRITE
+				} else if strings.HasPrefix(stmt, "DELETE") {
+					opType = common.OP_DELETE
+				} else {
+					log.Fatalf("TODO!")
+				}
+			default:
+				log.Fatalf("[CALLS BLUEPRINT] [RELDB] unknown method name for queue call: %s\n", call.String())
+			}
 
 			database, ok := extractDatabaseNameFromUnOp(graph, unOp)
 			if !ok {
@@ -181,6 +189,10 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 									fmt.Printf("[CALLS BLUEPRINT] [RELDB] on store node: %v\n", storeNode)
 									storeInstr, _ := storeNode.GetInstruction().(*ssa.Store)
 									argVals = append(argVals, storeInstr.Val)
+
+									if storeInstr.Val == nil {
+										log.Fatalf("unexpected nil val for storeinstr: %v\n", storeInstr)
+									}
 								}
 							}
 						}
@@ -190,37 +202,71 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 			var fields []string
 			var tableName string
-			var readFields []string
+			var filterFields []string
 
 			if opType == common.OP_READ {
 				var tables []string
-				readFields, fields, tables = app.ParseSQLRead(database, stmt)
-				fmt.Printf("[CALLS BLUEPRINT] [RELDB] got filter fields: %v\n", fields)
+				fmt.Printf("[CALLS BLUEPRINT] [SQL] [READ] parsing stmt: %s\n", stmt)
+				filterFields, fields, tables = app.ParseSQLRead(database, stmt)
+				fmt.Printf("[CALLS BLUEPRINT] [SQL] [READ] got filter fields: %v\n", filterFields)
 				tableName = tables[0]
+
+				// sanity check
+				if len(argVals) != len(fields) {
+					log.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
+				}
 			} else if opType == common.OP_WRITE {
+				fmt.Printf("[CALLS BLUEPRINT] [SQL] [WRITE] parsing stmt: %s\n", stmt)
 				fields, _, tableName = app.ParseSQLWrite(database, stmt)
-				fmt.Printf("[CALLS BLUEPRINT] [RELDB] got written fields: %v\n", fields)
+				fmt.Printf("[CALLS BLUEPRINT] [SQL] [WRITE] got written fields: %v\n", fields)
+			} else if opType == common.OP_DELETE {
+				fmt.Printf("[CALLS BLUEPRINT] [SQL] [DELETE] parsing stmt: %s\n", stmt)
+				var tables []string
+				filterFields, tables = app.ParseSQLDelete(database, stmt)
+				fmt.Printf("[CALLS BLUEPRINT] [SQL] [DELETE] got filter fields: %v\n", filterFields)
+				tableName = tables[0]
+
+				// sanity check
+				if len(argVals) != len(filterFields) {
+					log.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
+				}
 			}
 
-			if len(argVals) != len(fields) {
-				log.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
-			}
-
-			valFieldPathLst := make([]ValFieldPath, len(argVals))
+			var valFieldPathLst []ValFieldPath
 			for i, field := range fields {
 				argVal := argVals[i]
-				valFieldPath := ValFieldPath{val: argVal, fieldpath: field}
-				valFieldPathLst[i] = valFieldPath
+				if argVals[i] == nil {
+					log.Fatalf("field argvals[i] is nil")
+				}
+				valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: argVal, fieldpath: field})
 			}
 
 			if opType == common.OP_READ {
 				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
 				// and the readField has format <database>.<table>
-				if call.Call.Method.Name() == "Select" {
+				if call.Call.Method.Name() == "Select" && len(filterFields) > 0 {
 					// select method reads entire row
-					readField := readFields[0]
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: dstVal, fieldpath: readField})
+					filterField := filterFields[0]
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: dstVal, fieldpath: filterField})
+
+					if dstVal == nil {
+						log.Fatalf("dstval is nil")
+					}
 				}
+			} else if opType == common.OP_DELETE {
+				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
+				// and the readField has format <database>.<table>
+				for i, filterField := range filterFields {
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: argVals[i], fieldpath: filterField})
+
+					if argVals[i] == nil {
+						log.Fatalf("is nil")
+					}
+				}
+			}
+
+			for i, valFieldpAth := range valFieldPathLst{
+				fmt.Printf("%d: %v\n", i, valFieldpAth.val)
 			}
 
 			return database, tableName, opType, valFieldPathLst, true

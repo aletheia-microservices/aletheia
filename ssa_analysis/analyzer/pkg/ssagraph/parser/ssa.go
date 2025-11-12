@@ -190,7 +190,7 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.Panic:
 		// ignore
 
-	case *ssa.Go:
+	case *ssa.Go, *ssa.RunDefers, *ssa.Defer:
 		// TODO
 		fmt.Printf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 

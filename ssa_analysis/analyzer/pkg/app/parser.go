@@ -300,7 +300,9 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 			}
 		}
 
-		filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+		if stmt.Where != nil {
+			filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+		}
 
 	default:
 		log.Fatalf("[APP SQL PARSER] Unsupported SQL statement: %s", stmtStr)
@@ -386,6 +388,38 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 		filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
 	}
 	return writtenFields, filterFields, tableName
+}
+
+// ParseSQLDelete parses a DELETE statement and returns:
+// - filterFields: fields used in the WHERE clause, in the form <db>.<table>.<column>
+// - tableNames: the table names involved in the delete
+func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
+	fmt.Printf("[APP SQL PARSER] parsing sql delete for database (%s): %s\n", db, stmtStr)
+	stmt, err := sqlparser.Parse(stmtStr)
+	if err != nil {
+		log.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+	}
+
+	var filterFields      []string
+	var tableNameAliasLst []tableNameAlias
+
+	switch stmt := stmt.(type) {
+	case *sqlparser.Delete:
+		tableNameAliasLst = parseSQLTableExprs(stmt.TableExprs)
+		if stmt.Where != nil {
+			filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+		}
+
+	default:
+		log.Fatalf("[APP SQL PARSER] Unsupported SQL statement for delete parser: %s", stmtStr)
+	}
+
+	tableNames := make([]string, len(tableNameAliasLst))
+	for i, tableAlias := range tableNameAliasLst {
+		tableNames[i] = tableAlias.name
+	}
+
+	return filterFields, tableNames
 }
 
 func parseSQLTableExprs(tableExprs sqlparser.TableExprs) []tableNameAlias {
