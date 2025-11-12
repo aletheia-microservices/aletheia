@@ -49,7 +49,9 @@ func (constraint *Constraint) IsMandatory() bool {
 			return false
 		}
 	}
-	return true
+	// if there are still elements in the list, then constraint is not mandatory
+	// if there are no elements in the list, then constraint is not mandatory
+	return len(constraint.reqIdxToMandatory) != 0
 }
 
 func (constraint *Constraint) GetRequestsIndexesOnMandatoryFlags() []int {
