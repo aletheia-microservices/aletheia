@@ -98,6 +98,11 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int,
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
+	database := app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
+	if database.IsNoSQL() && edge.GetMethod() == "Upsert" {
+		detector.OnWrite(app, reqIdx, edge)
+		return
+	}
 	// nothing to do
 }
 

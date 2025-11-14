@@ -76,6 +76,10 @@ func (database *Database) IsQueue() bool {
 	return database.typeString == "Queue"
 }
 
+func (database *Database) IsNoSQL() bool {
+	return database.typeString == "NoSQLDatabase"
+}
+
 func (database *Database) String() string {
 	var str string
 	str += " // schema: \n"
