@@ -34,13 +34,40 @@
           "catalogue_db.sock.ImageURL_2",
           "catalogue_db.sock.Price",
           "catalogue_db.sock.TagString",
-          "catalogue_db.sock.Tags"
+          "catalogue_db.sock.Tags",
+          "catalogue_db.sock.description",
+          "catalogue_db.sock.image_url_1",
+          "catalogue_db.sock.image_url_2",
+          "catalogue_db.sock.name",
+          "catalogue_db.sock.price",
+          "catalogue_db.sock.quantity",
+          "catalogue_db.sock_tag.ID",
+          "catalogue_db.sock_tag.tag_id",
+          "catalogue_db.tag",
+          "catalogue_db.tag.name",
+          "catalogue_db.tag[*]",
+          "catalogue_db.tag[*].ID",
+          "catalogue_db.tag[*].Name"
+        ],
+        "constraints": []
+      },
+      {
+        "name": "sock_tag",
+        "fields": [
+          "catalogue_db.sock_tag.ID",
+          "catalogue_db.sock_tag.tag_id"
         ],
         "constraints": []
       },
       {
         "name": "tag",
-        "fields": [],
+        "fields": [
+          "catalogue_db.tag",
+          "catalogue_db.tag.name",
+          "catalogue_db.tag[*]",
+          "catalogue_db.tag[*].ID",
+          "catalogue_db.tag[*].Name"
+        ],
         "constraints": []
       }
     ]
@@ -62,14 +89,16 @@
           "order_db.orders.Items[*].Quantity",
           "order_db.orders.Items[*].UnitPrice",
           "order_db.orders.Shipment",
+          "order_db.orders.Shipment.ID",
           "order_db.orders.Shipment.Name",
           "order_db.orders.Shipment.Status"
         ],
         "constraints": [
-          "FOREIGN_KEY order_db.orders.Address REFERENCES user_db.users.Addresses",
-          "FOREIGN_KEY order_db.orders.Card REFERENCES user_db.users.Cards",
+          "FOREIGN_KEY order_db.orders.Address REFERENCES user_db.users",
+          "FOREIGN_KEY order_db.orders.Card REFERENCES user_db.users",
           "FOREIGN_KEY order_db.orders.CustomerID REFERENCES user_db.users.UserID",
           "FOREIGN_KEY order_db.orders.Items REFERENCES cart_db.carts.Items",
+          "FOREIGN_KEY order_db.orders.Shipment.ID REFERENCES order_db.orders.ID [MANDATORY] [T]",
           "FOREIGN_KEY order_db.orders.Shipment.Name REFERENCES user_db.users.UserID [T]"
         ]
       }
@@ -131,7 +160,8 @@
           "user_db.users.Salt",
           "user_db.users.UserID",
           "user_db.users.Username",
-          "user_db.users._id"
+          "user_db.users._id",
+          "user_db.users.username"
         ],
         "constraints": []
       }

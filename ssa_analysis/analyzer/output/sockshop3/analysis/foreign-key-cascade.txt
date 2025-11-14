@@ -1,8 +1,12 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
-[NUM_WARNINGS = 1]
-entry request: Frontend.DeleteSock()
-	DELETE: CatalogueService.DeleteSock() --> catalogue_db.catalogue.DeleteOne()
-		MISSING CASCADE DELETE #1: database={cart_db}, pending fields={Items[*].ID, Items[*].UnitPrice}
+[NUM_WARNINGS = 2]
+entry request: Frontend.Login()
+	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
+		MISSING CASCADE DELETE #1: database={order_db}, pending fields={Items}
+
+entry request: Frontend.Register()
+	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
+		MISSING CASCADE DELETE #2: database={order_db}, pending fields={Items}
 

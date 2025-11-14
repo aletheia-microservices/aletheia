@@ -534,7 +534,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 		fmt.Printf("[BEFORE] EDGE TYPE: %s\n", edge.GetTypeString())
 
-		if ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()) {
+		if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()); ok {
 			continue // skip
 		}
 
@@ -714,7 +714,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 	}
 	fmt.Printf("\t[TAINT NEARBY] [PART_2] exiting %s: %s\n", val.Name(), val.String())
 
-	if ssaValueIsUsedInMongoBsonFilter(graph, val) {
+	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, val); ok{
 		return // skip
 	}
 }
@@ -732,7 +732,7 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 	node := graph.GetNodeByName(val.Name())
 	fmt.Printf("\t[TAINT FETCH] checking upper taints: %v\n", node.GetTaints())
 
-	if ssaValueIsUsedInMongoBsonFilter(graph, val) {
+	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, val); ok {
 		return // skip
 	}
 

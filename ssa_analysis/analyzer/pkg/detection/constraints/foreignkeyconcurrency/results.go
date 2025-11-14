@@ -61,6 +61,7 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 				)
 			}
 		}
+		results += "\n"
 	}
 	detector.results = header + fmt.Sprintf("[NUM_WARNINGS = %d]\n", numWarnings) + results
 }

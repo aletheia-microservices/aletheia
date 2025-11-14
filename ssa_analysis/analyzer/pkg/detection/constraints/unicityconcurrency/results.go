@@ -18,6 +18,15 @@ func (detector *UnicityConcurrencyDetector) ComputeResults(app *app.App) {
 	var numWarnings int
 	var results string
 	for request, vulnerableWriteSets := range detector.vulnerableWriteSets {
+		var ok bool
+		for _, writeSet := range vulnerableWriteSets {
+			if len(writeSet.otherOps) > 0 {
+				ok = true
+			}
+		}
+		if !ok {
+			continue
+		}
 		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for _, writeSet := range vulnerableWriteSets {
 			results += fmt.Sprintf("\tWRITE (ORIGIN): %s\n", writeSet.constrainedOp.call.String())
