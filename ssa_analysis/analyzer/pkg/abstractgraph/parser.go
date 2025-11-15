@@ -37,8 +37,9 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 					ssaTaint.GetDatabasePath(),
 					ssaTaint.GetDatabaseCall().GetID(),
 					ssaTaint.GetDatabaseCall().GetOpType(),
-					true, false,
+					true, false, ssaTaint.IsReadKey(), ssaTaint.IsReadValue(),
 				)
+				
 				abstractTaints = append(abstractTaints, taint)
 				fmt.Printf("[SSA TO ABSTRACT TAINT] new taint on object path (%s): %s\n", objPath, taint.LongString())
 			}

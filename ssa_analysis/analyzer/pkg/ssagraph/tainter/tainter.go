@@ -85,7 +85,7 @@ func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMod
 	case TAINT_MODE_NEARBY:
 		if taintInfo.isTypeDatabase() {
 			fmt.Printf("[TAINT NEARBY] [DATABASE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
-			ok = node.AddDatabaseTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabasePath(), taintInfo.getDatabaseCall())
+			ok = node.AddDatabaseTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabasePath(), taintInfo.getDatabaseCall(), taintInfo.isReadKey(), taintInfo.isReadValue())
 		} else if taintInfo.isTypeService() {
 			fmt.Printf("[TAINT NEARBY] [SERVICE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
 			ok = node.AddServiceTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getServicePath(), taintInfo.getServiceCall())
@@ -93,7 +93,7 @@ func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMod
 	case TAINT_MODE_FETCH_UPWARDS:
 		if taintInfo.isTypeDatabase() {
 			fmt.Printf("[TAINT FETCH] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath()+taintInfo.getObjectPath())
-			ok = node.AddDatabaseTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabasePath()+taintInfo.getObjectPath(), taintInfo.getDatabaseCall())
+			ok = node.AddDatabaseTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getDatabasePath()+taintInfo.getObjectPath(), taintInfo.getDatabaseCall(), taintInfo.isReadKey(), taintInfo.isReadValue())
 		} else if taintInfo.isTypeService() {
 			fmt.Printf("[TAINT FETCH] [SERVICE] tainting node (%s) for objpath (%s) and dbfield (%s)\n", node.String(), taintInfo.getObjectFullPath(), taintInfo.getDatabasePath())
 			ok = node.AddServiceTaintIfNotExists(taintInfo.getObjectFullPath(), taintInfo.getServicePath(), taintInfo.getServiceCall())
@@ -124,7 +124,7 @@ func nodeHasTaintInfo(node *ssagraph.SSANode, objpath string, info TaintInfo) bo
 
 func generateRootTaintInfoFromTaint(node *ssagraph.SSANode, taint *ssagraph.SSATaint) TaintInfo {
 	if taint.IsDatabaseTaint() {
-		return NewTaintInfoDatabase(taint.GetDatabasePath(), "", node.GetValue(), taint.GetDatabaseCall())
+		return NewTaintInfoDatabase(taint.GetDatabasePath(), "", node.GetValue(), taint.GetDatabaseCall(), taint.IsReadKey(), taint.IsReadValue())
 	} else if taint.IsServiceTaint() {
 		return NewTaintInfoService(taint.GetServicePath(), "", node.GetValue(), taint.GetServiceCall())
 	}
@@ -221,8 +221,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				break
 			}
 
-			fmt.Println("HERE 09")
-
 			var taintInfoTmp TaintInfo
 			if taintInfo.isObjectRoot() {
 				taintInfoTmp = taintInfo.updateCallPathSuffix("." + edge.GetParam())
@@ -233,8 +231,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				fmt.Printf("[TAINT NEARBY] [PART_1] [FIELD] unexpected conditions // FROM_NODE=%s // TAINT INFO (_obj%s, %s)\n", toNode.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 				continue
 			}
-
-			fmt.Println("HERE 10")
 
 			if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
 				fmt.Printf("TAINT INFO: %s\n", taintInfo.String())
@@ -714,7 +710,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 	}
 	fmt.Printf("\t[TAINT NEARBY] [PART_2] exiting %s: %s\n", val.Name(), val.String())
 
-	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, val); ok{
+	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, val); ok {
 		return // skip
 	}
 }
@@ -756,6 +752,8 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 				taintInfoTmp := taintInfo
 				taintInfoTmp.dbTaint.dbpath = taint.GetDatabasePath()
 				taintInfoTmp.dbTaint.dbcall = taint.GetDatabaseCall()
+				taintInfoTmp.setReadKey(taint.IsReadKey())
+				taintInfoTmp.setReadValue(taint.IsReadValue())
 				doTaintNode(node, taintInfoTmp, TAINT_MODE_FETCH_UPWARDS)
 
 				// so that we can later taint the bottom node
@@ -889,7 +887,7 @@ func runTainterOnDatabaseCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) 
 
 			visited := make(map[ssa.Value]bool)
 
-			taintInfo := NewTaintInfoDatabase(dbfield, "", nil, dbCall)
+			taintInfo := NewTaintInfoDatabase(dbfield, "", nil, dbCall, valFieldPath.readKey, valFieldPath.readValue)
 
 			// e.g. dsb_hotel2: RecommendationService.LoadRecommendations()
 			// where &hotels is the destination
@@ -984,7 +982,7 @@ func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagra
 		fmt.Println()
 		fmt.Printf("[TAINT] check upper taints for node: %v\n", originNode.String())
 		visited := make(map[ssa.Value]bool)
-		taintInfo := NewTaintInfoDatabase("", "", nil, nil)
+		taintInfo := NewTaintInfoDatabase("", "", nil, nil, false, false)
 		checkTaintInfo := NewCheckTaintInfo()
 		propagateTaintFetchUpwards(graph, originNode.GetValue(), taintInfo, visited, checkTaintInfo, false)
 		node := graph.GetNodeByName(originNode.GetValue().Name())
@@ -994,7 +992,7 @@ func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagra
 			if taint.dbcall == nil {
 				log.Fatalf("[1] nil db call for taint: %v\n", taint)
 			}
-			taintInfo := NewTaintInfoDatabase(taint.dbpath, "", originNode.GetValue(), taint.dbcall)
+			taintInfo := NewTaintInfoDatabase(taint.dbpath, "", originNode.GetValue(), taint.dbcall, taint.readKey, taint.readVal)
 			doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
 		}
 
@@ -1006,7 +1004,7 @@ func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagra
 					// FIXME: verify this
 					fmt.Printf("[2] nil db call for taint: %v\n", taint)
 				} else {
-					taintInfo := NewTaintInfoDatabase(taint.dbpath, objpath, originNode.GetValue(), taint.dbcall)
+					taintInfo := NewTaintInfoDatabase(taint.dbpath, objpath, originNode.GetValue(), taint.dbcall, taint.readKey, taint.readVal)
 					doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
 				}
 			}

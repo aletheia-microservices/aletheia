@@ -28,6 +28,11 @@ type ValFieldPath struct {
 	val       ssa.Value
 	fieldpath string
 
+	// need to distinguish between filter keys and retrieved values
+	// aplies to reads (any db) and updates (e.g., nosql)
+	readKey   bool // aka filter keys
+	readValue bool // aka returned values
+
 	// cache only
 	cacheMultiget bool
 
@@ -129,7 +134,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			fmt.Printf("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
 
 			var dstVal, stmtVal, sliceArgsVal ssa.Value
-			if call.Call.Method.Name() == "Select" || call.Call.Method.Name() == "Get"  {
+			if call.Call.Method.Name() == "Select" || call.Call.Method.Name() == "Get" {
 				// e.g., Select(ctx, &movieId, "SELECT * FROM movieid WHERE movieid = ?", movieID)
 				// TODO: add support for more than 1 dst val
 				dstVal = call.Call.Args[1]
@@ -238,7 +243,11 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				if argVals[i] == nil {
 					log.Fatalf("field argvals[i] is nil")
 				}
-				valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: argVal, fieldpath: field})
+				valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+					val: argVal, 
+					fieldpath: field,
+					readKey:   true,
+				})
 			}
 
 			if opType == common.OP_READ {
@@ -247,7 +256,11 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				if call.Call.Method.Name() == "Select" && len(filterFields) > 0 {
 					// select method reads entire row
 					filterField := filterFields[0]
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: dstVal, fieldpath: filterField})
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+						val:       dstVal,
+						fieldpath: filterField,
+						readValue:   true,
+					})
 
 					if dstVal == nil {
 						log.Fatalf("dstval is nil")
@@ -257,16 +270,16 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
 				// and the readField has format <database>.<table>
 				for i, filterField := range filterFields {
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{val: argVals[i], fieldpath: filterField})
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+						val:       argVals[i],
+						fieldpath: filterField,
+						readKey:   true,
+					})
 
 					if argVals[i] == nil {
 						log.Fatalf("is nil")
 					}
 				}
-			}
-
-			for i, valFieldpAth := range valFieldPathLst{
-				fmt.Printf("%d: %v\n", i, valFieldpAth.val)
 			}
 
 			return database, tableName, opType, valFieldPathLst, true
@@ -301,7 +314,11 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				topic := "notification"
 				valFieldPathLst := make([]ValFieldPath, 1)
 				docVal := call.Call.Args[1]
-				valFieldPathLst[0] = ValFieldPath{val: docVal, fieldpath: database + "." + topic}
+				valFieldPathLst[0] = ValFieldPath{
+					val: docVal, 
+					fieldpath: database + "." + topic,
+					readValue: opType == common.OP_READ,
+				}
 
 				return database, topic, opType, valFieldPathLst, true
 			}
@@ -349,26 +366,29 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				// track cache key
 				if _, ok := utils.ExtractStringFromValue(cacheKeyVal); ok {
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-						val: cacheKeyVal, 
-						fieldpath: database + "." + namespace + "." + keyField,
+						val:           cacheKeyVal,
+						fieldpath:     database + "." + namespace + "." + keyField,
 						cacheMultiget: opType == common.OP_READ_MANY,
+						readKey:       true,
 					})
 				} else if binOp, ok := cacheKeyVal.(*ssa.BinOp); ok {
 					if suffix, ok := utils.ExtractStringFromValue(binOp.Y); ok {
 						namespace, _ = strings.CutPrefix(suffix, ":")
 						// real cache key
 						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-							val: binOp.X, 
-							fieldpath: database + "." + namespace + "." + keyField,
+							val:           binOp.X,
+							fieldpath:     database + "." + namespace + "." + keyField,
 							cacheMultiget: opType == common.OP_READ_MANY,
+							readKey:       true,
 						})
 					}
 				} else if call, ok := cacheKeyVal.(*ssa.Call); ok {
 					for _, arg := range call.Call.Args {
 						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-							val: arg, 
-							fieldpath: database + "." + namespace + "." + keyField,
+							val:           arg,
+							fieldpath:     database + "." + namespace + "." + keyField,
 							cacheMultiget: opType == common.OP_READ_MANY,
+							readKey:       true,
 						})
 					}
 				}
@@ -376,18 +396,20 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				if valFieldPathLst == nil {
 					// [TO BE IMPROVED]
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-						val: cacheKeyVal, 
-						fieldpath: database + "." + namespace + "." + keyField,
+						val:           cacheKeyVal,
+						fieldpath:     database + "." + namespace + "." + keyField,
 						cacheMultiget: opType == common.OP_READ_MANY,
+						readKey:       true,
 					})
 					fmt.Printf("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
 				}
 
 				// track cache value
 				valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-					val: cacheValueVal, 
-					fieldpath: database + "." + namespace + "." + valField,
+					val:           cacheValueVal,
+					fieldpath:     database + "." + namespace + "." + valField,
 					cacheMultiget: opType == common.OP_READ_MANY,
+					readValue:     true,
 				})
 
 				return database, namespace, opType, valFieldPathLst, true
@@ -496,6 +518,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 								} else {
 									val.fieldpath = database + "." + collection + ".*"
 								}
+								val.readKey = true
 								valFieldPathLst = append(valFieldPathLst, val)
 							}
 						}
@@ -506,30 +529,10 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					if opType == common.OP_READ || opType == common.OP_READ_MANY {
 						if len(call.Call.Args) > 2 {
 							projection := call.Call.Args[2]
-							for projectionValue, vals := range computeNoSQLFilterKeyToValues(graph, projection) {
-								for _, val := range vals {
-									// sanity check
-									if projectionValue != "" {
-										if opType == common.OP_READ_MANY {
-											// NoSQL FindMany returns many documents for the projection
-											// so we need to add the projectionValue directly to the path
-											val.fieldpath = database + "." + collection + "." + projectionValue
-										} else if opType == common.OP_READ {
-											// NosQL FindOne returns the document that includes the projection
-											// so the fieldpath does not need to contain the projectionValue now
-											val.fieldpath = database + "." + collection
-										}
-										projections = append(projections, projectionValue)
-									} else { // sanity check
-										if opType == common.OP_READ_MANY {
-											// the "*" has nothing to do with MANY
-											// we are only setting a dynamic projectionValue
-											val.fieldpath = database + "." + collection + ".*"
-										} else if opType == common.OP_READ {
-											val.fieldpath = database + "." + collection
-										}
-									}
-									valFieldPathLst = append(valFieldPathLst, val)
+							for projectionValue := range computeNoSQLFilterKeyToValues(graph, projection) {
+								// sanity check
+								if projectionValue != "" {
+									projections = append(projections, projectionValue)
 								}
 							}
 						}
@@ -558,7 +561,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 							})
 						}
 					}
-					
+
 					// propagata taint to future reads on cursor
 					if opType == common.OP_READ || opType == common.OP_READ_MANY {
 						for cursorCall, extr := range getNoSQLCursorCallsFromCollectionCall(graph, call) {
@@ -573,6 +576,10 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 										// TODO: add support for multiple projection values
 										log.Fatalf("TODO! projections = %v\n", projections)
 									}
+								} else {
+									// skip
+									// NosQL FindOne returns the document that includes the projection
+									// so the fieldpath does not need to contain the projectionValue now
 								}
 								// distinguish objects used as arguments for any operation
 								// from objects used as destination for reads (isDst=true)
@@ -580,6 +587,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 									fieldpath:      fieldpath,
 									val:            dstVal,
 									bsonCursorMany: opType == common.OP_READ_MANY,
+									readValue:      true,
 								})
 							}
 						}
@@ -896,7 +904,7 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 			}
 		} else if slice2, ok := slice.Type().(*types.Slice); ok {
 			// can be a slice of bson.D
-			// e.g., projections where parameter is "projection ...bson.D" 
+			// e.g., projections where parameter is "projection ...bson.D"
 			if named, ok := slice2.Elem().(*types.Named); ok {
 				// this is the alias type: go.mongodb.org/mongo-driver/bson/primitive.D
 				if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "D" {

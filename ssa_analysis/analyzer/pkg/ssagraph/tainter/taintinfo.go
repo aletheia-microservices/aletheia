@@ -24,8 +24,10 @@ const (
 )
 
 type DBTaint struct {
-	dbpath string                 // with full path: <database>.<table>.<fieldname>[.<any sub path>]
-	dbcall *ssagraph.DatabaseCall //currently this is only used to get the ID later in the parser of abstractcallgraph
+	dbpath  string                 // with full path: <database>.<table>.<fieldname>[.<any sub path>]
+	dbcall  *ssagraph.DatabaseCall //currently this is only used to get the ID later in the parser of abstractcallgraph
+	readKey bool                   // aka filter key
+	readVal bool                   // aka retrived value
 }
 
 type SVTaint struct {
@@ -52,15 +54,17 @@ func (ti TaintInfo) String() string {
 	return fmt.Sprintf("(_obj%s)", ti.getObjectPath())
 }
 
-func NewTaintInfoDatabase(dbpath string, path string, val ssa.Value, dbcall *ssagraph.DatabaseCall) TaintInfo {
+func NewTaintInfoDatabase(dbpath string, path string, val ssa.Value, dbcall *ssagraph.DatabaseCall, readKey bool, readVal bool) TaintInfo {
 	return TaintInfo{
 		objpath:  path,
 		objval:   val,
 		infoType: TAINT_INFO_DATABASE,
 		objroot:  true,
 		dbTaint: DBTaint{
-			dbpath: dbpath,
-			dbcall: dbcall,
+			dbpath:  dbpath,
+			dbcall:  dbcall,
+			readKey: readKey,
+			readVal: readVal,
 		},
 	}
 }
@@ -76,6 +80,22 @@ func NewTaintInfoService(svpath string, path string, val ssa.Value, svcall *ssag
 			svcall: svcall,
 		},
 	}
+}
+
+func (t TaintInfo) isReadKey() bool {
+	return t.dbTaint.readKey
+}
+
+func (t TaintInfo) isReadValue() bool {
+	return t.dbTaint.readVal
+}
+
+func (t TaintInfo) setReadKey(readKey bool) {
+	t.dbTaint.readKey = readKey
+}
+
+func (t TaintInfo) setReadValue(readValue bool) {
+	t.dbTaint.readVal = readValue
 }
 
 func (t TaintInfo) enableObjectRoot() TaintInfo {

@@ -3,18 +3,58 @@
     "name": "bar_db",
     "schemas": null
   },
-  "foo_db": {
-    "name": "foo_db",
+  "movie_db": {
+    "name": "movie_db",
     "schemas": [
       {
-        "name": "foo",
+        "name": "movie",
         "fields": [
-          "foo_db.foo",
-          "foo_db.foo.BarItems",
-          "foo_db.foo.FooID",
-          "foo_db.foo.FooMap",
-          "foo_db.foo.FooMap.MapVal",
-          "foo_db.foo.Text"
+          "movie_db.movie",
+          "movie_db.movie.MovieID",
+          "movie_db.movie.PlotID"
+        ],
+        "constraints": []
+      }
+    ]
+  },
+  "plot_db": {
+    "name": "plot_db",
+    "schemas": [
+      {
+        "name": "plot",
+        "fields": [
+          "plot_db.plot",
+          "plot_db.plot.PlotID"
+        ],
+        "constraints": [
+          "FOREIGN_KEY plot_db.plot.PlotID REFERENCES movie_db.movie.PlotID"
+        ]
+      }
+    ]
+  },
+  "price_db": {
+    "name": "price_db",
+    "schemas": [
+      {
+        "name": "price",
+        "fields": [
+          "price_db.price",
+          "price_db.price.RouteID"
+        ],
+        "constraints": [
+          "FOREIGN_KEY price_db.price.RouteID REFERENCES route_db.route.RouteID"
+        ]
+      }
+    ]
+  },
+  "route_db": {
+    "name": "route_db",
+    "schemas": [
+      {
+        "name": "route",
+        "fields": [
+          "route_db.route",
+          "route_db.route.RouteID"
         ],
         "constraints": []
       }

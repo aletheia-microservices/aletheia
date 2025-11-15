@@ -71,8 +71,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		for _, otherTaint := range otherTaintsMap[objpath] {
 			if objpath, exists := taintExists(otherTaint); !exists {
 				// need to create new AbstractTaint to avoid just storing the pointer and modifying its fields
-				newTaint := NewAbstractTaint(otherTaint.fieldpath, otherTaint.dbcallID, otherTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE)
-				
+				newTaint := NewAbstractTaint(otherTaint.fieldpath, otherTaint.dbcallID, otherTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE, otherTaint.IsReadKey(), otherTaint.IsReadValue())
 				if mode != MERGE_MODE_DEBUG {
 					obj.AddTaintIfNotExists(objpath, newTaint)
 				}
@@ -132,7 +131,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 				// to path: 	_obj.ID => taint to add: 	my_db.MyObject.ID (diff = .ID)
 				if ok, diff := utils.IsUpperPath(fromObjpath, toLocation); ok {
 					newDbpath := fromTaint.GetDatabasePath() + diff
-					newTaint := NewAbstractTaint(newDbpath, fromTaint.dbcallID, fromTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE)
+					newTaint := NewAbstractTaint(newDbpath, fromTaint.dbcallID, fromTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE, fromTaint.IsReadKey(), fromTaint.IsReadValue())
 					if mode != MERGE_MODE_DEBUG {
 						obj.AddTaintIfNotExists(toLocation, newTaint)
 					}
@@ -460,28 +459,69 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currRead
 	return modified
 }
 
-func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, currTaint AbstractTaint, otherTaint AbstractTaint, currDb *backends.Database, otherDb *backends.Database, currField *backends.Field, otherField *backends.Field) bool {
+func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 AbstractTaint, taint1 AbstractTaint, db2 *backends.Database, db1 *backends.Database, field2 *backends.Field, field1 *backends.Field) bool {
 	if !config.Global.CreateReferencesFromReadReadPair {
 		return false
 	}
 
 	var modified bool
-	if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
-		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherField, currField)
-
-		if ok := createTransitiveReferenceIfExists(constraint); ok {
-			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-READ] [TRANSITIVE] added new transitive constraints\n")
+	if !field2.HasConstraintForeignKeyToField(field1) && !field1.HasConstraintForeignKeyToField(field2) {
+		if taint1.IsReadKey() && taint2.IsReadKey() {
+			// foreign key: field1 <--- field2
+			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
+			if ok := createTransitiveReferenceIfExists(constraint); ok {
+				modified = true
+				fmt.Printf("\t\t[ITERATOR] [READ-READ] [KEY-KEY] [TRANSITIVE] added new transitive constraints\n")
+			} else {
+				field2.AddConstraint(constraint)
+				db2.GetLastSchema().AddConstraint(constraint)
+				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+				modified = true
+				fmt.Printf("\t\t[ITERATOR] [READ-READ] [KEY-KEY] added new constraint: %s\n", constraint)
+			}
+		} else if taint1.IsReadValue() && taint2.IsReadKey() {
+			// foreign key: field1 ---> field2
+			if !config.Global.CreateReferencesFromReadReadPairAndValKey {
+				return false
+			}
+			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field2)
+			if ok := createTransitiveReferenceIfExists(constraint); ok {
+				modified = true
+				fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] [TRANSITIVE] added new transitive constraints\n")
+			} else {
+				field1.AddConstraint(constraint)
+				db1.GetLastSchema().AddConstraint(constraint)
+				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+				modified = true
+				fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] added new constraint: %s\n", constraint)
+			}
+		} else if taint1.IsReadKey() && taint2.IsReadValue() {
+			// should never occur
+			// FIXME: it is happening because taints are unordered
+			// for now, we just follow the same logic abose vor val-key
+			//log.Fatalf("\t\t[ITERATOR] [READ-READ] [KEY-VAL] unexpected key-val pair: (%s, %s)\n", taint1.String(), taint2.String())
+		
+		
+			// foreign key: field2 ---> field1
+			if !config.Global.CreateReferencesFromReadReadPairAndValKey {
+				return false
+			}
+			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
+			if ok := createTransitiveReferenceIfExists(constraint); ok {
+				modified = true
+				fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] [TRANSITIVE] added new transitive constraints\n")
+			} else {
+				field2.AddConstraint(constraint)
+				db2.GetLastSchema().AddConstraint(constraint)
+				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+				modified = true
+				fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] added new constraint: %s\n", constraint)
+			}
 		} else {
-			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			constraint.DisableMandatory(reqIdx)
-			otherField.AddConstraint(constraint)
-			otherDb.GetLastSchema().AddConstraint(constraint)
-			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
-			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-READ] added new constraint: %s\n", constraint)
+			// sanity check
+			//FIXME: it's happening e.g., caches in dsb_sn
+			//log.Fatalf("\t\t[ITERATOR] [READ-READ] [VAL-VAL] unexpected val-val pair: (%s, %s)\n", taint1.String(), taint2.String())
 		}
-
 	}
 	return modified
 }

@@ -6,7 +6,9 @@ entry request: ProductService.Delete()
 	DELETE: ProductService.Delete() --> products_db.products.DeleteOne()
 		CONCURRENT WRITE #1: SkuService.New() --> skus_db.skus.InsertOne()
 		- entry={SkuService.New}, database={skus_db}, written fields={Parent}
+
 entry request: SkuService.Delete()
 	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
 		CONCURRENT WRITE #2: OrderService.New() --> orders_db.orders.InsertOne()
 		- entry={OrderService.New}, database={orders_db}, written fields={Items[*].Parent}
+

@@ -163,6 +163,12 @@ func (obj *AbstractObject) TaintString() string {
 				builder.WriteString(", secondary]")
 			}
 
+			if taint.IsReadKey() {
+				builder.WriteString(" [K]")
+			} else if taint.IsReadValue() {
+				builder.WriteString(" [V]")
+			}
+
 			builder.WriteString(" @ ")
 			builder.WriteString(taint.String())
 			builder.WriteByte('\n')
@@ -364,6 +370,8 @@ func (obj *AbstractObject) AddTaintIfSimilarNotExists(objpath string, newtaint A
 			dbcallID:  newtaint.dbcallID,
 			primary:   newtaint.primary,
 			dbOpType:  newtaint.dbOpType,
+			readKey:   newtaint.readKey,
+			readVal:   newtaint.readVal,
 		}
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
 		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)

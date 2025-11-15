@@ -23,6 +23,9 @@ type SSATaint struct {
 	dbcall    *DatabaseCall
 	svpath    string
 	svcall    *ServiceCall
+
+	readKey   bool // aka filter key
+	readValue bool // aka retrived value
 }
 
 func (taint *SSATaint) IsDatabaseTaint() bool {
@@ -31,6 +34,14 @@ func (taint *SSATaint) IsDatabaseTaint() bool {
 
 func (taint *SSATaint) IsServiceTaint() bool {
 	return taint.taintType == TAINT_SERVICE
+}
+
+func (taint *SSATaint) IsReadKey() bool {
+	return taint.readKey
+}
+
+func (taint *SSATaint) IsReadValue() bool {
+	return taint.readValue
 }
 
 func (taint *SSATaint) GetDatabasePath() string {
@@ -109,7 +120,7 @@ func (node *SSANode) GetTaints() map[string][]*SSATaint {
 	return node.taints
 }
 
-func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, dbcall *DatabaseCall) bool {
+func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, dbcall *DatabaseCall, readKey bool, readVal bool) bool {
 	lstTaints := node.taints[objpath]
 	for _, taint := range lstTaints {
 		if taint.dbpath == dbpath && taint.dbcall.opType == dbcall.opType {
@@ -120,6 +131,8 @@ func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, 
 		taintType: TAINT_DATABASE,
 		dbpath:    dbpath,
 		dbcall:    dbcall,
+		readKey:   readKey,
+		readValue: readVal,
 	})
 	return true
 }
@@ -164,6 +177,12 @@ func (node *SSANode) taintString() string {
 				builder.WriteString("rpc")
 			}
 			builder.WriteString("]")
+
+			if taint.IsReadKey() {
+				builder.WriteString(" [K]")
+			} else if taint.IsReadValue() {
+				builder.WriteString(" [V]")
+			}
 
 			builder.WriteString(" @ ")
 			builder.WriteString(taint.String())

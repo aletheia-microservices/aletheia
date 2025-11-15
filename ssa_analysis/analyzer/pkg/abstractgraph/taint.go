@@ -13,15 +13,20 @@ type AbstractTaint struct {
 	dbOpType  common.DatabaseOperationType
 	primary   bool
 	traced    bool
+	// db only
+	readKey bool
+	readVal bool
 }
 
-func NewAbstractTaint(dbpath string, dbcall string, opType common.DatabaseOperationType, primary bool, traced bool) *AbstractTaint {
+func NewAbstractTaint(dbpath string, dbcall string, opType common.DatabaseOperationType, primary bool, traced bool, readKey bool, readVal bool) *AbstractTaint {
 	return &AbstractTaint{
 		fieldpath: dbpath,
 		dbcallID:  dbcall,
 		dbOpType:  opType,
 		primary:   primary,
 		traced:    traced,
+		readKey:   readKey,
+		readVal:   readVal,
 	}
 }
 
@@ -32,7 +37,25 @@ func (taint *AbstractTaint) Copy() *AbstractTaint {
 		dbOpType:  taint.dbOpType,
 		primary:   taint.primary,
 		traced:    taint.traced,
+		readKey:   taint.readKey,
+		readVal:   taint.readVal,
 	}
+}
+
+func (taint *AbstractTaint) SetReadKey(readKey bool) {
+	taint.readKey = readKey
+}
+
+func (taint *AbstractTaint) SetReadValue(readVal bool) {
+	taint.readKey = readVal
+}
+
+func (taint *AbstractTaint) IsReadKey() bool {
+	return taint.readKey
+}
+
+func (taint *AbstractTaint) IsReadValue() bool {
+	return taint.readVal
 }
 
 func (taint *AbstractTaint) IsRead() bool {
@@ -100,7 +123,7 @@ func (taint *AbstractTaint) Equal(other *AbstractTaint) bool {
 		taint.traced == other.traced
 }
 
-// e.g., 
+// e.g.,
 // - curr dbfield 	= notification
 // - other dbfield 	= notification.PostID
 func (taint *AbstractTaint) IsUpperTaint(other *AbstractTaint) (bool, string) {
