@@ -40,7 +40,8 @@
           "post_db.post.PostID"
         ],
         "constraints": [
-          "FOREIGN_KEY post_db.post.PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]"
+          "FOREIGN_KEY post_db.post.PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
+          "FOREIGN_KEY post_db.post.PostID REFERENCES usertimeline_cache.*.Value[*].PostID [MANDATORY]"
         ]
       }
     ]
@@ -125,6 +126,7 @@
         ],
         "constraints": [
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES hometimeline_cache.*.Value[*].PostID [MANDATORY]",
+          "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].Timestamp REFERENCES hometimeline_cache.*.Value[*].Timestamp [MANDATORY]",
           "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES socialgraph_cache.followers.Key [MANDATORY]"
         ]

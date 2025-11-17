@@ -163,25 +163,39 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 		return
 	}
 
+	if !config.Global.UpdateTransitiveReferencesTriggeredByCurrent {
+		return
+	}
+
+	fmt.Printf("[TRANSITIVE REFS] current: %s\n", current.String())
+
 	for _, db := range graph.app.GetAllDatabases() {
 		for _, schema := range db.GetAllSchemas() {
 			var toDelete []*backends.Constraint
 			var toAdd []*backends.Constraint
 			for _, old := range schema.GetAllForeignKeyConstraints() {
+				if old.IsMandatory() {
+					// do not update these!
+					continue
+				}
 				if old.GetFieldAt(1) == current.GetFieldAt(0) {
 					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, old.GetFieldAt(0), current.GetFieldAt(1))
 					new.SetTransitive()
 					new.CopyMandatory(current)
 
 					toDelete = append(toDelete, old)
+					fmt.Printf("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
 					toAdd = append(toAdd, new)
+					fmt.Printf("\t[TRANSITIVE REFS] to add: %s\n", new.String())
 				}
 			}
 			for _, constraint := range toDelete {
+				constraint.GetFieldAt(0).RemoveConstraint(constraint)
 				schema.RemoveConstraint(constraint)
 			}
 
 			for _, constraint := range toAdd {
+				constraint.GetFieldAt(0).AddConstraint(constraint)
 				schema.AddConstraint(constraint)
 			}
 		}
@@ -213,6 +227,7 @@ func createTransitiveReferenceIfExists(old *backends.Constraint) bool {
 				new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
 				new.SetTransitive()
 				new.CopyMandatory(current)
+				field1.AddConstraint(new)
 				field1.GetSchema().AddConstraint(new)
 
 				transitiveConstraints = append(transitiveConstraints, new)
@@ -275,37 +290,37 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 	return modified
 }
 
-func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, currTaint AbstractTaint, otherTaint AbstractTaint, currDb *backends.Database, otherDb *backends.Database, currField *backends.Field, otherField *backends.Field) bool {
+func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2 AbstractTaint, taint1 AbstractTaint, db2 *backends.Database, db1 *backends.Database, field2 *backends.Field, field1 *backends.Field) bool {
 	var modified bool
-	if constraint := currField.GetConstraintForeignKeyToField(otherField); constraint != nil {
-		if otherTaint.IsWrite() && currTaint.IsWrite() {
+	if constraint := field2.GetConstraintForeignKeyToField(field1); constraint != nil {
+		if taint1.IsWrite() && taint2.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
 				modified = true
 				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
 			}
 		}
-	} else if constraint := otherField.GetConstraintForeignKeyToField(currField); constraint != nil {
-		if otherTaint.IsWrite() && currTaint.IsWrite() {
+	} else if constraint := field1.GetConstraintForeignKeyToField(field2); constraint != nil {
+		if taint1.IsWrite() && taint2.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
 				modified = true
 				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
 			}
 		}
-	} else if !currField.HasConstraintForeignKeyToField(otherField) && !otherField.HasConstraintForeignKeyToField(currField) {
+	} else if !field2.HasConstraintForeignKeyToField(field1) && !field1.HasConstraintForeignKeyToField(field2) {
 		// 2nd condition is for sanity check
 		// may happen when iterating queue.Push() --> queue.Pop()
-		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currField, otherField)
+		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
 
 		if ok := createTransitiveReferenceIfExists(constraint); ok {
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] [TRANSITIVE] added new transitive constraints\n")
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			if otherTaint.IsWrite() && currTaint.IsWrite() {
+			if taint1.IsWrite() && taint2.IsWrite() {
 				constraint.EnableMandatory(reqIdx)
 			}
-			currField.AddConstraint(constraint)
-			currDb.GetLastSchema().AddConstraint(constraint)
+			field2.AddConstraint(constraint)
+			db2.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
 			fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
@@ -354,16 +369,14 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, currWrit
 	return modified
 }
 
-func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currReadTaint AbstractTaint, otherWriteTaint AbstractTaint, currDb *backends.Database, otherDb *backends.Database, currField *backends.Field, otherField *backends.Field) bool {
-	if otherField.GetPath() == "order_db.order.FromStation" && currField.GetPath() == "station_db.station.Name" {
-		fmt.Printf("CURRENT TAINT: %s\n", currReadTaint.LongString())
-		fmt.Printf("OTHER TAINT: %s\n", otherWriteTaint.LongString())
+func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_read AbstractTaint, taint1_write AbstractTaint, db2 *backends.Database, db1 *backends.Database, field2 *backends.Field, field1 *backends.Field) bool {
+	if field1.GetPath() == "order_db.order.FromStation" && field2.GetPath() == "station_db.station.Name" {
+		fmt.Printf("CURRENT TAINT: %s\n", taint2_read.LongString())
+		fmt.Printf("OTHER TAINT: %s\n", taint1_write.LongString())
 		log.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
 	}
 
 	var modified bool
-	currReadField := currField
-	otherWriteField := otherField
 	// e.g.,
 	// postnotification: TODO
 	// 		=> FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID [MANDATORY]
@@ -378,82 +391,83 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, currRead
 	// NOTE: verify this
 	// not sure if we shoud leave the following conditions ahead with "nothing to do"
 	// to also capture foreign keys for other combinations of operations
-	if constraint := currReadField.GetConstraintForeignKeyToField(otherWriteField); constraint != nil {
-		if otherWriteTaint.IsWrite() {
+	if constraint := field2.GetConstraintForeignKeyToField(field1); constraint != nil {
+		if taint1_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (A) disabled mandatory: %s\n", constraint)
+				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0A] disabled mandatory: %s\n", constraint)
 			}
 		}
-	} else if constraint := otherWriteField.GetConstraintForeignKeyToField(currReadField); constraint != nil {
-		if otherWriteTaint.IsWrite() {
+	} else if constraint := field1.GetConstraintForeignKeyToField(field2); constraint != nil {
+		if taint1_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] (B) disabled mandatory: %s\n", constraint)
+				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0B] disabled mandatory: %s\n", constraint)
 			}
 		}
-	} else if false && !otherWriteField.HasConstraintForeignKeyToField(currReadField) && !currReadField.HasConstraintForeignKeyToField(otherWriteField) {
+	} else if false && !field1.HasConstraintForeignKeyToField(field2) && !field2.HasConstraintForeignKeyToField(field1) {
 		// VERSION 2
 		// WRITE .. READ
 		// field_write <--FK-- field_read
 		// 2nd condition is for sanity check
-		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, currReadField, otherWriteField)
+		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
 
 		// FOREIGN_KEY user_db.user.UserID REFERENCES order_db.order.AccountID [MANDATORY]
-		if currReadField.GetPath() == "user_db.user.UserID" && otherWriteField.GetPath() == "order_db.order.AccountID" {
-			fmt.Printf("otherTaint: %s\n", otherWriteTaint.LongString())
-			fmt.Printf("currTaint: %s\n", currReadTaint.LongString())
+		if field2.GetPath() == "user_db.user.UserID" && field1.GetPath() == "order_db.order.AccountID" {
+			fmt.Printf("otherTaint: %s\n", taint1_write.LongString())
+			fmt.Printf("currTaint: %s\n", taint2_read.LongString())
 			//log.Fatalf("[1] HERE!")
 		}
-		if currReadField.GetPath() == "order_db.order.AccountID" && otherWriteField.GetPath() == "user_db.user.UserID" {
-			fmt.Printf("otherTaint: %s\n", otherWriteTaint.LongString())
-			fmt.Printf("currTaint: %s\n", currReadTaint.LongString())
+		if field2.GetPath() == "order_db.order.AccountID" && field1.GetPath() == "user_db.user.UserID" {
+			fmt.Printf("otherTaint: %s\n", taint1_write.LongString())
+			fmt.Printf("currTaint: %s\n", taint2_read.LongString())
 			//log.Fatalf("[2] HERE!")
 		}
 
 		if ok := createTransitiveReferenceIfExists(constraint); ok {
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new transitive constraints\n")
+			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] [1] added new transitive constraints\n")
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			if otherWriteTaint.IsWrite() {
+			if taint1_write.IsWrite() {
 				constraint.DisableMandatory(reqIdx)
 			}
-			currReadField.AddConstraint(constraint)
-			currDb.GetLastSchema().AddConstraint(constraint)
+			field2.AddConstraint(constraint)
+			db2.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
+			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [1] added new constraint: %s\n", constraint)
 		}
-	} else if true && !currReadField.HasConstraintForeignKeyToField(otherWriteField) && !otherWriteField.HasConstraintForeignKeyToField(currReadField) {
+
+	} else if true && !field2.HasConstraintForeignKeyToField(field1) && !field1.HasConstraintForeignKeyToField(field2) {
 		// WRITE .. READ
 		// field_write --FK--> field_read
 
 		// 2nd condition is for sanity check
-		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, otherWriteField, currReadField)
+		constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field2)
 
-		if currReadField.GetPath() == "hometimeline_cache.*.Value[*].PostID" && otherWriteField.GetPath() == "post_db.post.PostID" {
-			fmt.Printf("otherTaint: %s\n", otherWriteTaint.LongString())
-			fmt.Printf("currTaint: %s\n", currReadTaint.LongString())
+		if field2.GetPath() == "hometimeline_cache.*.Value[*].PostID" && field1.GetPath() == "post_db.post.PostID" {
+			fmt.Printf("otherTaint: %s\n", taint1_write.LongString())
+			fmt.Printf("currTaint: %s\n", taint2_read.LongString())
 		}
-		if currReadField.GetPath() == "usertimeline_cache.*.Value[*].PostID" && otherWriteField.GetPath() == "post_db.post.PostID" {
-			fmt.Printf("otherTaint: %s\n", otherWriteTaint.LongString())
-			fmt.Printf("currTaint: %s\n", currReadTaint.LongString())
+		if field2.GetPath() == "usertimeline_cache.*.Value[*].PostID" && field1.GetPath() == "post_db.post.PostID" {
+			fmt.Printf("otherTaint: %s\n", taint1_write.LongString())
+			fmt.Printf("currTaint: %s\n", taint2_read.LongString())
 		}
 
 		if ok := createTransitiveReferenceIfExists(constraint); ok {
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] added new transitive constraints\n")
+			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [TRANSITIVE] [2] added new transitive constraints\n")
 		} else {
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			if otherWriteTaint.IsWrite() {
+			if taint1_write.IsWrite() {
 				constraint.DisableMandatory(reqIdx)
 			}
-			otherWriteField.AddConstraint(constraint)
-			otherDb.GetLastSchema().AddConstraint(constraint)
+			field1.AddConstraint(constraint)
+			db1.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] added new constraint: %s\n", constraint)
+			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [2] added new constraint: %s\n", constraint)
 		}
 	}
 	return modified

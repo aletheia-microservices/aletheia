@@ -1,15 +1,19 @@
 package config
 
 type Config struct {
-	EnableTransitiveReferences                bool
+	EnableTransitiveReferences                   bool
+	UpdateTransitiveReferencesTriggeredByCurrent bool
+
 	CreateReferencesFromReadReadPair          bool
 	CreateReferencesFromReadReadPairAndValKey bool
-	PropagateTaintsAcrossQueueOperations      bool
+
+	PropagateTaintsAcrossQueueOperations bool
 }
 
 var Global = &Config{
-	EnableTransitiveReferences:                true,
-	CreateReferencesFromReadReadPair:          false,
-	CreateReferencesFromReadReadPairAndValKey: false,
-	PropagateTaintsAcrossQueueOperations:      true,
+	EnableTransitiveReferences:                   true,
+	UpdateTransitiveReferencesTriggeredByCurrent: true,
+	CreateReferencesFromReadReadPair:             false,
+	CreateReferencesFromReadReadPairAndValKey:    false,
+	PropagateTaintsAcrossQueueOperations:         true,
 }

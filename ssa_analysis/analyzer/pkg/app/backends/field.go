@@ -17,6 +17,15 @@ func NewField(path string, database *Database, schema *Schema) *Field {
 	}
 }
 
+func (field *Field) RemoveConstraint(old *Constraint) {
+    for i, c := range field.constraints {
+        if c == old {
+            field.constraints = append(field.constraints[:i], field.constraints[i+1:]...)
+            return
+        }
+    }
+}
+
 func (field *Field) GetPath() string {
 	return field.path
 }

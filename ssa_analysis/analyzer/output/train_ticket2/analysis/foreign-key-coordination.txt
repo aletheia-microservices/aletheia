@@ -18,7 +18,7 @@ entry request: BasicService.QueryOrderWithAllInfo()
 	FOREIGN KEY READS #3:
 		READ (FOREIGN KEY): DeliveryService.FindDelivery() --> delivery_db.delivery.FindOne()
 			- field: delivery_db.delivery.OrderID
-			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID [MANDATORY]
+			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID [MANDATORY] [T]
 		READ (ORIGIN): OrderService.Find() --> order_db.order.FindOne()
 			- field: order_db.order.ID
 	FOREIGN KEY READS #4:
