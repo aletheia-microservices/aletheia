@@ -231,12 +231,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				fmt.Printf("[TAINT NEARBY] [PART_1] [FIELD] unexpected conditions // FROM_NODE=%s // TAINT INFO (_obj%s, %s)\n", toNode.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 				continue
 			}
-
-			if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-				fmt.Printf("TAINT INFO: %s\n", taintInfo.String())
-				log.Fatalf("HERE????? UPWARDS=%t // ROOT=%t", upwards, taintInfo.objroot)
-			}
-
 			propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
 
 		case ssagraph.EDGE_INDEX:

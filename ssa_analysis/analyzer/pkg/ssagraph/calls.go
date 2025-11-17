@@ -8,6 +8,7 @@ func ComputeCallID(graph *SSAGraph, node *SSANode) string {
 
 type ServiceCall struct {
 	id   string // format: <func_short_path>_<ssa_instr_name>
+	t    string // format: <ssa_variable_name>
 	node *SSANode
 	args []*SSANode
 	rets []*SSANode
@@ -20,6 +21,7 @@ type ServiceCall struct {
 func NewServiceCall(id string, node *SSANode, args []*SSANode, rets []*SSANode, service string, method string, funcShortPath string) *ServiceCall {
 	return &ServiceCall{
 		id:            id,
+		t:             node.GetValue().Name(),
 		node:          node,
 		args:          args,
 		rets:          rets,
@@ -27,6 +29,10 @@ func NewServiceCall(id string, node *SSANode, args []*SSANode, rets []*SSANode, 
 		method:        method,
 		funcShortPath: funcShortPath,
 	}
+}
+
+func (call *ServiceCall) GetT() string {
+	return call.t
 }
 
 func (call *ServiceCall) GetID() string {
@@ -67,6 +73,7 @@ func (call *ServiceCall) String() string {
 
 type DatabaseCall struct {
 	id     string // the ssa instr name for the db call on the callee side
+	t      string // format: <ssa_variable_name>
 	node   *SSANode
 	args   []*SSANode
 	opType common.DatabaseOperationType
@@ -79,6 +86,7 @@ type DatabaseCall struct {
 func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string, schema string, method string, opType common.DatabaseOperationType) *DatabaseCall {
 	return &DatabaseCall{
 		id:       id,
+		t:        node.GetValue().Name(),
 		node:     node,
 		args:     args,
 		database: database,
@@ -86,6 +94,10 @@ func NewDatabaseCall(id string, node *SSANode, args []*SSANode, database string,
 		method:   method,
 		opType:   opType,
 	}
+}
+
+func (call *DatabaseCall) GetT() string {
+	return call.t
 }
 
 func (call *DatabaseCall) GetID() string {

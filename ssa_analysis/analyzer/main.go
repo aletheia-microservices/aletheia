@@ -176,8 +176,9 @@ func main() {
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
 	start_schema := time.Now()
-	// phase 1: one pass
+	// phase 1: two passes
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
+	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 
 	elapsed_schema := time.Since(start_schema)
 	start_detection := time.Now()

@@ -2,16 +2,19 @@ package abstractgraph
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
 type AbstractTrace struct {
+	t        string // format: <ssa_variable_name> (only when primary!!)
 	svpath   string
 	svcallID string
 }
 
-func NewAbstractTrace(svpath string, svcallID string) *AbstractTrace {
+func NewAbstractTrace(t string, svpath string, svcallID string) *AbstractTrace {
 	return &AbstractTrace{
+		t:        t,
 		svpath:   svpath,
 		svcallID: svcallID,
 	}
@@ -32,6 +35,15 @@ func (trace *AbstractTrace) GetArgumentPath() string {
 		return "_obj." + splits[3]
 	}
 	return "_obj"
+}
+
+func (trace *AbstractTrace) GetT() string {
+	return trace.t
+}
+
+func (trace *AbstractTrace) GetTNumber() int {
+	n, _ := strconv.Atoi(trace.t[1:])  // assuming "t3", "t13", etc.
+    return n
 }
 
 func (trace *AbstractTrace) GetServicePath() string {

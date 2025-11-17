@@ -130,6 +130,15 @@ func (field *Field) HasConstraintForeignKeyToField(otherField *Field) bool {
 	return false
 }
 
+func (field *Field) HasConstraintForeignKey() bool {
+	for _, constraint := range field.constraints {
+		if constraint.t == CONSTRAINT_FOREIGN_KEY {
+			return true
+		}
+	}
+	return false
+}
+
 // searches for unicity in single field
 // EXCLUDES primary key
 func (field *Field) HasContraintUnicity() bool {

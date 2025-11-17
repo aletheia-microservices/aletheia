@@ -18,10 +18,11 @@ const (
 )
 
 type AbstractEdge struct {
-	t EdgeType
+	edgeType EdgeType
 
 	opType common.DatabaseOperationType // for database calls
-	
+	t      string                       // format: <ssa_variable_name> (only when primary!!)
+
 	// format: <func_short_path>_<ssa_instr_name>
 	// except for entrypoint edges where format is just <func_short_path>
 	id     string
@@ -30,6 +31,18 @@ type AbstractEdge struct {
 	to     *AbstractNode
 	args   []*AbstractObject // caller side
 	rets   []*AbstractObject // caller side
+}
+
+func NewAbstractEdge(t string, id string, method string, from *AbstractNode, to *AbstractNode, opType common.DatabaseOperationType, edgeType EdgeType) *AbstractEdge {
+	return &AbstractEdge{
+		t:        t,
+		id:       id,
+		edgeType: edgeType,
+		method:   method,
+		from:     from,
+		to:       to,
+		opType:   opType,
+	}
 }
 
 func (edge *AbstractEdge) String() string {
@@ -42,6 +55,15 @@ func (edge *AbstractEdge) GetOpType() common.DatabaseOperationType {
 
 func (edge *AbstractEdge) GetID() string {
 	return edge.id
+}
+
+func (edge *AbstractEdge) GetT() string {
+	return edge.t
+}
+
+func (edge *AbstractEdge) GetTNumber() int {
+	n, _ := strconv.Atoi(edge.t[1:])  // assuming "t3", "t13", etc.
+    return n
 }
 
 // some exceptions can be:
@@ -61,7 +83,7 @@ func (edge *AbstractEdge) GetIDNumber() int {
 }
 
 func (edge *AbstractEdge) GetEdgeType() EdgeType {
-	return edge.t
+	return edge.edgeType
 }
 
 func (edge *AbstractEdge) GetFromNode() *AbstractNode {
@@ -117,15 +139,4 @@ func (edge *AbstractEdge) GetReturnAt(i int) *AbstractObject {
 
 func (edge *AbstractEdge) AddReturn(ret *AbstractObject) {
 	edge.rets = append(edge.rets, ret)
-}
-
-func NewAbstractEdge(id string, method string, from *AbstractNode, to *AbstractNode, opType common.DatabaseOperationType, t EdgeType) *AbstractEdge {
-	return &AbstractEdge{
-		id:     id,
-		t:      t,
-		method: method,
-		from:   from,
-		to:     to,
-		opType: opType,
-	}
 }

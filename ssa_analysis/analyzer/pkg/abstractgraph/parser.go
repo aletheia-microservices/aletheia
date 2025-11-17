@@ -34,6 +34,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 					}
 				}
 				taint := NewAbstractTaint(
+					ssaTaint.GetT(),
 					ssaTaint.GetDatabasePath(),
 					ssaTaint.GetDatabaseCall().GetID(),
 					ssaTaint.GetDatabaseCall().GetOpType(),
@@ -58,6 +59,7 @@ func ssaTaintServiceToAbstractTrace(graph *AbstractCallGraph, ssaTaintsMap map[s
 		for _, ssaTaint := range ssaTaints {
 			if ssaTaint.IsServiceTaint() {
 				trace := NewAbstractTrace(
+					ssaTaint.GetT(),
 					ssaTaint.GetServicePath(),
 					ssaTaint.GetServiceCall().GetID(),
 				)
@@ -125,7 +127,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				obj.addToAllNames(ret.GetValue().Type().String())
 
 				fmt.Printf("\t\t[ABSTRACTGRAPH] ret = %s\n", ret.String())
-				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, MERGE_MODE_PARSE)
+				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, MERGE_MODE_PARSE, "")
 				MergeTraces(obj, ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
 				fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
@@ -138,7 +140,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 
 	// build dummy edges for entrypoints
 	if entrypoint {
-		edge := NewAbstractEdge(funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
+		edge := NewAbstractEdge("", funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 			arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint), make(map[string][]*AbstractTrace))
 			edge.AddArgument(arg)
@@ -172,7 +174,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				}
 			}
 
-			edge := NewAbstractEdge(serviceCall.GetID(), serviceCall.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
+			edge := NewAbstractEdge(serviceCall.GetT(), serviceCall.GetID(), serviceCall.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
 
 			// create call arguments
 			for _, callArg := range serviceCall.GetArguments() {
@@ -215,7 +217,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				}
 			}
 
-			edge := NewAbstractEdge(databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), EDGE_DATABASE_CALL)
+			edge := NewAbstractEdge(databaseCall.GetT(), databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), EDGE_DATABASE_CALL)
 
 			for _, callArg := range databaseCall.GetArguments() {
 				arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
@@ -228,7 +230,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			// propagate taints to databases (forward): args (from) >>> params (to)
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE)
+				MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE, "")
 			}
 
 			edges = append(edges, edge)

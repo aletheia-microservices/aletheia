@@ -1,6 +1,7 @@
 package ssagraph
 
 import (
+	"fmt"
 	"log"
 	"sort"
 	"strings"
@@ -26,6 +27,13 @@ type SSATaint struct {
 
 	readKey   bool // aka filter key
 	readValue bool // aka retrived value
+}
+
+func (taint *SSATaint) GetT() string {
+	if taint.IsDatabaseTaint() {
+		return taint.dbcall.t
+	}
+	return taint.svcall.t
 }
 
 func (taint *SSATaint) IsDatabaseTaint() bool {
@@ -183,6 +191,8 @@ func (node *SSANode) taintString() string {
 			} else if taint.IsReadValue() {
 				builder.WriteString(" [V]")
 			}
+
+			builder.WriteString(fmt.Sprintf(" [%s]", taint.GetT()))
 
 			builder.WriteString(" @ ")
 			builder.WriteString(taint.String())

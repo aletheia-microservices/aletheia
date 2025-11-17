@@ -107,7 +107,7 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 	databases := []string{}
 	clients := []string{}
 	others := []string{}
-	
+
 	var sortedNodes []*AbstractNode
 	for _, node := range graph.GetNodes() {
 		sortedNodes = append(sortedNodes, node)
@@ -124,13 +124,13 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 		if detailed {
 			for i, param := range node.GetParams() {
 				if param.IsTainted() || param.IsTraced() {
-					label += fmt.Sprintf("\n\n==== param %d (%s) tainted ====\n%s", i, param.name, param.TaintString())
+					label += fmt.Sprintf("\n\n==== param %d (%s) tainted ====\n%s", i, param.name, param.Annotations())
 				}
 
 			}
 			for i, ret := range node.GetReturns() {
 				if ret.IsTainted() || ret.IsTraced() {
-					label += fmt.Sprintf("\n\n==== ret %d (%s) tainted ====\n%s", i, ret.name, ret.TaintString())
+					label += fmt.Sprintf("\n\n==== ret %d (%s) tainted ====\n%s", i, ret.name, ret.Annotations())
 				}
 
 			}
@@ -193,13 +193,13 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 		if detailed {
 			for i, arg := range edge.GetArguments() {
 				if arg.IsTainted() || arg.IsTraced() {
-					label += fmt.Sprintf("\n\n==== arg %d (%s) tainted ====\n%s", i, arg.GetName(), arg.TaintString())
+					label += fmt.Sprintf("\n\n==== arg %d (%s) tainted ====\n%s", i, arg.GetName(), arg.Annotations())
 				}
 
 			}
 			for i, ret := range edge.GetReturns() {
 				if ret.IsTainted() || ret.IsTraced() {
-					label += fmt.Sprintf("\n\n==== ret %d (%s) tainted ====\n%s", i, ret.GetName(), ret.TaintString())
+					label += fmt.Sprintf("\n\n==== ret %d (%s) tainted ====\n%s", i, ret.GetName(), ret.Annotations())
 				}
 			}
 			label = strings.ReplaceAll(label, `"`, `\"`)

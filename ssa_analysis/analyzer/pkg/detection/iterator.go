@@ -15,6 +15,7 @@ type IterationPhase int
 const (
 	PHASE_0_DEBUG IterationPhase = iota
 	PHASE_1_SCHEMA_BUILDER
+	PHASE_1_SCHEMA_BUILDER_READ_ONLY
 	PHASE_2_PATTERN_DETECTOR
 )
 
@@ -165,7 +166,9 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
+				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsBeforeT(edge.GetTNumber()), nil, abstractgraph.MERGE_MODE_TAINT, config.MIN_T)
+				taintMapping.Merge(taintMappingTmp, true)
+				taintMappingTmp = abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsAfterT(edge.GetTNumber()), nil, abstractgraph.MERGE_MODE_TAINT, config.MAX_T)
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
@@ -174,8 +177,8 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			abstractgraph.PropagateNewTaintsToDatabaseCallObjects(it.graph, toNode, taintMapping)
 
 			// finalize phase by propagating to database schemas
-			if it.mode == PHASE_1_SCHEMA_BUILDER {
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 			}
 
 			// --------------------------
@@ -194,7 +197,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, fromArg := range edge.GetArguments() {
 				toParam := toNode.GetParamAt(i)
 				fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
+				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT, edge.GetT())
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
@@ -202,7 +205,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, fromRet := range edge.GetReturns() {
 				toRet := toNode.GetReturnAt(i)
 				fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
-				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
+				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT, edge.GetT())
 				taintMapping.Merge(taintMappingTmp, true)
 			}
 
@@ -211,8 +214,8 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			abstractgraph.PropagateNewTaintsToDatabaseCallObjects(it.graph, node, taintMapping)
 
 			// finalize phase by propagating to database schemas
-			if it.mode == PHASE_1_SCHEMA_BUILDER {
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+			if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 			}
 
 			fmt.Printf("[TRANSVERSE] taint mapping: %s\n", taintMapping.String())
@@ -299,13 +302,13 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 		taintMapping := abstractgraph.NewTaintMapping()
 		for i, arg := range edge.GetArguments() {
 			otherArg := queueReadEdge.GetArgumentAt(i)
-			taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), nil, abstractgraph.MERGE_MODE_TAINT)
+			taintMappingTmp := abstractgraph.MergeTaints(otherArg, arg.GetPrimaryTaints(), nil, abstractgraph.MERGE_MODE_TAINT, config.MIN_T)
 			taintMapping.Merge(taintMappingTmp, true)
 		}
 		abstractgraph.PropagateTaintsToServiceCallObjects(it.graph, node, taintMapping, queueReadEdge, true)
 	
-		if it.mode == PHASE_1_SCHEMA_BUILDER {
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping)
+		if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 		}
 	}
 

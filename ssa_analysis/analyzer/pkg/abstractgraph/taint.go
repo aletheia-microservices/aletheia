@@ -2,12 +2,14 @@ package abstractgraph
 
 import (
 	"fmt"
+	"strconv"
 
 	"analyzer/pkg/common"
 	"analyzer/pkg/utils"
 )
 
 type AbstractTaint struct {
+	t         string // format: <ssa_variable_name> (only when primary!!)
 	fieldpath string // field path in db
 	dbcallID  string //i.e., the ID of the abstract edge representing the call
 	dbOpType  common.DatabaseOperationType
@@ -18,8 +20,9 @@ type AbstractTaint struct {
 	readVal bool
 }
 
-func NewAbstractTaint(dbpath string, dbcall string, opType common.DatabaseOperationType, primary bool, traced bool, readKey bool, readVal bool) *AbstractTaint {
+func NewAbstractTaint(t string, dbpath string, dbcall string, opType common.DatabaseOperationType, primary bool, traced bool, readKey bool, readVal bool) *AbstractTaint {
 	return &AbstractTaint{
+		t:         t,
 		fieldpath: dbpath,
 		dbcallID:  dbcall,
 		dbOpType:  opType,
@@ -32,6 +35,7 @@ func NewAbstractTaint(dbpath string, dbcall string, opType common.DatabaseOperat
 
 func (taint *AbstractTaint) Copy() *AbstractTaint {
 	return &AbstractTaint{
+		t:         taint.t,
 		fieldpath: taint.fieldpath,
 		dbcallID:  taint.dbcallID,
 		dbOpType:  taint.dbOpType,
@@ -40,6 +44,18 @@ func (taint *AbstractTaint) Copy() *AbstractTaint {
 		readKey:   taint.readKey,
 		readVal:   taint.readVal,
 	}
+}
+
+func (taint *AbstractTaint) GetT() string {
+	return taint.t
+}
+
+func (taint *AbstractTaint) GetTNumber() int {
+	if taint.t == "" {
+		return -1
+	}
+	n, _ := strconv.Atoi(taint.t[1:]) // assuming "t3", "t13", etc.
+	return n
 }
 
 func (taint *AbstractTaint) SetReadKey(readKey bool) {

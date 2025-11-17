@@ -50,7 +50,7 @@ func (constraint *Constraint) IsMandatory() bool {
 		}
 	}
 	// if there are still elements in the list, then constraint is not mandatory
-	// if there are no elements in the list, then constraint is not mandatory
+	// if there are no elements in the list, then constraint is mandatory
 	return len(constraint.reqIdxToMandatory) != 0
 }
 
