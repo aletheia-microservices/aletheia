@@ -1,13 +1,12 @@
 package detection
 
 import (
-	"fmt"
-
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
 	"analyzer/pkg/config"
+	"fmt"
 )
 
 type IterationPhase int
@@ -306,7 +305,7 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 			taintMapping.Merge(taintMappingTmp, true)
 		}
 		abstractgraph.PropagateTaintsToServiceCallObjects(it.graph, node, taintMapping, queueReadEdge, true)
-	
+
 		if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
 			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 		}

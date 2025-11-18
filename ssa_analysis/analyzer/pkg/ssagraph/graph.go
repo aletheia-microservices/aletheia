@@ -275,13 +275,11 @@ func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType 
 	}
 	for _, edge := range graph.GetEdgesFromNode(from) {
 		if edge.to == to /* && edge.edgeType == edgeType */ {
-			fmt.Printf("[GRAPH] [1] found existing edge with type: %v\n", edge.edgeType)
 			return edge, false
 		}
 	}
 	for _, edge := range graph.GetEdgesToNode(to) {
 		if edge.from == from /* && edge.edgeType == edgeType */ {
-			fmt.Printf("[GRAPH] [2] found existing edge with type: %v\n", edge.edgeType)
 			return edge, false
 		}
 	}

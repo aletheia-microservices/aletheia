@@ -37,49 +37,6 @@ const (
 // t57 taint becomes: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
 // ----------------------------
 func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMode) {
-	if strings.Contains(taintInfo.objpath, "_obj.Username[*]") {
-		log.Fatalf("[TAINT] unexpected taint info path (%s): %v\n", taintInfo.objpath, taintInfo)
-	}
-
-	if strings.Contains(taintInfo.objpath, "[*][*][*]") {
-		log.Fatalf("[TAINT] unexpected taint info path (%s): %v\n", taintInfo.objpath, taintInfo)
-	}
-
-	// sanity check for dsb_hotel2 app
-	if strings.Contains(taintInfo.objpath, ".HId[*]") && taintInfo.dbTaint.dbcall.GetDatabaseName() == "recommendation_db" {
-		log.Fatalf("[TAINT] [DSB_HOTEL2] unexpected taint info path (%s): %v\n", taintInfo.objpath, taintInfo)
-	}
-
-	if node.GetValue().Name() == "t85" && strings.Contains(taintInfo.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-		log.Fatalf("t95: wrong taint!")
-	}
-	if node.GetValue().Name() == "t95" && strings.Contains(taintInfo.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-		log.Fatalf("t95: wrong taint!")
-	}
-	if node.GetValue().Name() == "t93" && strings.Contains(taintInfo.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-		log.Fatalf("t93: wrong taint!")
-	}
-	if node.GetValue().Name() == "t92" && strings.Contains(taintInfo.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-		log.Fatalf("t92: wrong taint!")
-	}
-	if node.GetValue().Name() == "t91" && strings.Contains(taintInfo.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-		log.Fatalf("t91: wrong taint!")
-	}
-	if node.GetValue().Name() == "t90" && strings.Contains(taintInfo.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-		log.Fatalf("t90: wrong taint!")
-	}
-
-	if taintInfo.isTypeDatabase() && taintInfo.getDatabaseCall() == nil {
-		// FIXME: verify this
-		fmt.Printf("[TAINT] [4] nil db call for taint info: %v\n", taintInfo)
-		return
-	}
-	if taintInfo.isTypeService() && taintInfo.getServiceCall() == nil {
-		// FIXME: verify this
-		fmt.Printf("[TAINT] [4] nil sv call for taint info: %v\n", taintInfo)
-		return
-	}
-
 	var ok bool
 	switch taintMode {
 	case TAINT_MODE_NEARBY:
@@ -137,17 +94,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		log.Panicf("[TAINT NEARBY] unexpected nil val // TAINT INFO (_obj%s, %s)\n", taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 	}
 
-	//var prevVal ssa.Value
-	var prevValName string
-	if taintInfo.prevval == nil {
-		//prevVal = nil
-		prevValName = "<nil>"
-		taintInfo.prevval = val
-	} else {
-		//prevVal = taintInfo.prevval
-		prevValName = taintInfo.prevval.Name()
-	}
-
 	taintInfo = taintInfo.updateValue(val)
 
 	fmt.Printf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
@@ -166,7 +112,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 	doTaintNode(node, taintInfo, TAINT_MODE_NEARBY)
 
-	fmt.Printf("[TAINT NEARBY] [PART_1] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
+	fmt.Printf("[TAINT NEARBY] [PART_1] [ROOT=%t] [RECURSE=%t] current node: %v\n", taintInfo.objroot, recurse, node)
 	taintInfo.prevval = node.GetValue()
 
 	for _, edge := range graph.GetEdgesFromNode(node) {
@@ -176,22 +122,18 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		switch edge.GetType() {
 
 		case ssagraph.EDGE_FIELD:
-			fmt.Println("HERE 05")
 			if upwards {
 				if toNode.GetValue().Name() == "t96" && node.GetValue().Name() == "t101" {
 					log.Fatalf("inspect")
 				}
-				fmt.Println("HERE 06")
 				// TODO: EXTEND TO TYPE DATABASE??
 				// FOR NOW WE ONLY NEED TO SERVICE TYPE
 				// BECAUSE WE NEED TO SPREAD THE TRACES FROM UPPER STRUCTS TO LOWER FIELDS
 				// E.G. TRAINTICKET PRESERVESERVICE.PRESERVE() WHERE TRIPALLINFO AND ORDER USE THE OTI.TRIPID PARAMETER
 				// we don't need to do for type database because we already to "check upper taints"
 				if taintInfo.isTypeService() || taintInfo.isTypeDatabase() {
-					fmt.Println("HERE 07")
 					// found field corresponding to upper taintinfo objpath
 					if taintInfo.objpath == "."+edge.GetParam() {
-						fmt.Println("HERE 07.1")
 						for _, upperTaint := range node.GetTaintsForPath("_obj" + taintInfo.objpath) {
 							taintInfoTmp := generateRootTaintInfoFromTaint(toNode, upperTaint)
 							/* if taintInfo.isTypeDatabase() && graph.GetService() == "UserTimelineService" && graph.GetMethodName() == "ReadUserTimeline" {
@@ -213,9 +155,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 							}
 						}
 					}
-					fmt.Println("HERE 07.2")
 				} else {
-					fmt.Println("HERE 08")
 					//TODO
 				}
 				break
@@ -516,7 +456,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		} */
 	}
 
-	fmt.Printf("[TAINT NEARBY] [PART_2] [ROOT=%t] [RECURSE=%t] [PREV=%s] current node: %v\n", taintInfo.objroot, recurse, prevValName, node)
+	fmt.Printf("[TAINT NEARBY] [PART_2] [ROOT=%t] [RECURSE=%t] current node: %v\n", taintInfo.objroot, recurse, node)
 	for _, edge := range graph.GetEdgesToNode(node) {
 		fromNode := edge.GetFromNode()
 
@@ -571,10 +511,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 		case ssagraph.EDGE_FIELD:
 			visitedTmp := make(map[ssa.Value]bool)
-
-			fmt.Printf("ROOT?: %t\n", taintInfo.isObjectRoot())
-			fmt.Printf("EDGE PARAM: %s\n", edge.GetParam())
-			fmt.Printf("TAINT OBJPATH: %s\n", taintInfo.objpath)
 
 			var taintInfoTmp TaintInfo
 			if !taintInfo.isObjectRoot() && edge.GetParam() == taintInfo.objpath {

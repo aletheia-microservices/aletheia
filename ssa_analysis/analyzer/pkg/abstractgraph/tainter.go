@@ -306,7 +306,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				taint2 = otherTaint
 				db2 = otherDb
 			}
-			
+
 			if taint1.GetT() == taint2.GetT() {
 				// debugging
 				log.Fatalf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
@@ -541,7 +541,7 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 				// original reference origin could actually be another field
 				return false
 			}
-			
+
 			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
 			if ok := createTransitiveReferenceIfExists(constraint); ok {
 				modified = true

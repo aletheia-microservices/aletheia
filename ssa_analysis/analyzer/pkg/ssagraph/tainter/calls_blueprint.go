@@ -244,7 +244,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					log.Fatalf("field argvals[i] is nil")
 				}
 				valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-					val: argVal, 
+					val:       argVal,
 					fieldpath: field,
 					readKey:   true,
 				})
@@ -259,7 +259,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 						val:       dstVal,
 						fieldpath: filterField,
-						readValue:   true,
+						readValue: true,
 					})
 
 					if dstVal == nil {
@@ -315,7 +315,7 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				valFieldPathLst := make([]ValFieldPath, 1)
 				docVal := call.Call.Args[1]
 				valFieldPathLst[0] = ValFieldPath{
-					val: docVal, 
+					val:       docVal,
 					fieldpath: database + "." + topic,
 					readValue: opType == common.OP_READ,
 				}
@@ -918,7 +918,6 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 			return ok1, ok2
 		}
 	}
-	fmt.Println("returning false...")
 	return false, false
 }
 

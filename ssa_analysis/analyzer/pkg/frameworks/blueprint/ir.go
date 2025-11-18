@@ -3,7 +3,6 @@ package blueprint
 import (
 	"fmt"
 	"log"
-	"reflect"
 
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/blueprint/logging"
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/coreplugins/address"
@@ -76,16 +75,8 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 		if n, ok := node.(namespaceutil.IRNamespace); ok {
 			if nn, ok := n.(ir.IRNode); ok {
 				if nnn, ok := nn.(*linuxcontainer.Container); ok {
-					fmt.Println("--------------------------------------------")
-					fmt.Println()
-					fmt.Println(nnn.String())
-					fmt.Println()
 					for _, child := range nnn.Nodes {
 						if nnnn, ok := child.(*goproc.Process); ok {
-							/* for _, child := range nnnn.Edges { */
-							t := reflect.TypeOf(child).Elem().Name()
-							fmt.Printf("[IR EDGE] got edge %s with type %s\n", child.Name(), t)
-							/* } */
 							for _, child := range nnnn.Nodes {
 								if workflowHandler, ok := child.(*workflow.WorkflowHandler); ok {
 									fmt.Printf("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)

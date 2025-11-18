@@ -1,7 +1,6 @@
 package unicityconcurrency
 
 import (
-	"fmt"
 	"slices"
 
 	"analyzer/pkg/app"
@@ -29,7 +28,6 @@ func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, req
 
 	var constrainedFields []*backends.Field
 	for _, arg := range currOp.arguments {
-		fmt.Printf("[UNICITY CHECKER] arg (%s) has primary taint lst: %v\n", arg.String(), arg.GetPrimaryTaintsFlatList())
 		for _, taint := range arg.GetPrimaryTaintsFlatList() {
 			fieldpath := taint.GetDatabasePath()
 

@@ -22,9 +22,9 @@ type Config struct {
 
 var Global = &Config{
 	// transitive references
-	EnableTransitiveReferences:                              true, // do not change
-	DeleteOldOnTransitiveReferences:                         true, // tunable
-	UpdateTransitiveReferencesTriggeredByCurrent:            true, // do not change
+	EnableTransitiveReferences:                              false, // do not change
+	DeleteOldOnTransitiveReferences:                         false, // tunable
+	UpdateTransitiveReferencesTriggeredByCurrent:            false, // do not change
 	UpdateTransitiveReferencesTriggeredByCurrentOnMandatory: false, // tunable
 
 	// creation of references on read-read pairs

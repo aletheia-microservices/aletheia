@@ -277,23 +277,19 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 	case *sqlparser.Select:
 		tableNameAliasLst = parseSQLTableExprs(stmt.From)
 
-		var readAllFields bool
 		for _, expr := range stmt.SelectExprs {
 			if _, ok := expr.(*sqlparser.StarExpr); ok {
-				readAllFields = true
 				fieldpath := db + "." + tableNameAliasLst[0].name // + ".*"
 				selectedFields = append(selectedFields, fieldpath)
-				fmt.Printf("[APP SQL PARSER] found sqlparser.StarExpr (%t)\n", readAllFields)
 			} else if aliasedExpr, ok := expr.(*sqlparser.AliasedExpr); ok {
 				if valTuple, ok := aliasedExpr.Expr.(sqlparser.ValTuple); ok {
-					for rowIdx, expr := range valTuple {
+					for _, expr := range valTuple {
 						if col, ok := expr.(*sqlparser.ColName); ok {
 							prefixTableName, columnName := parseColumnName(string(col.Name.CompliantName()))
 							tableName := parseTableName(prefixTableName, tableNameAliasLst)
 							fieldpath := db + "." + tableName + "." + columnName
 
 							selectedFields = append(selectedFields, fieldpath)
-							fmt.Printf("[APP SQL PARSER] [SELECT record %d/%d]: %s\n", rowIdx+1, len(valTuple), fieldpath)
 						}
 					}
 				}
@@ -348,15 +344,13 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 	switch stmt := stmt.(type) {
 	case *sqlparser.Insert:
 		if values, ok := stmt.Rows.(sqlparser.Values); ok {
-			for rowIdx, tuple := range values {
+			for _, tuple := range values {
 				for colIdx, expr := range tuple {
 					if sqlVal, ok := expr.(*sqlparser.SQLVal); ok {
 						tableName = stmt.Table.Name.CompliantName()
 						if sqlVal.Type == sqlparser.ValArg { // placeholder (e.g., '?' that is then parsed into ':v1', ':v2', etc.)
 							fieldpath := db + "." + tableName + "." + stmt.Columns[colIdx].CompliantName()
-							placeholderVal := string(sqlVal.Val)
 							writtenFields = append(writtenFields, fieldpath)
-							fmt.Printf("[APP SQL PARSER] (record %d/%d) INSERT %s = (%s) -> <SOME OBJECT TBD>\n", rowIdx+1, len(values), fieldpath, placeholderVal)
 						}
 					}
 				}
@@ -377,9 +371,7 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 			if sqlVal, ok := expr.Expr.(*sqlparser.SQLVal); ok {
 				if sqlVal.Type == sqlparser.ValArg { // placeholder (e.g., '?', parsed as ':v1', ':v2')
 					//fieldObj := args[argIdx]
-					placeholderVal := string(sqlVal.Val)
 					writtenFields = append(writtenFields, fieldpath)
-					fmt.Printf("[APP SQL PARSER] SET %s = (%s) -> <SOME OBJECT TBD>\n", fieldpath, placeholderVal)
 					argIdx++
 				}
 			}
@@ -400,7 +392,7 @@ func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
 		log.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
 	}
 
-	var filterFields      []string
+	var filterFields []string
 	var tableNameAliasLst []tableNameAlias
 
 	switch stmt := stmt.(type) {

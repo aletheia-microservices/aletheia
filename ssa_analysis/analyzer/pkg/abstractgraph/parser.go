@@ -40,7 +40,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 					ssaTaint.GetDatabaseCall().GetOpType(),
 					true, false, ssaTaint.IsReadKey(), ssaTaint.IsReadValue(),
 				)
-				
+
 				abstractTaints = append(abstractTaints, taint)
 				fmt.Printf("[SSA TO ABSTRACT TAINT] new taint on object path (%s): %s\n", objPath, taint.LongString())
 			}
@@ -112,12 +112,12 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	retsLst := ssaGraph.GetReturnsLst()
 	var retsObjs []*AbstractObject
 	// first, just create new abstract objects using the first set of returns (could be any other)
-	for i, ret := range retsLst[0] {
+	for _, ret := range retsLst[0] {
 		obj := NewAbstractObject(ret.GetValue().Type().String(), ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
 		obj.addToAllNames(ret.GetValue().Type().String())
 		node.AddReturn(obj)
 		retsObjs = append(retsObjs, obj)
-		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", i, obj.String())
+		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", obj.String())
 	}
 	// then, merge taints with corresponding object in the remaining set of returns
 	if len(retsLst) > 1 {
@@ -133,10 +133,6 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			}
 		}
 	}
-	// debug
-	/* for i, obj := range node.GetReturns() {
-		fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] final taints for object (%s):\n%s\n", i, obj.String(), obj.TaintLongString())
-	} */
 
 	// build dummy edges for entrypoints
 	if entrypoint {

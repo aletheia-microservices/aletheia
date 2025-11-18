@@ -37,6 +37,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- dsb_media_sql")
 		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
 		fmt.Fprintln(os.Stderr, "- train_ticket2")
+		fmt.Fprintln(os.Stderr, "- large_scale_app")
 		os.Exit(1)
 	}
 
@@ -68,6 +69,7 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
+	fmt.Println("[EVAL] starting program parser...")
 	start := time.Now()
 
 	prog, pkgs, err := buildProgram(apppath)
@@ -78,10 +80,7 @@ func main() {
 	app.InitServiceFields(pkgs)
 	app.ParseSchemaFromUserFile()
 
-	fmt.Println("[INFO] running analysis for packages:")
-	/* for _, pkg := range pkgs {
-		fmt.Printf("\t- %s\n", pkg.String())
-	} */
+	fmt.Println("running analysis for packages:")
 
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
@@ -118,46 +117,11 @@ func main() {
 		tainter.RunTainter(ssagraph)
 	}
 
-	/* fmt.Print("\n\n ========== NODES ========== \n\n")
-	for fn, ssagraph := range funcGraphs {
-		for _, node := range ssagraph.GetNodes() {
-			var prefix string
-			if node.GetName() != "" {
-				prefix = node.GetName() + ":"
-			} else {
-				prefix = "\t"
-			}
-			if node.GetInstruction() != nil {
-				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetInstruction(), prefix, node.GetInstruction().String())
-			} else {
-				fmt.Printf("[%s] [%s] [%T] \t %s %v\n", fn, node.GetID(), node.GetValue(), prefix, node.GetValue().String())
-			}
-		}
-	} */
-
-	/* for fn, ssagraph := range funcGraphs {
-		fmt.Printf("[MAIN] go ssa graph for (%s): %v\n", fn, ssagraph)
-	} */
-
-	/* fmt.Print("\n\n ========== TAINTS ========== \n\n")
-	for fn, ssagraph := range funcGraphs {
-		for _, node := range ssagraph.GetNodes() {
-			if node.IsTainted() {
-				for obj, taints := range node.GetTaints() {
-					fmt.Printf("[%s] %s [%s]: %s\n", fn, node.String(), node.GetName(), obj)
-					for _, taint := range taints {
-						fmt.Printf("\t\t |--> %s\n", taint.String())
-					}
-				}
-			}
-		}
-	} */
-
 	for fn, ssagraph := range funcGraphs {
 		ssagraph.WriteToDOTFile(appname, fn, true)
 	}
 
-	fmt.Println("\n[INFO] successfully analyzed app (" + appname + ")\n")
+	fmt.Println("\nsuccessfully analyzed app (" + appname + ")\n")
 
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
@@ -175,12 +139,15 @@ func main() {
 	detector5 := unicityconcurrency.NewDetector()
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
+	fmt.Println("[EVAL] starting schema builder...")
 	start_schema := time.Now()
 	// phase 1: two passes
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 
 	elapsed_schema := time.Since(start_schema)
+
+	fmt.Println("[EVAL] starting pattern detection...")
 	start_detection := time.Now()
 
 	// phase 2: one pass for all detectors
@@ -194,44 +161,6 @@ func main() {
 
 	app.WriteAppToJSON()
 	app.WriteSchemaToJSON()
-
-	/* fmt.Print("\n\n ========== SERVICE CALLS ========== \n\n")
-	for _, node := range absgraph.GetNodes() {
-		if node.GetNodeType() == abstractgraph.NODE_SERVICE {
-			for _, edge := range absgraph.GetEdgesToNode(node) {
-				fmt.Printf("SERVICE CALL: %s\n", edge.String())
-				for i, arg := range edge.GetArguments() {
-					fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
-				}
-				fmt.Println("--")
-				for i, param := range edge.GetToNode().GetParams() {
-					fmt.Printf("PARAM %d (%s) w/ TAINTS:\n%s", i, param.String(), param.TaintLongString())
-				}
-				fmt.Println("--")
-				for i, ret := range edge.GetReturns() {
-					fmt.Printf("RET (EDGE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
-				}
-				fmt.Println("--")
-				for i, ret := range edge.GetToNode().GetReturns() {
-					fmt.Printf("RET (NODE) %d (%s) w/ TAINTS:\n%s", i, ret.String(), ret.TaintLongString())
-				}
-				fmt.Println()
-			}
-		}
-	} */
-
-	/* fmt.Print("\n\n ========== DATABASE CALLS ========== \n\n")
-	for _, node := range absgraph.GetNodes() {
-		if node.GetNodeType() == abstractgraph.NODE_DATABASE {
-			for _, edge := range absgraph.GetEdgesToNode(node) {
-				fmt.Printf("DATABASE CALL: %s\n", edge.String())
-				for i, arg := range edge.GetArguments() {
-					fmt.Printf("ARG %d (%s) w/ TAINTS:\n%s", i, arg.String(), arg.TaintLongString())
-				}
-				fmt.Println()
-			}
-		}
-	} */
 
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
@@ -265,14 +194,12 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 	conf.Fset = fset
 	file, err := conf.ParseFile(filepath, string(source))
 	if err != nil {
-		fmt.Println("parse error:", err)
 		return nil, nil, err
 	}
 	conf.CreateFromFiles("main", file)
 
 	iprog, err := conf.Load()
 	if err != nil {
-		fmt.Println("type error:", err)
 		return nil, nil, err
 	}
 

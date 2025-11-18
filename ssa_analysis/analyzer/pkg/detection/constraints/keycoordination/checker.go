@@ -40,10 +40,9 @@ func (detector *KeyCoordinationDetector) checkInconsistency(app *app.App, reques
 
 func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, request *Request, currOp *ReadOperation) {
 	// same logic as in foreignkeycascade but here we verify if secondaryTaint.IsDelete()
-	fmt.Printf("[%s| CHECKER] on op: %v\n", detector.GetTypeStringUpper(), currOp.call.String())
+	fmt.Printf("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
 	for _, arg := range currOp.arguments {
 		fmt.Printf("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
-		fmt.Printf("\t[%s | CHECKER] arg (%s) w/ all taints: %v\n", arg.String(), detector.GetTypeStringUpper(), arg.GetAllTaints())
 
 		for _, taintLst := range arg.GetAllTaints() {
 			var currTaint *abstractgraph.AbstractTaint
@@ -51,16 +50,14 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 
 			for _, taint := range taintLst {
 				if taint.IsPrimary() && taint.GetDatabaseCallID() == currOp.GetCallID() {
-					//fmt.Printf("\t[%s | CHECKER] objpath={%s} // currTaint={%s}\n", detector.GetTypeStringUpper(), objpath, taint.String())
 					currTaint = taint
 				} else if !taint.IsPrimary() && taint.GetDatabaseCallID() != currOp.GetCallID() && !slices.Contains(otherTaints, taint) {
-					//fmt.Printf("\t[%s | CHECKER] objpath={%s} // otherTaint={%s}\n", detector.GetTypeStringUpper(), objpath, taint.String())
 					otherTaints = append(otherTaints, taint)
 				}
 			}
 
 			if currTaint == nil {
-				fmt.Printf("\t[%s | CHECKER] skipping currTaint with otherTaints: %v\n", detector.GetTypeStringUpper(), otherTaints)
+				fmt.Printf("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
 				continue
 			}
 
@@ -69,7 +66,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			currField := app.ComputeDatabaseFieldFromPath(currDatabase, currFieldPath)
 
 			for _, otherTaint := range otherTaints {
-				fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %v\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+				fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 				otherOp := request.FindOperationByCallID(otherTaint.GetDatabaseCallID())
 
 				// sanity checks

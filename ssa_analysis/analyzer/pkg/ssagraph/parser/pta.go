@@ -144,8 +144,6 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 				continue
 			}
 
-			lblFnLongName := utils.GetShortFunctionPath(lblFn.String())
-			fmt.Printf("\t\t- [%s] got label: [%T] %s\n", lblFnLongName, lbl.Value(), lbl.Value())
 			desc += fmt.Sprintf("\t → %s [path=%s]\n", valueDescShort(lbl.Value().Parent(), lbl.Value()), lbl.Path())
 
 			if lbl.Value().Parent() == fn {

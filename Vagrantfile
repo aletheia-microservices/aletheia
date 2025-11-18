@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
     vm.vm.provider "virtualbox" do |vb|
         vb.name = "analyzer-vm"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        vb.memory = "2048"
-        vb.cpus = 2
+        vb.memory = "8192"
+        vb.cpus = 10
     end
 
     vm.vm.synced_folder "ssa_analysis", "/home/vagrant/ssa_analysis",
