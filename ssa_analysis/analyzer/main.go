@@ -35,6 +35,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- digota")
 		fmt.Fprintln(os.Stderr, "- sockshop3")
 		fmt.Fprintln(os.Stderr, "- dsb_media_sql")
+		fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
 		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
 		fmt.Fprintln(os.Stderr, "- train_ticket2")
 		fmt.Fprintln(os.Stderr, "- large_scale_app")
@@ -78,7 +79,8 @@ func main() {
 	}
 
 	app.InitServiceFields(pkgs)
-	app.ParseSchemaFromUserFile()
+	app.ParseSQLSchemaFromUserFile()
+	app.ParseNoSQLSchemaFromUserFile()
 
 	fmt.Println("running analysis for packages:")
 

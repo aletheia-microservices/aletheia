@@ -64,6 +64,17 @@ func (database *Database) GetSchemaByNameIfExists(name string) *Schema {
 	return nil
 }
 
+func (database *Database) GetOrCreateSchema(name string) *Schema {
+	for _, schema := range database.schemas {
+		if schema.GetName() == name {
+			return schema
+		}
+	}
+	schema := NewSchema(name)
+	database.AddSchema(schema)
+	return schema
+}
+
 func (database *Database) GetLastSchema() *Schema {
 	return database.schemas[0]
 }

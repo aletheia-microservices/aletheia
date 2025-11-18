@@ -1,0 +1,308 @@
+{
+  "name": "dsb_media_nosql",
+  "databases": [
+    "cast_info_db",
+    "compose_review_cache",
+    "movie_id_cache",
+    "movie_id_db",
+    "movie_info_db",
+    "movie_review_cache",
+    "movie_review_db",
+    "plot_db",
+    "rating_cache",
+    "review_storage_cache",
+    "review_storage_db",
+    "user_cache",
+    "user_db",
+    "user_review_cache",
+    "user_review_db"
+  ],
+  "services": [
+    {
+      "name": "APIService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.APIService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "APIServiceImpl",
+      "fields": [
+        "userService #0 (user_service)",
+        "textService #1 (text_service)",
+        "movieIdService #2 (movieid_service)",
+        "uniqueIdService #3 (unique_id_service)",
+        "movieInfoService #4 (movieinfo_service)",
+        "castInfoService #5 (castinfo_service)",
+        "plotService #6 (plot_service)",
+        "pageService #7 (page_service)"
+      ],
+      "methods": [
+        "Login",
+        "ReadPage",
+        "RegisterMovie",
+        "RegisterMovieId",
+        "RegisterUser",
+        "UploadMovieId",
+        "UploadText",
+        "UploadUniqueId",
+        "UploadUserWithUsername",
+        "WriteCastInfo",
+        "WriteMovieInfo",
+        "WritePlot"
+      ],
+      "services": [
+        "CastInfoService",
+        "MovieIdService",
+        "MovieInfoService",
+        "PageService",
+        "PlotService",
+        "TextService",
+        "UniqueIdService",
+        "UserService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "CastInfoService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.CastInfoService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "CastInfoServiceImpl",
+      "fields": [
+        "database #0 (cast_info_db)"
+      ],
+      "methods": [
+        "WriteCastInfo",
+        "ReadCastInfos"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "ComposeReviewService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.ComposeReviewService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "ComposeReviewServiceImpl",
+      "fields": [
+        "cache #0 (compose_review_cache)",
+        "reviewStorageService #1 (review_storage_service)",
+        "userReviewService #2 (user_review_service)",
+        "movieReviewService #3 (movie_review_service)"
+      ],
+      "methods": [
+        "UploadText",
+        "UploadRating",
+        "UploadUniqueId",
+        "UploadMovieId",
+        "UploadUserId"
+      ],
+      "services": [
+        "MovieReviewService",
+        "ReviewStorageService",
+        "UserReviewService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "MovieIdService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.MovieIdService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "MovieIdServiceImpl",
+      "fields": [
+        "database #0 (movie_id_db)",
+        "cache #1 (movie_id_cache)",
+        "composeReviewService #2 (compose_review_service)",
+        "ratingService #3 (rating_service)"
+      ],
+      "methods": [
+        "RegisterMovieId",
+        "UploadMovieId",
+        "ReadMovieId"
+      ],
+      "services": [
+        "ComposeReviewService",
+        "RatingService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "MovieInfoService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.MovieInfoService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "MovieInfoServiceImpl",
+      "fields": [
+        "database #0 (movie_info_db)"
+      ],
+      "methods": [
+        "WriteMovieInfo",
+        "ReadMovieInfo"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "MovieReviewService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.MovieReviewService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "MovieReviewServiceImpl",
+      "fields": [
+        "database #0 (movie_review_db)",
+        "cache #1 (movie_review_cache)",
+        "reviewStorageService #2 (review_storage_service)"
+      ],
+      "methods": [
+        "UploadMovieReview",
+        "ReadMovieReviews"
+      ],
+      "services": [
+        "ReviewStorageService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "PageService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.PageService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "PageServiceImpl",
+      "fields": [
+        "movieInfoService #0 (movieinfo_service)",
+        "movieReviewService #1 (movie_review_service)",
+        "castInfoService #2 (castinfo_service)",
+        "plotService #3 (plot_service)"
+      ],
+      "methods": [
+        "ReadPage"
+      ],
+      "services": [
+        "CastInfoService",
+        "MovieInfoService",
+        "MovieReviewService",
+        "PlotService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "PlotService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.PlotService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "PlotServiceImpl",
+      "fields": [
+        "database #0 (plot_db)"
+      ],
+      "methods": [
+        "WritePlot",
+        "ReadPlot"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "RatingService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.RatingService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "RatingServiceImpl",
+      "fields": [
+        "cache #0 (rating_cache)",
+        "composeReviewService #1 (compose_review_service)"
+      ],
+      "methods": [
+        "UploadRating"
+      ],
+      "services": [
+        "ComposeReviewService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "ReviewStorageService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.ReviewStorageService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "ReviewStorageServiceImpl",
+      "fields": [
+        "database #0 (review_storage_db)",
+        "cache #1 (review_storage_cache)"
+      ],
+      "methods": [
+        "StoreReview",
+        "ReadReviews"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "TextService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.TextService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "TextServiceImpl",
+      "fields": [
+        "composeReviewService #0 (compose_review_service)"
+      ],
+      "methods": [
+        "UploadText"
+      ],
+      "services": [
+        "ComposeReviewService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "UniqueIdService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.UniqueIdService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "UniqueIdServiceImpl",
+      "fields": [
+        "counter #0",
+        "currentTimestamp #1",
+        "machineID #2",
+        "composeReviewService #3 (compose_review_service)"
+      ],
+      "methods": [
+        "UploadUniqueId"
+      ],
+      "services": [
+        "ComposeReviewService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "UserReviewService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.UserReviewService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "UserReviewServiceImpl",
+      "fields": [
+        "database #0 (user_review_db)",
+        "cache #1 (user_review_cache)",
+        "reviewStorageService #2 (review_storage_service)"
+      ],
+      "methods": [
+        "UploadUserReview",
+        "ReadUserReviews"
+      ],
+      "services": [
+        "ReviewStorageService"
+      ],
+      "databases": []
+    },
+    {
+      "name": "UserService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow/mediamicroservices_nosql.UserService",
+      "pkg": "mediamicroservices_nosql",
+      "impl": "UserServiceImpl",
+      "fields": [
+        "counter #0",
+        "currentTimestamp #1",
+        "machineID #2",
+        "database #3 (user_db)",
+        "cache #4 (user_cache)",
+        "composeReviewService #5 (compose_review_service)"
+      ],
+      "methods": [
+        "RegisterUser",
+        "RegisterUserWithId",
+        "UploadUserWithUsername",
+        "UploadUserWithUserId",
+        "Login"
+      ],
+      "services": [
+        "ComposeReviewService"
+      ],
+      "databases": []
+    }
+  ]
+}

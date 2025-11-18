@@ -2,102 +2,18 @@ package app
 
 import (
 	"fmt"
-	"go/types"
 	"log"
 	"os"
-	"sort"
 	"strings"
 
 	"github.com/auxten/postgresql-parser/pkg/sql/parser"
 	"github.com/auxten/postgresql-parser/pkg/sql/sem/tree"
 	"github.com/auxten/postgresql-parser/pkg/walk"
 	"github.com/xwb1989/sqlparser"
-	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/app/backends"
-	"analyzer/pkg/app/services"
-	"analyzer/pkg/frameworks/blueprint"
 	"analyzer/pkg/utils"
 )
-
-func (app *App) Init() {
-	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName())
-	sort.Strings(frontends)
-
-	// parse services
-	for _, svcInfo := range servicesInfo {
-		name := svcInfo.Name
-		constructor := svcInfo.ConstructorName
-		pkg := svcInfo.Package
-		pkgpath := svcInfo.PackagePath
-		path := svcInfo.PackagePath + "." + svcInfo.Name
-		impl := svcInfo.Name + "Impl"
-		methods := svcInfo.Methods
-		args := svcInfo.ServiceArgs
-
-		service := services.NewService(name, impl, pkg, pkgpath, path, constructor, args)
-		service.SetMethods(methods...)
-		app.AddService(service)
-	}
-
-	for _, svcInfo := range servicesInfo {
-		log.Printf("service = %s, args = %v\n", svcInfo.Name, svcInfo.ServiceArgs)
-	}
-
-	for _, svcInfo := range servicesInfo {
-		service := app.GetServiceByName(svcInfo.Name)
-		for _, dep := range svcInfo.Edges {
-			otherService := app.GetServiceByName(dep)
-			service.AddDependency(otherService)
-		}
-	}
-
-	// parse databases
-	for _, dsInfo := range datastoresInfo {
-		database := backends.NewDatabase(dsInfo.Name, dsInfo.GetTypeString())
-		app.AddDatabase(database)
-	}
-
-	// parse entrypoints
-	for _, serviceName := range frontends {
-		service := app.GetServiceByName(serviceName)
-		app.SetServiceEntrypoints(service, service.GetMethods())
-	}
-	for _, service := range app.GetAllServices() {
-		if service.HasInitializerMethod() {
-			// Run() method can also be considered as entrypoint
-			// because they are always called when initializing services
-			app.AddEntrypoint(service, "Run")
-		}
-	}
-}
-
-func (app *App) InitServiceFields(pkgs []*ssa.Package) {
-	for _, pkg := range pkgs {
-		fmt.Printf("[APP PARSER] analyzing package: %s\n", pkg.String())
-		for _, member := range pkg.Members {
-			if ssaType, ok := member.(*ssa.Type); ok {
-				service := app.GetServiceWithImplPathIfExists(ssaType.String())
-				if service == nil {
-					continue
-				}
-				fmt.Printf("\t[APP PARSER] found service impl: %s\n", service.GetImpl())
-				if typeNamed, ok := ssaType.Type().(*types.Named); ok {
-					if typeStruct, ok := typeNamed.Underlying().(*types.Struct); ok {
-						i := 0
-						for i < typeStruct.NumFields() {
-							typeVar := typeStruct.Field(i)
-							field := services.NewField(i, typeVar.Name())
-							service.AddField(field)
-							fmt.Printf("\t\t[APP PARSER] created new field: %s\n", field.String())
-							i++
-						}
-					}
-				}
-			}
-		}
-	}
-}
 
 // -----------
 // FILE PARSER
@@ -120,7 +36,7 @@ type sqlDbStmt struct {
 	stmt string
 }
 
-func (app *App) ParseSchemaFromUserFile() {
+func (app *App) ParseSQLSchemaFromUserFile() {
 	if ok, input := utils.GetAppDatabaseSQLPaths(app.GetName(), true); ok {
 		dbStmts := parseSQLStatementsFromInput(input)
 		for _, dbStmt := range dbStmts {
@@ -178,18 +94,9 @@ func parseSQLStatement(database *backends.Database, sql string) {
 				fieldName := tableName + "." + columnName
 				fieldPath := database.GetName() + "." + fieldName
 
-				schema := database.GetSchemaByNameIfExists(tableName)
-				if schema == nil {
-					schema = backends.NewSchema(tableName)
-					database.AddSchema(schema)
-				}
+				schema := database.GetOrCreateSchema(tableName)
 
-				field := schema.GetFieldByPathIfExists(fieldPath)
-				if field == nil {
-					field = backends.NewField(fieldPath, database, schema)
-					schema.AddField(field)
-					fmt.Printf("[APP SQL PARSER] added new database field: %s\n", field.GetPath())
-				}
+				field := schema.GetOrCreateField(database, fieldPath)
 				fields[columnName] = field
 
 				var constraint *backends.Constraint

@@ -13,6 +13,7 @@ import (
 	"analyzer/pkg/common"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/utils"
+	"analyzer/pkg/ssagraph/registry"
 )
 
 const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runtime/core/backend"
@@ -504,6 +505,9 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					var valFieldPathLst []ValFieldPath
 					if opType == common.OP_WRITE {
 						docVal := call.Call.Args[1]
+
+						registry.RegisterNoSQLPrimaryKey(graph.GetApp(), database, collection, docVal)
+
 						valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 							val:       docVal,
 							fieldpath: database + "." + collection,

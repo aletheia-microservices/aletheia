@@ -129,7 +129,7 @@ func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
 	field, ok := schema.fields[path]
 	if !ok {
 		field = NewField(path, database, schema)
-		schema.fields[path] = field
+		schema.AddField(field)
 	}
 	return field
 }

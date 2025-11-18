@@ -18,19 +18,24 @@ type Config struct {
 
 	// taint propagation
 	PropagateTaintsAcrossQueueOperations bool
+
+	// database schema configuration
+	MakeIndexesAsPrimaryKeysForNoSQLDatabases bool
 }
 
 var Global = &Config{
 	// transitive references
-	EnableTransitiveReferences:                              false, // do not change
-	DeleteOldOnTransitiveReferences:                         false, // tunable
-	UpdateTransitiveReferencesTriggeredByCurrent:            false, // do not change
+	EnableTransitiveReferences:                              true, // do not change
+	DeleteOldOnTransitiveReferences:                         true, // tunable
+	UpdateTransitiveReferencesTriggeredByCurrent:            true, // do not change
 	UpdateTransitiveReferencesTriggeredByCurrentOnMandatory: false, // tunable
 
 	// creation of references on read-read pairs
-	CreateReferencesFromReadReadPair:          true, // do not change
+	CreateReferencesFromReadReadPair:          true,  // do not change
 	CreateReferencesFromReadReadPairAndValKey: false, // tunable
 
 	// taint propagation
 	PropagateTaintsAcrossQueueOperations: true, // do not change
+
+	MakeIndexesAsPrimaryKeysForNoSQLDatabases: true, // do not change
 }

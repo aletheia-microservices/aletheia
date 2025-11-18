@@ -16,6 +16,7 @@ if [ "$#" -ne 2 ]; then
   echo "- postnotification_simple"
   echo "- dsb_sn2"
   echo "- dsb_media_sql"
+  echo "- dsb_media_nosql"
   echo "- train_ticket2"
   echo "- dsb_hotel2"
   exit 1

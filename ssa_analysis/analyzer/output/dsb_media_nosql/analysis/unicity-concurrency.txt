@@ -1,0 +1,9 @@
+---------------------------------------------------------------------
+------------------- ANALYSIS: UNICITY CONCURRENCY -------------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 1]
+entry request: APIService.RegisterMovie()
+	WRITE (ORIGIN): MovieIdService.RegisterMovieId() --> movie_id_db.movie.InsertOne()
+		- field (constrained): movie_id_db.movie.Title (PRIMARY KEY)
+		- AFFECTED WRITE #1: MovieInfoService.WriteMovieInfo() --> movie_info_db.movie_info.InsertOne()
+

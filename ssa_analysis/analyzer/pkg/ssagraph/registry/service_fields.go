@@ -11,36 +11,6 @@ import (
 	"analyzer/pkg/ssagraph"
 )
 
-// check postnotification_simple.NewUploadServiceImpl.dot
-// for now this is a bit hardcoded
-func registerFieldsFromAlloc(app *app.App, graph *ssagraph.SSAGraph, service *services.Service, allocNode *ssagraph.SSANode) {
-	for _, edge := range graph.GetEdgesFromNode(allocNode) {
-		if edge.GetType() == ssagraph.EDGE_FIELD {
-			fieldNode := edge.GetToNode()
-			if ssaFieldAddr, ok := fieldNode.GetValue().(*ssa.FieldAddr); ok {
-				fieldIdx := ssaFieldAddr.Field
-				for _, fieldEdge := range graph.GetEdgesFromNode(fieldNode) {
-					if fieldEdge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
-						storeNode := fieldEdge.GetToNode()
-						for _, storeEdge := range graph.GetEdgesToNode(storeNode) {
-							if storeEdge.GetType() == ssagraph.EDGE_STORE_VALUE {
-								valNode := storeEdge.GetFromNode()
-								if _, ok := valNode.GetValue().(*ssa.Parameter); ok {
-									paramIdx := graph.GetIndexOfParameter(valNode)
-									fmt.Printf("[REGISTRY] [%s] val node (index=%d): %v\n", service.GetName(), paramIdx, valNode.String())
-									wiringName := service.GetWiringNameAt(paramIdx)
-									field := service.GetFieldAt(fieldIdx)
-									field.SetWiringName(wiringName)
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 func RegisterFields(app *app.App, graphs []*ssagraph.SSAGraph) {
 	for _, graph := range graphs {
 		service := app.GetServiceWithConstructorShortPathIfExists(graph.GetFunctionShortPath())
@@ -74,8 +44,35 @@ func RegisterFields(app *app.App, graphs []*ssagraph.SSAGraph) {
 				}
 			}
 		}
-		/* if service.GetName() == "DeliveryService" {
-			log.Fatalf("HERE 1!")
-		} */
+	}
+}
+
+// check postnotification_simple.NewUploadServiceImpl.dot
+// for now this is a bit hardcoded
+func registerFieldsFromAlloc(app *app.App, graph *ssagraph.SSAGraph, service *services.Service, allocNode *ssagraph.SSANode) {
+	for _, edge := range graph.GetEdgesFromNode(allocNode) {
+		if edge.GetType() == ssagraph.EDGE_FIELD {
+			fieldNode := edge.GetToNode()
+			if ssaFieldAddr, ok := fieldNode.GetValue().(*ssa.FieldAddr); ok {
+				fieldIdx := ssaFieldAddr.Field
+				for _, fieldEdge := range graph.GetEdgesFromNode(fieldNode) {
+					if fieldEdge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
+						storeNode := fieldEdge.GetToNode()
+						for _, storeEdge := range graph.GetEdgesToNode(storeNode) {
+							if storeEdge.GetType() == ssagraph.EDGE_STORE_VALUE {
+								valNode := storeEdge.GetFromNode()
+								if _, ok := valNode.GetValue().(*ssa.Parameter); ok {
+									paramIdx := graph.GetIndexOfParameter(valNode)
+									fmt.Printf("[REGISTRY] [%s] val node (index=%d): %v\n", service.GetName(), paramIdx, valNode.String())
+									wiringName := service.GetWiringNameAt(paramIdx)
+									field := service.GetFieldAt(fieldIdx)
+									field.SetWiringName(wiringName)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

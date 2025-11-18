@@ -107,11 +107,15 @@ func (detector *KeyCoordinationDetector) updateForeignReadConstraints(fread *For
 
 // this information is only accurate after the entire schema is built at the end of the iteration
 func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) bool {
-	if detector.isTypePrimaryKey() && (!fread.field1.IsPrimaryKey() || !fread.field2.IsPrimaryKey()) {
-		return false
+	if detector.isTypePrimaryKey() {
+		if !fread.field1.IsPrimaryKey() || !fread.field2.IsPrimaryKey() {
+			return false
+		}
 	}
-	if detector.isTypeForeignKey() && fread.field1.IsPrimaryKey() && fread.field2.IsPrimaryKey() {
-		return false
+	if detector.isTypeForeignKey() {
+		if fread.field1.IsPrimaryKey() && fread.field2.IsPrimaryKey() {
+			return false
+		}
 	}
 
 	if detector.isTypeForeignKey() && detector.isRestrictive() {

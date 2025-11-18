@@ -5,6 +5,7 @@ import (
 
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_dsb_hotel2 "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring/specs"
+	specs_dsb_media_nosql "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring/specs"
 	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
 	specs_dsb_sn2 "github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring/specs"
 	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
@@ -28,11 +29,12 @@ var APPS_INFO = map[string]AppInfo{
 	"postnotification_simple": {utils.APP_PATH_POSTNOTIFICATION_SIMPLE, specs_postnotification_simple.Docker},
 	"digota":                  {utils.APP_PATH_DIGOTA, specs_digota.Docker},
 	"dsb_media_sql":           {utils.APP_PATH_DSB_MEDIA_SQL, specs_dsb_media_sql.Docker},
+	"dsb_media_nosql":         {utils.APP_PATH_DSB_MEDIA_NOSQL, specs_dsb_media_nosql.Docker},
 	"sockshop3":               {utils.APP_PATH_SOCKSHOP3, specs_sockshop3.Docker},
 	"dsb_sn2":                 {utils.APP_PATH_DSB_SN2, specs_dsb_sn2.Docker},
 	"dsb_hotel2":              {utils.APP_PATH_DSB_HOTEL2, specs_dsb_hotel2.Original},
 	"train_ticket2":           {utils.APP_PATH_TRAIN_TICKET2, specs_trainticket.Docker},
-	"large_scale_app":           {utils.APP_PATH_LARGE_SCALE_APP, specs_largescaleapp.Docker},
+	"large_scale_app":         {utils.APP_PATH_LARGE_SCALE_APP, specs_largescaleapp.Docker},
 	"foobar":                  {utils.APP_PATH_FOO_BAR, specs_foobar.Docker},
 }
 
