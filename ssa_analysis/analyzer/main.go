@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"go/token"
 	"log"
@@ -25,24 +26,40 @@ import (
 	"analyzer/pkg/utils"
 )
 
+var EVAL = true
+
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage: program <appname>\n")
-		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- foobar")
-		fmt.Fprintln(os.Stderr, "- postnotification_simple")
-		fmt.Fprintln(os.Stderr, "- dsb_sn2")
-		fmt.Fprintln(os.Stderr, "- digota")
-		fmt.Fprintln(os.Stderr, "- sockshop3")
-		fmt.Fprintln(os.Stderr, "- dsb_media_sql")
-		fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
-		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
-		fmt.Fprintln(os.Stderr, "- train_ticket2")
-		fmt.Fprintln(os.Stderr, "- large_scale_app")
-		os.Exit(1)
+	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
+    flag.Parse()
+
+	if flag.NArg() < 1 {
+        fmt.Fprintf(os.Stderr, "usage: program [--eval] <appname>\n")
+        fmt.Fprintln(os.Stderr, "available appnames:")
+        fmt.Fprintln(os.Stderr, "- foobar")
+        fmt.Fprintln(os.Stderr, "- postnotification_simple")
+        fmt.Fprintln(os.Stderr, "- dsb_sn2")
+        fmt.Fprintln(os.Stderr, "- digota")
+        fmt.Fprintln(os.Stderr, "- sockshop3")
+        fmt.Fprintln(os.Stderr, "- dsb_media_sql")
+        fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
+        fmt.Fprintln(os.Stderr, "- dsb_hotel2")
+        fmt.Fprintln(os.Stderr, "- train_ticket2")
+        fmt.Fprintln(os.Stderr, "- large_scale_app")
+        os.Exit(1)
+    }
+
+	if EVAL {
+		go func() {
+			for {
+				for _, r := range `-\|/` {
+					fmt.Printf("\rRunning... %c", r)
+					time.Sleep(1 * time.Second)
+				}
+			}
+		}()
 	}
 
-	appname := os.Args[1]
+	appname := flag.Arg(0)
 
 	apppath := utils.GetAppEntrypointPath(appname)
 	app := app.NewApp(appname)
@@ -70,20 +87,22 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	fmt.Println("[EVAL] starting program parser...")
 	start := time.Now()
-
+	
+	fmt.Printf("[%s] [1/13] building program\n", time.Now().Format(time.TimeOnly))
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
-
+	
+	fmt.Printf("[%s] [2/13] initializing service fields\n", time.Now().Format(time.TimeOnly))
 	app.InitServiceFields(pkgs)
+	fmt.Printf("[%s] [3/13] parsing SQL schema from user file\n", time.Now().Format(time.TimeOnly))
 	app.ParseSQLSchemaFromUserFile()
+	fmt.Printf("[%s] [4/13] parsing NoSQL schema from user file\n", time.Now().Format(time.TimeOnly))
 	app.ParseNoSQLSchemaFromUserFile()
 
-	fmt.Println("running analysis for packages:")
-
+	fmt.Printf("[%s] [5/13] initializing pointer analysis\n", time.Now().Format(time.TimeOnly))
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
@@ -91,6 +110,7 @@ func main() {
 
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
+	fmt.Printf("[%s] [6/13] running SSA analysis\n", time.Now().Format(time.TimeOnly))
 	for _, pkg := range pkgs {
 		parser.RunSSAAnalysis(app, prog, pkg, funcGraphs)
 	}
@@ -99,6 +119,7 @@ func main() {
 		ssagraph.Sort()
 	}
 
+	fmt.Printf("[%s] [7/13] initializing pointer-to analysis\n", time.Now().Format(time.TimeOnly))
 	for _, pkg := range pkgs {
 		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
 	}
@@ -108,29 +129,36 @@ func main() {
 		graphsLst = append(graphsLst, graph)
 	}
 
+	fmt.Printf("[%s] [8/13] registering fields\n", time.Now().Format(time.TimeOnly))
 	registry.RegisterFields(app, graphsLst)
-	app.WriteAppToJSON()
 
-	for fn, ssagraph := range funcGraphs {
-		ssagraph.WriteToDOTFile(appname, fn, false)
+	if !EVAL {
+		app.WriteAppToJSON()
+		for fn, ssagraph := range funcGraphs {
+			ssagraph.WriteToDOTFile(appname, fn, false)
+		}
 	}
 
+	fmt.Printf("[%s] [9/13] running SSA tainter\n", time.Now().Format(time.TimeOnly))
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
 
-	for fn, ssagraph := range funcGraphs {
-		ssagraph.WriteToDOTFile(appname, fn, true)
+	if !EVAL {
+		for fn, ssagraph := range funcGraphs {
+			ssagraph.WriteToDOTFile(appname, fn, true)
+		}
 	}
 
-	fmt.Println("\nsuccessfully analyzed app (" + appname + ")\n")
-
+	fmt.Printf("[%s] [10/13] creating new abstract call graph\n", time.Now().Format(time.TimeOnly))
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
-	absgraph.WriteVisited(appname)
+	if !EVAL {
+		absgraph.WriteVisited(appname)
+	}
 
 	elapsed_parsing := time.Since(start)
 
@@ -141,44 +169,45 @@ func main() {
 	detector5 := unicityconcurrency.NewDetector()
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
-	fmt.Println("[EVAL] starting schema builder...")
 	start_schema := time.Now()
 	// phase 1: two passes
+	fmt.Printf("[%s] [11/13] starting schema builder\n", time.Now().Format(time.TimeOnly))
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
+	fmt.Printf("[%s] [12/13] starting schema builder (read only)\n", time.Now().Format(time.TimeOnly))
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 
 	elapsed_schema := time.Since(start_schema)
 
-	fmt.Println("[EVAL] starting pattern detection...")
+	fmt.Printf("[%s] [13/13] starting pattern detection\n", time.Now().Format(time.TimeOnly))
 	start_detection := time.Now()
 
 	// phase 2: one pass for all detectors
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
 
-	// phase 0: dummy pass to generate dot files with taints for debugging
-	iterator.Run(detection.PHASE_0_DEBUG)
+	if !EVAL {
+		// phase 0: dummy pass to generate dot files with taints for debugging
+		iterator.Run(detection.PHASE_0_DEBUG)
+	
+		absgraph.WriteToDOTFile(appname, true)
+		absgraph.WriteToDOTFile(appname, false)
+	
+		app.WriteAppToJSON()
+		app.WriteSchemaToJSON()
+	}
 
-	absgraph.WriteToDOTFile(appname, true)
-	absgraph.WriteToDOTFile(appname, false)
-
-	app.WriteAppToJSON()
-	app.WriteSchemaToJSON()
 
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
-
-	fmt.Print("\n\n ========== APP ========== \n\n")
-	fmt.Println(app.String())
 
 	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
 	}
 
-	fmt.Printf("Execution time (TOTAL): %.4f s\n", elapsed_total.Seconds())
-	fmt.Printf("Execution time (PARSING): %.4f s\n", elapsed_parsing.Seconds())
-	fmt.Printf("Execution time (SCHEMA): %.4f s\n", elapsed_schema.Seconds())
-	fmt.Printf("Execution time (DETECTION): %.4f s\n", elapsed_detection.Seconds())
+	fmt.Printf("Execution time (TOTAL):\t%.4f s\n", elapsed_total.Seconds())
+	fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
+	fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
+	fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
@@ -216,8 +245,6 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
 			if utils.IsAppPackagePath(pkg.Pkg.Path()) {
 				pkgs = append(pkgs, pkg)
-			} else {
-				fmt.Printf("skipping... %s\n", pkg.Pkg.Path())
 			}
 		}
 	}

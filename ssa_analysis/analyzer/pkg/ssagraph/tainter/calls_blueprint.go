@@ -12,8 +12,8 @@ import (
 	"analyzer/pkg/app"
 	"analyzer/pkg/common"
 	"analyzer/pkg/ssagraph"
-	"analyzer/pkg/utils"
 	"analyzer/pkg/ssagraph/registry"
+	"analyzer/pkg/utils"
 )
 
 const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runtime/core/backend"

@@ -36,7 +36,7 @@ func buildIR(name string, spec cmdbuilder.SpecOption) *cmdbuilder.CmdBuilder {
 		OutputDir: "build",
 	}
 	logging.DisableCompilerLogging()
-	logging.EnableCompilerLogging()
+	//logging.EnableCompilerLogging()
 	builder.Registry[spec.Name] = spec
 	builder.Wiring = wiring.NewWiringSpec(builder.Name)
 	if builder.Wiring == nil {

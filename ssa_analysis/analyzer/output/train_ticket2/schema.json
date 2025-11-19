@@ -49,7 +49,8 @@
           "consign_db.consign_record.Weight"
         ],
         "constraints": [
-          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID [T]",
+          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES order_db.order.AccountID [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID",
           "FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES station_db.station.Name [T]",
           "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.TargetDate REFERENCES order_db.order.TravelDate [MANDATORY]",

@@ -7,18 +7,32 @@ import (
 	"strings"
 )
 
+type TaintPair struct {
+	Taint1 AbstractTaint
+	Taint2 AbstractTaint
+}
+
+// memoization of previously computed taint pairs to avoid propagating over again
+// it is resetted on NewTaintMapping which occurs when visiting a node or matching queue push/pops
+var seenTaintPairsOnJoin = make(map[TaintPair]bool)
+
 // TaintMapping is a mapping between primary taint (key) that already existed
 // and the list of secondary taints (value) that were recently propagated
 //
 // in practice, this means that all objects with primary taint will also inherit
-// the secondary taint and possibly originate a foreign key when written to the database
+// the secondary taint and possibly originate a foreign key when written to the databases
 type TaintMapping struct {
 	mapping     map[AbstractTaint][]AbstractTaint // do not use pointers so that we can compare easily
 	mappingKeys []AbstractTaint                   // to track order of keys in "mapping" above
 }
 
 func NewTaintMapping() *TaintMapping {
+	seenTaintPairsOnJoin = make(map[TaintPair]bool)
 	return &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
+}
+
+func (tm *TaintMapping) Clear() {
+	tm = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
 }
 
 func (tm *TaintMapping) GetMappingKeys() []AbstractTaint {
@@ -29,10 +43,15 @@ func (tm *TaintMapping) GetMappingForKey(key AbstractTaint) []AbstractTaint {
 	return tm.mapping[key]
 }
 
-func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint, after bool) {
+func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint, after bool, join bool) {
 	if key == valElem {
 		return
 	}
+
+	if _, exists := seenTaintPairsOnJoin[TaintPair{Taint1: key, Taint2: valElem}]; exists {
+		return
+	}
+
 	fmt.Printf("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
 	if mappingVal, ok := tm.mapping[key]; ok {
 		if !slices.Contains(mappingVal, valElem) {
@@ -50,13 +69,17 @@ func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint,
 		}
 		tm.mapping[key] = []AbstractTaint{valElem}
 	}
+
+	if join {
+		seenTaintPairsOnJoin[TaintPair{Taint1: key, Taint2: valElem}] = true
+	}
 }
 
-func (tm *TaintMapping) Merge(other *TaintMapping, after bool) {
+func (tm *TaintMapping) Join(other *TaintMapping, after bool) {
 	for _, otherKey := range other.GetMappingKeys() {
 		otherValLst := other.GetMappingForKey(otherKey)
 		for _, otherValElem := range otherValLst {
-			tm.AddIfNotExists(otherKey, otherValElem, after)
+			tm.AddIfNotExists(otherKey, otherValElem, after, true)
 		}
 	}
 }

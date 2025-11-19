@@ -127,7 +127,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				obj.addToAllNames(ret.GetValue().Type().String())
 
 				fmt.Printf("\t\t[ABSTRACTGRAPH] ret = %s\n", ret.String())
-				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, MERGE_MODE_PARSE, "")
+				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, MERGE_MODE_PARSE, "", false)
 				MergeTraces(obj, ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
 				fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
@@ -226,7 +226,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			// propagate taints to databases (forward): args (from) >>> params (to)
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE, "")
+				MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE, "", false)
 			}
 
 			edges = append(edges, edge)
