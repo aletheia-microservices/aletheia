@@ -20,19 +20,35 @@ func NewAbstractTrace(t string, svpath string, svcallID string) *AbstractTrace {
 	}
 }
 
-// [TO BE IMPROVED]
 // format: <service>.<method>.<ssa name>[.<any sub path>]
-// e.g., MovieIdService.RegisterMovieId.t4
-// e.g., MovieIdService.RegisterMovieId.t4.MovieId
+// examples:
+// - MovieIdService.RegisterMovieId.t4
+// - MovieIdService.RegisterMovieId.t4.MovieId
+// - MovieInfoService.ReadMovieInfo.t4.Casts[*].CastInfoID
+// we want to extract t4
 func (trace *AbstractTrace) GetArgumentName() string {
 	splits := strings.Split(trace.GetServicePath(), ".")
-	return splits[2]
+
+	// handle array case if it exists
+	// e.g., CastInfoService.ReadCastInfos.t17[*]...
+	// we want to extract t17
+	arraySplits := strings.Split(splits[2], "[*]")
+
+	return arraySplits[0]
 }
 
 func (trace *AbstractTrace) GetArgumentPath() string {
 	splits := strings.SplitN(trace.GetServicePath(), ".", 4)
 	if len(splits) > 3 {
 		return "_obj." + splits[3]
+	}
+
+	// handle array case if it exists
+	// e.g., CastInfoService.ReadCastInfos.t17[*]...
+	// we want to extract [*]...
+	arraySplits := strings.SplitN(splits[2], "[*]", 2)
+	if len(arraySplits) > 1 {
+		return "_obj[*]" + arraySplits[1]
 	}
 	return "_obj"
 }

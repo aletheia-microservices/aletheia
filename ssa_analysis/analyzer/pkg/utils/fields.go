@@ -23,3 +23,18 @@ func IsUpperPath(objpath1 string, objpath2 string) (bool, string) {
 	}
 	return false, ""
 }
+
+// e.g.,
+// objpath1 (upper): notification
+// objpath2 (lower): notification.PostID
+func IsUpperOrEqualPath(objpath1 string, objpath2 string) (bool, string) {
+	if objpath1 == objpath2 {
+		return true, ""
+	}
+	if strings.HasPrefix(objpath2, objpath1) {
+		var diff string
+		_, diff, _ = strings.Cut(objpath2, objpath1)
+		return true, diff
+	}
+	return false, ""
+}

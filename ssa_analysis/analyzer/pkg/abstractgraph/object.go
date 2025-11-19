@@ -224,6 +224,16 @@ func (obj *AbstractObject) GetAllAbstractLocationsWithTraces() []string {
 	return locations
 }
 
+func (obj *AbstractObject) GetAllAbstractLocationsWithTaints() []string {
+	var locations []string
+	for objpath := range obj.taints {
+		locations = append(locations, objpath)
+	}
+	// sort in reverse from lower locations (more specific) to upper locations (more general)
+	sort.Sort(sort.Reverse(sort.StringSlice(locations)))
+	return locations
+}
+
 func (obj *AbstractObject) GetWriteTaints() map[string][]*AbstractTaint {
 	writeTaints := make(map[string][]*AbstractTaint, 0)
 	for objpath, taints := range obj.taints {
@@ -397,11 +407,13 @@ func (obj *AbstractObject) AddTaintIfSimilarNotExists(objpath string, newtaint A
 	}
 }
 
-func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint *AbstractTaint) {
+func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint *AbstractTaint) bool {
 	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
 	exists := obj.HasEqualTaint(objpath, *newtaint)
 	if !exists {
 		obj.taints[objpath] = append(obj.taints[objpath], newtaint)
 		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, newtaint)
+		return false
 	}
+	return true
 }

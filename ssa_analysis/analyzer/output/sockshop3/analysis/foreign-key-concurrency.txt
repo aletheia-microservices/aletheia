@@ -5,10 +5,10 @@
 entry request: Frontend.Login()
 	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
 		CONCURRENT WRITE #1: OrderService.NewOrder() --> order_db.orders.InsertOne()
-		- entry={Frontend.NewOrder}, database={order_db}, written fields={Items}
+		- entry={Frontend.NewOrder}, database={order_db}, written fields={Items, Items[*], Items[*].Quantity}
 
 entry request: Frontend.Register()
 	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
 		CONCURRENT WRITE #2: OrderService.NewOrder() --> order_db.orders.InsertOne()
-		- entry={Frontend.NewOrder}, database={order_db}, written fields={Items}
+		- entry={Frontend.NewOrder}, database={order_db}, written fields={Items, Items[*], Items[*].Quantity}
 

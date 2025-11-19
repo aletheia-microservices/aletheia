@@ -4,9 +4,9 @@
 [NUM_WARNINGS = 2]
 entry request: Frontend.Login()
 	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
-		MISSING CASCADE DELETE #1: database={order_db}, pending fields={Items}
+		MISSING CASCADE DELETE #1: database={order_db}, pending fields={Items, Items[*], Items[*].Quantity}
 
 entry request: Frontend.Register()
 	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
-		MISSING CASCADE DELETE #2: database={order_db}, pending fields={Items}
+		MISSING CASCADE DELETE #2: database={order_db}, pending fields={Items, Items[*], Items[*].Quantity}
 

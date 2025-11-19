@@ -26,8 +26,6 @@ vagrant ssh
 ```zsh
 cd ssa_analysis/analyzer/
 
-# testing purposes
-go run main.go foobar
 # e-commerce
 go run main.go digota
 go run main.go sockshop3
@@ -35,10 +33,15 @@ go run main.go sockshop3
 go run main.go postnotification_simple
 go run main.go dsb_sn2
 # media
-go run main.go dsb_media_sql
+go run main.go dsb_media_nosql
 # reservation
-go run main.go dsb_hotel2
 go run main.go train_ticket2
-# eval
+
+# large apps
 go run main.go large_scale_app
+
+# extras
+go run main.go foobar
+go run main.go dsb_media_sql
+go run main.go dsb_hotel2
 ```

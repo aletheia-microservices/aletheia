@@ -21,6 +21,9 @@
           "orders_db.orders.Shipping"
         ],
         "constraints": [
+          "FOREIGN_KEY orders_db.orders.Items[*].Amount REFERENCES skus_db.skus.Price",
+          "FOREIGN_KEY orders_db.orders.Items[*].Currency REFERENCES skus_db.skus.Currency",
+          "FOREIGN_KEY orders_db.orders.Items[*].Description REFERENCES skus_db.skus.Name",
           "FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus.Id"
         ]
       }

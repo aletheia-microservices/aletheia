@@ -8,5 +8,5 @@ entry request: ProductService.Delete()
 
 entry request: SkuService.Delete()
 	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
-		MISSING CASCADE DELETE #2: database={orders_db}, pending fields={Items[*].Parent}
+		MISSING CASCADE DELETE #2: database={orders_db}, pending fields={Items[*].Amount, Items[*].Currency, Items[*].Description, Items[*].Parent}
 

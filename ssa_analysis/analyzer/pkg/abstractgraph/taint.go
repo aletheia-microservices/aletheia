@@ -106,6 +106,10 @@ func (taint *AbstractTaint) GetDatabasePath() string {
 	return taint.fieldpath
 }
 
+func (taint *AbstractTaint) SetDatabasepath(path string) {
+	taint.fieldpath = path
+}
+
 func (taint *AbstractTaint) AddSuffixToDatabasePath(suffix string) {
 	taint.fieldpath = taint.fieldpath + suffix
 }

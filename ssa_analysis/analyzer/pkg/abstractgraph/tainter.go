@@ -40,6 +40,42 @@ func mergeModeIsTraced(mode MergeMode) bool {
 	return mode == MERGE_MODE_TRACE
 }
 
+func mergeExistingTaintsWithNewTaints(obj *AbstractObject, objpath string, subpath string, newTaint *AbstractTaint, taintMapping *TaintMapping, mode MergeMode, t string) {
+	for _, existingTaint := range obj.taints[objpath] {
+		// filter by writes to reduce number of foreign keys for now
+		// TODO: remove IsPrimary() condition?
+		if existingTaint.IsPrimary() {
+			lowerTaint := existingTaint.Copy()
+			lowerTaint.AddSuffixToDatabasePath(subpath)
+
+			if mode != MERGE_MODE_DEBUG {
+				taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
+			}
+			fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%s}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+		} else {
+			// sometimes it is not possible that taints are primary
+			// for example, when there is a service that acts as a gateway for two service
+			// e.g., dsb mediamicroservices:
+			// [write, traced] [t34] @ movie_info_db.movie_info.Casts[*].CastInfoID
+			// [write, traced] [t55] @ cast_info_db.cast.CastInfoID
+			// [rpc] [t34] @ MovieInfoService.WriteMovieInfo.t9[*].CastInfoID
+			// [rpc] [t55] @ CastInfoService.WriteCastInfo.t48
+			if mode == MERGE_MODE_TRACE {
+				if existingTaint.GetT() == t {
+					// if T values are equal, then we skip since they
+					// come from the same source and will eventually be matched there
+					fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] skipping for existingTaint={%s} and newTaint={%s} since T values (%s) are equal\n", existingTaint.LongString(), newTaint.LongString(), t)
+					continue
+				}
+				lowerTaint := existingTaint.Copy()
+				lowerTaint.AddSuffixToDatabasePath(subpath)
+				taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
+				fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+			}
+		}
+	}
+}
+
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, mode MergeMode, t string) *TaintMapping {
 	fmt.Printf("[TAINTMAPPING] merging taints (mode=%d): %v\n", mergeModeToString(mode), otherTaintsMap)
 	var taintMapping *TaintMapping
@@ -76,47 +112,57 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 				}
 				// need to create new AbstractTaint to avoid just storing the pointer and modifying its fields
 				newTaint := NewAbstractTaint(t, otherTaint.fieldpath, otherTaint.dbcallID, otherTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE, otherTaint.IsReadKey(), otherTaint.IsReadValue())
+
 				if mode != MERGE_MODE_DEBUG {
 					obj.AddTaintIfNotExists(objpath, newTaint)
 				}
 
 				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] added new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
 
-				// 1. The logic below cannot be ran for MERGE_MODE_TRACE because they
-				// are not exact matches such as, for example, arg-params, which is necessary for computing upper taints
-				// and we already extracted the selected taints (inc. from lower paths) prior to calling MergeTaints
-				// 2. It is also not necessary to be ran for MERGE_MODE_PARSE
-				if mode == MERGE_MODE_PARSE || mode == MERGE_MODE_TRACE {
+				// it is not necessary to be ran for MERGE_MODE_PARSE
+				if mode == MERGE_MODE_PARSE {
 					continue
 				}
 
 				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] attempting to add mapping for objpath={%s} // taint={%s} // mode={%t}\n", obj.String(), objpath, newTaint.LongString(), mergeModeToString(mode))
-				// explore all upper paths
-				var ok = true
-				var subpath = ""
-				for ok {
-					for _, existingTaint := range obj.taints[objpath] {
-						// filter by writes to reduce number of foreign keys for now
-						// TODO: remove IsPrimary() condition?
-						if existingTaint.IsPrimary() {
-							lowerTaint := existingTaint.Copy()
-							lowerTaint.AddSuffixToDatabasePath(subpath)
 
-							if mode != MERGE_MODE_DEBUG {
-								taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true)
-							}
-							fmt.Printf("\t\t[TAINTMAPPING] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+
+				mergeExistingTaintsWithNewTaints(obj, objpath, "", newTaint, taintMapping, mode, t)
+
+				if mode != MERGE_MODE_TRACE {
+					// The logic below for upper paths (and lower paths) cannot be ran for MERGE_MODE_TRACE because they
+					// are not exact matches such as, for example, arg-params, which is necessary for computing upper taints
+					// and we already extracted the selected taints (which also includes lower paths) prior to calling MergeTaints
+					
+					// 1. explore all upper paths
+					var subpath string
+					var ok bool
+					for {
+						objpath, subpath, ok = utils.ExtractUpperPath(objpath)
+						if !ok {
+							break
 						}
+						mergeExistingTaintsWithNewTaints(obj, objpath, subpath, newTaint, taintMapping, mode, t)
 					}
-					objpath, subpath, ok = utils.ExtractUpperPath(objpath)
-				}
 
-				// TODO: explore all lower paths ??
+					// 2. explore all lower paths
+					/* fromObjpath := objpath
+					fromTaint := otherTaint
+					for _, toLocation := range obj.GetAllAbstractLocationsWithTaints() {
+						if ok, diff := utils.IsUpperPath(fromObjpath, toLocation); ok {
+							newDbpath := fromTaint.GetDatabasePath() + diff
+							newTaint = newTaint.Copy()
+							newTaint.SetDatabasepath(newDbpath)
+							if mode != MERGE_MODE_DEBUG {
+								obj.AddTaintIfNotExists(toLocation, newTaint)
+							}
+						}
+					} */
+				}
 			}
 
-			// 1. The logic below cannot be ran for MERGE_MODE_TRACE because they
-			// are not exact matches such as, for example, arg-params, which is necessary for computing upper taints
-			// and we already extracted the selected taints (inc. from lower paths) prior to calling MergeTaints
+			// 1. The logic below does not need to be ran for MERGE_MODE_TRACE because we already extracted the
+			// selected taints (which include lower paths) prior to calling MergeTaints and added them above
 			// 2. It is also not necessary to be ran for MERGE_MODE_PARSE
 			if mode == MERGE_MODE_PARSE || mode == MERGE_MODE_TRACE {
 				continue
@@ -133,12 +179,11 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 				// e.g.,
 				// from path: 	_obj 	=> taint: 			my_db.MyObject
 				// to path: 	_obj.ID => taint to add: 	my_db.MyObject.ID (diff = .ID)
-				if ok, diff := utils.IsUpperPath(fromObjpath, toLocation); ok {
+
+				// it is ok if fromObjpath is always an upper path of toLocation
+				// in other words, toLocation is lowerpath of fromObjpath
+				if ok, diff := utils.IsUpperOrEqualPath(fromObjpath, toLocation); ok {
 					newDbpath := fromTaint.GetDatabasePath() + diff
-					if mode == MERGE_MODE_PARSE {
-						// parameter "t" is empty for this mode
-						t = otherTaint.GetT()
-					}
 					newTaint := NewAbstractTaint(t, newDbpath, fromTaint.dbcallID, fromTaint.dbOpType, mode == MERGE_MODE_PARSE, mode == MERGE_MODE_TRACE, fromTaint.IsReadKey(), fromTaint.IsReadValue())
 					if mode != MERGE_MODE_DEBUG {
 						obj.AddTaintIfNotExists(toLocation, newTaint)
@@ -309,6 +354,8 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 
 			if taint1.GetT() == taint2.GetT() {
 				// debugging
+				fmt.Printf("taint1: %s\n", taint1.LongString())
+				fmt.Printf("taint2: %s\n", taint2.LongString())
 				log.Fatalf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
 			}
 
@@ -758,7 +805,7 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 }
 
 func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject, currObjPath string, tracedObjPath string, trace *AbstractTrace, taintMapping *TaintMapping, onEdge bool, after bool) {
-	fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
+	fmt.Printf("[TRACE] [ON_EDGE=%t] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", onEdge, currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
 	var selectedTaints = make(map[string][]*AbstractTaint)
 	var selectedTaintsKeys []string
 
@@ -798,6 +845,7 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 		selectedPath := tracedObjPath + pathsDiffs[path]
 
 		for _, taint := range taintLst {
+			fmt.Printf("[TRACE] [ON_EDGE=%t] currObjpath=%s // tracedObjpath=%s // path=%s // selectedPath=%s // taint={%s}\n", onEdge, currObjPath, tracedObjPath, path, selectedPath, taint.LongString())
 			selectedTaint := taint.Copy()
 			selectedTaints[selectedPath] = append(selectedTaints[selectedPath], selectedTaint)
 		}
@@ -807,10 +855,15 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 	}
 
 	taintMappingTmp := MergeTaints(tracedObj, selectedTaints, selectedTaintsKeys, MERGE_MODE_TRACE, trace.GetT())
-	fmt.Printf("[TRACE] taint mapping tmp = %s\n", taintMappingTmp.String())
+	fmt.Printf("[TRACE] [ON_EDGE=%t] taint mapping tmp = %s\n", onEdge, taintMappingTmp.String())
 
 	if taintMapping != nil {
+		fmt.Printf("[TRACE] [ON_EDGE=%t] merging taint mapping tmp into main taint mapping\n", onEdge)
 		taintMapping.Merge(taintMappingTmp, after)
+	}
+
+	if tracedObjPath == "_obj[*]" && trace.svpath == "CastInfoService.ReadMovieInfo.t4.Casts[*].CastInfoID" {
+		log.Fatalf("HERE!!!!")
 	}
 
 }

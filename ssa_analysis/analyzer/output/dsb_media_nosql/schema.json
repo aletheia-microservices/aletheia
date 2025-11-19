@@ -12,6 +12,7 @@
           "cast_info_db.cast.Name"
         ],
         "constraints": [
+          "FOREIGN_KEY cast_info_db.cast.CastInfoID REFERENCES movie_info_db.movie_info.Casts[*].CastInfoID [MANDATORY]",
           "PRIMARY KEY (cast_info_db.cast.CastInfoID)"
         ]
       }
@@ -51,6 +52,7 @@
         "fields": [
           "movie_info_db.movie_info",
           "movie_info_db.movie_info.Casts",
+          "movie_info_db.movie_info.Casts[*].CastInfoID",
           "movie_info_db.movie_info.MovieID",
           "movie_info_db.movie_info.PlotID",
           "movie_info_db.movie_info.Title"
@@ -135,13 +137,17 @@
           "review_storage_cache.*.Key",
           "review_storage_cache.*.Key[*]",
           "review_storage_cache.*.Value",
+          "review_storage_cache.*.Value.ReviewID",
           "review_storage_cache.*.Value[*]"
         ],
         "constraints": [
           "FOREIGN_KEY review_storage_cache.*.Key REFERENCES movie_review_db.movie_review.Reviews[*].ReviewID",
           "FOREIGN_KEY review_storage_cache.*.Key REFERENCES review_storage_cache.*.Key[*] [T]",
           "FOREIGN_KEY review_storage_cache.*.Key REFERENCES review_storage_db.review.ReviewID [T]",
-          "FOREIGN_KEY review_storage_cache.*.Value REFERENCES review_storage_db.review [T]"
+          "FOREIGN_KEY review_storage_cache.*.Value REFERENCES review_storage_db.review [T]",
+          "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES movie_review_db.movie_review.Reviews[*].ReviewID",
+          "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES review_storage_cache.*.Key[*] [T]",
+          "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES review_storage_db.review.ReviewID [T]"
         ]
       }
     ]
@@ -202,6 +208,8 @@
         "name": "user",
         "fields": [
           "user_db.user",
+          "user_db.user.FirstName",
+          "user_db.user.LastName",
           "user_db.user.Password",
           "user_db.user.Salt",
           "user_db.user.UserID",
