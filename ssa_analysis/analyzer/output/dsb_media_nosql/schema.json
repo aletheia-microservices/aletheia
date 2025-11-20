@@ -79,7 +79,6 @@
         "constraints": [
           "FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_id_db.movie.MovieID",
           "FOREIGN_KEY movie_review_cache.*.Value[*] REFERENCES review_storage_db.review",
-          "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES movie_review_db.movie_review.Reviews[*].ReviewID [T]",
           "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_cache.*.Key[*]",
           "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_db.review.ReviewID"
         ]
@@ -141,11 +140,9 @@
           "review_storage_cache.*.Value[*]"
         ],
         "constraints": [
-          "FOREIGN_KEY review_storage_cache.*.Key REFERENCES movie_review_db.movie_review.Reviews[*].ReviewID",
           "FOREIGN_KEY review_storage_cache.*.Key REFERENCES review_storage_cache.*.Key[*] [T]",
           "FOREIGN_KEY review_storage_cache.*.Key REFERENCES review_storage_db.review.ReviewID [T]",
           "FOREIGN_KEY review_storage_cache.*.Value REFERENCES review_storage_db.review [T]",
-          "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES movie_review_db.movie_review.Reviews[*].ReviewID",
           "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES review_storage_cache.*.Key[*] [T]",
           "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES review_storage_db.review.ReviewID [T]"
         ]
