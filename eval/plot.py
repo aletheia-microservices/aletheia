@@ -3,49 +3,43 @@ import seaborn as sns
 import numpy as np
 import yaml
 
-OUT_FILENAME = "plot-all.png"
+INTPUT_FILENAME = "results/averages.yaml"
+OUT_FILENAME = "plots/plot.png"
 
 # load yaml data
-with open("results_apps.yaml", "r") as f1, open("results_dummies.yaml", "r") as f2:
-  data1 = yaml.safe_load(f1)
-  data2 = yaml.safe_load(f2)
-
-data = {
-  "apps": data1.get("apps", []) + data2.get("apps", []),
-  "weights": {**data1.get("weights", {}), **data2.get("weights", {})}
-}
+with open(INTPUT_FILENAME, "r") as f:
+  data = yaml.safe_load(f)
 
 # weights
 ms_weight = data["weights"]["ms_weight"]
 ds_weight = data["weights"]["ds_weight"]
 
 # actual results
-apps = [app["name"] for app in data["apps"]]
+apps = [app["app"] for app in data["apps"]]
 ms_counts = np.array([app["ms_count"] for app in data["apps"]])
 ds_counts = np.array([app["ds_count"] for app in data["apps"]])
-parsing_time_s = np.array([app["parsing_time_s"] for app in data["apps"]])
-schema_time_s = np.array([app["schema_time_s"] for app in data["apps"]])
-detection_time_s = np.array([app["detection_time_s"] for app in data["apps"]])
+parsing_s = np.array([app["parsing_s"] for app in data["apps"]])
+schema_s = np.array([app["schema_s"] for app in data["apps"]])
+detection_s = np.array([app["detection_s"] for app in data["apps"]])
 
 # x and y values
 complexity = ms_weight * ms_counts + ds_weight * ds_counts
-total_time_s = parsing_time_s + schema_time_s + detection_time_s
-#total_time_s = parsing_time_s + schema_time_s / 1000 + detection_time_s / 1000
+total_s = parsing_s + schema_s + detection_s
 
 print("Apps:", apps)
 print("Complexity:", complexity)
-print("Total time (s):", total_time_s)
+print("Total time (s):", total_s)
 
 order = np.lexsort((ms_counts, complexity))
 
 apps_sorted      = [apps[i] for i in order]
-parsing_sorted   = parsing_time_s[order]
-schema_sorted    = schema_time_s[order]
-detection_sorted = detection_time_s[order]
-total_time_s = total_time_s[order]
+parsing_sorted   = parsing_s[order]
+schema_sorted    = schema_s[order]
+detection_sorted = detection_s[order]
+total_s = total_s[order]
 
-parsing_time_s = np.round(parsing_time_s).astype(int)
-total_time_s = np.round(total_time_s).astype(int)
+parsing_s = np.round(parsing_s).astype(int)
+total_s = np.round(total_s).astype(int)
 
 spacing = 0.8  # smaller => bars closer horizontally
 x = np.arange(len(apps_sorted)) * spacing
@@ -71,7 +65,7 @@ plt.rcParams['ytick.labelsize'] = 'xx-small'
 
 fig, axes = plt.subplots(4, 1, sharex=True)
 
-bars0 = axes[0].bar(x, total_time_s, color=COLORS['total'], width=bar_width)
+bars0 = axes[0].bar(x, total_s, color=COLORS['total'], width=bar_width)
 axes[0].set_yscale('log')
 axes[0].margins(y=0.3) # 20% vertical padding
 axes[0].bar_label(bars0, fmt="%ds", fontsize=5.5, padding=3)

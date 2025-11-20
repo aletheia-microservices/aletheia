@@ -11,6 +11,7 @@ import (
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
+	"gopkg.in/yaml.v2"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
@@ -30,23 +31,23 @@ var EVAL = true
 
 func main() {
 	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
-    flag.Parse()
+	flag.Parse()
 
 	if flag.NArg() < 1 {
-        fmt.Fprintf(os.Stderr, "usage: program [--eval] <appname>\n")
-        fmt.Fprintln(os.Stderr, "available appnames:")
-        fmt.Fprintln(os.Stderr, "- foobar")
-        fmt.Fprintln(os.Stderr, "- postnotification_simple")
-        fmt.Fprintln(os.Stderr, "- dsb_sn2")
-        fmt.Fprintln(os.Stderr, "- digota")
-        fmt.Fprintln(os.Stderr, "- sockshop3")
-        fmt.Fprintln(os.Stderr, "- dsb_media_sql")
-        fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
-        fmt.Fprintln(os.Stderr, "- dsb_hotel2")
-        fmt.Fprintln(os.Stderr, "- train_ticket2")
-        fmt.Fprintln(os.Stderr, "- large_scale_app")
-        os.Exit(1)
-    }
+		fmt.Fprintf(os.Stderr, "usage: program [--eval] <appname>\n")
+		fmt.Fprintln(os.Stderr, "available appnames:")
+		fmt.Fprintln(os.Stderr, "- foobar")
+		fmt.Fprintln(os.Stderr, "- postnotification_simple")
+		fmt.Fprintln(os.Stderr, "- dsb_sn2")
+		fmt.Fprintln(os.Stderr, "- digota")
+		fmt.Fprintln(os.Stderr, "- sockshop3")
+		fmt.Fprintln(os.Stderr, "- dsb_media_sql")
+		fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
+		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
+		fmt.Fprintln(os.Stderr, "- train_ticket2")
+		fmt.Fprintln(os.Stderr, "- large_scale_app")
+		os.Exit(1)
+	}
 
 	if EVAL {
 		go func() {
@@ -60,10 +61,13 @@ func main() {
 	}
 
 	appname := flag.Arg(0)
-
+	
+	start := time.Now()
+	
 	apppath := utils.GetAppEntrypointPath(appname)
 	app := app.NewApp(appname)
 	app.Init()
+
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
@@ -87,20 +91,21 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	start := time.Now()
-	
 	fmt.Printf("[%s] [1/13] building program\n", time.Now().Format(time.TimeOnly))
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
-	
+
 	fmt.Printf("[%s] [2/13] initializing service fields\n", time.Now().Format(time.TimeOnly))
 	app.InitServiceFields(pkgs)
 	fmt.Printf("[%s] [3/13] parsing SQL schema from user file\n", time.Now().Format(time.TimeOnly))
 	app.ParseSQLSchemaFromUserFile()
 	fmt.Printf("[%s] [4/13] parsing NoSQL schema from user file\n", time.Now().Format(time.TimeOnly))
 	app.ParseNoSQLSchemaFromUserFile()
+
+	elapse_init := time.Since(start)
+	start_parsing := time.Now()
 
 	fmt.Printf("[%s] [5/13] initializing pointer analysis\n", time.Now().Format(time.TimeOnly))
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
@@ -156,11 +161,22 @@ func main() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
+	fmt.Printf("[%s] [11/15] releasing memory associated with ssa graph\n", time.Now().Format(time.TimeOnly))
+	graphsLst = nil
+	pkgs = nil
+	for fn, ssagraph := range funcGraphs {
+		if ssagraph != nil {
+			ssagraph.Release()
+		}
+		delete(funcGraphs, fn)
+	}
+	funcGraphs = nil
+
 	if !EVAL {
 		absgraph.WriteVisited(appname)
 	}
 
-	elapsed_parsing := time.Since(start)
+	elapsed_parsing := time.Since(start_parsing)
 
 	detector1 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_PRIMARY_KEY)
 	detector2 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_FOREIGN_KEY)
@@ -171,14 +187,14 @@ func main() {
 
 	start_schema := time.Now()
 	// phase 1: two passes
-	fmt.Printf("[%s] [11/13] starting schema builder\n", time.Now().Format(time.TimeOnly))
+	fmt.Printf("[%s] [12/15] starting schema builder\n", time.Now().Format(time.TimeOnly))
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
-	fmt.Printf("[%s] [12/13] starting schema builder (read only)\n", time.Now().Format(time.TimeOnly))
+	fmt.Printf("[%s] [13/15] starting schema builder (read only)\n", time.Now().Format(time.TimeOnly))
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 
 	elapsed_schema := time.Since(start_schema)
 
-	fmt.Printf("[%s] [13/13] starting pattern detection\n", time.Now().Format(time.TimeOnly))
+	fmt.Printf("[%s] [14/15] starting pattern detection\n", time.Now().Format(time.TimeOnly))
 	start_detection := time.Now()
 
 	// phase 2: one pass for all detectors
@@ -187,27 +203,74 @@ func main() {
 	if !EVAL {
 		// phase 0: dummy pass to generate dot files with taints for debugging
 		iterator.Run(detection.PHASE_0_DEBUG)
-	
+
 		absgraph.WriteToDOTFile(appname, true)
 		absgraph.WriteToDOTFile(appname, false)
-	
+
 		app.WriteAppToJSON()
 		app.WriteSchemaToJSON()
 	}
 
-
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
 
+	fmt.Printf("[%s] [15/15] saving results\n", time.Now().Format(time.TimeOnly))
 	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
 	}
 
-	fmt.Printf("Execution time (TOTAL):\t%.4f s\n", elapsed_total.Seconds())
+	fmt.Printf("Execution time (TOTAL):\t\t%.4f s\n", elapsed_total.Seconds())
+	fmt.Printf("Execution time (INIT):\t\t%.4f s\n", elapse_init.Seconds())
 	fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
 	fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
 	fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
+
+	if EVAL {
+		times := AnalysisTimes{
+			App:              app.GetName(),
+			NumMicroservices: app.NumberOfMicroservices(),
+			NumDatastores:    app.NumberOfDatastores(),
+			Total:            elapsed_total.Seconds(),
+			Init:             elapse_init.Seconds(),
+			Parsing:          elapsed_parsing.Seconds(),
+			Schema:           elapsed_schema.Seconds(),
+			Detection:        elapsed_detection.Seconds(),
+		}
+		saveAnalysisTime(app, times)
+	}
+}
+
+type AnalysisTimes struct {
+	App              string  `yaml:"app"`
+	NumMicroservices int     `yaml:"ms_count"`
+	NumDatastores    int     `yaml:"ds_count"`
+	Total            float64 `yaml:"total_s"`
+	Init             float64 `yaml:"init_s"`
+	Parsing          float64 `yaml:"parsing_s"`
+	Schema           float64 `yaml:"schema_s"`
+	Detection        float64 `yaml:"detection_s"`
+}
+
+func saveAnalysisTime(app *app.App, times AnalysisTimes) {
+	ts := time.Now().Format("2006-01-02_15-04-05")
+	dir := "analysis_times"
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		panic(err)
+	}
+
+	filepath := fmt.Sprintf("%s/%s_%s.yaml", dir, app.GetName(), ts)
+
+	out, err := yaml.Marshal(times)
+	if err != nil {
+		panic(err)
+	}
+
+	err = os.WriteFile(filepath, out, 0644)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {

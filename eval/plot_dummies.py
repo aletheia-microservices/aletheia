@@ -3,10 +3,11 @@ import seaborn as sns
 import numpy as np
 import yaml
 
-OUT_FILENAME = "plot-dummies.png"
+INTPUT_FILENAME = "results/results_dummies.yaml"
+OUT_FILENAME = "plots/plot-dummies.png"
 
 # load yaml data
-with open("results_dummies.yaml", "r") as f:
+with open(INTPUT_FILENAME, "r") as f:
   data = yaml.safe_load(f)
 
 # weights
@@ -14,13 +15,13 @@ ms_weight = data["weights"]["ms_weight"]
 reqs_weight = data["weights"]["reqs_weight"]
 
 # actual results
-apps = [app["name"] for app in data["apps"]]
+apps = [app["app"] for app in data["apps"]]
 ms_counts = np.array([app["ms_count"] for app in data["apps"]])
 reqs_counts = np.array([app["reqs_count"] for app in data["apps"]])
-total_time_m = np.array([app["total_time_m"] for app in data["apps"]])
-parsing_time_s = np.array([app["parsing_time_s"] for app in data["apps"]])
-schema_time_s = np.array([app["schema_time_s"] for app in data["apps"]])
-detection_time_s = np.array([app["detection_time_s"] for app in data["apps"]])
+total_m = np.array([app["total_m"] for app in data["apps"]])
+parsing_s = np.array([app["parsing_s"] for app in data["apps"]])
+schema_s = np.array([app["schema_s"] for app in data["apps"]])
+detection_s = np.array([app["detection_s"] for app in data["apps"]])
 
 # x and y values
 complexity = ms_weight * ms_counts + reqs_weight * reqs_counts
@@ -28,13 +29,13 @@ order = np.lexsort((ms_counts, complexity))
 
 print("Apps:", apps)
 print("Complexity:", complexity)
-print("Total time (m):", total_time_m)
+print("Total time (m):", total_m)
 
 apps_sorted      = [apps[i] for i in order]
-parsing_sorted   = parsing_time_s[order]
-schema_sorted    = schema_time_s[order]
-detection_sorted = detection_time_s[order]
-total_time_m     = total_time_m[order]
+parsing_sorted   = parsing_s[order]
+schema_sorted    = schema_s[order]
+detection_sorted = detection_s[order]
+total_m     = total_m[order]
 
 spacing = 0.5  # smaller => bars closer horizontally
 x = np.arange(len(apps_sorted)) * spacing
@@ -60,7 +61,7 @@ plt.rcParams['ytick.labelsize'] = 'xx-small'
 
 fig, axes = plt.subplots(4, 1, sharex=True)
 
-bars0 = axes[0].bar(x, total_time_m, color=COLORS['total'], width=bar_width)
+bars0 = axes[0].bar(x, total_m, color=COLORS['total'], width=bar_width)
 axes[0].bar_label(bars0, fmt="%0.2fmin", fontsize=6, padding=0)
 axes[0].set_title("Total", fontsize=8)
 axes[0].set_ylabel("Time (min)")

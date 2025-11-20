@@ -91,6 +91,14 @@ func (app *App) GetName() string {
 	return app.name
 }
 
+func (app *App) NumberOfMicroservices() int {
+	return len(app.services)
+}
+
+func (app *App) NumberOfDatastores() int {
+	return len(app.databases)
+}
+
 func (app *App) SetServiceEntrypoints(service *services.Service, methods []string) {
 	sort.Strings(methods)
 	app.entrypoints[service] = methods
