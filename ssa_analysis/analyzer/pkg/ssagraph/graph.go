@@ -30,6 +30,18 @@ type SSAGraph struct {
 	returns    [][]*SSANode // can have multiple return tuples depending on controlflow
 }
 
+func (graph *SSAGraph) Release() {
+	graph.nodes = nil
+	graph.edges = nil
+	graph.defs = nil
+	graph.methodCall = nil
+	graph.svcCalls = nil
+	graph.dbCalls = nil
+	graph.allCalls = nil
+	graph.params = nil
+	graph.returns = nil
+}
+
 func (graph *SSAGraph) String() string {
 	return graph.fnShortPath
 }
