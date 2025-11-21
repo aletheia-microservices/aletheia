@@ -153,7 +153,7 @@ func (t TaintInfo) cutObjectPathSuffix(suffix string) (TaintInfo, bool) {
 	var ok bool
 	t.objpath, ok = strings.CutSuffix(t.objpath, suffix)
 	if !ok {
-		fmt.Printf("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
+		// EVAL: fmt.Printf("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
 	}
 	return t, ok
 }

@@ -79,16 +79,16 @@ func (trace *AbstractTrace) LongString() string {
 }
 
 func (trace *AbstractTrace) Equals(other *AbstractTrace) bool {
-	fmt.Printf("[ABSTRACT TRACE] [EQUAL] checking if traces are equal:\n\t%s\n\t%s\n", trace.LongString(), other.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT TRACE] [EQUAL] checking if traces are equal:\n\t%s\n\t%s\n", trace.LongString(), other.LongString())
 	return trace.svpath == other.svpath && trace.svcallID == other.svcallID
 }
 
 func (trace *AbstractTrace) IsUpperPath(other *AbstractTrace) (bool, string) {
-	fmt.Printf("[ABSTRACT TRACE] [SUPER] checking if trace is super path:\n\t%s\n\t%s\n", trace.LongString(), other.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT TRACE] [SUPER] checking if trace is super path:\n\t%s\n\t%s\n", trace.LongString(), other.LongString())
 	if trace.svpath != other.svpath && strings.HasPrefix(other.svpath, trace.svpath) {
 		var subpath string
 		_, subpath, _ = strings.Cut(other.svpath, trace.svpath)
-		fmt.Printf("got subpath: %s\n", subpath)
+		// EVAL: fmt.Printf("got subpath: %s\n", subpath)
 		return trace.svcallID == other.svcallID, subpath
 	}
 	return false, ""

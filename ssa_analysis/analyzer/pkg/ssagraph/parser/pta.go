@@ -86,7 +86,7 @@ func InitPointerAnalysis(prog *ssa.Program, pkgs []*ssa.Package) (*pointer.Resul
 }
 
 func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, result *pointer.Result, funcGraphs map[string]*ssagraph.SSAGraph) {
-	fmt.Printf("\n[PTA] running pointer analysis for package: %s\n", pkg.String())
+	// EVAL: fmt.Printf("\n[PTA] running pointer analysis for package: %s\n", pkg.String())
 
 	path := fmt.Sprintf("output/%s/ssa/%s.ptrs", appname, pkg.Pkg.Name())
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
@@ -114,15 +114,15 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 		}
 
 		shortFuncPath := utils.GetShortFunctionPath(fn.String())
-		fmt.Println()
-		fmt.Printf("\t[PTA] [%s] analyzing value: %v // pointers = %v\n", shortFuncPath, value, pts)
+		// EVAL: fmt.Println()
+		// EVAL: fmt.Printf("\t[PTA] [%s] analyzing value: %v // pointers = %v\n", shortFuncPath, value, pts)
 		if fn.Pkg == nil {
 			continue
 		}
 
 		graph := funcGraphs[shortFuncPath]
 		if graph == nil {
-			fmt.Printf("skipping graph not found for name (%s)\n", shortFuncPath)
+			// EVAL: fmt.Printf("skipping graph not found for name (%s)\n", shortFuncPath)
 			continue
 		}
 
@@ -131,16 +131,16 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 		name := value.Name()
 		node, ok := graph.GetNodeByNameIfExists(name)
 		if !ok {
-			fmt.Printf("skipping node not found for name (%s)\n", name)
+			// EVAL: fmt.Printf("skipping node not found for name (%s)\n", name)
 			continue
 		}
-		//fmt.Printf("points to set of [%T] %v @ %v:\n", value, value, value.Parent())
+		//// EVAL: fmt.Printf("points to set of [%T] %v @ %v:\n", value, value, value.Parent())
 		for _, lbl := range pts.PointsTo().Labels() {
 			lblFn := lbl.Value().Parent()
 			if lblFn == nil {
 				// [TO BE IMPROVED]
 				// e.g., train_ticket2.TRAFFIC_ACCIDENT
-				fmt.Printf("nill lblFn as parent of value: %v\n", lbl.Value())
+				// EVAL: fmt.Printf("nill lblFn as parent of value: %v\n", lbl.Value())
 				continue
 			}
 
@@ -159,15 +159,15 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 						}
 					} */
 					if !exists {
-						fmt.Printf("creating edge\n")
+						// EVAL: fmt.Printf("creating edge\n")
 
 						edge, _ := graph.CreateAndAddNewEdge(node, pointsToNode, ssagraph.EDGE_POINTS_TO, 0, "")
 						if edge != nil {
 							edge.SetPath(lbl.Path())
 
-							fmt.Printf("created edge from: %v\n", edge.GetFromNode())
+							// EVAL: fmt.Printf("created edge from: %v\n", edge.GetFromNode())
 							/* for _, edge := range graph.GetEdgesFromNode(edge.GetFromNode()) {
-								fmt.Printf("- edge to (%v): %v\n", edge.GetType(), edge.GetToNode().String())
+								// EVAL: fmt.Printf("- edge to (%v): %v\n", edge.GetType(), edge.GetToNode().String())
 							} */
 						}
 					}

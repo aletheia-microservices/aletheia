@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
         vb.name = "analyzer-vm"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.memory = "8192"
-        vb.cpus = 10
+        vb.cpus = 5
     end
 
     vm.vm.synced_folder "ssa_analysis", "/home/vagrant/ssa_analysis",

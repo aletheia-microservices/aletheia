@@ -148,7 +148,7 @@ func (graph *SSAGraph) GetReturnsLst() [][]*SSANode {
 }
 
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
-	fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
+	// EVAL: fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
 	if len(graph.params) <= 2 {
 		return nil
 	}

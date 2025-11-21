@@ -7,7 +7,11 @@ apps=(
     dsb_sn2
     dsb_media_nosql
     train_ticket2
-    large_scale_app
+    #large_scale_app_A
+    #large_scale_app_B
+    #large_scale_app_C
+    #large_scale_app_D
+    #large_scale_app_E
 )
 
 runs=5

@@ -39,7 +39,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 	defer outfile2.Close()
 
 	for _, member := range pkg.Members {
-		fmt.Printf("[SSA] [%T] member: %v\n", member, member)
+		// EVAL: fmt.Printf("[SSA] [%T] member: %v\n", member, member)
 		switch m := member.(type) {
 		case *ssa.Function:
 			iterateFunc(app, outfile2, m, nil, funcGraphs)
@@ -55,11 +55,11 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 			// file: print.go
 			// function: func (p *Package) WriteTo(w io.Writer) (int64, error)
 			for _, sel := range typeutil.IntuitiveMethodSet(m.Type(), &prog.MethodSets) {
-				fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
+				// EVAL: fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
 				method := prog.MethodValue(sel)
 				if method != nil {
 					fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
-					fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: %v\n", method, method)
+					// EVAL: fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: %v\n", method, method)
 					if len(sel.Index()) != 1 {
 						// when a structure has an embedded field its methods are promoted and
 						// will appear for the current structure
@@ -74,7 +74,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 						// where jwt.StandardClaims has methods Valid(), VerifyAudience(), etc.
 						//
 						// WORKAROUND: just ignore them for now
-						fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: skipping...\n", method)
+						// EVAL: fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: skipping...\n", method)
 						continue
 					}
 					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
@@ -84,14 +84,14 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 			methods := prog.MethodSets.MethodSet(m.Type().Underlying())
 			for i := 0; i < methods.Len(); i++ {
 				sel := methods.At(i)
-				fmt.Printf("\t[SSA] [METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
+				// EVAL: fmt.Printf("\t[SSA] [METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
 				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				method := prog.MethodValue(sel)
 				if method != nil {
-					fmt.Printf("\t[SSA] [METHOD SET] [%T]: %v\n", method, method)
+					// EVAL: fmt.Printf("\t[SSA] [METHOD SET] [%T]: %v\n", method, method)
 					if len(sel.Index()) != 1 {
 						// same reason as above when iterating IntuitiveMethodSet
-						fmt.Printf("\t[SSA] [METHOD SET] [%T]: skipping...\n", method)
+						// EVAL: fmt.Printf("\t[SSA] [METHOD SET] [%T]: skipping...\n", method)
 						continue
 					}
 					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
@@ -109,16 +109,16 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
 	methodName := utils.ExtractMethodNameFromShortFunctionPath(shortFuncPath)
 
-	fmt.Printf("[SSA] iterating function (%s)\n", shortFuncPath)
+	// EVAL: fmt.Printf("[SSA] iterating function (%s)\n", shortFuncPath)
 
 	graph := ssagraph.NewGraph(app, fn.Pkg.Pkg.Name(), shortFuncPath, serviceName, methodName)
 	if _, exists := funcGraphs[shortFuncPath]; exists {
-		fmt.Printf("[SSA] ssagraph for function (%s) already exists\n", shortFuncPath)
-		fmt.Println("[SSA] skipping...")
+		// EVAL: fmt.Printf("[SSA] ssagraph for function (%s) already exists\n", shortFuncPath)
+		// EVAL: fmt.Println("[SSA] skipping...")
 		return
 	}
 	funcGraphs[shortFuncPath] = graph
-	fmt.Printf("[SSA] added new ssagraph for function (%s)\n", shortFuncPath)
+	// EVAL: fmt.Printf("[SSA] added new ssagraph for function (%s)\n", shortFuncPath)
 
 	var visited = make(map[ssa.Value]bool)
 
@@ -144,11 +144,11 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 }
 
 func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	fmt.Printf("[SSA PARSE INSTR] %02d [%T] %v\n", instrIdx, instr, instr.String())
+	// EVAL: fmt.Printf("[SSA PARSE INSTR] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	id := computeInstructionID(instr)
 	if id == "" { // e.graph., conditions or jumps (instructions and not values)
-		fmt.Printf("[SSA PARSE INSTR] skipping instruction with invalid id: %v\n", instr)
+		// EVAL: fmt.Printf("[SSA PARSE INSTR] skipping instruction with invalid id: %v\n", instr)
 		return nil
 	}
 
@@ -192,7 +192,7 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 	case *ssa.Go, *ssa.RunDefers, *ssa.Defer:
 		// TODO
-		fmt.Printf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
+		// EVAL: fmt.Printf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	default:
 		log.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
@@ -202,7 +202,7 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 }
 
 func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	fmt.Printf("[SSA PARSE VALUE] %02d [%T] %v\n", instrIdx, val, val.String())
+	// EVAL: fmt.Printf("[SSA PARSE VALUE] %02d [%T] %v\n", instrIdx, val, val.String())
 
 	if visited[val] {
 		return graph.GetNodeByName(val.Name())
@@ -223,16 +223,16 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	switch t := val.(type) {
 	case *ssa.Call:
 		for _, arg := range t.Call.Args {
-			fmt.Printf("[SSA PARSE VALUE] [CALL: %s] ARG: %s\n", t.Name(), arg.Name())
+			// EVAL: fmt.Printf("[SSA PARSE VALUE] [CALL: %s] ARG: %s\n", t.Name(), arg.Name())
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == arg.Name() {
-					fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
+					// EVAL: fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == arg.Name() {
-					fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
+					// EVAL: fmt.Printf("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -241,7 +241,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		}
 		if t.Call.IsInvoke() {
 			rcv := t.Call.Value
-			fmt.Printf("[SSA PARSE VALUE] [CALL: %s] RCV: %s\n", t.Name(), rcv.Name())
+			// EVAL: fmt.Printf("[SSA PARSE VALUE] [CALL: %s] RCV: %s\n", t.Name(), rcv.Name())
 			rcvNode := parseValue(graph, instr, instrIdx, rcv, visited)
 			graph.CreateAndAddNewEdge(rcvNode, node, ssagraph.EDGE_RECEIVER_ON_CALL, 0, "")
 		}
@@ -287,7 +287,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		// nothing to do
 
 	case *ssa.MakeMap:
-		fmt.Printf("[SSA PARSE VALUE] MAKE MAP! %v\n", t)
+		// EVAL: fmt.Printf("[SSA PARSE VALUE] MAKE MAP! %v\n", t)
 		// nothing to do
 
 	case *ssa.Global:
@@ -297,13 +297,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		for _, phiEdge := range t.Edges {
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == phiEdge.Name() {
-					fmt.Printf("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
+					// EVAL: fmt.Printf("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == phiEdge.Name() {
-					fmt.Printf("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
+					// EVAL: fmt.Printf("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -362,7 +362,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.ChangeInterface, *ssa.Index,
 		*ssa.TypeAssert, *ssa.ChangeType: // dsb_sn2
 		// TODO
-		fmt.Printf("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		// EVAL: fmt.Printf("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 
 	default:
 		log.Fatalf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())

@@ -1,4 +1,19 @@
 {
+  "cast_info_cache": {
+    "name": "cast_info_cache",
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "cast_info_cache.*.Key",
+          "cast_info_cache.*.Key[*]",
+          "cast_info_cache.*.Value",
+          "cast_info_cache.*.Value[*]"
+        ],
+        "constraints": []
+      }
+    ]
+  },
   "cast_info_db": {
     "name": "cast_info_db",
     "schemas": [
@@ -24,7 +39,21 @@
   },
   "movie_id_cache": {
     "name": "movie_id_cache",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "movie_id_cache.*.Key",
+          "movie_id_cache.*.Value"
+        ],
+        "constraints": [
+          "FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_info_cache.*.Key [MANDATORY]",
+          "FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_info_db.movie_info.MovieID",
+          "FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_review_cache.*.Key [MANDATORY]",
+          "FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_review_db.movie_review.MovieID"
+        ]
+      }
+    ]
   },
   "movie_id_db": {
     "name": "movie_id_db",
@@ -40,6 +69,29 @@
           "PRIMARY KEY (movie_id_db.movie.MovieID)",
           "PRIMARY KEY (movie_id_db.movie.Title)",
           "UNIQUE (movie_id_db.movie.Title)"
+        ]
+      }
+    ]
+  },
+  "movie_info_cache": {
+    "name": "movie_info_cache",
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "movie_info_cache.*.Key",
+          "movie_info_cache.*.Value",
+          "movie_info_cache.*.Value.Casts[*].CastInfoID",
+          "movie_info_cache.*.Value.PlotID"
+        ],
+        "constraints": [
+          "FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_id_db.movie.MovieID",
+          "FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_review_cache.*.Key [MANDATORY]",
+          "FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_review_db.movie_review.MovieID",
+          "FOREIGN_KEY movie_info_cache.*.Value.Casts[*].CastInfoID REFERENCES cast_info_cache.*.Key[*]",
+          "FOREIGN_KEY movie_info_cache.*.Value.Casts[*].CastInfoID REFERENCES cast_info_db.cast.CastInfoID",
+          "FOREIGN_KEY movie_info_cache.*.Value.PlotID REFERENCES plot_cache.*.Key",
+          "FOREIGN_KEY movie_info_cache.*.Value.PlotID REFERENCES plot_db.plot.PlotID"
         ]
       }
     ]
@@ -78,7 +130,7 @@
         ],
         "constraints": [
           "FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_id_db.movie.MovieID",
-          "FOREIGN_KEY movie_review_cache.*.Value[*] REFERENCES review_storage_db.review",
+          "FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_info_db.movie_info.MovieID",
           "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_cache.*.Key[*]",
           "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_db.review.ReviewID"
         ]
@@ -99,10 +151,23 @@
           "movie_review_db.movie_review.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY movie_review_db.movie_review.MovieID REFERENCES movie_id_db.movie.MovieID [MANDATORY] [T]",
+          "FOREIGN_KEY movie_review_db.movie_review.MovieID REFERENCES movie_id_db.movie.MovieID [T]",
           "PRIMARY KEY (movie_review_db.movie_review.MovieID)",
           "PRIMARY KEY (movie_review_db.movie_review.UserID)"
         ]
+      }
+    ]
+  },
+  "plot_cache": {
+    "name": "plot_cache",
+    "schemas": [
+      {
+        "name": "*",
+        "fields": [
+          "plot_cache.*.Key",
+          "plot_cache.*.Value"
+        ],
+        "constraints": []
       }
     ]
   },
@@ -136,16 +201,9 @@
           "review_storage_cache.*.Key",
           "review_storage_cache.*.Key[*]",
           "review_storage_cache.*.Value",
-          "review_storage_cache.*.Value.ReviewID",
           "review_storage_cache.*.Value[*]"
         ],
-        "constraints": [
-          "FOREIGN_KEY review_storage_cache.*.Key REFERENCES review_storage_cache.*.Key[*] [T]",
-          "FOREIGN_KEY review_storage_cache.*.Key REFERENCES review_storage_db.review.ReviewID [T]",
-          "FOREIGN_KEY review_storage_cache.*.Value REFERENCES review_storage_db.review [T]",
-          "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES review_storage_cache.*.Key[*] [T]",
-          "FOREIGN_KEY review_storage_cache.*.Value.ReviewID REFERENCES review_storage_db.review.ReviewID [T]"
-        ]
+        "constraints": []
       }
     ]
   },
@@ -164,6 +222,10 @@
         ]
       }
     ]
+  },
+  "social_graph_db": {
+    "name": "social_graph_db",
+    "schemas": null
   },
   "user_cache": {
     "name": "user_cache",

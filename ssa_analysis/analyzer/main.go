@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
@@ -49,6 +50,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	logrus.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: time.TimeOnly,
+	})
+
 	if EVAL {
 		go func() {
 			for {
@@ -64,6 +70,11 @@ func main() {
 	
 	start := time.Now()
 	
+	logrus_ctx := logrus.WithField("app", appname)
+
+	// ------------ PART 1
+	logrus_ctx.Infof("[1/13] initializing program")
+
 	apppath := utils.GetAppEntrypointPath(appname)
 	app := app.NewApp(appname)
 	app.Init()
@@ -91,23 +102,20 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	fmt.Printf("[%s] [1/13] building program\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 2
+	logrus_ctx.Infof("[2/13] building program")
+
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
 	}
 
-	fmt.Printf("[%s] [2/13] initializing service fields\n", time.Now().Format(time.TimeOnly))
 	app.InitServiceFields(pkgs)
-	fmt.Printf("[%s] [3/13] parsing SQL schema from user file\n", time.Now().Format(time.TimeOnly))
 	app.ParseSQLSchemaFromUserFile()
-	fmt.Printf("[%s] [4/13] parsing NoSQL schema from user file\n", time.Now().Format(time.TimeOnly))
 	app.ParseNoSQLSchemaFromUserFile()
 
-	elapse_init := time.Since(start)
-	start_parsing := time.Now()
-
-	fmt.Printf("[%s] [5/13] initializing pointer analysis\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 3
+	logrus_ctx.Infof("[3/13] initializing pointer analysis")
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
@@ -115,7 +123,8 @@ func main() {
 
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
-	fmt.Printf("[%s] [6/13] running SSA analysis\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 4
+	logrus_ctx.Infof("[4/13] running SSA analysis")
 	for _, pkg := range pkgs {
 		parser.RunSSAAnalysis(app, prog, pkg, funcGraphs)
 	}
@@ -124,7 +133,8 @@ func main() {
 		ssagraph.Sort()
 	}
 
-	fmt.Printf("[%s] [7/13] initializing pointer-to analysis\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 5
+	logrus_ctx.Infof("[5/13] running pointer-to analysis")
 	for _, pkg := range pkgs {
 		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
 	}
@@ -134,7 +144,8 @@ func main() {
 		graphsLst = append(graphsLst, graph)
 	}
 
-	fmt.Printf("[%s] [8/13] registering fields\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 6
+	logrus_ctx.Infof("[6/13] registering fields")
 	registry.RegisterFields(app, graphsLst)
 
 	if !EVAL {
@@ -144,7 +155,8 @@ func main() {
 		}
 	}
 
-	fmt.Printf("[%s] [9/13] running SSA tainter\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 7
+	logrus_ctx.Infof("[7/13] running SSA tainter")
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
@@ -155,13 +167,15 @@ func main() {
 		}
 	}
 
-	fmt.Printf("[%s] [10/13] creating new abstract call graph\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 8
+	logrus_ctx.Infof("[8/13] creating new abstract call graph")
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
-	fmt.Printf("[%s] [11/15] releasing memory associated with ssa graph\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 9
+	logrus_ctx.Infof("[9/13] releasing memory associated with ssa graph")
 	graphsLst = nil
 	pkgs = nil
 	for fn, ssagraph := range funcGraphs {
@@ -176,7 +190,7 @@ func main() {
 		absgraph.WriteVisited(appname)
 	}
 
-	elapsed_parsing := time.Since(start_parsing)
+	elapsed_parsing := time.Since(start)
 
 	detector1 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_PRIMARY_KEY)
 	detector2 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_FOREIGN_KEY)
@@ -186,42 +200,44 @@ func main() {
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
 	start_schema := time.Now()
-	// phase 1: two passes
-	fmt.Printf("[%s] [12/15] starting schema builder\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 10
+	logrus_ctx.Infof("[10/13] starting schema builder")
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
-	fmt.Printf("[%s] [13/15] starting schema builder (read only)\n", time.Now().Format(time.TimeOnly))
+	// ------------ PART 11
+	logrus_ctx.Infof("[11/13] starting schema builder (read only)")
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
-
+	
 	elapsed_schema := time.Since(start_schema)
-
-	fmt.Printf("[%s] [14/15] starting pattern detection\n", time.Now().Format(time.TimeOnly))
+	
+	// ------------ PART 12
+	logrus_ctx.Infof("[12/13] starting pattern detection")
 	start_detection := time.Now()
-
+	
 	// phase 2: one pass for all detectors
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
-
+	
 	if !EVAL {
 		// phase 0: dummy pass to generate dot files with taints for debugging
 		iterator.Run(detection.PHASE_0_DEBUG)
-
+		
 		absgraph.WriteToDOTFile(appname, true)
 		absgraph.WriteToDOTFile(appname, false)
-
+		
 		app.WriteAppToJSON()
 		app.WriteSchemaToJSON()
 	}
-
+	
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
-
-	fmt.Printf("[%s] [15/15] saving results\n", time.Now().Format(time.TimeOnly))
+	
+	// ------------ PART 13
+	logrus_ctx.Infof("[13/13] saving results")
 	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
 	}
 
 	fmt.Printf("Execution time (TOTAL):\t\t%.4f s\n", elapsed_total.Seconds())
-	fmt.Printf("Execution time (INIT):\t\t%.4f s\n", elapse_init.Seconds())
 	fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
 	fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
 	fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
@@ -232,7 +248,6 @@ func main() {
 			NumMicroservices: app.NumberOfMicroservices(),
 			NumDatastores:    app.NumberOfDatastores(),
 			Total:            elapsed_total.Seconds(),
-			Init:             elapse_init.Seconds(),
 			Parsing:          elapsed_parsing.Seconds(),
 			Schema:           elapsed_schema.Seconds(),
 			Detection:        elapsed_detection.Seconds(),
@@ -246,7 +261,6 @@ type AnalysisTimes struct {
 	NumMicroservices int     `yaml:"ms_count"`
 	NumDatastores    int     `yaml:"ds_count"`
 	Total            float64 `yaml:"total_s"`
-	Init             float64 `yaml:"init_s"`
 	Parsing          float64 `yaml:"parsing_s"`
 	Schema           float64 `yaml:"schema_s"`
 	Detection        float64 `yaml:"detection_s"`

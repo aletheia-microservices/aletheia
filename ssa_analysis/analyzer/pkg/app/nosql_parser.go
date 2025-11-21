@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -60,7 +59,7 @@ func (app *App) ParseNoSQLSchemaFromUserFile() {
 }
 
 func parseJson(app *App, jsonSchema JSONSchema) {
-	fmt.Printf("[JSON PARSER] parsing json data: %v", jsonSchema)
+	// EVAL: fmt.Printf("[JSON PARSER] parsing json data: %v", jsonSchema)
 
 	for _, field := range jsonSchema.Schema.UniqueItems {
 		database := app.GetDatabaseByName(jsonSchema.Schema.Database)

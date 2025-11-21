@@ -1,12 +1,12 @@
 package keycoordination
 
 import (
-	"fmt"
 	"slices"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
+	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
 )
 
@@ -40,9 +40,9 @@ func (detector *KeyCoordinationDetector) checkInconsistency(app *app.App, reques
 
 func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, request *Request, currOp *ReadOperation) {
 	// same logic as in foreignkeycascade but here we verify if secondaryTaint.IsDelete()
-	fmt.Printf("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
+	// EVAL: fmt.Printf("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
 	for _, arg := range currOp.arguments {
-		fmt.Printf("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
+		// EVAL: fmt.Printf("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
 
 		for _, taintLst := range arg.GetAllTaints() {
 			var currTaint *abstractgraph.AbstractTaint
@@ -57,7 +57,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			}
 
 			if currTaint == nil {
-				fmt.Printf("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
+				// EVAL: fmt.Printf("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
 				continue
 			}
 
@@ -66,12 +66,12 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			currField := app.ComputeDatabaseFieldFromPath(currDatabase, currFieldPath)
 
 			for _, otherTaint := range otherTaints {
-				fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+				// EVAL: fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 				otherOp := request.FindOperationByCallID(otherTaint.GetDatabaseCallID())
 
 				// sanity checks
 				if currOp == otherOp || otherOp == nil || currOp.call.GetToNode().GetDatabaseName() == otherOp.call.GetToNode().GetDatabaseName() {
-					fmt.Printf("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+					// EVAL: fmt.Printf("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 					continue
 				}
 
@@ -80,7 +80,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 					otherDatabase := app.GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherFieldpath))
 					otherField := app.ComputeDatabaseFieldFromPath(otherDatabase, otherFieldpath)
 
-					fmt.Printf("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
+					// EVAL: fmt.Printf("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
 
 					foreignRead := &ForeignRead{
 						op1:    currOp,
@@ -118,7 +118,7 @@ func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) 
 		}
 	}
 
-	if detector.isTypeForeignKey() && detector.isRestrictive() {
+	if detector.isTypeForeignKey() && config.Global.RestrictiveForeignKeyCoordinationAnalysis {
 		// 1. restrict detection warnings to mandatory constraints
 		// 2. filter out constraints that were created in the current request
 		// meaning that this foreign read was either before the write (e.g., to check if exists cache)
@@ -140,14 +140,24 @@ func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) 
 		// 		- merging old posts (cache key is UserID and never uses exchanged PostID) with new posts (cache values containing exchanged PostID across services) causes the new posts' PostID to "accidently" taint the old posts' PostID
 		// 		- the tool then assumes that the PostID was used to read the old posts from their resp. cache
 
-		if fread.constraint1 != nil && fread.constraint1.IsMandatory() {
-			if !slices.Contains(fread.constraint1.GetRequestsIndexesOnMandatoryFlags(), fread.op1.reqIdx) {
+		if fread.constraint1 != nil && fread.constraint1.IsMandatory() && 
+			!fread.constraint1.HasRequestIndexOnMandatory(fread.op1.reqIdx) {
+			return true
+		} else if fread.constraint2 != nil && fread.constraint2.IsMandatory() && 
+			!fread.constraint2.HasRequestIndexOnMandatory(fread.op2.reqIdx) {
+			return true
+		}
+	} else if detector.isTypePrimaryKey() && config.Global.RestrictivePrimaryKeyCoordinationAnalysis {
+		if constraint := fread.field1.GetConstraintForeignKeyToField(fread.field2); constraint != nil {
+			if constraint.IsMandatory() && !constraint.HasRequestIndexOnMandatory(fread.op1.reqIdx) {
 				return true
 			}
-		} else if fread.constraint2 != nil && fread.constraint2.IsMandatory() {
-			if !slices.Contains(fread.constraint2.GetRequestsIndexesOnMandatoryFlags(), fread.op2.reqIdx) {
+		} else if constraint := fread.field2.GetConstraintForeignKeyToField(fread.field1); constraint != nil {
+			if constraint.IsMandatory() && !constraint.HasRequestIndexOnMandatory(fread.op2.reqIdx) {
 				return true
 			}
+		} else {
+			return false
 		}
 	} else {
 		return true

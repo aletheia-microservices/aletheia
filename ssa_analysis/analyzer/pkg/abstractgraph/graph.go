@@ -37,7 +37,7 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 }
 
 func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
-	fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
+	// EVAL: fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
 }
 

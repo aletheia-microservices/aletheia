@@ -1,7 +1,6 @@
 package foreignkeyconcurrency
 
 import (
-	"fmt"
 	"slices"
 
 	"analyzer/pkg/abstractgraph"
@@ -18,11 +17,11 @@ type ForeignKeyConcurrencyDetector struct {
 }
 
 func NewDetector() *ForeignKeyConcurrencyDetector {
-	fmt.Println()
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println(" ---------------------------------- INITIALIZING FOREIGN KEY CONCURRENCY DETECTOR --------------------------------- ")
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println()
+	// EVAL: fmt.Println()
+	// EVAL: fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: fmt.Println(" ---------------------------------- INITIALIZING FOREIGN KEY CONCURRENCY DETECTOR --------------------------------- ")
+	// EVAL: fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: fmt.Println()
 	return &ForeignKeyConcurrencyDetector{
 		dangerousDeletes: make(map[*Request][]*DangerousDelete),
 	}
@@ -51,7 +50,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnEndRun(app *app.App) {
 func (detector *ForeignKeyConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] on new request\n")
+	// EVAL: fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] on new request\n")
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnEndRequest(app *app.App) {
@@ -77,15 +76,15 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int,
 
 	// search for fields:
 	// fields in current database with constraint foreign key + mandatory
-	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] write={%s}, entry={%s}\n", write.call.String(), write.request.entry.String())
+	// EVAL: fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] write={%s}, entry={%s}\n", write.call.String(), write.request.entry.String())
 	var fields []*backends.Field
 	for _, arg := range write.call.GetArguments() {
 		for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(write.call.GetID()) {
 			writtenField := app.ComputeDatabaseFieldFromPath(write.database, fieldpath)
 			for _, field := range app.GetAllDatabaseFieldsWithPrefixPath(writtenField, true) {
-				fmt.Printf("\t[FOREIGN KEY CONCURRENCY | DETECTOR] field = %s\n", field.String())
+				// EVAL: fmt.Printf("\t[FOREIGN KEY CONCURRENCY | DETECTOR] field = %s\n", field.String())
 				if field.HasConstraintForeignKeyNonMandatory() && !slices.Contains(fields, field) {
-					fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | DETECTOR] OK!\n")
+					// EVAL: fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | DETECTOR] OK!\n")
 					fields = append(fields, field)
 				}
 			}
@@ -94,7 +93,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int,
 	write.SetFields(fields)
 
 	request.addWriteOperation(write)
-	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new write: %v\n", write)
+	// EVAL: fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new write: %v\n", write)
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
@@ -114,7 +113,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int
 	// search for pending fields:
 	// fields in other databases with constraint foreign key + mandatory
 	// that reference some field in the current database
-	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] delete = %s\n", delete.call.String())
+	// EVAL: fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] delete = %s\n", delete.call.String())
 	for _, arg := range delete.call.GetArguments() {
 		for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(delete.call.GetID()) {
 			// [TO BE IMPROVED]
@@ -127,5 +126,5 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int
 	}
 
 	request.addDeleteOperation(delete)
-	fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new delete: %v\n", delete)
+	// EVAL: fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new delete: %v\n", delete)
 }

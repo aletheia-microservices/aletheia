@@ -4,7 +4,6 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
-	"fmt"
 )
 
 type DetectionType int
@@ -19,7 +18,6 @@ type KeyCoordinationDetector struct {
 	keyType      DetectionType
 	requests     []*Request
 	results      string
-	restrictive  bool
 	foreignReads map[*Request][]*ForeignRead
 }
 
@@ -27,18 +25,13 @@ func NewDetector(keyType DetectionType) *KeyCoordinationDetector {
 	detector := &KeyCoordinationDetector{
 		keyType:      keyType,
 		foreignReads: make(map[*Request][]*ForeignRead),
-		restrictive:  true,
 	}
-	fmt.Println()
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Printf(" --------------------------------- INITIALIZING %s DETECTOR --------------------------------- \n", detector.GetTypeStringUpper())
-	fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
-	fmt.Println()
+	// EVAL: fmt.Println()
+	// EVAL: fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: fmt.Printf(" --------------------------------- INITIALIZING %s DETECTOR --------------------------------- \n", detector.GetTypeStringUpper())
+	// EVAL: fmt.Println(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: fmt.Println()
 	return detector
-}
-
-func (detector *KeyCoordinationDetector) isRestrictive() bool {
-	return detector.restrictive
 }
 
 func (detector *KeyCoordinationDetector) isTypePrimaryKey() bool {
@@ -95,7 +88,7 @@ func (detector *KeyCoordinationDetector) OnEndRun(app *app.App) {
 func (detector *KeyCoordinationDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	fmt.Printf("[%s | DETECTOR] on new request\n", detector.GetTypeStringUpper())
+	// EVAL: fmt.Printf("[%s | DETECTOR] on new request\n", detector.GetTypeStringUpper())
 }
 
 func (detector *KeyCoordinationDetector) OnEndRequest(app *app.App) {
@@ -114,7 +107,7 @@ func (detector *KeyCoordinationDetector) OnRead(app *app.App, reqIdx int, edge *
 	read := NewReadOperation(edge, edge.GetArguments(), reqIdx)
 	request := detector.getCurrentRequest()
 	request.AddOperation(read)
-	fmt.Printf("[%s | DETECTOR] added new read: %v\n", detector.GetTypeStringUpper(), read)
+	// EVAL: fmt.Printf("[%s | DETECTOR] added new read: %v\n", detector.GetTypeStringUpper(), read)
 }
 
 func (detector *KeyCoordinationDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {

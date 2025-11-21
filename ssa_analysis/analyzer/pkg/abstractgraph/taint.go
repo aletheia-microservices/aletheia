@@ -127,7 +127,7 @@ func (taint *AbstractTaint) LongString() string {
 }
 
 func (taint *AbstractTaint) Similar(other *AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT TAINT] [SIMILAR] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT TAINT] [SIMILAR] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID /* &&
 		taint.primary == other.primary &&
@@ -135,7 +135,7 @@ func (taint *AbstractTaint) Similar(other *AbstractTaint) bool {
 }
 
 func (taint *AbstractTaint) Equal(other *AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID &&
 		taint.dbOpType == other.dbOpType &&
@@ -147,11 +147,11 @@ func (taint *AbstractTaint) Equal(other *AbstractTaint) bool {
 // - curr dbfield 	= notification
 // - other dbfield 	= notification.PostID
 func (taint *AbstractTaint) IsUpperTaint(other *AbstractTaint) (bool, string) {
-	fmt.Printf("[ABSTRACT TAINT] [SUPER] checking if taint is super path:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT TAINT] [SUPER] checking if taint is super path:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	if ok, diff := utils.IsUpperPath(taint.fieldpath, other.fieldpath); ok {
-		fmt.Printf("got subpath: %s\n", diff)
+		// EVAL: fmt.Printf("got subpath: %s\n", diff)
 		return taint.dbcallID == other.dbcallID, diff
 	}
-	fmt.Printf("[ABSTRACT TAINT] [SUPER] returning false...\n")
+	// EVAL: fmt.Printf("[ABSTRACT TAINT] [SUPER] returning false...\n")
 	return false, ""
 }

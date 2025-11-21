@@ -69,11 +69,15 @@
         "name": "socialgraph",
         "fields": [
           "socialgraph_db.socialgraph",
+          "socialgraph_db.socialgraph.Followees",
           "socialgraph_db.socialgraph.Followers",
           "socialgraph_db.socialgraph.Followers[*]",
-          "socialgraph_db.socialgraph.Followers[*].FollowerID"
+          "socialgraph_db.socialgraph.Followers[*].FollowerID",
+          "socialgraph_db.socialgraph.UserID"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID [MANDATORY]"
+        ]
       }
     ]
   },
@@ -90,7 +94,15 @@
     "schemas": [
       {
         "name": "user",
-        "fields": [],
+        "fields": [
+          "user_db.user",
+          "user_db.user.FirstName",
+          "user_db.user.LastName",
+          "user_db.user.PwdHashed",
+          "user_db.user.Salt",
+          "user_db.user.UserID",
+          "user_db.user.Username"
+        ],
         "constraints": []
       }
     ]

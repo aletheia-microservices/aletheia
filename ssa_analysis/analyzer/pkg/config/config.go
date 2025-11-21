@@ -6,6 +6,9 @@ const (
 )
 
 type Config struct {
+	RestrictivePrimaryKeyCoordinationAnalysis bool
+	RestrictiveForeignKeyCoordinationAnalysis bool
+
 	// transitive references
 	EnableTransitiveReferences                              bool
 	DeleteOldOnTransitiveReferences                         bool
@@ -24,10 +27,13 @@ type Config struct {
 }
 
 var Global = &Config{
+	RestrictivePrimaryKeyCoordinationAnalysis: true,
+	RestrictiveForeignKeyCoordinationAnalysis: true,
+
 	// transitive references
-	EnableTransitiveReferences:                              true, // do not change
-	DeleteOldOnTransitiveReferences:                         true, // tunable
-	UpdateTransitiveReferencesTriggeredByCurrent:            true, // do not change
+	EnableTransitiveReferences:                              true,  // do not change
+	DeleteOldOnTransitiveReferences:                         true,  // tunable
+	UpdateTransitiveReferencesTriggeredByCurrent:            true,  // do not change
 	UpdateTransitiveReferencesTriggeredByCurrentOnMandatory: false, // tunable
 
 	// creation of references on read-read pairs

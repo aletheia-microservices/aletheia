@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"slices"
@@ -20,6 +19,11 @@ const (
 	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
 	APP_PATH_LARGE_SCALE_APP         = "large_scale_app/workflow/large_scale_app"
+	APP_PATH_LARGE_SCALE_APP_A       = "large_scale_app_A/workflow/large_scale_app_A"
+	APP_PATH_LARGE_SCALE_APP_B       = "large_scale_app_B/workflow/large_scale_app_B"
+	APP_PATH_LARGE_SCALE_APP_C       = "large_scale_app_C/workflow/large_scale_app_C"
+	APP_PATH_LARGE_SCALE_APP_D       = "large_scale_app_D/workflow/large_scale_app_D"
+	APP_PATH_LARGE_SCALE_APP_E       = "large_scale_app_E/workflow/large_scale_app_E"
 
 	BLUEPRINT_EXAMPLES_RELATIVE_PATH = "../../blueprint/examples"
 )
@@ -35,6 +39,11 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_A,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_B,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_C,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_D,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_E,
 }
 
 var APPS_ENTRYPOINTS_PATHS = map[string]string{
@@ -48,7 +57,12 @@ var APPS_ENTRYPOINTS_PATHS = map[string]string{
 	"dsb_sn2":                 "blueprint/dsb_sn2/poststorageservice_storepost",
 	"dsb_hotel2":              "blueprint/dsb_hotel2/geoservice_nearby",
 	"train_ticket2":           "blueprint/train_ticket2/assuranceservice_deletebyid",
-	"large_scale_app":         "blueprint/large_scale_app/service100_method100",
+	"large_scale_app":         "blueprint/large_scale_app/entry",
+	"large_scale_app_A":       "blueprint/large_scale_app_A/entry",
+	"large_scale_app_B":       "blueprint/large_scale_app_B/entry",
+	"large_scale_app_C":       "blueprint/large_scale_app_C/entry",
+	"large_scale_app_D":       "blueprint/large_scale_app_D/entry",
+	"large_scale_app_E":       "blueprint/large_scale_app_E/entry",
 }
 
 var APPS_NOSQL_SCHEMAS = map[string]string{
@@ -86,7 +100,7 @@ func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {
 		return false, ""
 	}
 
-	fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
+	// EVAL: fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {

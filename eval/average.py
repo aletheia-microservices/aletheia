@@ -8,10 +8,15 @@ OUTPUT_FILE = "results/averages.yaml"
 NAME_MAP = {
     "dsb_media_nosql":          "mediamicroservices",
     "dsb_sn2":                  "socialnetwork",
-    "large_scale_app":          "largescaleapp",
     "postnotification_simple":  "postnotification",
     "sockshop3":                "sockshop",
     "train_ticket2":            "trainticket",
+    "large_scale_app":          "largescaleapp",
+    "large_scale_app_A":        "largescaleapp",
+    "large_scale_app_B":        "largescaleappA",
+    "large_scale_app_C":        "largescaleappB",
+    "large_scale_app_D":        "largescaleappC",
+    "large_scale_app_E":        "largescaleappD",
 }
 
 apps_data = defaultdict(list)

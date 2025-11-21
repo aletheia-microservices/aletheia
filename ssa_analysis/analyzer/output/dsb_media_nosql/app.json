@@ -1,17 +1,21 @@
 {
   "name": "dsb_media_nosql",
   "databases": [
+    "cast_info_cache",
     "cast_info_db",
     "compose_review_cache",
     "movie_id_cache",
     "movie_id_db",
+    "movie_info_cache",
     "movie_info_db",
     "movie_review_cache",
     "movie_review_db",
+    "plot_cache",
     "plot_db",
     "rating_cache",
     "review_storage_cache",
     "review_storage_db",
+    "social_graph_db",
     "user_cache",
     "user_db",
     "user_review_cache",
@@ -65,7 +69,8 @@
       "pkg": "mediamicroservices_nosql",
       "impl": "CastInfoServiceImpl",
       "fields": [
-        "database #0 (cast_info_db)"
+        "database #0 (cast_info_db)",
+        "cache #1 (cast_info_cache)"
       ],
       "methods": [
         "WriteCastInfo",
@@ -127,11 +132,14 @@
       "pkg": "mediamicroservices_nosql",
       "impl": "MovieInfoServiceImpl",
       "fields": [
-        "database #0 (movie_info_db)"
+        "database #0 (movie_info_db)",
+        "cache #1 (movie_info_cache)",
+        "socialGraphDB #2 (social_graph_db)"
       ],
       "methods": [
         "WriteMovieInfo",
-        "ReadMovieInfo"
+        "ReadMovieInfo",
+        "UpdateRating"
       ],
       "services": [],
       "databases": []
@@ -183,7 +191,8 @@
       "pkg": "mediamicroservices_nosql",
       "impl": "PlotServiceImpl",
       "fields": [
-        "database #0 (plot_db)"
+        "database #0 (plot_db)",
+        "cache #1 (plot_cache)"
       ],
       "methods": [
         "WritePlot",

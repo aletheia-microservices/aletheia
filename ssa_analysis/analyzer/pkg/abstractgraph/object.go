@@ -334,7 +334,7 @@ func (obj *AbstractObject) CleanSecondaryTaints() {
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
 func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTaint) (string, bool) {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
 	for objpath, taintLst := range obj.GetAllTaints() {
 		for _, taint := range taintLst {
 			if taint.Similar(&other) {
@@ -343,18 +343,18 @@ func (obj *AbstractObject) FindObjectPathWithEqualOrUpperTaint(other AbstractTai
 			// taint.dbfield: notification
 			// other.dbfield: notification.PostID
 			if ok, subpath := taint.IsUpperTaint(&other); ok {
-				fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning true...\n")
+				// EVAL: fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning true...\n")
 				return objpath + subpath, true
 			}
 		}
 	}
-	fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning false...\n")
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] [EXISTS] returning false...\n")
 	return "", false
 }
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
 func (obj *AbstractObject) HasSimilarTaint(other AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with similar taint\n")
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] finding object path with similar taint\n")
 	for _, taintLst := range obj.GetAllTaints() {
 		for _, taint := range taintLst {
 			if taint.Similar(&other) {
@@ -367,7 +367,7 @@ func (obj *AbstractObject) HasSimilarTaint(other AbstractTaint) bool {
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
 func (obj *AbstractObject) HasSimilarTaintOnObjectPath(objpath string, other AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with similar taint\n")
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] finding object path with similar taint\n")
 	for _, taint := range obj.GetTaintsForObjectPath(objpath) {
 		if taint.Similar(&other) {
 			return true
@@ -378,7 +378,7 @@ func (obj *AbstractObject) HasSimilarTaintOnObjectPath(objpath string, other Abs
 
 // argument 'other' must not be a pointer because the objective is to compare taints with same content
 func (obj *AbstractObject) HasEqualTaint(objpath string, other AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
 	for _, taint := range obj.GetTaintsForObjectPath(objpath) {
 		if taint.Equal(&other) {
 			return true
@@ -389,7 +389,7 @@ func (obj *AbstractObject) HasEqualTaint(objpath string, other AbstractTaint) bo
 
 // argument 'newtaint' must not be a pointer because the objective is is to compare taints with the same content
 func (obj *AbstractObject) AddTaintIfSimilarNotExists(objpath string, newtaint AbstractTaint) {
-	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
 	exists := obj.HasSimilarTaint(newtaint)
 	if !exists {
 		/* taint := &AbstractTaint{
@@ -403,16 +403,16 @@ func (obj *AbstractObject) AddTaintIfSimilarNotExists(objpath string, newtaint A
 		} */
 		taint := newtaint.Copy()
 		obj.taints[objpath] = append(obj.taints[objpath], taint)
-		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)
+		// EVAL: fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, taint)
 	}
 }
 
 func (obj *AbstractObject) AddTaintIfNotExists(objpath string, newtaint *AbstractTaint) bool {
-	fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
+	// EVAL: fmt.Printf("[ABSTRACT OBJECT] propagate new taint for obj path (%s): %s\n", objpath, newtaint.LongString())
 	exists := obj.HasEqualTaint(objpath, *newtaint)
 	if !exists {
 		obj.taints[objpath] = append(obj.taints[objpath], newtaint)
-		fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, newtaint)
+		// EVAL: fmt.Printf("[ABSTRACT OBJECT] added new taint to obj path (%s): %s\n", objpath, newtaint)
 		return false
 	}
 	return true

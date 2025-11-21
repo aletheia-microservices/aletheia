@@ -52,7 +52,7 @@ func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint,
 		return
 	}
 
-	fmt.Printf("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
+	// EVAL: fmt.Printf("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
 	if mappingVal, ok := tm.mapping[key]; ok {
 		if !slices.Contains(mappingVal, valElem) {
 			if after {

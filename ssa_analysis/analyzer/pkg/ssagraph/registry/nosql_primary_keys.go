@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"fmt"
 	"go/types"
 
 	"golang.org/x/tools/go/ssa"
@@ -25,11 +24,11 @@ func RegisterNoSQLPrimaryKey(app *app.App, databaseStr string, collectionStr str
 						constraint := backends.NewConstraint(backends.CONSTRAINT_PRIMARY, field)
 						field.AddConstraint(constraint)
 						schema.AddConstraint(constraint)
-						fmt.Printf("[CALLS BLUEPRINT] [NOSQL PK] registered primary key constraint: %s\n", constraint.String())
+						// EVAL: fmt.Printf("[CALLS BLUEPRINT] [NOSQL PK] registered primary key constraint: %s\n", constraint.String())
 					}
 				}
 			}
 		}
 	}
-	//fmt.Printf("[CALLS BLUEPRINT] [NOSQL PK] skipping registerNoSQLPrimaryKey (database=%s, schema=%s)\n", database.GetName(), schema.GetName())
+	//// EVAL: fmt.Printf("[CALLS BLUEPRINT] [NOSQL PK] skipping registerNoSQLPrimaryKey (database=%s, schema=%s)\n", database.GetName(), schema.GetName())
 }

@@ -1,6 +1,9 @@
 package backends
 
-import "log"
+import (
+	"log"
+	"slices"
+)
 
 type ConstraintType int
 
@@ -62,6 +65,10 @@ func (constraint *Constraint) GetRequestsIndexesOnMandatoryFlags() []int {
 		}
 	}
 	return reqIdxs
+}
+
+func (constraint *Constraint) HasRequestIndexOnMandatory(reqIdx int) bool {
+	return slices.Contains(constraint.GetRequestsIndexesOnMandatoryFlags(), reqIdx)
 }
 
 func (constraint *Constraint) CopyMandatory(other *Constraint) {

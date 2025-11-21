@@ -1,11 +1,9 @@
 package abstractgraph
 
 import (
-	"fmt"
 	"log"
 
 	"analyzer/pkg/app/backends"
-	"analyzer/pkg/common"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
 )
@@ -51,7 +49,7 @@ func mergeExistingTaintsWithNewTaints(obj *AbstractObject, objpath string, subpa
 			if mode != MERGE_MODE_DEBUG {
 				taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true, false)
 			}
-			fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%s}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+			// EVAL: fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%s}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
 		} else {
 			// sometimes it is not possible that taints are primary
 			// for example, when there is a service that acts as a gateway for two service
@@ -64,20 +62,20 @@ func mergeExistingTaintsWithNewTaints(obj *AbstractObject, objpath string, subpa
 				if existingTaint.GetT() == t {
 					// if T values are equal, then we skip since they
 					// come from the same source and will eventually be matched there
-					fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] skipping for existingTaint={%s} and newTaint={%s} since T values (%s) are equal\n", existingTaint.LongString(), newTaint.LongString(), t)
+					// EVAL: fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] skipping for existingTaint={%s} and newTaint={%s} since T values (%s) are equal\n", existingTaint.LongString(), newTaint.LongString(), t)
 					continue
 				}
 				lowerTaint := existingTaint.Copy()
 				lowerTaint.AddSuffixToDatabasePath(subpath)
 				taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true, false)
-				fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+				// EVAL: fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
 			}
 		}
 	}
 }
 
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, mode MergeMode, t string, readOnly bool) *TaintMapping {
-	fmt.Printf("[TAINTMAPPING] merging taints (mode=%d): %v\n", mergeModeToString(mode), otherTaintsMap)
+	// EVAL: fmt.Printf("[TAINTMAPPING] merging taints (mode=%d): %v\n", mergeModeToString(mode), otherTaintsMap)
 	var taintMapping *TaintMapping
 
 	taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
@@ -89,7 +87,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 	}
 
 	for _, objpath := range otherTaintsMapKeys {
-		fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
+		// EVAL: fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
 		existingTaints := obj.taints[objpath]
 
 		var taintsToAdd []*AbstractTaint
@@ -97,15 +95,15 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		taintExists := func(otherTaint *AbstractTaint) (string, bool) {
 			for _, existingTaint := range existingTaints {
 				if existingTaint.Similar(otherTaint) {
-					fmt.Printf("[TAINTMAPPING] [EXISTS] returning true...\n")
+					// EVAL: fmt.Printf("[TAINTMAPPING] [EXISTS] returning true...\n")
 					return objpath, true
 				}
 			}
-			fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
+			// EVAL: fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
 			return objpath, false
 		}
 
-		fmt.Printf("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
+		// EVAL: fmt.Printf("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
 		for _, otherTaint := range otherTaintsMap[objpath] {
 			if readOnly && !otherTaint.IsRead() {
 				continue
@@ -123,14 +121,14 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 					taintsToAdd = append(taintsToAdd, newTaint)
 				}
 
-				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] added new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
+				// EVAL: fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] added new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
 
 				// it is not necessary to be ran for MERGE_MODE_PARSE
 				if mode == MERGE_MODE_PARSE {
 					continue
 				}
 
-				fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] attempting to add mapping for objpath={%s} // taint={%s} // mode={%t}\n", obj.String(), objpath, newTaint.LongString(), mergeModeToString(mode))
+				// EVAL: fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] attempting to add mapping for objpath={%s} // taint={%s} // mode={%t}\n", obj.String(), objpath, newTaint.LongString(), mergeModeToString(mode))
 
 				mergeExistingTaintsWithNewTaints(obj, objpath, "", newTaint, taintMapping, mode, t)
 
@@ -240,7 +238,7 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 		return
 	}
 
-	fmt.Printf("[TRANSITIVE REFS] current: %s\n", current.String())
+	// EVAL: fmt.Printf("[TRANSITIVE REFS] current: %s\n", current.String())
 
 	for _, db := range graph.app.GetAllDatabases() {
 		for _, schema := range db.GetAllSchemas() {
@@ -253,16 +251,20 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 					}
 				}
 				if old.GetFieldAt(1) == current.GetFieldAt(0) {
+					if current.GetFieldAt(0).GetDatabase() == old.GetFieldAt(1).GetDatabase() {
+						continue
+					}
+
 					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, old.GetFieldAt(0), current.GetFieldAt(1))
 					new.SetTransitive()
 					new.CopyMandatory(current)
 
 					if config.Global.DeleteOldOnTransitiveReferences {
 						toDelete = append(toDelete, old)
-						fmt.Printf("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
+						// EVAL: fmt.Printf("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
 					}
 					toAdd = append(toAdd, new)
-					fmt.Printf("\t[TRANSITIVE REFS] to add: %s\n", new.String())
+					// EVAL: fmt.Printf("\t[TRANSITIVE REFS] to add: %s\n", new.String())
 				}
 			}
 
@@ -287,7 +289,7 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 //
 // if (a) and (b), then (c)
 // (c) X references Z (NEW)
-func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.Field) bool {
+func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.Field, reqIdx int, writewrite bool) bool {
 	if !config.Global.EnableTransitiveReferences {
 		return false
 	}
@@ -306,10 +308,16 @@ func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.
 			if c := field3.GetConstraintForeignKeyToField(field1); c != nil {
 				// skip since it already exists the other way around
 				continue
+			} else if field1.GetDatabase() == field3.GetDatabase() {
+				continue
 			} else {
 				if _, exists := seen[constraintPair{fromField: field1, toField: field3}]; !exists {
 					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
-					new.CopyMandatory(current)
+					if writewrite {
+						new.EnableMandatory(reqIdx)
+					} else {
+						new.DisableMandatory(reqIdx)
+					}
 					toAdd = append(toAdd, new)
 					seen[constraintPair{fromField: field1, toField: field3}] = true
 				}
@@ -320,7 +328,7 @@ func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.
 		new.SetTransitive()
 		field1.AddConstraint(new)
 		field1.GetSchema().AddConstraint(new)
-		fmt.Printf("[TRANSITIVE] added new transitive constraint: %s\n", new.String())
+		// EVAL: fmt.Printf("[TRANSITIVE] added new transitive constraint: %s\n", new.String())
 	}
 	return len(toAdd) > 0
 }
@@ -372,9 +380,13 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 
 			if taint1.GetT() == taint2.GetT() {
 				// debugging
-				fmt.Printf("taint1: %s\n", taint1.LongString())
-				fmt.Printf("taint2: %s\n", taint2.LongString())
+				// EVAL: fmt.Printf("taint1: %s\n", taint1.LongString())
+				// EVAL: fmt.Printf("taint2: %s\n", taint2.LongString())
 				log.Fatalf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
+			}
+
+			if db1 == db2 {
+				continue
 			}
 
 			if !readOnly {
@@ -415,33 +427,31 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if constraint := field1_write.GetConstraintForeignKeyToField(field2_write); constraint != nil {
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if !field2_write.HasConstraintForeignKeyToField(field1_write) && !field1_write.HasConstraintForeignKeyToField(field2_write) {
 		// 2nd condition is for sanity check
 		// may happen when iterating queue.Push() --> queue.Pop()
 
-		if ok := createTransitiveReferenceIfExists(field2_write, field1_write); ok {
+		if ok := createTransitiveReferenceIfExists(field2_write, field1_write, reqIdx, true); ok {
 			modified = true
 		} else {
 			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2_write, field1_write)
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			if taint1_write.IsWrite() && taint2_write.IsWrite() {
-				constraint.EnableMandatory(reqIdx)
-			}
+			constraint.EnableMandatory(reqIdx)
 			field2_write.AddConstraint(constraint)
 			db2_write.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
+			// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 		}
 	}
 	return modified
@@ -453,33 +463,31 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 		if taint2_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if constraint := field1_read.GetConstraintForeignKeyToField(field2_write); constraint != nil {
 		if taint2_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if !field2_write.HasConstraintForeignKeyToField(field1_read) && !field1_read.HasConstraintForeignKeyToField(field2_write) {
 		// 2nd condition is for sanity check
 		// may happen when iterating queue.Push() --> queue.Pop()
 
-		if ok := createTransitiveReferenceIfExists(field2_write, field1_read); ok {
+		if ok := createTransitiveReferenceIfExists(field2_write, field1_read, reqIdx, false); ok {
 			modified = true
 		} else {
 			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2_write, field1_read)
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			if taint2_write.IsWrite() {
-				constraint.DisableMandatory(reqIdx)
-			}
+			constraint.DisableMandatory(reqIdx)
 			field2_write.AddConstraint(constraint)
 			db2_write.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
+			// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 		}
 
 	}
@@ -488,8 +496,8 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 
 func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_read AbstractTaint, taint1_write AbstractTaint, db2_read *backends.Database, db1_write *backends.Database, field2_read *backends.Field, field1_write *backends.Field) bool {
 	if field1_write.GetPath() == "order_db.order.FromStation" && field2_read.GetPath() == "station_db.station.Name" {
-		fmt.Printf("CURRENT TAINT: %s\n", taint2_read.LongString())
-		fmt.Printf("OTHER TAINT: %s\n", taint1_write.LongString())
+		// EVAL: fmt.Printf("CURRENT TAINT: %s\n", taint2_read.LongString())
+		// EVAL: fmt.Printf("OTHER TAINT: %s\n", taint1_write.LongString())
 		log.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
 	}
 
@@ -512,14 +520,14 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 		if taint1_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0A] disabled mandatory: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0A] disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if constraint := field1_write.GetConstraintForeignKeyToField(field2_read); constraint != nil {
 		if taint1_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0B] disabled mandatory: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0B] disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if !field2_read.HasConstraintForeignKeyToField(field1_write) && !field1_write.HasConstraintForeignKeyToField(field2_read) {
@@ -529,19 +537,17 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 			return false
 		}
 
-		if ok := createTransitiveReferenceIfExists(field1_write, field2_read); ok {
+		if ok := createTransitiveReferenceIfExists(field1_write, field2_read, reqIdx, false); ok {
 			modified = true
 		} else {
 			constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1_write, field2_read)
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
-			if taint1_write.IsWrite() {
-				constraint.DisableMandatory(reqIdx)
-			}
+			constraint.DisableMandatory(reqIdx)
 			field1_write.AddConstraint(constraint)
 			db1_write.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [2] added new constraint: %s\n", constraint)
+			// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [2] added new constraint: %s\n", constraint)
 		}
 	}
 	return modified
@@ -562,7 +568,7 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 				return false
 			}
 
-			if ok := createTransitiveReferenceIfExists(field2, field1); ok {
+			if ok := createTransitiveReferenceIfExists(field2, field1, reqIdx, false); ok {
 				modified = true
 			} else {
 				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
@@ -571,14 +577,14 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 				db2.GetLastSchema().AddConstraint(constraint)
 				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-READ] [KEY-KEY] added new constraint: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-READ] [KEY-KEY] added new constraint: %s\n", constraint)
 			}
 		} else if taint1.IsReadValue() && taint2.IsReadKey() {
 			// foreign key: field1 ---> field2
 			if !config.Global.CreateReferencesFromReadReadPairAndValKey {
 				return false
 			}
-			if ok := createTransitiveReferenceIfExists(field1, field2); ok {
+			if ok := createTransitiveReferenceIfExists(field1, field2, reqIdx, false); ok {
 				modified = true
 			} else {
 				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field2)
@@ -587,7 +593,7 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 				db1.GetLastSchema().AddConstraint(constraint)
 				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 				modified = true
-				fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] added new constraint: %s\n", constraint)
+				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] added new constraint: %s\n", constraint)
 			}
 		} else {
 			// sanity check
@@ -628,7 +634,7 @@ func PropagateTaintsToServiceCallObjects(graph *AbstractCallGraph, currNode *Abs
 		for _, otherEdge := range graph.GetEdgesFromNode(currNode) {
 			// propagate from params in current node to call arguments in other edge
 			for _, param := range currNode.GetParams() {
-				fmt.Printf("[TRACE] [FROM_NODE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", currNode.String(), param.String(), otherEdge.String())
+				// EVAL: fmt.Printf("[TRACE] [FROM_NODE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", currNode.String(), param.String(), otherEdge.String())
 				taintTracedObjectsOnEdge(param, currNode, otherEdge, taintMapping, true, readOnly)
 			}
 		}
@@ -657,13 +663,13 @@ func PropagateTaintsToServiceCallObjects(graph *AbstractCallGraph, currNode *Abs
 			}
 			// 1. propagate from call arguments
 			for _, arg := range currEdge.GetArguments() {
-				fmt.Printf("[TRACE] [FROM_EDGE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+				// EVAL: fmt.Printf("[TRACE] [FROM_EDGE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
 				// 1b. to objects acting as arguments in other edges
 				taintTracedObjectsOnEdge(arg, currNode, otherEdge, taintMapping, doTaintAfter, readOnly)
 			}
 			// 2. propagate from call returns
 			for _, ret := range currEdge.GetReturns() {
-				fmt.Printf("[TRACE] [FROM_EDGE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+				// EVAL: fmt.Printf("[TRACE] [FROM_EDGE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
 				// 2b. to objects acting as arguments in other edges
 				taintTracedObjectsOnEdge(ret, currNode, otherEdge, taintMapping, doTaintAfter, readOnly)
 			}
@@ -720,7 +726,7 @@ func taintTracedObjectsOnEdge(currObj *AbstractObject, currNode *AbstractNode, o
 
 			// we get exactly the matching object by looking for the trace argument name
 			if tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName()); tracedObj != nil {
-				fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", currObj.String(), currObjpath, trace.LongString())
+				// EVAL: fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", currObj.String(), currObjpath, trace.LongString())
 				tracedObjPath := trace.GetArgumentPath()
 				taintTracedObjectsHelper(currObj, tracedObj, currObjpath, tracedObjPath, trace, taintMapping, true, doTaintAfter, readOnly)
 			}
@@ -735,7 +741,7 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 			var tracedObjPaths []string
 			var tracedObjs []*AbstractObject
 
-			fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
+			// EVAL: fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
 
 			for _, param := range currNode.GetParams() {
 				for paramObjpath, paramTraceLst := range param.GetTraces() {
@@ -744,9 +750,9 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if paramTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, param)
 								tracedObjPaths = append(tracedObjPaths, paramObjpath)
-								fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
-								fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
-								fmt.Printf("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
+								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
+								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
+								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}
@@ -759,9 +765,9 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if retTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, ret)
 								tracedObjPaths = append(tracedObjPaths, retObjpath)
-								fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace call ID: %s\n", retTrace.GetServiceCallID())
-								fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace path: %s\n", retTrace.GetServicePath())
-								fmt.Printf("[TRACE] [ON_NODE] [RET] trace path: %s\n", trace.GetServicePath())
+								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace call ID: %s\n", retTrace.GetServiceCallID())
+								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace path: %s\n", retTrace.GetServicePath())
+								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [RET] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}
@@ -778,7 +784,7 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 }
 
 func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject, currObjPath string, tracedObjPath string, trace *AbstractTrace, taintMapping *TaintMapping, onEdge bool, after bool, readOnly bool) {
-	fmt.Printf("[TRACE] [ON_EDGE=%t] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", onEdge, currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
+	// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", onEdge, currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
 	var selectedTaints = make(map[string][]*AbstractTaint)
 	var selectedTaintsKeys []string
 
@@ -821,7 +827,7 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 			if readOnly && !taint.IsRead() {
 				continue
 			}
-			fmt.Printf("[TRACE] [ON_EDGE=%t] currObjpath=%s // tracedObjpath=%s // path=%s // selectedPath=%s // taint={%s}\n", onEdge, currObjPath, tracedObjPath, path, selectedPath, taint.LongString())
+			// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] currObjpath=%s // tracedObjpath=%s // path=%s // selectedPath=%s // taint={%s}\n", onEdge, currObjPath, tracedObjPath, path, selectedPath, taint.LongString())
 			selectedTaint := taint.Copy()
 			selectedTaints[selectedPath] = append(selectedTaints[selectedPath], selectedTaint)
 		}
@@ -831,10 +837,10 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 	}
 
 	taintMappingTmp := MergeTaints(tracedObj, selectedTaints, selectedTaintsKeys, MERGE_MODE_TRACE, trace.GetT(), readOnly)
-	fmt.Printf("[TRACE] [ON_EDGE=%t] taint mapping tmp = %s\n", onEdge, taintMappingTmp.String())
+	// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] taint mapping tmp = %s\n", onEdge, taintMappingTmp.String())
 
 	if taintMapping != nil {
-		fmt.Printf("[TRACE] [ON_EDGE=%t] merging taint mapping tmp into main taint mapping\n", onEdge)
+		// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] merging taint mapping tmp into main taint mapping\n", onEdge)
 		taintMapping.Join(taintMappingTmp, after)
 	}
 
