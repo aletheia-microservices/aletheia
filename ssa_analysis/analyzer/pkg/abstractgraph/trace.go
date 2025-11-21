@@ -2,7 +2,6 @@ package abstractgraph
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -55,11 +54,6 @@ func (trace *AbstractTrace) GetArgumentPath() string {
 
 func (trace *AbstractTrace) GetT() string {
 	return trace.t
-}
-
-func (trace *AbstractTrace) GetTNumber() int {
-	n, _ := strconv.Atoi(trace.t[1:]) // assuming "t3", "t13", etc.
-	return n
 }
 
 func (trace *AbstractTrace) GetServicePath() string {

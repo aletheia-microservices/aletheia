@@ -2,8 +2,9 @@ package abstractgraph
 
 import (
 	"fmt"
-	"log"
 	"os"
+
+	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
@@ -26,7 +27,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 					graph.AddNode(dbPath, dbNode)
 
 					if !graph.GetApp().HasDatabase(dbname) {
-						log.Fatalf("database (%s) not found", dbname)
+						logrus.Fatalf("database (%s) not found", dbname)
 					}
 					db := graph.GetApp().GetDatabaseByName(dbname)
 					if !db.HasSchema(schemaName) {
@@ -144,101 +145,136 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		graph.AddEdge(edge)
 	}
 
-	var edges []*AbstractEdge
-
 	for _, call := range ssaGraph.GetAllCalls() {
 		if serviceCall, ok := call.(*ssagraph.ServiceCall); ok {
-			// EVAL: fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
-			toName := serviceCall.GetServiceWithMethod()
-			toNode := graph.GetNodeByNameIfExists(toName)
-
-			toSSAGraph := funcGraphs[serviceCall.GetFuncShortPath()]
-			if toSSAGraph == nil {
-				log.Fatalf("could not find ssa graph for short func path (%s)", serviceCall.GetFuncShortPath())
-			}
-
-			// create node for the first time
-			if toNode == nil {
-				toNode = NewAbstractNode(toName, NODE_SERVICE, serviceCall.GetService(), serviceCall.GetMethod(), "", "")
-				graph.AddNode(toName, toNode)
-
-				// EVAL: fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
-				for _, funcParam := range toSSAGraph.GetFuncParametersExceptMemberAndContext() {
-					param := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
-					toNode.AddParam(param)
-					// EVAL: fmt.Printf("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
-				}
-			}
-
-			edge := NewAbstractEdge(serviceCall.GetT(), serviceCall.GetID(), serviceCall.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
-
-			// create call arguments
-			for _, callArg := range serviceCall.GetArguments() {
-				arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
-				edge.AddArgument(arg)
-			}
-
-			// create call returns
-			for _, callRet := range serviceCall.GetReturns() {
-				ret := NewAbstractObject(callRet.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callRet.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callRet.GetTaints()))
-				// EVAL: fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
-				edge.AddReturn(ret)
-			}
-
-			edges = append(edges, edge)
-			// EVAL: fmt.Printf("[ABSTRACT GRAPH] [SERVICE CALL] added edge: %v\n", edge)
+			parseServiceCall(graph, node, serviceCall, funcGraphs)
 		}
 
 		if databaseCall, ok := call.(*ssagraph.DatabaseCall); ok {
-			// EVAL: fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
+			parseDatabaseCall(graph, node, databaseCall)
+		}
 
-			toDatabasePath := databaseCall.GetDatabasePath()
-			toNode := graph.GetNodeByNameIfExists(toDatabasePath)
-			dbname := databaseCall.GetDatabaseName()
-			schema := databaseCall.GetSchemaName()
+		if methodCall, ok := call.(*ssagraph.MethodCall); ok {
+			parseMethodCall(graph, node, ssaGraph, methodCall, funcGraphs)
+		}
+	}
+	for _, call := range ssaGraph.GetServiceCalls() {
+		Parse(graph, call.GetFuncShortPath(), false, funcGraphs)
+	}
+}
 
-			if toNode == nil {
-				toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE, "", "", dbname, schema)
-				graph.AddNode(toDatabasePath, toNode)
+func parseServiceCall(graph *AbstractCallGraph, node *AbstractNode, serviceCall *ssagraph.ServiceCall, funcGraphs map[string]*ssagraph.SSAGraph) {
+	// EVAL: fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
+	toName := serviceCall.GetServiceWithMethod()
+	toNode := graph.GetNodeByNameIfExists(toName)
 
-				schemaName := databaseCall.GetSchemaName()
+	toSSAGraph := funcGraphs[serviceCall.GetFuncShortPath()]
+	if toSSAGraph == nil {
+		logrus.Fatalf("could not find ssa graph for short func path (%s)", serviceCall.GetFuncShortPath())
+	}
 
-				if !graph.GetApp().HasDatabase(dbname) {
-					log.Fatalf("database (%s) not found", dbname)
-				}
+	// create node for the first time
+	if toNode == nil {
+		toNode = NewAbstractNode(toName, NODE_SERVICE, serviceCall.GetService(), serviceCall.GetMethod(), "", "")
+		graph.AddNode(toName, toNode)
 
-				db := graph.GetApp().GetDatabaseByName(dbname)
-				if !db.HasSchema(schemaName) {
-					db.AddSchema(backends.NewSchema(schemaName))
-				}
-			}
-
-			edge := NewAbstractEdge(databaseCall.GetT(), databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), EDGE_DATABASE_CALL)
-
-			for _, callArg := range databaseCall.GetArguments() {
-				arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
-				edge.AddArgument(arg)
-			}
-
-			// create fields if they do not exist yet
-			registerDatabaseFields(graph, edge.GetArguments())
-
-			// propagate taints to databases (forward): args (from) >>> params (to)
-			for i, toParam := range toNode.GetParams() {
-				fromArg := edge.GetArgumentAt(i)
-				MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE, "", false)
-			}
-
-			edges = append(edges, edge)
-			// EVAL: fmt.Printf("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)
+		// EVAL: fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
+		for _, funcParam := range toSSAGraph.GetFuncParametersExceptMemberAndContext() {
+			param := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
+			toNode.AddParam(param)
+			// EVAL: fmt.Printf("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
 		}
 	}
 
-	for _, edge := range edges {
+	edge := NewAbstractEdge(serviceCall.GetT(), serviceCall.GetID(), serviceCall.GetMethod(), node, toNode, common.OP_UNDEFINED, EDGE_SERVICE_RPC)
+
+	// create call arguments
+	for _, callArg := range serviceCall.GetArguments() {
+		arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
+		edge.AddArgument(arg)
+	}
+
+	// create call returns
+	for _, callRet := range serviceCall.GetReturns() {
+		ret := NewAbstractObject(callRet.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callRet.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callRet.GetTaints()))
+		// EVAL: fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
+		edge.AddReturn(ret)
+	}
+
+	// EVAL: fmt.Printf("[ABSTRACT GRAPH] [SERVICE CALL] added edge: %v\n", edge)
+	graph.AddEdge(edge)
+}
+
+func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCall *ssagraph.DatabaseCall) {
+	// EVAL: fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
+	toDatabasePath := databaseCall.GetDatabasePath()
+	toNode := graph.GetNodeByNameIfExists(toDatabasePath)
+	dbname := databaseCall.GetDatabaseName()
+	schema := databaseCall.GetSchemaName()
+
+	if toNode == nil {
+		toNode = NewAbstractNode(toDatabasePath, NODE_DATABASE, "", "", dbname, schema)
+		graph.AddNode(toDatabasePath, toNode)
+
+		schemaName := databaseCall.GetSchemaName()
+
+		if !graph.GetApp().HasDatabase(dbname) {
+			logrus.Fatalf("database (%s) not found", dbname)
+		}
+
+		db := graph.GetApp().GetDatabaseByName(dbname)
+		if !db.HasSchema(schemaName) {
+			db.AddSchema(backends.NewSchema(schemaName))
+		}
+	}
+
+	edge := NewAbstractEdge(databaseCall.GetT(), databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), EDGE_DATABASE_CALL)
+
+	for _, callArg := range databaseCall.GetArguments() {
+		arg := NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
+		edge.AddArgument(arg)
+	}
+
+	// create fields if they do not exist yet
+	registerDatabaseFields(graph, edge.GetArguments())
+
+	// propagate taints to databases (forward): args (from) >>> params (to)
+	for i, toParam := range toNode.GetParams() {
+		fromArg := edge.GetArgumentAt(i)
+		MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE, "", false)
+	}
+
+	// EVAL: fmt.Printf("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)
+	graph.AddEdge(edge)
+}
+
+func parseMethodCall(graph *AbstractCallGraph, node *AbstractNode, fromSSAGraph *ssagraph.SSAGraph, methodCall *ssagraph.MethodCall, funcGraphs map[string]*ssagraph.SSAGraph) {
+	var edgesToAdd []*AbstractEdge
+	toSSAGraph := fromSSAGraph.GetCombinedGraphForMethodCallIfExists(methodCall)
+	if toSSAGraph == nil {
+		// should never happen
+		return
+	}
+
+	for _, call := range toSSAGraph.GetAllCalls() {
+		if serviceCall, ok := call.(*ssagraph.ServiceCall); ok {
+			parseServiceCall(graph, node, serviceCall, funcGraphs)
+		}
+
+		if databaseCall, ok := call.(*ssagraph.DatabaseCall); ok {
+			parseDatabaseCall(graph, node, databaseCall)
+		}
+
+		if methodCall, ok := call.(*ssagraph.MethodCall); ok {
+			parseMethodCall(graph, node, fromSSAGraph, methodCall, funcGraphs)
+		}
+	}
+
+	for _, edge := range edgesToAdd {
 		graph.AddEdge(edge)
 	}
 
-	for _, call := range ssaGraph.GetServiceCalls() {
+	for _, call := range toSSAGraph.GetServiceCalls() {
 		Parse(graph, call.GetFuncShortPath(), false, funcGraphs)
 	}
 }
@@ -264,7 +300,7 @@ func (graph *AbstractCallGraph) WriteVisited(appname string) {
 	file, err := os.Create(filename)
 	defer file.Close()
 	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+		logrus.Fatalf("error: %s", err.Error())
 	}
 
 	clientNode := graph.GetNodeByName("client")

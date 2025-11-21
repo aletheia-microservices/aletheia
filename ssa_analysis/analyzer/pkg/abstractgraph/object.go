@@ -138,7 +138,7 @@ func (obj *AbstractObject) Annotations() string {
 
 		sortedTaints := obj.GetTaintsForObjectPath(objpath)
 		sort.Slice(sortedTaints, func(i, j int) bool {
-			return sortedTaints[i].GetTNumber() < sortedTaints[j].GetTNumber()
+			return lessT(sortedTaints[i].GetT(), sortedTaints[j].GetT())
 		})
 
 		for _, taint := range sortedTaints {
@@ -168,7 +168,7 @@ func (obj *AbstractObject) Annotations() string {
 
 		sortedTraces := obj.GetTracesForObjectPath(objpath)
 		sort.Slice(sortedTraces, func(i, j int) bool {
-			return sortedTraces[i].GetTNumber() < sortedTraces[j].GetTNumber()
+			return lessT(sortedTraces[i].GetT(), sortedTraces[j].GetT())
 		})
 
 		for _, trace := range sortedTraces {
@@ -186,23 +186,24 @@ func (obj *AbstractObject) GetAllTaints() map[string][]*AbstractTaint {
 	return obj.taints
 }
 
-func (obj *AbstractObject) GetAllTaintsBeforeT(tnumber int) map[string][]*AbstractTaint {
+func (obj *AbstractObject) GetAllTaintsBeforeT(otherT string) map[string][]*AbstractTaint {
 	var taints = make(map[string][]*AbstractTaint)
 	for objpath, taintLst := range obj.taints {
 		for _, taint := range taintLst {
-			if taint.GetTNumber() <= tnumber {
+			if lessT(taint.GetT(), otherT) || equalT(taint.GetT(), otherT) {
 				taints[objpath] = append(taints[objpath], taint)
+				
 			}
 		}
 	}
 	return taints
 }
 
-func (obj *AbstractObject) GetAllTaintsAfterT(tnumber int) map[string][]*AbstractTaint {
+func (obj *AbstractObject) GetAllTaintsAfterT(otherT string) map[string][]*AbstractTaint {
 	var taints = make(map[string][]*AbstractTaint)
 	for objpath, taintLst := range obj.taints {
 		for _, taint := range taintLst {
-			if taint.GetTNumber() >= tnumber {
+			if greaterT(taint.GetT(), otherT) || equalT(taint.GetT(), otherT) {
 				taints[objpath] = append(taints[objpath], taint)
 			}
 		}

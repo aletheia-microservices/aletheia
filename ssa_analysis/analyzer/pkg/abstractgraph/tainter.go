@@ -1,10 +1,11 @@
 package abstractgraph
 
 import (
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
-	"log"
 )
 
 type MergeMode int
@@ -367,7 +368,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 			taint2 = currTaint
 			db2 = currDb
 
-			if otherTaint.GetTNumber() > currTaint.GetTNumber() {
+			if greaterT(otherTaint.GetT(), currTaint.GetT()) {
 				field1 = currField
 				taint1 = currTaint
 				db1 = currDb
@@ -377,11 +378,11 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				db2 = otherDb
 			}
 
-			if taint1.GetT() == taint2.GetT() {
+			if equalT(taint1.GetT(), taint2.GetT()) {
 				// debugging
 				// EVAL: fmt.Printf("taint1: %s\n", taint1.LongString())
 				// EVAL: fmt.Printf("taint2: %s\n", taint2.LongString())
-				log.Fatalf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
+				logrus.Fatalf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
 			}
 
 			if db1 == db2 {
@@ -497,7 +498,7 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 	if field1_write.GetPath() == "order_db.order.FromStation" && field2_read.GetPath() == "station_db.station.Name" {
 		// EVAL: fmt.Printf("CURRENT TAINT: %s\n", taint2_read.LongString())
 		// EVAL: fmt.Printf("OTHER TAINT: %s\n", taint1_write.LongString())
-		log.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
+		logrus.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
 	}
 
 	var modified bool
@@ -597,7 +598,7 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 		} else {
 			// sanity check
 			// NOTE: it's happening e.g., caches in dsb_sn
-			// log.Fatalf("\t\t[ITERATOR] [READ-READ] [VAL-VAL] unexpected val-val pair: (%s, %s)\n", taint1.String(), taint2.String())
+			// logrus.Fatalf("\t\t[ITERATOR] [READ-READ] [VAL-VAL] unexpected val-val pair: (%s, %s)\n", taint1.String(), taint2.String())
 		}
 	}
 	return modified
@@ -844,7 +845,7 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 	}
 
 	if tracedObjPath == "_obj[*]" && trace.svpath == "CastInfoService.ReadMovieInfo.t4.Casts[*].CastInfoID" {
-		log.Fatalf("HERE!!!!")
+		logrus.Fatalf("HERE!!!!")
 	}
 
 }

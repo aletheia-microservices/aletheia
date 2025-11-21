@@ -2,7 +2,6 @@ package abstractgraph
 
 import (
 	"fmt"
-	"strconv"
 
 	"analyzer/pkg/common"
 	"analyzer/pkg/utils"
@@ -48,14 +47,6 @@ func (taint *AbstractTaint) Copy() *AbstractTaint {
 
 func (taint *AbstractTaint) GetT() string {
 	return taint.t
-}
-
-func (taint *AbstractTaint) GetTNumber() int {
-	if taint.t == "" {
-		return -1
-	}
-	n, _ := strconv.Atoi(taint.t[1:]) // assuming "t3", "t13", etc.
-	return n
 }
 
 func (taint *AbstractTaint) SetReadKey(readKey bool) {

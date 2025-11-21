@@ -1,6 +1,8 @@
 package detection
 
 import (
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
@@ -141,6 +143,7 @@ func (it *Iterator) clean(node *abstractgraph.AbstractNode) {
 }
 
 func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
+	logrus.Debugf("[TRAVERSE] traversing node: %s\n", node.String())
 	if it.mode == PHASE_2_PATTERN_DETECTOR {
 		for _, detector := range it.detectors {
 			detector.OnNewNode(it.app, node)
@@ -149,10 +152,10 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 	for _, edge := range it.graph.GetEdgesFromNode(node) {
 		if edge.GetEdgeType() == abstractgraph.EDGE_SERVICE_RPC {
+			logrus.Debugf("[TRAVERSE] visiting service call edge: %s\n", edge.String())
 			// ============
 			// SERVICE RPCs
 			// ============
-			// EVAL: fmt.Printf("[TRANSVERSE] edge=%s\n", edge.String())
 			toNode := edge.GetToNode()
 
 			// -----------------------------------
@@ -164,9 +167,9 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
 				// EVAL: fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
-				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsBeforeT(edge.GetTNumber()), nil, abstractgraph.MERGE_MODE_TAINT, config.MIN_T, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsBeforeT(edge.GetT()), nil, abstractgraph.MERGE_MODE_TAINT, config.MIN_T, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 				taintMapping.Join(taintMappingTmp, true)
-				taintMappingTmp = abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsAfterT(edge.GetTNumber()), nil, abstractgraph.MERGE_MODE_TAINT, config.MAX_T, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+				taintMappingTmp = abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsAfterT(edge.GetT()), nil, abstractgraph.MERGE_MODE_TAINT, config.MAX_T, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 				taintMapping.Join(taintMappingTmp, true)
 			}
 
@@ -218,6 +221,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 		}
 
 		if edge.GetEdgeType() == abstractgraph.EDGE_DATABASE_CALL {
+			logrus.Debugf("[TRAVERSE] visiting database call edge: %s\n", edge.String())
 			// ===================
 			// DATABASE OPERATIONS
 			// ===================

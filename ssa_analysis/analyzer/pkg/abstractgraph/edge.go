@@ -2,9 +2,10 @@ package abstractgraph
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/common"
 )
@@ -61,11 +62,6 @@ func (edge *AbstractEdge) GetT() string {
 	return edge.t
 }
 
-func (edge *AbstractEdge) GetTNumber() int {
-	n, _ := strconv.Atoi(edge.t[1:]) // assuming "t3", "t13", etc.
-	return n
-}
-
 // some exceptions can be:
 // ProductService.New.nil:*github.com/blueprint-uservices/blueprint/examples/digota/workflow/digota.PackageDimensions
 // ProductService.New."image":string
@@ -113,7 +109,7 @@ func (edge *AbstractEdge) GetArgumentByNameIfExists(name string) *AbstractObject
 
 func (edge *AbstractEdge) GetArgumentAt(i int) *AbstractObject {
 	if i > len(edge.args)-1 {
-		log.Fatalf("index (%d) out of bounds for edge arguments: %v\n", i, edge.args)
+		logrus.Fatalf("index (%d) out of bounds for edge arguments: %v\n", i, edge.args)
 	}
 	return edge.args[i]
 }
@@ -132,7 +128,7 @@ func (edge *AbstractEdge) GetReturns() []*AbstractObject {
 
 func (edge *AbstractEdge) GetReturnAt(i int) *AbstractObject {
 	if i > len(edge.rets)-1 {
-		log.Fatalf("index (%d) out of bounds for edge returns: %v\n", i, edge.rets)
+		logrus.Fatalf("index (%d) out of bounds for edge returns: %v\n", i, edge.rets)
 	}
 	return edge.rets[i]
 }
