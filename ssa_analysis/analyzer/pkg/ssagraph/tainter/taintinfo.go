@@ -43,6 +43,7 @@ type TaintInfo struct {
 	infoType TaintInfoType
 	dbTaint  DBTaint
 	svTaint  SVTaint
+	callerT  string // managed at combiner.go
 }
 
 func (ti TaintInfo) String() string {
@@ -80,6 +81,10 @@ func NewTaintInfoService(svpath string, path string, val ssa.Value, svcall *ssag
 			svcall: svcall,
 		},
 	}
+}
+
+func (t TaintInfo) getCallerT() string {
+	return t.callerT
 }
 
 func (t TaintInfo) isReadKey() bool {

@@ -4,11 +4,11 @@ import (
 	"crypto/rand"
 	"fmt"
 	"go/types"
-	"log"
 	"math/big"
 	"os"
 	"path/filepath"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/types/typeutil"
 
@@ -20,21 +20,21 @@ import (
 func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*ssagraph.SSAGraph) {
 	path1 := fmt.Sprintf("output/%s/ssa/%s.out", app.GetName(), pkg.Pkg.Name())
 	if err := os.MkdirAll(filepath.Dir(path1), 0755); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	outfile1, err := os.Create(path1)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer outfile1.Close()
 
 	path2 := fmt.Sprintf("output/%s/ssa/%s.ssa", app.GetName(), pkg.Pkg.Name())
 	if err := os.MkdirAll(filepath.Dir(path2), 0755); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	outfile2, err := os.Create(path2)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer outfile2.Close()
 
@@ -195,7 +195,7 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		// EVAL: fmt.Printf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	default:
-		log.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
+		logrus.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 	}
 
 	return node
@@ -211,7 +211,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 	id := computeValueID(val)
 	if id == "" { // sanity check
-		log.Fatalf("[SSA PARSE VALUE] unexpected invalid id for value: %v\n", val)
+		logrus.Fatalf("[SSA PARSE VALUE] unexpected invalid id for value: %v\n", val)
 		return nil
 	}
 
@@ -365,7 +365,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		// EVAL: fmt.Printf("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 
 	default:
-		log.Fatalf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		logrus.Fatalf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 	}
 	return node
 }

@@ -1,11 +1,10 @@
 package abstractgraph
 
 import (
-	"log"
-
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
+	"log"
 )
 
 type MergeMode int
@@ -313,7 +312,7 @@ func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.
 			} else {
 				if _, exists := seen[constraintPair{fromField: field1, toField: field3}]; !exists {
 					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
-					if writewrite {
+					if writewrite && current.IsMandatory() {
 						new.EnableMandatory(reqIdx)
 					} else {
 						new.DisableMandatory(reqIdx)

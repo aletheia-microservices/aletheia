@@ -38,6 +38,16 @@ type SSAEdge struct {
 	path string //pointer only
 }
 
+func NewEdge(edgeType EdgeType, from *SSANode, to *SSANode, index int, param string) *SSAEdge {
+	return &SSAEdge{
+		edgeType: edgeType,
+		from:     from,
+		to:       to,
+		index:    index,
+		param:    param,
+	}
+}
+
 func (edge *SSAEdge) GetParam() string {
 	return edge.param
 }

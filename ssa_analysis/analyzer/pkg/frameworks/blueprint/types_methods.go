@@ -462,17 +462,13 @@ var boolReturn = MethodField{
 	},
 }
 var NoSQLCursorReturn = MethodField{
-	FieldInfo: FieldInfo{
-	},
+	FieldInfo: FieldInfo{},
 }
 var NoSQLCollectionReturn = MethodField{
-	FieldInfo: FieldInfo{
-	},
+	FieldInfo: FieldInfo{},
 }
-var errorReturn = MethodField{
-}
-var replacementParam = MethodField{
-}
+var errorReturn = MethodField{}
+var replacementParam = MethodField{}
 var intReturn = MethodField{
 	FieldInfo: FieldInfo{
 		// error is actually an interface

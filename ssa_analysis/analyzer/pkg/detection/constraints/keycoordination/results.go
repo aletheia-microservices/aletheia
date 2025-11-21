@@ -89,7 +89,7 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.FirstCallString())
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field1.GetPath())
 			}
-			
+
 			if fread.constraint2 == nil {
 				results += fmt.Sprintf("\t\tREAD (ORIGIN): %s\n", fread.SecondCallString())
 				results += fmt.Sprintf("\t\t\t- field: %s\n", fread.field2.GetPath())

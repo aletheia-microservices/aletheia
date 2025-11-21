@@ -62,8 +62,8 @@ func (edge *AbstractEdge) GetT() string {
 }
 
 func (edge *AbstractEdge) GetTNumber() int {
-	n, _ := strconv.Atoi(edge.t[1:])  // assuming "t3", "t13", etc.
-    return n
+	n, _ := strconv.Atoi(edge.t[1:]) // assuming "t3", "t13", etc.
+	return n
 }
 
 // some exceptions can be:

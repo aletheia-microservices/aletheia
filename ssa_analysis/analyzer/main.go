@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"log"
 	"os"
+	"path"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -38,6 +39,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "usage: program [--eval] <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
 		fmt.Fprintln(os.Stderr, "- foobar")
+		fmt.Fprintln(os.Stderr, "- foobar2")
 		fmt.Fprintln(os.Stderr, "- postnotification_simple")
 		fmt.Fprintln(os.Stderr, "- dsb_sn2")
 		fmt.Fprintln(os.Stderr, "- digota")
@@ -67,18 +69,17 @@ func main() {
 	}
 
 	appname := flag.Arg(0)
-	
+
 	start := time.Now()
-	
+
 	logrus_ctx := logrus.WithField("app", appname)
 
 	// ------------ PART 1
-	logrus_ctx.Infof("[1/13] initializing program")
+	logrus_ctx.Infof("[1/14] initializing program")
 
 	apppath := utils.GetAppEntrypointPath(appname)
 	app := app.NewApp(appname)
 	app.Init()
-
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
@@ -103,7 +104,7 @@ func main() {
 	}
 
 	// ------------ PART 2
-	logrus_ctx.Infof("[2/13] building program")
+	logrus_ctx.Infof("[2/14] building program")
 
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
@@ -115,7 +116,7 @@ func main() {
 	app.ParseNoSQLSchemaFromUserFile()
 
 	// ------------ PART 3
-	logrus_ctx.Infof("[3/13] initializing pointer analysis")
+	logrus_ctx.Infof("[3/14] initializing pointer analysis")
 	result, err := parser.InitPointerAnalysis(prog, pkgs)
 	if err != nil {
 		log.Fatalf("error: %s", err.Error())
@@ -124,7 +125,7 @@ func main() {
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
 	// ------------ PART 4
-	logrus_ctx.Infof("[4/13] running SSA analysis")
+	logrus_ctx.Infof("[4/14] running SSA analysis")
 	for _, pkg := range pkgs {
 		parser.RunSSAAnalysis(app, prog, pkg, funcGraphs)
 	}
@@ -134,7 +135,7 @@ func main() {
 	}
 
 	// ------------ PART 5
-	logrus_ctx.Infof("[5/13] running pointer-to analysis")
+	logrus_ctx.Infof("[5/14] running pointer-to analysis")
 	for _, pkg := range pkgs {
 		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
 	}
@@ -145,7 +146,7 @@ func main() {
 	}
 
 	// ------------ PART 6
-	logrus_ctx.Infof("[6/13] registering fields")
+	logrus_ctx.Infof("[6/14] registering fields")
 	registry.RegisterFields(app, graphsLst)
 
 	if !EVAL {
@@ -156,10 +157,18 @@ func main() {
 	}
 
 	// ------------ PART 7
-	logrus_ctx.Infof("[7/13] running SSA tainter")
+	logrus_ctx.Infof("[7/14] running SSA tainter for single graphs")
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
+
+	// ------------ PART 7
+	logrus_ctx.Infof("[8/14] combining SSA graphs")
+	for _, ssagraph := range funcGraphs {
+		tainter.Combine(ssagraph, funcGraphs)
+	}
+
+	fmt.Println("HERE!")
 
 	if !EVAL {
 		for fn, ssagraph := range funcGraphs {
@@ -167,15 +176,15 @@ func main() {
 		}
 	}
 
-	// ------------ PART 8
-	logrus_ctx.Infof("[8/13] creating new abstract call graph")
+	// ------------ PART 9
+	logrus_ctx.Infof("[9/14] creating new abstract call graph")
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
-	// ------------ PART 9
-	logrus_ctx.Infof("[9/13] releasing memory associated with ssa graph")
+	// ------------ PART 10
+	logrus_ctx.Infof("[10/14] releasing memory associated with ssa graph")
 	graphsLst = nil
 	pkgs = nil
 	for fn, ssagraph := range funcGraphs {
@@ -200,38 +209,38 @@ func main() {
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
 	start_schema := time.Now()
-	// ------------ PART 10
-	logrus_ctx.Infof("[10/13] starting schema builder")
-	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 	// ------------ PART 11
-	logrus_ctx.Infof("[11/13] starting schema builder (read only)")
-	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
-	
-	elapsed_schema := time.Since(start_schema)
-	
+	logrus_ctx.Infof("[11/14] starting schema builder")
+	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 	// ------------ PART 12
-	logrus_ctx.Infof("[12/13] starting pattern detection")
+	logrus_ctx.Infof("[12/14] starting schema builder (read only)")
+	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+
+	elapsed_schema := time.Since(start_schema)
+
+	// ------------ PART 13
+	logrus_ctx.Infof("[13/14] starting pattern detection")
 	start_detection := time.Now()
-	
+
 	// phase 2: one pass for all detectors
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
-	
+
 	if !EVAL {
 		// phase 0: dummy pass to generate dot files with taints for debugging
 		iterator.Run(detection.PHASE_0_DEBUG)
-		
+
 		absgraph.WriteToDOTFile(appname, true)
 		absgraph.WriteToDOTFile(appname, false)
-		
+
 		app.WriteAppToJSON()
 		app.WriteSchemaToJSON()
 	}
-	
+
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
-	
-	// ------------ PART 13
-	logrus_ctx.Infof("[13/13] saving results")
+
+	// ------------ PART 14
+	logrus_ctx.Infof("[14/14] saving results")
 	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
@@ -267,14 +276,14 @@ type AnalysisTimes struct {
 }
 
 func saveAnalysisTime(app *app.App, times AnalysisTimes) {
-	ts := time.Now().Format("2006-01-02_15-04-05")
-	dir := "analysis_times"
+	ts := time.Now().Unix()
+	dir := path.Join("analysis_times", time.Now().Format(time.DateOnly))
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		panic(err)
 	}
 
-	filepath := fmt.Sprintf("%s/%s_%s.yaml", dir, app.GetName(), ts)
+	filepath := fmt.Sprintf("%s/%s_%d.yaml", dir, app.GetName(), ts)
 
 	out, err := yaml.Marshal(times)
 	if err != nil {

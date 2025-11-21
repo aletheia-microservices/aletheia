@@ -3,7 +3,6 @@ package parser
 import (
 	"fmt"
 	"go/token"
-	"log"
 	"os"
 	"path/filepath"
 	"slices"
@@ -90,12 +89,12 @@ func RunPointerToAnalysis(appname string, prog *ssa.Program, pkg *ssa.Package, r
 
 	path := fmt.Sprintf("output/%s/ssa/%s.ptrs", appname, pkg.Pkg.Name())
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	outFile, err := os.Create(path)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer outFile.Close()
 

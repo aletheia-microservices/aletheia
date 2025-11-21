@@ -2,10 +2,10 @@ package tainter
 
 import (
 	"go/types"
-	"log"
 	"slices"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/app"
@@ -46,9 +46,10 @@ func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, str
 	if call, ok := val.(*ssa.Call); ok {
 		// EVAL: fmt.Printf("[CALLS BLUEPRINT] [SVC] checking for service call: %s\n", val.String())
 
-		// --------------
-		// blueprint apps
-		// --------------
+		// Example:
+		// t0 = &s.barService [#1]
+		// t1 = *t0 								(*ssa.UnOp)
+		// t2 = invoke t1.WriteBar(ctx, id, text) 	(*ssa.Call)
 		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
 			if typesNamed, ok := unOp.Type().(*types.Named); ok {
 				servicePath := typesNamed.String()
@@ -63,13 +64,25 @@ func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, str
 						// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
 						return serviceName, method, funcShortPath, call.Call.Args[1:], call, true
 					} else {
-						log.Fatalf("[CALLS BLUEPRINT] [SVC] method (%s) not found for service (%s)", method, serviceName)
+						logrus.Fatalf("[CALLS BLUEPRINT] [SVC] method (%s) not found for service (%s)", method, serviceName)
 					}
 				}
 			}
 		}
 	}
 	return "", "", "", nil, nil, false
+}
+
+func isMethodCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, []ssa.Value, *ssa.Call, bool) {
+	if call, ok := val.(*ssa.Call); ok {
+		if fn, ok := call.Call.Value.(*ssa.Function); ok {
+			fnShortPath := utils.GetShortFunctionPath(fn.String())
+			method := fn.Name()
+			return method, fnShortPath, call.Call.Args, call, true
+		}
+		return "", "", nil, nil, false
+	}
+	return "", "", nil, nil, false
 }
 
 func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, common.DatabaseOperationType, []ValFieldPath, bool) {
@@ -158,10 +171,10 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				} else if strings.HasPrefix(stmt, "DELETE") {
 					opType = common.OP_DELETE
 				} else {
-					log.Fatalf("TODO!")
+					logrus.Fatalf("TODO!")
 				}
 			default:
-				log.Fatalf("[CALLS BLUEPRINT] [RELDB] unknown method name for queue call: %s\n", call.String())
+				logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] unknown method name for queue call: %s\n", call.String())
 			}
 
 			database, ok := extractDatabaseNameFromUnOp(graph, unOp)
@@ -196,7 +209,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 									argVals = append(argVals, storeInstr.Val)
 
 									if storeInstr.Val == nil {
-										log.Fatalf("unexpected nil val for storeinstr: %v\n", storeInstr)
+										logrus.Fatalf("unexpected nil val for storeinstr: %v\n", storeInstr)
 									}
 								}
 							}
@@ -218,7 +231,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 				// sanity check
 				if len(argVals) != len(fields) {
-					log.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
+					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
 				}
 			} else if opType == common.OP_WRITE {
 				// EVAL: fmt.Printf("[CALLS BLUEPRINT] [SQL] [WRITE] parsing stmt: %s\n", stmt)
@@ -233,7 +246,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 				// sanity check
 				if len(argVals) != len(filterFields) {
-					log.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
+					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
 				}
 			}
 
@@ -241,7 +254,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			for i, field := range fields {
 				argVal := argVals[i]
 				if argVals[i] == nil {
-					log.Fatalf("field argvals[i] is nil")
+					logrus.Fatalf("field argvals[i] is nil")
 				}
 				valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 					val:       argVal,
@@ -263,7 +276,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					})
 
 					if dstVal == nil {
-						log.Fatalf("dstval is nil")
+						logrus.Fatalf("dstval is nil")
 					}
 				}
 			} else if opType == common.OP_DELETE {
@@ -277,7 +290,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					})
 
 					if argVals[i] == nil {
-						log.Fatalf("is nil")
+						logrus.Fatalf("is nil")
 					}
 				}
 			}
@@ -306,7 +319,7 @@ func isBlueprintQueueCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 			case "Push":
 				opType = common.OP_WRITE
 			default:
-				log.Fatalf("[CALLS BLUEPRINT] [QUEUE] unknown method name for queue call: %s\n", call.String())
+				logrus.Fatalf("[CALLS BLUEPRINT] [QUEUE] unknown method name for queue call: %s\n", call.String())
 			}
 
 			// e.g., t10 = &u.notificationsQueue [#1]
@@ -344,7 +357,7 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 			case "Put":
 				opType = common.OP_WRITE
 			default:
-				log.Fatalf("[CALLS BLUEPRINT] [CACHE] unknown method name for queue call: %s\n", call.String())
+				logrus.Fatalf("[CALLS BLUEPRINT] [CACHE] unknown method name for queue call: %s\n", call.String())
 			}
 
 			// e.g., t10 = &u.notificationsQueue [#1]
@@ -481,7 +494,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 			case "DeleteOne":
 				opType = common.OP_DELETE
 			default:
-				log.Fatalf("[CALLS BLUEPRINT] [NOSQL] unknown method name for queue call: %s\n", call.String())
+				logrus.Fatalf("[CALLS BLUEPRINT] [NOSQL] unknown method name for queue call: %s\n", call.String())
 			}
 
 			// e.g.
@@ -498,7 +511,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					// sanity check
 					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("[CALLS BLUEPRINT] [NOSQL] database (%s) extracted from value (%s) not found for app with databases: %v", database, databaseVal.String(), graph.GetApp().GetAllDatabases())
+						logrus.Fatalf("[CALLS BLUEPRINT] [NOSQL] database (%s) extracted from value (%s) not found for app with databases: %v", database, databaseVal.String(), graph.GetApp().GetAllDatabases())
 					}
 
 					var valFieldPathLst []ValFieldPath
@@ -577,7 +590,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 										fieldpath += "." + projections[0]
 									} else {
 										// TODO: add support for multiple projection values
-										log.Fatalf("TODO! projections = %v\n", projections)
+										logrus.Fatalf("TODO! projections = %v\n", projections)
 									}
 								} else {
 									// skip
@@ -623,11 +636,11 @@ func findSliceForBsonAorD(graph *ssagraph.SSAGraph, bsonAVal ssa.Value) ssa.Valu
 	toNode := graph.GetNodeByName(bsonAVal.Name())
 	fromNode := graph.GetFirstEdgeToNode(toNode).GetFromNode()
 	if _, ok := fromNode.GetValue().(*ssa.Slice); !ok {
-		log.Fatalf("unexpected type [%T]: %s\n", fromNode.GetValue(), fromNode.GetValue().String())
+		logrus.Fatalf("unexpected type [%T]: %s\n", fromNode.GetValue(), fromNode.GetValue().String())
 	}
 	fromNode2 := graph.GetFirstEdgeToNode(fromNode).GetFromNode()
 	if _, ok := fromNode2.GetValue().(*ssa.Alloc); !ok {
-		log.Fatalf("unexpected type [%T]: %s\n", fromNode2.GetValue(), fromNode2.GetValue().String())
+		logrus.Fatalf("unexpected type [%T]: %s\n", fromNode2.GetValue(), fromNode2.GetValue().String())
 	}
 
 	return fromNode2.GetValue()
@@ -636,7 +649,7 @@ func findSliceForBsonAorD(graph *ssagraph.SSAGraph, bsonAVal ssa.Value) ssa.Valu
 func getValInStoreInstrForCurrentAddr(graph *ssagraph.SSAGraph, bsonValueNode *ssagraph.SSANode) ssa.Value {
 	edge := graph.GetFirstEdgeTypedFrom(bsonValueNode, ssagraph.EDGE_STORE_ADDRESS)
 	if edge == nil {
-		log.Fatalf("unexpected nil edge")
+		logrus.Fatalf("unexpected nil edge")
 	}
 
 	storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
@@ -679,7 +692,7 @@ func computeNoSQLFilterKeyToValues_AND(graph *ssagraph.SSAGraph, bsonVal ssa.Val
 			storeInstrVal := getValInStoreInstrForCurrentAddr(graph, bsonValueNode)
 			sliceVal := findSliceForBsonAorD(graph, storeInstrVal)
 			if sliceVal == nil {
-				log.Fatalf("unexpected nil sliceVal")
+				logrus.Fatalf("unexpected nil sliceVal")
 			}
 
 			// restrict to ssagraph.EDGE_FIELD just for sanity check
@@ -689,7 +702,7 @@ func computeNoSQLFilterKeyToValues_AND(graph *ssagraph.SSAGraph, bsonVal ssa.Val
 				elemStoreInstrVal := getValInStoreInstrForCurrentAddr(graph, elemNode)
 				elemSliceVal := findSliceForBsonAorD(graph, elemStoreInstrVal)
 				if elemSliceVal == nil {
-					log.Fatalf("unexpected nil sliceVal")
+					logrus.Fatalf("unexpected nil sliceVal")
 				}
 				elemSliceValsNodes = append(elemSliceValsNodes, graph.GetNodeByName(elemSliceVal.Name()))
 			}
@@ -750,7 +763,7 @@ func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode
 						}
 					}
 				}
-				//log.Fatalf("returning filter key to values: %v\n", filterKeyToValues)
+				//logrus.Fatalf("returning filter key to values: %v\n", filterKeyToValues)
 				return filterKeyToValues
 			}
 
@@ -778,9 +791,9 @@ func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode
 											filterObjTmp.bsonFilterKey = filterField
 											filterObjs = append(filterObjs, filterObjTmp)
 										}
-										//log.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
+										//logrus.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
 									default:
-										log.Fatalf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+										logrus.Fatalf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
 									}
 								}
 							}
@@ -789,7 +802,7 @@ func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode
 				}
 			}
 			if filterField == "" {
-				log.Fatalf("[CALLS BLUEPRINT] [BSON] empty filter field for bsonVal (%s) and bsonElem (%s)\n", bsonSliceNode.GetValue().Name(), bsonElemNode.GetValue().Name())
+				logrus.Fatalf("[CALLS BLUEPRINT] [BSON] empty filter field for bsonVal (%s) and bsonElem (%s)\n", bsonSliceNode.GetValue().Name(), bsonElemNode.GetValue().Name())
 			}
 			filterKeyToValues[filterField] = filterObjs
 		}
@@ -943,13 +956,13 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 					database := field.GetWiringName()
 
 					if database == "" {
-						log.Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
+						logrus.Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
 					}
 
 					// sanity check
 					// keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
-						log.Fatalf("[CALLS BLUEPRINT] [QUEUE] database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
+						logrus.Fatalf("[CALLS BLUEPRINT] [QUEUE] database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
 					}
 
 					return database, true

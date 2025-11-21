@@ -111,6 +111,6 @@ func NewAbstractNode(name string, t NodeType, service string, method string, dbn
 		service: service,
 		method:  method,
 		dbname:  dbname,
-		schema: schema,
+		schema:  schema,
 	}
 }

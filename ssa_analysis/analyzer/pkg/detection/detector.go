@@ -42,7 +42,7 @@ func SaveResults(app *app.App, detectors ...Detector) []string {
 	for i, detector := range detectors {
 		detector.ComputeResults(app)
 		results := detector.GetResults()
-	
+
 		// ensure the path for the results file exists
 		path := fmt.Sprintf("output/%s/analysis/%s.txt", app.GetName(), detector.GetTypeString())
 		dir := filepath.Dir(path)
@@ -50,7 +50,7 @@ func SaveResults(app *app.App, detectors ...Detector) []string {
 		if err != nil {
 			log.Fatalf("[%s] error creating directory %s: %s", path, dir, err.Error())
 		}
-	
+
 		// read previous file (if it exists) and check if results have changed
 		var previousContent []byte
 		if _, err := os.Stat(path); err == nil {
@@ -59,24 +59,24 @@ func SaveResults(app *app.App, detectors ...Detector) []string {
 				log.Fatalf("[%s] error reading existing file %s: %s", path, path, err.Error())
 			}
 		}
-	
+
 		color := TEXT_BOLD_LIGHT_BLUE
 		if string(previousContent) == results {
 			str := color + "\t\t\t\t\t\t\t (unmodified) \n" + results + TEXT_RESET_COLOR + "\n\n"
 			detectorsResults[i] = str
 			continue
 		}
-	
+
 		// if content changed but the analysis summary is the same then the result is printed in yellow
 		// otherwise (i.e., changes in both content and analysis summary), result is printed in red
 		color = TEXT_BOLD_LIGHT_RED
-	
+
 		// if we have a new file or the content has changed then update the results
 		err = os.WriteFile(path, []byte(results), 0644)
 		if err != nil {
 			log.Fatalf("[%s] error writing data to %s: %s", path, path, err.Error())
 		}
-	
+
 		str := fmt.Sprintf("%s\t\t\t\t\t\t\t   (modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
 		detectorsResults[i] = str
 	}
