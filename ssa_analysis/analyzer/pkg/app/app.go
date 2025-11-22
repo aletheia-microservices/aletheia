@@ -11,6 +11,8 @@ import (
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/app/services"
 	"analyzer/pkg/utils"
+
+	"github.com/sirupsen/logrus"
 )
 
 type App struct {
@@ -139,7 +141,7 @@ func (app *App) GetServiceWithImplPath(implpath string) *services.Service {
 	/* for _, service := range app.services {
 		// EVAL: fmt.Printf("pkg path = (%s) // impl = (%s)\n", service.GetPackagePath(), service.GetImpl())
 	} */
-	log.Fatalf("could not find service for impl path (%s)", implpath)
+	logrus.Fatalf("could not find service for impl path (%s)", implpath)
 	return nil
 }
 
@@ -181,7 +183,7 @@ func (app *App) GetAllDatabases() []*backends.Database {
 func (app *App) GetDatabaseByName(name string) *backends.Database {
 	db, ok := app.databases[name]
 	if !ok {
-		log.Fatalf("could not find database for name (%s) in app", name)
+		logrus.Fatalf("could not find database for name (%s) in app", name)
 	}
 	return db
 }
@@ -206,7 +208,7 @@ func (app *App) HasService(name string) bool {
 func (app *App) GetServiceByName(name string) *services.Service {
 	service, ok := app.services[name]
 	if !ok {
-		log.Fatalf("could not find service for name (%s) in app", name)
+		logrus.Fatalf("could not find service for name (%s) in app", name)
 	}
 	return service
 }

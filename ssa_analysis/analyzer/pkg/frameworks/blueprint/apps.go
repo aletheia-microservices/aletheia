@@ -1,8 +1,6 @@
 package blueprint
 
 import (
-	"log"
-
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_dsb_hotel2 "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring/specs"
 	specs_dsb_media_nosql "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring/specs"
@@ -20,6 +18,7 @@ import (
 	specs_sockshop3 "github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring/specs"
 	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/train_ticket2/wiring/specs"
 	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
+	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/utils"
 )
@@ -54,6 +53,6 @@ func loadAppSpec(app string) cmdbuilder.SpecOption {
 	if info, ok := APPS_INFO[app]; ok {
 		return info.BlueprintSpec
 	}
-	log.Fatalf("unknown application %s", app)
+	logrus.Fatalf("unknown application %s", app)
 	return cmdbuilder.SpecOption{}
 }

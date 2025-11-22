@@ -1,8 +1,6 @@
 package blueprint
 
 import (
-	"log"
-
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/blueprint/logging"
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/coreplugins/address"
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/coreplugins/namespaceutil"
@@ -20,6 +18,7 @@ import (
 	"github.com/blueprint-uservices/blueprint/plugins/redis"
 	"github.com/blueprint-uservices/blueprint/plugins/workflow"
 	"github.com/blueprint-uservices/blueprint/plugins/workflow/workflowspec"
+	"github.com/sirupsen/logrus"
 )
 
 func BuildAndInspectIR(name string, spec cmdbuilder.SpecOption) (map[*workflowspec.Service][]golang.Service, map[string]ir.IRNode, map[*workflowspec.Service][]ir.IRNode, []string) {
@@ -39,18 +38,18 @@ func buildIR(name string, spec cmdbuilder.SpecOption) *cmdbuilder.CmdBuilder {
 	builder.Registry[spec.Name] = spec
 	builder.Wiring = wiring.NewWiringSpec(builder.Name)
 	if builder.Wiring == nil {
-		log.Fatal("error creating new wiring spec")
+		logrus.Fatalf("error creating new wiring spec")
 		return nil
 	}
 	nodesToBuild, err := builder.Spec.Build(builder.Wiring)
 	if err != nil {
-		log.Fatal("error building wiring spec")
+		logrus.Fatalf("error building wiring spec")
 		return nil
 	}
 
 	builder.IR, err = builder.Wiring.BuildIR(nodesToBuild...)
 	if err != nil {
-		log.Fatal("error building IR")
+		logrus.Fatalf("error building IR")
 		return nil
 	}
 	return builder
@@ -81,7 +80,7 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 									// EVAL: fmt.Printf("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
 
 									if workflowHandler.ServiceType == "Runnable" {
-										log.Fatalf("[IR NODE] found Runnable service type for service (%s) -- cannot analyze application", workflowHandler.Name())
+										logrus.Fatalf("[IR NODE] found Runnable service type for service (%s) -- cannot analyze application", workflowHandler.Name())
 									}
 
 									// make sure that services that do not have any other dependencies are also included
@@ -97,7 +96,7 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 										case *ir.IRValue:
 											// nothing to do
 										default:
-											log.Fatalf("[IR HANDLER ARG] unknown arg type [%T]: %v\n", arg, arg)
+											logrus.Fatalf("[IR HANDLER ARG] unknown arg type [%T]: %v\n", arg, arg)
 										}
 										args[workflowHandler.ServiceInfo] = append(args[workflowHandler.ServiceInfo], arg)
 									}

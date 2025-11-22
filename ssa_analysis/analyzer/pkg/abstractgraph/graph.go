@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"analyzer/pkg/app"
+
+	"github.com/sirupsen/logrus"
 )
 
 type AbstractCallGraph struct {
@@ -31,7 +33,7 @@ func (graph *AbstractCallGraph) GetApp() *app.App {
 
 func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 	if _, ok := graph.nodes[name]; ok {
-		log.Fatalf("node with name (%s) already exists in graph: %v", name, graph)
+		logrus.Fatalf("node with name (%s) already exists in graph: %v", name, graph)
 	}
 	graph.nodes[name] = node
 }

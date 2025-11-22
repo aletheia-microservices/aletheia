@@ -10,6 +10,7 @@ import (
 
 	"analyzer/pkg/app"
 	"analyzer/pkg/common"
+	"analyzer/pkg/config"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/registry"
 	"analyzer/pkg/utils"
@@ -19,7 +20,9 @@ const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runt
 
 var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
-var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne", "Upsert", "ReplaceOne"}
+
+// TODO: UpdateMany (check foobar app)
+var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne" /* , "UpdateMany" */, "Upsert", "ReplaceOne"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
 var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select", "Get"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
@@ -40,6 +43,7 @@ type ValFieldPath struct {
 	bsonFilterKey  string
 	bsonCursorMany bool // destination objects from nosql cursor reads
 	bsonFilterIn   bool // bson filter: $in
+	bsonFilterEach bool // bson filter: $each
 }
 
 func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
@@ -489,7 +493,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 				opType = common.OP_READ_MANY
 			case "InsertOne":
 				opType = common.OP_WRITE
-			case "UpdateOne", "ReplaceOne", "Upsert":
+			case "UpdateOne", "UpdateMany", "ReplaceOne", "Upsert":
 				opType = common.OP_UPDATE
 			case "DeleteOne":
 				opType = common.OP_DELETE
@@ -526,7 +530,9 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 						})
 					} else { // reads, updates, or deletes
 						filterVal := call.Call.Args[1]
-						for filter, vals := range computeNoSQLFilterKeyToValues(graph, filterVal) {
+						bsonNode := findBsonNode(graph, filterVal)
+						filterKeyToValues := computeNoSQLFilterKeyToValues(graph, bsonNode, nil, false)
+						for filter, vals := range filterKeyToValues {
 							for _, val := range vals {
 								// sanity check
 								if filter != "" {
@@ -545,7 +551,9 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 					if opType == common.OP_READ || opType == common.OP_READ_MANY {
 						if len(call.Call.Args) > 2 {
 							projection := call.Call.Args[2]
-							for projectionValue := range computeNoSQLFilterKeyToValues(graph, projection) {
+							bsonNode := findBsonNode(graph, projection)
+							filterKeyToValues := computeNoSQLFilterKeyToValues(graph, bsonNode, nil, true)
+							for projectionValue := range filterKeyToValues {
 								// sanity check
 								if projectionValue != "" {
 									projections = append(projections, projectionValue)
@@ -558,7 +566,24 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 						if call.Call.Method.Name() == "UpdateOne" {
 							//FIXME: change to call.Call.Args[2] (test with SockShop app)
 							updateVal := call.Call.Args[1]
-							for filter, vals := range computeNoSQLFilterKeyToValues(graph, updateVal) {
+							bsonNode := findBsonNode(graph, updateVal)
+							filterKeyToValues := computeNoSQLFilterKeyToValues(graph, bsonNode, nil, false)
+							for filter, vals := range filterKeyToValues {
+								for _, val := range vals {
+									// sanity check
+									if filter != "" {
+										val.fieldpath = database + "." + collection + "." + filter
+									} else {
+										val.fieldpath = database + "." + collection + ".*"
+									}
+									valFieldPathLst = append(valFieldPathLst, val)
+								}
+							}
+						} else if call.Call.Method.Name() == "UpdateMany" {
+							updateVal := call.Call.Args[2]
+							bsonNode := findBsonNode(graph, updateVal)
+							filterKeyToValues := computeNoSQLFilterKeyToValues(graph, bsonNode, nil, false)
+							for filter, vals := range filterKeyToValues {
 								for _, val := range vals {
 									// sanity check
 									if filter != "" {
@@ -716,96 +741,127 @@ func computeNoSQLFilterKeyToValues_AND(graph *ssagraph.SSAGraph, bsonVal ssa.Val
 // if isProjection=true then we only want the key and not the value (which should be set to "true")
 // REMINDER: we assume that all keys present have value set to true, otherwise we need
 // more code logic to know which key matches which value
-func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode *ssagraph.SSANode, filterKeyToValues map[string][]ValFieldPath, isProjection bool) map[string][]ValFieldPath {
-	for _, edge := range graph.GetEdgesTypedTo(bsonSliceNode, ssagraph.EDGE_POINTS_TO) {
-		if edge.HasPath("[*]") {
-			var filterField string
-			bsonElemNode := edge.GetFromNode()
+func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonNode *ssagraph.SSANode, filterKeyToValues map[string][]ValFieldPath, isProjection bool) map[string][]ValFieldPath {
+	if filterKeyToValues == nil {
+		filterKeyToValues = make(map[string][]ValFieldPath)
+	}
+	var edges []*ssagraph.SSAEdge
+	if config.Global.EnabledPointerToAnalysis {
+		for _, edge := range graph.GetEdgesTypedTo(bsonNode, ssagraph.EDGE_POINTS_TO) {
+			if edge.HasPath("[*]") {
+				bsonElemNode := edge.GetFromNode()
+				edges = append(edges, graph.GetEdgesTypedFrom(bsonElemNode, ssagraph.EDGE_FIELD)...)
+			}
+		}
+	} else {
+		for _, edge := range graph.GetEdgesTypedFrom(bsonNode, ssagraph.EDGE_INDEX) {
+			bsonElemNode := edge.GetToNode()
+			edges = append(edges, graph.GetEdgesTypedFrom(bsonElemNode, ssagraph.EDGE_FIELD)...)
+			if edge.GetIndex() > 0 {
+				logrus.WithField("index", edge.GetIndex()).Warnf("[CALLS BLUEPRINT] check bson edge\n")
+			}
+		}
+	}
+	for _, edge := range edges {
+		if edge.GetParam() != "Key" {
+			continue
+		}
 
-			// objects that are excluded from taint:
-			// - bson slice
-			// - bson slice elems
-			// - bson slice elem key
-			// - bson slice elem value
+		var filterField string
+		bsonElemNode := edge.GetFromNode()
 
-			var filterObjs = []ValFieldPath{}
+		// objects that are excluded from taint:
+		// - bson slice
+		// - bson slice elems
+		// - bson slice elem key
+		// - bson slice elem value
 
+		var filterObjs = []ValFieldPath{}
+
+		// track objects used as value in store instructions for current bson key
+		bsonKeyNode := edge.GetToNode()
+		for _, edge := range graph.GetEdgesTypedFrom(bsonKeyNode, ssagraph.EDGE_STORE_ADDRESS) {
+			storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
+			filterObjs = append(filterObjs, ValFieldPath{
+				val:           storeInstr.Val,
+				bsonFilterKey: filterField,
+			})
+			// should only occur once
+			if filterFieldTmp, ok := utils.ExtractStringFromValue(storeInstr.Val); ok {
+				filterField = filterFieldTmp
+				break
+			}
+		}
+		if filterField == "$and" {
+			bsonElemSliceNodes := computeNoSQLFilterKeyToValues_AND(graph, bsonNode.GetValue(), bsonElemNode)
+			// NOTE: the final appended filterKeyToValues will not contain the
+			// filterObj for the "Key", which is good because we don't want taints with "$and"
+			for _, node := range bsonElemSliceNodes {
+				filterKeyToValuesTmp := computeNoSQLFilterKeyToValues(graph, node, filterKeyToValues, isProjection)
+				for k, lst := range filterKeyToValuesTmp {
+					for _, v := range lst {
+						if !slices.Contains(filterKeyToValues[k], v) {
+							filterKeyToValues[k] = append(filterKeyToValues[k], v)
+						}
+					}
+				}
+			}
+			return filterKeyToValues
+		}
+
+		if filterField == "" {
+			filterField = "*"
+		}
+
+		if !isProjection {
 			for _, edge := range graph.GetEdgesTypedFrom(bsonElemNode, ssagraph.EDGE_FIELD) {
-				if edge.GetParam() == "Key" {
-					// track objects used as value in store instructions for current bson key
-					bsonKeyNode := edge.GetToNode()
-					for _, edge := range graph.GetEdgesTypedFrom(bsonKeyNode, ssagraph.EDGE_STORE_ADDRESS) {
+				if edge.GetParam() == "Value" {
+					// track objects used as value in store instructions for current bson value
+					bsonValueNode := edge.GetToNode()
+					for _, edge := range graph.GetEdgesTypedFrom(bsonValueNode, ssagraph.EDGE_STORE_ADDRESS) {
 						storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
 						filterObjs = append(filterObjs, ValFieldPath{
 							val:           storeInstr.Val,
 							bsonFilterKey: filterField,
 						})
-						// should only occur once
-						if filterFieldTmp, ok := utils.ExtractStringFromValue(storeInstr.Val); ok {
-							filterField = filterFieldTmp
-							break
-						}
-					}
-				}
-			}
-
-			if filterField == "$and" {
-				bsonElemSliceNodes := computeNoSQLFilterKeyToValues_AND(graph, bsonSliceNode.GetValue(), bsonElemNode)
-				// NOTE: the final appended filterKeyToValues will not contain the
-				// filterObj for the "Key", which is good because we don't want taints with "$and"
-				for _, node := range bsonElemSliceNodes {
-					filterKeyToValuesTmp := computeNoSQLFilterKeyToValuesHelper(graph, node, filterKeyToValues, isProjection)
-					for k, lst := range filterKeyToValuesTmp {
-						for _, v := range lst {
-							if !slices.Contains(filterKeyToValues[k], v) {
-								filterKeyToValues[k] = append(filterKeyToValues[k], v)
-							}
-						}
-					}
-				}
-				//logrus.Fatalf("returning filter key to values: %v\n", filterKeyToValues)
-				return filterKeyToValues
-			}
-
-			if filterField == "" {
-				filterField = "*"
-			}
-
-			if !isProjection {
-				for _, edge := range graph.GetEdgesTypedFrom(bsonElemNode, ssagraph.EDGE_FIELD) {
-					if edge.GetParam() == "Value" {
-						// track objects used as value in store instructions for current bson value
-						bsonValueNode := edge.GetToNode()
-						for _, edge := range graph.GetEdgesTypedFrom(bsonValueNode, ssagraph.EDGE_STORE_ADDRESS) {
-							storeInstr := edge.GetToNode().GetInstruction().(*ssa.Store)
-							filterObjs = append(filterObjs, ValFieldPath{
-								val:           storeInstr.Val,
-								bsonFilterKey: filterField,
-							})
-							if iface, ok := storeInstr.Val.(*ssa.MakeInterface); ok {
-								for filterFieldTmp, filterObjsTmp := range computeNoSQLFilterKeyToValues(graph, iface.X) {
-									switch filterFieldTmp {
-									case "$in":
-										for _, filterObjTmp := range filterObjsTmp {
-											filterObjTmp.bsonFilterIn = true
-											filterObjTmp.bsonFilterKey = filterField
-											filterObjs = append(filterObjs, filterObjTmp)
-										}
-										//logrus.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
-									default:
-										logrus.Fatalf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+						if iface, ok := storeInstr.Val.(*ssa.MakeInterface); ok {
+							bsonNode := findBsonNode(graph, iface.X)
+							filterKeyToValues := computeNoSQLFilterKeyToValues(graph, bsonNode, nil, false)
+							for filterFieldTmp, filterObjsTmp := range filterKeyToValues {
+								switch filterFieldTmp {
+								case "$in":
+									for _, filterObjTmp := range filterObjsTmp {
+										filterObjTmp.bsonFilterIn = true
+										filterObjTmp.bsonFilterKey = filterField
+										filterObjs = append(filterObjs, filterObjTmp)
 									}
+									//logrus.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
+								case "$gt":
+									for _, filterObjTmp := range filterObjsTmp {
+										filterObjTmp.bsonFilterIn = true
+										filterObjTmp.bsonFilterKey = filterField
+										filterObjs = append(filterObjs, filterObjTmp)
+									}
+									//logrus.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
+								case "$each":
+									// TODO
+									logrus.Warnf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+								case "$position":
+									// TODO
+									logrus.Warnf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+								default:
+									logrus.Fatalf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
 								}
 							}
 						}
 					}
 				}
 			}
-			if filterField == "" {
-				logrus.Fatalf("[CALLS BLUEPRINT] [BSON] empty filter field for bsonVal (%s) and bsonElem (%s)\n", bsonSliceNode.GetValue().Name(), bsonElemNode.GetValue().Name())
-			}
-			filterKeyToValues[filterField] = filterObjs
 		}
+		if filterField == "" {
+			logrus.Fatalf("[CALLS BLUEPRINT] [BSON] empty filter field for bsonVal (%s) and bsonElem (%s)\n", bsonNode.GetValue().Name(), bsonElemNode.GetValue().Name())
+		}
+		filterKeyToValues[filterField] = filterObjs
 	}
 	return filterKeyToValues
 }
@@ -820,13 +876,11 @@ func computeNoSQLFilterKeyToValuesHelper(graph *ssagraph.SSAGraph, bsonSliceNode
 //			bson.D{{Key: "RouteID", Value: routeID}},
 //			bson.D{{Key: "TrainType", Value: trainType}},
 //		}}}
-func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonVal ssa.Value) map[string][]ValFieldPath {
-	filterKeyToValues := make(map[string][]ValFieldPath)
-	if slice, ok := bsonVal.(*ssa.Slice); ok {
+func findBsonNode(graph *ssagraph.SSAGraph, bsonSliceVal ssa.Value) *ssagraph.SSANode {
+	if slice, ok := bsonSliceVal.(*ssa.Slice); ok {
 		ok, isSliceOfSlice := ssaValueIsUsedInMongoBsonFilter(graph, slice)
 		if ok {
 			bsonSliceNode := graph.GetNodeByName(slice.X.Name())
-			var bsonSliceNode2 *ssagraph.SSANode
 			if isSliceOfSlice {
 				// can be a slice of bson.D
 				// e.g., projections where parameter is "projection ...bson.D"
@@ -835,25 +889,20 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonVal ssa.Value) 
 						for _, edge := range graph.GetEdgesFromNode(edge.GetToNode()) {
 							if store, ok := edge.GetToNode().GetInstruction().(*ssa.Store); ok {
 								if slice, ok := store.Val.(*ssa.Slice); ok {
-									bsonSliceNode2 = graph.GetNodeByName(slice.X.Name())
+									return graph.GetNodeByName(slice.X.Name())
 								}
 							}
 						}
 					}
 				}
-				if bsonSliceNode2 != nil {
-					filterKeyToValues = computeNoSQLFilterKeyToValuesHelper(graph, bsonSliceNode2, filterKeyToValues, true)
-				}
 			} else {
-				bsonSliceNode := graph.GetNodeByName(slice.X.Name())
-				filterKeyToValues = computeNoSQLFilterKeyToValuesHelper(graph, bsonSliceNode, filterKeyToValues, false)
+				return graph.GetNodeByName(slice.X.Name())
 			}
+		} else {
+			logrus.WithField("graph", graph.String()).WithField("slice", slice.Name()).Warnf("slice is not used in mongo bson filter")
 		}
-	} else {
-		// EVAL: fmt.Printf("[CALLS BLUEPRINT] bson val (%T): %v\n", bsonVal, bsonVal)
 	}
-	// EVAL: fmt.Printf("[CALLS BLUEPRINT] [NOSQL FILTER] returning lst: %v\n", filterKeyToValues)
-	return filterKeyToValues
+	return nil
 }
 
 func getNoSQLCursorCallsFromCollectionCall(graph *ssagraph.SSAGraph, collectionCall *ssa.Call) map[*ssa.Call]*ssa.Extract {
@@ -929,9 +978,13 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 			}
 		}
 	}
-	for _, edge := range graph.GetEdgesTypedFrom(graph.GetNodeByName(val.Name()), ssagraph.EDGE_POINTS_TO) {
-		if ok1, ok2 := ssaValueIsUsedInMongoBsonFilter(graph, edge.GetToNode().GetValue()); ok1 {
-			return ok1, ok2
+
+	if config.Global.EnabledPointerToAnalysis {
+		for _, edge := range graph.GetEdgesTypedFrom(graph.GetNodeByName(val.Name()), ssagraph.EDGE_POINTS_TO) {
+			if ok1, ok2 := ssaValueIsUsedInMongoBsonFilter(graph, edge.GetToNode().GetValue()); ok1 {
+				logrus.Warnf("[OK] graph=%s // value=%s\n", graph.String(), edge.GetToNode().GetValue())
+				return ok1, ok2
+			}
 		}
 	}
 	return false, false

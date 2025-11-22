@@ -2,10 +2,11 @@ package keycoordination
 
 import (
 	"fmt"
-	"log"
 	"sort"
 
 	"analyzer/pkg/app"
+
+	"github.com/sirupsen/logrus"
 )
 
 func (detector *KeyCoordinationDetector) GetResults() string {
@@ -62,7 +63,7 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 			} else if detector.isTypeForeignKey() {
 				results += fmt.Sprintf("\tFOREIGN KEY READS #%d:\n", numWarnings)
 			} else {
-				log.Fatalf("unexpected")
+				logrus.Fatalf("unexpected")
 			}
 
 			if fread.constraint1 != nil {

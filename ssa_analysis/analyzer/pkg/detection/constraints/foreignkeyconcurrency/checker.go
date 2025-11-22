@@ -43,7 +43,6 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 					// EVAL: fmt.Printf("\t[FOREIGN KEY CONCURRENCY | CHECKER] other_write={%s}, entry={%s}\n", otherWrite.call.String(), otherWrite.request.entry.String())
 					for _, otherField := range otherWrite.fields {
 						// EVAL: fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
-
 						for _, deletedField := range delete.schema.GetAllFieldsLst() {
 							// EVAL: fmt.Printf("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] deleted field = %s\n", deletedField.String())
 							if otherField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {

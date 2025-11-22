@@ -52,6 +52,8 @@
           "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID [T]",
           "FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES station_db.station.Name [T]",
           "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]",
+          "FOREIGN_KEY consign_db.consign_record.Price REFERENCES consignprice_db.consign.InitialPrice",
+          "FOREIGN_KEY consign_db.consign_record.Price REFERENCES consignprice_db.consign.InitialWeight",
           "FOREIGN_KEY consign_db.consign_record.TargetDate REFERENCES order_db.order.TravelDate [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES station_db.station.Name [T]"
         ]
@@ -64,7 +66,11 @@
       {
         "name": "consign",
         "fields": [
-          "consignprice_db.consign"
+          "consignprice_db.consign",
+          "consignprice_db.consign.BeyondPrice",
+          "consignprice_db.consign.InitialPrice",
+          "consignprice_db.consign.InitialWeight",
+          "consignprice_db.consign.WithinPrice"
         ],
         "constraints": []
       }
@@ -211,10 +217,7 @@
     "schemas": [
       {
         "name": "money",
-        "fields": [
-          "payment_db.payment",
-          "payment_db.payment.OrderID"
-        ],
+        "fields": [],
         "constraints": []
       },
       {
@@ -295,6 +298,7 @@
         "name": "train",
         "fields": [
           "train_db.train",
+          "train_db.train.EconomyClass",
           "train_db.train.ID",
           "train_db.train.Name"
         ],

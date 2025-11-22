@@ -2,12 +2,13 @@ package detection
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Detector interface {
@@ -48,7 +49,7 @@ func SaveResults(app *app.App, detectors ...Detector) []string {
 		dir := filepath.Dir(path)
 		err := os.MkdirAll(dir, 0755)
 		if err != nil {
-			log.Fatalf("[%s] error creating directory %s: %s", path, dir, err.Error())
+			logrus.Fatalf("[%s] error creating directory %s: %s", path, dir, err.Error())
 		}
 
 		// read previous file (if it exists) and check if results have changed
@@ -56,7 +57,7 @@ func SaveResults(app *app.App, detectors ...Detector) []string {
 		if _, err := os.Stat(path); err == nil {
 			previousContent, err = os.ReadFile(path)
 			if err != nil {
-				log.Fatalf("[%s] error reading existing file %s: %s", path, path, err.Error())
+				logrus.Fatalf("[%s] error reading existing file %s: %s", path, path, err.Error())
 			}
 		}
 
@@ -74,7 +75,7 @@ func SaveResults(app *app.App, detectors ...Detector) []string {
 		// if we have a new file or the content has changed then update the results
 		err = os.WriteFile(path, []byte(results), 0644)
 		if err != nil {
-			log.Fatalf("[%s] error writing data to %s: %s", path, path, err.Error())
+			logrus.Fatalf("[%s] error writing data to %s: %s", path, path, err.Error())
 		}
 
 		str := fmt.Sprintf("%s\t\t\t\t\t\t\t   (modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)

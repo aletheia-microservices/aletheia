@@ -2,9 +2,10 @@ package blueprint
 
 import (
 	"fmt"
-	"log"
 
 	"analyzer/pkg/frameworks/components"
+
+	"github.com/sirupsen/logrus"
 )
 
 func IsBackendComponent(name string) bool {
@@ -151,12 +152,12 @@ func (t *BlueprintBackendType) GetPackage() string {
 }
 
 func (t *BlueprintBackendType) GetBasicValue() string {
-	log.Fatalf("[TYPES BLUEPRINT] unable to get value for blueprint backend type type %s", t.String())
+	logrus.Fatalf("[TYPES BLUEPRINT] unable to get value for blueprint backend type type %s", t.String())
 	return ""
 }
 
 func (t *BlueprintBackendType) AddValue(value string) {
-	log.Fatalf("[TYPES BLUEPRINT] unable to add value for blueprint backend type type %s", t.String())
+	logrus.Fatalf("[TYPES BLUEPRINT] unable to add value for blueprint backend type type %s", t.String())
 }
 
 func (t *BlueprintBackendType) IsNoSQLComponent() bool {
@@ -189,7 +190,7 @@ func (t *BlueprintBackendType) GetMethod(name string) *BackendMethod {
 			return m
 		}
 	}
-	log.Fatalf("[TYPES BLUEPRINT] could not find method (%s) for backend type (%s) with methods (%v)", name, t.String(), t.Methods)
+	logrus.Fatalf("[TYPES BLUEPRINT] could not find method (%s) for backend type (%s) with methods (%v)", name, t.String(), t.Methods)
 	return nil
 }
 

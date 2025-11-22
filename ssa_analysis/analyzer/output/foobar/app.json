@@ -2,91 +2,59 @@
   "name": "foobar",
   "databases": [
     "bar_db",
-    "movie_db",
-    "plot_db",
-    "price_db",
-    "route_db"
+    "foo_db"
   ],
   "services": [
+    {
+      "name": "BarService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.BarService",
+      "pkg": "foobar",
+      "impl": "BarServiceImpl",
+      "fields": [
+        "barDb #0 (bar_db)"
+      ],
+      "methods": [
+        "WriteBar",
+        "ReadBar"
+      ],
+      "services": [],
+      "databases": []
+    },
+    {
+      "name": "FooService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.FooService",
+      "pkg": "foobar",
+      "impl": "FooServiceImpl",
+      "fields": [
+        "database #0 (foo_db)",
+        "barService #1 (bar_service)"
+      ],
+      "methods": [
+        "WriteFoo",
+        "ReadFoo"
+      ],
+      "services": [
+        "BarService"
+      ],
+      "databases": []
+    },
     {
       "name": "Frontend",
       "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.Frontend",
       "pkg": "foobar",
       "impl": "FrontendImpl",
       "fields": [
-        "barService #0 (bar_service)",
-        "movieService #1 (movie_service)",
-        "plotService #2 (plot_service)",
-        "priceService #3 (price_service)",
-        "routeService #4"
+        "fooService #0 (foo_service)",
+        "barService #1 (bar_service)"
       ],
       "methods": [
-        "ReadMoviePlot",
-        "ReadRoutePrice"
+        "ReadBarFoo",
+        "WriteFoo"
       ],
       "services": [
-        "MovieService",
-        "MovieService",
-        "PlotService",
-        "PriceService",
-        "RouteService"
+        "BarService",
+        "FooService"
       ],
-      "databases": []
-    },
-    {
-      "name": "MovieService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.MovieService",
-      "pkg": "foobar",
-      "impl": "MovieServiceImpl",
-      "fields": [
-        "db #0 (bar_db)"
-      ],
-      "methods": [
-        "ReadMovie"
-      ],
-      "services": [],
-      "databases": []
-    },
-    {
-      "name": "PlotService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.PlotService",
-      "pkg": "foobar",
-      "impl": "PlotServiceImpl",
-      "fields": [
-        "db #0 (plot_db)"
-      ],
-      "methods": [
-        "ReadPlot"
-      ],
-      "services": [],
-      "databases": []
-    },
-    {
-      "name": "PriceService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.PriceService",
-      "pkg": "foobar",
-      "impl": "PriceServiceImpl",
-      "fields": [
-        "db #0 (price_db)"
-      ],
-      "methods": [
-        "ReadPriceByRouteID"
-      ],
-      "services": [],
-      "databases": []
-    },
-    {
-      "name": "RouteService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/foobar/workflow/foobar.RouteService",
-      "pkg": "foobar",
-      "impl": "RouteServiceImpl",
-      "fields": [
-        "db #0 (route_db)"
-      ],
-      "methods": [
-        "ReadRoute"
-      ],
-      "services": [],
       "databases": []
     }
   ]

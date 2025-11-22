@@ -2,7 +2,8 @@ package blueprint
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/sirupsen/logrus"
 )
 
 type OperationType int
@@ -189,7 +190,7 @@ func (b *BackendMethod) GetWrittenObjectIndex() int {
 	case "Queue.Push":
 		return 1
 	default:
-		log.Fatalf("unknown backend %s", b.FullName())
+		logrus.Fatalf("unknown backend %s", b.FullName())
 	}
 	return -1
 }
@@ -205,7 +206,7 @@ func (b *BackendMethod) GetReadObjectIndex() int {
 	case "Queue.Pop":
 		return 1
 	default:
-		log.Fatalf("unknown backend %s", b.FullName())
+		logrus.Fatalf("unknown backend %s", b.FullName())
 	}
 
 	return -1
@@ -218,7 +219,7 @@ func (b *BackendMethod) GetWrittenKeyIndex() int {
 	case "Queue.Push":
 		return 1
 	default:
-		log.Fatalf("unknown backend %s", b.FullName())
+		logrus.Fatalf("unknown backend %s", b.FullName())
 	}
 	return -1
 }
@@ -232,7 +233,7 @@ func (b *BackendMethod) GetReadKeyIndex() int {
 	case "Queue.Pop":
 		return 1
 	default:
-		log.Fatalf("unknown backend %s", b.FullName())
+		logrus.Fatalf("unknown backend %s", b.FullName())
 	}
 	return -1
 }
@@ -296,7 +297,7 @@ func BuildBackendComponentMethods(name string) []*BackendMethod {
 	case "NoSQLCursor":
 		methods = buildBackendNoSQLCursorMethods()
 	default:
-		log.Fatalf("could not build methods for backend %s", name)
+		logrus.Fatalf("could not build methods for backend %s", name)
 	}
 	return methods
 }

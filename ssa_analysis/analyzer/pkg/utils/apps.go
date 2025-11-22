@@ -2,10 +2,11 @@ package utils
 
 import (
 	"bufio"
-	"log"
 	"os"
 	"slices"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -16,6 +17,7 @@ const (
 	APP_PATH_SOCKSHOP3               = "sockshop3/workflow/sockshop3"
 	APP_PATH_DSB_SN2                 = "dsb_sn2/workflow/socialnetwork2"
 	APP_PATH_FOO_BAR                 = "foobar/workflow/foobar"
+	APP_PATH_FOO_BAR2                = "foobar2/workflow/foobar2"
 	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
 	APP_PATH_LARGE_SCALE_APP         = "large_scale_app/workflow/large_scale_app"
@@ -48,6 +50,7 @@ var APPS_PACKAGE_PATHS = []string{
 
 var APPS_ENTRYPOINTS_PATHS = map[string]string{
 	"foobar":                  "blueprint/foobar/fooservice_writefoo",
+	"foobar2":                 "blueprint/foobar2/fooservice_writefoo",
 	"postnotification":        "blueprint/postnotification/notifyservice_run",
 	"postnotification_simple": "blueprint/postnotification/notifyservice_run",
 	"digota":                  "blueprint/digota/skuservice_get",
@@ -84,7 +87,7 @@ func GetAppEntrypointPath(appsimplename string) string {
 	if path, ok := APPS_ENTRYPOINTS_PATHS[appsimplename]; ok {
 		return path
 	}
-	log.Fatalf("[UTILS] entrypoint path not found for appsimplename (%s)", appsimplename)
+	logrus.Fatalf("[UTILS] entrypoint path not found for appsimplename (%s)", appsimplename)
 	return ""
 }
 
@@ -104,7 +107,7 @@ func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		log.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
+		logrus.Fatalf("error reading sql paths for app (%s): %s", app, err.Error())
 		return false, ""
 	}
 

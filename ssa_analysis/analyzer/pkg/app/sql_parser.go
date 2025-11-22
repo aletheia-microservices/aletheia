@@ -1,13 +1,13 @@
 package app
 
 import (
-	"log"
 	"os"
 	"strings"
 
 	"github.com/auxten/postgresql-parser/pkg/sql/parser"
 	"github.com/auxten/postgresql-parser/pkg/sql/sem/tree"
 	"github.com/auxten/postgresql-parser/pkg/walk"
+	"github.com/sirupsen/logrus"
 	"github.com/xwb1989/sqlparser"
 
 	"analyzer/pkg/app/backends"
@@ -55,7 +55,7 @@ func parseSQLStatementsFromInput(input string) []sqlDbStmt {
 		sqlStmt := splits[1]
 		sqlBytes, err := os.ReadFile(sqlStmt)
 		if err != nil {
-			log.Fatalf("error reading sql files: %s", err.Error())
+			logrus.Fatalf("error reading sql files: %s", err.Error())
 			return nil
 		}
 		sqlStmts := strings.Split(string(sqlBytes), ";")
@@ -140,15 +140,15 @@ func parseSQLStatement(database *backends.Database, sql string) {
 
 	stmts, err := parser.Parse(sql)
 	if err != nil {
-		log.Fatalf("[APP SQL PARSER] %s", err.Error())
+		logrus.Fatalf("[APP SQL PARSER] %s", err.Error())
 		return
 	}
 
 	ok, err := w.Walk(stmts, nil)
 	if err != nil {
-		log.Fatalf("[APP SQL PARSER] %s", err.Error())
+		logrus.Fatalf("[APP SQL PARSER] %s", err.Error())
 	} else if !ok {
-		log.Fatalf("[APP SQL PARSER] UNEXPECTED!")
+		logrus.Fatalf("[APP SQL PARSER] UNEXPECTED!")
 	}
 }
 
@@ -170,7 +170,7 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 	// EVAL: fmt.Printf("[APP SQL PARSER] parsing sql read for database (%s): %s\n", db, stmtStr)
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
-		log.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+		logrus.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
 	}
 
 	//argIdx := 0
@@ -207,7 +207,7 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 		}
 
 	default:
-		log.Fatalf("[APP SQL PARSER] Unsupported SQL statement: %s", stmtStr)
+		logrus.Fatalf("[APP SQL PARSER] Unsupported SQL statement: %s", stmtStr)
 	}
 
 	tableNames := make([]string, len(tableNameAliasLst))
@@ -240,7 +240,7 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
-		log.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+		logrus.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
 	}
 
 	var writtenFields []string
@@ -262,7 +262,7 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 				}
 			}
 		} else {
-			log.Fatalf("[APP SQL PARSER] unexpected type %T for rows in sql insert: %s", stmt.Rows, stmtStr)
+			logrus.Fatalf("[APP SQL PARSER] unexpected type %T for rows in sql insert: %s", stmt.Rows, stmtStr)
 		}
 	case *sqlparser.Update:
 		argIdx := 0
@@ -295,7 +295,7 @@ func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
 	// EVAL: fmt.Printf("[APP SQL PARSER] parsing sql delete for database (%s): %s\n", db, stmtStr)
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
-		log.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+		logrus.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
 	}
 
 	var filterFields []string
@@ -309,7 +309,7 @@ func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
 		}
 
 	default:
-		log.Fatalf("[APP SQL PARSER] Unsupported SQL statement for delete parser: %s", stmtStr)
+		logrus.Fatalf("[APP SQL PARSER] Unsupported SQL statement for delete parser: %s", stmtStr)
 	}
 
 	tableNames := make([]string, len(tableNameAliasLst))
@@ -352,6 +352,6 @@ func parseTableName(prefixTableName string, tableNameAliasLst []tableNameAlias) 
 			return t.name
 		}
 	}
-	log.Fatal("unexpected")
+	logrus.Fatalf("unexpected")
 	return tableNameAliasLst[0].name
 }

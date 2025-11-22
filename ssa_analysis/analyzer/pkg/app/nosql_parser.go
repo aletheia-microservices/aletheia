@@ -2,13 +2,14 @@ package app
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 	"path/filepath"
 
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Property struct {
@@ -34,20 +35,20 @@ func (app *App) ParseNoSQLSchemaFromUserFile() {
 	pkgPathDB := utils.APPS_NOSQL_SCHEMAS[app.name] + "/database/"
 	filepaths, err := filepath.Glob(filepath.Join(pkgPathDB, "*.json"))
 	if err != nil {
-		log.Fatalf("error extracting database json files: %s", err.Error())
+		logrus.Fatalf("error extracting database json files: %s", err.Error())
 	}
 
 	var jsonSchemas []JSONSchema
 	for _, jsonFilePath := range filepaths {
 		jsonBytes, err := os.ReadFile(jsonFilePath)
 		if err != nil {
-			log.Fatalf("error reading json files: %s", err.Error())
+			logrus.Fatalf("error reading json files: %s", err.Error())
 		}
 
 		var jsonSchema JSONSchema
 		err = json.Unmarshal([]byte(jsonBytes), &jsonSchema)
 		if err != nil {
-			log.Fatalf("[JSON PARSER] error parsing json data: %s", err.Error())
+			logrus.Fatalf("[JSON PARSER] error parsing json data: %s", err.Error())
 		}
 
 		jsonSchemas = append(jsonSchemas, jsonSchema)

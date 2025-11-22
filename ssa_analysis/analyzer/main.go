@@ -4,13 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"go/token"
-	"log"
 	"os"
 	"path"
 	"time"
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/loader"
+	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 	"gopkg.in/yaml.v2"
@@ -18,6 +18,7 @@ import (
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
+	"analyzer/pkg/config"
 	"analyzer/pkg/detection/constraints/foreignkeycascade"
 	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
 	"analyzer/pkg/detection/constraints/keycoordination"
@@ -56,6 +57,7 @@ func main() {
 		FullTimestamp:   true,
 		TimestampFormat: time.TimeOnly,
 	})
+	logrus.SetLevel(logrus.InfoLevel)
 
 	if EVAL {
 		go func() {
@@ -84,23 +86,23 @@ func main() {
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
 	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+		logrus.Fatalf("error: %s", err.Error())
 	}
 
 	// ensure output sub directory for graphs exists
 	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/tainted", appname), os.ModePerm)
 	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+		logrus.Fatalf("error: %s", err.Error())
 	}
 	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/untainted", appname), os.ModePerm)
 	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+		logrus.Fatalf("error: %s", err.Error())
 	}
 
 	// ensure output sub directory for graphs exists
 	err = os.MkdirAll(fmt.Sprintf("output/%s/ssa", appname), os.ModePerm)
 	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+		logrus.Fatalf("error: %s", err.Error())
 	}
 
 	// ------------ PART 2
@@ -108,7 +110,7 @@ func main() {
 
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+		logrus.Fatalf("error: %s", err.Error())
 	}
 
 	app.InitServiceFields(pkgs)
@@ -116,10 +118,15 @@ func main() {
 	app.ParseNoSQLSchemaFromUserFile()
 
 	// ------------ PART 3
-	logrus_ctx.Infof("[3/14] initializing pointer analysis")
-	result, err := parser.InitPointerAnalysis(prog, pkgs)
-	if err != nil {
-		log.Fatalf("error: %s", err.Error())
+	var result *pointer.Result
+	if config.Global.EnabledPointerToAnalysis {
+		logrus_ctx.Infof("[3/14] initializing pointer-to analysis")
+		result, err = parser.InitPointerAnalysis(prog, pkgs)
+		if err != nil {
+			logrus.Fatalf("error: %s", err.Error())
+		}
+	} else {
+		logrus_ctx.Infof("[3/14] skipping pointer-to analysis")
 	}
 
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
@@ -135,9 +142,13 @@ func main() {
 	}
 
 	// ------------ PART 5
-	logrus_ctx.Infof("[5/14] running pointer-to analysis")
-	for _, pkg := range pkgs {
-		parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
+	if config.Global.EnabledPointerToAnalysis {
+		logrus_ctx.Infof("[5/14] running pointer-to analysis")
+		for _, pkg := range pkgs {
+			parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
+		}
+	} else {
+		logrus_ctx.Infof("[5/14] skipping pointer-to analysis")
 	}
 
 	var graphsLst []*ssagraph.SSAGraph
@@ -168,11 +179,22 @@ func main() {
 		tainter.Combine(ssagraph, funcGraphs)
 	}
 
-	fmt.Println("HERE!")
-
 	if !EVAL {
+		var written = make(map[string]bool)
 		for fn, ssagraph := range funcGraphs {
 			ssagraph.WriteToDOTFile(appname, fn, true)
+			written[fn] = true
+		}
+		// debug
+		for fn, ssagraph := range funcGraphs {
+			for _, toGraph := range ssagraph.GetAllCombinedGraphs() {
+				// sanity check
+				newFn := fn+"."+toGraph.GetMethodName()
+				if exists, _ := written[newFn]; !exists {
+					toGraph.WriteToDOTFile(appname, newFn, true)
+				}
+				written[newFn] = true
+			}
 		}
 	}
 

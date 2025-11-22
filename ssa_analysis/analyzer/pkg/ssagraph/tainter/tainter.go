@@ -63,7 +63,7 @@ func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMod
 		logrus.Fatalf("unexpected taint mode: %v\n", taintMode)
 	}
 	if ok {
-		logrus.Tracef ("\t[TAINT] OK!\n")
+		logrus.Tracef("\t[TAINT] OK!\n")
 	}
 }
 
@@ -418,7 +418,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 									propagateTaintNearby(graph, true, callNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 								}
 							} else if fn.Name() == "ParseFloat" || fn.Name() == "ParseInt" {
-								// e.g., 
+								// e.g.,
 								// (1) amount, err := strconv.ParseFloat(declineOverAmount, 32)
 								// 		- taint: amount <<< declineOverAmount
 								// (2) amount, err := strconv.ParseInt(str, 10, 64)
@@ -739,107 +739,72 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 }
 
 func RunTainter(graph *ssagraph.SSAGraph) {
-	// for simplicity, always run taint on database calls before service calls due to cases where
-	// 1st there is a service call that returns some value
-	// 2nd that value is then used in a database call
-	//
-	// the taint is detected when analyzing the service call
-	// only if the database call was analyzed before
-	// because of the way we are checking upper taints with the "spreading of taints in store points"
-	// at the service call
-	//
-	// this logic is close to the tainting process of returns and parameters
-	// where we only taint them after all database calls have been processed
-	runTainterOnCalls(graph)
+	logrus.WithField("graph", graph.String()).Debugf("[SSA TAINTER] running SSA tainter...")
+	databaseCallRegistry := make(map[*ssagraph.DatabaseCall][]ValFieldPath)
+	registerCalls(graph, databaseCallRegistry)
+	runTainterOnCalls(graph, databaseCallRegistry)
 	runTainterOnParameters(graph)
 	runTainterOnReturns(graph)
 }
 
-func runTainterOnParameters(graph *ssagraph.SSAGraph) {
-	paramNodes := graph.GetFuncParametersExceptMemberAndContext()
-	checkUpperTaintsForObjects(graph, paramNodes)
-}
-
-func runTainterOnReturns(graph *ssagraph.SSAGraph) {
-	var nodesToVisit []*ssagraph.SSANode
+func registerCalls(graph *ssagraph.SSAGraph, databaseCallRegistry map[*ssagraph.DatabaseCall][]ValFieldPath) {
 	for _, node := range graph.GetNodes() {
-		// keep track of arguments returned in the current function possibly invoked by other services
-		// so that we can mark their indirect taints
-		if ret, ok := node.GetInstruction().(*ssa.Return); ok {
-			var rets []*ssagraph.SSANode
-			for _, res := range ret.Results {
-				resNode := graph.GetNodeByName(res.Name())
-				nodesToVisit = append(nodesToVisit, resNode)
-				rets = append(rets, resNode)
+		ok := registerDatabaseCall(graph, node, databaseCallRegistry)
+		if ok {
+			logrus.WithField("graph", graph.String()).WithField("node", node.String()).Infof("[SSA TAINTER] database call")
+		} else {
+			ok = registerServiceCall(graph, node)
+			if ok {
+				logrus.WithField("graph", graph.String()).WithField("node", node.String()).Infof("[SSA TAINTER] service call")
+			} else {
+				registerMethodCall(graph, node)
 			}
-			graph.AddReturnsToLst(rets)
-		}
-
-		checkUpperTaintsForObjects(graph, nodesToVisit)
-	}
-}
-
-func runTainterOnCalls(graph *ssagraph.SSAGraph) {
-	for _, node := range graph.GetNodes() {
-		ok := runTainterOnDatabaseCall(graph, node)
-		if !ok {
-			ok = runTainterOnServiceCall(graph, node)
-		}
-		if !ok {
-			runTainterOnMethodCall(graph, node)
 		}
 	}
 }
 
-func runTainterOnDatabaseCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
-	var nodesToVisit []*ssagraph.SSANode
+func registerDatabaseCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, databaseCallRegistry map[*ssagraph.DatabaseCall][]ValFieldPath) bool {
 	if database, collectionOrTopic, method, opType, valFieldPathLst, ok := isDatabaseCall(graph, node.GetValue()); ok {
 		var argNodes []*ssagraph.SSANode
-
 		for _, valFieldPath := range valFieldPathLst {
 			argNodes = append(argNodes, graph.GetNodeByName(valFieldPath.val.Name()))
 		}
-
 		callId := ssagraph.ComputeCallID(graph, node)
 		dbCall := ssagraph.NewDatabaseCall(callId, node, argNodes, database, collectionOrTopic, method, opType)
 		graph.AddDatabaseCall(dbCall)
 		graph.AddCall(dbCall)
-
-		for _, valFieldPath := range valFieldPathLst {
-			dbfield := valFieldPath.fieldpath
-			obj := valFieldPath.val
-
-			taintInfo := NewTaintInfoDatabase(dbfield, "", nil, dbCall, valFieldPath.readKey, valFieldPath.readValue)
-
-			// e.g. dsb_hotel2: RecommendationService.LoadRecommendations()
-			// where &hotels is the destination
-			// -----------------------------------------------
-			// var hotels []Hotel
-			// cursor, err := collection.FindMany(ctx, filter)
-			// cursor.All(ctx, &hotels)
-			// -----------------------------------------------
-			// REMINDER:
-			// cannot do default propagateTaintNearby (root=true) for read operations fetched
-			// into arrays/slices (e.g., FindMany) because the default taintinfo is the root path
-			// when propagating to other objects
-			if valFieldPath.bsonCursorMany || valFieldPath.bsonFilterIn || valFieldPath.cacheMultiget {
-				taintInfo.objpath += "[*]"
-				taintInfo.objroot = false
-			}
-
-			visited := make(map[ssa.Value]bool)
-			propagateTaintNearby(graph, false, obj, taintInfo, visited, nil, false)
-			objNode := graph.GetNodeByName(obj.Name())
-			nodesToVisit = append(nodesToVisit, objNode)
-		}
-
-		checkUpperTaintsForObjects(graph, nodesToVisit)
+		databaseCallRegistry[dbCall] = valFieldPathLst
 		return true
 	}
 	return false
 }
 
-func runTainterOnMethodCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
+func registerServiceCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
+	// keep track of arguments passed in service RPCs
+	// so that we can mark their indirect taints
+	if service, method, funcShortPath, args, call, ok := isServiceCall(graph, node.GetValue()); ok {
+		// keep track of objects passed as arguments
+		var argNodes []*ssagraph.SSANode
+		for _, arg := range args {
+			argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
+		}
+
+		// keep track of objects extracted from returns
+		var retNodes []*ssagraph.SSANode
+		for _, val := range getReturnSSAValuesFromCall(graph, call) {
+			retNodes = append(retNodes, graph.GetNodeByName(val.Name()))
+		}
+
+		callId := ssagraph.ComputeCallID(graph, node)
+		svcCall := ssagraph.NewServiceCall(callId, node, argNodes, retNodes, service, method, funcShortPath)
+		graph.AddServiceCall(svcCall)
+		graph.AddCall(svcCall)
+		return true
+	}
+	return false
+}
+
+func registerMethodCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
 	if method, fnShortPath, args, call, ok := isMethodCall(graph, node.GetValue()); ok {
 		var argNodes []*ssagraph.SSANode
 		for _, arg := range args {
@@ -878,56 +843,94 @@ func getReturnSSAValuesFromCall(graph *ssagraph.SSAGraph, call *ssa.Call) []ssa.
 	return vals
 }
 
-func runTainterOnServiceCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
-	var nodesToVisit []*ssagraph.SSANode
-	// keep track of arguments passed in service RPCs
-	// so that we can mark their indirect taints
-	if service, method, funcShortPath, args, call, ok := isServiceCall(graph, node.GetValue()); ok {
-		// keep track of objects passed as arguments
-		var argNodes []*ssagraph.SSANode
-		// EVAL: fmt.Printf("[TAINT] added service call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
-		for _, arg := range args {
-			argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
-			// EVAL: fmt.Printf("[TAINT] checking taint for service call with arg: %s\n", arg.String())
-			node := graph.GetNodeByName(arg.Name())
-			nodesToVisit = append(nodesToVisit, node)
+func runTainterOnCalls(graph *ssagraph.SSAGraph, databaseCallRegistry map[*ssagraph.DatabaseCall][]ValFieldPath) {
+	for _, call := range graph.GetAllCalls() {
+		if dbCall, ok := call.(*ssagraph.DatabaseCall); ok {
+			valFieldPathLst := databaseCallRegistry[dbCall]
+			taintOnDatabaseCall(graph, dbCall, valFieldPathLst)
+		} else if svcCall, ok := call.(*ssagraph.ServiceCall); ok {
+			taintOnServiceCall(graph, svcCall)
 		}
-
-		// keep track of objects extracted from returns
-		var retNodes []*ssagraph.SSANode
-		for _, val := range getReturnSSAValuesFromCall(graph, call) {
-			retNode := graph.GetNodeByName(val.Name())
-			retNodes = append(retNodes, retNode)
-			nodesToVisit = append(nodesToVisit, retNode)
-		}
-		// EVAL: fmt.Printf("[TAINT] [%s] got ret nodes: %v\n", node.String(), retNodes)
-
-		callId := ssagraph.ComputeCallID(graph, node)
-		svcCall := ssagraph.NewServiceCall(callId, node, argNodes, retNodes, service, method, funcShortPath)
-		graph.AddServiceCall(svcCall)
-		graph.AddCall(svcCall)
-
-		for _, argNode := range argNodes {
-			arg := argNode.GetValue()
-			svpath := svcCall.String() + "." + arg.Name()
-			visited := make(map[ssa.Value]bool)
-			taintInfo := NewTaintInfoService(svpath, "", nil, svcCall)
-			propagateTaintNearby(graph, false, arg, taintInfo, visited, nil, false)
-		}
-
-		for _, retNode := range retNodes {
-			ret := retNode.GetValue()
-			svpath := svcCall.String() + "." + ret.Name()
-			visited := make(map[ssa.Value]bool)
-			taintInfo := NewTaintInfoService(svpath, "", nil, svcCall)
-			propagateTaintNearby(graph, false, ret, taintInfo, visited, nil, false)
-		}
-
-		// EVAL: fmt.Printf("[TAINT] visiting nodes for call (%s) --> (%s)\n", graph.GetFunctionShortPath(), funcShortPath)
-		checkUpperTaintsForObjects(graph, nodesToVisit)
-		return true
 	}
-	return false
+}
+
+func taintOnDatabaseCall(graph *ssagraph.SSAGraph, dbCall *ssagraph.DatabaseCall, valFieldPathLst []ValFieldPath) {
+	var nodesToVisit []*ssagraph.SSANode
+	for _, valFieldPath := range valFieldPathLst {
+		dbfield := valFieldPath.fieldpath
+		obj := valFieldPath.val
+
+		taintInfo := NewTaintInfoDatabase(dbfield, "", nil, dbCall, valFieldPath.readKey, valFieldPath.readValue)
+
+		// e.g. dsb_hotel2: RecommendationService.LoadRecommendations()
+		// where &hotels is the destination
+		// -----------------------------------------------
+		// var hotels []Hotel
+		// cursor, err := collection.FindMany(ctx, filter)
+		// cursor.All(ctx, &hotels)
+		// -----------------------------------------------
+		// REMINDER:
+		// cannot do default propagateTaintNearby (root=true) for read operations fetched
+		// into arrays/slices (e.g., FindMany) because the default taintinfo is the root path
+		// when propagating to other objects
+		if valFieldPath.bsonCursorMany || valFieldPath.bsonFilterIn || valFieldPath.cacheMultiget {
+			taintInfo.objpath += "[*]"
+			taintInfo.objroot = false
+		}
+
+		visited := make(map[ssa.Value]bool)
+		propagateTaintNearby(graph, false, obj, taintInfo, visited, nil, false)
+		objNode := graph.GetNodeByName(obj.Name())
+		nodesToVisit = append(nodesToVisit, objNode)
+	}
+
+	checkUpperTaintsForObjects(graph, nodesToVisit)
+}
+
+func taintOnServiceCall(graph *ssagraph.SSAGraph, svcCall *ssagraph.ServiceCall) {
+	var nodesToVisit []*ssagraph.SSANode
+	for _, argNode := range svcCall.GetArguments() {
+		nodesToVisit = append(nodesToVisit, argNode)
+		arg := argNode.GetValue()
+		svpath := svcCall.String() + "." + arg.Name()
+		visited := make(map[ssa.Value]bool)
+		taintInfo := NewTaintInfoService(svpath, "", nil, svcCall)
+		propagateTaintNearby(graph, false, arg, taintInfo, visited, nil, false)
+	}
+
+	for _, retNode := range svcCall.GetReturns() {
+		nodesToVisit = append(nodesToVisit, retNode)
+		ret := retNode.GetValue()
+		svpath := svcCall.String() + "." + ret.Name()
+		visited := make(map[ssa.Value]bool)
+		taintInfo := NewTaintInfoService(svpath, "", nil, svcCall)
+		propagateTaintNearby(graph, false, ret, taintInfo, visited, nil, false)
+	}
+	checkUpperTaintsForObjects(graph, nodesToVisit)
+}
+
+func runTainterOnParameters(graph *ssagraph.SSAGraph) {
+	paramNodes := graph.GetFuncParametersExceptMemberAndContext()
+	checkUpperTaintsForObjects(graph, paramNodes)
+}
+
+func runTainterOnReturns(graph *ssagraph.SSAGraph) {
+	var nodesToVisit []*ssagraph.SSANode
+	for _, node := range graph.GetNodes() {
+		// keep track of arguments returned in the current function possibly invoked by other services
+		// so that we can mark their indirect taints
+		if ret, ok := node.GetInstruction().(*ssa.Return); ok {
+			var rets []*ssagraph.SSANode
+			for _, res := range ret.Results {
+				resNode := graph.GetNodeByName(res.Name())
+				nodesToVisit = append(nodesToVisit, resNode)
+				rets = append(rets, resNode)
+			}
+			graph.AddReturnsToLst(rets)
+		}
+
+		checkUpperTaintsForObjects(graph, nodesToVisit)
+	}
 }
 
 func checkUpperTaintsForObjects(graph *ssagraph.SSAGraph, nodesToVisit []*ssagraph.SSANode) {

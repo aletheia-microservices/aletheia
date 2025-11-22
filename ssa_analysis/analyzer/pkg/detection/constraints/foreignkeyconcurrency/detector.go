@@ -3,6 +3,8 @@ package foreignkeyconcurrency
 import (
 	"slices"
 
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
@@ -109,6 +111,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int
 	database := app.GetDatabaseByName(edge.GetToNode().GetDatabaseName())
 	delete := NewDeleteOperation(edge, database)
 	request := detector.getCurrentRequest()
+	var schema *backends.Schema
 
 	// search for pending fields:
 	// fields in other databases with constraint foreign key + mandatory
@@ -119,11 +122,14 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int
 			// [TO BE IMPROVED]
 			// just associated the schema to the call when parsing it...
 			field := app.ComputeDatabaseFieldFromPath(delete.database, fieldpath)
-			schema := field.GetSchema()
-			delete.setSchema(schema)
+			schema = field.GetSchema()
 			break
 		}
 	}
+	if schema == nil {
+		logrus.WithField("delete_op", delete.call.String()).Fatalf("[FOREIGN KEY CONCURRENCY] [DETECTOR] unexpected nil schema")
+	}
+	delete.setSchema(schema)
 
 	request.addDeleteOperation(delete)
 	// EVAL: fmt.Printf("[FOREIGN KEY CONCURRENCY | DETECTOR] added new delete: %v\n", delete)

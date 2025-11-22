@@ -1,7 +1,6 @@
 package blueprint
 
 import (
-	"log"
 	"strings"
 
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/ir"
@@ -13,6 +12,7 @@ import (
 	"github.com/blueprint-uservices/blueprint/plugins/redis"
 	"github.com/blueprint-uservices/blueprint/plugins/workflow"
 	"github.com/blueprint-uservices/blueprint/plugins/workflow/workflowspec"
+	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/frameworks/components"
 )
@@ -100,7 +100,7 @@ func buildDatabasesInstances(databases map[string]ir.IRNode) []*components.Datas
 				Kind: components.DATASTORE_KIND_MYSQL,
 			})
 		default:
-			log.Fatalf("unknown type for database instance: %s // NODE = [%T] %v", name, node, node)
+			logrus.Fatalf("unknown type for database instance: %s // NODE = [%T] %v", name, node, node)
 			continue
 		}
 	}

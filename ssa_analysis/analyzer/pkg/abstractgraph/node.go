@@ -1,6 +1,6 @@
 package abstractgraph
 
-import "log"
+import "github.com/sirupsen/logrus"
 
 type NodeType int
 
@@ -36,7 +36,7 @@ func (node *AbstractNode) String() string {
 
 func (node *AbstractNode) GetSchemaName() string {
 	if node.schema == "" {
-		log.Fatalf("empty schema name for node: %s\n", node.String())
+		logrus.Fatalf("empty schema name for node: %s\n", node.String())
 	}
 	return node.schema
 }
@@ -71,7 +71,7 @@ func (node *AbstractNode) GetParams() []*AbstractObject {
 
 func (node *AbstractNode) GetParamAt(i int) *AbstractObject {
 	if i > len(node.params)-1 {
-		log.Fatalf("index (%d) out of bounds for node params: %v\n", i, node.params)
+		logrus.Fatalf("index (%d) out of bounds for node params: %v\n", i, node.params)
 	}
 	return node.params[i]
 }
@@ -99,7 +99,7 @@ func (node *AbstractNode) GetReturns() []*AbstractObject {
 
 func (node *AbstractNode) GetReturnAt(i int) *AbstractObject {
 	if i > len(node.rets)-1 {
-		log.Fatalf("index (%d) out of bounds for node returns: %v\n", i, node.rets)
+		logrus.Panicf("index (%d) out of bounds for node returns: %v\n", i, node.rets)
 	}
 	return node.rets[i]
 }

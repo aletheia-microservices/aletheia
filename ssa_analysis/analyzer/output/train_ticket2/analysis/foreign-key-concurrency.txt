@@ -4,32 +4,32 @@
 [NUM_WARNINGS = 16]
 entry request: AdminBasicInfoService.DeleteContact()
 	DELETE: ContactsService.Delete() --> contacts_db.contacts.DeleteOne()
-		CONCURRENT WRITE #1: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #1: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={AdminOrderService.AddOrder}, database={order_db}, written fields={ContactsDocumentNumber, ContactsName, DocumentType}
-		CONCURRENT WRITE #2: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #2: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={order_db}, written fields={ContactsDocumentNumber, ContactsName, DocumentType}
 
 entry request: AdminBasicInfoService.DeletePrice()
 	DELETE: PriceService.DeletePriceConfig() --> price_db.priceConfig.DeleteOne()
-		CONCURRENT WRITE #3: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #3: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={AdminOrderService.AddOrder}, database={order_db}, written fields={Price}
-		CONCURRENT WRITE #4: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #4: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={order_db}, written fields={Price}
 
 entry request: AdminBasicInfoService.DeleteStation()
 	DELETE: StationService.DeleteStation() --> station_db.station.DeleteOne()
 		CONCURRENT WRITE #5: ConsignService.InsertConsign() --> consign_db.consign_record.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={consign_db}, written fields={FromPlace, ToPlace}
-		CONCURRENT WRITE #6: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #6: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={AdminOrderService.AddOrder}, database={order_db}, written fields={FromStation, ToStation}
-		CONCURRENT WRITE #7: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #7: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={order_db}, written fields={FromStation, ToStation}
 
 entry request: AdminRouteService.DeleteRoute()
 	DELETE: RouteService.DeleteRoute() --> route_db.route.DeleteOne()
-		CONCURRENT WRITE #8: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #8: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={AdminOrderService.AddOrder}, database={order_db}, written fields={Price}
-		CONCURRENT WRITE #9: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #9: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={order_db}, written fields={Price}
 		CONCURRENT WRITE #10: PriceService.CreateNewPriceConfig() --> price_db.priceConfig.InsertOne()
 		- entry={AdminBasicInfoService.AddPrice}, database={price_db}, written fields={RouteID}
@@ -38,17 +38,17 @@ entry request: AdminRouteService.DeleteRoute()
 
 entry request: AdminTravelService.DeleteTravel()
 	DELETE: TravelService.DeleteTrip() --> travel_db.trip.DeleteOne()
-		CONCURRENT WRITE #12: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #12: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={AdminOrderService.AddOrder}, database={order_db}, written fields={TrainNumber}
-		CONCURRENT WRITE #13: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #13: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={order_db}, written fields={TrainNumber}
 
 entry request: AdminUserService.DeleteUser()
 	DELETE: UserService.DeleteUser() --> user_db.user.DeleteOne()
 		CONCURRENT WRITE #14: ConsignService.InsertConsign() --> consign_db.consign_record.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={consign_db}, written fields={AccountID}
-		CONCURRENT WRITE #15: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #15: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={AdminOrderService.AddOrder}, database={order_db}, written fields={AccountID}
-		CONCURRENT WRITE #16: OrderService.Create() --> order_db.order.InsertOne()
+		CONCURRENT WRITE #16: OrderService.CreateNewOrder() --> order_db.order.InsertOne()
 		- entry={Dashboard.PreserveTicketConfirm}, database={order_db}, written fields={AccountID}
 

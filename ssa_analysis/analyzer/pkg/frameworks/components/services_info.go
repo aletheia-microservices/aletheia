@@ -2,7 +2,8 @@ package components
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/sirupsen/logrus"
 )
 
 type ServiceInfo struct {
@@ -24,6 +25,6 @@ func (info *ServiceInfo) GetArgumentAt(idx int) string {
 	if idx < len(info.ServiceArgs) {
 		return info.ServiceArgs[idx]
 	}
-	log.Fatalf("[SERVICE INFO] [%s] index %d out of bounds for service info with %d arguments: %v", info.Name, idx, len(info.ServiceArgs), info.ServiceArgs)
+	logrus.Fatalf("[SERVICE INFO] [%s] index %d out of bounds for service info with %d arguments: %v", info.Name, idx, len(info.ServiceArgs), info.ServiceArgs)
 	return ""
 }

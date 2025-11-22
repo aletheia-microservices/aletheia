@@ -304,16 +304,6 @@ func (graph *SSAGraph) GetFirstEdgeToNode(node *SSANode) *SSAEdge {
 	return nil
 }
 
-func (graph *SSAGraph) GetEdgesFromNodeExceptPointerTo(node *SSANode) []*SSAEdge {
-	var edges []*SSAEdge
-	for _, edge := range graph.edges {
-		if edge.from == node && edge.GetType() != EDGE_POINTS_TO {
-			edges = append(edges, edge)
-		}
-	}
-	return edges
-}
-
 func (graph *SSAGraph) GetEdgesFromNode(node *SSANode) []*SSAEdge {
 	var edges []*SSAEdge
 	for _, edge := range graph.edges {
@@ -328,16 +318,6 @@ func (graph *SSAGraph) GetAllNodeEdges(node *SSANode) []*SSAEdge {
 	var edges []*SSAEdge
 	for _, edge := range graph.edges {
 		if edge.from == node || edge.to == node {
-			edges = append(edges, edge)
-		}
-	}
-	return edges
-}
-
-func (graph *SSAGraph) GetEdgesToNodeExceptPointerTo(node *SSANode) []*SSAEdge {
-	var edges []*SSAEdge
-	for _, edge := range graph.edges {
-		if edge.to == node && edge.GetType() != EDGE_POINTS_TO {
 			edges = append(edges, edge)
 		}
 	}
