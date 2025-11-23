@@ -65,9 +65,12 @@ func (graph *SSAGraph) Release() {
 }
 
 func (graph *SSAGraph) SimpleCopy() *SSAGraph {
+	var copyNodesMap = make(map[string]*SSANode, 0)
 	var copyNodes []*SSANode
 	for _, node := range graph.nodes {
-		copyNodes = append(copyNodes, node.SimpleCopy())
+		copyNode := node.SimpleCopy()
+		copyNodes = append(copyNodes, copyNode)
+		copyNodesMap[copyNode.String()] = copyNode
 	}
 
 	var newDefs = make(map[string]*SSANode, 0)
@@ -77,8 +80,17 @@ func (graph *SSAGraph) SimpleCopy() *SSAGraph {
 
 	var newEdges []*SSAEdge
 	for _, edge := range graph.edges {
-		newFromNode := newDefs[edge.GetFromNode().GetName()]
-		newToNode := newDefs[edge.GetToNode().GetName()]
+		var newFromNode, newToNode *SSANode
+		if edge.GetFromNode().inDefs {
+			newFromNode = newDefs[edge.GetFromNode().GetName()]
+		} else {
+			newFromNode = copyNodesMap[edge.GetFromNode().String()]
+		}
+		if edge.GetToNode().inDefs {
+			newToNode = newDefs[edge.GetToNode().GetName()]
+		} else {
+			newToNode = copyNodesMap[edge.GetToNode().String()]
+		}
 		newEdge := NewEdge(edge.edgeType, newFromNode, newToNode, edge.index, edge.param)
 		newEdges = append(newEdges, newEdge)
 	}
@@ -416,6 +428,9 @@ func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) {
 
 	for _, node := range graph.nodes {
 		label := safeLabel(node.String())
+		if nodeLabels := node.LabelsString(); nodeLabels != "" {
+			label += "\n" + nodeLabels
+		}
 		if node.IsTainted() {
 			label += "\n\n==== tainted ====\n" + node.TaintAndTraceString()
 		}

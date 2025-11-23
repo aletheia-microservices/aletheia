@@ -68,6 +68,7 @@
         "fields": [
           "consignprice_db.consign",
           "consignprice_db.consign.BeyondPrice",
+          "consignprice_db.consign.Index",
           "consignprice_db.consign.InitialPrice",
           "consignprice_db.consign.InitialWeight",
           "consignprice_db.consign.WithinPrice"
@@ -217,7 +218,10 @@
     "schemas": [
       {
         "name": "money",
-        "fields": [],
+        "fields": [
+          "payment_db.payment",
+          "payment_db.payment.OrderID"
+        ],
         "constraints": []
       },
       {

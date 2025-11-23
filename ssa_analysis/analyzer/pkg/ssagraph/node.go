@@ -126,11 +126,12 @@ func (taint *SSATaint) String() string {
 }
 
 type SSANode struct {
-	id    string
-	name  string
-	val   ssa.Value
-	instr ssa.Instruction
-	isdef bool
+	id         string
+	name       string
+	val        ssa.Value
+	instr      ssa.Instruction
+	inDefs     bool
+	usedInBson bool
 
 	// maps object to database field, e.g.:
 	// key: Product    // SSATaint.dbfield: prod_db.Product
@@ -139,14 +140,40 @@ type SSANode struct {
 	taints map[string][]*SSATaint
 }
 
+func RegisterNewNodeVal(graph *SSAGraph, instr ssa.Instruction, val ssa.Value, id string) *SSANode {
+	node := &SSANode{
+		name:   val.Name(),
+		val:    val,
+		instr:  instr,
+		inDefs: true,
+		id:     id,
+		taints: make(map[string][]*SSATaint),
+	}
+	graph.AddNode(node)
+	graph.AddNodeDef(node)
+	return node
+}
+
+func RegisterNewNodeInstr(graph *SSAGraph, instr ssa.Instruction, id string) *SSANode {
+	node := &SSANode{
+		id:     id,
+		instr:  instr,
+		taints: make(map[string][]*SSATaint),
+	}
+	graph.AddNode(node)
+	graph.nodes = append(graph.nodes, node)
+	return node
+}
+
 func (node *SSANode) SimpleCopy() *SSANode {
 	return &SSANode{
-		id:     node.id,
-		name:   node.name,
-		val:    node.val,
-		instr:  node.instr,
-		isdef:  node.isdef,
-		taints: make(map[string][]*SSATaint),
+		id:         node.id,
+		name:       node.name,
+		val:        node.val,
+		instr:      node.instr,
+		inDefs:     node.inDefs,
+		usedInBson: node.usedInBson,
+		taints:     make(map[string][]*SSATaint),
 	}
 }
 
@@ -158,6 +185,14 @@ func (node *SSANode) CombineTaints(new map[string][]*SSATaint) {
 			node.taints[newPath] = newTaintsLst
 		}
 	}
+}
+
+func (node *SSANode) EnableUsedInBson() {
+	node.usedInBson = true
+}
+
+func (node *SSANode) IsUsedInBson() bool {
+	return node.usedInBson
 }
 
 func (node *SSANode) GetID() string {
@@ -206,7 +241,9 @@ func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, 
 			return false // already exists
 		}
 	}
-	node.taints[objpath] = append(lstTaints, NewSSATaintDB(dbpath, dbcall, readKey, readVal, callerT))
+	taint := NewSSATaintDB(dbpath, dbcall, readKey, readVal, callerT)
+	logrus.Tracef("added new taint: %s\n", taint.String())
+	node.taints[objpath] = append(lstTaints, taint)
 	return true
 }
 
@@ -288,27 +325,19 @@ func (node *SSANode) colorForSSA() string {
 	return "black"
 }
 
-func RegisterNewNodeValue(graph *SSAGraph, instr ssa.Instruction, val ssa.Value, id string) *SSANode {
-	node := &SSANode{
-		name:   val.Name(),
-		val:    val,
-		instr:  instr,
-		isdef:  true,
-		id:     id,
-		taints: make(map[string][]*SSATaint),
+func (node *SSANode) LabelsString() string {
+	var lbls []string
+	var ssaTypeStr string
+	if node.val != nil {
+		ssaTypeStr = fmt.Sprintf("%T", node.val)
+	} else {
+		ssaTypeStr = fmt.Sprintf("%T", node.instr)
 	}
-	graph.AddNode(node)
-	graph.AddNodeDef(node)
-	return node
-}
-
-func RegisterNewNode(graph *SSAGraph, instr ssa.Instruction, id string) *SSANode {
-	node := &SSANode{
-		id:     id,
-		instr:  instr,
-		taints: make(map[string][]*SSATaint),
+	ssaTypeStr, _ = strings.CutPrefix(ssaTypeStr, "*ssa.")
+	ssaTypeStr = strings.ToLower(ssaTypeStr)
+	lbls = append(lbls, fmt.Sprintf("[ssa: %s]", ssaTypeStr))
+	if node.IsUsedInBson() {
+		lbls = append(lbls, "[bson]")
 	}
-	graph.AddNode(node)
-	graph.nodes = append(graph.nodes, node)
-	return node
+	return strings.Join(lbls, " ")
 }

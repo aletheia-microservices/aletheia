@@ -32,7 +32,7 @@ type Config struct {
 
 var Global = &Config{
 	// optimizations
-	EnabledPointerToAnalysis: true,
+	EnabledPointerToAnalysis: false,
 
 	// pattern detection
 	RestrictivePrimaryKeyCoordinationAnalysis: true,

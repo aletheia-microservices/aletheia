@@ -102,6 +102,8 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 	taintInfo = taintInfo.updateValue(val)
 
+	logrus.WithField("graph", graph.String()).Debugf("visiting (%s) for taint info: %s\n", val.Name(), taintInfo.String())
+
 	logrus.Debugf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
 	if visited[val] {
 		logrus.Debugf("skipping already visited value (taint_info=%s)\n", taintInfo.String())
@@ -471,10 +473,12 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 		logrus.Debugf("\t[TAINT NEARBY] [PART_2] [r=%t] [ToNode %s] edge (%s) from node: %v\n", recurse, node.GetValue().Name(), edge.GetTypeString(), fromNode)
 
-		// EVAL: fmt.Printf("[BEFORE] EDGE TYPE: %s\n", edge.GetTypeString())
-
+		if fromNode.IsUsedInBson() {
+			return
+		}
 		if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, fromNode.GetValue()); ok {
-			continue // skip
+			fromNode.EnableUsedInBson()
+			return // skip
 		}
 
 		// EVAL: fmt.Printf("[AFTER] EDGE TYPE: %s\n", edge.GetTypeString())
@@ -649,7 +653,11 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 	}
 	logrus.Debugf("\t[TAINT NEARBY] [PART_2] exiting %s: %s\n", val.Name(), val.String())
 
-	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, val); ok {
+	if node.IsUsedInBson() {
+		return
+	}
+	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()); ok {
+		node.EnableUsedInBson()
 		return // skip
 	}
 }
@@ -667,7 +675,11 @@ func propagateTaintFetchUpwards(graph *ssagraph.SSAGraph, val ssa.Value, taintIn
 	node := graph.GetNodeByName(val.Name())
 	// EVAL: fmt.Printf("\t[TAINT FETCH] checking upper taints: %v\n", node.GetTaints())
 
-	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, val); ok {
+	if node.IsUsedInBson() {
+		return
+	}
+	if ok, _ := ssaValueIsUsedInMongoBsonFilter(graph, node.GetValue()); ok {
+		node.EnableUsedInBson()
 		return // skip
 	}
 

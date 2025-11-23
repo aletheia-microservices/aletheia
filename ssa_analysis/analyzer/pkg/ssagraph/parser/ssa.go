@@ -155,7 +155,7 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	if val, ok := instr.(ssa.Value); ok {
 		return parseValue(graph, instr, instrIdx, val, visited)
 	}
-	node := ssagraph.RegisterNewNode(graph, instr, id)
+	node := ssagraph.RegisterNewNodeInstr(graph, instr, id)
 
 	switch t := instr.(type) {
 	case *ssa.Store:
@@ -217,7 +217,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 
 	node, exists := graph.GetNodeByNameIfExists(val.Name())
 	if !exists {
-		node = ssagraph.RegisterNewNodeValue(graph, instr, val, id)
+		node = ssagraph.RegisterNewNodeVal(graph, instr, val, id)
 	}
 
 	switch t := val.(type) {
