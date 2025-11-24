@@ -6,9 +6,6 @@ const (
 )
 
 type Config struct {
-	// optimizations
-	EnabledPointerToAnalysis bool
-
 	// pattern detection
 	RestrictivePrimaryKeyCoordinationAnalysis bool
 	RestrictiveForeignKeyCoordinationAnalysis bool
@@ -31,9 +28,6 @@ type Config struct {
 }
 
 var Global = &Config{
-	// optimizations
-	EnabledPointerToAnalysis: false,
-
 	// pattern detection
 	RestrictivePrimaryKeyCoordinationAnalysis: true,
 	RestrictiveForeignKeyCoordinationAnalysis: true,

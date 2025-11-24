@@ -78,7 +78,6 @@ require (
 	github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/lib/pq v1.10.9
-	github.com/llir/llvm v0.3.6
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	golang.org/x/tools/go/pointer v0.1.0-deprecated
 	gopkg.in/yaml.v2 v2.4.0
@@ -126,8 +125,6 @@ require (
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/llir/ll v0.0.0-20220802044011-65001c0fb73c // indirect
-	github.com/mewmew/float v0.0.0-20201204173432-505706aa38fa // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/onsi/gomega v1.27.10 // indirect
 	github.com/otiai10/copy v1.14.1 // indirect
@@ -159,7 +156,6 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250227231956-55c901821b1e // indirect
 	google.golang.org/grpc v1.70.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
-	tinygo.org/x/go-llvm v0.0.0-20250422114502-b8f170971e74 // indirect
 )
 
 require (

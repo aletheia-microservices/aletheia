@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -48,26 +49,6 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_E,
 }
 
-var APPS_ENTRYPOINTS_PATHS = map[string]string{
-	"foobar":                  "blueprint/foobar/fooservice_writefoo",
-	"foobar2":                 "blueprint/foobar2/fooservice_writefoo",
-	"postnotification":        "blueprint/postnotification/notifyservice_run",
-	"postnotification_simple": "blueprint/postnotification/notifyservice_run",
-	"digota":                  "blueprint/digota/skuservice_get",
-	"sockshop3":               "blueprint/sockshop3/userservice_login",
-	"dsb_media_sql":           "blueprint/dsb_media_sql/api_readmovie",
-	"dsb_media_nosql":         "blueprint/dsb_media_nosql/api_readmovie",
-	"dsb_sn2":                 "blueprint/dsb_sn2/poststorageservice_storepost",
-	"dsb_hotel2":              "blueprint/dsb_hotel2/geoservice_nearby",
-	"train_ticket2":           "blueprint/train_ticket2/assuranceservice_deletebyid",
-	"large_scale_app":         "blueprint/large_scale_app/entry",
-	"large_scale_app_A":       "blueprint/large_scale_app_A/entry",
-	"large_scale_app_B":       "blueprint/large_scale_app_B/entry",
-	"large_scale_app_C":       "blueprint/large_scale_app_C/entry",
-	"large_scale_app_D":       "blueprint/large_scale_app_D/entry",
-	"large_scale_app_E":       "blueprint/large_scale_app_E/entry",
-}
-
 var APPS_NOSQL_SCHEMAS = map[string]string{
 	"dsb_media_nosql": BLUEPRINT_EXAMPLES_RELATIVE_PATH + "/" + APP_PATH_DSB_MEDIA_NOSQL,
 }
@@ -83,12 +64,8 @@ var APPS_SQL_TABLES = map[string][]string{
 	},
 }
 
-func GetAppEntrypointPath(appsimplename string) string {
-	if path, ok := APPS_ENTRYPOINTS_PATHS[appsimplename]; ok {
-		return path
-	}
-	logrus.Fatalf("[UTILS] entrypoint path not found for appsimplename (%s)", appsimplename)
-	return ""
+func GetAppRootPackagePath(appsimplename string) string {
+	return fmt.Sprintf("github.com/blueprint-uservices/blueprint/examples/%s/workflow/...", appsimplename)
 }
 
 func IsAppPackagePath(pkgpath string) bool {

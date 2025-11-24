@@ -24,7 +24,6 @@ const (
 	EDGE_PARAMETER
 	EDGE_RANGE_OF
 	EDGE_ITERATOR_OF
-	EDGE_POINTS_TO
 )
 
 type SSAEdge struct {
@@ -118,8 +117,6 @@ func (edge *SSAEdge) GetTypeString() string {
 		return "INDEX"
 	case EDGE_PARAMETER:
 		return "PARAMETER"
-	case EDGE_POINTS_TO:
-		return "POINTS_TO"
 	case EDGE_MAP_UPDATE:
 		return "EDGE_MAP_UPDATE"
 	case EDGE_MAP_KEY:

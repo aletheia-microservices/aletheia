@@ -3,22 +3,20 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go/token"
+	"go/ast"
+	"go/types"
 	"os"
 	"path"
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"golang.org/x/tools/go/loader"
-	"golang.org/x/tools/go/pointer"
+	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/ssa"
-	"golang.org/x/tools/go/ssa/ssautil"
 	"gopkg.in/yaml.v2"
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
-	"analyzer/pkg/config"
 	"analyzer/pkg/detection/constraints/foreignkeycascade"
 	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
 	"analyzer/pkg/detection/constraints/keycoordination"
@@ -77,9 +75,9 @@ func main() {
 	logrus_ctx := logrus.WithField("app", appname)
 
 	// ------------ PART 1
-	logrus_ctx.Infof("[1/14] initializing program")
+	logrus_ctx.Infof("[1/12] initializing program")
 
-	apppath := utils.GetAppEntrypointPath(appname)
+	apppath := utils.GetAppRootPackagePath(appname)
 	app := app.NewApp(appname)
 	app.Init()
 
@@ -106,7 +104,7 @@ func main() {
 	}
 
 	// ------------ PART 2
-	logrus_ctx.Infof("[2/14] building program")
+	logrus_ctx.Infof("[2/12] building program")
 
 	prog, pkgs, err := buildProgram(apppath)
 	if err != nil {
@@ -117,22 +115,10 @@ func main() {
 	app.ParseSQLSchemaFromUserFile()
 	app.ParseNoSQLSchemaFromUserFile()
 
-	// ------------ PART 3
-	var result *pointer.Result
-	if config.Global.EnabledPointerToAnalysis {
-		logrus_ctx.Infof("[3/14] initializing pointer-to analysis")
-		result, err = parser.InitPointerAnalysis(prog, pkgs)
-		if err != nil {
-			logrus.Fatalf("error: %s", err.Error())
-		}
-	} else {
-		logrus_ctx.Infof("[3/14] skipping pointer-to analysis")
-	}
-
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
-	// ------------ PART 4
-	logrus_ctx.Infof("[4/14] running SSA analysis")
+	// ------------ PART 3
+	logrus_ctx.Infof("[3/12] running SSA analysis")
 	for _, pkg := range pkgs {
 		parser.RunSSAAnalysis(app, prog, pkg, funcGraphs)
 	}
@@ -141,23 +127,13 @@ func main() {
 		ssagraph.Sort()
 	}
 
-	// ------------ PART 5
-	if config.Global.EnabledPointerToAnalysis {
-		logrus_ctx.Infof("[5/14] running pointer-to analysis")
-		for _, pkg := range pkgs {
-			parser.RunPointerToAnalysis(appname, prog, pkg, result, funcGraphs)
-		}
-	} else {
-		logrus_ctx.Infof("[5/14] skipping pointer-to analysis")
-	}
-
 	var graphsLst []*ssagraph.SSAGraph
 	for _, graph := range funcGraphs {
 		graphsLst = append(graphsLst, graph)
 	}
 
-	// ------------ PART 6
-	logrus_ctx.Infof("[6/14] registering fields")
+	// ------------ PART 4
+	logrus_ctx.Infof("[4/12] registering fields")
 	registry.RegisterFields(app, graphsLst)
 
 	if !EVAL {
@@ -167,14 +143,14 @@ func main() {
 		}
 	}
 
-	// ------------ PART 7
-	logrus_ctx.Infof("[7/14] running SSA tainter for single graphs")
+	// ------------ PART 5
+	logrus_ctx.Infof("[5/12] running SSA tainter for single graphs")
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
 
-	// ------------ PART 7
-	logrus_ctx.Infof("[8/14] combining SSA graphs")
+	// ------------ PART 6
+	logrus_ctx.Infof("[6/12] combining SSA graphs")
 	for _, ssagraph := range funcGraphs {
 		tainter.Combine(ssagraph, funcGraphs)
 	}
@@ -189,7 +165,7 @@ func main() {
 		for fn, ssagraph := range funcGraphs {
 			for _, toGraph := range ssagraph.GetAllCombinedGraphs() {
 				// sanity check
-				newFn := fn+"."+toGraph.GetMethodName()
+				newFn := fn + "." + toGraph.GetMethodName()
 				if exists, _ := written[newFn]; !exists {
 					toGraph.WriteToDOTFile(appname, newFn, true)
 				}
@@ -198,15 +174,15 @@ func main() {
 		}
 	}
 
-	// ------------ PART 9
-	logrus_ctx.Infof("[9/14] creating new abstract call graph")
+	// ------------ PART 7
+	logrus_ctx.Infof("[7/12] creating new abstract call graph")
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
 		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
-	// ------------ PART 10
-	logrus_ctx.Infof("[10/14] releasing memory associated with ssa graph")
+	// ------------ PART 8
+	logrus_ctx.Infof("[8/12] releasing memory associated with ssa graph")
 	graphsLst = nil
 	pkgs = nil
 	for fn, ssagraph := range funcGraphs {
@@ -231,17 +207,17 @@ func main() {
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
 	start_schema := time.Now()
-	// ------------ PART 11
-	logrus_ctx.Infof("[11/14] starting schema builder")
+	// ------------ PART 9
+	logrus_ctx.Infof("[9/12] starting schema builder")
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
-	// ------------ PART 12
-	logrus_ctx.Infof("[12/14] starting schema builder (read only)")
+	// ------------ PART 10
+	logrus_ctx.Infof("[10/12] starting schema builder (read only)")
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 
 	elapsed_schema := time.Since(start_schema)
 
-	// ------------ PART 13
-	logrus_ctx.Infof("[13/14] starting pattern detection")
+	// ------------ PART 11
+	logrus_ctx.Infof("[11/12] starting pattern detection")
 	start_detection := time.Now()
 
 	// phase 2: one pass for all detectors
@@ -261,8 +237,8 @@ func main() {
 	elapsed_total := time.Since(start)
 	elapsed_detection := time.Since(start_detection)
 
-	// ------------ PART 14
-	logrus_ctx.Infof("[14/14] saving results")
+	// ------------ PART 12
+	logrus_ctx.Infof("[12/12] saving results")
 	results := detection.SaveResults(app, detector1, detector2, detector3, detector4, detector5)
 	for _, result := range results {
 		fmt.Println(result)
@@ -319,41 +295,89 @@ func saveAnalysisTime(app *app.App, times AnalysisTimes) {
 }
 
 func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
-	// e.graph. "../apps/test2/main.go"
-	filepath := "apps/" + apppath + "/main.go"
-	source, err := os.ReadFile(filepath)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to read file %s: %v\n", filepath, err)
-		os.Exit(1)
+	cfg := &packages.Config{
+		Mode: packages.NeedName |
+			packages.NeedFiles |
+			packages.NeedCompiledGoFiles |
+			packages.NeedTypes |
+			packages.NeedSyntax |
+			packages.NeedTypesInfo |
+			packages.NeedDeps,
 	}
 
-	// setup loader
-	var conf loader.Config
-	fset := token.NewFileSet()
-	conf.Fset = fset
-	file, err := conf.ParseFile(filepath, string(source))
+	initialPkgs, err := packages.Load(cfg, apppath)
 	if err != nil {
 		return nil, nil, err
 	}
-	conf.CreateFromFiles("main", file)
-
-	iprog, err := conf.Load()
-	if err != nil {
-		return nil, nil, err
+	if len(initialPkgs) == 0 {
+		return nil, nil, fmt.Errorf("no packages found for apppath (%s)", apppath)
 	}
 
-	prog := ssautil.CreateProgram(iprog, 0)
-	mainPkg := prog.Package(iprog.Created[0].Pkg)
+	typeToPkg := make(map[*types.Package]*packages.Package)
+	var visitPkgs func(p *packages.Package)
+	visitPkgs = func(p *packages.Package) {
+		if p == nil || p.Types == nil || typeToPkg[p.Types] != nil {
+			return
+		}
+		typeToPkg[p.Types] = p
+		for _, imp := range p.Imports {
+			visitPkgs(imp)
+		}
+	}
+	for _, p := range initialPkgs {
+		visitPkgs(p)
+	}
+
+	prog := ssa.NewProgram(initialPkgs[0].Fset, 0)
+
+	// recursively create SSA packages following go/types imports
+	seenTypes := make(map[*types.Package]bool)
+	var createSSA func(tp *types.Package)
+	createSSA = func(tp *types.Package) {
+		if tp == nil || seenTypes[tp] {
+			return
+		}
+		seenTypes[tp] = true
+
+		pp := typeToPkg[tp]
+		var files []*ast.File
+		var info *types.Info
+		if pp != nil && len(pp.Syntax) > 0 {
+			files = pp.Syntax
+			info = pp.TypesInfo
+		}
+		if prog.Package(tp) == nil {
+			_ = prog.CreatePackage(tp, files, info, true)
+		}
+
+		for _, imp := range tp.Imports() {
+			createSSA(imp)
+		}
+	}
+
+	for _, p := range initialPkgs {
+		if p.Types != nil {
+			createSSA(p.Types)
+		}
+	}
 
 	prog.Build()
 
-	var pkgs = []*ssa.Package{mainPkg}
 
-	for _, pkg := range prog.AllPackages() {
-		if pkg.Pkg.Path() != "main" { // skip the synthetic main if needed
-			if utils.IsAppPackagePath(pkg.Pkg.Path()) {
-				pkgs = append(pkgs, pkg)
+	var pkgsSeen = make(map[*ssa.Package]bool)
+	var pkgs []*ssa.Package
+	for _, p := range initialPkgs {
+		if p.Types != nil {
+			if progPkg := prog.Package(p.Types); progPkg != nil && !pkgsSeen[progPkg] {
+				pkgsSeen[progPkg] = true
+				pkgs = append(pkgs, progPkg)
 			}
+		}
+	}
+	for _, progPkg := range prog.AllPackages() {
+		if utils.IsAppPackagePath(progPkg.Pkg.Path()) && progPkg != nil && !pkgsSeen[progPkg] {
+			pkgsSeen[progPkg] = true
+			pkgs = append(pkgs, progPkg)
 		}
 	}
 	return prog, pkgs, nil

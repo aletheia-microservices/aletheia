@@ -1,61 +1,249 @@
 module analyzer
 
-go 1.22.4
+go 1.25.0
 
-// prevent blueprint in go.work to force higher version
-replace golang.org/x/tools => golang.org/x/tools v0.12.0
-
-replace golang.org/x/sys => golang.org/x/sys v0.11.0
-
-replace golang.org/x/mod => golang.org/x/mod v0.12.0
+require (
+	go.opentelemetry.io/otel v1.32.0 // indirect
+	go.opentelemetry.io/otel/metric v1.32.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.26.0 // indirect
+	golang.org/x/tools v0.33.0
+)
 
 replace go.opentelemetry.io/otel => go.opentelemetry.io/otel v1.26.0
 
+replace go.opentelemetry.io/otel/sdk => go.opentelemetry.io/otel/sdk v1.26.0
+
 replace go.opentelemetry.io/otel/metric => go.opentelemetry.io/otel/metric v1.26.0
 
-replace go.opentelemetry.io/otel/trace => go.opentelemetry.io/otel/trace v1.26.0
-
 require (
-	golang.org/x/mod v0.12.0
-	golang.org/x/sys v0.19.0
-	golang.org/x/tools v0.12.0
-	golang.org/x/tools/go/pointer v0.1.0-deprecated
-)
-
-require (
+	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/Rhymond/go-money v1.0.15 // indirect
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/workflow v0.0.0 // indirect
+	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cockroachdb/apd v1.1.1-0.20181017181144-bced77f817b4 // indirect
 	github.com/cockroachdb/errors v1.8.2 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
 	github.com/cockroachdb/redact v1.0.8 // indirect
 	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/getsentry/raven-go v0.2.0 // indirect
+	github.com/go-logr/logr v1.4.3 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
+	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
+	github.com/hailocab/go-geoindex v0.0.0-20160127134810-64631bfe9711 // indirect
+	github.com/jmoiron/sqlx v1.4.0 // indirect
+	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/lib/pq v1.9.0 // indirect
+	github.com/lib/pq v1.10.9 // indirect
+	github.com/montanaflynn/stats v0.7.1 // indirect
+	github.com/otiai10/copy v1.14.1 // indirect
+	github.com/otiai10/mint v1.6.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/sirupsen/logrus v1.6.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.9.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2 // indirect
-	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
-	google.golang.org/genproto v0.0.0-20200911024640-645f7a48b24f // indirect
-	google.golang.org/grpc v1.33.1 // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
+	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
+	github.com/xdg-go/scram v1.1.2 // indirect
+	github.com/xdg-go/stringprep v1.0.4 // indirect
+	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
+	go.mongodb.org/mongo-driver v1.17.4 // indirect
+	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v1.26.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.26.0 // indirect
+	go.opentelemetry.io/otel/trace v1.32.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
+	golang.org/x/mod v0.24.0 // indirect
+	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
+	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
+	google.golang.org/grpc v1.61.1 // indirect
+	google.golang.org/protobuf v1.34.0 // indirect
 )
 
 require (
 	github.com/auxten/postgresql-parser v1.0.1
-	github.com/go-logr/logr v1.4.1 // indirect
-	github.com/go-logr/stdr v1.2.2 // indirect
-	go.opentelemetry.io/otel v1.26.0 // indirect
-	go.opentelemetry.io/otel/metric v1.26.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.26.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.26.0 // indirect
-	go.opentelemetry.io/otel/trace v1.26.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/wiring v0.0.0
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/wiring v0.0.0-00010101000000-000000000000
+	github.com/sirupsen/logrus v1.9.3
+	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
+	gopkg.in/yaml.v2 v2.4.0
 )
+
+require github.com/blueprint-uservices/blueprint/plugins v0.0.0
+
+require github.com/blueprint-uservices/blueprint/blueprint v0.0.0
+
+require github.com/blueprint-uservices/blueprint/runtime v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/digota/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/digota/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/train_ticket2/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/foobar2/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/foobar2/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/wiring v0.0.0
+
+require github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/wiring v0.0.0
+
+require (
+	github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/workflow v0.0.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v1.26.0 // indirect
+)
+
+require github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/wiring v0.0.0
+
+replace github.com/blueprint-uservices/blueprint/plugins => ../../blueprint/plugins
+
+replace github.com/blueprint-uservices/blueprint/blueprint => ../../blueprint/blueprint
+
+replace github.com/blueprint-uservices/blueprint/runtime => ../../blueprint/runtime
+
+replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple => ../../blueprint/examples/postnotification_simple
+
+replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow => ../../blueprint/examples/postnotification_simple/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring => ../../blueprint/examples/postnotification_simple/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/digota => ../../blueprint/examples/digota
+
+replace github.com/blueprint-uservices/blueprint/examples/digota/workflow => ../../blueprint/examples/digota/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/digota/wiring => ../../blueprint/examples/digota/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/sockshop3 => ../../blueprint/examples/sockshop3
+
+replace github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow => ../../blueprint/examples/sockshop3/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring => ../../blueprint/examples/sockshop3/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/train_ticket2 => ../../blueprint/examples/train_ticket2
+
+replace github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow => ../../blueprint/examples/train_ticket2/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/train_ticket2/wiring => ../../blueprint/examples/train_ticket2/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2 => ../../blueprint/examples/dsb_hotel2
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow => ../../blueprint/examples/dsb_hotel2/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring => ../../blueprint/examples/dsb_hotel2/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_sn2 => ../../blueprint/examples/dsb_sn2
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow => ../../blueprint/examples/dsb_sn2/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring => ../../blueprint/examples/dsb_sn2/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/foobar => ../../blueprint/examples/foobar
+
+replace github.com/blueprint-uservices/blueprint/examples/foobar/workflow => ../../blueprint/examples/foobar/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/foobar/wiring => ../../blueprint/examples/foobar/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/foobar2 => ../../blueprint/examples/foobar2
+
+replace github.com/blueprint-uservices/blueprint/examples/foobar2/workflow => ../../blueprint/examples/foobar2/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/foobar2/wiring => ../../blueprint/examples/foobar2/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql => ../../blueprint/examples/dsb_media_sql
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow => ../../blueprint/examples/dsb_media_sql/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring => ../../blueprint/examples/dsb_media_sql/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql => ../../blueprint/examples/dsb_media_nosql
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow => ../../blueprint/examples/dsb_media_nosql/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring => ../../blueprint/examples/dsb_media_nosql/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app => ../../blueprint/examples/large_scale_app
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app/workflow => ../../blueprint/examples/large_scale_app/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app/wiring => ../../blueprint/examples/large_scale_app/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_A => ../../blueprint/examples/large_scale_app_A
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/workflow => ../../blueprint/examples/large_scale_app_A/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/wiring => ../../blueprint/examples/large_scale_app_A/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_B => ../../blueprint/examples/large_scale_app_B
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/workflow => ../../blueprint/examples/large_scale_app_B/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/wiring => ../../blueprint/examples/large_scale_app_B/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_C => ../../blueprint/examples/large_scale_app_C
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/workflow => ../../blueprint/examples/large_scale_app_C/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/wiring => ../../blueprint/examples/large_scale_app_C/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_D => ../../blueprint/examples/large_scale_app_D
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/workflow => ../../blueprint/examples/large_scale_app_D/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/wiring => ../../blueprint/examples/large_scale_app_D/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_E => ../../blueprint/examples/large_scale_app_E
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/workflow => ../../blueprint/examples/large_scale_app_E/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/wiring => ../../blueprint/examples/large_scale_app_E/wiring

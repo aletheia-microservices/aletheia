@@ -346,8 +346,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				// EVAL: fmt.Printf("ROOT? %t", taintInfo.isObjectRoot())
 				//logrus.Fatalf("STOP!!!!!!")
 			}
-		case ssagraph.EDGE_POINTS_TO:
-			// ignore for now
 		case ssagraph.EDGE_ARG_ON_CALL:
 			call := toNode.GetValue().(*ssa.Call)
 			if call == nil {
@@ -389,7 +387,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 								// e.g., delete(m map[Type]Type1, key Type)
 								// propagate from map to key
 								funcArg := edge.GetFromNode()
-								if edge.IsType(ssagraph.EDGE_POINTS_TO) || funcArg == node {
+								if funcArg == node {
 									continue
 								}
 
@@ -580,9 +578,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 		case ssagraph.EDGE_USAGE, ssagraph.EDGE_PHI_ON:
 			propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-
-		case ssagraph.EDGE_POINTS_TO:
-		// ignore for now
 
 		case ssagraph.EDGE_ARG_ON_CALL:
 			call := node.GetValue().(*ssa.Call)

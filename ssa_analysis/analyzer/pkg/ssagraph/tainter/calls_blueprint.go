@@ -10,7 +10,6 @@ import (
 
 	"analyzer/pkg/app"
 	"analyzer/pkg/common"
-	"analyzer/pkg/config"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/registry"
 	"analyzer/pkg/utils"
@@ -754,20 +753,11 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonArrayNode *ssag
 		filterKeyToValues = make(map[string][]ValFieldPath)
 	}
 	var edges []*ssagraph.SSAEdge
-	if config.Global.EnabledPointerToAnalysis {
-		for _, edge := range graph.GetEdgesTypedTo(bsonArrayNode, ssagraph.EDGE_POINTS_TO) {
-			if edge.HasPath("[*]") {
-				bsonArrayElemNode := edge.GetFromNode()
-				edges = append(edges, graph.GetEdgesTypedFrom(bsonArrayElemNode, ssagraph.EDGE_FIELD)...)
-			}
-		}
-	} else {
-		for _, edge := range graph.GetEdgesTypedFrom(bsonArrayNode, ssagraph.EDGE_INDEX) {
-			bsonArrayElemNode := edge.GetToNode()
-			edges = append(edges, graph.GetEdgesTypedFrom(bsonArrayElemNode, ssagraph.EDGE_FIELD)...)
-			if edge.GetIndex() > 0 {
-				logrus.WithField("index", edge.GetIndex()).Warnf("[CALLS BLUEPRINT] check bson edge\n")
-			}
+	for _, edge := range graph.GetEdgesTypedFrom(bsonArrayNode, ssagraph.EDGE_INDEX) {
+		bsonArrayElemNode := edge.GetToNode()
+		edges = append(edges, graph.GetEdgesTypedFrom(bsonArrayElemNode, ssagraph.EDGE_FIELD)...)
+		if edge.GetIndex() > 0 {
+			logrus.WithField("index", edge.GetIndex()).Warnf("[CALLS BLUEPRINT] check bson edge\n")
 		}
 	}
 	for _, edge := range edges {
@@ -986,41 +976,30 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 	if slice, ok := val.(*ssa.Slice); ok {
 		// e.g.,
 		// [ssa.Slice] t73: slice t60[:]
-		if named, ok := slice.Type().(*types.Named); ok {
-			// this is the alias type: go.mongodb.org/mongo-driver/bson/primitive.D
-			if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "D" {
-				return true, false
+		if alias, ok := slice.Type().(*types.Alias); ok {
+			if aliasSlice, ok := alias.Underlying().(*types.Slice); ok {
+				if named, ok := aliasSlice.Elem().(*types.Named); ok {
+					// this is the alias type: go.mongodb.org/mongo-driver/bson/primitive.E
+					if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "E" {
+						return true, false
+					}
+				}
 			}
 		} else if slice2, ok := slice.Type().(*types.Slice); ok {
-			// can be a slice of bson.D
-			// e.g., projections where parameter is "projection ...bson.D"
-			if named, ok := slice2.Elem().(*types.Named); ok {
-				// this is the alias type: go.mongodb.org/mongo-driver/bson/primitive.D
-				if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "D" {
-					return true, true
+			if alias, ok := slice2.Elem().(*types.Alias); ok {
+				if slice3, ok := alias.Underlying().(*types.Slice); ok {
+					if named, ok := slice3.Elem().(*types.Named); ok {
+						// can be a slice of bson.D
+						// e.g., projections where parameter is "projection ...bson.D"
+						// this is the alias type: go.mongodb.org/mongo-driver/bson/primitive.E
+						if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "E" {
+							return true, true
+						}
+					}
 				}
 			}
 		}
 	}
-
-	if config.Global.EnabledPointerToAnalysis {
-		for _, edge := range graph.GetEdgesTypedFrom(graph.GetNodeByName(val.Name()), ssagraph.EDGE_POINTS_TO) {
-			if ok1, ok2 := ssaValueIsUsedInMongoBsonFilter(graph, edge.GetToNode().GetValue()); ok1 {
-				logrus.Warnf("[OK] graph=%s // value=%s\n", graph.String(), edge.GetToNode().GetValue())
-				return ok1, ok2
-			}
-		}
-	} /*  else {
-		for _, edge := range graph.GetEdgesToNode(graph.GetNodeByName(val.Name())) {
-			if graph.GetNodeByName(val.Name()) == edge.GetFromNode() {
-				continue
-			}
-			if ok1, ok2 := ssaValueIsUsedInMongoBsonFilter(graph, edge.GetFromNode().GetValue()); ok1 {
-				logrus.Warnf("[OK 2] graph=%s // value=%s\n", graph.String(), edge.GetFromNode().GetValue())
-				return ok1, ok2
-			}
-		}
-	} */
 	return false, false
 }
 

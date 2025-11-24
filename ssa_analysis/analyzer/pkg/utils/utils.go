@@ -43,15 +43,6 @@ func GetShortFunctionPath(s string) string {
 
 	return s
 }
-
-/* func getPathWithoutFunctionName(s string) string {
-	parts := strings.Split(s, ".")
-	if len(parts) < 2 {
-		return s // nothing to remove
-	}
-	return strings.Join(parts[:len(parts)-1], ".")
-} */
-
 func ExtractServiceNameFromShortFunctionPath(s string) string {
 	parts := strings.Split(s, ".")
 	if len(parts) != 3 {

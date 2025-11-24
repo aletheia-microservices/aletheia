@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -409,15 +410,15 @@ func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) {
 	if tainted {
 		stage = "tainted"
 	}
-	dirname := fmt.Sprintf("output/%s/ssagraphs/%s", appname, stage)
-	filename := fmt.Sprintf("%s/%s.dot", dirname, fn)
+	// can still have directories e.g., postnotification/common.Int64ToString
+	path := fmt.Sprintf("output/%s/ssagraphs/%s/%s.dot", appname, stage, fn)
 
-	err := os.MkdirAll(dirname, os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	if err != nil {
 		logrus.Fatalf("error: %s", err.Error())
 	}
 
-	file, err := os.Create(filename)
+	file, err := os.Create(path)
 	defer file.Close()
 	if err != nil {
 		logrus.Fatalf("error: %s", err.Error())
@@ -450,10 +451,7 @@ func (graph *SSAGraph) WriteToDOTFile(appname string, fn string, tainted bool) {
 	}
 
 	for _, edge := range graph.edges {
-		if edge.edgeType == EDGE_POINTS_TO {
-			path := strings.ReplaceAll(edge.path, `"`, `\"`)
-			fmt.Fprintf(file, "\tN_%s -> N_%s [label=\"%s\", style=dashed, color=blue];\n", safeID(edge.from.id), safeID(edge.to.id), path)
-		} else if edge.from != nil && edge.to != nil {
+		if edge.from != nil && edge.to != nil {
 			fmt.Fprintf(file, "\tN_%s -> N_%s;\n", safeID(edge.from.id), safeID(edge.to.id))
 		}
 	}
