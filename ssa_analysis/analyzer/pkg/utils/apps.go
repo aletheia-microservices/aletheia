@@ -13,6 +13,7 @@ import (
 const (
 	APP_PATH_POSTNOTIFICATION_SIMPLE = "postnotification_simple/workflow/postnotification_simple"
 	APP_PATH_DIGOTA                  = "digota/workflow/digota"
+	APP_PATH_ESHOPMICROSERVICES      = "eshopmicroservices/workflow/eshopmicroservices"
 	APP_PATH_DSB_MEDIA_SQL           = "dsb_media_sql/workflow/mediamicroservices_sql"
 	APP_PATH_DSB_MEDIA_NOSQL         = "dsb_media_nosql/workflow/mediamicroservices_nosql"
 	APP_PATH_SOCKSHOP3               = "sockshop3/workflow/sockshop3"
@@ -34,6 +35,7 @@ const (
 var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_POSTNOTIFICATION_SIMPLE,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DIGOTA,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_ESHOPMICROSERVICES,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIA_SQL,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIA_NOSQL,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP3,

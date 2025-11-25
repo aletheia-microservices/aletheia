@@ -18,7 +18,7 @@ entry request: AdminBasicInfoService.DeleteStation()
 entry request: AdminOrderService.DeleteOrder()
 	DELETE: OrderService.DeleteOrder() --> order_db.order.DeleteOne()
 		MISSING CASCADE DELETE #5: database={assurance_db}, pending fields={OrderID}
-		MISSING CASCADE DELETE #6: database={consign_db}, pending fields={OrderID, TargetDate}
+		MISSING CASCADE DELETE #6: database={consign_db}, pending fields={AccountID, OrderID, TargetDate}
 		MISSING CASCADE DELETE #7: database={delivery_db}, pending fields={OrderID}
 		MISSING CASCADE DELETE #8: database={food_db}, pending fields={OrderID}
 

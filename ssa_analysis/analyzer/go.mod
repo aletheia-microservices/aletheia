@@ -101,6 +101,10 @@ require github.com/blueprint-uservices/blueprint/examples/digota/workflow v0.0.0
 
 require github.com/blueprint-uservices/blueprint/examples/digota/wiring v0.0.0
 
+require github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow v0.0.0 // indirect
+
+require github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring v0.0.0
+
 require github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring v0.0.0
@@ -163,6 +167,12 @@ replace github.com/blueprint-uservices/blueprint/examples/digota => ../../bluepr
 replace github.com/blueprint-uservices/blueprint/examples/digota/workflow => ../../blueprint/examples/digota/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/digota/wiring => ../../blueprint/examples/digota/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/eshopmicroservices => ../../blueprint/examples/eshopmicroservices
+
+replace github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow => ../../blueprint/examples/eshopmicroservices/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring => ../../blueprint/examples/eshopmicroservices/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/sockshop3 => ../../blueprint/examples/sockshop3
 

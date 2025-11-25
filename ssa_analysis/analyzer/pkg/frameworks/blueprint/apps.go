@@ -6,6 +6,7 @@ import (
 	specs_dsb_media_nosql "github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring/specs"
 	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
 	specs_dsb_sn2 "github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring/specs"
+	specs_eshopmicroservices "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring/specs"
 	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
 	specs_foobar2 "github.com/blueprint-uservices/blueprint/examples/foobar2/wiring/specs"
 	specs_largescaleapp "github.com/blueprint-uservices/blueprint/examples/large_scale_app/wiring/specs"
@@ -33,6 +34,7 @@ type AppInfo struct {
 var APPS_INFO = map[string]AppInfo{
 	"postnotification_simple": {utils.APP_PATH_POSTNOTIFICATION_SIMPLE, specs_postnotification_simple.Docker},
 	"digota":                  {utils.APP_PATH_DIGOTA, specs_digota.Docker},
+	"eshopmicroservices":      {utils.APP_PATH_ESHOPMICROSERVICES, specs_eshopmicroservices.Docker},
 	"dsb_media_sql":           {utils.APP_PATH_DSB_MEDIA_SQL, specs_dsb_media_sql.Docker},
 	"dsb_media_nosql":         {utils.APP_PATH_DSB_MEDIA_NOSQL, specs_dsb_media_nosql.Docker},
 	"sockshop3":               {utils.APP_PATH_SOCKSHOP3, specs_sockshop3.Docker},

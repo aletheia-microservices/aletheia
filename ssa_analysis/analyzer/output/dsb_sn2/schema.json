@@ -121,6 +121,7 @@
         ],
         "constraints": [
           "FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_cache.followers.Key [MANDATORY]",
+          "FOREIGN_KEY usertimeline_cache.*.Key REFERENCES socialgraph_db.socialgraph.UserID",
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_cache.*.Key[*]",
           "FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_db.post.PostID",
           "FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]"
@@ -143,7 +144,8 @@
         ],
         "constraints": [
           "FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]",
-          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES socialgraph_cache.followers.Key [MANDATORY]"
+          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES socialgraph_cache.followers.Key [MANDATORY]",
+          "FOREIGN_KEY usertimeline_db.usertimeline.UserID REFERENCES socialgraph_db.socialgraph.UserID"
         ]
       }
     ]

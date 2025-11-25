@@ -103,7 +103,9 @@
       ],
       "methods": [
         "AddTravel",
-        "DeleteTravel"
+        "DeleteTravel",
+        "GetAllTravels",
+        "UpdateTravel"
       ],
       "services": [
         "TravelService"
@@ -120,7 +122,9 @@
       ],
       "methods": [
         "AddUser",
-        "DeleteUser"
+        "DeleteUser",
+        "GetAllUsers",
+        "UpdateUser"
       ],
       "services": [
         "UserService"
@@ -157,23 +161,14 @@
         "stationService #0 (station_service)",
         "trainService #1 (train_service)",
         "routeService #2 (route_service)",
-        "priceService #3 (price_service)",
-        "orderService #4 (order_service)",
-        "foodService #5 (food_service)",
-        "assuranceService #6 (assurance_service)",
-        "consignService #7 (consign_price_service)",
-        "deliveryService #8 (delivery_service)"
+        "priceService #3 (price_service)"
       ],
       "methods": [
         "QueryForTravel",
-        "QueryOrderWithAllInfo"
+        "QueryForTravels",
+        "QueryForStationId"
       ],
       "services": [
-        "AssuranceService",
-        "ConsignService",
-        "DeliveryService",
-        "FoodService",
-        "OrderService",
         "PriceService",
         "RouteService",
         "StationService",
@@ -249,7 +244,10 @@
       ],
       "methods": [
         "InsertConsign",
-        "FindByOrderId"
+        "UpdateConsign",
+        "FindByOrderId",
+        "FindByAccountId",
+        "FindByConsignee"
       ],
       "services": [
         "ConsignPriceService"
@@ -281,13 +279,18 @@
       "pkg": "train_ticket2",
       "impl": "DashboardImpl",
       "fields": [
-        "assuranceService #0 (assurance_service)",
-        "basicService #1 (basic_service)",
-        "configService #2 (config_service)",
-        "contactsService #3 (contacts_service)",
-        "paymentService #4 (payment_service)",
-        "preserveService #5 (preserve_service)",
-        "orderService #6 (order_service)"
+        "basicService #0 (basic_service)",
+        "configService #1 (config_service)",
+        "contactsService #2 (contacts_service)",
+        "paymentService #3 (payment_service)",
+        "preserveService #4 (preserve_service)",
+        "executeService #5 (execute_service)",
+        "cancelService #6 (cancel_service)",
+        "assuranceService #7 (assurance_service)",
+        "orderService #8 (order_service)",
+        "foodService #9 (food_service)",
+        "consignService #10 (consign_price_service)",
+        "deliveryService #11 (delivery_service)"
       ],
       "methods": [
         "AddAssurance",
@@ -297,13 +300,21 @@
         "GetAllOrders",
         "GetTravel",
         "Pay",
-        "PreserveTicketConfirm"
+        "PreserveTicketConfirm",
+        "QueryOrderWithAllInfo",
+        "TicketCollect",
+        "TicketExecute"
       ],
       "services": [
         "AssuranceService",
         "BasicService",
+        "CancelService",
         "ConfigService",
+        "ConsignService",
         "ContactsService",
+        "DeliveryService",
+        "ExecuteService",
+        "FoodService",
         "OrderService",
         "PaymentService",
         "PreserveService"
@@ -350,13 +361,24 @@
       "impl": "FoodServiceImpl",
       "fields": [
         "foodDB #0 (food_db)",
-        "deliveryQueue #1 (delivery_queue)"
+        "deliveryQueue #1 (delivery_queue)",
+        "trainFoodService #2 (trainfood_service)",
+        "travelService #3 (travel_service)",
+        "stationFoodService #4 (stationfood_service)"
       ],
       "methods": [
         "CreateFoodOrder",
-        "FindFoodOrderByOrderId"
+        "CreateFoodBatches",
+        "UpdateFoodOrder",
+        "DeleteFoodOrder",
+        "FindFoodOrderByOrderId",
+        "GetAllFood"
       ],
-      "services": [],
+      "services": [
+        "StationFoodService",
+        "TrainFoodService",
+        "TravelService"
+      ],
       "databases": []
     },
     {
@@ -602,16 +624,28 @@
       "fields": [
         "basicService #0 (basic_service)",
         "seatService #1 (seat_service)",
-        "travelDB #2 (travel_db)"
+        "routeService #2 (route_service)",
+        "trainService #3 (train_service)",
+        "travelDB #4 (travel_db)"
       ],
       "methods": [
-        "GetTripAllDetailInfo",
+        "GetTrainTypeByTripId",
+        "GetRouteByTripId",
+        "GetTripsByRouteId",
         "CreateTrip",
-        "DeleteTrip"
+        "Retrieve",
+        "UpdateTrip",
+        "DeleteTrip",
+        "QueryInfo",
+        "GetTripAllDetailInfo",
+        "QueryAll",
+        "AdminQueryAll"
       ],
       "services": [
         "BasicService",
-        "SeatService"
+        "RouteService",
+        "SeatService",
+        "TrainService"
       ],
       "databases": []
     },

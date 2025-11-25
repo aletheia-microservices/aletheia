@@ -1,0 +1,18 @@
+---------------------------------------------------------------------
+----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 4]
+entry request: CatalogService.DeleteProduct()
+	DELETE: CatalogService.DeleteProduct() --> catalog_db.product.DeleteOne()
+		CONCURRENT WRITE #1: BasketService.StoreBasket() --> basket_db.basket.InsertOne()
+		- entry={BasketService.StoreBasket}, database={basket_db}, written fields={Items[*], Items[*], Items[*], Items[*].Price, Items[*].ProductId, Items[*].ProductName}
+		CONCURRENT WRITE #2: BasketService.StoreBasket() --> basket_db.basket.InsertOne()
+		- entry={WebApp.OnPostAddToCartAsync}, database={basket_db}, written fields={Items[*], Items[*], Items[*], Items[*].Price, Items[*].ProductId, Items[*].ProductName}
+
+entry request: DiscountService.DeleteDiscount()
+	DELETE: DiscountService.DeleteDiscount() --> discount_db.coupon.DeleteOne()
+		CONCURRENT WRITE #3: BasketService.StoreBasket() --> basket_db.basket.InsertOne()
+		- entry={BasketService.StoreBasket}, database={basket_db}, written fields={Items[*].ProductName}
+		CONCURRENT WRITE #4: BasketService.StoreBasket() --> basket_db.basket.InsertOne()
+		- entry={WebApp.OnPostAddToCartAsync}, database={basket_db}, written fields={Items[*].ProductName}
+

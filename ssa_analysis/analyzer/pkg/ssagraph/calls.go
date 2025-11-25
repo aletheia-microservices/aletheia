@@ -1,6 +1,10 @@
 package ssagraph
 
-import "analyzer/pkg/common"
+import (
+	"github.com/sirupsen/logrus"
+
+	"analyzer/pkg/common"
+)
 
 func ComputeCallID(graph *SSAGraph, node *SSANode) string {
 	return graph.GetServiceWithMethod() + "." + node.GetName()
@@ -154,6 +158,9 @@ func (call *MethodCall) GetReturns() []*SSANode {
 }
 
 func (call *MethodCall) GetReturnAt(idx int) *SSANode {
+	if idx >= len(call.rets) {
+		logrus.Fatalf("index (%d) out of range for call (%s) with returns lst: %v\n", idx, call.String(), call.rets)
+	}
 	return call.rets[idx]
 }
 

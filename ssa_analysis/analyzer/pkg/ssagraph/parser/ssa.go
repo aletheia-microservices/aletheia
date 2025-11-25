@@ -266,6 +266,12 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 			param = "*"
 		} */
 		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_INDEX, 0, param)
+	case *ssa.Field:
+		// e.g., [*ssa.Field] t151 = t150.StartPlace [#1]
+		// where t150 is a map value
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		param := "*"
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_FIELD, 0, param)
 	case *ssa.UnOp:
 		// 01 [unary] t14 = *t13
 		// 05 [unary] t31 = *t30

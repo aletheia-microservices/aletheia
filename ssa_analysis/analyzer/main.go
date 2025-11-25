@@ -42,6 +42,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- postnotification_simple")
 		fmt.Fprintln(os.Stderr, "- dsb_sn2")
 		fmt.Fprintln(os.Stderr, "- digota")
+		fmt.Fprintln(os.Stderr, "- eshopmicroservices")
 		fmt.Fprintln(os.Stderr, "- sockshop3")
 		fmt.Fprintln(os.Stderr, "- dsb_media_sql")
 		fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
