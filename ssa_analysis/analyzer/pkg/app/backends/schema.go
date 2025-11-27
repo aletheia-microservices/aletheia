@@ -10,12 +10,14 @@ type Schema struct {
 	name        string // can be name of (sql) table, (nosql) collection, or (queue) topic
 	fields      map[string]*Field
 	constraints []*Constraint
+	database    *Database
 }
 
-func NewSchema(name string) *Schema {
+func NewSchema(name string, database *Database) *Schema {
 	return &Schema{
-		name:   name,
-		fields: make(map[string]*Field),
+		name:     name,
+		fields:   make(map[string]*Field),
+		database: database,
 	}
 }
 
@@ -41,6 +43,10 @@ func (schema *Schema) GetAllFieldsLst() []*Field {
 
 func (schema *Schema) GetName() string {
 	return schema.name
+}
+
+func (schema *Schema) GetDatabase() *Database {
+	return schema.database
 }
 
 func (schema *Schema) MarshalJSON() ([]byte, error) {
@@ -135,37 +141,37 @@ func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
 }
 
 func (schema *Schema) RemoveConstraint(old *Constraint) {
-    for i, c := range schema.constraints {
-        if c == old {
-            schema.constraints = append(schema.constraints[:i], schema.constraints[i+1:]...)
-            return
-        }
-    }
+	for i, c := range schema.constraints {
+		if c == old {
+			schema.constraints = append(schema.constraints[:i], schema.constraints[i+1:]...)
+			return
+		}
+	}
 }
 
 func (schema *Schema) AddConstraint(newConstraint *Constraint) {
 	for _, existingConstraint := range schema.getConstraintsForeignKey() {
-		if existingConstraint.GetFieldAt(0) == newConstraint.GetFieldAt(0) && 
+		if existingConstraint.GetFieldAt(0) == newConstraint.GetFieldAt(0) &&
 			existingConstraint.GetFieldAt(1) == newConstraint.GetFieldAt(1) {
 
-				if existingConstraint.mandatory == newConstraint.mandatory {
-					// ignore if constraint already exists
-					return
-				} else {
-					for reqIdx, mandatory := range newConstraint.reqIdxToMandatory {
-						if ok, m := existingConstraint.reqIdxToMandatory[reqIdx]; ok {
-							// upgrade existing constraint to mandatory set to true
-							if !m {
-								existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
-							}
-						} else {
-							// add new entry with mandatory set to true
+			if existingConstraint.mandatory == newConstraint.mandatory {
+				// ignore if constraint already exists
+				return
+			} else {
+				for reqIdx, mandatory := range newConstraint.reqIdxToMandatory {
+					if ok, m := existingConstraint.reqIdxToMandatory[reqIdx]; ok {
+						// upgrade existing constraint to mandatory set to true
+						if !m {
 							existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
 						}
+					} else {
+						// add new entry with mandatory set to true
+						existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
 					}
-					return
 				}
+				return
 			}
+		}
 	}
 	schema.constraints = append(schema.constraints, newConstraint)
 }

@@ -13,6 +13,7 @@ if [ "$#" -ne 2 ]; then
   echo "- foobar"
   echo "- digota"
   echo "- sockshop3"
+  echo "- eshopmicroservices"
   echo "- postnotification_simple"
   echo "- dsb_sn2"
   echo "- dsb_media_sql"

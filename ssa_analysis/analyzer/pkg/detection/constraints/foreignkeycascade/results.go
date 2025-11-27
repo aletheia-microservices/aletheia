@@ -2,10 +2,12 @@ package foreignkeycascade
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
 	"analyzer/pkg/app"
+	"analyzer/pkg/app/backends"
 )
 
 func (detector *ForeignKeyCascadeDetector) GetResults() string {
@@ -39,31 +41,37 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 		if !found {
 			continue
 		}
-		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for _, cascadeDelete := range cascadeDeletes {
 			if len(cascadeDelete.pendingFields) == 0 {
 				continue
 			}
-			results += fmt.Sprintf("\tDELETE: %s\n", cascadeDelete.op.call.String())
+			if request.entry.String() != cascadeDelete.op.call.GetFromNode().String() {
+				results += fmt.Sprintf("delete: %s() ... %s\n", request.entry.String(), cascadeDelete.op.call.String())				
+			} else {
+				results += fmt.Sprintf("delete: %s\n", cascadeDelete.op.call.String())
+			}
 
-			var dbToPendingField = make(map[string][]string)
+			var schemaToPendingField = make(map[*backends.Schema][]string)
+			var sortedSchemas []*backends.Schema
 			for _, pendingField := range cascadeDelete.pendingFields {
-				dbname := pendingField.GetDatabase().GetName()
+				schema := pendingField.GetSchema()
 				fieldname := pendingField.GetName()
-				dbToPendingField[dbname] = append(dbToPendingField[dbname], fieldname)
+				schemaToPendingField[schema] = append(schemaToPendingField[schema], fieldname)
+				if !slices.Contains(sortedSchemas, schema) {
+					sortedSchemas = append(sortedSchemas, schema)
+				}
 			}
 
-			var sortedDbs []string
-			for db := range dbToPendingField {
-				sortedDbs = append(sortedDbs, db)
-			}
-			sort.Strings(sortedDbs)
+			sort.Slice(sortedSchemas, func(i, j int) bool {
+				return sortedSchemas[i].GetName() < sortedSchemas[j].GetName()
+			})
 
-			for _, db := range sortedDbs {
-				fieldsLst := dbToPendingField[db]
+			for _, schema := range sortedSchemas {
+				database := schema.GetDatabase()
+				fieldsLst := schemaToPendingField[schema]
 				sort.Strings(fieldsLst)
 				numWarnings++
-				results += fmt.Sprintf("\t\tMISSING CASCADE DELETE #%d: database={%s}, pending fields={%s}\n", numWarnings, db, strings.Join(fieldsLst, ", "))
+				results += fmt.Sprintf("\tmissing cascade #%d: database={%s}, entity={%s}, pending_fields={%s}\n", numWarnings, database.GetName(), schema.GetName(), strings.Join(fieldsLst, ", "))
 			}
 		}
 		results += "\n"

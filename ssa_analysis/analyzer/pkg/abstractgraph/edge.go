@@ -47,7 +47,7 @@ func NewAbstractEdge(t string, id string, method string, from *AbstractNode, to 
 }
 
 func (edge *AbstractEdge) String() string {
-	return fmt.Sprintf("%s() --> %s.%s()", edge.from.String(), edge.to.String(), edge.method)
+	return fmt.Sprintf("%s() ... %s.%s()", edge.from.String(), edge.to.String(), edge.method)
 }
 
 func (edge *AbstractEdge) GetOpType() common.DatabaseOperationType {

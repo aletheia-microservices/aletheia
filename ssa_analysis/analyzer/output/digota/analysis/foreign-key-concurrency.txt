@@ -2,13 +2,11 @@
 ----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
 ---------------------------------------------------------------------
 [NUM_WARNINGS = 2]
-entry request: ProductService.Delete()
-	DELETE: ProductService.Delete() --> products_db.products.DeleteOne()
-		CONCURRENT WRITE #1: SkuService.New() --> skus_db.skus.InsertOne()
-		- entry={SkuService.New}, database={skus_db}, written fields={Parent}
+delete: ProductService.Delete() ... products_db.products.DeleteOne()
+	write #1: SkuService.New() ... SkuService.New() ... skus_db.skus.InsertOne()
+		- database={skus_db}, entity={skus}, written_fields={Parent}
 
-entry request: SkuService.Delete()
-	DELETE: SkuService.Delete() --> skus_db.skus.DeleteOne()
-		CONCURRENT WRITE #2: OrderService.New() --> orders_db.orders.InsertOne()
-		- entry={OrderService.New}, database={orders_db}, written fields={Items[*].Amount, Items[*].Currency, Items[*].Description, Items[*].Parent}
+delete: SkuService.Delete() ... skus_db.skus.DeleteOne()
+	write #2: OrderService.New() ... OrderService.New() ... orders_db.orders.InsertOne()
+		- database={orders_db}, entity={orders}, written_fields={Items[*].Amount, Items[*].Currency, Items[*].Description, Items[*].Parent}
 

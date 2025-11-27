@@ -34,9 +34,13 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 			return sortedDangerousDeleteLst[i].CallString() < sortedDangerousDeleteLst[j].CallString()
 		})
 
-		results += fmt.Sprintf("entry request: %s()\n", request.entry.String())
 		for _, dangerousDelete := range sortedDangerousDeleteLst {
-			results += fmt.Sprintf("\tDELETE: %s\n", dangerousDelete.CallString())
+			if request.entry.String() != dangerousDelete.delete.call.GetFromNode().String() {
+				results += fmt.Sprintf("delete: %s() ... %s\n", request.entry.String(), dangerousDelete.CallString())				
+			} else {
+				results += fmt.Sprintf("delete: %s\n", dangerousDelete.CallString())
+			}
+
 			var sortedConcurrentWrites []*ConcurrentWrite = dangerousDelete.concurrentWrites
 			sort.Slice(sortedConcurrentWrites, func(i, j int) bool {
 				if sortedConcurrentWrites[i].CallString() != sortedConcurrentWrites[j].CallString() {
@@ -47,16 +51,16 @@ func (detector *ForeignKeyConcurrencyDetector) ComputeResults(app *app.App) {
 
 			for _, concurrentWrite := range dangerousDelete.concurrentWrites {
 				numWarnings++
-				results += fmt.Sprintf("\t\tCONCURRENT WRITE #%d: %s\n", numWarnings, concurrentWrite.CallString())
+				results += fmt.Sprintf("\twrite #%d: %s() ... %s\n", numWarnings, concurrentWrite.EntryString(), concurrentWrite.CallString())
 				var orderedFieldNames []string
 
 				for _, field := range concurrentWrite.affectedFields {
 					orderedFieldNames = append(orderedFieldNames, field.GetName())
 				}
 				sort.Strings(orderedFieldNames)
-				results += fmt.Sprintf("\t\t- entry={%s}, database={%s}, written fields={%s}\n", 
-					concurrentWrite.EntryString(), 
-					concurrentWrite.database.GetName(), 
+				results += fmt.Sprintf("\t\t- database={%s}, entity={%s}, written_fields={%s}\n",
+					concurrentWrite.database.GetName(),
+					concurrentWrite.schema.GetName(),
 					strings.Join(orderedFieldNames, ", "),
 				)
 			}

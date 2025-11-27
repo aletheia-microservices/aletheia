@@ -73,6 +73,7 @@
           "FOREIGN_KEY order_db.orders.Items REFERENCES cart_db.carts.Items",
           "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_db.shipments [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_queue.notification [MANDATORY]",
+          "FOREIGN_KEY order_db.orders.Shipment.Name REFERENCES user_db.users.UserID [T]",
           "FOREIGN_KEY order_db.orders.Shipment.Status REFERENCES ship_db.shipments.Status [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Shipment.Status REFERENCES ship_queue.notification.Status [MANDATORY]"
         ]

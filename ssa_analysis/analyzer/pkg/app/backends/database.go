@@ -70,7 +70,7 @@ func (database *Database) GetOrCreateSchema(name string) *Schema {
 			return schema
 		}
 	}
-	schema := NewSchema(name)
+	schema := NewSchema(name, database)
 	database.AddSchema(schema)
 	return schema
 }

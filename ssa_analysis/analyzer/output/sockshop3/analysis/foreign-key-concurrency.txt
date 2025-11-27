@@ -2,13 +2,11 @@
 ----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
 ---------------------------------------------------------------------
 [NUM_WARNINGS = 2]
-entry request: Frontend.Login()
-	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
-		CONCURRENT WRITE #1: OrderService.NewOrder() --> order_db.orders.InsertOne()
-		- entry={Frontend.NewOrder}, database={order_db}, written fields={Items}
+delete: Frontend.Login() ... CartService.MergeCarts() ... cart_db.carts.DeleteOne()
+	write #1: Frontend.NewOrder() ... OrderService.NewOrder() ... order_db.orders.InsertOne()
+		- database={order_db}, entity={orders}, written_fields={Items}
 
-entry request: Frontend.Register()
-	DELETE: CartService.MergeCarts() --> cart_db.carts.DeleteOne()
-		CONCURRENT WRITE #2: OrderService.NewOrder() --> order_db.orders.InsertOne()
-		- entry={Frontend.NewOrder}, database={order_db}, written fields={Items}
+delete: Frontend.Register() ... CartService.MergeCarts() ... cart_db.carts.DeleteOne()
+	write #2: Frontend.NewOrder() ... OrderService.NewOrder() ... order_db.orders.InsertOne()
+		- database={order_db}, entity={orders}, written_fields={Items}
 

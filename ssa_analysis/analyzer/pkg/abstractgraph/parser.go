@@ -31,7 +31,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 					}
 					db := graph.GetApp().GetDatabaseByName(dbname)
 					if !db.HasSchema(schemaName) {
-						db.AddSchema(backends.NewSchema(schemaName))
+						db.AddSchema(backends.NewSchema(schemaName, db))
 					}
 				}
 				taint := NewAbstractTaint(
@@ -224,7 +224,7 @@ func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCal
 
 		db := graph.GetApp().GetDatabaseByName(dbname)
 		if !db.HasSchema(schemaName) {
-			db.AddSchema(backends.NewSchema(schemaName))
+			db.AddSchema(backends.NewSchema(schemaName, db))
 		}
 	}
 
