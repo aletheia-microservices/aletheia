@@ -2,7 +2,6 @@ package abstractgraph
 
 import (
 	"fmt"
-	"slices"
 	"sort"
 	"strings"
 )
@@ -54,7 +53,14 @@ func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint,
 
 	// EVAL: fmt.Printf("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
 	if mappingVal, ok := tm.mapping[key]; ok {
-		if !slices.Contains(mappingVal, valElem) {
+		var exists bool
+		for _, t := range mappingVal {
+			if t.EqualExceptPrimaryAndTrace(&valElem) {
+				exists = true
+				break
+			}
+		}
+		if !exists {
 			if after {
 				tm.mapping[key] = append(mappingVal, valElem)
 			} else {
@@ -102,14 +108,16 @@ func (tm *TaintMapping) String() string {
 	})
 
 	for _, key := range keys {
+		var num int
 		var valsStr []string
 		for _, val := range tm.mapping[key] {
-			valsStr = append(valsStr, val.GetDatabasePath())
+			valsStr = append(valsStr, val.LongLongString())
+			num++
 		}
 
 		sort.Strings(valsStr)
 
-		builder.WriteString(fmt.Sprintf("  %s: [%s]\n", key.GetDatabasePath(), strings.Join(valsStr, ", ")))
+		builder.WriteString(fmt.Sprintf("  %s: [%d]\n", key.GetDatabasePath(), num))
 	}
 
 	builder.WriteString("}")

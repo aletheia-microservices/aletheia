@@ -117,21 +117,32 @@ func (taint *AbstractTaint) LongString() string {
 	return fmt.Sprintf("{%s, %s, %s, %t}", taint.fieldpath, taint.dbcallID, common.OperationTypeToString(taint.dbOpType), taint.primary)
 }
 
+func (taint *AbstractTaint) LongLongString() string {
+	return fmt.Sprintf("{%s, %s, %s, %s, %t, %t, %t, %t}", taint.t, taint.fieldpath, taint.dbcallID, common.OperationTypeToString(taint.dbOpType), taint.primary, taint.traced, taint.readKey, taint.readVal)
+}
+
 func (taint *AbstractTaint) Similar(other *AbstractTaint) bool {
 	// EVAL: fmt.Printf("[ABSTRACT TAINT] [SIMILAR] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
-		taint.dbcallID == other.dbcallID /* &&
-		taint.primary == other.primary &&
-		taint.dbOpType == other.dbOpType */
+		taint.dbcallID == other.dbcallID
 }
 
-func (taint *AbstractTaint) Equal(other *AbstractTaint) bool {
+func (taint *AbstractTaint) EqualExceptReadKeyAndReadVal(other *AbstractTaint) bool {
 	// EVAL: fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID &&
 		taint.dbOpType == other.dbOpType &&
 		taint.primary == other.primary &&
 		taint.traced == other.traced
+}
+
+func (taint *AbstractTaint) EqualExceptPrimaryAndTrace(other *AbstractTaint) bool {
+	// EVAL: fmt.Printf("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
+	return taint.fieldpath == other.fieldpath &&
+		taint.dbcallID == other.dbcallID &&
+		taint.dbOpType == other.dbOpType &&
+		taint.readKey == other.readKey &&
+		taint.readVal == other.readVal
 }
 
 // e.g.,

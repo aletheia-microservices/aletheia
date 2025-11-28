@@ -192,7 +192,7 @@ func (obj *AbstractObject) GetAllTaintsBeforeT(otherT string) map[string][]*Abst
 		for _, taint := range taintLst {
 			if lessT(taint.GetT(), otherT) || equalT(taint.GetT(), otherT) {
 				taints[objpath] = append(taints[objpath], taint)
-				
+
 			}
 		}
 	}
@@ -381,7 +381,7 @@ func (obj *AbstractObject) HasSimilarTaintOnObjectPath(objpath string, other Abs
 func (obj *AbstractObject) HasEqualTaint(objpath string, other AbstractTaint) bool {
 	// EVAL: fmt.Printf("[ABSTRACT OBJECT] finding object path with equal taint\n")
 	for _, taint := range obj.GetTaintsForObjectPath(objpath) {
-		if taint.Equal(&other) {
+		if taint.EqualExceptReadKeyAndReadVal(&other) {
 			return true
 		}
 	}
