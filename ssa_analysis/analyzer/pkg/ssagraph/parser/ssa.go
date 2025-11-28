@@ -166,10 +166,13 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		graph.CreateAndAddNewEdge(addrNode, node, ssagraph.EDGE_STORE_ADDRESS, 0, "")
 		graph.CreateAndAddNewEdge(valNode, node, ssagraph.EDGE_STORE_VALUE, 0, "")
 	case *ssa.Return:
-		for _, res := range t.Results {
-			resNode := parseValue(graph, instr, instrIdx, res, visited)
-			graph.CreateAndAddNewEdge(resNode, node, ssagraph.EDGE_RETURN_ON, 0, "")
+		var rets []*ssagraph.SSANode
+		for _, ret := range t.Results {
+			retNode := parseValue(graph, instr, instrIdx, ret, visited)
+			rets = append(rets, retNode)
+			graph.CreateAndAddNewEdge(retNode, node, ssagraph.EDGE_RETURN_ON, 0, "")
 		}
+		graph.AddReturnsToLst(rets)
 	case *ssa.MapUpdate:
 		mapNode := parseValue(graph, instr, instrIdx, t.Map, visited)
 		keyNode := parseValue(graph, instr, instrIdx, t.Key, visited)

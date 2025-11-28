@@ -758,11 +758,11 @@ func registerCalls(graph *ssagraph.SSAGraph, databaseCallRegistry map[*ssagraph.
 	for _, node := range graph.GetNodes() {
 		ok := registerDatabaseCall(graph, node, databaseCallRegistry)
 		if ok {
-			logrus.WithField("graph", graph.String()).WithField("node", node.String()).Infof("[SSA TAINTER] database call")
+			logrus.WithField("graph", graph.String()).WithField("node", node.String()).Debugf("[SSA TAINTER] database call")
 		} else {
 			ok = registerServiceCall(graph, node)
 			if ok {
-				logrus.WithField("graph", graph.String()).WithField("node", node.String()).Infof("[SSA TAINTER] service call")
+				logrus.WithField("graph", graph.String()).WithField("node", node.String()).Debugf("[SSA TAINTER] service call")
 			} else {
 				registerMethodCall(graph, node)
 			}
@@ -922,21 +922,9 @@ func runTainterOnParameters(graph *ssagraph.SSAGraph) {
 }
 
 func runTainterOnReturns(graph *ssagraph.SSAGraph) {
-	var nodesToVisit []*ssagraph.SSANode
-	for _, node := range graph.GetNodes() {
-		// keep track of arguments returned in the current function possibly invoked by other services
-		// so that we can mark their indirect taints
-		if ret, ok := node.GetInstruction().(*ssa.Return); ok {
-			var rets []*ssagraph.SSANode
-			for _, res := range ret.Results {
-				resNode := graph.GetNodeByName(res.Name())
-				nodesToVisit = append(nodesToVisit, resNode)
-				rets = append(rets, resNode)
-			}
-			graph.AddReturnsToLst(rets)
-		}
-
-		checkUpperTaintsForObjects(graph, nodesToVisit)
+	retNodesLst := graph.GetReturnsLst()
+	for _, retNodes := range retNodesLst {
+		checkUpperTaintsForObjects(graph, retNodes)
 	}
 }
 
