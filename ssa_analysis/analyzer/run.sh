@@ -15,11 +15,18 @@ apps=(
     dsb_sn2
     dsb_media_nosql
     train_ticket2
-    #large_scale_app_A
-    #large_scale_app_B
-    #large_scale_app_C
-    #large_scale_app_D
-    #large_scale_app_E
+)
+
+apps_synthetic=(
+    #synthetic_app
+    #synthetic_appA
+    #synthetic_appB
+    #synthetic_app1
+    #synthetic_app2
+    #synthetic_app3
+    #synthetic_app4
+    #synthetic_app5
+    #synthetic_app6
 )
 
 mode=""
@@ -29,7 +36,6 @@ if [[ $# -eq 1 ]]; then
     case "$1" in
         --eval)
             mode="--eval"
-            runs=5
             ;;
         --debug)
             mode=""
@@ -48,6 +54,17 @@ for app in "${apps[@]}"; do
     for i in $(seq 1 $runs); do
         echo "=== Run $i/$runs"
         go run main.go $mode $app
+    done
+
+    echo
+done
+
+for app in "${apps_synthetic[@]}"; do
+    echo "=== Running $app ($runs times) $mode ==="
+    
+    for i in $(seq 1 $runs); do
+        echo "=== Run $i/$runs"
+        go run main.go $mode --synthetic $app
     done
 
     echo

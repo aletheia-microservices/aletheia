@@ -1,9 +1,25 @@
 import os
 import yaml
 from collections import defaultdict
+import argparse
+from datetime import date
 
-INPUT_DIR = "../ssa_analysis/analyzer/analysis_times"
-OUTPUT_FILE = "results/averages.yaml"
+parser = argparse.ArgumentParser()
+parser.add_argument("--synthetic", action="store_true", help="enable evaluation mode")
+parser.add_argument("--date", type=str, default=str(date.today()), help="date in YYYY-MM-DD format (default: today)")
+
+
+args = parser.parse_args()
+
+if args.synthetic:
+    INPUT_DIR = f"../ssa_analysis/analyzer/analysis_times/{args.date}/synthetic"
+else:
+    INPUT_DIR = f"../ssa_analysis/analyzer/analysis_times/{args.date}"
+
+if args.synthetic:
+    OUTPUT_FILE = "results/averages_synthetic.yaml"
+else:
+    OUTPUT_FILE = "results/averages.yaml"
 
 NAME_MAP = {
     "dsb_media_nosql":          "mediamicroservices",
@@ -11,12 +27,14 @@ NAME_MAP = {
     "postnotification_simple":  "postnotification",
     "sockshop3":                "sockshop",
     "train_ticket2":            "trainticket",
-    "large_scale_app":          "largescaleapp",
-    "large_scale_app_A":        "largescaleapp",
-    "large_scale_app_B":        "largescaleappA",
-    "large_scale_app_C":        "largescaleappB",
-    "large_scale_app_D":        "largescaleappC",
-    "large_scale_app_E":        "largescaleappD",
+    "synthetic_app":            "syntheticapp",
+    "synthetic_app1":           "syntheticapp (4, 3)",
+    "synthetic_app2":           "syntheticapp (5, 3)",
+    "synthetic_app3":           "syntheticapp (340, 1)",
+    "synthetic_app4":           "syntheticapp (4, 4)",
+    "synthetic_app5":           "syntheticapp (1, 340)",
+    "synthetic_app6":           "syntheticapp (4, 5)",
+    "synthetic_app7":           "syntheticapp (5, 4)",
 }
 
 apps_data = defaultdict(list)
@@ -24,6 +42,8 @@ for filename in os.listdir(INPUT_DIR):
     if not filename.endswith(".yaml"):
         continue
     path = os.path.join(INPUT_DIR, filename)
+
+    print(f"[INFO] parsing {path}")
 
     with open(path, "r") as f:
         data = yaml.safe_load(f)
@@ -80,11 +100,10 @@ for (app, ms_count, ds_count), avg in results.items():
         "iterations":   len(apps_data[(app, ms_count, ds_count)]),
         "ms_count":     int(avg["ms_count"]),
         "ds_count":     int(avg["ds_count"]),
-        "total_s":      int(avg["total_s"]),
-        "init_s":       int(avg["init_s"]),
-        "parsing_s":    int(avg["parsing_s"]),
-        "schema_s":     float(f"{avg['schema_s']:.3f}"),
-        "detection_s":  float(f"{avg['detection_s']:.3f}"),
+        "total_s":      float(f"{avg['total_s']:.2f}"),
+        "parsing_s":    float(f"{avg['parsing_s']:.2f}"),
+        "schema_s":     float(f"{avg['schema_s']:.4f}"),
+        "detection_s":  float(f"{avg['detection_s']:.4f}"),
     }
     ordered_results.append(entry)
 

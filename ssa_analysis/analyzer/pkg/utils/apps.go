@@ -22,12 +22,16 @@ const (
 	APP_PATH_FOO_BAR2                = "foobar2/workflow/foobar2"
 	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
-	APP_PATH_LARGE_SCALE_APP         = "large_scale_app/workflow/large_scale_app"
-	APP_PATH_LARGE_SCALE_APP_A       = "large_scale_app_A/workflow/large_scale_app_A"
-	APP_PATH_LARGE_SCALE_APP_B       = "large_scale_app_B/workflow/large_scale_app_B"
-	APP_PATH_LARGE_SCALE_APP_C       = "large_scale_app_C/workflow/large_scale_app_C"
-	APP_PATH_LARGE_SCALE_APP_D       = "large_scale_app_D/workflow/large_scale_app_D"
-	APP_PATH_LARGE_SCALE_APP_E       = "large_scale_app_E/workflow/large_scale_app_E"
+	APP_PATH_SYNTHETIC_APP           = "synthetic_app/workflow/synthetic_app"
+	APP_PATH_SYNTHETIC_APPA           = "synthetic_app/workflow/synthetic_appA"
+	APP_PATH_SYNTHETIC_APPB           = "synthetic_app/workflow/synthetic_appB"
+	APP_PATH_SYNTHETIC_APP1          = "synthetic_app1/workflow/synthetic_app1"
+	APP_PATH_SYNTHETIC_APP2          = "synthetic_app2/workflow/synthetic_app2"
+	APP_PATH_SYNTHETIC_APP3          = "synthetic_app3/workflow/synthetic_app3"
+	APP_PATH_SYNTHETIC_APP4          = "synthetic_app4/workflow/synthetic_app4"
+	APP_PATH_SYNTHETIC_APP5          = "synthetic_app5/workflow/synthetic_app5"
+	APP_PATH_SYNTHETIC_APP6          = "synthetic_app5/workflow/synthetic_app6"
+	APP_PATH_SYNTHETIC_APP7          = "synthetic_app5/workflow/synthetic_app7"
 
 	BLUEPRINT_EXAMPLES_RELATIVE_PATH = "../../blueprint/examples"
 )
@@ -43,12 +47,16 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_A,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_B,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_C,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_D,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_LARGE_SCALE_APP_E,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APPA,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APPB,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP1,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP2,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP3,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP4,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP5,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP6,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP7,
 }
 
 var APPS_NOSQL_SCHEMAS = map[string]string{

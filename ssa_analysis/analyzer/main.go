@@ -28,10 +28,12 @@ import (
 	"analyzer/pkg/utils"
 )
 
-var EVAL = true
+var EVAL = false
+var synthetic = false
 
 func main() {
 	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
+	flag.BoolVar(&synthetic, "synthetic", false, "enable synthetic app")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -48,7 +50,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "- dsb_media_nosql")
 		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
 		fmt.Fprintln(os.Stderr, "- train_ticket2")
-		fmt.Fprintln(os.Stderr, "- large_scale_app")
+		fmt.Fprintln(os.Stderr, "- synthetic")
 		os.Exit(1)
 	}
 
@@ -137,6 +139,9 @@ func main() {
 	logrus_ctx.Infof("[4/12] registering fields")
 	registry.RegisterFields(app, graphsLst)
 
+	elapsed_ssa_parsing := time.Since(start)
+	start_ssa_tainting := time.Now()
+
 	if !EVAL {
 		app.WriteAppToJSON()
 		for fn, ssagraph := range funcGraphs {
@@ -149,6 +154,8 @@ func main() {
 	for _, ssagraph := range funcGraphs {
 		tainter.RunTainter(ssagraph)
 	}
+
+	elapsed_ssa_tainting := time.Since(start_ssa_tainting)
 
 	// ------------ PART 6
 	logrus_ctx.Infof("[6/12] combining SSA graphs")
@@ -184,7 +191,7 @@ func main() {
 
 	// ------------ PART 8
 	logrus_ctx.Infof("[8/12] releasing memory associated with ssa graph")
-	graphsLst = nil
+	/* graphsLst = nil
 	pkgs = nil
 	for fn, ssagraph := range funcGraphs {
 		if ssagraph != nil {
@@ -192,7 +199,7 @@ func main() {
 		}
 		delete(funcGraphs, fn)
 	}
-	funcGraphs = nil
+	funcGraphs = nil */
 
 	if !EVAL {
 		absgraph.WriteVisited(appname)
@@ -247,8 +254,21 @@ func main() {
 
 	fmt.Printf("Execution time (TOTAL):\t\t%.4f s\n", elapsed_total.Seconds())
 	fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
+	fmt.Printf("Execution time (SSA PARS):\t%.4f s\n", elapsed_ssa_parsing.Seconds())
+	fmt.Printf("Execution time (SSA TAIN):\t%.4f s\n", elapsed_ssa_tainting.Seconds())
 	fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
 	fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
+
+	/* for fn, ssagraph := range funcGraphs {
+		ssagraph.WriteToDOTFile(appname, fn, true)
+	} */
+
+	/* absgraph.WriteVisited(appname)
+	iterator.Run(detection.PHASE_0_DEBUG)
+	absgraph.WriteToDOTFile(appname, true)
+	absgraph.WriteToDOTFile(appname, false) */
+	app.WriteAppToJSON()
+	app.WriteSchemaToJSON()
 
 	if EVAL {
 		times := AnalysisTimes{
@@ -277,6 +297,9 @@ type AnalysisTimes struct {
 func saveAnalysisTime(app *app.App, times AnalysisTimes) {
 	ts := time.Now().Unix()
 	dir := path.Join("analysis_times", time.Now().Format(time.DateOnly))
+	if synthetic {
+		dir += "/synthetic"
+	}
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		panic(err)
@@ -363,7 +386,6 @@ func buildProgram(apppath string) (*ssa.Program, []*ssa.Package, error) {
 	}
 
 	prog.Build()
-
 
 	var pkgsSeen = make(map[*ssa.Package]bool)
 	var pkgs []*ssa.Package

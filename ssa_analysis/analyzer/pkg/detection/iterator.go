@@ -182,6 +182,8 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 			}
 
+			//fmt.Printf("[%s] [1] TAINT MAPPING: %s\n", it.app.GetName(), taintMapping.String())
+
 			// --------------------------
 			// PHASE 2: transverse caller
 			// --------------------------
@@ -201,6 +203,8 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT, edge.GetT(), it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 				taintMapping.Join(taintMappingTmp, true)
 			}
+
+			//fmt.Printf("[%s] [2] TAINT MAPPING: %s\n", it.app.GetName(), taintMapping.String())
 
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			for i, fromRet := range edge.GetReturns() {

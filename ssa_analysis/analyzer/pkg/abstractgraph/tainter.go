@@ -423,6 +423,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 
 func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_write AbstractTaint, taint1_write AbstractTaint, db2_write *backends.Database, db1_write *backends.Database, field2_write *backends.Field, field1_write *backends.Field) bool {
 	var modified bool
+	//fmt.Printf("write-write pair (%s) -> (%s)\n", taint2_write.String(), taint1_write.String())
 	if constraint := field2_write.GetConstraintForeignKeyToField(field1_write); constraint != nil {
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
@@ -750,9 +751,10 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if paramTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, param)
 								tracedObjPaths = append(tracedObjPaths, paramObjpath)
-								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
-								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
-								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
+								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] param: %s\n", param.String())
+								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
+								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
+								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}

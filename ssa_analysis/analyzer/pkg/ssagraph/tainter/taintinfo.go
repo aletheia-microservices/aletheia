@@ -163,6 +163,15 @@ func (t TaintInfo) cutObjectPathSuffix(suffix string) (TaintInfo, bool) {
 	return t, ok
 }
 
+func (t TaintInfo) cutObjectPathPrefix(prefix string) (TaintInfo, bool) {
+	var ok bool
+	t.objpath, ok = strings.CutPrefix(t.objpath, prefix)
+	if !ok {
+		// EVAL: fmt.Printf("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
+	}
+	return t, ok
+}
+
 func (t TaintInfo) updateObjectPathPrefix(prefix string) TaintInfo {
 	t.objpath = prefix + t.objpath
 	return t
@@ -170,6 +179,11 @@ func (t TaintInfo) updateObjectPathPrefix(prefix string) TaintInfo {
 
 func (t TaintInfo) updateObjectPathSuffix(suffix string) TaintInfo {
 	t.objpath = t.objpath + suffix
+	return t
+}
+
+func (t TaintInfo) setObjectPath(new string) TaintInfo {
+	t.objpath = new
 	return t
 }
 

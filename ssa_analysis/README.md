@@ -38,7 +38,7 @@ go run main.go dsb_media_nosql
 go run main.go train_ticket2
 
 # large apps
-go run main.go large_scale_app
+go run main.go synthetic_app
 
 # extras
 go run main.go foobar
@@ -53,7 +53,7 @@ cd ms-consistency-analyzer/blueprint/examples/scripts/
 go run main.go
 
 cd ms-consistency-analyzer/ssa_analysis/analyzer/
-./eval.sh
+./run.sh --eval
 
 cd ms-consistency-analyzer/eval
 python3 -m venv ~/.venv
@@ -61,4 +61,6 @@ source ~/.venv/bin/activate
 pip3 install -r requirements.txt
 python3 average.py
 python3 plot.py
+python3 average.py --synthetic
+python3 plot.py --synthetic
 ```

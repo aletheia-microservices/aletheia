@@ -18,9 +18,16 @@ replace go.opentelemetry.io/otel/metric => go.opentelemetry.io/otel/metric v1.26
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Rhymond/go-money v1.0.15 // indirect
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app6/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app7/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_appA/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_appB/workflow v0.0.0 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -79,13 +86,22 @@ require (
 require (
 	github.com/auxten/postgresql-parser v1.0.1
 	github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/wiring v0.0.0
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.3
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	gopkg.in/yaml.v2 v2.4.0
 )
+
+require go.opentelemetry.io/otel/sdk/metric v1.26.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/plugins v0.0.0
 
@@ -134,21 +150,6 @@ require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring v
 require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring v0.0.0
-
-require github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/workflow v0.0.0 // indirect
-
-require github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/wiring v0.0.0
-
-require github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/workflow v0.0.0 // indirect
-
-require github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/wiring v0.0.0
-
-require (
-	github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/workflow v0.0.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.26.0 // indirect
-)
-
-require github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/wiring v0.0.0
 
 replace github.com/blueprint-uservices/blueprint/plugins => ../../blueprint/plugins
 
@@ -222,38 +223,62 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workfl
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring => ../../blueprint/examples/dsb_media_nosql/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app => ../../blueprint/examples/large_scale_app
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app => ../../blueprint/examples/synthetic_app
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app/workflow => ../../blueprint/examples/large_scale_app/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app/workflow => ../../blueprint/examples/synthetic_app/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app/wiring => ../../blueprint/examples/large_scale_app/wiring
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring => ../../blueprint/examples/synthetic_app/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_A => ../../blueprint/examples/large_scale_app_A
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_appA => ../../blueprint/examples/synthetic_appA
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/workflow => ../../blueprint/examples/large_scale_app_A/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_appA/workflow => ../../blueprint/examples/synthetic_appA/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_A/wiring => ../../blueprint/examples/large_scale_app_A/wiring
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring => ../../blueprint/examples/synthetic_appA/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_B => ../../blueprint/examples/large_scale_app_B
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_appB => ../../blueprint/examples/synthetic_appB
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/workflow => ../../blueprint/examples/large_scale_app_B/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_appB/workflow => ../../blueprint/examples/synthetic_appB/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_B/wiring => ../../blueprint/examples/large_scale_app_B/wiring
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring => ../../blueprint/examples/synthetic_appB/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_C => ../../blueprint/examples/large_scale_app_C
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1 => ../../blueprint/examples/synthetic_app1
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/workflow => ../../blueprint/examples/large_scale_app_C/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow => ../../blueprint/examples/synthetic_app1/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_C/wiring => ../../blueprint/examples/large_scale_app_C/wiring
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring => ../../blueprint/examples/synthetic_app1/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_D => ../../blueprint/examples/large_scale_app_D
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2 => ../../blueprint/examples/synthetic_app2
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/workflow => ../../blueprint/examples/large_scale_app_D/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow => ../../blueprint/examples/synthetic_app2/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_D/wiring => ../../blueprint/examples/large_scale_app_D/wiring
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring => ../../blueprint/examples/synthetic_app2/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_E => ../../blueprint/examples/large_scale_app_E
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3 => ../../blueprint/examples/synthetic_app3
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/workflow => ../../blueprint/examples/large_scale_app_E/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow => ../../blueprint/examples/synthetic_app3/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/large_scale_app_E/wiring => ../../blueprint/examples/large_scale_app_E/wiring
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring => ../../blueprint/examples/synthetic_app3/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4 => ../../blueprint/examples/synthetic_app4
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow => ../../blueprint/examples/synthetic_app4/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring => ../../blueprint/examples/synthetic_app4/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5 => ../../blueprint/examples/synthetic_app5
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow => ../../blueprint/examples/synthetic_app5/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring => ../../blueprint/examples/synthetic_app5/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app6 => ../../blueprint/examples/synthetic_app6
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app6/workflow => ../../blueprint/examples/synthetic_app6/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring => ../../blueprint/examples/synthetic_app6/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7 => ../../blueprint/examples/synthetic_app7
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7/workflow => ../../blueprint/examples/synthetic_app7/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring => ../../blueprint/examples/synthetic_app7/wiring
