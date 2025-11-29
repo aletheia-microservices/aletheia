@@ -41,7 +41,8 @@
         "name": "post",
         "fields": [
           "post_db.post",
-          "post_db.post.PostID"
+          "post_db.post.PostID",
+          "post_db.post.UserMentions[*].UserID"
         ],
         "constraints": []
       }
@@ -58,7 +59,9 @@
           "socialgraph_cache.followers.Value[*]",
           "socialgraph_cache.followers.Value[*].FollowerID"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES post_db.post.UserMentions[*].UserID [MANDATORY]"
+        ]
       }
     ]
   },

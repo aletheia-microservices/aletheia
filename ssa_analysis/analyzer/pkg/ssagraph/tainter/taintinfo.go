@@ -48,9 +48,9 @@ type TaintInfo struct {
 
 func (ti TaintInfo) String() string {
 	if ti.getDatabasePath() != "" {
-		return fmt.Sprintf("(_obj%s, %s) (DB)\n", ti.getObjectPath(), ti.getDatabasePath())
+		return fmt.Sprintf("(_obj%s, %s) (DB)", ti.getObjectPath(), ti.getDatabasePath())
 	} else if ti.getServicePath() != "" {
-		return fmt.Sprintf("(_obj%s, %s) (SV)\n", ti.getObjectPath(), ti.getServicePath())
+		return fmt.Sprintf("(_obj%s, %s) (SV)", ti.getObjectPath(), ti.getServicePath())
 	}
 	return fmt.Sprintf("(_obj%s)", ti.getObjectPath())
 }
@@ -105,6 +105,13 @@ func (t TaintInfo) setReadValue(readValue bool) {
 
 func (t TaintInfo) enableObjectRoot() TaintInfo {
 	t.objroot = true
+	return t
+}
+
+func (t TaintInfo) tryEnableObjectRoot() TaintInfo {
+	if t.objpath == "" {
+		t.objroot = true
+	}
 	return t
 }
 

@@ -219,6 +219,14 @@ func (node *SSANode) GetValueLookup() *ssa.Lookup {
 	return lookup
 }
 
+func (node *SSANode) GetInstructionMapUpdate() *ssa.MapUpdate {
+	mapupdate, ok := node.instr.(*ssa.MapUpdate)
+	if !ok {
+		log.Panicf("[SSA NODE] unexpected type for node value: [%T] %v\n", node.val, node.val)
+	}
+	return mapupdate
+}
+
 func (node *SSANode) IsTainted() bool {
 	return len(node.taints) > 0
 }

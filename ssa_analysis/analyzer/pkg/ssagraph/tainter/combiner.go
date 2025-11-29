@@ -23,7 +23,7 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		RunTainter(toGraph)
 		callerT := methodCall.GetT()
 
-		logrus.Debugf("combining SSA graphs (caller=%s) (at=%s) (callee =%s)\n", graph.String(), methodCall.GetID(), toGraph.String())
+		logrus.Debugf("combining SSA graphs (caller=%s) (at=%s) (callee=%s)\n", graph.String(), methodCall.GetID(), toGraph.String())
 
 		// propagation: caller args <<< callee params
 		// TODO: upper/lower taints
@@ -129,6 +129,7 @@ func propagateTaints(graph *ssagraph.SSAGraph, to_obj *ssagraph.SSANode, from_ta
 			if callerT != "" {
 				taintInfo.callerT = callerT
 			}
+			seenTaint = make(map[TaintInfo]bool)
 			propagateTaintNearby(graph, false, to_obj.GetValue(), taintInfo, visited, nil, false)
 		}
 	}

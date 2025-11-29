@@ -8,24 +8,26 @@
 #   ./run.sh --debug
 #   ./run.sh
 
+set -e
+
 apps=(
-    digota
-    sockshop3
-    postnotification_simple
-    dsb_sn2
-    dsb_media_nosql
-    train_ticket2
+    #digota
+    #sockshop3
+    #postnotification_simple
+    #dsb_sn2
+    #dsb_media_nosql
+    #train_ticket2
 )
 
 apps_synthetic=(
     #synthetic_app
     #synthetic_appA
     #synthetic_appB
-    #synthetic_app1
-    #synthetic_app2
-    #synthetic_app3
-    #synthetic_app4
-    #synthetic_app5
+    synthetic_app1
+    synthetic_app2
+    synthetic_app3
+    synthetic_app4
+    synthetic_app5
     #synthetic_app6
 )
 

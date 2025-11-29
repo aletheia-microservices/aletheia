@@ -9,14 +9,9 @@ import (
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/ssagraph"
-	"analyzer/pkg/utils"
 )
 
-const (
-	DYNAMIC_MAP       = ".*"
-	DYNAMIC_MAP_KEY   = ".MapKey"
-	DYNAMIC_MAP_VALUE = ".MapVal"
-)
+var seenTaint map[TaintInfo]bool
 
 // REMINDER:
 // sometimes there are can be taints such as: _obj[*][*], usertimeline_db.usertimeline.Posts[*].PostID
@@ -38,6 +33,10 @@ const (
 // ----------------------------
 func doTaintNode(node *ssagraph.SSANode, taintInfo TaintInfo, taintMode TaintMode) {
 	var ok bool
+	logrus.WithField("taint_info", taintInfo.String()).
+		WithField("node", node.String()).
+		Debugf("taint node")
+
 	switch taintMode {
 	case TAINT_MODE_NEARBY:
 		if taintInfo.isTypeDatabase() {
@@ -102,22 +101,39 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 	taintInfo = taintInfo.updateValue(val)
 
-	var prevval string
+	var prevVal *ssa.Value
+	var prevValStr string
 	if taintInfo.prevval != nil {
-		prevval = taintInfo.prevval.Name() + ": " + taintInfo.prevval.String()
+		prevValStr = taintInfo.prevval.Name() + ": " + taintInfo.prevval.String()
 	}
 
-	logrus.WithField("graph", graph.String()).WithField("prev", prevval).
-		Debugf("visiting (%s) for taint info: %s\n", val.Name(), taintInfo.String())
+	if strings.Contains(taintInfo.objpath, ".MapKey.Key.MapKey") {
+		logrus.WithField("graph", graph.String()).
+			WithField("prev", prevValStr).
+			WithField("val", val.Name()).
+			WithField("taint_info", taintInfo.String()).
+			Fatalf("[TAINT NEARBY] stop!")
+	}
 
-	logrus.Debugf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+	logrus.WithField("graph", graph.String()).
+		WithField("prev", prevValStr).
+		WithField("val", val.Name()).
+		WithField("taint_info", taintInfo.String()).
+		Debugf("[TAINT NEARBY] visiting")
 
-	if visited[val] {
-		logrus.Debugf("skipping already visited value (taint_info=%s)\n", taintInfo.String())
-		logrus.Tracef("\t[TAINT NEARBY] skipping value %s: %s\n", val.Name(), val.String())
+	if seenTaint[taintInfo] {
+		logrus.WithField("val", val.Name).WithField("taint_info", taintInfo.String()).
+			Tracef("[TAINT NEARBY] skipping (seen taint)...")
 		return
 	}
-	visited[val] = true
+	seenTaint[taintInfo] = true
+
+	/* if visited[val] {
+		logrus.WithField("val", val.Name).WithField("taint_info", taintInfo.String()).
+			Tracef("[TAINT NEARBY] skipping (visited val)...")
+		return
+	}
+	visited[val] = true */
 
 	node := graph.GetNodeByName(val.Name())
 
@@ -131,7 +147,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 	logrus.Debugf("[TAINT NEARBY] [PART_1] [ROOT=%t] [RECURSE=%t] current node: %v\n", taintInfo.objroot, recurse, node)
 	taintInfo.prevval = node.GetValue()
-	propagateTaintNearbyFromNode(graph, node, recurse, taintInfo, visited, checkTaintInfo, upwards)
+	propagateTaintNearbyFromNode(graph, node, prevVal, recurse, taintInfo, visited, checkTaintInfo, upwards)
 	propagateTaintNearbyToNode(graph, node, recurse, taintInfo, visited, checkTaintInfo, upwards)
 
 	if node.IsUsedInBson() {
@@ -143,7 +159,7 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 	}
 }
 
-func propagateTaintNearbyFromNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, recurse bool, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
+func propagateTaintNearbyFromNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, prevVal *ssa.Value, recurse bool, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
 	logrus.Debugf("[TAINT NEARBY] [PART_1] [ROOT=%t] [RECURSE=%t] current node: %v\n", taintInfo.objroot, recurse, node)
 	for _, edge := range graph.GetEdgesFromNode(node) {
 		toNode := edge.GetToNode()
@@ -223,131 +239,29 @@ func propagateTaintNearbyFromNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANo
 
 			propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
 
-		case ssagraph.EDGE_MAP_UPDATE:
-			if upwards {
-				// TODO (similar to FIELD and INDEXES but needs more boring logic)
-				break
-			}
-
-			// e.g., t0[t6] = true
-			// curr/from: t0
-			// to: 		  t0[t6] = true
-
-			var taintInfoTmpKey, taintInfoTmpVal TaintInfo
-			var keyOk, valOk bool
-			if taintInfo.isObjectRoot() {
-				taintInfoTmpKey = taintInfo.updateCallPathPrefix(DYNAMIC_MAP_KEY + ".Key")
-				taintInfoTmpVal = taintInfo.updateCallPathPrefix(DYNAMIC_MAP_KEY + ".Val")
-				keyOk = true
-				valOk = true
-			} else {
-				taintInfoTmpKey = taintInfo.enableObjectRoot()
-				taintInfoTmpKey.objpath, keyOk = strings.CutPrefix(taintInfoTmpKey.objpath, DYNAMIC_MAP_KEY+".Key")
-				taintInfoTmpVal = taintInfo.enableObjectRoot()
-				taintInfoTmpVal.objpath, valOk = strings.CutPrefix(taintInfoTmpKey.objpath, DYNAMIC_MAP_KEY+".Val")
-			}
-
-			for _, edge := range graph.GetEdgesToNode(toNode) {
-				if edge.GetFromNode() != node {
-					if edge.IsType(ssagraph.EDGE_MAP_KEY) && keyOk {
-						propagateTaintNearby(graph, true, edge.GetFromNode().GetValue(), taintInfoTmpKey, visited, checkTaintInfo, upwards)
-					} else if edge.IsType(ssagraph.EDGE_MAP_VALUE) && valOk {
-						propagateTaintNearby(graph, true, edge.GetFromNode().GetValue(), taintInfoTmpVal, visited, checkTaintInfo, upwards)
-					}
-				}
-			}
-
-			logrus.WithField("root?", taintInfo.isObjectRoot()).
-				WithField("key_ok?", keyOk).WithField("val_ok?", valOk).
-				WithField("curr/from", node.String()).WithField("to", toNode.String()).
-				WithField("taint_info", taintInfo.String()).
-				WithField("taint_info_tmp", taintInfoTmpVal.String()).
-				Infof("found EDGE_MAP_UPDATE (%s: %s)\n", node.GetValue().Name(), node.GetValue().String())
-
-		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
-			// e.g., t12: t0[t11]
-			// curr/from: t11
-			// to:		  t12
-			// t11 >>> t0
-			lookupTarget := toNode.GetValueLookup().X
-			var prefix string
-			keyStr, ok := utils.ExtractStringFromValue(node.GetValue())
-			if !ok {
-				prefix = DYNAMIC_MAP_KEY // dynamic
-			} else {
-				prefix = "." + keyStr
-			}
-			prefix += ".Val"
-			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
-			taintInfoTmp = taintInfoTmp.disableObjectRoot()
-
-			logrus.WithField("to", toNode.String()).WithField("curr/from", node.String()).
-				WithField("taint_info_tmp", taintInfoTmp.String()).
-				Infof("found EDGE_LOOKUP_MAP_INDEX: %s\n", toNode.String())
-			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
-
-		case ssagraph.EDGE_LOOKUP_MAP:
-			// e.g., t12: t0[t11]
-			// curr/from: t0
-			// to:		  t12
-			// t0 >>> t11
-			lookupIndex := toNode.GetValueLookup().Index
-			var suffix string
-			keyStr, ok := utils.ExtractStringFromValue(toNode.GetValueLookup().Index)
-			if !ok {
-				suffix = DYNAMIC_MAP_KEY
-			} else {
-				suffix = "." + keyStr
-			}
-			suffix_key := suffix + ".Key"
-			logrus.WithField("suffix_key", suffix_key).WithField("curr/from", node).WithField("to", toNode).
-				Infof("found edge lookup map to: %s\n", toNode.String())
-			taintInfoTmp, ok := taintInfo.cutObjectPathPrefix(suffix_key)
-			if ok {
-				taintInfoTmp = taintInfoTmp.enableObjectRoot()
-				propagateTaintNearby(graph, true, lookupIndex, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
-			}
-
-		case ssagraph.EDGE_MAP_KEY:
-			logrus.Infof("ignoring edge map key to: %s\n", toNode.String())
-			// skip for now
-
-		case ssagraph.EDGE_MAP_VALUE:
-			var prefix string
-			instr := toNode.GetInstruction().(*ssa.MapUpdate)
-			keyStr, ok := utils.ExtractStringFromValue(instr.Key)
-			if !ok {
-				prefix = DYNAMIC_MAP_KEY // dynamic
-				// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
-			} else {
-				prefix = "." + keyStr
-			}
-			prefix += ".Val"
-
-			logrus.WithField("from_node", node).WithField("prefix", prefix).Infof("found edge map value to: %s\n", toNode.String())
-
-			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
-			//taintInfoTmp := taintInfo.setObjectPath(suffix)
-			taintInfoTmp = taintInfoTmp.disableObjectRoot()
-
-			propagateTaintNearby(graph, true, instr.Map, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+		case ssagraph.EDGE_MAP_UPDATE, ssagraph.EDGE_MAP_KEY, ssagraph.EDGE_MAP_VALUE, ssagraph.EDGE_LOOKUP_MAP, ssagraph.EDGE_LOOKUP_MAP_INDEX:
+			propagateTaintNearbyFromNodeOnMap(graph, edge, node, toNode, taintInfo, visited, checkTaintInfo, upwards)
 
 		case ssagraph.EDGE_STORE_ADDRESS:
 			val := toNode.GetInstruction().(*ssa.Store).Val
 			valNode := graph.GetNodeByName(val.Name())
 			propagateTaintNearby(graph, true, valNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+
 		case ssagraph.EDGE_STORE_VALUE:
 			addr := toNode.GetInstruction().(*ssa.Store).Addr
 			addrNode := graph.GetNodeByName(addr.Name())
 			propagateTaintNearby(graph, true, addrNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+
 		case ssagraph.EDGE_ARG_ON_CALL:
 			call := toNode.GetValue().(*ssa.Call)
 			if call == nil {
 				logrus.Fatalf("[TAINT NEARBY] [PART_1] unexpected type for node: [%T] %s\n", toNode.GetValue(), toNode.GetValue())
 			}
 			propagateTaintNearbyFromNodeOnCall(graph, node, toNode, taintInfo, visited, checkTaintInfo, upwards, call)
+
 		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_EXTRACT:
 			// skip
+
 		case ssagraph.EDGE_BINOP_X, ssagraph.EDGE_BINOP_Y:
 			// e.g. t89 = t85 * t88
 			// - allow propagation of taints from binOp.X to binOp
@@ -364,9 +278,6 @@ func propagateTaintNearbyFromNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANo
 
 		default:
 			propagateTaintNearby(graph, true, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-			/* if taintInfo.isObjectRoot() {
-				propagateTaintNearby(graph, true, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-			} */
 		}
 	}
 }
@@ -385,52 +296,6 @@ func propagateTaintNearbyToNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANode
 
 		switch edge.GetType() {
 
-		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
-			// e.g., t41: t6[t27]
-			// curr/to: t41
-			// from: 	t27
-			// t41 >>> t6
-
-			lookupTarget := node.GetValueLookup().X
-			var prefix string
-			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
-			if !ok {
-				prefix = DYNAMIC_MAP_KEY // dynamic
-				// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
-			} else {
-				prefix = "." + keyStr
-			}
-			prefix += ".Val"
-			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
-			taintInfoTmp = taintInfoTmp.disableObjectRoot()
-			
-			logrus.WithField("prefix", prefix).WithField("from", fromNode.String()).WithField("curr/to", node.String()).
-				WithField("taint_info_tmp", taintInfoTmp.String()).
-				Infof("found EDGE_LOOKUP_MAP_INDEX (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
-			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
-
-		case ssagraph.EDGE_LOOKUP_MAP:
-			// e.g., t41: t6[t27]
-			// curr/to: t41
-			// from: 	t6
-			// t41 >>> t6
-
-			lookupTarget := node.GetValueLookup().X
-			var prefix string
-			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
-			if !ok {
-				prefix = DYNAMIC_MAP_KEY // dynamic
-				// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
-			} else {
-				prefix = "." + keyStr
-			}
-			prefix += ".Val"
-			logrus.WithField("prefix", prefix).WithField("from", fromNode.String()).WithField("curr/to", node.String()).
-				Infof("found EDGE_LOOKUP_MAP (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
-			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
-			taintInfoTmp = taintInfoTmp.disableObjectRoot()
-			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
-
 		case ssagraph.EDGE_FIELD:
 			visitedTmp := make(map[ssa.Value]bool)
 
@@ -440,8 +305,6 @@ func propagateTaintNearbyToNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANode
 			} else {
 				taintInfoTmp = taintInfo.updateObjectPathPrefix("." + edge.GetParam())
 			}
-
-			/* taintInfoTmp := taintInfo.updateObjectPathPrefix("." + edge.GetParam()) */
 			propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
 
 		case ssagraph.EDGE_INDEX:
@@ -456,27 +319,22 @@ func propagateTaintNearbyToNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANode
 
 			propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
 
-		case ssagraph.EDGE_MAP_UPDATE:
-			logrus.Infof("ignoring map update to: %s\n", edge.GetToNode().String())
-			/* mapUpdateNode := edge.GetToNode().GetInstruction() */
-
-		case ssagraph.EDGE_MAP_KEY:
-			logrus.Infof("ignoring edge map key to: %s\n", edge.GetToNode().String())
-
-		case ssagraph.EDGE_MAP_VALUE:
-			logrus.Infof("ignoring edge map value to: %s\n", edge.GetToNode().String())
-			// skip for now
+		case ssagraph.EDGE_MAP_UPDATE, ssagraph.EDGE_MAP_KEY, ssagraph.EDGE_MAP_VALUE, ssagraph.EDGE_LOOKUP_MAP, ssagraph.EDGE_LOOKUP_MAP_INDEX:
+			propagateTaintNearbyToNodeOnMap(graph, edge, node, fromNode, taintInfo, visited, checkTaintInfo, upwards)
 
 		case ssagraph.EDGE_STORE_ADDRESS:
 			val := fromNode.GetInstruction().(*ssa.Store).Val
 			valNode := graph.GetNodeByName(val.Name())
 			propagateTaintNearby(graph, true, valNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+
 		case ssagraph.EDGE_STORE_VALUE:
 			addr := fromNode.GetInstruction().(*ssa.Store).Addr
 			addrNode := graph.GetNodeByName(addr.Name())
 			propagateTaintNearby(graph, true, addrNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+
 		case ssagraph.EDGE_RETURN_ON, ssagraph.EDGE_EXTRACT:
 			// skip
+
 		case ssagraph.EDGE_BINOP_X, ssagraph.EDGE_BINOP_Y:
 			// e.g. t89 = t85 * t88
 			// skip
@@ -503,158 +361,7 @@ func propagateTaintNearbyToNode(graph *ssagraph.SSAGraph, node *ssagraph.SSANode
 			propagateTaintNearbyToNodeOnCall(graph, taintInfo, visited, checkTaintInfo, upwards, call)
 
 		default:
-			/* if taintInfo.isObjectRoot() {
-				propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-			} */
 			propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-		}
-	}
-}
-
-func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool, call *ssa.Call) {
-	if !call.Call.IsInvoke() {
-		if builtin, ok := call.Call.Value.(*ssa.Builtin); ok {
-			if ok, funcType, _ := utils.SSABuiltinFuncIsDirect(builtin); ok {
-				if funcType == utils.FUNC_TYPE_APPEND {
-					// REMINDER:
-					// builtin append() can safely taint its arguments because
-					// the Go SSA transforms the second argument into a slice
-					// e.g. in dsb_sn2 at UserTimelineService.ReadUserTimeline:
-					// > new_post_ids = append(new_post_ids, post.PostID)
-					// ----------------------------
-					// t107: local PostInfo (post)
-					// t122: &t107.PostID [#0]
-					// t123: *t122
-					// t124: new[1]int64 (varargs)
-					// t125: &t124[0:int]
-					// *t125 = t123
-					// t126: slice t124[:]
-					// t127: append(t111, t126...)
-					// ----------------------------
-					propagateTaintNearby(graph, true, call, taintInfo, visited, checkTaintInfo, upwards)
-				}
-				if funcType == utils.FUNC_TYPE_APPEND || funcType == utils.FUNC_TYPE_TRANSFER {
-					// e.g.
-					// append(t111, t126...)
-					// copy(...)
-					for _, arg := range call.Call.Args {
-						argNode := graph.GetNodeByName(arg.Name())
-						if argNode != node {
-							propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-						}
-					}
-				} else if funcType == utils.FUNC_TYPE_MAP_ELEMS {
-					for idxToTaint, edge := range graph.GetEdgesToNode(toNode) {
-						// e.g., delete(m map[Type]Type1, key Type)
-						// propagate from map to key
-						funcArg := edge.GetFromNode()
-						if funcArg == node {
-							continue
-						}
-
-						// e.g., delete
-						logrus.Infof("SSA CALL VALUE: (%s)\n", call.Call.Value.Name())
-
-						// example 1:
-						// - unique_post_ids := make(map[int64]bool)
-						// - delete(unique_post_ids, post.PostID)
-						//
-						// example 2:
-						// - delete(t0, t59)
-						if call.Call.Value.Name() == "delete" {
-							taintInfoTmp := taintInfo.updateObjectPathPrefix(DYNAMIC_MAP_KEY + ".Key")
-							taintInfoTmp = taintInfoTmp.disableObjectRoot()
-							propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
-						} else if idxToTaint == 0 {
-							// TODO
-							taintInfoTmp := taintInfo.updateObjectPathSuffix(DYNAMIC_MAP_KEY + ".Val")
-							taintInfoTmp = taintInfoTmp.disableObjectRoot()
-							propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
-						} else if idxToTaint == 1 {
-							propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-						} else {
-							logrus.Fatalf("[TAINT NEARBY] [PART_1] unexpected index (%d)\n", idxToTaint)
-						}
-					}
-				}
-			}
-		} else if fn, ok := call.Call.Value.(*ssa.Function); ok {
-			if fn.Package() != nil {
-				if fn.Package().Pkg.Name() == "strconv" {
-					if fn.Name() == "FormatInt" || fn.Name() == "Itoa" {
-						// e.g.,
-						// (1) id_str := strconv.FormatInt(id, 10)
-						// 		- taint: id_str <<< id
-						argNode := graph.GetNodeByName(call.Call.Args[0].Name())
-						// check if its the current node
-						if node == argNode {
-							callNode := graph.GetNodeByName(call.Name())
-							propagateTaintNearby(graph, true, callNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-						}
-					} else if fn.Name() == "ParseFloat" || fn.Name() == "ParseInt" {
-						// e.g.,
-						// (1) amount, err := strconv.ParseFloat(declineOverAmount, 32)
-						// 		- taint: amount <<< declineOverAmount
-						// (2) amount, err := strconv.ParseInt(str, 10, 64)
-						// 		- taint: amount <<< str
-						// TODO (needs SSA EXTRACT logic)
-					} else {
-						logrus.Fatalf("[TAINT NEARBY] [PART_1] skipping function (%s) for call: [%T] %s\n", fn.Name(), call.Call.Value, call.Call.Value)
-					}
-				} else {
-					logrus.Tracef("[TAINT NEARBY] [PART_1] skipping package (%s) for call: [%T] %s\n", fn.Package().Pkg.Name(), call.Call.Value, call.Call.Value)
-				}
-			} else {
-				logrus.Tracef("[TAINT NEARBY] [PART_1] skipping nil package for call: [%T] %s\n", call.Call.Value, call.Call.Value)
-			}
-		} else {
-			logrus.Fatalf("[TAINT NEARBY] [PART_1] unexpected type for call value: [%T] %s\n", call.Call.Value, call.Call.Value)
-		}
-	}
-}
-
-func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool, call *ssa.Call) {
-	if !call.Call.IsInvoke() {
-		if builtin, ok := call.Call.Value.(*ssa.Builtin); ok {
-			if ok, funcType, _ := utils.SSABuiltinFuncIsDirect(builtin); ok {
-				if funcType == utils.FUNC_TYPE_APPEND {
-					// REMINDER:
-					// builtin append() can safely taint its arguments because
-					// the Go SSA transforms the second argument into a slice
-					// e.g. in dsb_sn2 at UserTimelineService.ReadUserTimeline:
-					// > new_post_ids = append(new_post_ids, post.PostID)
-					// ----------------------------
-					// t107: local PostInfo (post)
-					// t122: &t107.PostID [#0]
-					// t123: *t122
-					// t124: new[1]int64 (varargs)
-					// t125: &t124[0:int]
-					// *t125 = t123
-					// t126: slice t124[:]
-					// t127: append(t111, t126...)
-					// ----------------------------
-					for _, arg := range call.Call.Args {
-						argNode := graph.GetNodeByName(arg.Name())
-						propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-					}
-				}
-			}
-		} else if fn, ok := call.Call.Value.(*ssa.Function); ok && fn.Package() != nil {
-			if fn.Package().Pkg.Name() == "strconv" {
-				if fn.Name() == "FormatInt" || fn.Name() == "Itoa" {
-					// e.g.,
-					// (1) id_str := strconv.FormatInt(id, 10)
-					// 		- taint: id_str >>> id
-					// (2) amount, err := strconv.ParseFloat(declineOverAmount, 32)
-					// 		- taint: amount >>> declineOverAmount
-					argNode := graph.GetNodeByName(call.Call.Args[0].Name())
-					propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-				} else if fn.Name() == "ParseFloat" {
-					// e.g., amount, err := strconv.ParseFloat(declineOverAmount, 32)
-					// taint: amount >>> declineOverAmount
-					// TODO (needs SSA EXTRACT logic)
-				}
-			}
 		}
 	}
 }
@@ -882,7 +589,9 @@ func taintOnDatabaseCall(graph *ssagraph.SSAGraph, dbCall *ssagraph.DatabaseCall
 		}
 
 		visited := make(map[ssa.Value]bool)
+		seenTaint = make(map[TaintInfo]bool)
 		propagateTaintNearby(graph, false, obj, taintInfo, visited, nil, false)
+		seenTaint = nil
 		objNode := graph.GetNodeByName(obj.Name())
 		nodesToVisit = append(nodesToVisit, objNode)
 	}
@@ -896,18 +605,22 @@ func taintOnServiceCall(graph *ssagraph.SSAGraph, svcCall *ssagraph.ServiceCall)
 		nodesToVisit = append(nodesToVisit, argNode)
 		arg := argNode.GetValue()
 		svpath := svcCall.String() + "." + arg.Name()
-		visited := make(map[ssa.Value]bool)
 		taintInfo := NewTaintInfoService(svpath, "", nil, svcCall)
+		visited := make(map[ssa.Value]bool)
+		seenTaint = make(map[TaintInfo]bool)
 		propagateTaintNearby(graph, false, arg, taintInfo, visited, nil, false)
+		seenTaint = nil
 	}
 
 	for _, retNode := range svcCall.GetReturns() {
 		nodesToVisit = append(nodesToVisit, retNode)
 		ret := retNode.GetValue()
 		svpath := svcCall.String() + "." + ret.Name()
-		visited := make(map[ssa.Value]bool)
 		taintInfo := NewTaintInfoService(svpath, "", nil, svcCall)
+		visited := make(map[ssa.Value]bool)
+		seenTaint = make(map[TaintInfo]bool)
 		propagateTaintNearby(graph, false, ret, taintInfo, visited, nil, false)
+		seenTaint = nil
 	}
 	checkUpperTaintsForObjects(graph, nodesToVisit)
 }
