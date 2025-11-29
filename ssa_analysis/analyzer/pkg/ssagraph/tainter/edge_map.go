@@ -43,7 +43,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			WithField("to", toNode.String()).
 			WithField("taint_info", taintInfo.String()).
 			WithField("taint_info_tmp", taintInfoTmpVal.String()).
-			Infof("[TAINT NEARBY] [FROM] found EDGE_MAP_UPDATE")
+			Debugf("[TAINT NEARBY] [FROM] found EDGE_MAP_UPDATE")
 
 		if keyOk {
 			// triggers ssagraph.EDGE_MAP_KEY ahead
@@ -77,7 +77,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			WithField("curr/from", node).
 			WithField("to", toNode).
 			WithField("taint_info_tmp", taintInfoTmp.String()).
-			Infof("[TAINT NEARBY] [FROM] found EDGE_MAP_KEY")
+			Debugf("[TAINT NEARBY] [FROM] found EDGE_MAP_KEY")
 		taintInfoTmp = taintInfoTmp.enableObjectRoot()
 
 		propagateTaintNearby(graph, true, mapInstr.Map, taintInfoTmp, make(map[ssa.Value]bool), upwards)
@@ -105,7 +105,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			WithField("prefix", prefix).
 			WithField("taint_info", taintInfo.String()).
 			WithField("taint_info_tmp", taintInfoTmp.String()).
-			Infof("[TAINT NEARBY] [FROM] found EDGE_MAP_VALUE")
+			Debugf("[TAINT NEARBY] [FROM] found EDGE_MAP_VALUE")
 
 		propagateTaintNearby(graph, true, instr.Map, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 
@@ -168,7 +168,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			WithField("curr/from", node.String()).
 			WithField("taint_info", taintInfo.String()).
 			WithField("taint_info_tmp", taintInfoTmp.String()).
-			Infof("[TAINT NEARBY] [FROM] found EDGE_LOOKUP_MAP_INDEX: %s\n", toNode.String())
+			Debugf("[TAINT NEARBY] [FROM] found EDGE_LOOKUP_MAP_INDEX: %s\n", toNode.String())
 		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 	}
 }
@@ -209,7 +209,7 @@ func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SS
 		prefix += ".Val"
 
 		logrus.WithField("prefix", prefix).WithField("from", fromNode.String()).WithField("curr/to", node.String()).
-			Infof("[TAINT NEARBY] [TO] found EDGE_LOOKUP_MAP (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
+			Debugf("[TAINT NEARBY] [TO] found EDGE_LOOKUP_MAP (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
 
 		taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
 		taintInfoTmp = taintInfoTmp.disableObjectRoot()
@@ -239,7 +239,7 @@ func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SS
 			WithField("curr/to", node.String()).
 			WithField("taint_info", taintInfo.String()).
 			WithField("taint_info_tmp", taintInfoTmp.String()).
-			Infof("[TAINT NEARBY] [TO] found EDGE_LOOKUP_MAP_INDEX (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
+			Debugf("[TAINT NEARBY] [TO] found EDGE_LOOKUP_MAP_INDEX (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
 
 		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 	}

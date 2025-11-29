@@ -28,13 +28,13 @@ NAME_MAP = {
     "sockshop3":                "sockshop",
     "train_ticket2":            "trainticket",
     "synthetic_app":            "syntheticapp",
-    "synthetic_app1":           "syntheticapp (4, 3)",
-    "synthetic_app2":           "syntheticapp (5, 3)",
-    "synthetic_app3":           "syntheticapp (340, 1)",
-    "synthetic_app4":           "syntheticapp (4, 4)",
-    "synthetic_app5":           "syntheticapp (1, 340)",
-    "synthetic_app6":           "syntheticapp (4, 5)",
-    "synthetic_app7":           "syntheticapp (5, 4)",
+    "synthetic_app1":           "syntheticapp1 (4, 3)",
+    "synthetic_app2":           "syntheticapp2 (5, 3)",
+    "synthetic_app3":           "syntheticapp3 (340, 1)",
+    "synthetic_app4":           "syntheticapp4 (4, 4)",
+    "synthetic_app5":           "syntheticapp5 (1, 340)",
+    "synthetic_app6":           "syntheticapp6 (4, 5)",
+    "synthetic_app7":           "syntheticapp7 (5, 4)",
 }
 
 apps_data = defaultdict(list)

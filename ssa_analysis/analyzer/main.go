@@ -231,6 +231,9 @@ func main() {
 	// phase 2: one pass for all detectors
 	iterator.Run(detection.PHASE_2_PATTERN_DETECTOR)
 
+	elapsed_total := time.Since(start)
+	elapsed_detection := time.Since(start_detection)
+
 	if !EVAL {
 		// phase 0: dummy pass to generate dot files with taints for debugging
 		iterator.Run(detection.PHASE_0_DEBUG)
@@ -241,9 +244,6 @@ func main() {
 		app.WriteAppToJSON()
 		app.WriteSchemaToJSON()
 	}
-
-	elapsed_total := time.Since(start)
-	elapsed_detection := time.Since(start_detection)
 
 	// ------------ PART 12
 	logrus_ctx.Infof("[12/12] saving results")

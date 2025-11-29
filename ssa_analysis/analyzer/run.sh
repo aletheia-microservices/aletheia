@@ -11,12 +11,12 @@
 set -e
 
 apps=(
-    digota
-    sockshop3
-    postnotification_simple
-    dsb_sn2
-    dsb_media_nosql
-    train_ticket2
+    #digota
+    #sockshop3
+    #postnotification_simple
+    #dsb_sn2
+    #dsb_media_nosql
+    #train_ticket2
 )
 
 apps_synthetic=(
@@ -28,11 +28,11 @@ apps_synthetic=(
     #synthetic_app3
     #synthetic_app4
     #synthetic_app5
-    #synthetic_app6
+    synthetic_app6
 )
 
 mode=""
-runs=1
+runs=2
 
 if [[ $# -eq 1 ]]; then
     case "$1" in

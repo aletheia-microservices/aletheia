@@ -53,7 +53,7 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 								WithField("curr/from", node.String()).
 								WithField("other arg", edge.GetFromNode().String()).
 								WithField("taint_info", taintInfo.String()).
-								Infof("[TAINT NEARBY] [FROM] found call")
+								Debugf("[TAINT NEARBY] [FROM] found call")
 
 							if idxToTaint == 0 {
 								taintInfoTmp := taintInfo.updateObjectPathPrefix(DYNAMIC_MAP_KEY + ".Key")

@@ -35,15 +35,19 @@ type SVTaint struct {
 	svcall *ssagraph.ServiceCall //currently this is only used to get the ID later in the parser of abstractcallgraph
 }
 
-type TaintInfo struct {
+type TaintInfoData struct {
 	objpath  string
 	objval   ssa.Value
-	prevval  ssa.Value // debug purposes
-	objroot  bool
 	infoType TaintInfoType
 	dbTaint  DBTaint
 	svTaint  SVTaint
-	callerT  string // managed at combiner.go
+}
+
+type TaintInfo struct {
+	TaintInfoData
+	prevval ssa.Value // debug purposes
+	objroot bool
+	callerT string // managed at combiner.go
 }
 
 func (ti TaintInfo) String() string {
@@ -57,29 +61,33 @@ func (ti TaintInfo) String() string {
 
 func NewTaintInfoDatabase(dbpath string, path string, val ssa.Value, dbcall *ssagraph.DatabaseCall, readKey bool, readVal bool) TaintInfo {
 	return TaintInfo{
-		objpath:  path,
-		objval:   val,
-		infoType: TAINT_INFO_DATABASE,
-		objroot:  true,
-		dbTaint: DBTaint{
-			dbpath:  dbpath,
-			dbcall:  dbcall,
-			readKey: readKey,
-			readVal: readVal,
+		TaintInfoData: TaintInfoData{
+			objpath:  path,
+			objval:   val,
+			infoType: TAINT_INFO_DATABASE,
+			dbTaint: DBTaint{
+				dbpath:  dbpath,
+				dbcall:  dbcall,
+				readKey: readKey,
+				readVal: readVal,
+			},
 		},
+		objroot: true,
 	}
 }
 
 func NewTaintInfoService(svpath string, path string, val ssa.Value, svcall *ssagraph.ServiceCall) TaintInfo {
 	return TaintInfo{
-		objpath:  path,
-		objval:   val,
-		infoType: TAINT_INFO_SERVICE,
-		objroot:  true,
-		svTaint: SVTaint{
-			svpath: svpath,
-			svcall: svcall,
+		TaintInfoData: TaintInfoData{
+			objpath:  path,
+			objval:   val,
+			infoType: TAINT_INFO_SERVICE,
+			svTaint: SVTaint{
+				svpath: svpath,
+				svcall: svcall,
+			},
 		},
+		objroot:  true,
 	}
 }
 

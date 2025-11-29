@@ -9,7 +9,7 @@ import (
 	"analyzer/pkg/ssagraph"
 )
 
-var seenTaint map[TaintInfo]bool
+var seenTaint map[TaintInfoData]bool
 
 func RunTainter(graph *ssagraph.SSAGraph) {
 	logrus.WithField("graph", graph.String()).Debugf("[SSA TAINTER] running SSA tainter...")
@@ -81,12 +81,12 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		WithField("taint_info", taintInfo.String()).
 		Debugf("[TAINT NEARBY] visiting")
 
-	if seenTaint[taintInfo] {
+	if seenTaint[taintInfo.TaintInfoData] {
 		logrus.WithField("val", val.Name).WithField("taint_info", taintInfo.String()).
 			Tracef("[TAINT NEARBY] skipping (seen taint)...")
 		return
 	}
-	seenTaint[taintInfo] = true
+	seenTaint[taintInfo.TaintInfoData] = true
 
 	if visited[val] {
 		logrus.WithField("val", val.Name).WithField("taint_info", taintInfo.String()).
@@ -306,7 +306,7 @@ func getReturnSSAValuesFromCall(graph *ssagraph.SSAGraph, call *ssa.Call) []ssa.
 }
 
 func runTainterOnCalls(graph *ssagraph.SSAGraph, databaseCallRegistry map[*ssagraph.DatabaseCall][]ValFieldPath) {
-	seenTaint = make(map[TaintInfo]bool)
+	seenTaint = make(map[TaintInfoData]bool)
 	for _, call := range graph.GetAllCalls() {
 		if dbCall, ok := call.(*ssagraph.DatabaseCall); ok {
 			valFieldPathLst := databaseCallRegistry[dbCall]

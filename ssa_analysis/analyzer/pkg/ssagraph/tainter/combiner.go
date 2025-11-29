@@ -126,8 +126,9 @@ func propagateTaints(graph *ssagraph.SSAGraph, to_obj *ssagraph.SSANode, from_ta
 			if callerT != "" {
 				taintInfo.callerT = callerT
 			}
-			seenTaint = make(map[TaintInfo]bool)
+			seenTaint = make(map[TaintInfoData]bool)
 			propagateTaintNearby(graph, false, to_obj.GetValue(), taintInfo, visited, false)
+			seenTaint = nil
 		}
 	}
 }
