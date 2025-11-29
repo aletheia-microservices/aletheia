@@ -9,7 +9,7 @@ import (
 	"analyzer/pkg/ssagraph"
 )
 
-func propagateTaintNearbyFromNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
+func propagateTaintNearbyFromNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool) {
 	if upwards {
 		if taintInfo.isTypeService() {
 			// found index corresponding to upper taintinfo objpath
@@ -19,13 +19,9 @@ func propagateTaintNearbyFromNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagrap
 					// node has taint info if it was the previous node calling propagateTaintNearby
 					// (e.g., lower index propagating to upper slice)
 					// we need to avoid visiting it again otherwise we will have infinite recursion!
-					if !nodeHasTaintInfo(toNode, "_obj", taintInfoTmp) {
-						propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, false)
-					}
+					propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, make(map[ssa.Value]bool), false)
 				}
 			}
-		} else {
-			// TODO
 		}
 		return
 	}
@@ -41,10 +37,10 @@ func propagateTaintNearbyFromNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagrap
 		}
 	}
 
-	propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+	propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, visited, upwards)
 }
 
-func propagateTaintNearbyToNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, fromNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
+func propagateTaintNearbyToNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, fromNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool) {
 	var taintInfoTmp TaintInfo
 	if taintInfo.isObjectRoot() {
 		taintInfoTmp = taintInfo.updateObjectPathPrefix("[" + edge.GetParam() + "]")
@@ -52,5 +48,5 @@ func propagateTaintNearbyToNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.
 		taintInfoTmp = taintInfo.enableObjectRoot()
 	}
 
-	propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, true)
+	propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfoTmp, make(map[ssa.Value]bool), true)
 }

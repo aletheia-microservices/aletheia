@@ -8,7 +8,7 @@ import (
 	"analyzer/pkg/utils"
 )
 
-func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool, call *ssa.Call) {
+func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool, call *ssa.Call) {
 	if !call.Call.IsInvoke() {
 		if builtin, ok := call.Call.Value.(*ssa.Builtin); ok {
 			if ok, funcType, _ := utils.SSABuiltinFuncIsDirect(builtin); ok {
@@ -27,7 +27,7 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 					// t126: slice t124[:]
 					// t127: append(t111, t126...)
 					// ----------------------------
-					propagateTaintNearby(graph, true, call, taintInfo, visited, checkTaintInfo, upwards)
+					propagateTaintNearby(graph, true, call, taintInfo, visited, upwards)
 				}
 				if funcType == utils.FUNC_TYPE_APPEND || funcType == utils.FUNC_TYPE_TRANSFER {
 					// e.g., append(t111, t126...)
@@ -35,7 +35,7 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 					for _, arg := range call.Call.Args {
 						argNode := graph.GetNodeByName(arg.Name())
 						if argNode != node {
-							propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+							propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, upwards)
 						}
 					}
 				} else if funcType == utils.FUNC_TYPE_MAP_ELEMS {
@@ -58,12 +58,12 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 							if idxToTaint == 0 {
 								taintInfoTmp := taintInfo.updateObjectPathPrefix(DYNAMIC_MAP_KEY + ".Key")
 								taintInfoTmp = taintInfoTmp.disableObjectRoot()
-								propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+								propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, upwards)
 							} else if idxToTaint == 1 {
 								taintInfoTmp, ok := taintInfo.cutObjectPathPrefix(DYNAMIC_MAP_KEY + ".Key")
 								taintInfoTmp = taintInfoTmp.tryEnableObjectRoot()
 								if ok {
-									propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+									propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, upwards)
 								}
 							}
 						default:
@@ -84,7 +84,7 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 					// propagate from argument value to call value
 					if node == graph.GetNodeByName(call.Call.Args[0].Name()) {
 						callNode := graph.GetNodeByName(call.Name())
-						propagateTaintNearby(graph, true, callNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+						propagateTaintNearby(graph, true, callNode.GetValue(), taintInfo, visited, upwards)
 					}
 				default:
 					logrus.WithField("call", call.String()).Fatalf("[TAINT NEARBY] [FROM] unexpected call on (strconv) package")
@@ -94,7 +94,7 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 	}
 }
 
-func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool, call *ssa.Call) {
+func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool, call *ssa.Call) {
 	if !call.Call.IsInvoke() {
 		if builtin, ok := call.Call.Value.(*ssa.Builtin); ok {
 			if ok, funcType, _ := utils.SSABuiltinFuncIsDirect(builtin); ok {
@@ -115,7 +115,7 @@ func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintI
 					// ----------------------------
 					for _, arg := range call.Call.Args {
 						argNode := graph.GetNodeByName(arg.Name())
-						propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+						propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, upwards)
 					}
 				}
 			}
@@ -130,7 +130,7 @@ func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintI
 
 					// propagate from call value to argument value
 					argNode := graph.GetNodeByName(call.Call.Args[0].Name())
-					propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
+					propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, upwards)
 				default:
 					logrus.WithField("call", call.String()).Fatalf("[TAINT NEARBY] [FROM] unexpected call on (strconv) package")
 				}

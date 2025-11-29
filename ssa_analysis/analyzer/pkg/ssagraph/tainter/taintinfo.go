@@ -229,38 +229,3 @@ func insertAfterFieldName(path, prefix string) string {
 	// insert prefix right after fieldname
 	return path[:i] + prefix + path[i:]
 }
-
-type CheckTaintInfo struct {
-	indirectTaints  []DBTaint
-	inheritedTaints map[string][]DBTaint
-}
-
-func NewCheckTaintInfo() *CheckTaintInfo {
-	return &CheckTaintInfo{
-		inheritedTaints: make(map[string][]DBTaint),
-	}
-}
-
-func (t *CheckTaintInfo) addToInheritedTaints(objPath string, dbfield string, dbcall *ssagraph.DatabaseCall) {
-	for _, taint := range t.inheritedTaints[objPath] {
-		if taint.dbpath == dbfield {
-			return
-		}
-	}
-	t.inheritedTaints[objPath] = append(t.inheritedTaints[objPath], DBTaint{
-		dbpath: dbfield,
-		dbcall: dbcall,
-	})
-}
-
-func (t *CheckTaintInfo) addToIndirectTaints(dbfield string, dbcall *ssagraph.DatabaseCall) {
-	for _, taint := range t.indirectTaints {
-		if taint.dbpath == dbfield {
-			return
-		}
-	}
-	t.indirectTaints = append(t.indirectTaints, DBTaint{
-		dbpath: dbfield,
-		dbcall: dbcall,
-	})
-}

@@ -98,9 +98,6 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		}
 	}
 
-	runTainterOnParameters(graph)
-	runTainterOnReturns(graph)
-
 	for _, toGraph := range graph.GetAllCombinedGraphs() {
 		if graph.GetFunctionShortPath() == toGraph.GetFunctionShortPath() {
 			// skip to avoid recursion
@@ -130,7 +127,7 @@ func propagateTaints(graph *ssagraph.SSAGraph, to_obj *ssagraph.SSANode, from_ta
 				taintInfo.callerT = callerT
 			}
 			seenTaint = make(map[TaintInfo]bool)
-			propagateTaintNearby(graph, false, to_obj.GetValue(), taintInfo, visited, nil, false)
+			propagateTaintNearby(graph, false, to_obj.GetValue(), taintInfo, visited, false)
 		}
 	}
 }

@@ -16,7 +16,7 @@ const (
 	DYNAMIC_MAP_VALUE = ".MapVal"
 )
 
-func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
+func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool) {
 	switch edge.GetType() {
 	case ssagraph.EDGE_MAP_UPDATE:
 		if upwards {
@@ -48,12 +48,12 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 		if keyOk {
 			// triggers ssagraph.EDGE_MAP_KEY ahead
 			mapKey := toNode.GetInstruction().(*ssa.MapUpdate).Key
-			propagateTaintNearby(graph, true, mapKey, taintInfoTmpKey, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+			propagateTaintNearby(graph, true, mapKey, taintInfoTmpKey, make(map[ssa.Value]bool), upwards)
 		}
 		if valOk {
 			// triggers ssagraph.EDGE_MAP_VAL ahead
 			mapVal := toNode.GetInstruction().(*ssa.MapUpdate).Value
-			propagateTaintNearby(graph, true, mapVal, taintInfoTmpVal, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+			propagateTaintNearby(graph, true, mapVal, taintInfoTmpVal, make(map[ssa.Value]bool), upwards)
 		}
 
 	case ssagraph.EDGE_MAP_KEY:
@@ -80,7 +80,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			Infof("[TAINT NEARBY] [FROM] found EDGE_MAP_KEY")
 		taintInfoTmp = taintInfoTmp.enableObjectRoot()
 
-		propagateTaintNearby(graph, true, mapInstr.Map, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+		propagateTaintNearby(graph, true, mapInstr.Map, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 
 	case ssagraph.EDGE_MAP_VALUE:
 		// e.g., [ssa.MapUpdate] t0[t27] = t7
@@ -107,7 +107,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			WithField("taint_info_tmp", taintInfoTmp.String()).
 			Infof("[TAINT NEARBY] [FROM] found EDGE_MAP_VALUE")
 
-		propagateTaintNearby(graph, true, instr.Map, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+		propagateTaintNearby(graph, true, instr.Map, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 
 	case ssagraph.EDGE_LOOKUP_MAP:
 		// e.g., [ssa.Lookup] t12: t0[t11]
@@ -127,14 +127,14 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 		taintInfoTmpKey, keyOk := taintInfo.cutObjectPathPrefix(prefix_key)
 		if keyOk {
 			taintInfoTmpKey = taintInfoTmpKey.enableObjectRoot()
-			propagateTaintNearby(graph, true, lookupIndex, taintInfoTmpKey, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+			propagateTaintNearby(graph, true, lookupIndex, taintInfoTmpKey, make(map[ssa.Value]bool), upwards)
 		}
 
 		prefix_val := prefix + ".Val"
 		taintInfoTmpVal, valOk := taintInfo.cutObjectPathPrefix(prefix_val)
 		if valOk {
 			taintInfoTmpVal = taintInfoTmpVal.enableObjectRoot()
-			propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmpVal, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+			propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmpVal, make(map[ssa.Value]bool), upwards)
 		}
 
 		if !keyOk && !valOk {
@@ -169,11 +169,11 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 			WithField("taint_info", taintInfo.String()).
 			WithField("taint_info_tmp", taintInfoTmp.String()).
 			Infof("[TAINT NEARBY] [FROM] found EDGE_LOOKUP_MAP_INDEX: %s\n", toNode.String())
-		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 	}
 }
 
-func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, fromNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, checkTaintInfo *CheckTaintInfo, upwards bool) {
+func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, fromNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool) {
 	switch edge.GetType() {
 	case ssagraph.EDGE_MAP_UPDATE:
 		logrus.WithField("curr/to", node.String()).
@@ -213,7 +213,7 @@ func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SS
 
 		taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
 		taintInfoTmp = taintInfoTmp.disableObjectRoot()
-		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 
 	case ssagraph.EDGE_LOOKUP_MAP_INDEX:
 		// e.g., t41: t6[t27]
@@ -241,6 +241,6 @@ func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SS
 			WithField("taint_info_tmp", taintInfoTmp.String()).
 			Infof("[TAINT NEARBY] [TO] found EDGE_LOOKUP_MAP_INDEX (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
 
-		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+		propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), upwards)
 	}
 }

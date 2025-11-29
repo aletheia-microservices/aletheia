@@ -191,7 +191,7 @@ func main() {
 
 	// ------------ PART 8
 	logrus_ctx.Infof("[8/12] releasing memory associated with ssa graph")
-	/* graphsLst = nil
+	graphsLst = nil
 	pkgs = nil
 	for fn, ssagraph := range funcGraphs {
 		if ssagraph != nil {
@@ -199,7 +199,7 @@ func main() {
 		}
 		delete(funcGraphs, fn)
 	}
-	funcGraphs = nil */
+	funcGraphs = nil
 
 	if !EVAL {
 		absgraph.WriteVisited(appname)
