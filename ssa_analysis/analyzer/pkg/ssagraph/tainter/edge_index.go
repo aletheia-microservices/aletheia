@@ -11,7 +11,7 @@ import (
 
 func propagateTaintNearbyFromNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.SSAEdge, node *ssagraph.SSANode, toNode *ssagraph.SSANode, taintInfo TaintInfo, visited map[ssa.Value]bool, upwards bool) {
 	if upwards {
-		if taintInfo.isTypeService() {
+		if edge.GetParam() != "*" {
 			// found index corresponding to upper taintinfo objpath
 			if taintInfo.objpath == "["+edge.GetParam()+"]" {
 				for _, upperTaint := range node.GetTaintsForPath("_obj" + taintInfo.objpath) {
@@ -29,14 +29,15 @@ func propagateTaintNearbyFromNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagrap
 	if taintInfo.isObjectRoot() {
 		taintInfoTmp = taintInfo.updateCallPathSuffix("[" + edge.GetParam() + "]")
 	} else {
+		// e.g. objpath = "_obj[*].OrderItem.Parent"
 		var ok bool
 		taintInfoTmp = taintInfo.enableObjectRoot()
-		taintInfoTmp.objpath, ok = strings.CutSuffix(taintInfoTmp.objpath, "[*]")
+		taintInfoTmp.objpath, ok = strings.CutPrefix(taintInfoTmp.objpath, "[*]")
 		if !ok {
-			logrus.Fatalf("[TAINT NEARBY] [PART_1] [INDEX] could not cut suffix [*] for objpath = (%s)\n", taintInfoTmp.objpath)
+			logrus.WithField("curr/from", node.String()).WithField("to", toNode.String()).
+				Fatalf("[TAINT NEARBY] [FROM] [INDEX] could not cut suffix [*] for objpath = (%s)\n", taintInfoTmp.objpath)
 		}
 	}
-
 	propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, visited, upwards)
 }
 
@@ -47,6 +48,5 @@ func propagateTaintNearbyToNodeOnIndex(graph *ssagraph.SSAGraph, edge *ssagraph.
 	} else {
 		taintInfoTmp = taintInfo.enableObjectRoot()
 	}
-
 	propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfoTmp, make(map[ssa.Value]bool), true)
 }

@@ -6,10 +6,8 @@
         "name": "*",
         "fields": [
           "cast_info_cache.*.Key",
-          "cast_info_cache.*.Key[*]",
           "cast_info_cache.*.Value",
-          "cast_info_cache.*.Value.CastInfoID",
-          "cast_info_cache.*.Value[*]"
+          "cast_info_cache.*.Value.CastInfoID"
         ],
         "constraints": []
       }
@@ -89,7 +87,7 @@
           "FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_id_db.movie.MovieID",
           "FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_review_cache.*.Key [MANDATORY]",
           "FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_review_db.movie_review.MovieID",
-          "FOREIGN_KEY movie_info_cache.*.Value.Casts[*].CastInfoID REFERENCES cast_info_cache.*.Key[*]",
+          "FOREIGN_KEY movie_info_cache.*.Value.Casts[*].CastInfoID REFERENCES cast_info_cache.*.Key",
           "FOREIGN_KEY movie_info_cache.*.Value.Casts[*].CastInfoID REFERENCES cast_info_db.cast.CastInfoID",
           "FOREIGN_KEY movie_info_cache.*.Value.PlotID REFERENCES plot_cache.*.Key",
           "FOREIGN_KEY movie_info_cache.*.Value.PlotID REFERENCES plot_db.plot.PlotID"
@@ -132,7 +130,7 @@
         "constraints": [
           "FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_id_db.movie.MovieID",
           "FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_info_db.movie_info.MovieID",
-          "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_cache.*.Key[*]",
+          "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_cache.*.Key",
           "FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_db.review.ReviewID"
         ]
       }
@@ -200,10 +198,8 @@
         "name": "*",
         "fields": [
           "review_storage_cache.*.Key",
-          "review_storage_cache.*.Key[*]",
           "review_storage_cache.*.Value",
-          "review_storage_cache.*.Value.ReviewID",
-          "review_storage_cache.*.Value[*]"
+          "review_storage_cache.*.Value.ReviewID"
         ],
         "constraints": []
       }

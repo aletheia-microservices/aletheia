@@ -374,10 +374,6 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 
 				var keyField = "Key"
 				var valField = "Value"
-				if opType == common.OP_READ_MANY {
-					keyField += "[*]"
-					valField += "[*]"
-				}
 
 				// track cache key
 				if _, ok := utils.ExtractStringFromValue(cacheKeyVal); ok {

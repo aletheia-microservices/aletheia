@@ -7,13 +7,15 @@
         "fields": [
           "orders_db.orders",
           "orders_db.orders.Amount",
+          "orders_db.orders.ChargeId",
           "orders_db.orders.Currency",
           "orders_db.orders.Email",
           "orders_db.orders.Id",
           "orders_db.orders.Items",
           "orders_db.orders.Items[*].Parent",
           "orders_db.orders.Metadata",
-          "orders_db.orders.Shipping"
+          "orders_db.orders.Shipping",
+          "orders_db.orders.Status"
         ],
         "constraints": [
           "FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus.Id"
@@ -34,7 +36,12 @@
           "payments_db.payments.Id",
           "payments_db.payments.Statement"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY payments_db.payments.ChargeAmount REFERENCES orders_db.orders.Amount",
+          "FOREIGN_KEY payments_db.payments.Currency REFERENCES orders_db.orders.Currency",
+          "FOREIGN_KEY payments_db.payments.Email REFERENCES orders_db.orders.Email",
+          "FOREIGN_KEY payments_db.payments.Id REFERENCES orders_db.orders.ChargeId"
+        ]
       }
     ]
   },
