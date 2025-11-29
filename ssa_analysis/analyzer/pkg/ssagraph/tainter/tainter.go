@@ -102,9 +102,16 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 	taintInfo = taintInfo.updateValue(val)
 
-	logrus.WithField("graph", graph.String()).Debugf("visiting (%s) for taint info: %s\n", val.Name(), taintInfo.String())
+	var prevval string
+	if taintInfo.prevval != nil {
+		prevval = taintInfo.prevval.Name() + ": " + taintInfo.prevval.String()
+	}
+
+	logrus.WithField("graph", graph.String()).WithField("prev", prevval).
+		Debugf("visiting (%s) for taint info: %s\n", val.Name(), taintInfo.String())
 
 	logrus.Debugf("[TAINT NEARBY] visiting %s: %s // TAINT INFO (_obj%s, %s)\n", val.Name(), val.String(), taintInfo.getObjectPath(), taintInfo.getDatabasePath())
+
 	if visited[val] {
 		logrus.Debugf("skipping already visited value (taint_info=%s)\n", taintInfo.String())
 		// EVAL: fmt.Printf("\t[TAINT NEARBY] skipping value %s: %s\n", val.Name(), val.String())
@@ -133,9 +140,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 
 		case ssagraph.EDGE_FIELD:
 			if upwards {
-				if toNode.GetValue().Name() == "t96" && node.GetValue().Name() == "t101" {
-					logrus.Fatalf("inspect")
-				}
 				// TODO: EXTEND TO TYPE DATABASE??
 				// FOR NOW WE ONLY NEED TO SERVICE TYPE
 				// BECAUSE WE NEED TO SPREAD THE TRACES FROM UPPER STRUCTS TO LOWER FIELDS
@@ -146,21 +150,10 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 					if taintInfo.objpath == "."+edge.GetParam() {
 						for _, upperTaint := range node.GetTaintsForPath("_obj" + taintInfo.objpath) {
 							taintInfoTmp := generateRootTaintInfoFromTaint(toNode, upperTaint)
-							/* if taintInfo.isTypeDatabase() && graph.GetService() == "UserTimelineService" && graph.GetMethodName() == "ReadUserTimeline" {
-								if taintInfo.isTypeDatabase() && strings.Contains(upperTaint.GetDatabasePath(), edge.GetParam()) {
-									if field, ok := prevVal.(*ssa.FieldAddr); ok {
-										logrus.Fatalf("HERE!! (PREV_VAL=%v // TO_NODE=%v // OBJPATH=%s // DBPATH=%s)\n", field.Name(), toNode.String(), taintInfoTmp.objpath, upperTaint.GetDatabasePath())
-									}
-								}
-							} */
 							// node has taint info if it was the previous node calling propagateTaintNearby
 							// (e.g., lower field propagating to upper struct)
 							// we need to avoid visiting it again otherwise we will have infinite recursion!
 							if !nodeHasTaintInfo(toNode, "_obj", taintInfoTmp) {
-								if edge.GetParam() == "FirstClassPriceRate" && strings.Contains(taintInfoTmp.String(), "PriceService.FindByRouteIDAndTrainType.t62.BasicPriceRate") {
-									// EVAL: fmt.Printf("TAINT INFO: %s\n", taintInfo.String())
-									logrus.Fatalf("HERE????? UPWARDS=%t // ROOT=%t", upwards, taintInfo.objroot)
-								}
 								propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, false)
 							}
 						}
@@ -223,18 +216,22 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				break
 			}
 
+			// e.g., t0[t6] = true
+			// curr/from: t0
+			// to: 		  t0[t6] = true
+
 			var taintInfoTmpKey, taintInfoTmpVal TaintInfo
 			var keyOk, valOk bool
 			if taintInfo.isObjectRoot() {
-				taintInfoTmpKey = taintInfo.updateCallPathSuffix(DYNAMIC_MAP_KEY)
-				taintInfoTmpVal = taintInfo.updateCallPathSuffix(DYNAMIC_MAP_VALUE)
+				taintInfoTmpKey = taintInfo.updateCallPathPrefix(DYNAMIC_MAP_KEY + ".Key")
+				taintInfoTmpVal = taintInfo.updateCallPathPrefix(DYNAMIC_MAP_KEY + ".Val")
 				keyOk = true
 				valOk = true
 			} else {
 				taintInfoTmpKey = taintInfo.enableObjectRoot()
-				taintInfoTmpKey.objpath, keyOk = strings.CutSuffix(taintInfoTmpKey.objpath, DYNAMIC_MAP_KEY)
+				taintInfoTmpKey.objpath, keyOk = strings.CutPrefix(taintInfoTmpKey.objpath, DYNAMIC_MAP_KEY+".Key")
 				taintInfoTmpVal = taintInfo.enableObjectRoot()
-				taintInfoTmpVal.objpath, valOk = strings.CutSuffix(taintInfoTmpKey.objpath, DYNAMIC_MAP_VALUE)
+				taintInfoTmpVal.objpath, valOk = strings.CutPrefix(taintInfoTmpKey.objpath, DYNAMIC_MAP_KEY+".Val")
 			}
 
 			for _, edge := range graph.GetEdgesToNode(toNode) {
@@ -247,89 +244,78 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				}
 			}
 
-		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
-			// propagate downwards (i.e., to lookup target)
-			// requires appending suffix
+			logrus.WithField("root?", taintInfo.isObjectRoot()).
+				WithField("key_ok?", keyOk).WithField("val_ok?", valOk).
+				WithField("curr/from", node.String()).WithField("to", toNode.String()).
+				WithField("taint_info", taintInfo.String()).
+				WithField("taint_info_tmp", taintInfoTmpVal.String()).
+				Infof("found EDGE_MAP_UPDATE (%s: %s)\n", node.GetValue().Name(), node.GetValue().String())
 
-			// e.g., in dsb_sn2 @ UserTimelineService.ReadUserTimeline
-			// seen_posts := make(map[int64]bool)
-			// [...]
-			// if mypost, ok := seen_posts[post.PostID]; ok {
-			// 	 continue
-			// }
-			// ------------------------
-			// t124: &t114.PostID [#0]
-			// t125: *t124
-			// t126: t23[t125], ok
-			// t127: extract t126 #0
-			// t128: extract t126 #1
-			// ------------------------
-			//
-			// e.g., mypost, ok := seen_posts[post.PostID]
-			// X is seen_posts
-			// index is post.PostID
-			// EDGE: 			fromNode, node, index (post.PostID) --> toNode (mypost)
-			// PROPAGATION 1: 	fromNode, node, index (post.PostID) --> X (seen_posts)
-			// PROPAGATION 2: 	fromNode, node, index (post.PostID) --> toNode (mypost)
+		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
+			// e.g., t12: t0[t11]
+			// curr/from: t11
+			// to:		  t12
+			// t11 >>> t0
 			lookupTarget := toNode.GetValueLookup().X
-			var suffix string
+			var prefix string
 			keyStr, ok := utils.ExtractStringFromValue(node.GetValue())
 			if !ok {
-				suffix = DYNAMIC_MAP_KEY // dynamic
+				prefix = DYNAMIC_MAP_KEY // dynamic
 			} else {
-				suffix = "." + keyStr
+				prefix = "." + keyStr
 			}
-			taintInfoTmp := taintInfo.updateObjectPathSuffix(suffix)
+			prefix += ".Val"
+			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
+
+			logrus.WithField("to", toNode.String()).WithField("curr/from", node.String()).
+				WithField("taint_info_tmp", taintInfoTmp.String()).
+				Infof("found EDGE_LOOKUP_MAP_INDEX: %s\n", toNode.String())
 			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
-			// TODO: propagate to nodes that extract the current val
 
 		case ssagraph.EDGE_LOOKUP_MAP:
-			// propagate upwards (i.e., to lookup index)
-			// requires cutting suffix
-
-			// e.g., mypost, ok := seen_posts[post.PostID]
-			// X is seen_posts
-			// index is post.PostID
-			// EDGE: 		fromNode, node, X (seen_posts) --> toNode (mypost)
-			// PROPAGATION: fromNode, node, X (seen_posts) --> index (post.PostID)
+			// e.g., t12: t0[t11]
+			// curr/from: t0
+			// to:		  t12
+			// t0 >>> t11
 			lookupIndex := toNode.GetValueLookup().Index
 			var suffix string
 			keyStr, ok := utils.ExtractStringFromValue(toNode.GetValueLookup().Index)
 			if !ok {
-				suffix = DYNAMIC_MAP_KEY // dynamic
+				suffix = DYNAMIC_MAP_KEY
 			} else {
 				suffix = "." + keyStr
 			}
-
-			taintInfoTmp, _ := taintInfo.cutObjectPathSuffix(suffix)
-			taintInfoTmp = taintInfoTmp.enableObjectRoot()
-			propagateTaintNearby(graph, true, lookupIndex, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
-			// TODO: propagate to nodes that extract the current val
+			suffix_key := suffix + ".Key"
+			logrus.WithField("suffix_key", suffix_key).WithField("curr/from", node).WithField("to", toNode).
+				Infof("found edge lookup map to: %s\n", toNode.String())
+			taintInfoTmp, ok := taintInfo.cutObjectPathPrefix(suffix_key)
+			if ok {
+				taintInfoTmp = taintInfoTmp.enableObjectRoot()
+				propagateTaintNearby(graph, true, lookupIndex, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+			}
 
 		case ssagraph.EDGE_MAP_KEY:
+			logrus.Infof("ignoring edge map key to: %s\n", toNode.String())
 			// skip for now
 
 		case ssagraph.EDGE_MAP_VALUE:
-			var suffix string
+			var prefix string
 			instr := toNode.GetInstruction().(*ssa.MapUpdate)
 			keyStr, ok := utils.ExtractStringFromValue(instr.Key)
 			if !ok {
-				suffix = DYNAMIC_MAP_KEY // dynamic
+				prefix = DYNAMIC_MAP_KEY // dynamic
 				// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
-				suffix = "." + keyStr
+				prefix = "." + keyStr
 			}
+			prefix += ".Val"
 
-			taintInfoTmp := taintInfo.updateObjectPathSuffix(suffix)
+			logrus.WithField("from_node", node).WithField("prefix", prefix).Infof("found edge map value to: %s\n", toNode.String())
+
+			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
+			//taintInfoTmp := taintInfo.setObjectPath(suffix)
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
-
-			/* if strings.Contains(taintInfoTmp.String(), "(_obj.confortClass, PriceService.FindByRouteIDAndTrainType.t62") {
-				//_obj.economyClass, RouteService.GetRouteById.t44.Distances[*]
-				logrus.Fatalf("HERE: %s\n", taintInfoTmp.String())
-			} else {
-				continue
-			} */
 
 			propagateTaintNearby(graph, true, instr.Map, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 
@@ -341,11 +327,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			addr := toNode.GetInstruction().(*ssa.Store).Addr
 			addrNode := graph.GetNodeByName(addr.Name())
 			propagateTaintNearby(graph, true, addrNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
-			if node.GetValue().Name() == "t76" && addr.Name() == "t101" {
-				// EVAL: fmt.Printf("TAINTINFO: %s\n", taintInfo.String())
-				// EVAL: fmt.Printf("ROOT? %t", taintInfo.isObjectRoot())
-				//logrus.Fatalf("STOP!!!!!!")
-			}
 		case ssagraph.EDGE_ARG_ON_CALL:
 			call := toNode.GetValue().(*ssa.Call)
 			if call == nil {
@@ -391,9 +372,22 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 									continue
 								}
 
-								// TODO!!!!!
-								if idxToTaint == 0 {
-									taintInfoTmp := taintInfo.updateObjectPathSuffix(DYNAMIC_MAP_KEY)
+								// e.g., delete
+								logrus.Infof("SSA CALL VALUE: (%s)\n", call.Call.Value.Name())
+
+								// example 1:
+								// - unique_post_ids := make(map[int64]bool)
+								// - delete(unique_post_ids, post.PostID)
+								//
+								// example 2:
+								// - delete(t0, t59)
+								if call.Call.Value.Name() == "delete" {
+									taintInfoTmp := taintInfo.updateObjectPathPrefix(DYNAMIC_MAP_KEY + ".Key")
+									taintInfoTmp = taintInfoTmp.disableObjectRoot()
+									propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
+								} else if idxToTaint == 0 {
+									// TODO
+									taintInfoTmp := taintInfo.updateObjectPathSuffix(DYNAMIC_MAP_KEY + ".Val")
 									taintInfoTmp = taintInfoTmp.disableObjectRoot()
 									propagateTaintNearby(graph, true, funcArg.GetValue(), taintInfoTmp, visited, checkTaintInfo, upwards)
 								} else if idxToTaint == 1 {
@@ -459,10 +453,6 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 				propagateTaintNearby(graph, true, toNode.GetValue(), taintInfo, visited, checkTaintInfo, upwards)
 			} */
 		}
-
-		/* if taintInfo.prevval.Name() == "t76" {
-			logrus.Fatalf("STOP!")
-		} */
 	}
 
 	logrus.Debugf("[TAINT NEARBY] [PART_2] [ROOT=%t] [RECURSE=%t] current node: %v\n", taintInfo.objroot, recurse, node)
@@ -484,41 +474,50 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 		switch edge.GetType() {
 
 		case ssagraph.EDGE_LOOKUP_MAP_INDEX:
-			// same logic as in part 1
+			// e.g., t41: t6[t27]
+			// curr/to: t41
+			// from: 	t27
+			// t41 >>> t6
 
-			// e.g., mypost, ok := seen_posts[post.PostID]
-			// X is seen_posts
-			// index is post.PostID
-			// EDGE: 		fromNode, index (post.PostID) --> toNode, node (mypost)
-			// PROPAGATION: toNode, node (mypost) --> X (seen_posts)
 			lookupTarget := node.GetValueLookup().X
-			var suffix string
+			var prefix string
 			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
 			if !ok {
-				suffix = DYNAMIC_MAP_KEY // dynamic
+				prefix = DYNAMIC_MAP_KEY // dynamic
 				// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
-				suffix = "." + keyStr
+				prefix = "." + keyStr
 			}
-			taintInfoTmp := taintInfo.updateObjectPathSuffix(suffix)
+			prefix += ".Val"
+			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
 			taintInfoTmp = taintInfoTmp.disableObjectRoot()
+			
+			logrus.WithField("prefix", prefix).WithField("from", fromNode.String()).WithField("curr/to", node.String()).
+				WithField("taint_info_tmp", taintInfoTmp.String()).
+				Infof("found EDGE_LOOKUP_MAP_INDEX (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
 			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 
 		case ssagraph.EDGE_LOOKUP_MAP:
-			// same logic as in part 1, but inversed
+			// e.g., t41: t6[t27]
+			// curr/to: t41
+			// from: 	t6
+			// t41 >>> t6
 
-			lookupIndex := node.GetValueLookup().Index
-			var suffix string
+			lookupTarget := node.GetValueLookup().X
+			var prefix string
 			keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
 			if !ok {
-				suffix = DYNAMIC_MAP_KEY // dynamic
+				prefix = DYNAMIC_MAP_KEY // dynamic
 				// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 			} else {
-				suffix = "." + keyStr
+				prefix = "." + keyStr
 			}
-			taintInfoTmp, _ := taintInfo.cutObjectPathSuffix(suffix)
-			taintInfoTmp = taintInfoTmp.enableObjectRoot()
-			propagateTaintNearby(graph, true, lookupIndex, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
+			prefix += ".Val"
+			logrus.WithField("prefix", prefix).WithField("from", fromNode.String()).WithField("curr/to", node.String()).
+				Infof("found EDGE_LOOKUP_MAP (%s: %s)\n", node.GetValueLookup().Name(), node.GetValueLookup().String())
+			taintInfoTmp := taintInfo.updateObjectPathPrefix(prefix)
+			taintInfoTmp = taintInfoTmp.disableObjectRoot()
+			propagateTaintNearby(graph, true, lookupTarget, taintInfoTmp, make(map[ssa.Value]bool), checkTaintInfo, upwards)
 
 		case ssagraph.EDGE_FIELD:
 			visitedTmp := make(map[ssa.Value]bool)
@@ -546,9 +545,14 @@ func propagateTaintNearby(graph *ssagraph.SSAGraph, recurse bool, val ssa.Value,
 			propagateTaintNearby(graph, true, fromNode.GetValue(), taintInfoTmp, visitedTmp, checkTaintInfo, true)
 
 		case ssagraph.EDGE_MAP_UPDATE:
+			logrus.Infof("ignoring map update to: %s\n", edge.GetToNode().String())
 			/* mapUpdateNode := edge.GetToNode().GetInstruction() */
 
-		case ssagraph.EDGE_MAP_KEY, ssagraph.EDGE_MAP_VALUE:
+		case ssagraph.EDGE_MAP_KEY:
+			logrus.Infof("ignoring edge map key to: %s\n", edge.GetToNode().String())
+
+		case ssagraph.EDGE_MAP_VALUE:
+			logrus.Infof("ignoring edge map value to: %s\n", edge.GetToNode().String())
 			// skip for now
 
 		case ssagraph.EDGE_STORE_ADDRESS:

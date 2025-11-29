@@ -8,11 +8,11 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/app/services"
 	"analyzer/pkg/utils"
-
-	"github.com/sirupsen/logrus"
 )
 
 type App struct {
@@ -183,7 +183,7 @@ func (app *App) GetAllDatabases() []*backends.Database {
 func (app *App) GetDatabaseByName(name string) *backends.Database {
 	db, ok := app.databases[name]
 	if !ok {
-		logrus.Fatalf("could not find database for name (%s) in app", name)
+		logrus.Panicf("could not find database for name (%s) in app", name)
 	}
 	return db
 }

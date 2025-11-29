@@ -196,6 +196,33 @@ func (t TaintInfo) updateCallPathSuffix(suffix string) TaintInfo {
 	return t
 }
 
+// full path: <database>.<table>.<fieldname>[.<any sub path> or [<any sub path>]
+func (t TaintInfo) updateCallPathPrefix(prefix string) TaintInfo {
+	if t.infoType == TAINT_INFO_DATABASE {
+		t.dbTaint.dbpath = insertAfterFieldName(t.dbTaint.dbpath, prefix)
+	} else if t.infoType == TAINT_INFO_SERVICE {
+		t.svTaint.svpath = insertAfterFieldName(t.svTaint.svpath, prefix)
+	}
+	return t
+}
+
+// full path: <database>.<table>.<fieldname>[.<any sub path> or [<any sub path>]
+func insertAfterFieldName(path, prefix string) string {
+	// find first '.'
+	first := strings.IndexByte(path, '.')
+	// find second '.' (after first)
+	second := strings.IndexByte(path[first+1:], '.') + first + 1
+
+	// fieldname starts at second+1
+	// ends at next '.' or '[' or end
+	i := second + 1
+	for i < len(path) && path[i] != '.' && path[i] != '[' {
+		i++
+	}
+	// insert prefix right after fieldname
+	return path[:i] + prefix + path[i:]
+}
+
 type CheckTaintInfo struct {
 	indirectTaints  []DBTaint
 	inheritedTaints map[string][]DBTaint

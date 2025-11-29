@@ -157,12 +157,6 @@ func main() {
 
 	elapsed_ssa_tainting := time.Since(start_ssa_tainting)
 
-	// ------------ PART 6
-	logrus_ctx.Infof("[6/12] combining SSA graphs")
-	for _, ssagraph := range funcGraphs {
-		tainter.Combine(ssagraph, funcGraphs)
-	}
-
 	if !EVAL {
 		var written = make(map[string]bool)
 		for fn, ssagraph := range funcGraphs {
@@ -170,7 +164,7 @@ func main() {
 			written[fn] = true
 		}
 		// debug
-		for fn, ssagraph := range funcGraphs {
+		/* for fn, ssagraph := range funcGraphs {
 			for _, toGraph := range ssagraph.GetAllCombinedGraphs() {
 				// sanity check
 				newFn := fn + "." + toGraph.GetMethodName()
@@ -179,7 +173,13 @@ func main() {
 				}
 				written[newFn] = true
 			}
-		}
+		} */
+	}
+
+	// ------------ PART 6
+	logrus_ctx.Infof("[6/12] combining SSA graphs")
+	for _, ssagraph := range funcGraphs {
+		tainter.Combine(ssagraph, funcGraphs)
 	}
 
 	// ------------ PART 7

@@ -8,5 +8,5 @@ delete: ProductService.Delete() ... products_db.products.DeleteOne()
 
 delete: SkuService.Delete() ... skus_db.skus.DeleteOne()
 	write #2: OrderService.New() ... OrderService.New() ... orders_db.orders.InsertOne()
-		- database={orders_db}, entity={orders}, written_fields={Items[*].Amount, Items[*].Currency, Items[*].Description, Items[*].Parent}
+		- database={orders_db}, entity={orders}, written_fields={Items[*].Parent}
 
