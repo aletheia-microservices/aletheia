@@ -100,25 +100,42 @@ func (call *ServiceCall) String() string {
 }
 
 type MethodCall struct {
-	id   string // format: <func_short_path>_<ssa_instr_name>
-	t    string // format: <ssa_variable_name>
-	node *SSANode
-	args []*SSANode // includes receiver if exists
-	rets []*SSANode
+	ID    string // format: <func_short_path>_<ssa_instr_name>
+	t     string // format: <ssa_variable_name>
+	node  *SSANode
+	args  []*SSANode // includes receiver if exists
+	binds []*SSANode // go routine
+	rets  []*SSANode
 
 	method        string
 	funcShortPath string
+
+	goroutine bool
 }
 
 func NewMethodCall(id string, node *SSANode, args []*SSANode, rets []*SSANode, method string, funcShortPath string) *MethodCall {
 	return &MethodCall{
-		id:            id,
+		ID:            id,
 		t:             node.GetValue().Name(),
 		node:          node,
 		args:          args,
 		rets:          rets,
 		method:        method,
 		funcShortPath: funcShortPath,
+	}
+}
+
+func NewMethodCallGoRoutine(id string, instrID string, node *SSANode, binds []*SSANode, args []*SSANode, rets []*SSANode, method string, funcShortPath string) *MethodCall {
+	return &MethodCall{
+		ID:            id,
+		t:             instrID,
+		node:          node,
+		binds:         binds,
+		args:          args,
+		rets:          rets,
+		method:        method,
+		funcShortPath: funcShortPath,
+		goroutine:     true,
 	}
 }
 
@@ -135,7 +152,7 @@ func (call *MethodCall) Copy() *MethodCall {
 		copyRets = append(copyRets, ret.SimpleCopy())
 	}
 	return &MethodCall{
-		id:            call.id,
+		ID:            call.ID,
 		t:             call.t,
 		node:          call.node.SimpleCopy(),
 		args:          copyArgs,
@@ -150,11 +167,15 @@ func (call *MethodCall) GetT() string {
 }
 
 func (call *MethodCall) GetID() string {
-	return call.id
+	return call.ID
 }
 
 func (call *MethodCall) GetReturns() []*SSANode {
 	return call.rets
+}
+
+func (call *MethodCall) GetBindAt(idx int) *SSANode {
+	return call.binds[idx]
 }
 
 func (call *MethodCall) GetReturnAt(idx int) *SSANode {

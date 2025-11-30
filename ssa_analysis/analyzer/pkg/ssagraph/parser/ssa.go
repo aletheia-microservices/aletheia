@@ -3,7 +3,6 @@ package parser
 import (
 	"crypto/rand"
 	"fmt"
-	"go/types"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -42,7 +41,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 		// EVAL: fmt.Printf("[SSA] [%T] member: %v\n", member, member)
 		switch m := member.(type) {
 		case *ssa.Function:
-			iterateFunc(app, outfile2, m, nil, funcGraphs)
+			iterateFunc(app, outfile2, m, funcGraphs, false)
 
 		case *ssa.Global:
 			fmt.Fprintf(outfile2, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
@@ -77,7 +76,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 						// EVAL: fmt.Printf("\t[SSA] [INTUITIVE METHOD SET] [%T]: skipping...\n", method)
 						continue
 					}
-					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
+					iterateFunc(app, outfile2, method, funcGraphs, false)
 				}
 			}
 
@@ -94,7 +93,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 						// EVAL: fmt.Printf("\t[SSA] [METHOD SET] [%T]: skipping...\n", method)
 						continue
 					}
-					iterateFunc(app, outfile2, method, m.Type(), funcGraphs)
+					iterateFunc(app, outfile2, method, funcGraphs, false)
 				}
 			}
 
@@ -104,7 +103,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 	}
 }
 
-func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType types.Type, funcGraphs map[string]*ssagraph.SSAGraph) {
+func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, funcGraphs map[string]*ssagraph.SSAGraph, goroutine bool) {
 	shortFuncPath := utils.GetShortFunctionPath(fn.String())
 	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
 	methodName := utils.ExtractMethodNameFromShortFunctionPath(shortFuncPath)
@@ -116,6 +115,9 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 		// EVAL: fmt.Printf("[SSA] ssagraph for function (%s) already exists\n", shortFuncPath)
 		// EVAL: fmt.Println("[SSA] skipping...")
 		return
+	}
+	if goroutine {
+		graph.EnableGoRoutine()
 	}
 	funcGraphs[shortFuncPath] = graph
 	// EVAL: fmt.Printf("[SSA] added new ssagraph for function (%s)\n", shortFuncPath)
@@ -132,7 +134,7 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 	for i, block := range fn.Blocks {
 		fmt.Fprintf(outFile, "Block #%d: %s.%s\n", i, shortFuncPath, block.Comment)
 		for j, instr := range block.Instrs {
-			parseInstr(graph, instr, j, visited)
+			parseInstr(app, graph, instr, j, visited, outFile, funcGraphs)
 
 			if val, ok := instr.(ssa.Value); ok {
 				fmt.Fprintf(outFile, "\t\t\t%02d: %s = %s\n", j, val.Name(), instr.String())
@@ -143,10 +145,10 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, memberType ty
 	}
 }
 
-func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool) *ssagraph.SSANode {
+func parseInstr(app *app.App, graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool, outFile *os.File, funcGraphs map[string]*ssagraph.SSAGraph) *ssagraph.SSANode {
 	// EVAL: fmt.Printf("[SSA PARSE INSTR] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
-	id := computeInstructionID(instr)
+	id := utils.ComputeInstructionID(instr)
 	if id == "" { // e.graph., conditions or jumps (instructions and not values)
 		// EVAL: fmt.Printf("[SSA PARSE INSTR] skipping instruction with invalid id: %v\n", instr)
 		return nil
@@ -193,7 +195,17 @@ func parseInstr(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.Panic:
 		// ignore
 
-	case *ssa.Go, *ssa.RunDefers, *ssa.Defer:
+	case *ssa.Go:
+		if makeClosure, ok := t.Call.Value.(*ssa.MakeClosure); ok {
+			if fn, ok := makeClosure.Fn.(*ssa.Function); ok {
+				fmt.Printf("makeClosure: %s\n", makeClosure.Fn)
+				fmt.Printf("short func path: %s\n", utils.GetShortFunctionPath(fn.String()))
+				logrus.WithField("instr", instr.String()).Warnf("HERE!")
+				iterateFunc(app, outFile, fn, funcGraphs, true)
+			}
+		}
+
+	case *ssa.RunDefers, *ssa.Defer:
 		// TODO
 		// EVAL: fmt.Printf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 
@@ -291,6 +303,10 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.Parameter:
 		graph.AddParameter(node)
 		// nothing to do
+	
+	case *ssa.FreeVar:
+		// in case of go routines (variables that are not passed as parameters but SSA assumes this)
+		graph.AddFreeVar(node)
 
 	case *ssa.Const:
 		// nothing to do
@@ -377,27 +393,6 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		logrus.Fatalf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 	}
 	return node
-}
-
-func computeInstructionID(instr ssa.Instruction) string {
-	if !instr.Pos().IsValid() { // meaning there is no position
-		n, err := rand.Int(rand.Reader, big.NewInt(1<<31))
-		if err != nil {
-			return ""
-		}
-		return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", n)
-	}
-	return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", instr.Pos())
-}
-
-func instrString(instr ssa.Instruction) string {
-	switch instr.(type) {
-	case *ssa.Store:
-		return "store"
-	case *ssa.Return:
-		return "ret"
-	}
-	return ""
 }
 
 func computeValueID(val ssa.Value) string {

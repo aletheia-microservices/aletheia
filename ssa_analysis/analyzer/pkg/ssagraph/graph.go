@@ -2,7 +2,6 @@ package ssagraph
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -25,8 +24,9 @@ type SSAGraph struct {
 	edges []*SSAEdge
 	defs  map[string]*SSANode
 
-	params  []*SSANode
-	returns [][]*SSANode // can have multiple return tuples depending on controlflow
+	freevars []*SSANode // go routines
+	params   []*SSANode
+	returns  [][]*SSANode // can have multiple return tuples depending on controlflow
 
 	// managed by tainter.go
 	svcCalls    []*ServiceCall
@@ -39,6 +39,8 @@ type SSAGraph struct {
 	callerT                    string
 	combinedGraphsToMethodCall map[*SSAGraph]*MethodCall
 	methodCallToCombinedGraphs map[*MethodCall]*SSAGraph
+
+	goroutine bool
 }
 
 func NewGraph(app *app.App, pkg string, fn string, service string, method string) *SSAGraph {
@@ -52,6 +54,14 @@ func NewGraph(app *app.App, pkg string, fn string, service string, method string
 	}
 }
 
+func (graph *SSAGraph) EnableGoRoutine() {
+	graph.goroutine = true
+}
+
+func (graph *SSAGraph) IsGoRoutine() bool {
+	return graph.goroutine
+}
+
 func (graph *SSAGraph) Release() {
 	graph.nodes = nil
 	graph.edges = nil
@@ -61,6 +71,7 @@ func (graph *SSAGraph) Release() {
 	graph.dbCalls = nil
 	graph.allCalls = nil
 	graph.params = nil
+	graph.freevars = nil
 	graph.returns = nil
 	graph.combinedGraphs = nil
 }
@@ -102,6 +113,12 @@ func (graph *SSAGraph) SimpleCopy() *SSAGraph {
 		newParams = append(newParams, newNode)
 	}
 
+	var newFreeVars []*SSANode
+	for _, fv := range graph.freevars {
+		newNode := newDefs[fv.GetName()]
+		newFreeVars = append(newFreeVars, newNode)
+	}
+
 	var newReturns [][]*SSANode
 	for _, retLst := range graph.returns {
 		var newReturnsLst []*SSANode
@@ -121,8 +138,10 @@ func (graph *SSAGraph) SimpleCopy() *SSAGraph {
 		nodes:       copyNodes,
 		edges:       newEdges,
 		defs:        newDefs,
+		freevars:    newFreeVars,
 		params:      newParams,
 		returns:     newReturns,
+		goroutine:   graph.goroutine,
 	}
 }
 
@@ -203,6 +222,10 @@ func (graph *SSAGraph) GetParams() []*SSANode {
 	return graph.params
 }
 
+func (graph *SSAGraph) GetFreeVars() []*SSANode {
+	return graph.freevars
+}
+
 func (graph *SSAGraph) GetPackageName() string {
 	return graph.pkgName
 }
@@ -235,6 +258,15 @@ func (graph *SSAGraph) AddMethodCall(call *MethodCall) {
 	graph.methodCalls = append(graph.methodCalls, call)
 }
 
+func (graph *SSAGraph) HasMethodCall(call *MethodCall) bool {
+	for _, c := range graph.methodCalls {
+		if c.ID == call.ID {
+			return true
+		}
+	}
+	return false
+}
+
 func (graph *SSAGraph) GetAllCalls() []interface{} {
 	return graph.allCalls
 }
@@ -245,6 +277,10 @@ func (graph *SSAGraph) GetServiceCalls() []*ServiceCall {
 
 func (graph *SSAGraph) AddParameter(param *SSANode) {
 	graph.params = append(graph.params, param)
+}
+
+func (graph *SSAGraph) AddFreeVar(fv *SSANode) {
+	graph.freevars = append(graph.freevars, fv)
 }
 
 func (graph *SSAGraph) AddReturnsToLst(rets []*SSANode) {
@@ -363,7 +399,7 @@ func (graph *SSAGraph) GetNodeByName(name string) *SSANode {
 	if node, exists := graph.defs[name]; exists {
 		return node
 	}
-	log.Panicf("node with name (%s) not found in graph defs: %v\n", name, graph.defs)
+	logrus.WithField("graph", graph.String()).Panicf("node with name (%s) not found in graph defs: %v\n", name, graph.defs)
 	return nil
 }
 

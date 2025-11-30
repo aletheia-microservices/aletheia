@@ -20,14 +20,29 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		}
 		toGraph = toGraph.SimpleCopy()
 		graph.AddCombinedGraph(toGraph, methodCall)
+
+		var callerT string
 		RunTainter(toGraph)
-		callerT := methodCall.GetT()
+		callerT = methodCall.GetT()
 
 		logrus.Debugf("combining SSA graphs (caller=%s) (at=%s) (callee=%s)\n", graph.String(), methodCall.GetID(), toGraph.String())
+
+		if toGraph.IsGoRoutine() {
+			for i, callee_freevar := range toGraph.GetFreeVars() {
+				caller_var := methodCall.GetBindAt(i)
+				callee_taints := callee_freevar.GetTaints()
+				logrus.Tracef("CALLER VAR: %s\n", caller_var.String())
+				logrus.Tracef("CALLEE FREEVAR: %s\n", callee_freevar.String())
+				logrus.Tracef("callerT: %s\n", callerT)
+				propagateTaints(graph, caller_var, callee_taints, callerT)
+			}
+			// TODO rets
+		}
 
 		// propagation: caller args <<< callee params
 		// TODO: upper/lower taints
 		for i, callee_params := range toGraph.GetParams() {
+			logrus.Debugf("CALEE PARAM: [%T] %s\n", callee_params.GetValue(), callee_params.GetValue())
 			caller_arg := methodCall.GetArgumentAt(i)
 			callee_taints := callee_params.GetTaints()
 			propagateTaints(graph, caller_arg, callee_taints, callerT)
@@ -82,6 +97,17 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 			callee_param := toGraph.GetParamAt(i)
 			caller_taints := arg.GetTaints()
 			propagateTaints(toGraph, callee_param, caller_taints, "")
+		}
+
+		if toGraph.IsGoRoutine() {
+			for i, callee_freevar := range toGraph.GetFreeVars() {
+				caller_var := methodCall.GetBindAt(i)
+				caller_taints := caller_var.GetTaints()
+				logrus.Tracef("CALLE FREEVAR: %s\n", callee_freevar.String())
+				logrus.Tracef("CALLER VAR: %s\n", caller_var.String())
+				propagateTaints(toGraph, callee_freevar, caller_taints, "")
+			}
+			// TODO rets
 		}
 	}
 

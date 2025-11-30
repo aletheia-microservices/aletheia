@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"crypto/rand"
+	"fmt"
+	"math/big"
 	"strings"
 
 	"golang.org/x/tools/go/ssa"
@@ -54,4 +57,26 @@ func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, FUNC_TYPE, string) {
 		return true, FUNC_TYPE_MAP_ELEMS, builtin.Name()
 	}
 	return false, FUNC_TYPE_IGNORE, ""
+}
+
+
+func ComputeInstructionID(instr ssa.Instruction) string {
+	if !instr.Pos().IsValid() { // meaning there is no position
+		n, err := rand.Int(rand.Reader, big.NewInt(1<<31))
+		if err != nil {
+			return ""
+		}
+		return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", n)
+	}
+	return "instr_" + instrString(instr) + "_" + fmt.Sprintf("%d", instr.Pos())
+}
+
+func instrString(instr ssa.Instruction) string {
+	switch instr.(type) {
+	case *ssa.Store:
+		return "store"
+	case *ssa.Return:
+		return "ret"
+	}
+	return ""
 }

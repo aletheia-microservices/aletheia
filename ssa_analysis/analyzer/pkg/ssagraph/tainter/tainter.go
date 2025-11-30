@@ -2,11 +2,13 @@ package tainter
 
 import (
 	"log"
+	"sort"
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/ssagraph"
+	"analyzer/pkg/utils"
 )
 
 var seenTaint map[TaintInfoData]bool
@@ -267,19 +269,42 @@ func registerServiceCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool 
 }
 
 func registerMethodCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
-	if method, fnShortPath, args, call, ok := isMethodCall(graph, node.GetValue()); ok {
+	if method, fnShortPath, bindings, args, call, fn, ok := isMethodCall(graph, node.GetInstruction(), node.GetValue()); ok {
 		var argNodes []*ssagraph.SSANode
 		for _, arg := range args {
 			argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))
 		}
 		var retNodes []*ssagraph.SSANode
-		for _, val := range getReturnSSAValuesFromCall(graph, call) {
-			retNode := graph.GetNodeByName(val.Name())
-			retNodes = append(retNodes, retNode)
+		if call != nil {
+			for _, val := range getReturnSSAValuesFromCall(graph, call) {
+				retNode := graph.GetNodeByName(val.Name())
+				retNodes = append(retNodes, retNode)
+			}
 		}
 
-		callId := ssagraph.ComputeCallID(graph, node)
-		methodCall := ssagraph.NewMethodCall(callId, node, argNodes, retNodes, method, fnShortPath)
+		// go routine
+		var bindNodes []*ssagraph.SSANode
+		for _, b := range bindings {
+			bindNodes = append(bindNodes, graph.GetNodeByName(b.Name()))
+		}
+		sort.Slice(bindNodes, func(i, j int) bool {
+			return utils.LessT(bindNodes[i].GetName(), bindNodes[j].GetName())
+		})
+
+		var methodCall *ssagraph.MethodCall
+		if call != nil {
+			callId := ssagraph.ComputeCallID(graph, node)
+			methodCall = ssagraph.NewMethodCall(callId, node, argNodes, retNodes, method, fnShortPath)
+		} else {
+			// go routine
+
+			callId := utils.GetShortFunctionPath(fn.String())
+			// because instructions may appear multiple times
+			if graph.HasMethodCall(&ssagraph.MethodCall{ID: callId}) {
+				return false
+			}
+			methodCall = ssagraph.NewMethodCallGoRoutine(callId, node.GetID(), node, bindNodes, argNodes, retNodes, method, fnShortPath)
+		}
 		graph.AddMethodCall(methodCall)
 		graph.AddCall(methodCall)
 		return true

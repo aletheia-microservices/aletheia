@@ -76,16 +76,30 @@ func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, str
 	return "", "", "", nil, nil, false
 }
 
-func isMethodCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, []ssa.Value, *ssa.Call, bool) {
-	if call, ok := val.(*ssa.Call); ok {
-		if fn, ok := call.Call.Value.(*ssa.Function); ok {
-			fnShortPath := utils.GetShortFunctionPath(fn.String())
-			method := fn.Name()
-			return method, fnShortPath, call.Call.Args, call, true
+func isMethodCall(graph *ssagraph.SSAGraph, instr ssa.Instruction, val ssa.Value) (string, string, []ssa.Value, []ssa.Value, *ssa.Call, *ssa.Function, bool) {
+	if val != nil {
+		if call, ok := val.(*ssa.Call); ok {
+			if fn, ok := call.Call.Value.(*ssa.Function); ok {
+				fnShortPath := utils.GetShortFunctionPath(fn.String())
+				method := fn.Name()
+				return method, fnShortPath, nil, call.Call.Args, call, fn, true
+			}
+			return "", "", nil, nil, nil, nil, false
 		}
-		return "", "", nil, nil, false
+	} else {
+		// go routine
+		if goCall, ok := instr.(*ssa.Go); ok {
+			if makeClosure, ok := goCall.Call.Value.(*ssa.MakeClosure); ok {
+				if fn, ok := makeClosure.Fn.(*ssa.Function); ok {
+					fnShortPath := utils.GetShortFunctionPath(fn.String())
+					method := fn.Name()
+					logrus.WithField("fn short path", fnShortPath).WithField("method", method).Warnf("stop!")
+					return method, fnShortPath, makeClosure.Bindings, goCall.Call.Args, nil, fn, true
+				}
+			}
+		}
 	}
-	return "", "", nil, nil, false
+	return "", "", nil, nil, nil, nil, false
 }
 
 func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, common.DatabaseOperationType, []ValFieldPath, bool) {
@@ -1013,12 +1027,13 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 					service := graph.GetApp().GetServiceWithImplPath(serviceImplPath)
 					// EVAL: fmt.Printf("[CALLS BLUEPRINT] [QUEUE] service fields: %v\n", service.GetAllFields())
 					field := service.GetFieldAt(ssaFieldAddr.Field)
+					logrus.Infof("field = %s\n", field.String())
 					// EVAL: fmt.Printf("[CALLS BLUEPRINT] [QUEUE] field: %s\n", field.String())
 
 					database := field.GetWiringName()
 
 					if database == "" {
-						logrus.WithField("field", field.String()).Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
+						logrus.WithField("graph", graph.String()).WithField("field", field.String()).Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
 					}
 
 					// sanity check

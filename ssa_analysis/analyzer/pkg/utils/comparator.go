@@ -1,4 +1,4 @@
-package abstractgraph
+package utils
 
 import (
 	"strconv"
@@ -15,7 +15,7 @@ import (
 // Explanation:
 // in t4.t7, t4 is the variable in the exposed service method, 
 // and t7 is the variable in the internal called method
-func parseT(t string) []int {
+func parseT(t string) ([]int, bool) {
 	splits := strings.Split(t, ".")
 	res := make([]int, 0, len(splits))
 
@@ -23,6 +23,7 @@ func parseT(t string) []int {
 		if strings.HasPrefix(sub_t, "t") {
 			sub_t = sub_t[1:]
 		} else {
+			return nil, false
 			logrus.Fatalf("unexpected absence of 't' prefix in string (t=%s) (sub_t=%s)\n", t, sub_t)
 		}
 		n, err := strconv.Atoi(sub_t)
@@ -31,12 +32,18 @@ func parseT(t string) []int {
 		}
 		res = append(res, n)
 	}
-	return res
+	return res, true
 }
 
-func lessT(t1 string, t2 string) bool {
-	t1_lst := parseT(t1)
-	t2_lst := parseT(t2)
+func LessT(t1 string, t2 string) bool {
+	t1_lst, ok1 := parseT(t1)
+	t2_lst, ok2 := parseT(t2)
+
+	if !ok2 {
+		return false
+	} else if !ok1 {
+		return true
+	}
 
 	for i := 0; i < len(t1_lst) && i < len(t2_lst); i++ {
 		if t1_lst[i] < t2_lst[i] {
@@ -51,10 +58,10 @@ func lessT(t1 string, t2 string) bool {
 	return len(t1_lst) < len(t2_lst)
 }
 
-func greaterT(t1 string, t2 string) bool {
-	return lessT(t2, t1)
+func GreaterT(t1 string, t2 string) bool {
+	return LessT(t2, t1)
 }
 
-func equalT(t1 string, t2 string) bool {
+func EqualT(t1 string, t2 string) bool {
 	return t1 == t2
 }

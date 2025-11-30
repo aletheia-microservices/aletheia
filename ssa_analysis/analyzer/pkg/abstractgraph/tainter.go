@@ -368,7 +368,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 			taint2 = currTaint
 			db2 = currDb
 
-			if greaterT(otherTaint.GetT(), currTaint.GetT()) {
+			if utils.GreaterT(otherTaint.GetT(), currTaint.GetT()) {
 				field1 = currField
 				taint1 = currTaint
 				db1 = currDb
@@ -378,11 +378,9 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				db2 = otherDb
 			}
 
-			if equalT(taint1.GetT(), taint2.GetT()) {
-				// debugging
-				// EVAL: fmt.Printf("taint1: %s\n", taint1.LongString())
-				// EVAL: fmt.Printf("taint2: %s\n", taint2.LongString())
-				logrus.Fatalf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
+			if utils.EqualT(taint1.GetT(), taint2.GetT()) {
+				logrus.WithField("taint1", taint1.LongString()).WithField("taint2", taint2.LongString()).
+					Warnf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
 			}
 
 			if db1 == db2 {
