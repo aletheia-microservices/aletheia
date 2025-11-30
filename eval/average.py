@@ -22,12 +22,12 @@ else:
     OUTPUT_FILE = "results/averages.yaml"
 
 NAME_MAP = {
-    "dsb_media_nosql":          "mediamicroservices",
-    "dsb_sn2":                  "socialnetwork",
-    "postnotification_simple":  "postnotification",
-    "sockshop3":                "sockshop",
-    "train_ticket2":            "trainticket",
-    "synthetic_app":            "syntheticapp",
+    "dsb_mediamicroservices":   "dsb_mediamicroservices",
+    "dsb_socialnetwork":        "dsb_socialnetwork",
+    "postnotification":         "postnotification",
+    "sockshop":                 "sockshop",
+    "trainticket":              "trainticket",
+    "synthetic_app":            "app",
     "synthetic_app1":           "app1 (121, 4, 3)",
     "synthetic_app2":           "app2 (341, 340, 1)",
     "synthetic_app3":           "app3 (364, 5, 3)",

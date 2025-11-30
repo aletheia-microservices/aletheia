@@ -85,7 +85,7 @@ require (
 
 require (
 	github.com/auxten/postgresql-parser v1.0.1
-	github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring v0.0.0-00010101000000-000000000000
@@ -109,9 +109,9 @@ require github.com/blueprint-uservices/blueprint/blueprint v0.0.0
 
 require github.com/blueprint-uservices/blueprint/runtime v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow v0.0.0 // indirect
+require github.com/blueprint-uservices/blueprint/examples/postnotification/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/postnotification/wiring v0.0.0
 
 require github.com/blueprint-uservices/blueprint/examples/digota/workflow v0.0.0 // indirect
 
@@ -121,19 +121,19 @@ require github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wor
 
 require github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow v0.0.0 // indirect
+require github.com/blueprint-uservices/blueprint/examples/sockshop/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/sockshop/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow v0.0.0 // indirect
+require github.com/blueprint-uservices/blueprint/examples/trainticket/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/train_ticket2/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/trainticket/wiring v0.0.0
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow v0.0.0 // indirect
+require github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0 // indirect
 
@@ -143,9 +143,9 @@ require github.com/blueprint-uservices/blueprint/examples/foobar2/workflow v0.0.
 
 require github.com/blueprint-uservices/blueprint/examples/foobar2/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow v0.0.0 // indirect
+require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring v0.0.0
 
 require (
 	github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow v0.0.0 // indirect
@@ -160,11 +160,11 @@ replace github.com/blueprint-uservices/blueprint/blueprint => ../../blueprint/bl
 
 replace github.com/blueprint-uservices/blueprint/runtime => ../../blueprint/runtime
 
-replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple => ../../blueprint/examples/postnotification_simple
+replace github.com/blueprint-uservices/blueprint/examples/postnotification => ../../blueprint/examples/postnotification
 
-replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow => ../../blueprint/examples/postnotification_simple/workflow
+replace github.com/blueprint-uservices/blueprint/examples/postnotification/workflow => ../../blueprint/examples/postnotification/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring => ../../blueprint/examples/postnotification_simple/wiring
+replace github.com/blueprint-uservices/blueprint/examples/postnotification/wiring => ../../blueprint/examples/postnotification/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/digota => ../../blueprint/examples/digota
 
@@ -178,17 +178,17 @@ replace github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wor
 
 replace github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring => ../../blueprint/examples/eshopmicroservices/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/sockshop3 => ../../blueprint/examples/sockshop3
+replace github.com/blueprint-uservices/blueprint/examples/sockshop => ../../blueprint/examples/sockshop
 
-replace github.com/blueprint-uservices/blueprint/examples/sockshop3/workflow => ../../blueprint/examples/sockshop3/workflow
+replace github.com/blueprint-uservices/blueprint/examples/sockshop/workflow => ../../blueprint/examples/sockshop/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/sockshop3/wiring => ../../blueprint/examples/sockshop3/wiring
+replace github.com/blueprint-uservices/blueprint/examples/sockshop/wiring => ../../blueprint/examples/sockshop/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/train_ticket2 => ../../blueprint/examples/train_ticket2
+replace github.com/blueprint-uservices/blueprint/examples/trainticket => ../../blueprint/examples/trainticket
 
-replace github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow => ../../blueprint/examples/train_ticket2/workflow
+replace github.com/blueprint-uservices/blueprint/examples/trainticket/workflow => ../../blueprint/examples/trainticket/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/train_ticket2/wiring => ../../blueprint/examples/train_ticket2/wiring
+replace github.com/blueprint-uservices/blueprint/examples/trainticket/wiring => ../../blueprint/examples/trainticket/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2 => ../../blueprint/examples/dsb_hotel2
 
@@ -196,11 +196,11 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow =>
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring => ../../blueprint/examples/dsb_hotel2/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_sn2 => ../../blueprint/examples/dsb_sn2
+replace github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork => ../../blueprint/examples/dsb_socialnetwork
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_sn2/workflow => ../../blueprint/examples/dsb_sn2/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/workflow => ../../blueprint/examples/dsb_socialnetwork/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_sn2/wiring => ../../blueprint/examples/dsb_sn2/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring => ../../blueprint/examples/dsb_socialnetwork/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/foobar => ../../blueprint/examples/foobar
 
@@ -214,11 +214,11 @@ replace github.com/blueprint-uservices/blueprint/examples/foobar2/workflow => ..
 
 replace github.com/blueprint-uservices/blueprint/examples/foobar2/wiring => ../../blueprint/examples/foobar2/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql => ../../blueprint/examples/dsb_media_sql
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices => ../../blueprint/examples/dsb_mediamicroservices
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow => ../../blueprint/examples/dsb_media_sql/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ../../blueprint/examples/dsb_mediamicroservices/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring => ../../blueprint/examples/dsb_media_sql/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ../../blueprint/examples/dsb_mediamicroservices/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql => ../../blueprint/examples/dsb_media_nosql
 

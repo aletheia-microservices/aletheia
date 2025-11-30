@@ -12,8 +12,7 @@ import (
 	specs_coupons_app_sql "github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring/specs"
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
 	specs_dsb_hotel "github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring/specs"
-	specs_dsb_media "github.com/blueprint-uservices/blueprint/examples/dsb_media/wiring/specs"
-	specs_dsb_media_sql "github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring/specs"
+	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
 	specs_dsb_sn "github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring/specs"
 	specs_employee_app "github.com/blueprint-uservices/blueprint/examples/employee_app/wiring/specs"
 	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
@@ -39,9 +38,9 @@ var APPS_SQL_TABLES = map[string][]string{
 		"coupons_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/coupons.sql",
 		"students_db:blueprint/examples/coupons_app_sql/workflow/coupons_app_sql/database/students.sql",
 	},
-	"dsb_media_sql": {
-		"movieid_db:blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/movieid.sql",
-		"movieinfo_db:blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/movieinfo.sql",
+	"dsb_mediamicroservices_sql": {
+		"movieid_db:blueprint/examples/dsb_mediamicroservices_sql/workflow/mediamicroservices_sql/database/movieid.sql",
+		"movieinfo_db:blueprint/examples/dsb_mediamicroservices_sql/workflow/mediamicroservices_sql/database/movieinfo.sql",
 	},
 }
 
@@ -61,8 +60,8 @@ var Apps = []string{
 	"shopping_app",
 	"postnotification_simple",
 	"postnotification",
-	"dsb_media",
-	"dsb_media_sql",
+	"dsb_mediamicroservices",
+	"dsb_mediamicroservices_sql",
 	"dsb_sn",
 	"dsb_hotel",
 	"trainticket",
@@ -89,8 +88,7 @@ var APPS_INFO = map[string]AppInfo{
 	"shopping_simple":                       {BLUEPRINT_PATH_EXAMPLES + "shopping_simple/workflow", specs_shopping_simple.Docker},
 	"dsb_hotel":                             {BLUEPRINT_PATH_EXAMPLES + "dsb_hotel/workflow/hotelreservation", specs_dsb_hotel.Original},
 	"dsb_sn":                                {BLUEPRINT_PATH_EXAMPLES + "dsb_sn/workflow/socialnetwork", specs_dsb_sn.Docker},
-	"dsb_media":                             {BLUEPRINT_PATH_EXAMPLES + "dsb_media/workflow/mediamicroservices", specs_dsb_media.Docker},
-	"dsb_media_sql":                         {BLUEPRINT_PATH_EXAMPLES + "dsb_media_sql/workflow/mediamicroservices_sql", specs_dsb_media_sql.Docker},
+	"dsb_media":                             {BLUEPRINT_PATH_EXAMPLES + "dsb_media/workflow/mediamicroservices", specs_dsb_mediamicroservices.Docker},
 }
 
 func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {

@@ -14,10 +14,9 @@ if [ "$#" -ne 2 ]; then
   echo "- digota"
   echo "- sockshop3"
   echo "- eshopmicroservices"
-  echo "- postnotification_simple"
+  echo "- postnotification"
   echo "- dsb_sn2"
-  echo "- dsb_media_sql"
-  echo "- dsb_media_nosql"
+  echo "- dsb_mediamicroservices"
   echo "- train_ticket2"
   echo "- dsb_hotel2"
   exit 1

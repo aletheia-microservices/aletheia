@@ -11,42 +11,40 @@ import (
 )
 
 const (
-	APP_PATH_POSTNOTIFICATION_SIMPLE = "postnotification_simple/workflow/postnotification_simple"
-	APP_PATH_DIGOTA                  = "digota/workflow/digota"
-	APP_PATH_ESHOPMICROSERVICES      = "eshopmicroservices/workflow/eshopmicroservices"
-	APP_PATH_DSB_MEDIA_SQL           = "dsb_media_sql/workflow/mediamicroservices_sql"
-	APP_PATH_DSB_MEDIA_NOSQL         = "dsb_media_nosql/workflow/mediamicroservices_nosql"
-	APP_PATH_SOCKSHOP3               = "sockshop3/workflow/sockshop3"
-	APP_PATH_DSB_SN2                 = "dsb_sn2/workflow/socialnetwork2"
-	APP_PATH_FOO_BAR                 = "foobar/workflow/foobar"
-	APP_PATH_FOO_BAR2                = "foobar2/workflow/foobar2"
-	APP_PATH_DSB_HOTEL2              = "dsb_hotel2/workflow/hotelreservation2"
-	APP_PATH_TRAIN_TICKET2           = "train_ticket2/workflow/train_ticket2"
-	APP_PATH_SYNTHETIC_APP           = "synthetic_app/workflow/synthetic_app"
-	APP_PATH_SYNTHETIC_APPA           = "synthetic_app/workflow/synthetic_appA"
-	APP_PATH_SYNTHETIC_APPB           = "synthetic_app/workflow/synthetic_appB"
-	APP_PATH_SYNTHETIC_APP1          = "synthetic_app1/workflow/synthetic_app1"
-	APP_PATH_SYNTHETIC_APP2          = "synthetic_app2/workflow/synthetic_app2"
-	APP_PATH_SYNTHETIC_APP3          = "synthetic_app3/workflow/synthetic_app3"
-	APP_PATH_SYNTHETIC_APP4          = "synthetic_app4/workflow/synthetic_app4"
-	APP_PATH_SYNTHETIC_APP5          = "synthetic_app5/workflow/synthetic_app5"
-	APP_PATH_SYNTHETIC_APP6          = "synthetic_app5/workflow/synthetic_app6"
-	APP_PATH_SYNTHETIC_APP7          = "synthetic_app5/workflow/synthetic_app7"
+	APP_PATH_POSTNOTIFICATION       = "postnotification/workflow/postnotification"
+	APP_PATH_DIGOTA                 = "digota/workflow/digota"
+	APP_PATH_ESHOPMICROSERVICES     = "eshopmicroservices/workflow/eshopmicroservices"
+	APP_PATH_DSB_MEDIAMICROSERVICES = "dsb_mediamicroservices/workflow/mediamicroservices"
+	APP_PATH_SOCKSHOP               = "sockshop/workflow/sockshop"
+	APP_PATH_DSB_SOCIALNETWORK      = "dsb_socialnetwork/workflow/socialnetwork"
+	APP_PATH_FOO_BAR                = "foobar/workflow/foobar"
+	APP_PATH_FOO_BAR2               = "foobar2/workflow/foobar2"
+	APP_PATH_DSB_HOTEL2             = "dsb_hotel2/workflow/hotelreservation2"
+	APP_PATH_TRAIN_TICKET           = "train_ticket/workflow/train_ticket"
+	APP_PATH_SYNTHETIC_APP          = "synthetic_app/workflow/synthetic_app"
+	APP_PATH_SYNTHETIC_APPA         = "synthetic_app/workflow/synthetic_appA"
+	APP_PATH_SYNTHETIC_APPB         = "synthetic_app/workflow/synthetic_appB"
+	APP_PATH_SYNTHETIC_APP1         = "synthetic_app1/workflow/synthetic_app1"
+	APP_PATH_SYNTHETIC_APP2         = "synthetic_app2/workflow/synthetic_app2"
+	APP_PATH_SYNTHETIC_APP3         = "synthetic_app3/workflow/synthetic_app3"
+	APP_PATH_SYNTHETIC_APP4         = "synthetic_app4/workflow/synthetic_app4"
+	APP_PATH_SYNTHETIC_APP5         = "synthetic_app5/workflow/synthetic_app5"
+	APP_PATH_SYNTHETIC_APP6         = "synthetic_app5/workflow/synthetic_app6"
+	APP_PATH_SYNTHETIC_APP7         = "synthetic_app5/workflow/synthetic_app7"
 
 	BLUEPRINT_EXAMPLES_RELATIVE_PATH = "../../blueprint/examples"
 )
 
 var APPS_PACKAGE_PATHS = []string{
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_POSTNOTIFICATION_SIMPLE,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_POSTNOTIFICATION,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DIGOTA,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_ESHOPMICROSERVICES,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIA_SQL,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIA_NOSQL,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP3,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SN2,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIAMICROSERVICES,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SOCIALNETWORK,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET2,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APPA,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APPB,
@@ -60,17 +58,17 @@ var APPS_PACKAGE_PATHS = []string{
 }
 
 var APPS_NOSQL_SCHEMAS = map[string]string{
-	"dsb_media_nosql": BLUEPRINT_EXAMPLES_RELATIVE_PATH + "/" + APP_PATH_DSB_MEDIA_NOSQL,
+	"dsb_mediamicroservices": BLUEPRINT_EXAMPLES_RELATIVE_PATH + "/" + APP_PATH_DSB_MEDIAMICROSERVICES,
 }
 
 var APPS_SQL_TABLES = map[string][]string{
 	// key is the name of the app
 	// value is a list of <database_name>:<sql_filepath>
-	"dsb_media_sql": {
-		"movieid_db:../../blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/movieid.sql",
-		"movieinfo_db:../../blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/movieinfo.sql",
-		"castinfo_db:../../blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/castinfo.sql",
-		"plot_db:../../blueprint/examples/dsb_media_sql/workflow/mediamicroservices_sql/database/plot.sql",
+	"dsb_mediamicroservices_sql": {
+		"movieid_db:../../blueprint/examples/dsb_mediamicroservices_sql/workflow/mediamicroservices_sql/database/movieid.sql",
+		"movieinfo_db:../../blueprint/examples/dsb_mediamicroservices_sql/workflow/mediamicroservices_sql/database/movieinfo.sql",
+		"castinfo_db:../../blueprint/examples/dsb_mediamicroservices_sql/workflow/mediamicroservices_sql/database/castinfo.sql",
+		"plot_db:../../blueprint/examples/dsb_mediamicroservices_sql/workflow/mediamicroservices_sql/database/plot.sql",
 	},
 }
 

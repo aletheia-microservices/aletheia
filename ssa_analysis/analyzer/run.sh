@@ -12,12 +12,12 @@ set -e
 
 apps=(
     digota
-    sockshop3
+    sockshop
     eshopmicroservices
-    postnotification_simple
-    dsb_sn2
-    dsb_media_nosql
-    train_ticket2
+    postnotification
+    dsb_socialnetwork
+    dsb_mediamicroservices
+    trainticket
 )
 
 apps_synthetic=(

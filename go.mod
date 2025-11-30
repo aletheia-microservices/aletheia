@@ -1,8 +1,6 @@
 module analyzer
 
-go 1.23.0
-
-toolchain go1.24.0
+go 1.24.0
 
 require golang.org/x/tools v0.30.0
 
@@ -15,10 +13,6 @@ require github.com/blueprint-uservices/blueprint/runtime v0.0.0 // indirect
 require github.com/blueprint-uservices/blueprint/examples/postnotification/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/postnotification/wiring v0.0.0
-
-require github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow v0.0.0 // indirect
-
-require github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring v0.0.0
 
 require github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/workflow v0.0.0 // indirect
 
@@ -73,8 +67,7 @@ require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0
 require (
 	github.com/auxten/postgresql-parser v1.0.1
 	github.com/aws/aws-sdk-go-v2 v1.36.3
-	github.com/blueprint-uservices/blueprint/examples/dsb_media/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/lib/pq v1.10.9
@@ -99,8 +92,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.19 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workload v0.0.0-20240619221802-d064c5861c1e // indirect
-	github.com/blueprint-uservices/blueprint/examples/dsb_media/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow v0.0.0 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -137,7 +129,7 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
-	go.mongodb.org/mongo-driver v1.17.4 // indirect
+	go.mongodb.org/mongo-driver v1.17.6 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.34.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
@@ -178,12 +170,6 @@ replace github.com/blueprint-uservices/blueprint/examples/postnotification => ./
 replace github.com/blueprint-uservices/blueprint/examples/postnotification/workflow => ./blueprint/examples/postnotification/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/postnotification/wiring => ./blueprint/examples/postnotification/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple => ./blueprint/examples/postnotification_simple
-
-replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow => ./blueprint/examples/postnotification_simple/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/postnotification_simple/wiring => ./blueprint/examples/postnotification_simple/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity => ./blueprint/examples/app_constraints_referential_integrity
 
@@ -257,17 +243,11 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow => ./b
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring => ./blueprint/examples/dsb_sn/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media => ./blueprint/examples/dsb_media
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices => ./blueprint/examples/dsb_mediamicroservices
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media/workflow => ./blueprint/examples/dsb_media/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ./blueprint/examples/dsb_mediamicroservices/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media/wiring => ./blueprint/examples/dsb_media/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql => ./blueprint/examples/dsb_media_sql
-
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow => ./blueprint/examples/dsb_media_sql/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring => ./blueprint/examples/dsb_media_sql/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ./blueprint/examples/dsb_mediamicroservices/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/foobar => ./blueprint/examples/foobar
 
