@@ -70,7 +70,7 @@ func parseSQLStatementsFromInput(input string) []sqlDbStmt {
 }
 
 func parseSQLStatement(database *backends.Database, sql string) {
-	// EVAL: fmt.Printf("[APP SQL PARSER] parsing statement: %s\n", sql)
+	logrus.Tracef("[APP SQL PARSER] parsing statement: %s\n", sql)
 
 	sql = strings.ReplaceAll(sql, "\n", " ")
 	sql = strings.ReplaceAll(sql, "\t", " ")
@@ -81,7 +81,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 
 	w := &walk.AstWalker{
 		Fn: func(ctx interface{}, node interface{}) (stop bool) {
-			// EVAL: fmt.Printf("[APP SQL PARSER] visiting node (%T): %v\n", node, node)
+			logrus.Tracef("[APP SQL PARSER] visiting node (%T): %v\n", node, node)
 
 			switch stmt := node.(type) {
 			case *tree.CreateTable:
@@ -107,7 +107,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 				if constraint != nil {
 					field.AddConstraint(constraint)
 					schema.AddConstraint(constraint)
-					// EVAL: fmt.Printf("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
+					logrus.Tracef("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
 				}
 
 			case *tree.UniqueConstraintTableDef:
@@ -131,7 +131,7 @@ func parseSQLStatement(database *backends.Database, sql string) {
 				}
 
 				schema.AddConstraint(constraint)
-				// EVAL: fmt.Printf("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
+				logrus.Tracef("[APP SQL PARSER] added new constraint: %s\n", constraint.String())
 
 			}
 			return false
@@ -166,11 +166,12 @@ type tableNameAlias struct {
 //
 // NOTE: for SQL Selects on all fields (i.e., '*') the readFields length is 1
 // and the readField has format <database>.<table>
-func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
-	// EVAL: fmt.Printf("[APP SQL PARSER] parsing sql read for database (%s): %s\n", db, stmtStr)
+func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string, bool) {
+	logrus.Tracef("[APP SQL PARSER] parsing sql read for database (%s): %s\n", db, stmtStr)
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
-		logrus.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+		logrus.Warnf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+		return nil, nil, nil, false
 	}
 
 	//argIdx := 0
@@ -203,7 +204,12 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 		}
 
 		if stmt.Where != nil {
-			filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+			var ok bool
+			filterFields, ok = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+			if !ok {
+				logrus.Warnf("[APP SQL PARSER] unable to parse sql WHERE clause: %v", stmt.Where)
+				return nil, nil, nil, false
+			}
 		}
 
 	default:
@@ -215,10 +221,10 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string) {
 		tableNames[i] = tableAlias.name
 	}
 
-	return selectedFields, filterFields, tableNames
+	return selectedFields, filterFields, tableNames, true
 }
 
-func parseSQLWhere(db string, stmtWhere *sqlparser.Where, tableNameAliasLst []tableNameAlias) []string {
+func parseSQLWhere(db string, stmtWhere *sqlparser.Where, tableNameAliasLst []tableNameAlias) ([]string, bool) {
 	var filterFields []string
 	if comparisonExpr, ok := stmtWhere.Expr.(*sqlparser.ComparisonExpr); ok {
 		var leftFieldName string
@@ -228,19 +234,20 @@ func parseSQLWhere(db string, stmtWhere *sqlparser.Where, tableNameAliasLst []ta
 			leftFieldName = db + "." + tableName + "." + columnName
 		}
 		filterFields = append(filterFields, leftFieldName)
-		// EVAL: fmt.Printf("[APP SQL PARSER] [WHERE]: %s -> <SOME OBJECT TBD>\n", leftFieldName)
+		logrus.Tracef("[APP SQL PARSER] [WHERE]: %s -> <SOME OBJECT TBD>\n", leftFieldName)
 	}
-	return filterFields
+	return filterFields, true
 }
 
 // ParseSQLWrite returns two slices, one for written fields and another for filter fields
 // where each field return has format <table>.<field>
-func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
-	// EVAL: fmt.Printf("[APP SQL PARSER] parsing sql write for database (%s): %s\n", db, stmtStr)
+func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string, bool) {
+	logrus.Tracef("[APP SQL PARSER] parsing sql write for database (%s): %s\n", db, stmtStr)
 
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
 		logrus.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
+		return nil, nil, "", false
 	}
 
 	var writtenFields []string
@@ -282,17 +289,20 @@ func ParseSQLWrite(db string, stmtStr string) ([]string, []string, string) {
 				}
 			}
 		}
-
-		filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+		var ok bool
+		filterFields, ok = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+		if !ok {
+			return nil, nil, "", false
+		}
 	}
-	return writtenFields, filterFields, tableName
+	return writtenFields, filterFields, tableName, true
 }
 
 // ParseSQLDelete parses a DELETE statement and returns:
 // - filterFields: fields used in the WHERE clause, in the form <db>.<table>.<column>
 // - tableNames: the table names involved in the delete
-func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
-	// EVAL: fmt.Printf("[APP SQL PARSER] parsing sql delete for database (%s): %s\n", db, stmtStr)
+func ParseSQLDelete(db string, stmtStr string) ([]string, []string, bool) {
+	logrus.Tracef("[APP SQL PARSER] parsing sql delete for database (%s): %s\n", db, stmtStr)
 	stmt, err := sqlparser.Parse(stmtStr)
 	if err != nil {
 		logrus.Fatalf("[APP SQL PARSER] unable to parse sql query (%s): %s", stmtStr, err.Error())
@@ -305,7 +315,11 @@ func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
 	case *sqlparser.Delete:
 		tableNameAliasLst = parseSQLTableExprs(stmt.TableExprs)
 		if stmt.Where != nil {
-			filterFields = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+			var ok bool
+			filterFields, ok = parseSQLWhere(db, stmt.Where, tableNameAliasLst)
+			if !ok {
+				return nil, nil, false
+			}
 		}
 
 	default:
@@ -317,7 +331,7 @@ func ParseSQLDelete(db string, stmtStr string) ([]string, []string) {
 		tableNames[i] = tableAlias.name
 	}
 
-	return filterFields, tableNames
+	return filterFields, tableNames, true
 }
 
 func parseSQLTableExprs(tableExprs sqlparser.TableExprs) []tableNameAlias {

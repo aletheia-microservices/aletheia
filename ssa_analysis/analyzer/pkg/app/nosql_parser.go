@@ -5,11 +5,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
-
-	"github.com/sirupsen/logrus"
 )
 
 type Property struct {
@@ -60,7 +60,7 @@ func (app *App) ParseNoSQLSchemaFromUserFile() {
 }
 
 func parseJson(app *App, jsonSchema JSONSchema) {
-	// EVAL: fmt.Printf("[JSON PARSER] parsing json data: %v", jsonSchema)
+	logrus.Tracef("[JSON PARSER] parsing json data: %v", jsonSchema)
 
 	for _, field := range jsonSchema.Schema.UniqueItems {
 		database := app.GetDatabaseByName(jsonSchema.Schema.Database)

@@ -76,10 +76,10 @@ require (
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
-	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
+	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/grpc v1.61.1 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240415180920-8c6c420018be // indirect
+	google.golang.org/grpc v1.63.2 // indirect
 	google.golang.org/protobuf v1.34.0 // indirect
 )
 
@@ -147,7 +147,10 @@ require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/workflow
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_media_sql/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow v0.0.0 // indirect
+require (
+	github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow v0.0.0 // indirect
+	github.com/onsi/gomega v1.27.10 // indirect
+)
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring v0.0.0
 

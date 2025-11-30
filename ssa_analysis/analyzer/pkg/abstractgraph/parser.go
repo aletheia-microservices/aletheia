@@ -114,7 +114,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	}
 
 	if !created && node != nil && node.IsParsed() {
-		logrus.Warnf("[ABSTRACTGRAPH] ignoring parsed node: %s\n", node.String())
+		logrus.Tracef("[ABSTRACTGRAPH] ignoring parsed node: %s\n", node.String())
 		return
 	}
 
