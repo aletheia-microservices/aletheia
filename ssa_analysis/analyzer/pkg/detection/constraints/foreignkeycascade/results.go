@@ -73,8 +73,8 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 				numWarnings++
 				results += fmt.Sprintf("\tmissing cascade #%d: database={%s}, entity={%s}, pending_fields={%s}\n", numWarnings, database.GetName(), schema.GetName(), strings.Join(fieldsLst, ", "))
 			}
+			results += "\n"
 		}
-		results += "\n"
 	}
 	detector.results = header + fmt.Sprintf("[NUM_WARNINGS = %d]\n", numWarnings) + results
 }

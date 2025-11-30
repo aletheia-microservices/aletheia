@@ -164,6 +164,13 @@ func (call *MethodCall) GetReturnAt(idx int) *SSANode {
 	return call.rets[idx]
 }
 
+func (call *MethodCall) TryGetReturnAt(idx int) *SSANode {
+	if idx >= len(call.rets) {
+		return nil
+	}
+	return call.rets[idx]
+}
+
 func (call *MethodCall) GetFuncShortPath() string {
 	return call.funcShortPath
 }

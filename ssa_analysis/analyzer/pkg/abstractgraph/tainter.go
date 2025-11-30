@@ -496,11 +496,11 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 }
 
 func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_read AbstractTaint, taint1_write AbstractTaint, db2_read *backends.Database, db1_write *backends.Database, field2_read *backends.Field, field1_write *backends.Field) bool {
-	if field1_write.GetPath() == "order_db.order.FromStation" && field2_read.GetPath() == "station_db.station.Name" {
+	/* if field1_write.GetPath() == "order_db.order.FromStation" && field2_read.GetPath() == "station_db.station.Name" {
 		// EVAL: fmt.Printf("CURRENT TAINT: %s\n", taint2_read.LongString())
 		// EVAL: fmt.Printf("OTHER TAINT: %s\n", taint1_write.LongString())
 		logrus.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
-	}
+	} */
 
 	var modified bool
 	// e.g.,

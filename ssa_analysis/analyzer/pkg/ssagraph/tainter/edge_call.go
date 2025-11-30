@@ -76,7 +76,7 @@ func propagateTaintNearbyFromNodeOnCall(graph *ssagraph.SSAGraph, node *ssagraph
 			switch fn.Package().Pkg.Name() {
 			case "strconv":
 				switch fn.Name() {
-				case "FormatInt", "Itoa", "ParseInt", "ParseFloat":
+				case "FormatInt", "Itoa", "Atoi", "ParseInt", "ParseFloat":
 					// e.g., myval2 := strconv.ParseInt(myval, 10, 64)
 					// e.g., myval2 := strconv.FormatInt(val, 10)
 					// e.g., myval2 := strconv.Itoa(myval)
@@ -123,7 +123,7 @@ func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintI
 			switch fn.Package().Pkg.Name() {
 			case "strconv":
 				switch fn.Name() {
-				case "FormatInt", "Itoa", "ParseInt", "ParseFloat":
+				case "FormatInt", "Itoa", "Atoi", "ParseInt", "ParseFloat":
 					// e.g., myval2 := strconv.ParseInt(myval, 10, 64)
 					// e.g., myval2 := strconv.FormatInt(val, 10)
 					// e.g., myval2 := strconv.Itoa(myval)
@@ -132,7 +132,7 @@ func propagateTaintNearbyToNodeOnCall(graph *ssagraph.SSAGraph, taintInfo TaintI
 					argNode := graph.GetNodeByName(call.Call.Args[0].Name())
 					propagateTaintNearby(graph, true, argNode.GetValue(), taintInfo, visited, upwards)
 				default:
-					logrus.WithField("call", call.String()).Fatalf("[TAINT NEARBY] [FROM] unexpected call on (strconv) package")
+					logrus.WithField("call", call.String()).Fatalf("[TAINT NEARBY] [TO] unexpected call on (strconv) package")
 				}
 			}
 		}

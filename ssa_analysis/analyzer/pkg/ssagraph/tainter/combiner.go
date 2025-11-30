@@ -37,9 +37,11 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		// TODO: upper/lower taints
 		for _, callee_rets := range toGraph.GetReturnsLst() {
 			for i, callee_ret := range callee_rets {
-				caller_ret := methodCall.GetReturnAt(i)
-				callee_taints := callee_ret.GetTaints()
-				propagateTaints(graph, caller_ret, callee_taints, callerT)
+				caller_ret := methodCall.TryGetReturnAt(i)
+				if caller_ret != nil {
+					callee_taints := callee_ret.GetTaints()
+					propagateTaints(graph, caller_ret, callee_taints, callerT)
+				}
 			}
 		}
 

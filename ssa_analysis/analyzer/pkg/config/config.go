@@ -25,6 +25,8 @@ type Config struct {
 
 	// database schema configuration
 	MakeIndexesAsPrimaryKeysForNoSQLDatabases bool
+
+	ForeignKeyConcurrencyDetectorIncludeOnUpdates bool
 }
 
 var Global = &Config{
@@ -46,4 +48,6 @@ var Global = &Config{
 	PropagateTaintsAcrossQueueOperations: true, // do not change
 
 	MakeIndexesAsPrimaryKeysForNoSQLDatabases: true, // do not change
+
+	ForeignKeyConcurrencyDetectorIncludeOnUpdates: false, // tunable
 }

@@ -13,11 +13,11 @@ set -e
 apps=(
     digota
     sockshop3
+    eshopmicroservices
     postnotification_simple
     dsb_sn2
     dsb_media_nosql
     train_ticket2
-    eshopmicroservices
 )
 
 apps_synthetic=(
@@ -33,7 +33,7 @@ apps_synthetic=(
 )
 
 mode=""
-runs=1
+runs=5
 
 if [[ $# -eq 1 ]]; then
     case "$1" in

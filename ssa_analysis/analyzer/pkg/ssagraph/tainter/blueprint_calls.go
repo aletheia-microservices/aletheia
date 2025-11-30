@@ -1018,7 +1018,7 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 					database := field.GetWiringName()
 
 					if database == "" {
-						logrus.Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
+						logrus.WithField("field", field.String()).Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
 					}
 
 					// sanity check

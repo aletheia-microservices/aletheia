@@ -40,7 +40,7 @@ func propagateTaintNearbyFromNodeOnField(graph *ssagraph.SSAGraph, edge *ssagrap
 		// which do not match and it's ok
 		logrus.WithField("graph", graph.String()).WithField("curr/from", node.String()).WithField("to", toNode.String()).
 			WithField("taint_info", taintInfo.String()).WithField("taint_info_tmp", taintInfoTmp.String()).
-			Warnf("[TAINT NEARBY] [FROM] [FIELD] skipping for unexpected conditions")
+			Debugf("[TAINT NEARBY] [FROM] [FIELD] skipping for unexpected conditions")
 		return
 	}
 	propagateTaintNearby(graph, true, toNode.GetValue(), taintInfoTmp, visited, upwards)

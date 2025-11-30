@@ -89,12 +89,9 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)
 
-	if node != nil && node.IsParsed() {
-		// EVAL: fmt.Printf("[ABSTRACTGRAPH] ignoring node already visited: %s\n", node.String())
-		return
-	}
-
+	var created bool
 	if node == nil {
+		created = true
 		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "", "")
 		graph.AddNode(name, node)
 
@@ -104,6 +101,21 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			// EVAL: fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
 			node.AddParam(obj)
 		}
+	}
+
+	// build dummy edges for entrypoints
+	if entrypoint {
+		edge := NewAbstractEdge("", funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
+		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
+			arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint), make(map[string][]*AbstractTrace))
+			edge.AddArgument(arg)
+		}
+		graph.AddEdge(edge)
+	}
+
+	if !created && node != nil && node.IsParsed() {
+		logrus.Warnf("[ABSTRACTGRAPH] ignoring parsed node: %s\n", node.String())
+		return
 	}
 
 	node.SetParsed()
@@ -133,16 +145,6 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				// EVAL: fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
 		}
-	}
-
-	// build dummy edges for entrypoints
-	if entrypoint {
-		edge := NewAbstractEdge("", funcshortpath, utils.ExtractMethodNameFromShortFunctionPath(funcshortpath), clientNode, node, common.OP_UNDEFINED, EDGE_SERVICE_ENTRYPOINT)
-		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
-			arg := NewAbstractObject(funcParam.GetName(), make(map[string][]*AbstractTaint), make(map[string][]*AbstractTrace))
-			edge.AddArgument(arg)
-		}
-		graph.AddEdge(edge)
 	}
 
 	for _, call := range ssaGraph.GetAllCalls() {
