@@ -49,8 +49,7 @@
           "consign_db.consign_record.Weight"
         ],
         "constraints": [
-          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES order_db.order.AccountID [MANDATORY]",
-          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID",
+          "FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID [T]",
           "FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES station_db.station.Name [T]",
           "FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]",
           "FOREIGN_KEY consign_db.consign_record.Price REFERENCES consignprice_db.consign.InitialPrice",
@@ -165,7 +164,20 @@
   },
   "inside_payment_db": {
     "name": "inside_payment_db",
-    "schemas": null
+    "schemas": [
+      {
+        "name": "money",
+        "fields": [
+          "inside_payment_db.money.UserID"
+        ],
+        "constraints": []
+      },
+      {
+        "name": "payment",
+        "fields": [],
+        "constraints": []
+      }
+    ]
   },
   "money_db": {
     "name": "money_db",
@@ -179,15 +191,20 @@
         "fields": [
           "order_db.order",
           "order_db.order.AccountID",
+          "order_db.order.BoughtDate",
           "order_db.order.ContactsDocumentNumber",
           "order_db.order.ContactsName",
           "order_db.order.DocumentType",
           "order_db.order.FromStation",
           "order_db.order.ID",
           "order_db.order.Price",
+          "order_db.order.SeatClass",
+          "order_db.order.SeatNumber",
+          "order_db.order.Status",
           "order_db.order.ToStation",
           "order_db.order.TrainNumber",
-          "order_db.order.TravelDate"
+          "order_db.order.TravelDate",
+          "order_db.order.TravelTime"
         ],
         "constraints": [
           "FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID",
@@ -197,8 +214,11 @@
           "FOREIGN_KEY order_db.order.FromStation REFERENCES station_db.station.Name",
           "FOREIGN_KEY order_db.order.Price REFERENCES price_db.priceConfig.BasicPriceRate",
           "FOREIGN_KEY order_db.order.Price REFERENCES route_db.route.Distances[*]",
+          "FOREIGN_KEY order_db.order.Price REFERENCES travel_db.tripResponse.PriceForConfortClass",
+          "FOREIGN_KEY order_db.order.Price REFERENCES travel_db.tripResponse.PriceForEconomyClass",
           "FOREIGN_KEY order_db.order.ToStation REFERENCES station_db.station.Name",
-          "FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID"
+          "FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID",
+          "FOREIGN_KEY order_db.order.TravelTime REFERENCES travel_db.trip.StartTime"
         ]
       }
     ]
@@ -208,10 +228,7 @@
     "schemas": [
       {
         "name": "money",
-        "fields": [
-          "payment_db.payment",
-          "payment_db.payment.OrderID"
-        ],
+        "fields": [],
         "constraints": []
       },
       {
@@ -292,6 +309,7 @@
         "name": "train",
         "fields": [
           "train_db.train",
+          "train_db.train.ComfortClass",
           "train_db.train.ID",
           "train_db.train.Name"
         ],
@@ -323,7 +341,9 @@
           "travel_db.trip.StationsName",
           "travel_db.trip.TerminalStationName",
           "travel_db.trip.TrainTypeName",
-          "travel_db.trip.TripID"
+          "travel_db.trip.TripID",
+          "travel_db.tripResponse.PriceForConfortClass",
+          "travel_db.tripResponse.PriceForEconomyClass"
         ],
         "constraints": []
       }

@@ -46,7 +46,17 @@
         "DeleteContact",
         "DeletePrice",
         "DeleteStation",
-        "DeleteTrain"
+        "DeleteTrain",
+        "GetAllConfigs",
+        "GetAllContacts",
+        "GetAllPrices",
+        "GetAllStations",
+        "GetAllTrains",
+        "ModifyConfig",
+        "ModifyContact",
+        "ModifyPrice",
+        "ModifyStation",
+        "ModifyTrain"
       ],
       "services": [
         "ConfigService",
@@ -68,7 +78,8 @@
       "methods": [
         "AddOrder",
         "DeleteOrder",
-        "GetAllOrders"
+        "GetAllOrders",
+        "UpdateOrder"
       ],
       "services": [
         "OrderService"
@@ -286,22 +297,35 @@
         "preserveService #4 (preserve_service)",
         "executeService #5 (execute_service)",
         "cancelService #6 (cancel_service)",
-        "assuranceService #7 (assurance_service)",
-        "orderService #8 (order_service)",
-        "foodService #9 (food_service)",
-        "consignService #10 (consign_price_service)",
-        "deliveryService #11 (delivery_service)"
+        "rebookService #7 (rebook_service)",
+        "priceService #8 (price_service)",
+        "assuranceService #9 (assurance_service)",
+        "orderService #10 (order_service)",
+        "foodService #11 (food_service)",
+        "consignService #12 (consign_price_service)",
+        "deliveryService #13 (delivery_service)"
       ],
       "methods": [
         "AddAssurance",
         "AddContact",
+        "CalculateRefund",
+        "CancelOrder",
+        "DeleteContacts",
+        "FindAllContacts",
+        "GetAllAssuranceTypes",
+        "GetAllAssurances",
         "GetAllConfigs",
         "GetAllContacts",
         "GetAllOrders",
+        "GetAllPrices",
         "GetTravel",
+        "ModifyAssurance",
+        "ModifyContacts",
         "Pay",
+        "PayDifference",
         "PreserveTicketConfirm",
         "QueryOrderWithAllInfo",
+        "Rebook",
         "TicketCollect",
         "TicketExecute"
       ],
@@ -317,7 +341,9 @@
         "FoodService",
         "OrderService",
         "PaymentService",
-        "PreserveService"
+        "PreserveService",
+        "PriceService",
+        "RebookService"
       ],
       "databases": []
     },
@@ -387,12 +413,24 @@
       "pkg": "train_ticket2",
       "impl": "InsidePaymentServiceImpl",
       "fields": [
-        "insidePaymentDB #0 (inside_payment_db)"
+        "insidePaymentDB #0 (inside_payment_db)",
+        "paymentService #1 (payment_service)",
+        "orderService #2 (order_service)"
       ],
       "methods": [
+        "Pay",
+        "CreateAccount",
+        "AddMoney",
+        "QueryAccount",
+        "QueryAddMoney",
+        "QueryPayment",
+        "PayDifference",
         "Drawback"
       ],
-      "services": [],
+      "services": [
+        "OrderService",
+        "PaymentService"
+      ],
       "databases": []
     },
     {
@@ -416,8 +454,15 @@
         "orderDB #0 (order_db)"
       ],
       "methods": [
+        "QueryOrders",
+        "CalculateSoldTicket",
+        "SecurityInfoCheck",
+        "GetOrderPrice",
+        "PayOrder",
+        "AddCreateNewOrder",
         "CreateNewOrder",
-        "UpdateStatus",
+        "UpdateOrder",
+        "SaveOrderInfo",
         "GetOrderById",
         "FindAllOrder",
         "DeleteOrder",
@@ -490,15 +535,41 @@
         "priceDB #0 (price_db)"
       ],
       "methods": [
-        "FindByID",
-        "CreateNewPriceConfig",
         "FindByRouteIDAndTrainType",
         "FindByRouteIDsAndTrainTypes",
         "GetAllPriceConfig",
+        "CreateNewPriceConfig",
         "DeletePriceConfig",
         "UpdatePriceConfig"
       ],
       "services": [],
+      "databases": []
+    },
+    {
+      "name": "RebookService",
+      "path": "github.com/blueprint-uservices/blueprint/examples/train_ticket2/workflow/train_ticket2.RebookService",
+      "pkg": "train_ticket2",
+      "impl": "RebookServiceImpl",
+      "fields": [
+        "seatService #0 (seat_service)",
+        "travelService #1 (travel_service)",
+        "orderService #2 (order_service)",
+        "trainService #3",
+        "routeService #4 (route_service)",
+        "insidePaymentService #5 (inside_payment_service)"
+      ],
+      "methods": [
+        "PayDifference",
+        "Rebook"
+      ],
+      "services": [
+        "InsidePaymentService",
+        "OrderService",
+        "RouteService",
+        "SeatService",
+        "TrainService",
+        "TravelService"
+      ],
       "databases": []
     },
     {
@@ -574,7 +645,8 @@
         "FindByID",
         "FindByIDs",
         "FindID",
-        "FindIDs"
+        "FindIDs",
+        "FindAll"
       ],
       "services": [],
       "databases": []

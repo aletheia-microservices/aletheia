@@ -10,8 +10,8 @@
   "services": [
     {
       "name": "BasketService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/eshopmicroservices.BasketService",
-      "pkg": "eshopmicroservices",
+      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketService",
+      "pkg": "basket",
       "impl": "BasketServiceImpl",
       "fields": [
         "database #0 (basket_db)",
@@ -31,8 +31,8 @@
     },
     {
       "name": "CatalogService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/eshopmicroservices.CatalogService",
-      "pkg": "eshopmicroservices",
+      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CatalogService",
+      "pkg": "catalog",
       "impl": "CatalogServiceImpl",
       "fields": [
         "database #0 (catalog_db)"
@@ -40,7 +40,9 @@
       "methods": [
         "CreateProduct",
         "DeleteProduct",
+        "GetProductByCategory",
         "GetProductById",
+        "GetProducts",
         "Run"
       ],
       "services": [],
@@ -48,8 +50,8 @@
     },
     {
       "name": "DiscountService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/eshopmicroservices.DiscountService",
-      "pkg": "eshopmicroservices",
+      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DiscountService",
+      "pkg": "discount",
       "impl": "DiscountServiceImpl",
       "fields": [
         "database #0 (discount_db)"
@@ -65,8 +67,8 @@
     },
     {
       "name": "OrderService",
-      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/eshopmicroservices.OrderService",
-      "pkg": "eshopmicroservices",
+      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderService",
+      "pkg": "order",
       "impl": "OrderServiceImpl",
       "fields": [
         "database #0 (order_db)",
@@ -74,24 +76,32 @@
       ],
       "methods": [
         "CreateNewOrder",
-        "Run"
+        "DeleteOrder",
+        "GetOrdersByCustomer",
+        "Run",
+        "UpdateOrder"
       ],
       "services": [],
       "databases": []
     },
     {
       "name": "WebApp",
-      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/eshopmicroservices.WebApp",
-      "pkg": "eshopmicroservices",
+      "path": "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/web.WebApp",
+      "pkg": "web",
       "impl": "WebAppImpl",
       "fields": [
         "basketService #0 (basket_service)",
         "catalogService #1 (catalog_service)",
         "discountService #2 (discount_service)",
-        "orderService #3 (order_service)"
+        "orderService #3 (order_service)",
+        "customerId #4"
       ],
       "methods": [
-        "OnPostAddToCartAsync"
+        "OnGetOrdersAsync",
+        "OnGetProductsAsync",
+        "OnPostAddToCartAsync",
+        "OnPostCheckoutAsync",
+        "OnPostRemoveToCartAsync"
       ],
       "services": [
         "BasketService",

@@ -2,11 +2,9 @@
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
 [NUM_WARNINGS = 2]
-entry request: CatalogService.DeleteProduct()
-	DELETE: CatalogService.DeleteProduct() --> catalog_db.product.DeleteOne()
-		MISSING CASCADE DELETE #1: database={basket_db}, pending fields={Items[*], Items[*].Price, Items[*].ProductId, Items[*].ProductName}
+delete: CatalogService.DeleteProduct() ... catalog_db.product.DeleteOne()
+	missing cascade #1: database={basket_db}, entity={basket}, pending_fields={Items[*], Items[*].Price, Items[*].ProductId, Items[*].ProductName}
 
-entry request: DiscountService.DeleteDiscount()
-	DELETE: DiscountService.DeleteDiscount() --> discount_db.coupon.DeleteOne()
-		MISSING CASCADE DELETE #2: database={basket_db}, pending fields={Items[*].ProductName}
+delete: DiscountService.DeleteDiscount() ... discount_db.coupon.DeleteOne()
+	missing cascade #2: database={basket_db}, entity={basket}, pending_fields={Items[*].ProductName}
 
