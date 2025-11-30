@@ -4,8 +4,8 @@
 [NUM_WARNINGS = 1]
 entry request: Frontend.ReadBarFoo()
 	FOREIGN KEY READS #1:
-		READ (FOREIGN KEY): FooService.ReadFoo() --> foo_db.foo.FindOne()
+		READ (FOREIGN KEY): FooService.ReadFoo() ... foo_db.foo.FindOne()
 			- field: foo_db.foo.FooID
 			- constraint: FOREIGN_KEY foo_db.foo.FooID REFERENCES bar_db.bar.FooID [MANDATORY]
-		READ (ORIGIN): BarService.ReadBar() --> bar_db.bar.FindOne()
+		READ (ORIGIN): BarService.ReadBar() ... bar_db.bar.FindOne()
 			- field: bar_db.bar.FooID

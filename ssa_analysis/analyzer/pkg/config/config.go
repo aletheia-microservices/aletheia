@@ -47,7 +47,7 @@ var Global = &Config{
 	// taint propagation
 	PropagateTaintsAcrossQueueOperations: true, // do not change
 
-	MakeIndexesAsPrimaryKeysForNoSQLDatabases: true, // do not change
+	MakeIndexesAsPrimaryKeysForNoSQLDatabases: false, // do not change
 
 	ForeignKeyConcurrencyDetectorIncludeOnUpdates: false, // tunable
 }

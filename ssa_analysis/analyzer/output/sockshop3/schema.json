@@ -14,8 +14,8 @@
           "cart_db.carts.Items[*].UnitPrice"
         ],
         "constraints": [
-          "FOREIGN_KEY cart_db.carts.ID REFERENCES user_db.users.UserID",
-          "FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.sock.ID",
+          "FOREIGN_KEY cart_db.carts.ID REFERENCES user_db.user.User.UserID",
+          "FOREIGN_KEY cart_db.carts.Items[*].ID REFERENCES catalogue_db.sock.SockID",
           "FOREIGN_KEY cart_db.carts.Items[*].UnitPrice REFERENCES catalogue_db.sock.Price"
         ]
       }
@@ -28,11 +28,11 @@
         "name": "sock",
         "fields": [
           "catalogue_db.sock",
-          "catalogue_db.sock.ID",
           "catalogue_db.sock.ImageURL",
-          "catalogue_db.sock.ImageURL_1",
-          "catalogue_db.sock.ImageURL_2",
+          "catalogue_db.sock.ImageURL1",
+          "catalogue_db.sock.ImageURL2",
           "catalogue_db.sock.Price",
+          "catalogue_db.sock.SockID",
           "catalogue_db.sock.TagString",
           "catalogue_db.sock.Tags"
         ],
@@ -65,9 +65,10 @@
           "order_db.orders.Total"
         ],
         "constraints": [
-          "FOREIGN_KEY order_db.orders.Address REFERENCES user_db.users.Addresses",
-          "FOREIGN_KEY order_db.orders.Card REFERENCES user_db.users.Cards",
-          "FOREIGN_KEY order_db.orders.CustomerID REFERENCES user_db.users.UserID",
+          "FOREIGN_KEY order_db.orders.Address REFERENCES user_db.address.Address",
+          "FOREIGN_KEY order_db.orders.Card REFERENCES user_db.card.Card",
+          "FOREIGN_KEY order_db.orders.CustomerID REFERENCES ship_db.shipments.Name [MANDATORY]",
+          "FOREIGN_KEY order_db.orders.CustomerID REFERENCES ship_queue.notification.Name [MANDATORY]",
           "FOREIGN_KEY order_db.orders.ID REFERENCES ship_db.shipments.ID [MANDATORY]",
           "FOREIGN_KEY order_db.orders.ID REFERENCES ship_queue.notification.ID [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Items REFERENCES cart_db.carts.Items",
@@ -75,6 +76,8 @@
           "FOREIGN_KEY order_db.orders.Shipment REFERENCES ship_queue.notification [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Shipment.ID REFERENCES ship_db.shipments.ID [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Shipment.ID REFERENCES ship_queue.notification.ID [MANDATORY]",
+          "FOREIGN_KEY order_db.orders.Shipment.Name REFERENCES ship_db.shipments.Name [MANDATORY]",
+          "FOREIGN_KEY order_db.orders.Shipment.Name REFERENCES ship_queue.notification.Name [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Shipment.Status REFERENCES ship_db.shipments.Status [MANDATORY]",
           "FOREIGN_KEY order_db.orders.Shipment.Status REFERENCES ship_queue.notification.Status [MANDATORY]"
         ]
@@ -93,8 +96,7 @@
           "ship_db.shipments.Status"
         ],
         "constraints": [
-          "FOREIGN_KEY ship_db.shipments.ID REFERENCES ship_queue.notification.ID",
-          "FOREIGN_KEY ship_db.shipments.Name REFERENCES user_db.users.UserID"
+          "FOREIGN_KEY ship_db.shipments.ID REFERENCES ship_queue.notification.ID"
         ]
       }
     ]
@@ -110,9 +112,7 @@
           "ship_queue.notification.Name",
           "ship_queue.notification.Status"
         ],
-        "constraints": [
-          "FOREIGN_KEY ship_queue.notification.Name REFERENCES user_db.users.UserID"
-        ]
+        "constraints": []
       }
     ]
   },
@@ -120,19 +120,50 @@
     "name": "user_db",
     "schemas": [
       {
-        "name": "users",
+        "name": "address",
         "fields": [
-          "user_db.users",
-          "user_db.users.Addresses",
-          "user_db.users.Cards",
-          "user_db.users.Email",
-          "user_db.users.FirstName",
-          "user_db.users.LastName",
-          "user_db.users.Password",
-          "user_db.users.Salt",
-          "user_db.users.UserID",
-          "user_db.users.Username",
-          "user_db.users._id"
+          "user_db.address",
+          "user_db.address.Address",
+          "user_db.address.Address.ID",
+          "user_db.address.ID",
+          "user_db.address._id",
+          "user_db.card",
+          "user_db.card.Card",
+          "user_db.card.Card.ID",
+          "user_db.card.ID",
+          "user_db.card._id",
+          "user_db.user",
+          "user_db.user.User",
+          "user_db.user.User.Password",
+          "user_db.user.User.Salt",
+          "user_db.user.User.UserID",
+          "user_db.user.UserID",
+          "user_db.user.Username",
+          "user_db.user._id"
+        ],
+        "constraints": []
+      },
+      {
+        "name": "card",
+        "fields": [
+          "user_db.card",
+          "user_db.card.Card",
+          "user_db.card.Card.ID",
+          "user_db.card.ID",
+          "user_db.card._id"
+        ],
+        "constraints": []
+      },
+      {
+        "name": "user",
+        "fields": [
+          "user_db.user",
+          "user_db.user.User",
+          "user_db.user.User.Password",
+          "user_db.user.User.Salt",
+          "user_db.user.User.UserID",
+          "user_db.user.UserID",
+          "user_db.user.Username"
         ],
         "constraints": []
       }
