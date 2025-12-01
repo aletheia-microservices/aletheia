@@ -21,7 +21,7 @@ var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
 
 // TODO: UpdateMany (check foobar app)
-var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "FindMany", "UpdateOne" /* , "UpdateMany" */, "Upsert", "ReplaceOne"}
+var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "DeleteMany", "FindMany", "UpdateOne" /* , "UpdateMany" */, "Upsert", "ReplaceOne"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
 var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select", "Get"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
@@ -518,7 +518,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 				opType = common.OP_WRITE
 			case "UpdateOne", "UpdateMany", "ReplaceOne", "Upsert":
 				opType = common.OP_UPDATE
-			case "DeleteOne":
+			case "DeleteOne", "DeleteMany":
 				opType = common.OP_DELETE
 			default:
 				logrus.Fatalf("[CALLS BLUEPRINT] [NOSQL] unknown method name for queue call: %s\n", call.String())

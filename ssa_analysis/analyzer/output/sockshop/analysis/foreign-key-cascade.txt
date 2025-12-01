@@ -1,10 +1,16 @@
 ---------------------------------------------------------------------
 ------------------- ANALYSIS: FOREIGN KEY CASCADE -------------------
 ---------------------------------------------------------------------
-[NUM_WARNINGS = 2]
-delete: Frontend.Login() ... CartService.MergeCarts() ... cart_db.carts.DeleteOne()
+[NUM_WARNINGS = 4]
+delete: Frontend.DeleteCart() ... CartService.DeleteCart() ... cart_db.carts.DeleteMany()
 	missing cascade #1: database={order_db}, entity={orders}, pending_fields={Items}
 
-delete: Frontend.Register() ... CartService.MergeCarts() ... cart_db.carts.DeleteOne()
+delete: Frontend.Login() ... CartService.MergeCarts() ... cart_db.carts.DeleteOne()
 	missing cascade #2: database={order_db}, entity={orders}, pending_fields={Items}
+
+delete: Frontend.NewOrder() ... CartService.DeleteCart() ... cart_db.carts.DeleteMany()
+	missing cascade #3: database={order_db}, entity={orders}, pending_fields={Items}
+
+delete: Frontend.Register() ... CartService.MergeCarts() ... cart_db.carts.DeleteOne()
+	missing cascade #4: database={order_db}, entity={orders}, pending_fields={Items}
 

@@ -257,14 +257,6 @@ func main() {
 	fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
 	fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
 
-	/* for fn, ssagraph := range funcGraphs {
-		ssagraph.WriteToDOTFile(appname, fn, true)
-	} */
-
-	/* absgraph.WriteVisited(appname)
-	iterator.Run(detection.PHASE_0_DEBUG)
-	absgraph.WriteToDOTFile(appname, true)
-	absgraph.WriteToDOTFile(appname, false) */
 	app.WriteAppToJSON()
 	app.WriteSchemaToJSON()
 
@@ -280,6 +272,8 @@ func main() {
 		}
 		saveAnalysisTime(app, times)
 	}
+
+	logrus.Infof("[INFO] total number of microservice calls: %d\n", absgraph.GetNumberOfCumulativeCalls())
 }
 
 type AnalysisTimes struct {

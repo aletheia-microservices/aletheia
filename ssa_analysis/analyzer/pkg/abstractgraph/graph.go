@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	"analyzer/pkg/app"
-
 	"github.com/sirupsen/logrus"
+
+	"analyzer/pkg/app"
 )
 
 type AbstractCallGraph struct {
@@ -18,17 +18,23 @@ type AbstractCallGraph struct {
 	nodes map[string]*AbstractNode
 	// key is the id of the ssa instr name for the svc or db call on the callee side
 	edges []*AbstractEdge
+	calls int // total number of cumulative calls
 }
 
 func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
 	return &AbstractCallGraph{
 		app:   app,
 		nodes: make(map[string]*AbstractNode),
+		calls: 0,
 	}
 }
 
 func (graph *AbstractCallGraph) GetApp() *app.App {
 	return graph.app
+}
+
+func (graph *AbstractCallGraph) GetNumberOfCumulativeCalls() int {
+	return graph.calls
 }
 
 func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {

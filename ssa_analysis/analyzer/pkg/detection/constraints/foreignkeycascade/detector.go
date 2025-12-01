@@ -1,6 +1,8 @@
 package foreignkeycascade
 
 import (
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
@@ -82,5 +84,6 @@ func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, reqIdx int, ed
 	op := NewDeleteOperation(edge, edge.GetArguments(), edge.GetToNode().GetDatabaseName(), edge.GetToNode().GetSchemaName())
 	request := detector.getCurrentRequest()
 	request.AddOperation(op)
-	// EVAL: fmt.Printf("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op)
+	logrus.WithField("request", request.entry.String()).
+		Infof("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op.call.String())
 }

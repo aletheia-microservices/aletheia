@@ -26,7 +26,6 @@
           "cast_info_db.cast.Name"
         ],
         "constraints": [
-          "FOREIGN_KEY cast_info_db.cast.CastInfoID REFERENCES movie_info_db.movie_info.Casts[*].CastInfoID [MANDATORY]",
           "PRIMARY KEY (cast_info_db.cast.CastInfoID)"
         ]
       }
@@ -108,7 +107,9 @@
           "movie_info_db.movie_info.Title"
         ],
         "constraints": [
+          "FOREIGN_KEY movie_info_db.movie_info.Casts[*].CastInfoID REFERENCES cast_info_db.cast.CastInfoID [MANDATORY]",
           "FOREIGN_KEY movie_info_db.movie_info.MovieID REFERENCES movie_id_db.movie.MovieID [MANDATORY]",
+          "FOREIGN_KEY movie_info_db.movie_info.PlotID REFERENCES plot_db.plot.PlotID [MANDATORY]",
           "FOREIGN_KEY movie_info_db.movie_info.Title REFERENCES movie_id_db.movie.Title [MANDATORY]",
           "PRIMARY KEY (movie_info_db.movie_info.MovieID)"
         ]
@@ -180,7 +181,6 @@
           "plot_db.plot.PlotID"
         ],
         "constraints": [
-          "FOREIGN_KEY plot_db.plot.PlotID REFERENCES movie_info_db.movie_info.PlotID [MANDATORY]",
           "PRIMARY KEY (plot_db.plot.PlotID)"
         ]
       }

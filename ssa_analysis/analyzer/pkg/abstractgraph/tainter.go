@@ -421,7 +421,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 
 func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_write AbstractTaint, taint1_write AbstractTaint, db2_write *backends.Database, db1_write *backends.Database, field2_write *backends.Field, field1_write *backends.Field) bool {
 	var modified bool
-	//fmt.Printf("write-write pair (%s) -> (%s)\n", taint2_write.String(), taint1_write.String())
+	logrus.Tracef("[TAINTER] [WRITE-WRITE] pair (%s: %s) -> (%s: %s)\n", taint2_write.GetT(), taint2_write.String(), taint1_write.GetT(), taint1_write.String())
 	if constraint := field2_write.GetConstraintForeignKeyToField(field1_write); constraint != nil {
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {

@@ -84,7 +84,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	}
 
 	ssaGraph := funcGraphs[funcshortpath]
-	// EVAL: fmt.Printf("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
+	logrus.Infof("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
 
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)
@@ -95,7 +95,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "", "")
 		graph.AddNode(name, node)
 
-		// EVAL: fmt.Printf("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
+		logrus.Infof("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 			obj := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
 			// EVAL: fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
@@ -111,6 +111,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			edge.AddArgument(arg)
 		}
 		graph.AddEdge(edge)
+		graph.calls++
 	}
 
 	if !created && node != nil && node.IsParsed() {
@@ -166,7 +167,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 }
 
 func parseServiceCall(graph *AbstractCallGraph, node *AbstractNode, serviceCall *ssagraph.ServiceCall, funcGraphs map[string]*ssagraph.SSAGraph) {
-	// EVAL: fmt.Printf("[ABSTRACTGRAPH] [%s] found function (%s) with service calls\n", ssaGraph.GetService(), funcshortpath)
+	logrus.WithField("node", node.String()).Infof("[ABSTRACTGRAPH] found service call: %s\n", serviceCall.String())
 	toName := serviceCall.GetServiceWithMethod()
 	toNode := graph.GetNodeByNameIfExists(toName)
 
@@ -205,6 +206,7 @@ func parseServiceCall(graph *AbstractCallGraph, node *AbstractNode, serviceCall 
 
 	// EVAL: fmt.Printf("[ABSTRACT GRAPH] [SERVICE CALL] added edge: %v\n", edge)
 	graph.AddEdge(edge)
+	graph.calls++
 }
 
 func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCall *ssagraph.DatabaseCall) {
@@ -251,7 +253,6 @@ func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCal
 }
 
 func parseMethodCall(graph *AbstractCallGraph, node *AbstractNode, fromSSAGraph *ssagraph.SSAGraph, methodCall *ssagraph.MethodCall, funcGraphs map[string]*ssagraph.SSAGraph) {
-	var edgesToAdd []*AbstractEdge
 	toSSAGraph := fromSSAGraph.GetCombinedGraphForMethodCallIfExists(methodCall)
 	if toSSAGraph == nil {
 		// should never happen
@@ -271,11 +272,6 @@ func parseMethodCall(graph *AbstractCallGraph, node *AbstractNode, fromSSAGraph 
 			parseMethodCall(graph, node, fromSSAGraph, methodCall, funcGraphs)
 		}
 	}
-
-	for _, edge := range edgesToAdd {
-		graph.AddEdge(edge)
-	}
-
 	for _, call := range toSSAGraph.GetServiceCalls() {
 		Parse(graph, call.GetFuncShortPath(), false, funcGraphs)
 	}

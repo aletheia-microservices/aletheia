@@ -143,7 +143,7 @@ func (it *Iterator) clean(node *abstractgraph.AbstractNode) {
 }
 
 func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
-	logrus.Debugf("[TRAVERSE] traversing node: %s\n", node.String())
+	logrus.Tracef("[TRAVERSE] traversing node: %s\n", node.String())
 	if it.mode == PHASE_2_PATTERN_DETECTOR {
 		for _, detector := range it.detectors {
 			detector.OnNewNode(it.app, node)
@@ -152,7 +152,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 	for _, edge := range it.graph.GetEdgesFromNode(node) {
 		if edge.GetEdgeType() == abstractgraph.EDGE_SERVICE_RPC {
-			logrus.Debugf("[TRAVERSE] visiting service call edge: %s\n", edge.String())
+			logrus.Tracef("[TRAVERSE] visiting service call edge: %s\n", edge.String())
 			// ============
 			// SERVICE RPCs
 			// ============

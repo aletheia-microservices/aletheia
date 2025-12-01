@@ -4,14 +4,14 @@
 [NUM_WARNINGS = 2]
 entry request: APIService.ReadPage()
 	FOREIGN KEY READS #1:
-		READ (FOREIGN KEY): CastInfoService.ReadCastInfos() ... cast_info_db.cast.FindMany()
-			- field: cast_info_db.cast.CastInfoID
-			- constraint: FOREIGN_KEY cast_info_db.cast.CastInfoID REFERENCES movie_info_db.movie_info.Casts[*].CastInfoID [MANDATORY]
-		READ (ORIGIN): MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
+		READ (FOREIGN KEY): MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
 			- field: movie_info_db.movie_info.Casts[*].CastInfoID
+			- constraint: FOREIGN_KEY movie_info_db.movie_info.Casts[*].CastInfoID REFERENCES cast_info_db.cast.CastInfoID [MANDATORY]
+		READ (ORIGIN): CastInfoService.ReadCastInfos() ... cast_info_db.cast.FindMany()
+			- field: cast_info_db.cast.CastInfoID
 	FOREIGN KEY READS #2:
-		READ (FOREIGN KEY): PlotService.ReadPlot() ... plot_db.plot.FindOne()
-			- field: plot_db.plot.PlotID
-			- constraint: FOREIGN_KEY plot_db.plot.PlotID REFERENCES movie_info_db.movie_info.PlotID [MANDATORY]
-		READ (ORIGIN): MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
+		READ (FOREIGN KEY): MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
 			- field: movie_info_db.movie_info.PlotID
+			- constraint: FOREIGN_KEY movie_info_db.movie_info.PlotID REFERENCES plot_db.plot.PlotID [MANDATORY]
+		READ (ORIGIN): PlotService.ReadPlot() ... plot_db.plot.FindOne()
+			- field: plot_db.plot.PlotID
