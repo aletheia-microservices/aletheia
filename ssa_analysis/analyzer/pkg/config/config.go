@@ -27,6 +27,8 @@ type Config struct {
 	MakeIndexesAsPrimaryKeysForNoSQLDatabases bool
 
 	ForeignKeyConcurrencyDetectorIncludeOnUpdates bool
+
+	DualPassSchemaBuilding bool
 }
 
 var Global = &Config{
@@ -50,4 +52,6 @@ var Global = &Config{
 	MakeIndexesAsPrimaryKeysForNoSQLDatabases: false, // do not change
 
 	ForeignKeyConcurrencyDetectorIncludeOnUpdates: false, // tunable
+
+	DualPassSchemaBuilding: true, // do not change
 }

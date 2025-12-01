@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/app/backends"
+	"analyzer/pkg/common"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
 )
@@ -49,7 +50,7 @@ func mergeExistingTaintsWithNewTaints(obj *AbstractObject, objpath string, subpa
 			if mode != MERGE_MODE_DEBUG {
 				taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true, false)
 			}
-			// EVAL: fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%s}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+			logrus.Tracef("\t\t[TAINTMAPPING] [MERGE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%s}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
 		} else {
 			// sometimes it is not possible that taints are primary
 			// for example, when there is a service that acts as a gateway for two service
@@ -62,20 +63,20 @@ func mergeExistingTaintsWithNewTaints(obj *AbstractObject, objpath string, subpa
 				if existingTaint.GetT() == t {
 					// if T values are equal, then we skip since they
 					// come from the same source and will eventually be matched there
-					// EVAL: fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] skipping for existingTaint={%s} and newTaint={%s} since T values (%s) are equal\n", existingTaint.LongString(), newTaint.LongString(), t)
+					logrus.Tracef("\t\t[TAINTMAPPING] [MERGE] [TRACE] skipping for existingTaint={%s} and newTaint={%s} since T values (%s) are equal\n", existingTaint.LongString(), newTaint.LongString(), t)
 					continue
 				}
 				lowerTaint := existingTaint.Copy()
 				lowerTaint.AddSuffixToDatabasePath(subpath)
 				taintMapping.AddIfNotExists(*lowerTaint, *newTaint, true, false)
-				// EVAL: fmt.Printf("\t\t[TAINTMAPPING] [MERGE] [TRACE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%t}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
+				logrus.Tracef("\t\t[TAINTMAPPING] [MERGE] [TRACE] [OBJ={%s}] [1] upperpath={%s} // subpath={%s} // existingTaint={%s} // mode={%s}\n", obj.String(), objpath, subpath, existingTaint.LongString(), mergeModeToString(mode))
 			}
 		}
 	}
 }
 
 func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint, otherTaintsMapKeys []string, mode MergeMode, t string, readOnly bool) *TaintMapping {
-	// EVAL: fmt.Printf("[TAINTMAPPING] merging taints (mode=%d): %v\n", mergeModeToString(mode), otherTaintsMap)
+	logrus.Tracef("[TAINTMAPPING] merging taints mode={%s}: %v\n", mergeModeToString(mode), otherTaintsMap)
 	var taintMapping *TaintMapping
 
 	taintMapping = &TaintMapping{mapping: make(map[AbstractTaint][]AbstractTaint)}
@@ -87,7 +88,7 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 	}
 
 	for _, objpath := range otherTaintsMapKeys {
-		// EVAL: fmt.Printf("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
+		logrus.Tracef("[TAINTMAPPING] checking existing taints for objpath (%s)\n", objpath)
 		existingTaints := obj.taints[objpath]
 
 		var taintsToAdd []*AbstractTaint
@@ -95,15 +96,15 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 		taintExists := func(otherTaint *AbstractTaint) (string, bool) {
 			for _, existingTaint := range existingTaints {
 				if existingTaint.Similar(otherTaint) {
-					// EVAL: fmt.Printf("[TAINTMAPPING] [EXISTS] returning true...\n")
+					logrus.Tracef("[TAINTMAPPING] [EXISTS] returning true...\n")
 					return objpath, true
 				}
 			}
-			// EVAL: fmt.Printf("[TAINTMAPPING] [EXISTS] returning false...\n")
+			logrus.Tracef("[TAINTMAPPING] [EXISTS] returning false...\n")
 			return objpath, false
 		}
 
-		// EVAL: fmt.Printf("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
+		logrus.Tracef("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
 		for _, otherTaint := range otherTaintsMap[objpath] {
 			if readOnly && !otherTaint.IsRead() {
 				continue
@@ -121,14 +122,14 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 					taintsToAdd = append(taintsToAdd, newTaint)
 				}
 
-				// EVAL: fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] added new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
+				logrus.Tracef("\t[TAINTMAPPING] [OBJ={%s}] added new taint (%s, traced=%t) on obj path (%s): %v\n", obj.String(), common.OperationTypeToString(newTaint.dbOpType), newTaint.traced, objpath, newTaint)
 
 				// it is not necessary to be ran for MERGE_MODE_PARSE
 				if mode == MERGE_MODE_PARSE {
 					continue
 				}
 
-				// EVAL: fmt.Printf("\t[TAINTMAPPING] [OBJ={%s}] attempting to add mapping for objpath={%s} // taint={%s} // mode={%t}\n", obj.String(), objpath, newTaint.LongString(), mergeModeToString(mode))
+				logrus.Tracef("\t[TAINTMAPPING] [OBJ={%s}] attempting to add mapping for objpath={%s} // taint={%s} // mode={%s}\n", obj.String(), objpath, newTaint.LongString(), mergeModeToString(mode))
 
 				mergeExistingTaintsWithNewTaints(obj, objpath, "", newTaint, taintMapping, mode, t)
 
@@ -238,7 +239,7 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 		return
 	}
 
-	// EVAL: fmt.Printf("[TRANSITIVE REFS] current: %s\n", current.String())
+	logrus.Tracef("[TRANSITIVE REFS] current: %s\n", current.String())
 
 	for _, db := range graph.app.GetAllDatabases() {
 		for _, schema := range db.GetAllSchemas() {
@@ -261,10 +262,10 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 
 					if config.Global.DeleteOldOnTransitiveReferences {
 						toDelete = append(toDelete, old)
-						// EVAL: fmt.Printf("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
+						logrus.Tracef("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
 					}
 					toAdd = append(toAdd, new)
-					// EVAL: fmt.Printf("\t[TRANSITIVE REFS] to add: %s\n", new.String())
+					logrus.Tracef("\t[TRANSITIVE REFS] to add: %s\n", new.String())
 				}
 			}
 
@@ -328,7 +329,7 @@ func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.
 		new.SetTransitive()
 		field1.AddConstraint(new)
 		field1.GetSchema().AddConstraint(new)
-		// EVAL: fmt.Printf("[TRANSITIVE] added new transitive constraint: %s\n", new.String())
+		logrus.Tracef("[TRANSITIVE] added new transitive constraint: %s\n", new.String())
 	}
 	return len(toAdd) > 0
 }
@@ -426,14 +427,14 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [WRITE-WRITE] (A) enabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if constraint := field1_write.GetConstraintForeignKeyToField(field2_write); constraint != nil {
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
 			if ok := constraint.EnableMandatory(reqIdx); ok {
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [WRITE-WRITE] (B) enabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if !field2_write.HasConstraintForeignKeyToField(field1_write) && !field1_write.HasConstraintForeignKeyToField(field2_write) {
@@ -450,7 +451,7 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_
 			db2_write.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
+			logrus.Tracef("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 		}
 	}
 	return modified
@@ -462,14 +463,14 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 		if taint2_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [READ-WRITE] (A) disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if constraint := field1_read.GetConstraintForeignKeyToField(field2_write); constraint != nil {
 		if taint2_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [READ-WRITE] (B) disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if !field2_write.HasConstraintForeignKeyToField(field1_read) && !field1_read.HasConstraintForeignKeyToField(field2_write) {
@@ -486,7 +487,7 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 			db2_write.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
+			logrus.Tracef("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 		}
 
 	}
@@ -495,8 +496,8 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 
 func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_read AbstractTaint, taint1_write AbstractTaint, db2_read *backends.Database, db1_write *backends.Database, field2_read *backends.Field, field1_write *backends.Field) bool {
 	/* if field1_write.GetPath() == "order_db.order.FromStation" && field2_read.GetPath() == "station_db.station.Name" {
-		// EVAL: fmt.Printf("CURRENT TAINT: %s\n", taint2_read.LongString())
-		// EVAL: fmt.Printf("OTHER TAINT: %s\n", taint1_write.LongString())
+		logrus.Tracef("CURRENT TAINT: %s\n", taint2_read.LongString())
+		logrus.Tracef("OTHER TAINT: %s\n", taint1_write.LongString())
 		logrus.Fatalf("NOTE: THIS IS WHY WE NEED A SECOND SCHEMA BUILDER ITERATION!")
 	} */
 
@@ -519,14 +520,14 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 		if taint1_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0A] disabled mandatory: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [WRITE-READ] [0A] disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if constraint := field1_write.GetConstraintForeignKeyToField(field2_read); constraint != nil {
 		if taint1_write.IsWrite() {
 			if ok := constraint.DisableMandatory(reqIdx); ok {
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [WRITE-READ] [0B] disabled mandatory: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [WRITE-READ] [0B] disabled mandatory: %s\n", constraint)
 			}
 		}
 	} else if !field2_read.HasConstraintForeignKeyToField(field1_write) && !field1_write.HasConstraintForeignKeyToField(field2_read) {
@@ -546,7 +547,7 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 			db1_write.GetLastSchema().AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 			modified = true
-			// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-WRITE] [2] added new constraint: %s\n", constraint)
+			logrus.Tracef("\t\t[ITERATOR] [READ-WRITE] [2] added new constraint: %s\n", constraint)
 		}
 	}
 	return modified
@@ -576,7 +577,7 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 				db2.GetLastSchema().AddConstraint(constraint)
 				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-READ] [KEY-KEY] added new constraint: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [READ-READ] [KEY-KEY] added new constraint: %s\n", constraint)
 			}
 		} else if taint1.IsReadValue() && taint2.IsReadKey() {
 			// foreign key: field1 ---> field2
@@ -592,7 +593,7 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 				db1.GetLastSchema().AddConstraint(constraint)
 				//updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
 				modified = true
-				// EVAL: fmt.Printf("\t\t[ITERATOR] [READ-READ] [VAL-KEY] added new constraint: %s\n", constraint)
+				logrus.Tracef("\t\t[ITERATOR] [READ-READ] [VAL-KEY] added new constraint: %s\n", constraint)
 			}
 		} else {
 			// sanity check
@@ -633,7 +634,7 @@ func PropagateTaintsToServiceCallObjects(graph *AbstractCallGraph, currNode *Abs
 		for _, otherEdge := range graph.GetEdgesFromNode(currNode) {
 			// propagate from params in current node to call arguments in other edge
 			for _, param := range currNode.GetParams() {
-				// EVAL: fmt.Printf("[TRACE] [FROM_NODE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", currNode.String(), param.String(), otherEdge.String())
+				logrus.Tracef("[TRACE] [FROM_NODE] [PARAM] [NODE=%s] param={%s} // otherEdge={%s}\n", currNode.String(), param.String(), otherEdge.String())
 				taintTracedObjectsOnEdge(param, currNode, otherEdge, taintMapping, true, readOnly)
 			}
 		}
@@ -662,13 +663,13 @@ func PropagateTaintsToServiceCallObjects(graph *AbstractCallGraph, currNode *Abs
 			}
 			// 1. propagate from call arguments
 			for _, arg := range currEdge.GetArguments() {
-				// EVAL: fmt.Printf("[TRACE] [FROM_EDGE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+				logrus.Tracef("[TRACE] [FROM_EDGE] [ARG] [NODE=%s] arg={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), arg.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
 				// 1b. to objects acting as arguments in other edges
 				taintTracedObjectsOnEdge(arg, currNode, otherEdge, taintMapping, doTaintAfter, readOnly)
 			}
 			// 2. propagate from call returns
 			for _, ret := range currEdge.GetReturns() {
-				// EVAL: fmt.Printf("[TRACE] [FROM_EDGE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
+				logrus.Tracef("[TRACE] [FROM_EDGE] [RET] [NODE=%s] ret={%s} // edge={%s} // otherEdge={%s} // taintMapping={%s}\n", currNode.String(), ret.String(), currEdge.String(), otherEdge.String(), taintMapping.String())
 				// 2b. to objects acting as arguments in other edges
 				taintTracedObjectsOnEdge(ret, currNode, otherEdge, taintMapping, doTaintAfter, readOnly)
 			}
@@ -725,7 +726,7 @@ func taintTracedObjectsOnEdge(currObj *AbstractObject, currNode *AbstractNode, o
 
 			// we get exactly the matching object by looking for the trace argument name
 			if tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName()); tracedObj != nil {
-				// EVAL: fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", currObj.String(), currObjpath, trace.LongString())
+				logrus.Tracef("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", currObj.String(), currObjpath, trace.LongString())
 				tracedObjPath := trace.GetArgumentPath()
 				taintTracedObjectsHelper(currObj, tracedObj, currObjpath, tracedObjPath, trace, taintMapping, true, doTaintAfter, readOnly)
 			}
@@ -740,7 +741,7 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 			var tracedObjPaths []string
 			var tracedObjs []*AbstractObject
 
-			// EVAL: fmt.Printf("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
+			logrus.Tracef("[TRACE] [OBJ=%s // OBJPATH=%s] trace={%s}\n", obj.String(), objpath, trace.LongString())
 
 			for _, param := range currNode.GetParams() {
 				for paramObjpath, paramTraceLst := range param.GetTraces() {
@@ -749,10 +750,10 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if paramTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, param)
 								tracedObjPaths = append(tracedObjPaths, paramObjpath)
-								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] param: %s\n", param.String())
-								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
-								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
-								//fmt.Printf("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
+								logrus.Tracef("[TRACE] [ON_NODE] [PARAM] param: %s\n", param.String())
+								logrus.Tracef("[TRACE] [ON_NODE] [PARAM] param trace call ID: %s\n", paramTrace.GetServiceCallID())
+								logrus.Tracef("[TRACE] [ON_NODE] [PARAM] param trace path: %s\n", paramTrace.GetServicePath())
+								logrus.Tracef("[TRACE] [ON_NODE] [PARAM] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}
@@ -765,9 +766,9 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 							if retTrace.GetServicePath() == trace.GetServicePath() {
 								tracedObjs = append(tracedObjs, ret)
 								tracedObjPaths = append(tracedObjPaths, retObjpath)
-								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace call ID: %s\n", retTrace.GetServiceCallID())
-								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [RET] ret trace path: %s\n", retTrace.GetServicePath())
-								// EVAL: fmt.Printf("[TRACE] [ON_NODE] [RET] trace path: %s\n", trace.GetServicePath())
+								logrus.Tracef("[TRACE] [ON_NODE] [RET] ret trace call ID: %s\n", retTrace.GetServiceCallID())
+								logrus.Tracef("[TRACE] [ON_NODE] [RET] ret trace path: %s\n", retTrace.GetServicePath())
+								logrus.Tracef("[TRACE] [ON_NODE] [RET] trace path: %s\n", trace.GetServicePath())
 							}
 						}
 					}
@@ -784,7 +785,7 @@ func taintTracedObjectsOnNode(obj *AbstractObject, currNode *AbstractNode, other
 }
 
 func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject, currObjPath string, tracedObjPath string, trace *AbstractTrace, taintMapping *TaintMapping, onEdge bool, after bool, readOnly bool) {
-	// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", onEdge, currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
+	logrus.Tracef("[TRACE] [ON_EDGE=%t] [OBJ=%s // OBJPATH=%s] corresponding trace obj (path=%s): %s\n", onEdge, currObj.String(), currObjPath, tracedObjPath, tracedObj.String())
 	var selectedTaints = make(map[string][]*AbstractTaint)
 	var selectedTaintsKeys []string
 
@@ -827,7 +828,7 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 			if readOnly && !taint.IsRead() {
 				continue
 			}
-			// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] currObjpath=%s // tracedObjpath=%s // path=%s // selectedPath=%s // taint={%s}\n", onEdge, currObjPath, tracedObjPath, path, selectedPath, taint.LongString())
+			logrus.Tracef("[TRACE] [ON_EDGE=%t] currObjpath=%s // tracedObjpath=%s // path=%s // selectedPath=%s // taint={%s}\n", onEdge, currObjPath, tracedObjPath, path, selectedPath, taint.LongString())
 			selectedTaint := taint.Copy()
 			selectedTaints[selectedPath] = append(selectedTaints[selectedPath], selectedTaint)
 		}
@@ -837,10 +838,10 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 	}
 
 	taintMappingTmp := MergeTaints(tracedObj, selectedTaints, selectedTaintsKeys, MERGE_MODE_TRACE, trace.GetT(), readOnly)
-	// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] taint mapping tmp = %s\n", onEdge, taintMappingTmp.String())
+	logrus.Tracef("[TRACE] [ON_EDGE=%t] taint mapping tmp = %s\n", onEdge, taintMappingTmp.String())
 
 	if taintMapping != nil {
-		// EVAL: fmt.Printf("[TRACE] [ON_EDGE=%t] merging taint mapping tmp into main taint mapping\n", onEdge)
+		logrus.Tracef("[TRACE] [ON_EDGE=%t] merging taint mapping tmp into main taint mapping\n", onEdge)
 		taintMapping.Join(taintMappingTmp, after)
 	}
 

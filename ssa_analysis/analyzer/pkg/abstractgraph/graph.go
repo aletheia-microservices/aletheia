@@ -45,7 +45,7 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 }
 
 func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
-	// EVAL: fmt.Printf("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
+	logrus.Tracef("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
 }
 
@@ -167,21 +167,18 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 		}
 	}
 
-	//fmt.Fprintln(file, "\tsubgraph cluster_clients {\n\t\tlabel = \"Clients\";")
 	fmt.Fprintln(file, "\tsubgraph cluster_clients {\n\t\tstyle=invis;")
 	for _, line := range clients {
 		fmt.Fprintln(file, "\t"+line)
 	}
 	fmt.Fprintln(file, "\t}")
 
-	//fmt.Fprintln(file, "\tsubgraph cluster_services {\n\t\tlabel = \"Services\";")
 	fmt.Fprintln(file, "\tsubgraph cluster_services {\n\t\tstyle=invis;")
 	for _, line := range services {
 		fmt.Fprintln(file, "\t"+line)
 	}
 	fmt.Fprintln(file, "\t}")
 
-	//fmt.Fprintln(file, "\tsubgraph cluster_databases {\n\t\tlabel = \"Databases\";")
 	fmt.Fprintln(file, "\tsubgraph cluster_databases {\n\t\tstyle=invis;")
 	for _, line := range databases {
 		fmt.Fprintln(file, "\t"+line)

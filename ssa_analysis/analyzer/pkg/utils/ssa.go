@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -13,7 +14,7 @@ func ExtractStringFromValue(val ssa.Value) (string, bool) {
 	if c, ok := val.(*ssa.Const); ok {
 		return strings.Trim(c.Value.ExactString(), "\""), true
 	}
-	// EVAL: fmt.Printf("[UTILS] could not extract string from non-constant: [%T] %v\n", val, val)
+	logrus.Tracef("[UTILS] could not extract string from non-constant: [%T] %v\n", val, val)
 	return "", false
 }
 
@@ -58,7 +59,6 @@ func SSABuiltinFuncIsDirect(builtin *ssa.Builtin) (bool, FUNC_TYPE, string) {
 	}
 	return false, FUNC_TYPE_IGNORE, ""
 }
-
 
 func ComputeInstructionID(instr ssa.Instruction) string {
 	if !instr.Pos().IsValid() { // meaning there is no position

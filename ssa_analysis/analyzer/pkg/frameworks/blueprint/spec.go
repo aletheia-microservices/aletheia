@@ -49,14 +49,14 @@ func buildBlueprintServicesInfo(appSpecs map[*workflowspec.Service][]golang.Serv
 			serviceInfo.Methods = append(serviceInfo.Methods, method.Names[0].Name)
 		}
 		for _, otherService := range otherServicesLst {
-			// EVAL: fmt.Printf("[SPEC] [%s] other service: %v\n", serviceInfo.Name, getUniqueName(otherService.Name()))
+			logrus.Tracef("[SPEC] [%s] other service: %v\n", serviceInfo.Name, getUniqueName(otherService.Name()))
 			if workflowClient, ok := otherService.(*workflow.WorkflowClient); ok {
 				serviceInfo.Edges = append(serviceInfo.Edges, getUniqueName(workflowClient.ServiceType))
 			}
 		}
 
 		for _, arg := range servicesArgs[serviceSpec] {
-			// EVAL: fmt.Printf("[SPEC] [%s] arg: %v\n", serviceInfo.Name, getUniqueName(arg.Name()))
+			logrus.Tracef("[SPEC] [%s] arg: %v\n", serviceInfo.Name, getUniqueName(arg.Name()))
 			serviceInfo.ServiceArgs = append(serviceInfo.ServiceArgs, getUniqueName(arg.Name()))
 		}
 		services = append(services, serviceInfo)

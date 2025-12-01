@@ -88,7 +88,7 @@ func GetAppDatabaseSQLPaths(app string, autofill bool) (bool, string) {
 		return false, ""
 	}
 
-	// EVAL: fmt.Printf("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
+	logrus.Tracef("\nPlease specify the sql paths if existent.\nFormat (delimiter is ';'): <database_name>:<sql_path>\n> ")
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {

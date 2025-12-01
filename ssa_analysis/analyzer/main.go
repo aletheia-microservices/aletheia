@@ -16,6 +16,7 @@ import (
 
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+	"analyzer/pkg/config"
 	"analyzer/pkg/detection"
 	"analyzer/pkg/detection/constraints/foreignkeycascade"
 	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
@@ -217,8 +218,12 @@ func main() {
 	logrus_ctx.Infof("[9/12] starting schema builder")
 	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER)
 	// ------------ PART 10
-	logrus_ctx.Infof("[10/12] starting schema builder (read only)")
-	iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+	if config.Global.DualPassSchemaBuilding {
+		logrus_ctx.Infof("[10/12] starting schema builder (read only)")
+		iterator.Run(detection.PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+	} else {
+		logrus_ctx.Infof("[10/12] skipping schema builder (read only)...")
+	}
 
 	elapsed_schema := time.Since(start_schema)
 

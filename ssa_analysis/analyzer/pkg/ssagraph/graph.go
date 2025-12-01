@@ -292,7 +292,7 @@ func (graph *SSAGraph) GetReturnsLst() [][]*SSANode {
 }
 
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
-	// EVAL: fmt.Printf("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
+	logrus.Tracef("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
 	if len(graph.params) <= 2 {
 		return nil
 	}

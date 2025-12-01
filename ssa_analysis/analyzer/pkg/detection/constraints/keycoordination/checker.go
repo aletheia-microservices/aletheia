@@ -8,6 +8,8 @@ import (
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
+
+	"github.com/sirupsen/logrus"
 )
 
 type ForeignRead struct {
@@ -40,9 +42,9 @@ func (detector *KeyCoordinationDetector) checkInconsistency(app *app.App, reques
 
 func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, request *Request, currOp *ReadOperation) {
 	// same logic as in foreignkeycascade but here we verify if secondaryTaint.IsDelete()
-	// EVAL: fmt.Printf("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
+	logrus.Tracef("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
 	for _, arg := range currOp.arguments {
-		// EVAL: fmt.Printf("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
+		logrus.Tracef("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
 
 		for _, taintLst := range arg.GetAllTaints() {
 			var currTaint *abstractgraph.AbstractTaint
@@ -57,7 +59,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			}
 
 			if currTaint == nil {
-				// EVAL: fmt.Printf("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
+				logrus.Tracef("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
 				continue
 			}
 
@@ -66,12 +68,12 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			currField := app.ComputeDatabaseFieldFromPath(currDatabase, currFieldPath)
 
 			for _, otherTaint := range otherTaints {
-				// EVAL: fmt.Printf("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+				logrus.Tracef("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 				otherOp := request.FindOperationByCallID(otherTaint.GetDatabaseCallID())
 
 				// sanity checks
 				if currOp == otherOp || otherOp == nil || currOp.call.GetToNode().GetDatabaseName() == otherOp.call.GetToNode().GetDatabaseName() {
-					// EVAL: fmt.Printf("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+					logrus.Tracef("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 					continue
 				}
 
@@ -80,7 +82,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 					otherDatabase := app.GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherFieldpath))
 					otherField := app.ComputeDatabaseFieldFromPath(otherDatabase, otherFieldpath)
 
-					// EVAL: fmt.Printf("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
+					logrus.Tracef("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
 
 					foreignRead := &ForeignRead{
 						op1:    currOp,

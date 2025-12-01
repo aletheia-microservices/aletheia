@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/ssagraph"
@@ -87,7 +88,7 @@ func NewTaintInfoService(svpath string, path string, val ssa.Value, svcall *ssag
 				svcall: svcall,
 			},
 		},
-		objroot:  true,
+		objroot: true,
 	}
 }
 
@@ -173,7 +174,7 @@ func (t TaintInfo) cutObjectPathSuffix(suffix string) (TaintInfo, bool) {
 	var ok bool
 	t.objpath, ok = strings.CutSuffix(t.objpath, suffix)
 	if !ok {
-		// EVAL: fmt.Printf("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
+		logrus.Tracef("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
 	}
 	return t, ok
 }
@@ -182,7 +183,7 @@ func (t TaintInfo) cutObjectPathPrefix(prefix string) (TaintInfo, bool) {
 	var ok bool
 	t.objpath, ok = strings.CutPrefix(t.objpath, prefix)
 	if !ok {
-		// EVAL: fmt.Printf("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
+		logrus.Tracef("[TAINTINFO] [WARNING] objectpath (%s) does not contain prefix (%s)\n", t.objpath, prefix)
 	}
 	return t, ok
 }

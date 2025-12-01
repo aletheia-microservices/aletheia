@@ -43,7 +43,7 @@ func ssaTaintDatabaseToAbstractTaint(graph *AbstractCallGraph, ssaTaintsMap map[
 				)
 
 				abstractTaints = append(abstractTaints, taint)
-				// EVAL: fmt.Printf("[SSA TO ABSTRACT TAINT] new taint on object path (%s): %s\n", objPath, taint.LongString())
+				logrus.Tracef("[SSA TO ABSTRACT TAINT] new taint on object path (%s): %s\n", objPath, taint.LongString())
 			}
 		}
 		if abstractTaints != nil {
@@ -65,7 +65,7 @@ func ssaTaintServiceToAbstractTrace(graph *AbstractCallGraph, ssaTaintsMap map[s
 					ssaTaint.GetServiceCall().GetID(),
 				)
 				abstractTraces = append(abstractTraces, trace)
-				// EVAL: fmt.Printf("[SSA TO ABSTRACT TRACE] new trace on object path (%s): %s\n", objPath, trace.LongString())
+				logrus.Tracef("[SSA TO ABSTRACT TRACE] new trace on object path (%s): %s\n", objPath, trace.LongString())
 			}
 		}
 		if abstractTraces != nil {
@@ -98,7 +98,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		logrus.Tracef("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 			obj := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
-			// EVAL: fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
+			logrus.Tracef("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
 			node.AddParam(obj)
 		}
 	}
@@ -122,7 +122,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	node.SetParsed()
 
 	// finalize parsing
-	// EVAL: fmt.Printf("[ABSTRACTGRAPH] parsing returns for node: %s\n", node.String())
+	logrus.Tracef("[ABSTRACTGRAPH] parsing returns for node: %s\n", node.String())
 	retsLst := ssaGraph.GetReturnsLst()
 	var retsObjs []*AbstractObject
 	// first, just create new abstract objects using the first set of returns (could be any other)
@@ -131,7 +131,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		obj.addToAllNames(ret.GetValue().Type().String())
 		node.AddReturn(obj)
 		retsObjs = append(retsObjs, obj)
-		// EVAL: fmt.Printf("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", obj.String())
+		logrus.Tracef("\t[ABSTRACTGRAPH] [index=%d] added new return object (%s)\n", obj.String())
 	}
 	// then, merge taints with corresponding object in the remaining set of returns
 	if len(retsLst) > 1 {
@@ -140,10 +140,10 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 				obj := retsObjs[i]
 				obj.addToAllNames(ret.GetValue().Type().String())
 
-				// EVAL: fmt.Printf("\t\t[ABSTRACTGRAPH] ret = %s\n", ret.String())
+				logrus.Tracef("\t\t[ABSTRACTGRAPH] ret = %s\n", ret.String())
 				MergeTaints(obj, ssaTaintDatabaseToAbstractTaint(graph, ret.GetTaints()), nil, MERGE_MODE_PARSE, "", false)
 				MergeTraces(obj, ssaTaintServiceToAbstractTrace(graph, ret.GetTaints()))
-				// EVAL: fmt.Printf("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
+				logrus.Tracef("\t\t[ABSTRACTGRAPH] [index=%d] merged taints from (%s) to (%s)\n", i, ret.GetName(), obj.String())
 			}
 		}
 	}
@@ -181,11 +181,11 @@ func parseServiceCall(graph *AbstractCallGraph, node *AbstractNode, serviceCall 
 		toNode = NewAbstractNode(toName, NODE_SERVICE, serviceCall.GetService(), serviceCall.GetMethod(), "", "")
 		graph.AddNode(toName, toNode)
 
-		// EVAL: fmt.Printf("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
+		logrus.Tracef("[ABSTRACTGRAPH] creating toNode with (%d) params: %s\n", len(toSSAGraph.GetFuncParametersExceptMemberAndContext()), toNode)
 		for _, funcParam := range toSSAGraph.GetFuncParametersExceptMemberAndContext() {
 			param := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
 			toNode.AddParam(param)
-			// EVAL: fmt.Printf("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
+			logrus.Tracef("[debug] (2) added param (%s) to node (%s)\n", param.String(), toNode.String())
 		}
 	}
 
@@ -200,17 +200,17 @@ func parseServiceCall(graph *AbstractCallGraph, node *AbstractNode, serviceCall 
 	// create call returns
 	for _, callRet := range serviceCall.GetReturns() {
 		ret := NewAbstractObject(callRet.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callRet.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callRet.GetTaints()))
-		// EVAL: fmt.Printf("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
+		logrus.Tracef("[ABSTRACTGRAPH] [%s] added return object (%s) with taints: %v\n", node.String(), ret.String(), callRet.GetTaints())
 		edge.AddReturn(ret)
 	}
 
-	// EVAL: fmt.Printf("[ABSTRACT GRAPH] [SERVICE CALL] added edge: %v\n", edge)
+	logrus.Tracef("[ABSTRACT GRAPH] [SERVICE CALL] added edge: %v\n", edge)
 	graph.AddEdge(edge)
 	graph.calls++
 }
 
 func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCall *ssagraph.DatabaseCall) {
-	// EVAL: fmt.Printf("[ABSTRACTGRAPH] found [%s] function (%s) with database calls\n", ssaGraph.GetService(), funcshortpath)
+	logrus.Tracef("[ABSTRACTGRAPH] found function with database call: %s\n", databaseCall.String())
 	toDatabasePath := databaseCall.GetDatabasePath()
 	toNode := graph.GetNodeByNameIfExists(toDatabasePath)
 	dbname := databaseCall.GetDatabaseName()
@@ -248,7 +248,7 @@ func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCal
 		MergeTaints(toParam, fromArg.GetPrimaryTaints(), nil, MERGE_MODE_PARSE, "", false)
 	}
 
-	// EVAL: fmt.Printf("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)
+	logrus.Tracef("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)
 	graph.AddEdge(edge)
 }
 
@@ -303,7 +303,7 @@ func (graph *AbstractCallGraph) WriteVisited(appname string) {
 
 	clientNode := graph.GetNodeByName("client")
 
-	// EVAL: fmt.Printf("starting...")
+	logrus.Tracef("starting...")
 	for i, edge := range graph.GetEdgesFromNode(clientNode) {
 		fmt.Fprintf(file, "\n\n%d: %s", i, edge.to.String())
 		for _, edge2 := range graph.GetEdgesFromNode(edge.to) {
@@ -319,5 +319,5 @@ func (graph *AbstractCallGraph) WriteVisited(appname string) {
 			}
 		}
 	}
-	// EVAL: fmt.Printf("end...")
+	logrus.Tracef("end...")
 }

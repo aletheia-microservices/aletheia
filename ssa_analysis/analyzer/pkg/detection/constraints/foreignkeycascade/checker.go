@@ -16,7 +16,7 @@ type CascadeDelete struct {
 }
 
 func (detector *ForeignKeyCascadeDetector) checkInconsistencies(app *app.App) {
-	// EVAL: fmt.Printf("[FOREIGN KEY CASCADE | CHECKER] checking inconsistencies\n")
+	logrus.Tracef("[FOREIGN KEY CASCADE | CHECKER] checking inconsistencies\n")
 	for _, request := range detector.requests {
 		for _, delete := range request.GetAllOperations() {
 			logrus.Debugf("[FOREIGN KEY CASCADE | CHECKER] delete = %s\n", delete.call.String())
@@ -40,20 +40,20 @@ func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.
 		if db == currDB {
 			continue
 		}
-		// EVAL: fmt.Printf("\t[FOREIGN KEY CASCADE | CHECKER] database: %s\n", db.GetName())
+		logrus.Tracef("\t[FOREIGN KEY CASCADE | CHECKER] database: %s\n", db.GetName())
 		for _, schema := range db.GetSchemas() {
 			for _, constraint := range schema.GetAllConstraints() {
 				if constraint.IsForeignKey() {
-					// EVAL: fmt.Printf("\t[FOREIGN KEY CASCADE | CHECKER] constraint (foreign key): %s\n", constraint.String())
+					logrus.Tracef("\t[FOREIGN KEY CASCADE | CHECKER] constraint (foreign key): %s\n", constraint.String())
 					currField := constraint.GetFieldAt(1)
 					if currField.GetDatabase() == currDB && currField.GetSchema().GetName() == currOp.schema {
 						// found reference to current field
 						otherField := constraint.GetFieldAt(0)
-						// EVAL: fmt.Printf("\t[FOREIGN KEY CASCADE | CHECKER] pending field: %s\n", otherField.String())
+						logrus.Tracef("\t[FOREIGN KEY CASCADE | CHECKER] pending field: %s\n", otherField.String())
 
 						// skip if other field is from a queue
 						if otherField.GetDatabase().IsQueue() {
-							// EVAL: fmt.Printf("\t[FOREIGN KEY CASCADE | CHECKER] skipping pending field in queue: %s\n", otherField.GetPath())
+							logrus.Tracef("\t[FOREIGN KEY CASCADE | CHECKER] skipping pending field in queue: %s\n", otherField.GetPath())
 							continue
 						}
 

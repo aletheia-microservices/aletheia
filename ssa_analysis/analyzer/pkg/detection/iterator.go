@@ -166,7 +166,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// propagate taints across services (forward): args (from) >>> params (to)
 			for i, toParam := range toNode.GetParams() {
 				fromArg := edge.GetArgumentAt(i)
-				// EVAL: fmt.Printf("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
+				logrus.Tracef("[TRANSVERSE] [ARG >> PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
 				taintMappingTmp := abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsBeforeT(edge.GetT()), nil, abstractgraph.MERGE_MODE_TAINT, config.MIN_T, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 				taintMapping.Join(taintMappingTmp, true)
 				taintMappingTmp = abstractgraph.MergeTaints(toParam, fromArg.GetAllTaintsAfterT(edge.GetT()), nil, abstractgraph.MERGE_MODE_TAINT, config.MAX_T, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
@@ -181,8 +181,6 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
 				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 			}
-
-			//fmt.Printf("[%s] [1] TAINT MAPPING: %s\n", it.app.GetName(), taintMapping.String())
 
 			// --------------------------
 			// PHASE 2: transverse caller
@@ -199,17 +197,15 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 			// propagate taints across services (backwards): args (from) <<< params (to)
 			for i, fromArg := range edge.GetArguments() {
 				toParam := toNode.GetParamAt(i)
-				// EVAL: fmt.Printf("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
+				logrus.Tracef("[TRANSVERSE] [ARG << PARAM] fromArg=%s // toParam=%s\n", fromArg.String(), toParam.String())
 				taintMappingTmp := abstractgraph.MergeTaints(fromArg, toParam.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT, edge.GetT(), it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 				taintMapping.Join(taintMappingTmp, true)
 			}
 
-			//fmt.Printf("[%s] [2] TAINT MAPPING: %s\n", it.app.GetName(), taintMapping.String())
-
 			// propagate taints across services (backwards): rets (from) <<< rets (to)
 			for i, fromRet := range edge.GetReturns() {
 				toRet := toNode.GetReturnAt(i)
-				// EVAL: fmt.Printf("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
+				logrus.Tracef("[TRANSVERSE] [RET << RET] fromRet=%s // toRet=%s\n", fromRet.String(), toRet.String())
 				taintMappingTmp := abstractgraph.MergeTaints(fromRet, toRet.GetAllTaints(), nil, abstractgraph.MERGE_MODE_TAINT, edge.GetT(), it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 				taintMapping.Join(taintMappingTmp, true)
 			}
