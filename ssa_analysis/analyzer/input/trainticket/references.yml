@@ -1,0 +1,40 @@
+# ------
+# 1. references missed do to the existence of reads that do not retrieve objects
+# by their ID but instead by filtering queries based on existing foreign key values
+# ------
+
+# price
+- FOREIGN_KEY price_db.priceConfig.TrainType REFERENCES train_db.train.Name
+
+# trip
+- FOREIGN_KEY travel_db.trip.TrainTypeName REFERENCES train_db.train.Name
+- FOREIGN_KEY travel_db.trip.RouteID REFERENCES route_db.route.ID
+
+
+# ------
+# 2. references missed due to the lack of explicit data associations in the code
+# ------
+
+# delivery
+- FOREIGN_KEY delivery_db.delivery.StationName REFERENCES station_db.station.Name
+
+# food
+- FOREIGN_KEY food_db.food_order.StationName REFERENCES station_db.station.Name
+
+# route
+- FOREIGN_KEY route_db.route.StartStation REFERENCES station_db.station.Name
+- FOREIGN_KEY route_db.route.EndStation REFERENCES station_db.station.Name
+- FOREIGN_KEY route_db.route.Stations REFERENCES station_db.station.Name
+
+# trip
+- FOREIGN_KEY travel_db.trip.StationsName REFERENCES station_db.station.Name
+- FOREIGN_KEY travel_db.trip.StartStationName REFERENCES station_db.station.Name
+- FOREIGN_KEY travel_db.trip.TerminalStationName REFERENCES station_db.station.Name
+
+# contact
+- FOREIGN_KEY contacts_db.contacts.AccountID REFERENCES user_db.user.UserID
+
+# order
+#- FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contact.Name
+#- FOREIGN_KEY order_db.order.ContactsType REFERENCES contacts_db.contact.DocumentType
+#- FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contact.DocumentNumber

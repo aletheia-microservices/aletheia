@@ -30,11 +30,13 @@ import (
 )
 
 var EVAL = false
-var synthetic = false
+var SYNTHETIC = false
+var INPUT_REFS = false
 
 func main() {
 	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
-	flag.BoolVar(&synthetic, "synthetic", false, "enable synthetic app")
+	flag.BoolVar(&SYNTHETIC, "synthetic", false, "enable synthetic app")
+	flag.BoolVar(&INPUT_REFS, "refs", false, "enable input of references")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
@@ -116,6 +118,10 @@ func main() {
 	app.InitServiceFields(pkgs)
 	app.ParseSQLSchemaFromUserFile()
 	app.ParseNoSQLSchemaFromUserFile()
+	if INPUT_REFS {
+		logrus_ctx.Infof("reading input refs...")
+		app.ParseUserInputReferences()
+	}
 
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
 
@@ -294,7 +300,7 @@ type AnalysisTimes struct {
 func saveAnalysisTime(app *app.App, times AnalysisTimes) {
 	ts := time.Now().Unix()
 	dir := path.Join("results/times", time.Now().Format(time.DateOnly))
-	if synthetic {
+	if SYNTHETIC {
 		dir += "/synthetic"
 	}
 	err := os.MkdirAll(dir, 0755)

@@ -11,13 +11,13 @@
 set -e
 
 apps=(
-    digota
-    sockshop
-    eshopmicroservices
-    postnotification
-    dsb_socialnetwork
-    dsb_mediamicroservices
-    trainticket
+    #digota
+    #sockshop
+    #eshopmicroservices
+    #postnotification
+    #dsb_socialnetwork
+    #dsb_mediamicroservices
+    #trainticket
 )
 
 apps_synthetic=(
