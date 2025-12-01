@@ -53,5 +53,5 @@ var Global = &Config{
 
 	ForeignKeyConcurrencyDetectorIncludeOnUpdates: false, // tunable
 
-	DualPassSchemaBuilding: true, // do not change
+	DualPassSchemaBuilding: false, // do not change
 }

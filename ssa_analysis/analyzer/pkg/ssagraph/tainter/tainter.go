@@ -269,7 +269,7 @@ func registerServiceCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool 
 }
 
 func registerMethodCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
-	if method, fnShortPath, bindings, args, call, fn, ok := isMethodCall(graph, node.GetInstruction(), node.GetValue()); ok {
+	if method, fnShortPath, bindings, args, call, fn, ok := isMethodCall(node.GetInstruction(), node.GetValue()); ok {
 		var argNodes []*ssagraph.SSANode
 		for _, arg := range args {
 			argNodes = append(argNodes, graph.GetNodeByName(arg.Name()))

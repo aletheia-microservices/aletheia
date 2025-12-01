@@ -76,7 +76,7 @@ func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, str
 	return "", "", "", nil, nil, false
 }
 
-func isMethodCall(graph *ssagraph.SSAGraph, instr ssa.Instruction, val ssa.Value) (string, string, []ssa.Value, []ssa.Value, *ssa.Call, *ssa.Function, bool) {
+func isMethodCall(instr ssa.Instruction, val ssa.Value) (string, string, []ssa.Value, []ssa.Value, *ssa.Call, *ssa.Function, bool) {
 	if val != nil {
 		if call, ok := val.(*ssa.Call); ok {
 			if fn, ok := call.Call.Value.(*ssa.Function); ok {
@@ -93,7 +93,7 @@ func isMethodCall(graph *ssagraph.SSAGraph, instr ssa.Instruction, val ssa.Value
 				if fn, ok := makeClosure.Fn.(*ssa.Function); ok {
 					fnShortPath := utils.GetShortFunctionPath(fn.String())
 					method := fn.Name()
-					logrus.WithField("fn short path", fnShortPath).WithField("method", method).Warnf("stop!")
+					logrus.WithField("fn_short_path", fnShortPath).WithField("method", method).Warnf("[METHOD CALL] found call for go routine: %s", goCall.String())
 					return method, fnShortPath, makeClosure.Bindings, goCall.Call.Args, nil, fn, true
 				}
 			}

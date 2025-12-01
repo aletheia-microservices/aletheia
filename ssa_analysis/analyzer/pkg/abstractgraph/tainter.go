@@ -106,7 +106,9 @@ func MergeTaints(obj *AbstractObject, otherTaintsMap map[string][]*AbstractTaint
 
 		logrus.Tracef("\t[TAINTMAPPING] existing taints on objpath=%s: %v\n", objpath, obj.taints[objpath])
 		for _, otherTaint := range otherTaintsMap[objpath] {
-			if readOnly && !otherTaint.IsRead() {
+			if config.Global.DualPassSchemaBuilding && readOnly && !otherTaint.IsRead() {
+				logrus.WithField("dual_pass", config.Global.DualPassSchemaBuilding).WithField("read", otherTaint.IsRead()).
+					Tracef("[TAINTMAPPING] skipping read taint...")
 				continue
 			}
 
@@ -381,14 +383,23 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 
 			if utils.EqualT(taint1.GetT(), taint2.GetT()) {
 				logrus.WithField("taint1", taint1.LongString()).WithField("taint2", taint2.LongString()).
-					Warnf("found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
+					Warnf("[TAINTER] found taints with equal T numbers (%s) vs (%s)\n", taint1.GetT(), taint2.GetT())
 			}
 
 			if db1 == db2 {
 				continue
 			}
 
-			if !readOnly {
+			if !config.Global.DualPassSchemaBuilding || (config.Global.DualPassSchemaBuilding && readOnly) {
+				if taint1.IsRead() && taint2.IsRead() {
+					logrus.WithField("taint1", taint1.String()).WithField("taint2", taint2.String()).
+						Infof("[TAINTER] found read-read taint pair")
+					if propagateTaintsReadReadPair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
+						modified = true
+					}
+				}
+			}
+			if !config.Global.DualPassSchemaBuilding || (config.Global.DualPassSchemaBuilding && !readOnly) {
 				if taint1.IsWriteOrUpdate() && taint2.IsWriteOrUpdate() {
 					if propagateTaintsWriteWritePair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
 						modified = true
@@ -407,12 +418,6 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 					// nothing to do
 				} else if taint2.IsUpdate() || taint1.IsUpdate() {
 					// nothing to do
-				}
-			} else {
-				if taint1.IsRead() && taint2.IsRead() {
-					if propagateTaintsReadReadPair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
-						modified = true
-					}
 				}
 			}
 		}
@@ -609,7 +614,9 @@ func PropagateNewTaintsToDatabaseCallObjects(graph *AbstractCallGraph, node *Abs
 		if edge.GetEdgeType() == EDGE_DATABASE_CALL {
 			for _, obj := range edge.GetArguments() {
 				for _, currTaint := range taintMapping.GetMappingKeys() {
-					if readOnly && !currTaint.IsRead() {
+					if config.Global.DualPassSchemaBuilding && readOnly && !currTaint.IsRead() {
+						logrus.WithField("dual_pass", config.Global.DualPassSchemaBuilding).WithField("read", currTaint.IsRead()).
+							Tracef("[PROPAGATE DBS] skipping read taint...")
 						continue
 					}
 					otherTaintsLst := taintMapping.GetMappingForKey(currTaint)
@@ -825,7 +832,9 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 		selectedPath := tracedObjPath + pathsDiffs[path]
 
 		for _, taint := range taintLst {
-			if readOnly && !taint.IsRead() {
+			if config.Global.DualPassSchemaBuilding && readOnly && !taint.IsRead() {
+				logrus.WithField("dual_pass", config.Global.DualPassSchemaBuilding).WithField("read", taint.IsRead()).
+					Tracef("[TRACE] skipping read taint...")
 				continue
 			}
 			logrus.Tracef("[TRACE] [ON_EDGE=%t] currObjpath=%s // tracedObjpath=%s // path=%s // selectedPath=%s // taint={%s}\n", onEdge, currObjPath, tracedObjPath, path, selectedPath, taint.LongString())
@@ -843,10 +852,6 @@ func taintTracedObjectsHelper(currObj *AbstractObject, tracedObj *AbstractObject
 	if taintMapping != nil {
 		logrus.Tracef("[TRACE] [ON_EDGE=%t] merging taint mapping tmp into main taint mapping\n", onEdge)
 		taintMapping.Join(taintMappingTmp, after)
-	}
-
-	if tracedObjPath == "_obj[*]" && trace.svpath == "CastInfoService.ReadMovieInfo.t4.Casts[*].CastInfoID" {
-		logrus.Fatalf("HERE!!!!")
 	}
 
 }
