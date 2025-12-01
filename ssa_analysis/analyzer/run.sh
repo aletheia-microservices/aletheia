@@ -21,12 +21,12 @@ apps=(
 )
 
 apps_synthetic=(
-    #synthetic_app1
-    #synthetic_app2
-    #synthetic_app3
-    #synthetic_app4
-    #synthetic_app5
-    #synthetic_app6
+    synthetic_app1
+    synthetic_app2
+    synthetic_app3
+    synthetic_app4
+    synthetic_app5
+    synthetic_app6
 )
 
 mode=""

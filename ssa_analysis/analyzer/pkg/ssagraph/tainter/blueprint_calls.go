@@ -431,6 +431,15 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 							readKey:       true,
 						})
 					}
+				} else {
+					logrus.WithField("graph", graph.String()).
+						Warnf("[CALLS BLUEPRINT] [CACHE] unknown cache key (%s)", cacheKeyVal.String())
+					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
+						val:           cacheKeyVal,
+						fieldpath:     database + "." + namespace + "." + keyField,
+						cacheMultiget: opType == common.OP_READ_MANY,
+						readKey:       true,
+					})
 				}
 
 				if valFieldPathLst == nil {

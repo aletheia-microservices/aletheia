@@ -385,7 +385,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 			if !config.Global.DualPassSchemaBuilding || (config.Global.DualPassSchemaBuilding && readOnly) {
 				if taint1.IsRead() && taint2.IsRead() {
 					logrus.WithField("taint1", taint1.String()).WithField("taint2", taint2.String()).
-						Infof("[TAINTER] found read-read taint pair")
+						Tracef("[TAINTER] found read-read taint pair")
 					if propagateTaintsReadReadPair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
 						modified = true
 					}
