@@ -84,7 +84,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 	}
 
 	ssaGraph := funcGraphs[funcshortpath]
-	logrus.Infof("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
+	logrus.Tracef("[ABSTRACTGRAPH] got ssa graph for (%s): %v\n", funcshortpath, ssaGraph)
 
 	name := ssaGraph.GetServiceWithMethod()
 	node := graph.GetNodeByNameIfExists(name)
@@ -95,7 +95,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 		node = NewAbstractNode(name, NODE_SERVICE, ssaGraph.GetService(), ssaGraph.GetMethodName(), "", "")
 		graph.AddNode(name, node)
 
-		logrus.Infof("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
+		logrus.Tracef("[ABSTRACTGRAPH] creating node with (%d) params: %s\n", len(ssaGraph.GetFuncParametersExceptMemberAndContext()), node)
 		for _, funcParam := range ssaGraph.GetFuncParametersExceptMemberAndContext() {
 			obj := NewAbstractObject(funcParam.GetName(), ssaTaintDatabaseToAbstractTaint(graph, funcParam.GetTaints()), ssaTaintServiceToAbstractTrace(graph, funcParam.GetTaints()))
 			// EVAL: fmt.Printf("[debug] (1) added param (%s) to node (%s)\n", obj.String(), node.String())
@@ -167,7 +167,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 }
 
 func parseServiceCall(graph *AbstractCallGraph, node *AbstractNode, serviceCall *ssagraph.ServiceCall, funcGraphs map[string]*ssagraph.SSAGraph) {
-	logrus.WithField("node", node.String()).Infof("[ABSTRACTGRAPH] found service call: %s\n", serviceCall.String())
+	logrus.WithField("node", node.String()).Tracef("[ABSTRACTGRAPH] found service call: %s\n", serviceCall.String())
 	toName := serviceCall.GetServiceWithMethod()
 	toNode := graph.GetNodeByNameIfExists(toName)
 

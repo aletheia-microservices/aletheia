@@ -19,7 +19,7 @@ func (detector *ForeignKeyCascadeDetector) checkInconsistencies(app *app.App) {
 	// EVAL: fmt.Printf("[FOREIGN KEY CASCADE | CHECKER] checking inconsistencies\n")
 	for _, request := range detector.requests {
 		for _, delete := range request.GetAllOperations() {
-			logrus.Infof("[FOREIGN KEY CASCADE | CHECKER] delete = %s\n", delete.call.String())
+			logrus.Debugf("[FOREIGN KEY CASCADE | CHECKER] delete = %s\n", delete.call.String())
 			cascadeDelete := detector.registerFutureCascadeDelete(app, delete)
 			if cascadeDelete != nil {
 				detector.markCascadingDelete(app, request, delete)
@@ -30,7 +30,7 @@ func (detector *ForeignKeyCascadeDetector) checkInconsistencies(app *app.App) {
 }
 
 func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.App, currOp *DeleteOperation) *CascadeDelete {
-	logrus.Infof("[FOREIGN KEY CASCADE | CHECKER] register future cascade delete: %s\n", currOp.call.String())
+	logrus.Debugf("[FOREIGN KEY CASCADE | CHECKER] register future cascade delete: %s\n", currOp.call.String())
 
 	var pendingFields []*backends.Field
 	currDB := app.GetDatabaseByName(currOp.call.GetToNode().GetDatabaseName())

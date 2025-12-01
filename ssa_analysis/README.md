@@ -59,8 +59,12 @@ cd ms-consistency-analyzer/eval
 python3 -m venv ~/.venv
 source ~/.venv/bin/activate
 pip3 install -r requirements.txt
-python3 average.py
+
+python3 average_times.py
+python3 average_times.py --synthetic
 python3 plot.py
-python3 average.py --synthetic
 python3 plot.py --synthetic
+
+python3 average_metrics.py
+python3 average_metrics.py --synthetic
 ```

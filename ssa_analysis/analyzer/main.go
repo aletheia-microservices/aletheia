@@ -288,7 +288,7 @@ type AnalysisTimes struct {
 
 func saveAnalysisTime(app *app.App, times AnalysisTimes) {
 	ts := time.Now().Unix()
-	dir := path.Join("analysis_times", time.Now().Format(time.DateOnly))
+	dir := path.Join("results/times", time.Now().Format(time.DateOnly))
 	if synthetic {
 		dir += "/synthetic"
 	}

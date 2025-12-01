@@ -8,13 +8,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--synthetic", action="store_true", help="enable evaluation mode")
 parser.add_argument("--date", type=str, default=str(date.today()), help="date in YYYY-MM-DD format (default: today)")
 
-
 args = parser.parse_args()
 
+INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}"
 if args.synthetic:
-    INPUT_DIR = f"../ssa_analysis/analyzer/analysis_times/{args.date}/synthetic"
-else:
-    INPUT_DIR = f"../ssa_analysis/analyzer/analysis_times/{args.date}"
+    INPUT_DIR += "synthetic"
 
 if args.synthetic:
     OUTPUT_FILE = "results/averages_synthetic.yaml"

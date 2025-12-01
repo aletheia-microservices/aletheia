@@ -85,5 +85,5 @@ func (detector *ForeignKeyCascadeDetector) OnDelete(app *app.App, reqIdx int, ed
 	request := detector.getCurrentRequest()
 	request.AddOperation(op)
 	logrus.WithField("request", request.entry.String()).
-		Infof("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op.call.String())
+		Debugf("[DETECTOR - FOREIGN KEY CASCADE] added new delete: %v\n", op.call.String())
 }
