@@ -51,16 +51,39 @@
     "name": "socialgraph_cache",
     "schemas": [
       {
+        "name": "followees",
+        "fields": [
+          "socialgraph_cache.followees.Key",
+          "socialgraph_cache.followees.Value",
+          "socialgraph_cache.followees.Value[*]",
+          "socialgraph_cache.followees.Value[*].FolloweeID",
+          "socialgraph_cache.followees.Value[*].Timestamp"
+        ],
+        "constraints": []
+      },
+      {
         "name": "followers",
         "fields": [
+          "socialgraph_cache.followees.Key",
+          "socialgraph_cache.followees.Value",
+          "socialgraph_cache.followees.Value[*]",
+          "socialgraph_cache.followees.Value[*].FolloweeID",
+          "socialgraph_cache.followees.Value[*].Timestamp",
           "socialgraph_cache.followers.Key",
           "socialgraph_cache.followers.Value",
           "socialgraph_cache.followers.Value[*]",
-          "socialgraph_cache.followers.Value[*].FollowerID"
+          "socialgraph_cache.followers.Value[*].FollowerID",
+          "socialgraph_cache.followers.Value[*].Timestamp"
         ],
         "constraints": [
-          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_db.usertimeline.UserID [MANDATORY]",
-          "FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES post_db.post.UserMentions[*].UserID [MANDATORY]"
+          "FOREIGN_KEY socialgraph_cache.followees.Key REFERENCES user_db.user.UserID",
+          "FOREIGN_KEY socialgraph_cache.followees.Value[*].FolloweeID REFERENCES user_db.user.UserID",
+          "FOREIGN_KEY socialgraph_cache.followees.Value[*].FolloweeID REFERENCES usertimeline_db.usertimeline.UserID [T]",
+          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES user_db.user.UserID",
+          "FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_db.usertimeline.UserID",
+          "FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES post_db.post.UserMentions[*].UserID [MANDATORY]",
+          "FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES user_cache.UserID.Value [MANDATORY]",
+          "FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES user_db.user.UserID"
         ]
       }
     ]
@@ -79,7 +102,8 @@
           "socialgraph_db.socialgraph.UserID"
         ],
         "constraints": [
-          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID [MANDATORY]",
+          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_cache.UserID.Value",
+          "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID",
           "FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES usertimeline_db.usertimeline.UserID"
         ]
       }
@@ -98,7 +122,10 @@
           "user_cache.UserID.Key",
           "user_cache.UserID.Value"
         ],
-        "constraints": []
+        "constraints": [
+          "FOREIGN_KEY user_cache.UserID.Value REFERENCES socialgraph_cache.followees.Key [MANDATORY]",
+          "FOREIGN_KEY user_cache.UserID.Value REFERENCES usertimeline_db.usertimeline.UserID [T]"
+        ]
       }
     ]
   },

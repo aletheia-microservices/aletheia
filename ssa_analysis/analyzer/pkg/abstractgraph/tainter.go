@@ -31,14 +31,6 @@ func mergeModeToString(mode MergeMode) string {
 	return ""
 }
 
-func mergeModeIsParsed(mode MergeMode) bool {
-	return mode == MERGE_MODE_PARSE
-}
-
-func mergeModeIsTraced(mode MergeMode) bool {
-	return mode == MERGE_MODE_TRACE
-}
-
 func mergeExistingTaintsWithNewTaints(obj *AbstractObject, objpath string, subpath string, newTaint *AbstractTaint, taintMapping *TaintMapping, mode MergeMode, t string) {
 	for _, existingTaint := range obj.taints[objpath] {
 		// filter by writes to reduce number of foreign keys for now
