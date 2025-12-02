@@ -16,11 +16,11 @@ type ForeignKeyCascadeDetector struct {
 }
 
 func NewDetector() *ForeignKeyCascadeDetector {
-	logrus.Traceln()
-	logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	logrus.Traceln(" ------------------------------------ INITIALIZING FOREIGN KEY CASCADE DETECTOR ----------------------------------- ")
-	logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	logrus.Traceln()
+	// EVAL: logrus.Traceln()
+	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: logrus.Traceln(" ------------------------------------ INITIALIZING FOREIGN KEY CASCADE DETECTOR ----------------------------------- ")
+	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: logrus.Traceln()
 	return &ForeignKeyCascadeDetector{
 		cascadeDeletes: make(map[*Request][]*CascadeDelete),
 	}
@@ -53,7 +53,7 @@ func (detector *ForeignKeyCascadeDetector) OnEndRun(app *app.App) {
 func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	logrus.Tracef("[DETECTOR - FOREIGN KEY CASCADE] on new request\n")
+	// EVAL: logrus.Tracef("[DETECTOR - FOREIGN KEY CASCADE] on new request\n")
 }
 
 func (detector *ForeignKeyCascadeDetector) OnEndRequest(app *app.App) {

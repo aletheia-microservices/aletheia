@@ -55,7 +55,7 @@ def main():
     print("-" * (max_app_len + 26))
 
     for app, avg in sorted(averaged, key=lambda x: x[1]):
-        print(f"{app.ljust(max_app_len)}   {avg:7.2f}")
+        print(f"{app.ljust(max_app_len)}   {int(avg)}")
 
 if __name__ == "__main__":
     main()

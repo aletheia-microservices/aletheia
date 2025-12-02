@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-
-	"github.com/sirupsen/logrus"
 )
 
 type TaintPair struct {
@@ -53,7 +51,7 @@ func (tm *TaintMapping) AddIfNotExists(key AbstractTaint, valElem AbstractTaint,
 		return
 	}
 
-	logrus.Tracef("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
+	// EVAL: logrus.Tracef("[TM] adding taint mapping (%s) -> (%s)\n", key.String(), valElem.String())
 	if mappingVal, ok := tm.mapping[key]; ok {
 		var exists bool
 		for _, t := range mappingVal {

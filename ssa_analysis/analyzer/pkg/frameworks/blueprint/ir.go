@@ -60,8 +60,8 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 	databases := make(map[string]ir.IRNode)
 	args := make(map[*workflowspec.Service][]ir.IRNode)
 	var frontends []string
-	logrus.Tracef("[IR] inspecting ir %v\n", builder.IR)
-	logrus.Traceln()
+	// EVAL: logrus.Tracef("[IR] inspecting ir %v\n", builder.IR)
+	// EVAL: logrus.Traceln()
 	for _, node := range builder.IR.Children {
 		if n, ok := node.(*address.Address[*http.GolangHttpServer]); ok {
 			if httpService, ok := n.GetDestination().(*http.GolangHttpServer); ok {
@@ -77,7 +77,7 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 						if nnnn, ok := child.(*goproc.Process); ok {
 							for _, child := range nnnn.Nodes {
 								if workflowHandler, ok := child.(*workflow.WorkflowHandler); ok {
-									logrus.Tracef("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
+									// EVAL: logrus.Tracef("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
 
 									if workflowHandler.ServiceType == "Runnable" {
 										logrus.Fatalf("[IR NODE] found Runnable service type for service (%s) -- cannot analyze application", workflowHandler.Name())
@@ -87,7 +87,7 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 									services[workflowHandler.ServiceInfo] = nil
 
 									for _, arg := range workflowHandler.Args {
-										logrus.Tracef("[IR HANDLER ARG] [%T] got node: %s\n", arg, arg)
+										// EVAL: logrus.Tracef("[IR HANDLER ARG] [%T] got node: %s\n", arg, arg)
 										switch t := arg.(type) {
 										case *redis.RedisGoClient, *memcached.MemcachedGoClient, *rabbitmq.RabbitmqGoClient, *mongodb.MongoDBGoClient, *mysql.MySQLDBGoClient:
 											databases[arg.Name()] = arg
@@ -103,22 +103,22 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 								}
 							}
 						} else {
-							logrus.Tracef("unknown node type: [%T] %v\n", child, child)
+							// EVAL: logrus.Tracef("unknown node type: [%T] %v\n", child, child)
 						}
 					}
-					logrus.Traceln()
+					// EVAL: logrus.Traceln()
 				}
 			}
 		} /* else if redisContainer, ok := node.(*redis.RedisContainer); ok {
-			logrus.Tracef("[IR INFO] ignoring redis.RedisContainer for node %s, interface %s\n", redisContainer.Name(), redisContainer.Iface)
+			// EVAL: logrus.Tracef("[IR INFO] ignoring redis.RedisContainer for node %s, interface %s\n", redisContainer.Name(), redisContainer.Iface)
 		} else if memachedContainer, ok := node.(*memcached.MemcachedContainer); ok {
-			logrus.Tracef("[IR INFO] ignoring memcached.MemcachedContainer for node %s, interface %s\n", memachedContainer.Name(), memachedContainer.Iface)
+			// EVAL: logrus.Tracef("[IR INFO] ignoring memcached.MemcachedContainer for node %s, interface %s\n", memachedContainer.Name(), memachedContainer.Iface)
 		} else if rabbitContainer, ok := node.(*rabbitmq.RabbitmqContainer); ok {
-			logrus.Tracef("[IR INFO] ignoring rabbitmq.RabbitmqContainer for node %s, interface %s\n", rabbitContainer.Name(), rabbitContainer.Iface)
+			// EVAL: logrus.Tracef("[IR INFO] ignoring rabbitmq.RabbitmqContainer for node %s, interface %s\n", rabbitContainer.Name(), rabbitContainer.Iface)
 		} else if mongoDbContainer, ok := node.(*mongodb.MongoDBContainer); ok {
-			logrus.Tracef("[IR INFO] ignoring mongodb.MongoDBContainer for node %s, interface %s\n", mongoDbContainer.Name(), mongoDbContainer.Iface)
+			// EVAL: logrus.Tracef("[IR INFO] ignoring mongodb.MongoDBContainer for node %s, interface %s\n", mongoDbContainer.Name(), mongoDbContainer.Iface)
 		} else if mysqlContainer, ok := node.(*mysql.MySQLDBContainer); ok {
-			logrus.Tracef("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s\n", mysqlContainer.Name(), mysqlContainer.Iface)
+			// EVAL: logrus.Tracef("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s\n", mysqlContainer.Name(), mysqlContainer.Iface)
 		} */
 	}
 	return services, databases, args, frontends

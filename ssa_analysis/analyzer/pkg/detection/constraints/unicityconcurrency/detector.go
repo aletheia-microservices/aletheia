@@ -1,8 +1,6 @@
 package unicityconcurrency
 
 import (
-	"github.com/sirupsen/logrus"
-
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
 	"analyzer/pkg/detection"
@@ -16,11 +14,11 @@ type UnicityConcurrencyDetector struct {
 }
 
 func NewDetector() *UnicityConcurrencyDetector {
-	logrus.Traceln()
-	logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	logrus.Traceln(" ------------------------------------ INITIALIZING UNICITY CONCURRENCY DETECTOR ----------------------------------- ")
-	logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	logrus.Traceln()
+	// EVAL: logrus.Traceln()
+	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: logrus.Traceln(" ------------------------------------ INITIALIZING UNICITY CONCURRENCY DETECTOR ----------------------------------- ")
+	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: logrus.Traceln()
 	return &UnicityConcurrencyDetector{
 		vulnerableWriteSets: make(map[*Request][]*VulnerableWriteSet),
 	}
@@ -58,7 +56,7 @@ func (detector *UnicityConcurrencyDetector) OnEndRun(app *app.App) {
 func (detector *UnicityConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	logrus.Tracef("[DETECTOR - UNICITY CONCURRENCY] on new request\n")
+	// EVAL: logrus.Tracef("[DETECTOR - UNICITY CONCURRENCY] on new request\n")
 }
 
 func (detector *UnicityConcurrencyDetector) OnEndRequest(app *app.App) {
@@ -84,7 +82,7 @@ func (detector *UnicityConcurrencyDetector) OnWrite(app *app.App, reqIdx int, ed
 	// must check inconsistency before adding read to request
 	detector.checkInconsistency(app, request, op)
 	request.AddOperation(op)
-	logrus.Tracef("[DETECTOR - UNICITY CONCURRENCY] added new write: %v\n", op)
+	// EVAL: logrus.Tracef("[DETECTOR - UNICITY CONCURRENCY] added new write: %v\n", op)
 }
 
 func (detector *UnicityConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {

@@ -20,11 +20,11 @@ type ForeignKeyConcurrencyDetector struct {
 }
 
 func NewDetector() *ForeignKeyConcurrencyDetector {
-	logrus.Traceln()
-	logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	logrus.Traceln(" ---------------------------------- INITIALIZING FOREIGN KEY CONCURRENCY DETECTOR --------------------------------- ")
-	logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	logrus.Traceln()
+	// EVAL: logrus.Traceln()
+	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: logrus.Traceln(" ---------------------------------- INITIALIZING FOREIGN KEY CONCURRENCY DETECTOR --------------------------------- ")
+	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
+	// EVAL: logrus.Traceln()
 	return &ForeignKeyConcurrencyDetector{
 		dangerousDeletes: make(map[*Request][]*DangerousDelete),
 	}
@@ -53,7 +53,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnEndRun(app *app.App) {
 func (detector *ForeignKeyConcurrencyDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] on new request\n")
+	// EVAL: logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] on new request\n")
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnEndRequest(app *app.App) {
@@ -79,15 +79,15 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int,
 
 	// search for fields:
 	// fields in current database with constraint foreign key + mandatory
-	logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] write={%s}, entry={%s}\n", write.call.String(), write.request.entry.String())
+	// EVAL: logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] write={%s}, entry={%s}\n", write.call.String(), write.request.entry.String())
 	var fields []*backends.Field
 	for _, arg := range write.call.GetArguments() {
 		for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(write.call.GetID()) {
 			writtenField := app.ComputeDatabaseFieldFromPath(write.database, fieldpath)
 			for _, field := range app.GetAllDatabaseFieldsWithPrefixPath(writtenField, true) {
-				logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | DETECTOR] field = %s\n", field.String())
+				// EVAL: logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | DETECTOR] field = %s\n", field.String())
 				if field.HasConstraintForeignKeyNonMandatory() && !slices.Contains(fields, field) {
-					logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | DETECTOR] OK!\n")
+					// EVAL: logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | DETECTOR] OK!\n")
 					fields = append(fields, field)
 				}
 			}
@@ -96,7 +96,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnWrite(app *app.App, reqIdx int,
 	write.SetFields(fields)
 
 	request.addWriteOperation(write)
-	logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] added new write: %v\n", write)
+	// EVAL: logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] added new write: %v\n", write)
 }
 
 func (detector *ForeignKeyConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
@@ -119,7 +119,7 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int
 	// search for pending fields:
 	// fields in other databases with constraint foreign key + mandatory
 	// that reference some field in the current database
-	logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] delete = %s\n", delete.call.String())
+	// EVAL: logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] delete = %s\n", delete.call.String())
 	for _, arg := range delete.call.GetArguments() {
 		for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(delete.call.GetID()) {
 			// [TO BE IMPROVED]
@@ -135,5 +135,5 @@ func (detector *ForeignKeyConcurrencyDetector) OnDelete(app *app.App, reqIdx int
 	delete.setSchema(schema)
 
 	request.addDeleteOperation(delete)
-	logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] added new delete: %v\n", delete)
+	// EVAL: logrus.Tracef("[FOREIGN KEY CONCURRENCY | DETECTOR] added new delete: %v\n", delete)
 }

@@ -176,7 +176,7 @@ func (graph *SSAGraph) GetCombinedGraphForMethodCallIfExists(call *MethodCall) *
 	if m, ok := graph.methodCallToCombinedGraphs[call]; ok {
 		return m
 	}
-	logrus.Tracef("[SSA GRAPH] combined graph not found for call (%s)\n", call.String())
+	// EVAL: logrus.Tracef("[SSA GRAPH] combined graph not found for call (%s)\n", call.String())
 	return nil
 }
 
@@ -292,7 +292,7 @@ func (graph *SSAGraph) GetReturnsLst() [][]*SSANode {
 }
 
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
-	logrus.Tracef("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
+	// EVAL: logrus.Tracef("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
 	if len(graph.params) <= 2 {
 		return nil
 	}

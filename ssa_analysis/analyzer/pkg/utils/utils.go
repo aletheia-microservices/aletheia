@@ -4,7 +4,6 @@ import (
 	"go/types"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 )
 
@@ -16,7 +15,7 @@ func FieldIndexToName(t *ssa.FieldAddr) string {
 // - <pkg name>.<member type>.<func name>
 // - <pkg name>.<func name>
 func GetShortFunctionPath(s string) string {
-	logrus.Tracef("[UTILS] get function short path for (%s)\n", s)
+	// EVAL: logrus.Tracef("[UTILS] get function short path for (%s)\n", s)
 	// remove leading (* if present
 	if strings.HasPrefix(s, "(*") {
 		s = s[2:]

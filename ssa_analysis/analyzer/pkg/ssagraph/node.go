@@ -250,7 +250,7 @@ func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, 
 		}
 	}
 	taint := NewSSATaintDB(dbpath, dbcall, readKey, readVal, callerT)
-	logrus.Tracef("added new taint: %s\n", taint.String())
+	// EVAL: logrus.Tracef("added new taint: %s\n", taint.String())
 	node.taints[objpath] = append(lstTaints, taint)
 	return true
 }

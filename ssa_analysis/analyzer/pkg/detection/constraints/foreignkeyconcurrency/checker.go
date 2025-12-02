@@ -1,8 +1,6 @@
 package foreignkeyconcurrency
 
 import (
-	"github.com/sirupsen/logrus"
-
 	"analyzer/pkg/app/backends"
 )
 
@@ -31,10 +29,10 @@ func (cw *ConcurrentWrite) EntryString() string {
 }
 
 func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
-	logrus.Tracef("[FOREIGN KEY CONCURRENCY | CHECKER] checking inconsistencies\n")
+	// EVAL: logrus.Tracef("[FOREIGN KEY CONCURRENCY | CHECKER] checking inconsistencies\n")
 	for _, request := range detector.requests {
 		for _, delete := range request.getAllDeleteOperations() {
-			logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | CHECKER] delete = %s\n", delete.call.String())
+			// EVAL: logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | CHECKER] delete = %s\n", delete.call.String())
 			var concurrentWrites map[*WriteOperation][]*backends.Field
 
 			for _, otherRequest := range detector.requests {
@@ -42,17 +40,17 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 					continue
 				}
 				for _, otherWrite := range otherRequest.getAllWriteOperations() {
-					logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | CHECKER] other_write={%s}, entry={%s}\n", otherWrite.call.String(), otherWrite.request.entry.String())
+					// EVAL: logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | CHECKER] other_write={%s}, entry={%s}\n", otherWrite.call.String(), otherWrite.request.entry.String())
 					for _, otherField := range otherWrite.fields {
-						logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
+						// EVAL: logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
 						for _, deletedField := range delete.schema.GetAllFieldsLst() {
-							logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] deleted field = %s\n", deletedField.String())
+							// EVAL: logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] deleted field = %s\n", deletedField.String())
 							if otherField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {
 								if concurrentWrites == nil {
 									concurrentWrites = make(map[*WriteOperation][]*backends.Field)
 								}
 								concurrentWrites[otherWrite] = append(concurrentWrites[otherWrite], otherField)
-								logrus.Tracef("\t\t\t[FOREIGN KEY CONCURRENCY | CHECKER] OK!\n")
+								// EVAL: logrus.Tracef("\t\t\t[FOREIGN KEY CONCURRENCY | CHECKER] OK!\n")
 							}
 						}
 					}

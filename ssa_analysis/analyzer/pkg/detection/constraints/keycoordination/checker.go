@@ -8,8 +8,6 @@ import (
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/config"
 	"analyzer/pkg/utils"
-
-	"github.com/sirupsen/logrus"
 )
 
 type ForeignRead struct {
@@ -42,9 +40,9 @@ func (detector *KeyCoordinationDetector) checkInconsistency(app *app.App, reques
 
 func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, request *Request, currOp *ReadOperation) {
 	// same logic as in foreignkeycascade but here we verify if secondaryTaint.IsDelete()
-	logrus.Tracef("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
+	// EVAL: logrus.Tracef("[%s| CHECKER] on op: %s\n", detector.GetTypeStringUpper(), currOp.call.String())
 	for _, arg := range currOp.arguments {
-		logrus.Tracef("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
+		// EVAL: logrus.Tracef("[%s | CHECKER] arg (%s)\n", detector.GetTypeStringUpper(), arg.String())
 
 		for _, taintLst := range arg.GetAllTaints() {
 			var currTaint *abstractgraph.AbstractTaint
@@ -59,7 +57,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			}
 
 			if currTaint == nil {
-				logrus.Tracef("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
+				// EVAL: logrus.Tracef("\t[%s | CHECKER] skipping currTaint with otherTaints\n", detector.GetTypeStringUpper())
 				continue
 			}
 
@@ -68,12 +66,12 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 			currField := app.ComputeDatabaseFieldFromPath(currDatabase, currFieldPath)
 
 			for _, otherTaint := range otherTaints {
-				logrus.Tracef("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+				// EVAL: logrus.Tracef("\t[%s | CHECKER] arg (%s) w/ secondary taint: %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 				otherOp := request.FindOperationByCallID(otherTaint.GetDatabaseCallID())
 
 				// sanity checks
 				if currOp == otherOp || otherOp == nil || currOp.call.GetToNode().GetDatabaseName() == otherOp.call.GetToNode().GetDatabaseName() {
-					logrus.Tracef("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
+					// EVAL: logrus.Tracef("\t[%s | CHECKER] skipping nil op for otherTaint (arg=%s): %s\n", detector.GetTypeStringUpper(), arg.String(), otherTaint.LongString())
 					continue
 				}
 
@@ -82,7 +80,7 @@ func (detector *KeyCoordinationDetector) checkInconsistencyForOp(app *app.App, r
 					otherDatabase := app.GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherFieldpath))
 					otherField := app.ComputeDatabaseFieldFromPath(otherDatabase, otherFieldpath)
 
-					logrus.Tracef("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
+					// EVAL: logrus.Tracef("\t\t[%s | CHECKER] currField={%s} // otherField={%s}\n", detector.GetTypeStringUpper(), currField.String(), otherField.String())
 
 					foreignRead := &ForeignRead{
 						op1:    currOp,
@@ -142,10 +140,10 @@ func (detector *KeyCoordinationDetector) isValidForeignRead(fread *ForeignRead) 
 		// 		- merging old posts (cache key is UserID and never uses exchanged PostID) with new posts (cache values containing exchanged PostID across services) causes the new posts' PostID to "accidently" taint the old posts' PostID
 		// 		- the tool then assumes that the PostID was used to read the old posts from their resp. cache
 
-		if fread.constraint1 != nil && fread.constraint1.IsMandatory() && 
+		if fread.constraint1 != nil && fread.constraint1.IsMandatory() &&
 			!fread.constraint1.HasRequestIndexOnMandatory(fread.op1.reqIdx) {
 			return true
-		} else if fread.constraint2 != nil && fread.constraint2.IsMandatory() && 
+		} else if fread.constraint2 != nil && fread.constraint2.IsMandatory() &&
 			!fread.constraint2.HasRequestIndexOnMandatory(fread.op2.reqIdx) {
 			return true
 		}

@@ -3,7 +3,6 @@ package registry
 import (
 	"go/types"
 
-	"github.com/sirupsen/logrus"
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/app"
@@ -25,11 +24,11 @@ func RegisterNoSQLPrimaryKey(app *app.App, databaseStr string, collectionStr str
 						constraint := backends.NewConstraint(backends.CONSTRAINT_PRIMARY, field)
 						field.AddConstraint(constraint)
 						schema.AddConstraint(constraint)
-						logrus.Tracef("[CALLS BLUEPRINT] [NOSQL PK] registered primary key constraint: %s\n", constraint.String())
+						// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [NOSQL PK] registered primary key constraint: %s\n", constraint.String())
 					}
 				}
 			}
 		}
 	}
-	//logrus.Tracef("[CALLS BLUEPRINT] [NOSQL PK] skipping registerNoSQLPrimaryKey (database=%s, schema=%s)\n", database.GetName(), schema.GetName())
+	//// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [NOSQL PK] skipping registerNoSQLPrimaryKey (database=%s, schema=%s)\n", database.GetName(), schema.GetName())
 }

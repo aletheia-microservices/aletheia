@@ -15,7 +15,7 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		toGraph := graphs[methodCall.GetFuncShortPath()]
 		if toGraph == nil {
 			// it's from an external package
-			logrus.Tracef("[SSA GRAPH] toGraph not found for methodCall (%s)\n", methodCall.GetFuncShortPath())
+			// EVAL: logrus.Tracef("[SSA GRAPH] toGraph not found for methodCall (%s)\n", methodCall.GetFuncShortPath())
 			continue
 		}
 		toGraph = toGraph.SimpleCopy()
@@ -25,15 +25,15 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		RunTainter(toGraph)
 		callerT = methodCall.GetT()
 
-		logrus.Debugf("combining SSA graphs (caller=%s) (at=%s) (callee=%s)\n", graph.String(), methodCall.GetID(), toGraph.String())
+		// EVAL: logrus.Tracef("combining SSA graphs (caller=%s) (at=%s) (callee=%s)\n", graph.String(), methodCall.GetID(), toGraph.String())
 
 		if toGraph.IsGoRoutine() {
 			for i, callee_freevar := range toGraph.GetFreeVars() {
 				caller_var := methodCall.GetBindAt(i)
 				callee_taints := callee_freevar.GetTaints()
-				logrus.Tracef("CALLER VAR: %s\n", caller_var.String())
-				logrus.Tracef("CALLEE FREEVAR: %s\n", callee_freevar.String())
-				logrus.Tracef("callerT: %s\n", callerT)
+				// EVAL: logrus.Tracef("CALLER VAR: %s\n", caller_var.String())
+				// EVAL: logrus.Tracef("CALLEE FREEVAR: %s\n", callee_freevar.String())
+				// EVAL: logrus.Tracef("callerT: %s\n", callerT)
 				propagateTaints(graph, caller_var, callee_taints, callerT)
 			}
 			// TODO rets
@@ -42,7 +42,7 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		// propagation: caller args <<< callee params
 		// TODO: upper/lower taints
 		for i, callee_params := range toGraph.GetParams() {
-			logrus.Debugf("CALEE PARAM: [%T] %s\n", callee_params.GetValue(), callee_params.GetValue())
+			// EVAL: logrus.Tracef("CALEE PARAM: [%T] %s\n", callee_params.GetValue(), callee_params.GetValue())
 			caller_arg := methodCall.GetArgumentAt(i)
 			callee_taints := callee_params.GetTaints()
 			propagateTaints(graph, caller_arg, callee_taints, callerT)
@@ -103,8 +103,8 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 			for i, callee_freevar := range toGraph.GetFreeVars() {
 				caller_var := methodCall.GetBindAt(i)
 				caller_taints := caller_var.GetTaints()
-				logrus.Tracef("CALLE FREEVAR: %s\n", callee_freevar.String())
-				logrus.Tracef("CALLER VAR: %s\n", caller_var.String())
+				// EVAL: logrus.Tracef("CALLE FREEVAR: %s\n", callee_freevar.String())
+				// EVAL: logrus.Tracef("CALLER VAR: %s\n", caller_var.String())
 				propagateTaints(toGraph, callee_freevar, caller_taints, "")
 			}
 			// TODO rets

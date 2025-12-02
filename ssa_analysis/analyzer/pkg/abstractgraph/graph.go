@@ -18,14 +18,14 @@ type AbstractCallGraph struct {
 	nodes map[string]*AbstractNode
 	// key is the id of the ssa instr name for the svc or db call on the callee side
 	edges []*AbstractEdge
-	calls int // total number of cumulative calls
+	rpcs  int // total number of cumulative calls
 }
 
 func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
 	return &AbstractCallGraph{
 		app:   app,
 		nodes: make(map[string]*AbstractNode),
-		calls: 0,
+		rpcs:  0,
 	}
 }
 
@@ -34,7 +34,7 @@ func (graph *AbstractCallGraph) GetApp() *app.App {
 }
 
 func (graph *AbstractCallGraph) GetNumberOfCumulativeCalls() int {
-	return graph.calls
+	return graph.rpcs
 }
 
 func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
@@ -45,7 +45,7 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 }
 
 func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
-	logrus.Tracef("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
+	// EVAL: logrus.Tracef("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
 }
 

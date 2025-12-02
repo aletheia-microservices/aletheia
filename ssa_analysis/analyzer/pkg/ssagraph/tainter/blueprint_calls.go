@@ -47,7 +47,7 @@ type ValFieldPath struct {
 
 func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
 	if call, ok := val.(*ssa.Call); ok {
-		logrus.Tracef("[CALLS BLUEPRINT] [SVC] checking for service call: %s\n", val.String())
+		// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SVC] checking for service call: %s\n", val.String())
 
 		// Example:
 		// t0 = &s.barService [#1]
@@ -108,7 +108,7 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 	}
 
 	if call, ok := val.(*ssa.Call); ok {
-		logrus.Tracef("[CALLS BLUEPRINT] [DB] checking for database call: %s\n", val.String())
+		// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [DB] checking for database call: %s\n", val.String())
 
 		// --------------
 		// blueprint apps
@@ -161,7 +161,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_RELATIONALDB, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
-			logrus.Tracef("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
+			// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
 
 			var dstVal, stmtVal, sliceArgsVal ssa.Value
 			if call.Call.Method.Name() == "Select" || call.Call.Method.Name() == "Get" {
@@ -204,7 +204,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 			var argVals []ssa.Value
 			if slice, ok := sliceArgsVal.(*ssa.Slice); ok {
-				logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on ssa slice: %v\n", slice)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on ssa slice: %v\n", slice)
 				if alloc, ok := slice.X.(*ssa.Alloc); ok {
 					// example:
 					// t5 = new [2]any (varargs)
@@ -216,15 +216,15 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					// TODO: also need to consider case when slice is declared earlier and
 					// reused for another write in possbly another DB
 					allocNode := graph.GetNodeByName(alloc.Name())
-					logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on alloc node: %v\n", allocNode)
+					// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on alloc node: %v\n", allocNode)
 					for _, edge := range graph.GetEdgesFromNode(allocNode) {
 						if edge.GetType() == ssagraph.EDGE_INDEX {
 							idxNode := edge.GetToNode()
-							logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on idx node: %v\n", idxNode)
+							// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on idx node: %v\n", idxNode)
 							for _, edge := range graph.GetEdgesFromNode(idxNode) {
 								if edge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
 									storeNode := edge.GetToNode()
-									logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on store node: %v\n", storeNode)
+									// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on store node: %v\n", storeNode)
 									storeInstr, _ := storeNode.GetInstruction().(*ssa.Store)
 									argVals = append(argVals, storeInstr.Val)
 
@@ -244,12 +244,12 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 			if opType == common.OP_READ {
 				var tables []string
-				logrus.Tracef("[CALLS BLUEPRINT] [SQL] [READ] parsing stmt: %s\n", stmt)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [READ] parsing stmt: %s\n", stmt)
 				filterFields, fields, tables, ok = app.ParseSQLRead(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
-				logrus.Tracef("[CALLS BLUEPRINT] [SQL] [READ] got filter fields: %v\n", filterFields)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [READ] got filter fields: %v\n", filterFields)
 				tableName = tables[0]
 
 				// sanity check
@@ -257,22 +257,22 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
 				}
 			} else if opType == common.OP_WRITE {
-				logrus.Tracef("[CALLS BLUEPRINT] [SQL] [WRITE] parsing stmt: %s\n", stmt)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [WRITE] parsing stmt: %s\n", stmt)
 				var ok bool
 				fields, _, tableName, ok = app.ParseSQLWrite(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
-				logrus.Tracef("[CALLS BLUEPRINT] [SQL] [WRITE] got written fields: %v\n", fields)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [WRITE] got written fields: %v\n", fields)
 			} else if opType == common.OP_DELETE {
-				logrus.Tracef("[CALLS BLUEPRINT] [SQL] [DELETE] parsing stmt: %s\n", stmt)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [DELETE] parsing stmt: %s\n", stmt)
 				var tables []string
 				var ok bool
 				filterFields, tables, ok = app.ParseSQLDelete(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
-				logrus.Tracef("[CALLS BLUEPRINT] [SQL] [DELETE] got filter fields: %v\n", filterFields)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [DELETE] got filter fields: %v\n", filterFields)
 				tableName = tables[0]
 
 				// sanity check
@@ -397,8 +397,8 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				var valFieldPathLst []ValFieldPath
 				cacheKeyVal := call.Call.Args[1]
 				cacheValueVal := call.Call.Args[2]
-				logrus.Tracef("[CALLS BLUEPRINT] [CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
-				logrus.Tracef("[CALLS BLUEPRINT] [CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
+				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
 
 				var keyField = "Key"
 				var valField = "Value"
@@ -450,7 +450,7 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 						cacheMultiget: opType == common.OP_READ_MANY,
 						readKey:       true,
 					})
-					logrus.Tracef("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
+					// EVAL: logrus.Tracef("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
 				}
 
 				// track cache value
@@ -1043,17 +1043,17 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 // it cannot be used for NoSQLDatabase calls because the collection is extracted beforehand
 func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (string, bool) {
 	if ssaFieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
-		logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] ssa field addr (field=%d): %s\n", ssaFieldAddr.Field, ssaFieldAddr.String())
+		// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] ssa field addr (field=%d): %s\n", ssaFieldAddr.Field, ssaFieldAddr.String())
 		if ssaParam, ok := ssaFieldAddr.X.(*ssa.Parameter); ok {
-			logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] queue loaded from parameter (%d)\n", ssaFieldAddr.Field)
+			// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] queue loaded from parameter (%d)\n", ssaFieldAddr.Field)
 			if typesPointer, ok := ssaParam.Type().(*types.Pointer); ok {
 				if typeNamed, ok := typesPointer.Elem().(*types.Named); ok {
 					// e.g., github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
 					serviceImplPath := typeNamed.String()
 					service := graph.GetApp().GetServiceWithImplPath(serviceImplPath)
-					logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] service fields: %v\n", service.GetAllFields())
+					// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] service fields: %v\n", service.GetAllFields())
 					field := service.GetFieldAt(ssaFieldAddr.Field)
-					logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] field: %s\n", field.String())
+					// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] field: %s\n", field.String())
 
 					database := field.GetWiringName()
 

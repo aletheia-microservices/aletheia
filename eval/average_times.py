@@ -12,7 +12,7 @@ args = parser.parse_args()
 
 INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}"
 if args.synthetic:
-    INPUT_DIR += "synthetic"
+    INPUT_DIR += "/synthetic"
 
 if args.synthetic:
     OUTPUT_FILE = "results/averages_synthetic.yaml"
@@ -25,14 +25,13 @@ NAME_MAP = {
     "postnotification":         "postnotification",
     "sockshop":                 "sockshop",
     "trainticket":              "trainticket",
-    "synthetic_app":            "app",
-    "synthetic_app1":           "app 1",
-    "synthetic_app2":           "app 2",
-    "synthetic_app3":           "app 3",
-    "synthetic_app4":           "app 4",
-    "synthetic_app5":           "app 5",
-    "synthetic_app6":           "app 6",
-    "synthetic_app7":           "app 7",
+    "synthetic_app":            "synthetic_app",
+    "synthetic_app1":           "app1_avg_rpcs_uber",
+    "synthetic_app2":           "app2_high_call_depth",
+    "synthetic_app3":           "app3_avg_depth_alibaba",
+    "synthetic_app4":           "app4_avg_depth_alibaba",
+    "synthetic_app5":           "app5_high_fanout",
+    "synthetic_app6":           "app6_avg_depth_alibaba",
 }
 
 apps_data = defaultdict(list)

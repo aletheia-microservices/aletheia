@@ -38,7 +38,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 	defer outfile2.Close()
 
 	for _, member := range pkg.Members {
-		logrus.Tracef("[SSA] [%T] member: %v\n", member, member)
+		// EVAL: logrus.Tracef("[SSA] [%T] member: %v\n", member, member)
 		switch m := member.(type) {
 		case *ssa.Function:
 			iterateFunc(app, outfile2, m, funcGraphs, false)
@@ -54,11 +54,11 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 			// file: print.go
 			// function: func (p *Package) WriteTo(w io.Writer) (int64, error)
 			for _, sel := range typeutil.IntuitiveMethodSet(m.Type(), &prog.MethodSets) {
-				logrus.Tracef("\t[SSA] [INTUITIVE METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
+				// EVAL: logrus.Tracef("\t[SSA] [INTUITIVE METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
 				method := prog.MethodValue(sel)
 				if method != nil {
 					fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
-					logrus.Tracef("\t[SSA] [INTUITIVE METHOD SET] [%T]: %v\n", method, method)
+					// EVAL: logrus.Tracef("\t[SSA] [INTUITIVE METHOD SET] [%T]: %v\n", method, method)
 					if len(sel.Index()) != 1 {
 						// when a structure has an embedded field its methods are promoted and
 						// will appear for the current structure
@@ -73,7 +73,7 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 						// where jwt.StandardClaims has methods Valid(), VerifyAudience(), etc.
 						//
 						// WORKAROUND: just ignore them for now
-						logrus.Tracef("\t[SSA] [INTUITIVE METHOD SET] [%T]: skipping...\n", method)
+						// EVAL: logrus.Tracef("\t[SSA] [INTUITIVE METHOD SET] [%T]: skipping...\n", method)
 						continue
 					}
 					iterateFunc(app, outfile2, method, funcGraphs, false)
@@ -83,14 +83,14 @@ func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraph
 			methods := prog.MethodSets.MethodSet(m.Type().Underlying())
 			for i := 0; i < methods.Len(); i++ {
 				sel := methods.At(i)
-				logrus.Tracef("\t[SSA] [METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
+				// EVAL: logrus.Tracef("\t[SSA] [METHOD SET] [%T] (index=%v, indirect=%t): %v\n", sel, sel.Index(), sel.Indirect(), sel)
 				fmt.Fprintf(outfile2, "\tMethod: %v\n", sel.Obj().Type())
 				method := prog.MethodValue(sel)
 				if method != nil {
-					logrus.Tracef("\t[SSA] [METHOD SET] [%T]: %v\n", method, method)
+					// EVAL: logrus.Tracef("\t[SSA] [METHOD SET] [%T]: %v\n", method, method)
 					if len(sel.Index()) != 1 {
 						// same reason as above when iterating IntuitiveMethodSet
-						logrus.Tracef("\t[SSA] [METHOD SET] [%T]: skipping...\n", method)
+						// EVAL: logrus.Tracef("\t[SSA] [METHOD SET] [%T]: skipping...\n", method)
 						continue
 					}
 					iterateFunc(app, outfile2, method, funcGraphs, false)
@@ -108,19 +108,19 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, funcGraphs ma
 	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
 	methodName := utils.ExtractMethodNameFromShortFunctionPath(shortFuncPath)
 
-	logrus.Tracef("[SSA] iterating function (%s)\n", shortFuncPath)
+	// EVAL: logrus.Tracef("[SSA] iterating function (%s)\n", shortFuncPath)
 
 	graph := ssagraph.NewGraph(app, fn.Pkg.Pkg.Name(), shortFuncPath, serviceName, methodName)
 	if _, exists := funcGraphs[shortFuncPath]; exists {
-		logrus.Tracef("[SSA] ssagraph for function (%s) already exists\n", shortFuncPath)
-		logrus.Traceln("[SSA] skipping...")
+		// EVAL: logrus.Tracef("[SSA] ssagraph for function (%s) already exists\n", shortFuncPath)
+		// EVAL: logrus.Traceln("[SSA] skipping...")
 		return
 	}
 	if goroutine {
 		graph.EnableGoRoutine()
 	}
 	funcGraphs[shortFuncPath] = graph
-	logrus.Tracef("[SSA] added new ssagraph for function (%s)\n", shortFuncPath)
+	// EVAL: logrus.Tracef("[SSA] added new ssagraph for function (%s)\n", shortFuncPath)
 
 	var visited = make(map[ssa.Value]bool)
 
@@ -146,11 +146,11 @@ func iterateFunc(app *app.App, outFile *os.File, fn *ssa.Function, funcGraphs ma
 }
 
 func parseInstr(app *app.App, graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool, outFile *os.File, funcGraphs map[string]*ssagraph.SSAGraph) *ssagraph.SSANode {
-	logrus.Tracef("[SSA PARSE INSTR] %02d [%T] %v\n", instrIdx, instr, instr.String())
+	// EVAL: logrus.Tracef("[SSA PARSE INSTR] %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	id := utils.ComputeInstructionID(instr)
 	if id == "" { // e.graph., conditions or jumps (instructions and not values)
-		logrus.Tracef("[SSA PARSE INSTR] skipping instruction with invalid id: %v\n", instr)
+		// EVAL: logrus.Tracef("[SSA PARSE INSTR] skipping instruction with invalid id: %v\n", instr)
 		return nil
 	}
 
@@ -207,7 +207,7 @@ func parseInstr(app *app.App, graph *ssagraph.SSAGraph, instr ssa.Instruction, i
 
 	case *ssa.RunDefers, *ssa.Defer:
 		// TODO
-		logrus.Tracef("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
+		// EVAL: logrus.Tracef("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
 
 	default:
 		logrus.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
@@ -217,7 +217,7 @@ func parseInstr(app *app.App, graph *ssagraph.SSAGraph, instr ssa.Instruction, i
 }
 
 func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *ssagraph.SSANode {
-	logrus.Tracef("[SSA PARSE VALUE] %02d [%T] %v\n", instrIdx, val, val.String())
+	// EVAL: logrus.Tracef("[SSA PARSE VALUE] %02d [%T] %v\n", instrIdx, val, val.String())
 
 	if visited[val] {
 		return graph.GetNodeByName(val.Name())
@@ -238,16 +238,16 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	switch t := val.(type) {
 	case *ssa.Call:
 		for _, arg := range t.Call.Args {
-			logrus.Tracef("[SSA PARSE VALUE] [CALL: %s] ARG: %s\n", t.Name(), arg.Name())
+			// EVAL: logrus.Tracef("[SSA PARSE VALUE] [CALL: %s] ARG: %s\n", t.Name(), arg.Name())
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == arg.Name() {
-					logrus.Tracef("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
+					// EVAL: logrus.Tracef("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == arg.Name() {
-					logrus.Tracef("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
+					// EVAL: logrus.Tracef("[SSA PARSE VALUE] skipping arg edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -256,7 +256,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		}
 		if t.Call.IsInvoke() {
 			rcv := t.Call.Value
-			logrus.Tracef("[SSA PARSE VALUE] [CALL: %s] RCV: %s\n", t.Name(), rcv.Name())
+			// EVAL: logrus.Tracef("[SSA PARSE VALUE] [CALL: %s] RCV: %s\n", t.Name(), rcv.Name())
 			rcvNode := parseValue(graph, instr, instrIdx, rcv, visited)
 			graph.CreateAndAddNewEdge(rcvNode, node, ssagraph.EDGE_RECEIVER_ON_CALL, 0, "")
 		}
@@ -312,7 +312,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		// nothing to do
 
 	case *ssa.MakeMap:
-		logrus.Tracef("[SSA PARSE VALUE] MAKE MAP! %v\n", t)
+		// EVAL: logrus.Tracef("[SSA PARSE VALUE] MAKE MAP! %v\n", t)
 		// nothing to do
 
 	case *ssa.Global:
@@ -322,13 +322,13 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 		for _, phiEdge := range t.Edges {
 			for _, edges := range graph.GetEdgesFromNode(node) {
 				if edges.GetToNode().GetName() == phiEdge.Name() {
-					logrus.Tracef("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
+					// EVAL: logrus.Tracef("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
 			for _, edges := range graph.GetEdgesToNode(node) {
 				if edges.GetFromNode().GetName() == phiEdge.Name() {
-					logrus.Tracef("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
+					// EVAL: logrus.Tracef("[SSA PARSE VALUE] skipping phi edge for %s\n", t.Name())
 					continue
 				}
 			}
@@ -387,7 +387,7 @@ func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, v
 	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.ChangeInterface, *ssa.Index,
 		*ssa.TypeAssert, *ssa.ChangeType: // dsb_sn2
 		// TODO
-		logrus.Tracef("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+		// EVAL: logrus.Tracef("[SSA PARSE VALUE] ignoring ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
 
 	default:
 		logrus.Fatalf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
