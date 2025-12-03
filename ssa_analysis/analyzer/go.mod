@@ -26,6 +26,7 @@ require (
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app6/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app7/workflow v0.0.0 // indirect
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app8/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_appA/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_appB/workflow v0.0.0 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
@@ -94,6 +95,7 @@ require (
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring v0.0.0-00010101000000-000000000000
+	github.com/blueprint-uservices/blueprint/examples/synthetic_app8/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.3
@@ -285,3 +287,9 @@ replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7 => ../.
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7/workflow => ../../blueprint/examples/synthetic_app7/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring => ../../blueprint/examples/synthetic_app7/wiring
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app8 => ../../blueprint/examples/synthetic_app8
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app8/workflow => ../../blueprint/examples/synthetic_app8/workflow
+
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app8/wiring => ../../blueprint/examples/synthetic_app8/wiring

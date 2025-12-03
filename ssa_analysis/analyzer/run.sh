@@ -11,13 +11,13 @@
 set -e
 
 apps=(
-    digota
-    sockshop
-    eshopmicroservices
-    postnotification
-    dsb_socialnetwork
-    dsb_mediamicroservices
-    trainticket
+    #digota
+    #sockshop
+    #eshopmicroservices
+    #postnotification
+    #dsb_socialnetwork
+    #dsb_mediamicroservices
+    #trainticket
 )
 
 apps_synthetic=(
@@ -27,10 +27,11 @@ apps_synthetic=(
     #synthetic_app4
     #synthetic_app5
     #synthetic_app6
+    synthetic_app7
 )
 
 mode=""
-runs=5
+runs=1
 
 DATE=$(date +%F)
 METRICS_DIR="results/metrics/$DATE"

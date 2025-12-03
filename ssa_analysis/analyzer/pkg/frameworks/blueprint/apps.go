@@ -18,6 +18,7 @@ import (
 	specs_synthetic_app5 "github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring/specs"
 	specs_synthetic_app6 "github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring/specs"
 	specs_synthetic_app7 "github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring/specs"
+	specs_synthetic_app8 "github.com/blueprint-uservices/blueprint/examples/synthetic_app8/wiring/specs"
 	specs_synthetic_appA "github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring/specs"
 	specs_synthetic_appB "github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring/specs"
 	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/trainticket/wiring/specs"
@@ -55,6 +56,7 @@ var APPS_INFO = map[string]AppInfo{
 	"synthetic_app5":         {utils.APP_PATH_SYNTHETIC_APP5, specs_synthetic_app5.Docker},
 	"synthetic_app6":         {utils.APP_PATH_SYNTHETIC_APP6, specs_synthetic_app6.Docker},
 	"synthetic_app7":         {utils.APP_PATH_SYNTHETIC_APP7, specs_synthetic_app7.Docker},
+	"synthetic_app8":         {utils.APP_PATH_SYNTHETIC_APP8, specs_synthetic_app8.Docker},
 }
 
 func loadAppSpec(app string) cmdbuilder.SpecOption {

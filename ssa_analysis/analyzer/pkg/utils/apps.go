@@ -31,6 +31,7 @@ const (
 	APP_PATH_SYNTHETIC_APP5         = "synthetic_app5/workflow/synthetic_app5"
 	APP_PATH_SYNTHETIC_APP6         = "synthetic_app5/workflow/synthetic_app6"
 	APP_PATH_SYNTHETIC_APP7         = "synthetic_app5/workflow/synthetic_app7"
+	APP_PATH_SYNTHETIC_APP8         = "synthetic_app5/workflow/synthetic_app8"
 
 	BLUEPRINT_EXAMPLES_RELATIVE_PATH = "../../blueprint/examples"
 )
@@ -55,6 +56,7 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP5,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP6,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP7,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP8,
 }
 
 var APPS_NOSQL_SCHEMAS = map[string]string{

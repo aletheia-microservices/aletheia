@@ -26,12 +26,12 @@ NAME_MAP = {
     "sockshop":                 "sockshop",
     "trainticket":              "trainticket",
     "synthetic_app":            "synthetic_app",
-    "synthetic_app1":           "app1_avg_rpcs_uber",
-    "synthetic_app2":           "app2_high_call_depth",
-    "synthetic_app3":           "app3_avg_depth_alibaba",
-    "synthetic_app4":           "app4_avg_depth_alibaba",
-    "synthetic_app5":           "app5_high_fanout",
-    "synthetic_app6":           "app6_avg_depth_alibaba",
+    "synthetic_app1":           "1_high_call_depth",
+    "synthetic_app2":           "2_alibaba_avg_depth",
+    "synthetic_app3":           "3_alibaba_avg_depth",
+    "synthetic_app4":           "4_uber_avg_rpc_depth_total_rpc",
+    "synthetic_app5":           "5_high_fanout",
+    "synthetic_app6":           "6_alibaba_avg_depth_common_fanout",
 }
 
 apps_data = defaultdict(list)
