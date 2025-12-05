@@ -167,14 +167,14 @@
     "schemas": [
       {
         "name": "money",
-        "fields": [],
+        "fields": [
+          "inside_payment_db.money.UserID"
+        ],
         "constraints": []
       },
       {
         "name": "payment",
-        "fields": [
-          "inside_payment_db.money.UserID"
-        ],
+        "fields": [],
         "constraints": []
       }
     ]
@@ -212,7 +212,7 @@
           "FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name",
           "FOREIGN_KEY order_db.order.DocumentType REFERENCES contacts_db.contacts.DocumentType",
           "FOREIGN_KEY order_db.order.FromStation REFERENCES station_db.station.Name",
-          "FOREIGN_KEY order_db.order.Price REFERENCES price_db.priceConfig.BasicPriceRate",
+          "FOREIGN_KEY order_db.order.Price REFERENCES price_db.price_config.BasicPriceRate",
           "FOREIGN_KEY order_db.order.Price REFERENCES route_db.route.Distances[*]",
           "FOREIGN_KEY order_db.order.Price REFERENCES travel_db.tripResponse.PriceForConfortClass",
           "FOREIGN_KEY order_db.order.Price REFERENCES travel_db.tripResponse.PriceForEconomyClass",
@@ -228,15 +228,15 @@
     "schemas": [
       {
         "name": "money",
-        "fields": [],
-        "constraints": []
-      },
-      {
-        "name": "payment",
         "fields": [
           "payment_db.payment",
           "payment_db.payment.OrderID"
         ],
+        "constraints": []
+      },
+      {
+        "name": "payment",
+        "fields": [],
         "constraints": []
       }
     ]
@@ -245,17 +245,17 @@
     "name": "price_db",
     "schemas": [
       {
-        "name": "priceConfig",
+        "name": "price_config",
         "fields": [
-          "price_db.priceConfig",
-          "price_db.priceConfig.BasicPriceRate",
-          "price_db.priceConfig.FirstClassPriceRate",
-          "price_db.priceConfig.ID",
-          "price_db.priceConfig.RouteID",
-          "price_db.priceConfig.TrainType"
+          "price_db.price_config",
+          "price_db.price_config.BasicPriceRate",
+          "price_db.price_config.FirstClassPriceRate",
+          "price_db.price_config.ID",
+          "price_db.price_config.RouteID",
+          "price_db.price_config.TrainType"
         ],
         "constraints": [
-          "FOREIGN_KEY price_db.priceConfig.RouteID REFERENCES route_db.route.ID"
+          "FOREIGN_KEY price_db.price_config.RouteID REFERENCES route_db.route.ID"
         ]
       }
     ]

@@ -5,7 +5,7 @@
 delete: AdminBasicInfoService.DeleteContact() ... ContactsService.Delete() ... contacts_db.contacts.DeleteOne()
 	missing cascade #1: database={order_db}, entity={order}, pending_fields={ContactsDocumentNumber, ContactsName, DocumentType}
 
-delete: AdminBasicInfoService.DeletePrice() ... PriceService.DeletePriceConfig() ... price_db.priceConfig.DeleteOne()
+delete: AdminBasicInfoService.DeletePrice() ... PriceService.DeletePriceConfig() ... price_db.price_config.DeleteOne()
 	missing cascade #2: database={order_db}, entity={order}, pending_fields={Price}
 
 delete: AdminBasicInfoService.DeleteStation() ... StationService.DeleteStation() ... station_db.station.DeleteOne()
@@ -20,7 +20,7 @@ delete: AdminOrderService.DeleteOrder() ... OrderService.DeleteOrder() ... order
 
 delete: AdminRouteService.DeleteRoute() ... RouteService.DeleteRoute() ... route_db.route.DeleteOne()
 	missing cascade #9: database={order_db}, entity={order}, pending_fields={Price}
-	missing cascade #10: database={price_db}, entity={priceConfig}, pending_fields={RouteID}
+	missing cascade #10: database={price_db}, entity={price_config}, pending_fields={RouteID}
 
 delete: AdminTravelService.DeleteTravel() ... TravelService.DeleteTrip() ... travel_db.trip.DeleteOne()
 	missing cascade #11: database={order_db}, entity={order}, pending_fields={Price, TrainNumber, TravelTime}

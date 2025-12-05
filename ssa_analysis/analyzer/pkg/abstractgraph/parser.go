@@ -111,6 +111,7 @@ func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, func
 			edge.AddArgument(arg)
 		}
 		graph.AddEdge(edge)
+		graph.rpcs++
 	}
 
 	if !created && node != nil && node.IsParsed() {

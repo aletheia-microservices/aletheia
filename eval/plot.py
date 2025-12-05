@@ -3,23 +3,32 @@ import seaborn as sns
 import numpy as np
 import yaml
 import argparse
+import time
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--synthetic", action="store_true", help="enable synthetic app")
 args = parser.parse_args()
 
-if args.synthetic:
-  INTPUT_FILENAME = "results/averages_synthetic.yaml"
-else:
-  INTPUT_FILENAME = "results/averages.yaml"
+unix_ts = int(time.time())
+
+os.makedirs("plots", exist_ok=True)
+os.makedirs("plots/versions", exist_ok=True)
 
 if args.synthetic:
-  OUT_FILENAME = "plots/plot_synthetic.png"
+  INPUT_FILE = "results/averages-synthetic.yaml"
 else:
-  OUT_FILENAME = "plots/plot.png"
+  INPUT_FILE = "results/averages-apps.yaml"
+
+if args.synthetic:
+  OUTPUT_FILE1 = f"plots/plot-synthetic.png"
+  OUTPUT_FILE2 = f"plots/versions/plot-synthetic-{unix_ts}.png"
+else:
+  OUTPUT_FILE1 = f"plots/plot-apps.png"
+  OUTPUT_FILE2 = f"plots/versions/plot-apps-{unix_ts}.png"
 
 # load yaml data
-with open(INTPUT_FILENAME, "r") as f:
+with open(INPUT_FILE, "r") as f:
   data = yaml.safe_load(f)
 
 # weights
@@ -28,6 +37,7 @@ ds_weight = data["weights"]["ds_weight"]
 
 # actual results
 apps = [app["app"] for app in data["apps"]]
+rpcs = np.array([app["rpcs"] for app in data["apps"]])
 ms_counts = np.array([app["ms_count"] for app in data["apps"]])
 ds_counts = np.array([app["ds_count"] for app in data["apps"]])
 parsing_s = np.array([app["parsing_s"] for app in data["apps"]])
@@ -101,7 +111,11 @@ for i, ax in enumerate(axes):
     if i != 0:
       continue
     # secondary y-axis for #ms
-    ax2 = ax.twinx()
+    if args.synthetic:
+      ax2 = ax.twinx()
+      ax2.set_yscale("log")
+    else:
+      ax2 = ax.twinx()
     # plot #ms
     ax2.plot(
         x, ms_counts[order],
@@ -116,11 +130,22 @@ for i, ax in enumerate(axes):
         markersize=3, markerfacecolor='white', markeredgewidth=0.8,
         color='black', label='# datastores', zorder=5
     )
+    if args.synthetic:
+      # plot #rpcs
+      ax2.plot(
+          x, rpcs[order],
+          marker='^', linestyle='--', linewidth=1,
+          markersize=3, markerfacecolor='white', markeredgewidth=0.8,
+          color='black', label='# rpcs', zorder=5
+    )
     # shared y-axis scaling
-    upper_lim = max(ms_counts.max(), ds_counts.max()) * 1.2
+    if args.synthetic:
+      upper_lim = max(ms_counts.max(), ds_counts.max(), rpcs.max()) * 2.2
+    else:
+      upper_lim = max(ms_counts.max(), ds_counts.max(), rpcs.max()) * 1.2
     ax2.set_ylim(0, upper_lim)
     ax2.tick_params(axis='y', labelsize=6)
-    ax2.set_ylabel('# microservices / \n# datastores', fontsize=7)
+    ax2.set_ylabel('# microservices / \n# datastores / # rpcs', fontsize=7)
     # one combined legend
     ax2.legend(loc='upper left', fontsize=6)
 
@@ -135,10 +160,18 @@ axes[-1].set_xticklabels(xtick_labels, rotation=35, ha="right", rotation_mode="a
 for ax in axes[:-1]:
     ax.tick_params(labelbottom=False)
 
+if args.synthetic:
+  axes[0].set_yscale("log")
+  axes[1].set_yscale("log")
+  axes[2].set_yscale("log")
+  axes[3].set_yscale("log")
+
 plt.tight_layout()
 # smaller hspace => less vertical gap
 plt.subplots_adjust(left=0.12, hspace=0.40)
 # smaller left => left border
 plt.subplots_adjust(left=0.12)
-plt.savefig(OUT_FILENAME)
-print(f"[INFO] saved plot to {OUT_FILENAME}")
+plt.savefig(OUTPUT_FILE1)
+print(f"[INFO] saved plot to {OUTPUT_FILE1}")
+plt.savefig(OUTPUT_FILE2)
+print(f"[INFO] saved plot to {OUTPUT_FILE2}")

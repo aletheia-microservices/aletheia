@@ -8,7 +8,7 @@ delete: AdminBasicInfoService.DeleteContact() ... ContactsService.Delete() ... c
 	write #2: Dashboard.PreserveTicketConfirm() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
 		- database={order_db}, entity={order}, written_fields={ContactsDocumentNumber, ContactsName, DocumentType}
 
-delete: AdminBasicInfoService.DeletePrice() ... PriceService.DeletePriceConfig() ... price_db.priceConfig.DeleteOne()
+delete: AdminBasicInfoService.DeletePrice() ... PriceService.DeletePriceConfig() ... price_db.price_config.DeleteOne()
 	write #3: AdminOrderService.AddOrder() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
 		- database={order_db}, entity={order}, written_fields={Price}
 	write #4: Dashboard.PreserveTicketConfirm() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
@@ -27,8 +27,8 @@ delete: AdminRouteService.DeleteRoute() ... RouteService.DeleteRoute() ... route
 		- database={order_db}, entity={order}, written_fields={Price}
 	write #9: Dashboard.PreserveTicketConfirm() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
 		- database={order_db}, entity={order}, written_fields={Price}
-	write #10: AdminBasicInfoService.AddPrice() ... PriceService.CreateNewPriceConfig() ... price_db.priceConfig.InsertOne()
-		- database={price_db}, entity={priceConfig}, written_fields={RouteID}
+	write #10: AdminBasicInfoService.AddPrice() ... PriceService.CreateNewPriceConfig() ... price_db.price_config.InsertOne()
+		- database={price_db}, entity={price_config}, written_fields={RouteID}
 
 delete: AdminTravelService.DeleteTravel() ... TravelService.DeleteTrip() ... travel_db.trip.DeleteOne()
 	write #11: AdminOrderService.AddOrder() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
@@ -43,7 +43,7 @@ delete: AdminUserService.DeleteUser() ... UserService.DeleteUser() ... user_db.u
 		- database={order_db}, entity={order}, written_fields={AccountID}
 	write #15: Dashboard.PreserveTicketConfirm() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
 		- database={order_db}, entity={order}, written_fields={AccountID}
-	
+
 delete: Dashboard.DeleteContacts() ... ContactsService.Delete() ... contacts_db.contacts.DeleteOne()
 	write #16: AdminOrderService.AddOrder() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
 		- database={order_db}, entity={order}, written_fields={ContactsDocumentNumber, ContactsName, DocumentType}

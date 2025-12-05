@@ -3,6 +3,7 @@ import yaml
 from collections import defaultdict
 import argparse
 from datetime import date
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--synthetic", action="store_true", help="enable evaluation mode")
@@ -10,28 +11,38 @@ parser.add_argument("--date", type=str, default=str(date.today()), help="date in
 
 args = parser.parse_args()
 
-INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}"
-if args.synthetic:
-    INPUT_DIR += "/synthetic"
+unix_ts = int(time.time())
+
+os.makedirs("results", exist_ok=True)
+os.makedirs("results/versions", exist_ok=True)
 
 if args.synthetic:
-    OUTPUT_FILE = "results/averages_synthetic.yaml"
+    INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}/synthetic"
 else:
-    OUTPUT_FILE = "results/averages.yaml"
+    INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}"
+
+if args.synthetic:
+    OUTPUT_FILE1 = f"results/averages-synthetic.yaml"
+    OUTPUT_FILE2 = f"results/versions/averages-synthetic-{unix_ts}.yaml"
+else:
+    OUTPUT_FILE1 = f"results/averages-apps.yaml"
+    OUTPUT_FILE2 = f"results/versions/averages-apps-{unix_ts}.yaml"
 
 NAME_MAP = {
-    "dsb_mediamicroservices":   "dsb_mediamicroservices",
-    "dsb_socialnetwork":        "dsb_socialnetwork",
-    "postnotification":         "postnotification",
-    "sockshop":                 "sockshop",
-    "trainticket":              "trainticket",
+    "dsb_mediamicroservices":   "MediaMicroservices",
+    "dsb_socialnetwork":        "SocialNetwork",
+    "postnotification":         "PostNotification",
+    "sockshop":                 "SockShop",
+    "trainticket":              "TrainTicket",
+    "eshopmicroservices":       "EShopMicroservices",
+    "digota":                   "Digota",
     "synthetic_app":            "synthetic_app",
-    "synthetic_app1":           "1_high_call_depth",
-    "synthetic_app2":           "2_alibaba_avg_depth",
-    "synthetic_app3":           "3_alibaba_avg_depth",
-    "synthetic_app4":           "4_uber_avg_rpc_depth_total_rpc",
-    "synthetic_app5":           "5_high_fanout",
-    "synthetic_app6":           "6_alibaba_avg_depth_common_fanout",
+    "synthetic_app1":           "App 1",
+    "synthetic_app2":           "App 2",
+    "synthetic_app3":           "App 3",
+    "synthetic_app4":           "App 4",
+    "synthetic_app5":           "App 5",
+    "synthetic_app6":           "App 6",
 }
 
 apps_data = defaultdict(list)
@@ -97,6 +108,7 @@ for (app, ms_count, ds_count), avg in results.items():
         "iterations":   len(apps_data[(app, ms_count, ds_count)]),
         "ms_count":     int(avg["ms_count"]),
         "ds_count":     int(avg["ds_count"]),
+        "rpcs":         int(avg["rpcs"]),
         "total_s":      float(f"{avg['total_s']:.2f}"),
         "parsing_s":    float(f"{avg['parsing_s']:.2f}"),
         "schema_s":     float(f"{avg['schema_s']:.4f}"),
@@ -106,7 +118,7 @@ for (app, ms_count, ds_count), avg in results.items():
 
 ordered_results = sorted(ordered_results, key=lambda x: x["app"])
 
-with open(OUTPUT_FILE, "w") as out:
+with open(OUTPUT_FILE1, "w") as out:
     yaml.dump({"weights": weights}, out, sort_keys=False)
     out.write("\n")
 
@@ -115,4 +127,15 @@ with open(OUTPUT_FILE, "w") as out:
         yaml.dump([entry], out, sort_keys=False)
         out.write("\n")
 
-print(f"[INFO] Saved averaged results to {OUTPUT_FILE}")
+print(f"[INFO] Saved averaged results to {OUTPUT_FILE1}")
+
+with open(OUTPUT_FILE2, "w") as out:
+    yaml.dump({"weights": weights}, out, sort_keys=False)
+    out.write("\n")
+
+    out.write("apps:\n")
+    for entry in ordered_results:
+        yaml.dump([entry], out, sort_keys=False)
+        out.write("\n")
+
+print(f"[INFO] Saved averaged results to {OUTPUT_FILE2}")
