@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = 4
     end
 
-    vm.vm.synced_folder "ssa_analysis", "/home/vagrant/ssa_analysis",
+    vm.vm.synced_folder "ssa-analysis", "/home/vagrant/ssa-analysis",
         mount_options: ["dmode=775", "fmode=775"]
 
     vm.vm.synced_folder "blueprint", "/home/vagrant/blueprint",
@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
         sudo rm -r go1.22.4.linux-arm64.tar.gz
         echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.profile
         echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
-        cd ssa_analysis/analyzer
+        cd ssa-analysis/analyzer
         go mod tidy
     SHELL
   end

@@ -159,98 +159,98 @@ require (
 	golang.org/x/sync v0.11.0 // indirect
 )
 
-replace github.com/blueprint-uservices/blueprint/plugins => ./blueprint/plugins
+replace github.com/blueprint-uservices/blueprint/plugins => ../../blueprint/plugins
 
-replace github.com/blueprint-uservices/blueprint/blueprint => ./blueprint/blueprint
+replace github.com/blueprint-uservices/blueprint/blueprint => ../../blueprint/blueprint
 
-replace github.com/blueprint-uservices/blueprint/runtime => ./blueprint/runtime
+replace github.com/blueprint-uservices/blueprint/runtime => ../../blueprint/runtime
 
-replace github.com/blueprint-uservices/blueprint/examples/postnotification => ./blueprint/examples/postnotification
+replace github.com/blueprint-uservices/blueprint/examples/postnotification => ../../blueprint/examples/postnotification
 
-replace github.com/blueprint-uservices/blueprint/examples/postnotification/workflow => ./blueprint/examples/postnotification/workflow
+replace github.com/blueprint-uservices/blueprint/examples/postnotification/workflow => ../../blueprint/examples/postnotification/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/postnotification/wiring => ./blueprint/examples/postnotification/wiring
+replace github.com/blueprint-uservices/blueprint/examples/postnotification/wiring => ../../blueprint/examples/postnotification/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity => ./blueprint/examples/app_constraints_referential_integrity
+replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity => ../../blueprint/examples/app_constraints_referential_integrity
 
-replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/workflow => ./blueprint/examples/app_constraints_referential_integrity/workflow
+replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/workflow => ../../blueprint/examples/app_constraints_referential_integrity/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring => ./blueprint/examples/app_constraints_referential_integrity/wiring
+replace github.com/blueprint-uservices/blueprint/examples/app_constraints_referential_integrity/wiring => ../../blueprint/examples/app_constraints_referential_integrity/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/employee_app => ./blueprint/examples/employee_app
+replace github.com/blueprint-uservices/blueprint/examples/employee_app => ../../blueprint/examples/employee_app
 
-replace github.com/blueprint-uservices/blueprint/examples/employee_app/workflow => ./blueprint/examples/employee_app/workflow
+replace github.com/blueprint-uservices/blueprint/examples/employee_app/workflow => ../../blueprint/examples/employee_app/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/employee_app/wiring => ./blueprint/examples/employee_app/wiring
+replace github.com/blueprint-uservices/blueprint/examples/employee_app/wiring => ../../blueprint/examples/employee_app/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/digota => ./blueprint/examples/digota
+replace github.com/blueprint-uservices/blueprint/examples/digota => ../../blueprint/examples/digota
 
-replace github.com/blueprint-uservices/blueprint/examples/digota/workflow => ./blueprint/examples/digota/workflow
+replace github.com/blueprint-uservices/blueprint/examples/digota/workflow => ../../blueprint/examples/digota/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/digota/wiring => ./blueprint/examples/digota/wiring
+replace github.com/blueprint-uservices/blueprint/examples/digota/wiring => ../../blueprint/examples/digota/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app => ./blueprint/examples/coupons_app
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app => ../../blueprint/examples/coupons_app
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app/workflow => ./blueprint/examples/coupons_app/workflow
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app/workflow => ../../blueprint/examples/coupons_app/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring => ./blueprint/examples/coupons_app/wiring
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app/wiring => ../../blueprint/examples/coupons_app/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql => ./blueprint/examples/coupons_app_sql
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql => ../../blueprint/examples/coupons_app_sql
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/workflow => ./blueprint/examples/coupons_app_sql/workflow
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/workflow => ../../blueprint/examples/coupons_app_sql/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring => ./blueprint/examples/coupons_app_sql/wiring
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_sql/wiring => ../../blueprint/examples/coupons_app_sql/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache => ./blueprint/examples/coupons_app_cache
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache => ../../blueprint/examples/coupons_app_cache
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/workflow => ./blueprint/examples/coupons_app_cache/workflow
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/workflow => ../../blueprint/examples/coupons_app_cache/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring => ./blueprint/examples/coupons_app_cache/wiring
+replace github.com/blueprint-uservices/blueprint/examples/coupons_app_cache/wiring => ../../blueprint/examples/coupons_app_cache/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/shopping_app => ./blueprint/examples/shopping_app
+replace github.com/blueprint-uservices/blueprint/examples/shopping_app => ../../blueprint/examples/shopping_app
 
-replace github.com/blueprint-uservices/blueprint/examples/shopping_app/workflow => ./blueprint/examples/shopping_app/workflow
+replace github.com/blueprint-uservices/blueprint/examples/shopping_app/workflow => ../../blueprint/examples/shopping_app/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/shopping_app/wiring => ./blueprint/examples/shopping_app/wiring
+replace github.com/blueprint-uservices/blueprint/examples/shopping_app/wiring => ../../blueprint/examples/shopping_app/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/shopping_simple => ./blueprint/examples/shopping_simple
+replace github.com/blueprint-uservices/blueprint/examples/shopping_simple => ../../blueprint/examples/shopping_simple
 
-replace github.com/blueprint-uservices/blueprint/examples/shopping_simple/workflow => ./blueprint/examples/shopping_simple/workflow
+replace github.com/blueprint-uservices/blueprint/examples/shopping_simple/workflow => ../../blueprint/examples/shopping_simple/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/shopping_simple/wiring => ./blueprint/examples/shopping_simple/wiring
+replace github.com/blueprint-uservices/blueprint/examples/shopping_simple/wiring => ../../blueprint/examples/shopping_simple/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/sockshop2 => ./blueprint/examples/sockshop2
+replace github.com/blueprint-uservices/blueprint/examples/sockshop2 => ../../blueprint/examples/sockshop2
 
-replace github.com/blueprint-uservices/blueprint/examples/sockshop2/workflow => ./blueprint/examples/sockshop2/workflow
+replace github.com/blueprint-uservices/blueprint/examples/sockshop2/workflow => ../../blueprint/examples/sockshop2/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/sockshop2/wiring => ./blueprint/examples/sockshop2/wiring
+replace github.com/blueprint-uservices/blueprint/examples/sockshop2/wiring => ../../blueprint/examples/sockshop2/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/train_ticket => ./blueprint/examples/train_ticket
+replace github.com/blueprint-uservices/blueprint/examples/train_ticket => ../../blueprint/examples/train_ticket
 
-replace github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow => ./blueprint/examples/train_ticket/workflow
+replace github.com/blueprint-uservices/blueprint/examples/train_ticket/workflow => ../../blueprint/examples/train_ticket/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/train_ticket/wiring => ./blueprint/examples/train_ticket/wiring
+replace github.com/blueprint-uservices/blueprint/examples/train_ticket/wiring => ../../blueprint/examples/train_ticket/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel => ./blueprint/examples/dsb_hotel
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel => ../../blueprint/examples/dsb_hotel
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workflow => ./blueprint/examples/dsb_hotel/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workflow => ../../blueprint/examples/dsb_hotel/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring => ./blueprint/examples/dsb_hotel/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring => ../../blueprint/examples/dsb_hotel/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_sn => ./blueprint/examples/dsb_sn
+replace github.com/blueprint-uservices/blueprint/examples/dsb_sn => ../../blueprint/examples/dsb_sn
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow => ./blueprint/examples/dsb_sn/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/workflow => ../../blueprint/examples/dsb_sn/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring => ./blueprint/examples/dsb_sn/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_sn/wiring => ../../blueprint/examples/dsb_sn/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices => ./blueprint/examples/dsb_mediamicroservices
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices => ../../blueprint/examples/dsb_mediamicroservices
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ./blueprint/examples/dsb_mediamicroservices/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ../../blueprint/examples/dsb_mediamicroservices/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ./blueprint/examples/dsb_mediamicroservices/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ../../blueprint/examples/dsb_mediamicroservices/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/foobar => ./blueprint/examples/foobar
+replace github.com/blueprint-uservices/blueprint/examples/foobar => ../../blueprint/examples/foobar
 
-replace github.com/blueprint-uservices/blueprint/examples/foobar/workflow => ./blueprint/examples/foobar/workflow
+replace github.com/blueprint-uservices/blueprint/examples/foobar/workflow => ../../blueprint/examples/foobar/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/foobar/wiring => ./blueprint/examples/foobar/wiring
+replace github.com/blueprint-uservices/blueprint/examples/foobar/wiring => ../../blueprint/examples/foobar/wiring

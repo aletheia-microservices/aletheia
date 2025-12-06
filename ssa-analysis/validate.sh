@@ -25,7 +25,7 @@ fi
 appname=$1
 type=$2
 basedir="."
-outputdir="${basedir}/ssa_analysis/analyzer/output/${appname}"
+outputdir="${basedir}/analyzer/output/${appname}"
 
 if [ "$type" = "analysis" ]; then
   echo

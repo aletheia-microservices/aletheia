@@ -12,7 +12,7 @@ parser.add_argument("--synthetic", action="store_true", help="enable synthetic m
 parser.add_argument("--date", type=str, default=str(date.today()), help="date in YYYY-MM-DD format (default: today)")
 args = parser.parse_args()
 
-INPUT_DIR = Path(f"../ssa_analysis/analyzer/results/metrics/{args.date}")
+INPUT_DIR = Path(f"../ssa-analysis/analyzer/results/metrics/{args.date}")
 if args.synthetic:
     INPUT_DIR = INPUT_DIR / "synthetic"
 else:
