@@ -223,7 +223,7 @@ func MergeTraces(obj *AbstractObject, otherTracesMap map[string][]*AbstractTrace
 //
 // if (a) and (b), then (c)
 // (c) X references Z (NEW)
-func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, current *backends.Constraint) {
+func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, schema *backends.Schema, current *backends.Constraint) {
 	if !config.Global.EnableTransitiveReferences {
 		return
 	}
@@ -234,47 +234,45 @@ func updateTransitiveReferencesTriggeredByCurrent(graph *AbstractCallGraph, curr
 
 	// EVAL: logrus.Tracef("[TRANSITIVE REFS] current: %s\n", current.String())
 
-	for _, db := range graph.app.GetAllDatabases() {
-		for _, schema := range db.GetAllSchemas() {
-			var toDelete []*backends.Constraint
-			var toAdd []*backends.Constraint
-			for _, old := range schema.GetAllForeignKeyConstraints() {
-				if old.IsMandatory() {
-					if !config.Global.UpdateTransitiveReferencesTriggeredByCurrentOnMandatory {
-						continue
-					}
-				}
-				if old.GetFieldAt(1) == current.GetFieldAt(0) {
-					if current.GetFieldAt(0).GetDatabase() == old.GetFieldAt(1).GetDatabase() {
-						continue
-					}
-
-					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, old.GetFieldAt(0), current.GetFieldAt(1))
-					new.SetTransitive()
-					new.CopyMandatory(current)
-
-					if config.Global.DeleteOldOnTransitiveReferences {
-						toDelete = append(toDelete, old)
-						// EVAL: logrus.Tracef("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
-					}
-					toAdd = append(toAdd, new)
-					// EVAL: logrus.Tracef("\t[TRANSITIVE REFS] to add: %s\n", new.String())
+	for otherSchema := range schema.GetAllSchemasRefBy() {
+		var toDelete []*backends.Constraint
+		var toAdd []*backends.Constraint
+		for _, old := range otherSchema.GetAllForeignKeyConstraints() {
+			if old.IsMandatory() {
+				if !config.Global.UpdateTransitiveReferencesTriggeredByCurrentOnMandatory {
+					continue
 				}
 			}
-
-			if config.Global.DeleteOldOnTransitiveReferences {
-				for _, constraint := range toDelete {
-					constraint.GetFieldAt(0).RemoveConstraint(constraint)
-					schema.RemoveConstraint(constraint)
+			if old.GetFieldAt(1) == current.GetFieldAt(0) {
+				if current.GetFieldAt(0).GetDatabase() == old.GetFieldAt(1).GetDatabase() {
+					continue
 				}
-			}
 
-			for _, constraint := range toAdd {
-				constraint.GetFieldAt(0).AddConstraint(constraint)
-				schema.AddConstraint(constraint)
+				new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, old.GetFieldAt(0), current.GetFieldAt(1))
+				new.SetTransitive()
+				new.CopyMandatory(current)
+
+				if config.Global.DeleteOldOnTransitiveReferences {
+					toDelete = append(toDelete, old)
+					// EVAL: logrus.Tracef("\t[TRANSITIVE REFS] to delete: %s\n", old.String())
+				}
+				toAdd = append(toAdd, new)
+				// EVAL: logrus.Tracef("\t[TRANSITIVE REFS] to add: %s\n", new.String())
 			}
 		}
+		if config.Global.DeleteOldOnTransitiveReferences {
+			for _, constraint := range toDelete {
+				constraint.GetFieldAt(0).RemoveConstraint(constraint)
+				constraint.GetFieldAt(0).GetSchema().RemoveConstraint(constraint)
+			}
+		}
+	
+		for _, constraint := range toAdd {
+			constraint.GetFieldAt(0).AddConstraint(constraint)
+			schema.AddConstraint(constraint)
+		}
 	}
+
 }
 
 // RULE:
@@ -288,43 +286,36 @@ func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.
 		return false
 	}
 
-	// use memoization to avoid duplicates
-	type constraintPair struct {
-		fromField *backends.Field
-		toField   *backends.Field
-	}
-	var seen = make(map[constraintPair]bool)
-	var toAdd []*backends.Constraint
+	var seen = make(map[[2]*backends.Field]bool)
 
-	for _, current := range field2.GetConstraintForeignKey() {
+	for _, current := range field2.GetConstraintsForeignKeys() {
 		field3 := current.GetFieldAt(1)
 		if field2 != field3 {
-			if c := field3.GetConstraintForeignKeyToField(field1); c != nil {
+			if c := field3.GetSchema().GetForeignKeyForPair(field3, field1); c != nil {
 				// skip since it already exists the other way around
 				continue
 			} else if field1.GetDatabase() == field3.GetDatabase() {
 				continue
 			} else {
-				if _, exists := seen[constraintPair{fromField: field1, toField: field3}]; !exists {
+				pair := [2]*backends.Field{field1, field3}
+				if _, exists := seen[pair]; !exists {
 					new := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field3)
 					if writewrite && current.IsMandatory() {
 						new.EnableMandatory(reqIdx)
 					} else {
 						new.DisableMandatory(reqIdx)
 					}
-					toAdd = append(toAdd, new)
-					seen[constraintPair{fromField: field1, toField: field3}] = true
+					new.SetTransitive()
+					if ok := field1.GetSchema().AddConstraint(new); ok {
+						field1.AddConstraint(new)
+						// EVAL: logrus.Tracef("[TRANSITIVE] added new transitive constraint: %s\n", new.String())
+					}
+					seen[pair] = true
 				}
 			}
 		}
 	}
-	for _, new := range toAdd {
-		new.SetTransitive()
-		field1.AddConstraint(new)
-		field1.GetSchema().AddConstraint(new)
-		// EVAL: logrus.Tracef("[TRANSITIVE] added new transitive constraint: %s\n", new.String())
-	}
-	return len(toAdd) > 0
+	return len(seen) > 0
 }
 
 func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping, readOnly bool) bool {
@@ -444,8 +435,9 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			constraint.EnableMandatory(reqIdx)
 			field2_write.AddConstraint(constraint)
-			db2_write.GetLastSchema().AddConstraint(constraint)
-			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+			schema := db2_write.GetLastSchema()
+			schema.AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, schema, constraint)
 			modified = true
 			// EVAL: logrus.Tracef("\t\t[ITERATOR] [WRITE-WRITE] added new constraint: %s\n", constraint)
 		}
@@ -480,8 +472,9 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			constraint.DisableMandatory(reqIdx)
 			field2_write.AddConstraint(constraint)
-			db2_write.GetLastSchema().AddConstraint(constraint)
-			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+			schema := db2_write.GetLastSchema()
+			schema.AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, schema, constraint)
 			modified = true
 			// EVAL: logrus.Tracef("\t\t[ITERATOR] [WRITE-READ] added new constraint: %s\n", constraint)
 		}
@@ -540,8 +533,9 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			constraint.DisableMandatory(reqIdx)
 			field1_write.AddConstraint(constraint)
-			db1_write.GetLastSchema().AddConstraint(constraint)
-			updateTransitiveReferencesTriggeredByCurrent(graph, constraint)
+			schema := db1_write.GetLastSchema()
+			schema.AddConstraint(constraint)
+			updateTransitiveReferencesTriggeredByCurrent(graph, schema, constraint)
 			modified = true
 			// EVAL: logrus.Tracef("\t\t[ITERATOR] [READ-WRITE] [2] added new constraint: %s\n", constraint)
 		}

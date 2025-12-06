@@ -18,12 +18,12 @@ func NewField(path string, database *Database, schema *Schema) *Field {
 }
 
 func (field *Field) RemoveConstraint(old *Constraint) {
-    for i, c := range field.constraints {
-        if c == old {
-            field.constraints = append(field.constraints[:i], field.constraints[i+1:]...)
-            return
-        }
-    }
+	for i, c := range field.constraints {
+		if c == old {
+			field.constraints = append(field.constraints[:i], field.constraints[i+1:]...)
+			return
+		}
+	}
 }
 
 func (field *Field) GetPath() string {
@@ -93,7 +93,7 @@ func (field *Field) IsUnique() bool {
 	return false
 }
 
-func (field *Field) GetConstraintForeignKey() []*Constraint {
+func (field *Field) GetConstraintsForeignKeys() []*Constraint {
 	var constraints []*Constraint
 	for _, constraint := range field.constraints {
 		if constraint.t == CONSTRAINT_FOREIGN_KEY {

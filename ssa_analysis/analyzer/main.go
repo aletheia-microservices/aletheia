@@ -276,6 +276,7 @@ func main() {
 			App:              app.GetName(),
 			NumMicroservices: app.NumberOfMicroservices(),
 			NumDatastores:    app.NumberOfDatastores(),
+			Rpcs:             absgraph.GetNumberOfCumulativeCalls(),
 			Total:            elapsed_total.Seconds(),
 			Parsing:          elapsed_parsing.Seconds(),
 			Schema:           elapsed_schema.Seconds(),
@@ -291,6 +292,7 @@ type AnalysisTimes struct {
 	App              string  `yaml:"app"`
 	NumMicroservices int     `yaml:"ms_count"`
 	NumDatastores    int     `yaml:"ds_count"`
+	Rpcs             int     `yaml:"rpcs"`
 	Total            float64 `yaml:"total_s"`
 	Parsing          float64 `yaml:"parsing_s"`
 	Schema           float64 `yaml:"schema_s"`

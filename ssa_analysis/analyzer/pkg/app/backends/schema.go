@@ -11,6 +11,10 @@ type Schema struct {
 	fields      map[string]*Field
 	constraints []*Constraint
 	database    *Database
+	// index: (field0, field1) -> constraint
+	fkIndex map[[2]*Field]*Constraint
+	// no need to remove if referenced is deleted!
+	refBy   map[*Schema]bool
 }
 
 func NewSchema(name string, database *Database) *Schema {
@@ -18,6 +22,8 @@ func NewSchema(name string, database *Database) *Schema {
 		name:     name,
 		fields:   make(map[string]*Field),
 		database: database,
+		fkIndex:  make(map[[2]*Field]*Constraint),
+		refBy:    make(map[*Schema]bool),
 	}
 }
 
@@ -144,36 +150,58 @@ func (schema *Schema) RemoveConstraint(old *Constraint) {
 	for i, c := range schema.constraints {
 		if c == old {
 			schema.constraints = append(schema.constraints[:i], schema.constraints[i+1:]...)
+			if old.IsForeignKey() {
+				delete(schema.fkIndex, [2]*Field{old.GetFieldAt(0), old.GetFieldAt(1)})
+			}
 			return
 		}
 	}
 }
 
-func (schema *Schema) AddConstraint(newConstraint *Constraint) {
-	for _, existingConstraint := range schema.getConstraintsForeignKey() {
-		if existingConstraint.GetFieldAt(0) == newConstraint.GetFieldAt(0) &&
-			existingConstraint.GetFieldAt(1) == newConstraint.GetFieldAt(1) {
-
-			if existingConstraint.mandatory == newConstraint.mandatory {
-				// ignore if constraint already exists
-				return
-			} else {
-				for reqIdx, mandatory := range newConstraint.reqIdxToMandatory {
-					if ok, m := existingConstraint.reqIdxToMandatory[reqIdx]; ok {
-						// upgrade existing constraint to mandatory set to true
-						if !m {
-							existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
-						}
-					} else {
-						// add new entry with mandatory set to true
-						existingConstraint.reqIdxToMandatory[reqIdx] = mandatory
-					}
-				}
-				return
-			}
-		}
+func (schema *Schema) GetForeignKeyForPair(f1 *Field, f2 *Field) *Constraint {
+	key := [2]*Field{f1, f2}
+	if existing, ok := schema.fkIndex[key]; ok {
+		return existing
 	}
+	return nil
+}
+
+func (schema *Schema) AddConstraint(newConstraint *Constraint) bool {
+	if newConstraint.IsForeignKey() {
+		key := [2]*Field{
+			newConstraint.GetFieldAt(0),
+			newConstraint.GetFieldAt(1),
+		}
+
+		if existing, ok := schema.fkIndex[key]; ok {
+			// same fields, merge semantics
+			if existing.mandatory == newConstraint.mandatory {
+				// identical, nothing to do
+				return false
+			}
+
+			for reqIdx, mandatory := range newConstraint.reqIdxToMandatory {
+				if cur, ok := existing.reqIdxToMandatory[reqIdx]; !ok || (!cur && mandatory) {
+					// either new index or upgrade false -> true
+					existing.reqIdxToMandatory[reqIdx] = mandatory
+				}
+			}
+			return false
+		}
+		schema.fkIndex[key] = newConstraint
+		newConstraint.GetFieldAt(1).GetSchema().refBy[schema] = true
+	}
+
 	schema.constraints = append(schema.constraints, newConstraint)
+	return true
+}
+
+func (schema *Schema) AddSchemaToRefBy(other *Schema) {
+	schema.refBy[other] = true
+}
+
+func (schema *Schema) GetAllSchemasRefBy() map[*Schema]bool {
+	return schema.refBy
 }
 
 func (schema *Schema) GetAllConstraints() []*Constraint {
