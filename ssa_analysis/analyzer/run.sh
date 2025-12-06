@@ -21,13 +21,11 @@ apps=(
 )
 
 apps_synthetic=(
-    synthetic_app1
-    synthetic_app2
-    synthetic_app3
-    synthetic_app4
-    synthetic_app5
-    #synthetic_app6
-    #synthetic_app7
+    #synthetic_app1
+    #synthetic_app2
+    #synthetic_app3
+    #synthetic_app4
+    #synthetic_app5
 )
 
 mode=""
@@ -36,6 +34,7 @@ runs=5
 DATE=$(date +%F)
 METRICS_DIR="results/metrics/$DATE"
 mkdir -p "$METRICS_DIR"
+mkdir -p "$METRICS_DIR/apps"
 mkdir -p "$METRICS_DIR/synthetic"
 
 if [[ $# -eq 1 ]]; then
@@ -67,9 +66,9 @@ for app in "${apps[@]}"; do
     for i in $(seq 1 $runs); do
         echo "=== Run $i/$runs"
         timestamp=$(date +%s)
-        output_file="$METRICS_DIR/${app}.${timestamp}.txt"
+        output_file="$METRICS_DIR/apps/${app}.${timestamp}.txt"
         timestamp=$(date +%s)
-        output_file="$METRICS_DIR/${app}.${timestamp}.txt"
+        output_file="$METRICS_DIR/apps/${app}.${timestamp}.txt"
         if [[ "$mode" == "--eval" ]]; then
             /usr/bin/time -l go run main.go $mode "$app" 2> "$output_file"
         else

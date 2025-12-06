@@ -304,6 +304,8 @@ func saveAnalysisTime(app *app.App, times AnalysisTimes) {
 	dir := path.Join("results/times", time.Now().Format(time.DateOnly))
 	if SYNTHETIC {
 		dir += "/synthetic"
+	} else {
+		dir += "/apps"
 	}
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {

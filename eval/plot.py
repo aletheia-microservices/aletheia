@@ -55,7 +55,7 @@ print("Total time (s):", total_s)
 if args.synthetic:
   order = np.arange(len(ms_counts))
 else:
-  order = np.lexsort((ms_counts, complexity))
+  order = np.lexsort((ms_counts, total_s))
 
 apps_sorted      = [apps[i] for i in order]
 parsing_sorted   = parsing_s[order]
@@ -121,22 +121,31 @@ for i, ax in enumerate(axes):
         x, ms_counts[order],
         marker='o', linestyle='-', linewidth=1,
         markersize=3, markerfacecolor='white', markeredgewidth=0.8,
-        color='black', label='# microservices', zorder=5
+        color='black', label='# ms', zorder=5
     )
     # plot #ds
     ax2.plot(
         x, ds_counts[order],
         marker='s', linestyle='--', linewidth=1,
         markersize=3, markerfacecolor='white', markeredgewidth=0.8,
-        color='black', label='# datastores', zorder=5
+        color='black', label='# ds', zorder=5
     )
-    if args.synthetic:
-      # plot #rpcs
-      ax2.plot(
-          x, rpcs[order],
-          marker='^', linestyle='--', linewidth=1,
-          markersize=3, markerfacecolor='white', markeredgewidth=0.8,
-          color='black', label='# rpcs', zorder=5
+    # plot #rpcs
+    ax2.plot(
+        x, rpcs[order],
+        marker='^', linestyle='--', linewidth=1,
+        markersize=3, markerfacecolor='white', markeredgewidth=0.8,
+        color='black', label='# rpcs', zorder=5
+    )
+    # one combined legend
+    #ax2.legend(loc='upper left', fontsize=6)
+    ax2.legend(
+      loc='upper left',
+      fontsize=6,
+      ncol=3,            # force one single horizontal row
+      handlelength=1.0,
+      columnspacing=0.6,
+      handletextpad=0.3,
     )
     # shared y-axis scaling
     if args.synthetic:
@@ -145,12 +154,10 @@ for i, ax in enumerate(axes):
       upper_lim = max(ms_counts.max(), ds_counts.max(), rpcs.max()) * 1.2
     ax2.set_ylim(0, upper_lim)
     ax2.tick_params(axis='y', labelsize=6)
-    ax2.set_ylabel('# microservices / \n# datastores / # rpcs', fontsize=7)
-    # one combined legend
-    ax2.legend(loc='upper left', fontsize=6)
+    ax2.set_ylabel('# ms / # ds / # rpcs', fontsize=7)
 
 # shared y-axis label
-fig.text(0.02, 0.5, "Time (s)", va='center', rotation='vertical', fontsize=8)
+fig.text(0.02, 0.55, "Time (s)", va='center', rotation='vertical', fontsize=8)
 
 # put labels only on the bottom subplot, rotated diagonally
 axes[-1].set_xticks(x)

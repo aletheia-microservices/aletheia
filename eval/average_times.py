@@ -19,7 +19,7 @@ os.makedirs("results/versions", exist_ok=True)
 if args.synthetic:
     INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}/synthetic"
 else:
-    INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}"
+    INPUT_DIR = f"../ssa_analysis/analyzer/results/times/{args.date}/apps"
 
 if args.synthetic:
     OUTPUT_FILE1 = f"results/averages-synthetic.yaml"

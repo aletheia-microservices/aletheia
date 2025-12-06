@@ -15,6 +15,8 @@ args = parser.parse_args()
 INPUT_DIR = Path(f"../ssa_analysis/analyzer/results/metrics/{args.date}")
 if args.synthetic:
     INPUT_DIR = INPUT_DIR / "synthetic"
+else:
+    INPUT_DIR = INPUT_DIR / "apps"
 
 def extract_app_name(filename: str) -> str:
     return filename.split(".", 1)[0]
