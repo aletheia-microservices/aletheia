@@ -21,17 +21,11 @@ const (
 	APP_PATH_FOO_BAR2               = "foobar2/workflow/foobar2"
 	APP_PATH_DSB_HOTEL2             = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET           = "train_ticket/workflow/train_ticket"
-	APP_PATH_SYNTHETIC_APP          = "synthetic_app/workflow/synthetic_app"
-	APP_PATH_SYNTHETIC_APPA         = "synthetic_app/workflow/synthetic_appA"
-	APP_PATH_SYNTHETIC_APPB         = "synthetic_app/workflow/synthetic_appB"
 	APP_PATH_SYNTHETIC_APP1         = "synthetic_app1/workflow/synthetic_app1"
 	APP_PATH_SYNTHETIC_APP2         = "synthetic_app2/workflow/synthetic_app2"
 	APP_PATH_SYNTHETIC_APP3         = "synthetic_app3/workflow/synthetic_app3"
 	APP_PATH_SYNTHETIC_APP4         = "synthetic_app4/workflow/synthetic_app4"
 	APP_PATH_SYNTHETIC_APP5         = "synthetic_app5/workflow/synthetic_app5"
-	APP_PATH_SYNTHETIC_APP6         = "synthetic_app5/workflow/synthetic_app6"
-	APP_PATH_SYNTHETIC_APP7         = "synthetic_app5/workflow/synthetic_app7"
-	APP_PATH_SYNTHETIC_APP8         = "synthetic_app5/workflow/synthetic_app8"
 
 	BLUEPRINT_EXAMPLES_RELATIVE_PATH = "../../blueprint/examples"
 )
@@ -46,17 +40,11 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APPA,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APPB,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP1,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP3,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP4,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP5,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP6,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP7,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP8,
 }
 
 var APPS_NOSQL_SCHEMAS = map[string]string{

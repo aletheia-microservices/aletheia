@@ -18,17 +18,11 @@ replace go.opentelemetry.io/otel/metric => go.opentelemetry.io/otel/metric v1.26
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Rhymond/go-money v1.0.15 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app6/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app7/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app8/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_appA/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_appB/workflow v0.0.0 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -87,17 +81,11 @@ require (
 require (
 	github.com/auxten/postgresql-parser v1.0.1
 	github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app8/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.3
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	gopkg.in/yaml.v2 v2.4.0
@@ -149,12 +137,7 @@ require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring v0.0.0
 
-require (
-	github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow v0.0.0 // indirect
-	github.com/onsi/gomega v1.27.10 // indirect
-)
-
-require github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring v0.0.0
+require github.com/onsi/gomega v1.27.10 // indirect
 
 replace github.com/blueprint-uservices/blueprint/plugins => ../../blueprint/plugins
 
@@ -222,30 +205,6 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ../../blueprint/examples/dsb_mediamicroservices/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql => ../../blueprint/examples/dsb_media_nosql
-
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/workflow => ../../blueprint/examples/dsb_media_nosql/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/dsb_media_nosql/wiring => ../../blueprint/examples/dsb_media_nosql/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app => ../../blueprint/examples/synthetic_app
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app/workflow => ../../blueprint/examples/synthetic_app/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring => ../../blueprint/examples/synthetic_app/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_appA => ../../blueprint/examples/synthetic_appA
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_appA/workflow => ../../blueprint/examples/synthetic_appA/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring => ../../blueprint/examples/synthetic_appA/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_appB => ../../blueprint/examples/synthetic_appB
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_appB/workflow => ../../blueprint/examples/synthetic_appB/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring => ../../blueprint/examples/synthetic_appB/wiring
-
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1 => ../../blueprint/examples/synthetic_app1
 
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow => ../../blueprint/examples/synthetic_app1/workflow
@@ -275,21 +234,3 @@ replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5 => ../.
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow => ../../blueprint/examples/synthetic_app5/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring => ../../blueprint/examples/synthetic_app5/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app6 => ../../blueprint/examples/synthetic_app6
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app6/workflow => ../../blueprint/examples/synthetic_app6/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring => ../../blueprint/examples/synthetic_app6/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7 => ../../blueprint/examples/synthetic_app7
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7/workflow => ../../blueprint/examples/synthetic_app7/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring => ../../blueprint/examples/synthetic_app7/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app8 => ../../blueprint/examples/synthetic_app8
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app8/workflow => ../../blueprint/examples/synthetic_app8/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app8/wiring => ../../blueprint/examples/synthetic_app8/wiring

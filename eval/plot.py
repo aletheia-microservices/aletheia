@@ -79,7 +79,7 @@ xtick_labels = [f"{app}" for app, c in zip(apps_sorted, complexity[order])]
 
 sns.set_theme(style='ticks')
 plt.rcParams['figure.dpi'] = 600
-plt.rcParams['figure.figsize'] = [4, 5]
+plt.rcParams['figure.figsize'] = [4, 4]
 plt.rcParams['axes.labelsize'] = 'xx-small'
 plt.rcParams['legend.fontsize'] = 'xx-small'
 plt.rcParams['xtick.labelsize'] = 'xx-small'
@@ -90,22 +90,22 @@ fig, axes = plt.subplots(4, 1, sharex=True)
 bars0 = axes[0].bar(x, total_s, color=COLORS['total'], width=bar_width)
 axes[0].margins(y=0.3) # 20% vertical padding
 axes[0].bar_label(bars0, fmt="%.2fs", fontsize=5.5, padding=3)
-axes[0].set_title("Total", fontsize=8)
+axes[0].set_title("Total", fontsize=6, pad=2)
 
 bars1 = axes[1].bar(x, parsing_sorted, color=COLORS['parser'], width=bar_width)
 axes[1].margins(y=0.2) # 20% vertical padding
 axes[1].bar_label(bars1, fmt="%.2fs", fontsize=5.5)
-axes[1].set_title("Parsing", fontsize=8)
+axes[1].set_title("Parsing", fontsize=6, pad=2)
 
 bars2 = axes[2].bar(x, schema_sorted, color=COLORS['schema'], width=bar_width)
 axes[2].margins(y=0.2) # 20% vertical padding
 axes[2].bar_label(bars2, fmt="%.4fs", fontsize=5.5)
-axes[2].set_title("Schema Building", fontsize=8)
+axes[2].set_title("Schema Building", fontsize=6, pad=2)
 
 bars3 = axes[3].bar(x, detection_sorted, color=COLORS['detector'], width=bar_width)
 axes[3].margins(y=0.2) # 20% vertical padding
 axes[3].bar_label(bars3, fmt="%.4fs", fontsize=5.5)
-axes[3].set_title("Detection", fontsize=8)
+axes[3].set_title("Detection", fontsize=6, pad=2)
 
 for i, ax in enumerate(axes):
     if i != 0:
@@ -154,18 +154,26 @@ for i, ax in enumerate(axes):
       upper_lim = max(ms_counts.max(), ds_counts.max(), rpcs.max()) * 1.2
     ax2.set_ylim(0, upper_lim)
     ax2.tick_params(axis='y', labelsize=6)
-    ax2.set_ylabel('# ms / # ds / # rpcs', fontsize=7)
+    ax2.set_ylabel('# ms / # ds / # rpcs', fontsize=6)
 
 # shared y-axis label
-fig.text(0.02, 0.55, "Time (s)", va='center', rotation='vertical', fontsize=8)
+fig.text(0.02, 0.60, "Time (s)", va='center', rotation='vertical', fontsize=6)
 
 # put labels only on the bottom subplot, rotated diagonally
 axes[-1].set_xticks(x)
-axes[-1].set_xticklabels(xtick_labels, rotation=35, ha="right", rotation_mode="anchor")
+axes[-1].set_xticklabels(xtick_labels, rotation=20, ha="right", rotation_mode="anchor", fontsize=6)
 
 # hide x tick labels on upper subplots
 for ax in axes[:-1]:
-    ax.tick_params(labelbottom=False)
+  ax.tick_params(labelbottom=False)
+
+# reduce x-axis tick size
+for ax in axes:
+  ax.tick_params(axis='x', length=2.5)
+
+# reduce y-axis tick label font size for all subplots
+for ax in axes:
+    ax.tick_params(axis='y', labelsize=5.5)
 
 if args.synthetic:
   axes[0].set_yscale("log")
@@ -175,10 +183,10 @@ if args.synthetic:
 
 plt.tight_layout()
 # smaller hspace => less vertical gap
-plt.subplots_adjust(left=0.12, hspace=0.40)
+plt.subplots_adjust(left=0.12, hspace=0.22)
 # smaller left => left border
 plt.subplots_adjust(left=0.12)
-plt.savefig(OUTPUT_FILE1)
+plt.savefig(OUTPUT_FILE1, bbox_inches='tight', pad_inches=0)
 print(f"[INFO] saved plot to {OUTPUT_FILE1}")
-plt.savefig(OUTPUT_FILE2)
+plt.savefig(OUTPUT_FILE2, bbox_inches='tight', pad_inches=0)
 print(f"[INFO] saved plot to {OUTPUT_FILE2}")

@@ -10,17 +10,11 @@ import (
 	specs_foobar2 "github.com/blueprint-uservices/blueprint/examples/foobar2/wiring/specs"
 	specs_postnotification "github.com/blueprint-uservices/blueprint/examples/postnotification/wiring/specs"
 	specs_sockshop "github.com/blueprint-uservices/blueprint/examples/sockshop/wiring/specs"
-	specs_synthetic_app "github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring/specs"
 	specs_synthetic_app1 "github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring/specs"
 	specs_synthetic_app2 "github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring/specs"
 	specs_synthetic_app3 "github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring/specs"
 	specs_synthetic_app4 "github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring/specs"
 	specs_synthetic_app5 "github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring/specs"
-	specs_synthetic_app6 "github.com/blueprint-uservices/blueprint/examples/synthetic_app6/wiring/specs"
-	specs_synthetic_app7 "github.com/blueprint-uservices/blueprint/examples/synthetic_app7/wiring/specs"
-	specs_synthetic_app8 "github.com/blueprint-uservices/blueprint/examples/synthetic_app8/wiring/specs"
-	specs_synthetic_appA "github.com/blueprint-uservices/blueprint/examples/synthetic_appA/wiring/specs"
-	specs_synthetic_appB "github.com/blueprint-uservices/blueprint/examples/synthetic_appB/wiring/specs"
 	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/trainticket/wiring/specs"
 	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 	"github.com/sirupsen/logrus"
@@ -46,17 +40,11 @@ var APPS_INFO = map[string]AppInfo{
 	"trainticket":            {utils.APP_PATH_TRAIN_TICKET, specs_trainticket.Docker},
 	"foobar":                 {utils.APP_PATH_FOO_BAR, specs_foobar.Docker},
 	"foobar2":                {utils.APP_PATH_FOO_BAR2, specs_foobar2.Docker},
-	"synthetic_app":          {utils.APP_PATH_SYNTHETIC_APP, specs_synthetic_app.Docker},
-	"synthetic_appA":         {utils.APP_PATH_SYNTHETIC_APPA, specs_synthetic_appA.Docker},
-	"synthetic_appB":         {utils.APP_PATH_SYNTHETIC_APPB, specs_synthetic_appB.Docker},
 	"synthetic_app1":         {utils.APP_PATH_SYNTHETIC_APP1, specs_synthetic_app1.Docker},
 	"synthetic_app2":         {utils.APP_PATH_SYNTHETIC_APP2, specs_synthetic_app2.Docker},
 	"synthetic_app3":         {utils.APP_PATH_SYNTHETIC_APP3, specs_synthetic_app3.Docker},
 	"synthetic_app4":         {utils.APP_PATH_SYNTHETIC_APP4, specs_synthetic_app4.Docker},
 	"synthetic_app5":         {utils.APP_PATH_SYNTHETIC_APP5, specs_synthetic_app5.Docker},
-	"synthetic_app6":         {utils.APP_PATH_SYNTHETIC_APP6, specs_synthetic_app6.Docker},
-	"synthetic_app7":         {utils.APP_PATH_SYNTHETIC_APP7, specs_synthetic_app7.Docker},
-	"synthetic_app8":         {utils.APP_PATH_SYNTHETIC_APP8, specs_synthetic_app8.Docker},
 }
 
 func loadAppSpec(app string) cmdbuilder.SpecOption {
