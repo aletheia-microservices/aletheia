@@ -113,16 +113,23 @@ xtick_labels_syn  = apps_syn_sorted
 
 sns.set_theme(style='ticks')
 plt.rcParams['figure.dpi']        = 600
-plt.rcParams['figure.figsize']    = [4, 3]
+plt.rcParams['figure.figsize']    = [3, 3]
 plt.rcParams['axes.labelsize']    = 'xx-small'
 plt.rcParams['legend.fontsize']   = 'xx-small'
 plt.rcParams['xtick.labelsize']   = 'xx-small'
 plt.rcParams['ytick.labelsize']   = 'xx-small'
 
+# border thickness
+plt.rcParams['axes.linewidth']    = 0.75
+# ticks thickness
+plt.rcParams['xtick.major.width'] = 0.75
+plt.rcParams['ytick.major.width'] = 0.75
+plt.rcParams['xtick.minor.width'] = 0.75
+plt.rcParams['ytick.minor.width'] = 0.75
+
 fig, axes = plt.subplots(2, 1)
 
 # =================== subplot 0: REAL APPS (STACKED) ===================
-axes[1].set_yscale("log")
 # bottom = parsing
 bars_parser_real = axes[0].bar(
     x_real, parsing_real_sorted,
@@ -141,17 +148,12 @@ bars_detector_real = axes[0].bar(
     bottom=bottom_detector_real,
     color=COLORS['detector'], width=bar_width, label='Detection'
 )
-
-axes[0].margins(y=0.3)  # vertical padding
-# label total time on top of the stack (top segment)
-axes[0].bar_label(
-    bars_detector_real,
-    labels=[f"{t:.2f}s" for t in total_real_sorted],
-    fontsize=FONT_SIZE,
-    padding=3,
-)
-axes[0].set_title("Realistic Applications", fontsize=FONT_SIZE, pad=2, weight='bold')
+# legend: force order Parsing (bottom), Schema (mid), Detection (top)
+handles_real = [bars_parser_real, bars_schema_real, bars_detector_real]
+labels_real  = ['Parsing', 'Schema', 'Detection']
 axes[0].legend(
+    handles_real,
+    labels_real,
     loc='upper left',
     fontsize=FONT_SIZE,
     frameon=True,
@@ -161,30 +163,39 @@ axes[0].legend(
     handletextpad=0.3   # reduce spacing between square and text
 )
 
+axes[0].margins(y=0.3)  # vertical padding
+# label total time on top of the stack (top segment)
+axes[0].bar_label(
+    bars_detector_real,
+    labels=[f"{t:.2f}s" for t in total_real_sorted],
+    fontsize=FONT_SIZE,
+    padding=3,
+)
+axes[0].set_title("Realistic Applications", fontsize=FONT_SIZE, pad=2)
+
 # overlay #ms / #ds / #rpcs
 ax0_2 = axes[0].twinx()
 ax0_2.plot(
     x_real, ms_counts_real_sorted,
     marker='o', linestyle='-', linewidth=0.7,
     markersize=2.5, markerfacecolor='white', markeredgewidth=0.4,
-    color='black', label='# ms', zorder=5
+    color='black', label='# ms', zorder=1
 )
 ax0_2.plot(
     x_real, ds_counts_real_sorted,
     marker='s', linestyle='--', linewidth=0.7,
     markersize=2.5, markerfacecolor='white', markeredgewidth=0.4,
-    color='black', label='# ds', zorder=5
+    color='black', label='# ds', zorder=1
 )
 ax0_2.plot(
     x_real, rpcs_real_sorted,
     marker='^', linestyle='-.', linewidth=0.7,
     markersize=2.5, markerfacecolor='white', markeredgewidth=0.4,
-    color='black', label='# rpcs', zorder=5
+    color='black', label='# rpcs', zorder=1
 )
 
-upper_lim_real = max(ms_counts_real_sorted.max(),
-                     ds_counts_real_sorted.max(),
-                     rpcs_real_sorted.max()) * 1.05
+# line in plot: #ms, #ds, #rpcs
+upper_lim_real = max(ms_counts_real_sorted.max(), ds_counts_real_sorted.max(), rpcs_real_sorted.max()) * 1.23
 ax0_2.set_ylim(0, upper_lim_real)
 ax0_2.tick_params(axis='y', labelsize=LABEL_SIZE)
 #ax0_2.set_ylabel('# ms / # ds / # rpcs', fontsize=FONT_SIZE)
@@ -225,15 +236,12 @@ bars_detector_syn = axes[1].bar(
     color=COLORS['detector'], width=bar_width, label='Detection'
 )
 
-axes[1].margins(y=0.2)
-axes[1].bar_label(
-    bars_detector_syn,
-    labels=[f"{t:.2f}s" for t in total_syn_sorted],
-    fontsize=FONT_SIZE,
-    padding=3,
-)
-axes[1].set_title("Synthetic Applications", fontsize=FONT_SIZE, pad=2, weight='bold')
+# legend: force order Parsing (bottom), Schema (mid), Detection (top)
+handles_syn = [bars_parser_syn, bars_schema_syn, bars_detector_syn]
+labels_syn  = ['Parsing', 'Schema', 'Detection']
 axes[1].legend(
+    handles_syn,
+    labels_syn,
     loc='upper left',
     fontsize=FONT_SIZE,
     frameon=True,
@@ -243,30 +251,40 @@ axes[1].legend(
     handletextpad=0.3   # reduce spacing between square and text
 )
 
+axes[1].margins(y=0.2)
+axes[1].bar_label(
+    bars_detector_syn,
+    labels=[f"{t:.2f}s" for t in total_syn_sorted],
+    fontsize=FONT_SIZE,
+    padding=3,
+)
+axes[1].set_title("Synthetic Applications", fontsize=FONT_SIZE, pad=2)
+
 ax1_2 = axes[1].twinx()
 # overlay #ms / #ds / #rpcs for synthetic apps (linear scale)
 ax1_2.plot(
     x_syn, ms_counts_syn_sorted,
     marker='o', linestyle='-', linewidth=0.7,
     markersize=2.5, markerfacecolor='white', markeredgewidth=0.4,
-    color='black', label='# ms', zorder=5
+    color='black', label='# ms', zorder=1
 )
 ax1_2.plot(
     x_syn, ds_counts_syn_sorted,
     marker='s', linestyle='--', linewidth=0.7,
     markersize=2.5, markerfacecolor='white', markeredgewidth=0.4,
-    color='black', label='# ds', zorder=5
+    color='black', label='# ds', zorder=1
 )
 ax1_2.plot(
     x_syn, rpcs_syn_sorted,
     marker='^', linestyle='-.', linewidth=0.7,
     markersize=2.5, markerfacecolor='white', markeredgewidth=0.4,
-    color='black', label='# rpcs', zorder=5
+    color='black', label='# rpcs', zorder=1
 )
 
-upper_lim_syn = max(ms_counts_syn_sorted.max(),
-                    ds_counts_syn_sorted.max(),
-                    rpcs_syn_sorted.max()) * 2.2
+# line in plot: #ms, #ds, #rpcs
+upper_lim_syn = max(ms_counts_syn_sorted.max(), ds_counts_syn_sorted.max(), rpcs_syn_sorted.max()) * 1.14
+lower_lim_syn = upper_lim_syn * 0.05
+ax1_2.set_ylim(0, upper_lim_syn)
 ax1_2.tick_params(axis='y', labelsize=LABEL_SIZE)
 #ax1_2.set_ylabel('# ms / # ds / # rpcs', fontsize=FONT_SIZE)
 ax1_2.legend(
@@ -286,9 +304,9 @@ axes[1].set_xticklabels(
 
 # ------------ common formatting ------------
 # left shared label (time)
-fig.text(0.03, 0.50, "Time (s)", va='center', rotation='vertical', fontsize=FONT_SIZE)
+fig.text(0.05, 0.50, "Time (s)", va='center', rotation='vertical', fontsize=FONT_SIZE)
 # right shared label (#ms/#ds/#rpcs)
-fig.text(0.98, 0.50, "# ms / # ds / # rpcs", va='center', rotation='vertical', fontsize=FONT_SIZE)
+fig.text(0.92, 0.55, "# ms / # ds / # rpcs", va='center', rotation='vertical', fontsize=FONT_SIZE)
 
 for ax in axes:
     ax.tick_params(axis='x', length=2.5)
@@ -297,7 +315,7 @@ for ax in axes:
 plt.tight_layout()
 plt.subplots_adjust(left=0.12, hspace=0.50)
 
-plt.savefig(OUTPUT_FILE1, bbox_inches='tight', pad_inches=0.05)
+plt.savefig(OUTPUT_FILE1, bbox_inches='tight', pad_inches=0.025)
 print(f"[INFO] saved plot to {OUTPUT_FILE1}")
-plt.savefig(OUTPUT_FILE2, bbox_inches='tight', pad_inches=0.05)
+plt.savefig(OUTPUT_FILE2, bbox_inches='tight', pad_inches=0.025)
 print(f"[INFO] saved plot to {OUTPUT_FILE2}")
