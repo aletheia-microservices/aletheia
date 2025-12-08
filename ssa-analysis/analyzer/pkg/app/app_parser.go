@@ -12,8 +12,8 @@ import (
 	"analyzer/pkg/frameworks/blueprint"
 )
 
-func (app *App) Init() {
-	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName())
+func (app *App) Init(synthetic bool) {
+	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName(), synthetic)
 	sort.Strings(frontends)
 
 	// parse services

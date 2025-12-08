@@ -79,11 +79,11 @@ func main() {
 	logrus_ctx := logrus.WithField("app", appname)
 
 	// ------------ PART 1
-	logrus_ctx.Infof("[1/12] initializing program")
+	logrus_ctx.WithField("synthetic", SYNTHETIC).Infof("[1/12] initializing program")
 
 	apppath := utils.GetAppRootPackagePath(appname)
 	app := app.NewApp(appname)
-	app.Init()
+	app.Init(SYNTHETIC)
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)

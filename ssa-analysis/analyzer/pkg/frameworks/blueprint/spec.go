@@ -15,10 +15,12 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/frameworks/components"
+	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 )
 
-func LoadWiring(appName string) ([]*components.ServiceInfo, []*components.DatastoreInfo, []string) {
-	spec := loadAppSpec(appName)
+func LoadWiring(appName string, synthetic bool) ([]*components.ServiceInfo, []*components.DatastoreInfo, []string) {
+	var spec cmdbuilder.SpecOption
+	spec = loadAppSpec(appName)
 	servicesSpec, databasesNodes, servicesArgs, frontends := BuildAndInspectIR(appName, spec)
 	servicesInfo := buildBlueprintServicesInfo(servicesSpec, servicesArgs)
 	databasesInfo := buildDatabasesInstances(databasesNodes)
