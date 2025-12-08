@@ -11,21 +11,21 @@
 set -e
 
 apps=(
-    #digota
-    #sockshop
-    #eshopmicroservices
-    #postnotification
-    #dsb_socialnetwork
-    #dsb_mediamicroservices
-    #trainticket
+    digota
+    sockshop
+    eshopmicroservices
+    postnotification
+    dsb_socialnetwork
+    dsb_mediamicroservices
+    trainticket
 )
 
 apps_synthetic=(
-    synthetic_app1
-    synthetic_app2
-    synthetic_app3
-    synthetic_app4
-    synthetic_app5
+    #synthetic_app1
+    #synthetic_app2
+    #synthetic_app3
+    #synthetic_app4
+    #synthetic_app5
 )
 
 mode=""
@@ -36,6 +36,14 @@ METRICS_DIR="results/metrics/$DATE"
 mkdir -p "$METRICS_DIR"
 mkdir -p "$METRICS_DIR/apps"
 mkdir -p "$METRICS_DIR/synthetic"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS uses BSD time with -l
+    TIME_CMD="/usr/bin/time -l"
+else
+    # Linux uses GNU time with -v
+    TIME_CMD="time -v"
+fi
 
 if [[ $# -eq 1 ]]; then
     case "$1" in
@@ -70,7 +78,7 @@ for app in "${apps[@]}"; do
         timestamp=$(date +%s)
         output_file="$METRICS_DIR/apps/${app}.${timestamp}.txt"
         if [[ "$mode" == "--eval" ]]; then
-            /usr/bin/time -l go run main.go $mode "$app" 2> "$output_file"
+            $TIME_CMD go run main.go $mode "$app" 2> "$output_file"
         else
             go run main.go $mode "$app"
         fi
@@ -82,15 +90,29 @@ done
 for app in "${apps_synthetic[@]}"; do
     echo "=== Running $app ($runs times) $mode ==="
 
+    # choose build tags based on synthetic app
+    go_tags=""
+    case "$app" in
+        synthetic_app1|synthetic_app2|synthetic_app3)
+            go_tags="-tags synthetic_small"
+            ;;
+        synthetic_app4)
+            go_tags="-tags synthetic_medium"
+            ;;
+        synthetic_app5)
+            go_tags="-tags synthetic_large"
+            ;;
+    esac
+
     for i in $(seq 1 $runs); do
         echo "=== Run $i/$runs"
         timestamp=$(date +%s)
         output_file="$METRICS_DIR/synthetic/${app}.${timestamp}.txt"
 
         if [[ "$mode" == "--eval" ]]; then
-            /usr/bin/time -l go run main.go $mode --synthetic "$app" 2> "$output_file"
+            $TIME_CMD go run $go_tags main.go $mode --synthetic "$app" 2> "$output_file"
         else
-            go run main.go $mode --synthetic "$app"
+            go run $go_tags main.go $mode --synthetic "$app"
         fi
     done
 
