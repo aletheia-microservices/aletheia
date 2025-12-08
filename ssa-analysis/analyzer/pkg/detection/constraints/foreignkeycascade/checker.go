@@ -3,6 +3,8 @@ package foreignkeycascade
 import (
 	"slices"
 
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 )
@@ -16,12 +18,31 @@ type CascadeDelete struct {
 func (detector *ForeignKeyCascadeDetector) checkInconsistencies(app *app.App) {
 	// EVAL: logrus.Tracef("[FOREIGN KEY CASCADE | CHECKER] checking inconsistencies\n")
 	for _, request := range detector.requests {
+
+		// check if there was a write before involving the association
+		// if thats the case, the bug is not flagged
+		var do_not_flag bool
 		for _, delete := range request.GetAllOperations() {
+			database := app.GetDatabaseByName(delete.database)
+			schema := database.GetSchemaByNameIfExists(delete.schema)
+			for _, write := range request.GetAllWriteOperations() {
+				for _, writtenField := range write.fields {
+					for _, deletedField := range schema.GetAllFieldsLst() {
+						if writtenField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {
+							do_not_flag = true
+							logrus.Warnf("[FOREIGN KEY CASCADE | CHECKER] skipping cascade delete due to write in same request\n")
+							break
+						}
+					}
+				}
+			}
 			// EVAL: logrus.Tracef("[FOREIGN KEY CASCADE | CHECKER] delete = %s\n", delete.call.String())
-			cascadeDelete := detector.registerFutureCascadeDelete(app, delete)
-			if cascadeDelete != nil {
-				detector.markCascadingDelete(app, request, delete)
-				detector.addCascadeDelete(request, cascadeDelete)
+			if !do_not_flag {
+				cascadeDelete := detector.registerFutureCascadeDelete(app, delete)
+				if cascadeDelete != nil {
+					detector.markCascadingDelete(app, request, delete)
+					detector.addCascadeDelete(request, cascadeDelete)
+				}
 			}
 		}
 	}
