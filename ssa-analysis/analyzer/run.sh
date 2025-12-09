@@ -29,7 +29,7 @@ apps_synthetic=(
 )
 
 mode=""
-runs=5
+runs=1
 
 DATE=$(date +%F)
 METRICS_DIR="results/metrics/$DATE"

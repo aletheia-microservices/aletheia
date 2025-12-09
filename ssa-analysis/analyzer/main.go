@@ -84,6 +84,7 @@ func main() {
 	apppath := utils.GetAppRootPackagePath(appname)
 	app := app.NewApp(appname)
 	app.Init(SYNTHETIC)
+	elapsed_blueprint_compiler := time.Since(start)
 
 	// ensure output sub directory exists
 	err := os.MkdirAll(fmt.Sprintf("output/%s", appname), os.ModePerm)
@@ -262,6 +263,7 @@ func main() {
 	}
 
 	fmt.Printf("Execution time (TOTAL):\t\t%.4f s\n", elapsed_total.Seconds())
+	fmt.Printf("Execution time (BLUEPRINT):\t%.4f s\n", elapsed_blueprint_compiler.Seconds())
 	fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
 	fmt.Printf("Execution time (SSA PARS):\t%.4f s\n", elapsed_ssa_parsing.Seconds())
 	fmt.Printf("Execution time (SSA TAIN):\t%.4f s\n", elapsed_ssa_tainting.Seconds())
@@ -276,6 +278,7 @@ func main() {
 			App:              app.GetName(),
 			NumMicroservices: app.NumberOfMicroservices(),
 			NumDatastores:    app.NumberOfDatastores(),
+			Blueprint:    	  elapsed_blueprint_compiler.Seconds(),
 			Rpcs:             absgraph.GetNumberOfCumulativeCalls(),
 			Total:            elapsed_total.Seconds(),
 			Parsing:          elapsed_parsing.Seconds(),
@@ -293,6 +296,7 @@ type AnalysisTimes struct {
 	NumMicroservices int     `yaml:"ms_count"`
 	NumDatastores    int     `yaml:"ds_count"`
 	Rpcs             int     `yaml:"rpcs"`
+	Blueprint 		 float64 `yaml:"blueprint"`
 	Total            float64 `yaml:"total_s"`
 	Parsing          float64 `yaml:"parsing_s"`
 	Schema           float64 `yaml:"schema_s"`

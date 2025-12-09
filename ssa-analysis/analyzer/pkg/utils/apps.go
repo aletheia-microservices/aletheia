@@ -15,12 +15,14 @@ const (
 	APP_PATH_DIGOTA                 = "digota/workflow/digota"
 	APP_PATH_ESHOPMICROSERVICES     = "eshopmicroservices/workflow/eshopmicroservices"
 	APP_PATH_DSB_MEDIAMICROSERVICES = "dsb_mediamicroservices/workflow/mediamicroservices"
+	APP_PATH_DOTNET_ESHOP           = "dotnet_eshop/workflow/eshop"
 	APP_PATH_SOCKSHOP               = "sockshop/workflow/sockshop"
 	APP_PATH_DSB_SOCIALNETWORK      = "dsb_socialnetwork/workflow/socialnetwork"
 	APP_PATH_FOO_BAR                = "foobar/workflow/foobar"
 	APP_PATH_FOO_BAR2               = "foobar2/workflow/foobar2"
 	APP_PATH_DSB_HOTEL2             = "dsb_hotel2/workflow/hotelreservation2"
 	APP_PATH_TRAIN_TICKET           = "train_ticket/workflow/train_ticket"
+	APP_PATH_SYNTHETIC_APP          = "synthetic_app/workflow/synthetic_app"
 	APP_PATH_SYNTHETIC_APP1         = "synthetic_app1/workflow/synthetic_app1"
 	APP_PATH_SYNTHETIC_APP2         = "synthetic_app2/workflow/synthetic_app2"
 	APP_PATH_SYNTHETIC_APP3         = "synthetic_app3/workflow/synthetic_app3"
@@ -35,11 +37,13 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DIGOTA,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_ESHOPMICROSERVICES,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIAMICROSERVICES,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DOTNET_ESHOP,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SOCIALNETWORK,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_HOTEL2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_TRAIN_TICKET,
+	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP1,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP2,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SYNTHETIC_APP3,
