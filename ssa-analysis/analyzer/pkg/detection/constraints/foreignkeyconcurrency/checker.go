@@ -45,7 +45,7 @@ func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
 						// EVAL: logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] other field = %s\n", otherField.String())
 						for _, deletedField := range delete.schema.GetAllFieldsLst() {
 							// EVAL: logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | CHECKER] deleted field = %s\n", deletedField.String())
-							if otherField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {
+							if otherField.HasConstraintForeignKeyToField(deletedField) {
 								if concurrentWrites == nil {
 									concurrentWrites = make(map[*WriteOperation][]*backends.Field)
 								}
