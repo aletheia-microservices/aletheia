@@ -139,9 +139,9 @@ require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/workflow v0.0.0 // indirect
+//require github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring v0.0.0
+//require github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring v0.0.0
 
 require github.com/onsi/gomega v1.27.10 // indirect
 
@@ -211,11 +211,11 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ../../blueprint/examples/dsb_mediamicroservices/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop => ../../blueprint/examples/dotnet_eshop
+//replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop => ../../blueprint/examples/dotnet_eshop
 
-replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/workflow => ../../blueprint/examples/dotnet_eshop/workflow
+//replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/workflow => ../../blueprint/examples/dotnet_eshop/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring => ../../blueprint/examples/dotnet_eshop/wiring
+//replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring => ../../blueprint/examples/dotnet_eshop/wiring
 
 
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app => ../../blueprint/examples/synthetic_app

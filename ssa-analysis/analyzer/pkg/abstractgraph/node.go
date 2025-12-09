@@ -24,6 +24,24 @@ type AbstractNode struct {
 	// for database nodes only
 	dbname string
 	schema string
+	fanout int
+	depth int
+}
+
+func (node *AbstractNode) IncrStatelessFanout() {
+	node.fanout++
+}
+
+func (node *AbstractNode) GetServiceName() string {
+	return node.service
+}
+
+func (node *AbstractNode) GetFanout() int {
+	return node.fanout
+}
+
+func (node *AbstractNode) SetCallDepth(depth int) {
+	node.depth = depth
 }
 
 func (node *AbstractNode) GetServiceWithMethod() string {

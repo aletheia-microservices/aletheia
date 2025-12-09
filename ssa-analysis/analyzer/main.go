@@ -278,8 +278,8 @@ func main() {
 			App:              app.GetName(),
 			NumMicroservices: app.NumberOfMicroservices(),
 			NumDatastores:    app.NumberOfDatastores(),
-			Blueprint:    	  elapsed_blueprint_compiler.Seconds(),
-			Rpcs:             absgraph.GetNumberOfCumulativeCalls(),
+			Blueprint:        elapsed_blueprint_compiler.Seconds(),
+			Rpcs:             absgraph.GetRPCCount(),
 			Total:            elapsed_total.Seconds(),
 			Parsing:          elapsed_parsing.Seconds(),
 			Schema:           elapsed_schema.Seconds(),
@@ -288,7 +288,8 @@ func main() {
 		saveAnalysisTime(app, times)
 	}
 
-	logrus.Infof("[INFO] total number of microservice calls: %d\n", absgraph.GetNumberOfCumulativeCalls())
+	abstractgraph.ComputeGraphStats(absgraph)
+	abstractgraph.GatherGraphStats(absgraph)
 }
 
 type AnalysisTimes struct {
@@ -296,7 +297,7 @@ type AnalysisTimes struct {
 	NumMicroservices int     `yaml:"ms_count"`
 	NumDatastores    int     `yaml:"ds_count"`
 	Rpcs             int     `yaml:"rpcs"`
-	Blueprint 		 float64 `yaml:"blueprint"`
+	Blueprint        float64 `yaml:"blueprint"`
 	Total            float64 `yaml:"total_s"`
 	Parsing          float64 `yaml:"parsing_s"`
 	Schema           float64 `yaml:"schema_s"`

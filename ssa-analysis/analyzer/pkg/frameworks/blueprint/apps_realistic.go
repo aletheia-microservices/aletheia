@@ -4,7 +4,7 @@ package blueprint
 
 import (
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
-	specs_dotnet_eshop "github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring/specs"
+	/* specs_dotnet_eshop "github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring/specs" */
 	specs_dsb_hotel2 "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring/specs"
 	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
 	specs_dsb_socialnetwork "github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring/specs"
@@ -29,7 +29,7 @@ var APPS_INFO = map[string]AppInfo{
 	"digota":                 {utils.APP_PATH_DIGOTA, specs_digota.Docker},
 	"eshopmicroservices":     {utils.APP_PATH_ESHOPMICROSERVICES, specs_eshopmicroservices.Docker},
 	"dsb_mediamicroservices": {utils.APP_PATH_DSB_MEDIAMICROSERVICES, specs_dsb_mediamicroservices.Docker},
-	"dotnet_eshop":           {utils.APP_PATH_DOTNET_ESHOP, specs_dotnet_eshop.Docker},
+	/* "dotnet_eshop":           {utils.APP_PATH_DOTNET_ESHOP, specs_dotnet_eshop.Docker}, */
 	"sockshop":               {utils.APP_PATH_SOCKSHOP, specs_sockshop.Docker},
 	"dsb_socialnetwork":      {utils.APP_PATH_DSB_SOCIALNETWORK, specs_dsb_socialnetwork.Docker},
 	"dsb_hotel2":             {utils.APP_PATH_DSB_HOTEL2, specs_dsb_hotel2.Original},

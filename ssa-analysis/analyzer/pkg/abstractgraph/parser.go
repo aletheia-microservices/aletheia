@@ -2,7 +2,9 @@ package abstractgraph
 
 import (
 	"fmt"
+	"math"
 	"os"
+	"sort"
 
 	"github.com/sirupsen/logrus"
 
@@ -73,6 +75,116 @@ func ssaTaintServiceToAbstractTrace(graph *AbstractCallGraph, ssaTaintsMap map[s
 		}
 	}
 	return abstractTaintsMap
+}
+
+func ComputeGraphStats(graph *AbstractCallGraph) {
+	clientNode := graph.GetNodeByNameIfExists("client")
+	if clientNode == nil {
+		return
+	}
+
+	visited := make(map[*AbstractNode]int)
+	maxDepth := 0
+
+	for _, edge := range graph.GetEdgesFromNode(clientNode) {
+		computeGraphStatsHelper(graph, edge.GetToNode(), 1, visited, &maxDepth)
+	}
+
+	logrus.Infof("Max call depth from client: %d", maxDepth)
+}
+
+func computeGraphStatsHelper(graph *AbstractCallGraph, node *AbstractNode, depth int, visited map[*AbstractNode]int, maxDepth *int) {
+	if prevDepth, ok := visited[node]; ok && prevDepth >= depth {
+		return
+	}
+	visited[node] = depth
+
+	node.SetCallDepth(depth)
+	if depth > *maxDepth {
+		*maxDepth = depth
+	}
+
+	for _, edge := range graph.GetEdgesFromNode(node) {
+		to := edge.GetToNode()
+		if to.GetNodeType() == NODE_SERVICE {
+			node.IncrStatelessFanout()
+			computeGraphStatsHelper(graph, to, depth+1, visited, maxDepth)
+		}
+
+	}
+}
+
+func GatherGraphStats(graph *AbstractCallGraph) {
+	gatherGraphStatsFanout(graph)
+	gatherGraphStatsCounts(graph)
+}
+
+func gatherGraphStatsCounts(graph *AbstractCallGraph) {
+	var datastoreCount int
+	var entrypointsCount int
+	var services map[string]bool = make(map[string]bool)
+	for _, node := range graph.GetNodes() {
+		if node.GetName() != "client" {
+			if node.GetNodeType() == NODE_SERVICE {
+				if _, ok := services[node.GetServiceName()]; !ok {
+					services[node.GetServiceName()] = true
+				}
+			} else {
+				datastoreCount++
+			}
+		}
+	}
+	clientNode := graph.GetNodeByNameIfExists("client")
+	entrypointsCount = len(graph.GetEdgesFromNode(clientNode))
+	logrus.Infof("[INFO] [ABSTRACT GRAPH] #reqs. stateful (#rpcs)=%d, #reqs. stateless (#db accesses)=%d, #services=%d, #datastores=%d, #callgraphs=%d\n", graph.GetRPCCount(), graph.GetDBAccessCount(), len(services), datastoreCount, entrypointsCount)
+}
+
+func gatherGraphStatsFanout(graph *AbstractCallGraph) {
+	var fanouts []int
+	for _, node := range graph.GetNodes() {
+		f := node.GetFanout()
+		if f > 0 {
+			fanouts = append(fanouts, f)
+		}
+	}
+	if len(fanouts) == 0 {
+		logrus.Warn("no nodes with fanout > 0 found")
+		return
+	}
+	// sort ascending for median / percentiles
+	sort.Ints(fanouts)
+
+	// --- average ---
+	var sum int
+	for _, f := range fanouts {
+		sum += f
+	}
+	avg := float64(sum) / float64(len(fanouts))
+	// --- median ---
+	n := len(fanouts)
+	var median float64
+	if n%2 == 1 {
+		// odd
+		median = float64(fanouts[n/2])
+	} else {
+		// even
+		median = float64(fanouts[n/2-1]+fanouts[n/2]) / 2.0
+	}
+	// --- p90 (90th percentile, 1-based Ceil index) ---
+	// idx = ceil(0.9 * n) - 1
+	idx := int(math.Ceil(0.9*float64(n))) - 1
+	if idx < 0 {
+		idx = 0
+	}
+	if idx >= n {
+		idx = n - 1
+	}
+	p90 := fanouts[idx]
+
+	logrus.Infof(
+		"[INFO] [ABSTRACT GRAPH] fanout stats (>0): count=%d, avg=%.2f, median=%.2f, p90=%d\n",
+		n, avg, median, p90,
+	)
 }
 
 func Parse(graph *AbstractCallGraph, funcshortpath string, entrypoint bool, funcGraphs map[string]*ssagraph.SSAGraph) {
@@ -250,6 +362,7 @@ func parseDatabaseCall(graph *AbstractCallGraph, node *AbstractNode, databaseCal
 
 	// EVAL: logrus.Tracef("[ABSTRACT GRAPH] [DATABASE CALL] added edge: %v\n", edge)
 	graph.AddEdge(edge)
+	graph.dbaccesses++
 }
 
 func parseMethodCall(graph *AbstractCallGraph, node *AbstractNode, fromSSAGraph *ssagraph.SSAGraph, methodCall *ssagraph.MethodCall, funcGraphs map[string]*ssagraph.SSAGraph) {

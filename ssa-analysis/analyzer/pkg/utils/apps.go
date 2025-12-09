@@ -15,7 +15,7 @@ const (
 	APP_PATH_DIGOTA                 = "digota/workflow/digota"
 	APP_PATH_ESHOPMICROSERVICES     = "eshopmicroservices/workflow/eshopmicroservices"
 	APP_PATH_DSB_MEDIAMICROSERVICES = "dsb_mediamicroservices/workflow/mediamicroservices"
-	APP_PATH_DOTNET_ESHOP           = "dotnet_eshop/workflow/eshop"
+	/* APP_PATH_DOTNET_ESHOP           = "dotnet_eshop/workflow/eshop" */
 	APP_PATH_SOCKSHOP               = "sockshop/workflow/sockshop"
 	APP_PATH_DSB_SOCIALNETWORK      = "dsb_socialnetwork/workflow/socialnetwork"
 	APP_PATH_FOO_BAR                = "foobar/workflow/foobar"
@@ -37,7 +37,7 @@ var APPS_PACKAGE_PATHS = []string{
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DIGOTA,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_ESHOPMICROSERVICES,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_MEDIAMICROSERVICES,
-	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DOTNET_ESHOP,
+	/* "github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DOTNET_ESHOP, */
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_SOCKSHOP,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_DSB_SOCIALNETWORK,
 	"github.com/blueprint-uservices/blueprint/examples/" + APP_PATH_FOO_BAR,

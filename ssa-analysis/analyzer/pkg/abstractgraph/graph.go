@@ -17,8 +17,9 @@ type AbstractCallGraph struct {
 	// can either be service (key is the service name) or database (key is the database path)
 	nodes map[string]*AbstractNode
 	// key is the id of the ssa instr name for the svc or db call on the callee side
-	edges []*AbstractEdge
-	rpcs  int // total number of cumulative calls
+	edges      []*AbstractEdge
+	rpcs       int // total number of cumulative calls
+	dbaccesses int // total number of cumulative calls
 }
 
 func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
@@ -33,8 +34,12 @@ func (graph *AbstractCallGraph) GetApp() *app.App {
 	return graph.app
 }
 
-func (graph *AbstractCallGraph) GetNumberOfCumulativeCalls() int {
+func (graph *AbstractCallGraph) GetRPCCount() int {
 	return graph.rpcs
+}
+
+func (graph *AbstractCallGraph) GetDBAccessCount() int {
+	return graph.dbaccesses
 }
 
 func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
