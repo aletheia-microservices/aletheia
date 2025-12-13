@@ -319,17 +319,24 @@ func (obj *AbstractObject) GetSecondaryTaintsFlatList() []*AbstractTaint {
 
 func (obj *AbstractObject) CleanSecondaryTaints() {
 	for objpath, taints := range obj.taints {
-		var filtered []*AbstractTaint
+		// write index for in-place compaction
+		w := 0
+
 		for _, taint := range taints {
 			if taint.IsPrimary() {
-				filtered = append(filtered, taint)
+				taints[w] = taint
+				w++
 			}
 		}
-		if len(filtered) > 0 {
-			obj.taints[objpath] = filtered
-		} else {
+
+		if w == 0 {
+			// no primary taints left
 			delete(obj.taints, objpath)
+		} else if w < len(taints) {
+			// some removed: shrink slice
+			obj.taints[objpath] = taints[:w]
 		}
+		// else: all were primary, slice unchanged
 	}
 }
 
