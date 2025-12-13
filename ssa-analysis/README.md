@@ -49,6 +49,16 @@ go run main.go dsb_hotel2
 ## Evaluation
 
 ```zsh
+mkdir -p $HOME/tmp-go
+mkdir -p $HOME/go-big-cache
+
+TMPDIR=$HOME/tmp-go
+GOCACHE=$HOME/go-big-cache
+GOGC=20
+GOFLAGS="-p=1"
+```
+
+```zsh
 cd ms-consistency-analyzer/blueprint/examples/scripts/
 go run main.go
 
