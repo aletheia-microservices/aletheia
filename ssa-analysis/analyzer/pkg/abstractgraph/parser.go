@@ -106,10 +106,11 @@ func computeGraphStatsHelper(graph *AbstractCallGraph, node *AbstractNode, depth
 
 	for _, edge := range graph.GetEdgesFromNode(node) {
 		to := edge.GetToNode()
+
 		if to.GetNodeType() == NODE_SERVICE {
 			node.IncrStatelessFanout()
-			computeGraphStatsHelper(graph, to, depth+1, visited, maxDepth)
 		}
+		computeGraphStatsHelper(graph, to, depth+1, visited, maxDepth)
 
 	}
 }

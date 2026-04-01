@@ -6,6 +6,8 @@ import (
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
 	"analyzer/pkg/config"
+	"fmt"
+	"github.com/sirupsen/logrus"
 )
 
 type IterationPhase int
@@ -69,9 +71,12 @@ func (it *Iterator) Run(mode IterationPhase) {
 	}
 
 	clientNode := it.graph.GetNodeByName("client")
+	n := len(it.graph.GetEdgesFromNode(clientNode))
 
-	for _, edge := range it.graph.GetEdgesFromNode(clientNode) {
+	for i, edge := range it.graph.GetEdgesFromNode(clientNode) {
 		toNode := edge.GetToNode()
+		fmt.Printf("visiting frontend %d out of %d\n", i, n)
+		logrus.WithField("node", toNode.String()).Infof("visiting frontend %d out of %d\n", i, n)
 
 		it.newReqIdx()
 

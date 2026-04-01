@@ -18,7 +18,6 @@ replace go.opentelemetry.io/otel/metric => go.opentelemetry.io/otel/metric v1.26
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Rhymond/go-money v1.0.15 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow v0.0.0 // indirect
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow v0.0.0 // indirect
@@ -82,7 +81,6 @@ require (
 require (
 	github.com/auxten/postgresql-parser v1.0.1
 	github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring v0.0.0-00010101000000-000000000000
 	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring v0.0.0-00010101000000-000000000000
@@ -138,10 +136,6 @@ require github.com/blueprint-uservices/blueprint/examples/foobar2/wiring v0.0.0
 require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring v0.0.0
-
-//require github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/workflow v0.0.0 // indirect
-
-//require github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring v0.0.0
 
 require github.com/onsi/gomega v1.27.10 // indirect
 
@@ -210,19 +204,6 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ../../blueprint/examples/dsb_mediamicroservices/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ../../blueprint/examples/dsb_mediamicroservices/wiring
-
-//replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop => ../../blueprint/examples/dotnet_eshop
-
-//replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/workflow => ../../blueprint/examples/dotnet_eshop/workflow
-
-//replace github.com/blueprint-uservices/blueprint/examples/dotnet_eshop/wiring => ../../blueprint/examples/dotnet_eshop/wiring
-
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app => ../../blueprint/examples/synthetic_app
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app/workflow => ../../blueprint/examples/synthetic_app/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app/wiring => ../../blueprint/examples/synthetic_app/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1 => ../../blueprint/examples/synthetic_app1
 

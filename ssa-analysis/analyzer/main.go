@@ -29,11 +29,14 @@ import (
 	"analyzer/pkg/utils"
 )
 
+var CACHE = false
 var EVAL = false
 var SYNTHETIC = false
 var INPUT_REFS = false
+const EVAL_METRICS_BASE = "../../eval/output/metrics"
 
 func main() {
+	flag.BoolVar(&CACHE, "cache", false, "enable cache mode")
 	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
 	flag.BoolVar(&SYNTHETIC, "synthetic", false, "enable synthetic app")
 	flag.BoolVar(&INPUT_REFS, "refs", false, "enable input of references")
@@ -84,6 +87,12 @@ func main() {
 	apppath := utils.GetAppRootPackagePath(appname)
 	app := app.NewApp(appname)
 	app.Init(SYNTHETIC)
+
+	if CACHE {
+		// load app from cache and skip analysis
+		return
+	}
+
 	elapsed_blueprint_compiler := time.Since(start)
 
 	// ensure output sub directory exists
@@ -306,11 +315,11 @@ type AnalysisTimes struct {
 
 func saveAnalysisTime(app *app.App, times AnalysisTimes) {
 	ts := time.Now().Unix()
-	dir := path.Join("results/times", time.Now().Format(time.DateOnly))
+	dir := path.Join(EVAL_METRICS_BASE, time.Now().Format(time.DateOnly))
 	if SYNTHETIC {
 		dir += "/synthetic"
 	} else {
-		dir += "/apps"
+		dir += "/realistic"
 	}
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
