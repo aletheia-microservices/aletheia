@@ -1,8 +1,0 @@
-[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
-	 [0] ctx context.Context ---> depends on: {}
-	 [1] user user.UserService ---> depends on: {}
-	 [2] catalogue catalogue.CatalogueService ---> depends on: {}
-	 [3] cart cart.CartService ---> depends on: {}
-	 [4] order order.OrderService ---> depends on: {}
-	 [5] f (*frontend.FrontendImpl struct{user user.UserService, catalogue catalogue.CatalogueService, cart cart.CartService, order order.OrderService}) ---> depends on: {frontend.FrontendImpl struct{user user.UserService, catalogue catalogue.CatalogueService, cart cart.CartService, order order.OrderService}}
-

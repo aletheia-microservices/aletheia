@@ -1,6 +1,0 @@
-[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
-	 [0] ctx context.Context ---> depends on: {}
-	 [1] userService app_constraints_referential_integrity.UserService ---> depends on: {}
-	 [2] accountsDB NoSQLDatabase ---> depends on: {}
-	 [3] s (*app_constraints_referential_integrity.AccountServiceImpl struct{userService app_constraints_referential_integrity.UserService, accountsDB NoSQLDatabase}) ---> depends on: {app_constraints_referential_integrity.AccountServiceImpl struct{userService app_constraints_referential_integrity.UserService, accountsDB NoSQLDatabase}}
-

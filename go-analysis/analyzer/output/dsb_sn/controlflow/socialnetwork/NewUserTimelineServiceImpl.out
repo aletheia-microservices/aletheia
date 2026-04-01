@@ -1,7 +1,0 @@
-[BLOCK, #0, Body] NODES = [*ast.AssignStmt, *ast.ReturnStmt]; SUCCS = []
-	 [0] ctx context.Context ---> depends on: {}
-	 [1] userTimelineCache Cache ---> depends on: {}
-	 [2] userTimelineDB NoSQLDatabase ---> depends on: {}
-	 [3] postStorageService socialnetwork.PostStorageService ---> depends on: {}
-	 [4] u (*socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}) ---> depends on: {socialnetwork.UserTimelineServiceImpl struct{userTimelineCache Cache, userTimelineDB NoSQLDatabase, postStorageService socialnetwork.PostStorageService, CacheHits int64, CacheMiss int64, NumRequests int64}}
-
