@@ -11,20 +11,23 @@ unix_ts = int(time.time())
 os.makedirs("plots", exist_ok=True)
 os.makedirs("plots/versions", exist_ok=True)
 
-INPUT_APPS      = "results/averages-apps.yaml"
-INPUT_SYNTHETIC = "results/averages-synthetic.yaml"
+INPUT_APPS      = "results/metrics-realistic.yaml"
+INPUT_SYNTHETIC = "results/metrics-synthetic.yaml"
 
-OUTPUT_FILE1 = "plots/plot-apps-vs-synthetic.png"
-OUTPUT_FILE2 = f"plots/versions/plot-apps-vs-synthetic-{unix_ts}.png"
+OUTPUT_FILE1 = "plots/plot-times-realistic-synthetic.png"
+OUTPUT_FILE2 = f"plots/versions/plot-times-realistic-synthetic{unix_ts}.png"
 
 LABEL_SIZE = 4.5
 FONT_SIZE = 4.5
+FONT_SIZE_PLOT_TITLE = FONT_SIZE-0.5
 FONT_SIZE_X_AXIS = FONT_SIZE
 FONT_SIZE_PLOT_VALUES = FONT_SIZE
 
 label_map = {
     "EShopMicroservices": "EShop\nMicroservices",
     "MediaMicroservices": "Media\nMicroservices",
+    "PostNotification": "Media\nMicroservices",
+    "SocialNetwork": "Social\nNetwork",
 }
 
 # ------------ custom formatter for right y-axis ------------
@@ -172,7 +175,7 @@ bars_detector_real = axes[0].bar(
     bottom=bottom_detector_real,
     color=COLORS['detector'], width=bar_width, label='Detection'
 )
-# legend: force order Parsing (bottom), Schema (mid), Detection (top)
+# legend in top plot: Parsing, Schema, Detection
 handles_real = [bars_parser_real, bars_schema_real, bars_detector_real]
 labels_real  = ['Parsing', 'Schema', 'Detection']
 axes[0].legend(
@@ -187,13 +190,14 @@ axes[0].legend(
     handletextpad=0.3
 )
 
-axes[0].margins(y=0.3)  # vertical padding
-# label total time on top of the stack (top segment)
+# vertical padding between actual bar and top plot boundary
+axes[0].margins(y=0.1)
+# bar value (total time on top); vertical padding between value and actual bar
 axes[0].bar_label(
     bars_detector_real,
     labels=[f"{t:.2f}s" for t in total_real_sorted],
     fontsize=FONT_SIZE_X_AXIS,
-    padding=3,
+    padding=0,
 )
 
 # overlay #ms / #ds / #rpcs
@@ -217,11 +221,12 @@ ax0_2.plot(
     color='black', label='# rpcs', zorder=1
 )
 
-# line in plot: #ms, #ds, #rpcs
-upper_lim_real = max(ms_counts_real_sorted.max(), ds_counts_real_sorted.max(), rpcs_real_sorted.max()) * 1.23
+# line in top plot: #ms, #ds, #rpcs
+upper_lim_real = max(ms_counts_real_sorted.max(), ds_counts_real_sorted.max(), rpcs_real_sorted.max()) * 1.15
 ax0_2.set_ylim(0, upper_lim_real)
 ax0_2.tick_params(axis='y', labelsize=LABEL_SIZE)
 ax0_2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+# legend in top plot: #ms, #ds, #rpcs
 ax0_2.legend(
     loc='upper left',
     fontsize=FONT_SIZE,
@@ -231,14 +236,17 @@ ax0_2.legend(
     handletextpad=0.3,
 )
 
+# --------- values on x-axis for app names (rotated) ---------
 axes[0].set_xticks(x_real)
-axes[0].set_xticklabels(
-    xtick_labels_real,
-    rotation=25, ha="right", rotation_mode="anchor", fontsize=FONT_SIZE_X_AXIS
-)
+axes[0].set_xticklabels(xtick_labels_real, rotation=25, ha="right", rotation_mode="anchor", fontsize=FONT_SIZE_X_AXIS)
+axes[0].set_title("Realistic Applications", loc='right', fontdict={'fontsize': FONT_SIZE_PLOT_TITLE}, style='italic', pad=2)
 # tighter spacing between the newline lines on x-axis values
 for label in axes[0].get_xticklabels():
-    label.set_linespacing(0.8)
+    label.set_linespacing(0.85)
+# shift labels slightly upward and to the right
+for label in axes[0].get_xticklabels():
+    x, y = label.get_position()
+    label.set_position((x + 0.03, y + 0.03))
 
 # =================== subplot 1: SYNTHETIC APPS (STACKED + LOG) ===================
 axes[1].set_yscale("log")
@@ -262,27 +270,29 @@ bars_detector_syn = axes[1].bar(
     color=COLORS['detector'], width=bar_width, label='Detection'
 )
 
-# legend: force order Parsing (bottom), Schema (mid), Detection (top)
-handles_syn = [bars_parser_syn, bars_schema_syn, bars_detector_syn]
-labels_syn  = ['Parsing', 'Schema', 'Detection']
-axes[1].legend(
-    handles_syn,
-    labels_syn,
-    loc='upper left',
-    fontsize=FONT_SIZE,
-    frameon=True,
-    bbox_to_anchor=(0, 0.85),
-    handlelength=0.8,
-    handleheight=0.8,
-    handletextpad=0.3
-)
+# legend in bottom plot: Parsing, Schema, Detection
+#handles_syn = [bars_parser_syn, bars_schema_syn, bars_detector_syn]
+#labels_syn  = ['Parsing', 'Schema', 'Detection']
+#axes[1].legend(
+#    handles_syn,
+#    labels_syn,
+#    loc='upper left',
+#    fontsize=FONT_SIZE,
+#    frameon=True,
+#    bbox_to_anchor=(0, 0.85),
+#    handlelength=0.8,
+#    handleheight=0.8,
+#    handletextpad=0.3
+#)
 
-axes[1].margins(y=0.2)
+# vertical padding between actual bar and top plot boundary
+axes[1].margins(y=0.1)
+# bar value (total time on top); vertical padding between value and actual bar
 axes[1].bar_label(
     bars_detector_syn,
     labels=[f"{t:.2f}s" for t in total_syn_sorted],
     fontsize=FONT_SIZE_X_AXIS,
-    padding=3,
+    padding=0,
 )
 
 ax1_2 = axes[1].twinx()
@@ -306,31 +316,28 @@ ax1_2.plot(
     color='black', label='# rpcs', zorder=1
 )
 
-# line in plot: #ms, #ds, #rpcs
+# line in bottom plot: #ms, #ds, #rpcs
 upper_lim_syn = max(ms_counts_syn_sorted.max(), ds_counts_syn_sorted.max(), rpcs_syn_sorted.max()) * 1.17
 lower_lim_syn = upper_lim_syn * 0.05
 ax1_2.set_ylim(0, upper_lim_syn)
 ax1_2.tick_params(axis='y', labelsize=LABEL_SIZE)
-ax1_2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))  # <-- NEW
-ax1_2.legend(
-    loc='upper left',
-    fontsize=FONT_SIZE,
-    ncol=3,
-    handlelength=1.0,
-    columnspacing=0.6,
-    handletextpad=0.3,
-)
+ax1_2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+# legend in bottom plot: #ms, #ds, #rpcs
+#ax1_2.legend(
+#    loc='upper left',
+#    fontsize=FONT_SIZE,
+#    ncol=3,
+#    handlelength=1.0,
+#    columnspacing=0.6,
+#    handletextpad=0.3,
+#)
 
+# --------- values on x-axis for app names (rotated) ---------
 axes[1].set_xticks(x_syn)
-axes[1].set_xticklabels(
-    xtick_labels_syn,
-    rotation=25, ha="right", rotation_mode="anchor", fontsize=FONT_SIZE_X_AXIS
-)
-# tighter spacing between the newline lines on x-axis values
-for label in axes[0].get_xticklabels():
-    label.set_linespacing(0.8)
+axes[1].set_xticklabels(xtick_labels_syn, rotation=25, ha="right", rotation_mode="anchor", fontsize=FONT_SIZE_X_AXIS)
+axes[1].set_title("Synthetic Applications", loc='right', fontdict={'fontsize': FONT_SIZE_PLOT_TITLE}, style='italic', pad=2)
 
-# ------------ common formatting ------------
+# =================== common formatting =================== 
 # left shared label (time)
 fig.text(0.025, 0.50, "Time (s)", va='center', rotation='vertical', fontsize=FONT_SIZE)
 # right shared label (#ms/#ds/#rpcs)
@@ -341,16 +348,16 @@ for ax in axes:
     ax.tick_params(axis='y', labelsize=LABEL_SIZE)
 
 # global annotation replacing titles
-fig.text(
-    0.025, 0.02,
-    "Realistic applications (top) vs Synthetic applications (bottom)",
-    ha='left', va='bottom', fontsize=FONT_SIZE
-)
+#fig.text(
+#    0.025, 0.02,
+#    "Realistic applications (top) vs Synthetic applications (bottom)",
+#    ha='left', va='bottom', fontsize=FONT_SIZE
+#)
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.12, hspace=0.40)
 
-plt.savefig(OUTPUT_FILE1, bbox_inches='tight', pad_inches=0.02)
+plt.savefig(OUTPUT_FILE1, bbox_inches='tight', pad_inches=0.025)
 print(f"[INFO] saved plot to {OUTPUT_FILE1}")
-plt.savefig(OUTPUT_FILE2, bbox_inches='tight', pad_inches=0.02)
+plt.savefig(OUTPUT_FILE2, bbox_inches='tight', pad_inches=0.025)
 print(f"[INFO] saved plot to {OUTPUT_FILE2}")

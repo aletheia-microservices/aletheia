@@ -20,11 +20,11 @@ parser.add_argument("--synthetic", action="store_true", help="enable synthetic m
 parser.add_argument("--date", type=str, default=str(date.today()), help="date in YYYY-MM-DD format (default: today)")
 args = parser.parse_args()
 
-INPUT_DIR = Path(f"../ssa-analysis/analyzer/results/metrics/{args.date}")
+INPUT_DIR = Path(f"output/memory/{args.date}")
 if args.synthetic:
     INPUT_DIR = INPUT_DIR / "synthetic"
 else:
-    INPUT_DIR = INPUT_DIR / "apps"
+    INPUT_DIR = INPUT_DIR / "realistic"
 
 def extract_app_name(filename: str) -> str:
     return filename.split(".", 1)[0]
@@ -44,20 +44,24 @@ def extract_peak(path: Path):
 def save(averaged, max_app_len):
     lines = []
 
-    header = f"{'App'.ljust(max_app_len)}   Avg. Peak Memory (MB)"
+    unit = "GB" if args.synthetic else "MB"
+    header = f"{'App'.ljust(max_app_len)}   Avg. Peak Memory ({unit})"
     sep = "-" * (max_app_len + 26)
     lines.append(header)
     lines.append(sep)
 
-    for app, avg in sorted(averaged, key=lambda x: x[1]):
-        lines.append(f"{app.ljust(max_app_len)}   {int(avg)}")
+    for app, avg in sorted(averaged):
+        if args.synthetic:
+            lines.append(f"{app.ljust(max_app_len)}   {avg:.2f}")
+        else:
+            lines.append(f"{app.ljust(max_app_len)}   {int(avg)}")
 
     table_str = "\n".join(lines)
 
     print(table_str)
     unix_ts = int(time.time())
 
-    filename_base = "metrics-synthetic" if args.synthetic else "metrics-apps"
+    filename_base = "memory-synthetic" if args.synthetic else "memory-realistic"
 
     with open(OUTPUT_DIR_BASE / f"{filename_base}.txt", "w") as f:
         f.write(table_str + "\n")
@@ -82,7 +86,10 @@ def main():
             continue
 
         app = extract_app_name(file.name)
-        groups[app].append(peak / 1024**2)  # MB
+        if args.synthetic:
+            groups[app].append(peak / 1024**3)  # GB
+        else:
+            groups[app].append(peak / 1024**2)  # MB
 
     averaged = [(app, sum(vals)/len(vals)) for app, vals in groups.items()]
     max_app_len = max(len(app) for app, _ in averaged)

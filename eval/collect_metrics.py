@@ -17,16 +17,16 @@ os.makedirs("results", exist_ok=True)
 os.makedirs("results/versions", exist_ok=True)
 
 if args.synthetic:
-    INPUT_DIR = f"../ssa-analysis/analyzer/results/times/{args.date}/synthetic"
+    INPUT_DIR = f"output/metrics/{args.date}/synthetic"
 else:
-    INPUT_DIR = f"../ssa-analysis/analyzer/results/times/{args.date}/apps"
+    INPUT_DIR = f"output/metrics/{args.date}/realistic"
 
 if args.synthetic:
-    OUTPUT_FILE1 = f"results/averages-synthetic.yaml"
-    OUTPUT_FILE2 = f"results/versions/averages-synthetic-{unix_ts}.yaml"
+    OUTPUT_FILE1 = f"results/metrics-synthetic.yaml"
+    OUTPUT_FILE2 = f"results/versions/metrics-synthetic-{unix_ts}.yaml"
 else:
-    OUTPUT_FILE1 = f"results/averages-apps.yaml"
-    OUTPUT_FILE2 = f"results/versions/averages-apps-{unix_ts}.yaml"
+    OUTPUT_FILE1 = f"results/metrics-realistic.yaml"
+    OUTPUT_FILE2 = f"results/versions/metrics-realistic-{unix_ts}.yaml"
 
 NAME_MAP = {
     "dsb_mediamicroservices":   "MediaMicroservices",
@@ -36,7 +36,6 @@ NAME_MAP = {
     "trainticket":              "TrainTicket",
     "eshopmicroservices":       "EShopMicroservices",
     "digota":                   "Digota",
-    "synthetic_app":            "synthetic_app",
     "synthetic_app1":           "App 1",
     "synthetic_app2":           "App 2",
     "synthetic_app3":           "App 3",
