@@ -33,6 +33,7 @@ var CACHE = false
 var EVAL = false
 var SYNTHETIC = false
 var INPUT_REFS = false
+var DEBUG = false
 
 const EVAL_METRICS_BASE = "../eval/output/metrics"
 
@@ -41,10 +42,11 @@ func main() {
 	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
 	flag.BoolVar(&SYNTHETIC, "synthetic", false, "enable synthetic app")
 	flag.BoolVar(&INPUT_REFS, "refs", false, "enable input of references")
+	flag.BoolVar(&DEBUG, "debug", false, "enable debug output")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		fmt.Fprintf(os.Stderr, "usage: program [--eval] <appname>\n")
+		fmt.Fprintf(os.Stderr, "usage: program [--eval] [--debug] <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
 		fmt.Fprintln(os.Stderr, "- foobar")
 		fmt.Fprintln(os.Stderr, "- postnotification")
@@ -160,8 +162,10 @@ func main() {
 
 	if !EVAL {
 		app.WriteAppToJSON()
-		for fn, ssagraph := range funcGraphs {
-			ssagraph.WriteToDOTFile(appname, fn, false)
+		if DEBUG {
+			for fn, ssagraph := range funcGraphs {
+				ssagraph.WriteToDOTFile(appname, fn, false)
+			}
 		}
 	}
 
@@ -179,16 +183,14 @@ func main() {
 		tainter.Combine(ssagraph, funcGraphs)
 	}
 
-	if !EVAL {
+	if !EVAL && DEBUG {
 		var written = make(map[string]bool)
 		for fn, ssagraph := range funcGraphs {
 			ssagraph.WriteToDOTFile(appname, fn, true)
 			written[fn] = true
 		}
-		// debug
 		for fn, ssagraph := range funcGraphs {
 			for _, toGraph := range ssagraph.GetAllCombinedGraphs() {
-				// sanity check
 				newFn := fn + "." + toGraph.GetMethodName()
 				if exists, _ := written[newFn]; !exists {
 					toGraph.WriteToDOTFile(appname, newFn, true)
@@ -216,10 +218,6 @@ func main() {
 		delete(funcGraphs, fn)
 	}
 	funcGraphs = nil
-
-	if !EVAL {
-		absgraph.WriteVisited(appname)
-	}
 
 	elapsed_parsing := time.Since(start)
 
@@ -255,11 +253,12 @@ func main() {
 	elapsed_detection := time.Since(start_detection)
 
 	if !EVAL {
-		// phase 0: dummy pass to generate dot files with taints for debugging
-		iterator.Run(detection.PHASE_0_DEBUG)
-
-		absgraph.WriteToDOTFile(appname, true)
-		absgraph.WriteToDOTFile(appname, false)
+		if DEBUG {
+			// phase 0: dummy pass to generate dot files with taints for debugging
+			iterator.Run(detection.PHASE_0_DEBUG)
+			absgraph.WriteToDOTFile(appname, true)
+			absgraph.WriteToDOTFile(appname, false)
+		}
 
 		app.WriteAppToJSON()
 		app.WriteSchemaToJSON()
@@ -272,13 +271,15 @@ func main() {
 		fmt.Println(result)
 	}
 
-	fmt.Printf("Execution time (TOTAL):\t\t%.4f s\n", elapsed_total.Seconds())
-	fmt.Printf("Execution time (BLUEPRINT):\t%.4f s\n", elapsed_blueprint_compiler.Seconds())
-	fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
-	fmt.Printf("Execution time (SSA PARS):\t%.4f s\n", elapsed_ssa_parsing.Seconds())
-	fmt.Printf("Execution time (SSA TAIN):\t%.4f s\n", elapsed_ssa_tainting.Seconds())
-	fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
-	fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
+	if EVAL || DEBUG {
+		fmt.Printf("Execution time (TOTAL):\t\t%.4f s\n", elapsed_total.Seconds())
+		fmt.Printf("Execution time (BLUEPRINT):\t%.4f s\n", elapsed_blueprint_compiler.Seconds())
+		fmt.Printf("Execution time (PARSING):\t%.4f s\n", elapsed_parsing.Seconds())
+		fmt.Printf("Execution time (SSA PARS):\t%.4f s\n", elapsed_ssa_parsing.Seconds())
+		fmt.Printf("Execution time (SSA TAIN):\t%.4f s\n", elapsed_ssa_tainting.Seconds())
+		fmt.Printf("Execution time (SCHEMA):\t%.4f s\n", elapsed_schema.Seconds())
+		fmt.Printf("Execution time (DETECTION):\t%.4f s\n", elapsed_detection.Seconds())
+	}
 
 	app.WriteAppToJSON()
 	app.WriteSchemaToJSON()
@@ -298,8 +299,10 @@ func main() {
 		saveAnalysisTime(app, times)
 	}
 
-	abstractgraph.ComputeGraphStats(absgraph)
-	abstractgraph.GatherGraphStats(absgraph)
+	if DEBUG {
+		abstractgraph.ComputeGraphStats(absgraph)
+		abstractgraph.GatherGraphStats(absgraph)
+	}
 }
 
 type AnalysisTimes struct {

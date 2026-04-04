@@ -6,8 +6,6 @@ import (
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/common"
 	"analyzer/pkg/config"
-	"fmt"
-	"github.com/sirupsen/logrus"
 )
 
 type IterationPhase int
@@ -71,12 +69,10 @@ func (it *Iterator) Run(mode IterationPhase) {
 	}
 
 	clientNode := it.graph.GetNodeByName("client")
-	n := len(it.graph.GetEdgesFromNode(clientNode))
 
-	for i, edge := range it.graph.GetEdgesFromNode(clientNode) {
+	for _, edge := range it.graph.GetEdgesFromNode(clientNode) {
 		toNode := edge.GetToNode()
-		fmt.Printf("visiting frontend %d out of %d\n", i, n)
-		logrus.WithField("node", toNode.String()).Infof("visiting frontend %d out of %d\n", i, n)
+		//logrus.WithField("node", toNode.String()).Infof("visiting frontend %d out of %d\n", i, n)
 
 		it.newReqIdx()
 
@@ -86,9 +82,7 @@ func (it *Iterator) Run(mode IterationPhase) {
 			}
 		}
 
-		// FIXME: skip for now
-		// maybe for the future we can ensure we do not append the Run to the nodes list
-		// but let it be attached to edges
+		// TODO: skip for now but, in the future, we could not append to the nodes list but let it attached to edges
 		if toNode.GetMethod() == "Run" {
 			continue
 		}

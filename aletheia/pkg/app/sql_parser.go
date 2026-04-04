@@ -174,8 +174,6 @@ func ParseSQLRead(db string, stmtStr string) ([]string, []string, []string, bool
 		return nil, nil, nil, false
 	}
 
-	//argIdx := 0
-	//FIXME: selectedFields has always only one element and the object is the "target" from the func args
 	var selectedFields []string
 	var filterFields []string
 	var tableNameAliasLst []tableNameAlias

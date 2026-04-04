@@ -1,9 +1,7 @@
 package abstractgraph
 
 import (
-	"fmt"
 	"math"
-	"os"
 	"sort"
 
 	"github.com/sirupsen/logrus"
@@ -404,34 +402,4 @@ func registerDatabaseFields(graph *AbstractCallGraph, args []*AbstractObject) {
 			}
 		}
 	}
-}
-
-func (graph *AbstractCallGraph) WriteVisited(appname string) {
-	filename := fmt.Sprintf("output/%s/abstractcallgraph.visited", appname)
-
-	file, err := os.Create(filename)
-	defer file.Close()
-	if err != nil {
-		logrus.Fatalf("error: %s", err.Error())
-	}
-
-	clientNode := graph.GetNodeByName("client")
-
-	// EVAL: logrus.Tracef("starting...")
-	for i, edge := range graph.GetEdgesFromNode(clientNode) {
-		fmt.Fprintf(file, "\n\n%d: %s", i, edge.to.String())
-		for _, edge2 := range graph.GetEdgesFromNode(edge.to) {
-			fmt.Fprintf(file, "\n\t-> "+edge2.to.String())
-			for _, edge3 := range graph.GetEdgesFromNode(edge2.to) {
-				fmt.Fprintf(file, "\n\t\t-> "+edge3.to.String())
-				for _, edge4 := range graph.GetEdgesFromNode(edge3.to) {
-					fmt.Fprintf(file, "\n\t\t\t-> "+edge4.to.String())
-					for _, edge5 := range graph.GetEdgesFromNode(edge4.to) {
-						fmt.Fprintf(file, "\n\t\t\t\t-> "+edge5.to.String())
-					}
-				}
-			}
-		}
-	}
-	// EVAL: logrus.Tracef("end...")
 }
