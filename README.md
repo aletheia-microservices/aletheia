@@ -21,10 +21,10 @@ Integrity violations are detected by searching for the following patterns formal
 
 ## Overview
 
-The `aletheia/pkg` directory contains the core packages that implement the functionality:
+The `pkg` directory contains the core packages that implement the functionality:
 
 ```
-aletheia/pkg/
+pkg/
 ├── abstractgraph/                  # Abstract call graph construction and analysis
 ├── app/                            # Application model with services and databases
 ├── common/
@@ -42,10 +42,10 @@ aletheia/pkg/
 └── utils/
 ```
 
-After analyzing an application, the output will be stored in `aletheia/output/{app}` according to the following structure:
+After analyzing an application, the output will be stored in `output/{app}` according to the following structure:
 
 ```
-aletheia/output/{app}/
+output/{app}/
 ├── app.json                            # High-level dependencies with services metadata (packages, fields, methods, etc.) and databases
 ├── schema.json                         # Extracted data schema
 └── analysis/                           # Results for each analyzed pattern
@@ -68,7 +68,7 @@ git submodule update --init --recursive
 
 - [Golang](https://go.dev/doc/install) >= 1.24.5
 
-## Supported Applications
+## Registering new Applications
 
 By default, Aletheia supports analysis for the following applications:
 
@@ -80,14 +80,21 @@ By default, Aletheia supports analysis for the following applications:
  - dsb_mediamicroservices
  - trainticket
 
-Additional applications can be analyzed by extending the framework-specific extraction logic and configuration.
+To analyze new applications, add an entry to `configs/apps.yaml`, which contains information about the application location and corresponding Blueprint spec.
+
+Generate the application registry. The following script that creates a Go file under `pkg/frameworks/blueprint/` and updates `go.mod` so that Aletheia can properly import applications to be analyzed:
+
+```zsh
+# make sure you run from this directory so paths for the new Go file and the Go mod file are resolved correctly
+cd aletheia
+go run scripts/gen_app_registry/main.go
+```
 
 ## Running Aletheia
 
 Run Aletheia to analyze the application specified by the `app` parameter:
 
 ```zsh
-cd aletheia
 go run main.go {app}
 ```
 
@@ -97,4 +104,4 @@ Example:
 go run main.go sockshop
 ```
 
-This will generate the analysis results under `aletheia/output/sockshop`
+This will generate the analysis results under `output/sockshop`.

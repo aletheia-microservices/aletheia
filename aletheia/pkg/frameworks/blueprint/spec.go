@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/blueprint-uservices/blueprint/blueprint/pkg/ir"
+	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 	"github.com/blueprint-uservices/blueprint/plugins/golang"
 	"github.com/blueprint-uservices/blueprint/plugins/memcached"
 	"github.com/blueprint-uservices/blueprint/plugins/mongodb"
@@ -14,9 +15,18 @@ import (
 	"github.com/blueprint-uservices/blueprint/plugins/workflow/workflowspec"
 	"github.com/sirupsen/logrus"
 
+	blueprint_apps "analyzer/pkg/frameworks/blueprint/apps"
 	"analyzer/pkg/frameworks/components"
-	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 )
+
+func loadAppSpec(app string) cmdbuilder.SpecOption {
+	logrus.WithField("app", app).Infof("loading app spec")
+	if info, ok := blueprint_apps.APPS_INFO[app]; ok {
+		return info.BlueprintSpec
+	}
+	logrus.Fatalf("unknown application %s", app)
+	return cmdbuilder.SpecOption{}
+}
 
 func LoadWiring(appName string, synthetic bool) ([]*components.ServiceInfo, []*components.DatastoreInfo, []string) {
 	var spec cmdbuilder.SpecOption
