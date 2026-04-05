@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sort"
 
-	"analyzer/pkg/app"
-
 	"github.com/sirupsen/logrus"
+
+	"analyzer/pkg/app"
 )
 
 func (detector *KeyCoordinationDetector) GetResults() string {
@@ -44,9 +44,6 @@ func (detector *KeyCoordinationDetector) ComputeResults(app *app.App) {
 
 		var printedEntry = false
 		for _, fread := range sortedForeignReads {
-			//detector.restrictive = false
-
-			// this information is only accurate after the entire schema is built at the end of the iteration
 			detector.updateForeignReadConstraints(fread)
 			if !detector.isValidForeignRead(fread) {
 				continue

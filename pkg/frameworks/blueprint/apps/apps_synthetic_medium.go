@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	cfg, err := loadAppsConfig("configs/apps_synthetic_medium.yaml")
+	cfg, err := loadAppsConfig("registry/apps_synthetic_medium.yaml")
 	if err != nil {
 		logrus.Fatalf("failed to load apps config: %s", err)
 	}

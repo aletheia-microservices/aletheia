@@ -20,6 +20,7 @@ type AbstractCallGraph struct {
 	edges      []*AbstractEdge
 	rpcs       int // total number of cumulative calls
 	dbaccesses int // total number of cumulative calls
+	callgraphs int // total number of cumulative graphs
 }
 
 func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
@@ -28,6 +29,13 @@ func NewAbstractCallGraph(app *app.App) *AbstractCallGraph {
 		nodes: make(map[string]*AbstractNode),
 		rpcs:  0,
 	}
+}
+
+func (graph *AbstractCallGraph) ComputeAndGetNumCallGraphs() int {
+	clientNode := graph.GetNodeByNameIfExists("client")
+	entrypointsCount := len(graph.GetEdgesFromNode(clientNode))
+	graph.callgraphs = entrypointsCount
+	return graph.callgraphs
 }
 
 func (graph *AbstractCallGraph) GetApp() *app.App {

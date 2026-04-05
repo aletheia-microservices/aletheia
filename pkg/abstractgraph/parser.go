@@ -120,7 +120,6 @@ func GatherGraphStats(graph *AbstractCallGraph) {
 
 func gatherGraphStatsCounts(graph *AbstractCallGraph) {
 	var datastoreCount int
-	var entrypointsCount int
 	var services map[string]bool = make(map[string]bool)
 	for _, node := range graph.GetNodes() {
 		if node.GetName() != "client" {
@@ -133,9 +132,8 @@ func gatherGraphStatsCounts(graph *AbstractCallGraph) {
 			}
 		}
 	}
-	clientNode := graph.GetNodeByNameIfExists("client")
-	entrypointsCount = len(graph.GetEdgesFromNode(clientNode))
-	logrus.Infof("[INFO] [ABSTRACT GRAPH] #reqs. stateful (#rpcs)=%d, #reqs. stateless (#db accesses)=%d, #services=%d, #datastores=%d, #callgraphs=%d\n", graph.GetRPCCount(), graph.GetDBAccessCount(), len(services), datastoreCount, entrypointsCount)
+	callgraphs := graph.ComputeAndGetNumCallGraphs()
+	logrus.Infof("[INFO] [ABSTRACT GRAPH] #reqs. stateful (#rpcs)=%d, #reqs. stateless (#db accesses)=%d, #services=%d, #datastores=%d, #callgraphs=%d\n", graph.GetRPCCount(), graph.GetDBAccessCount(), len(services), datastoreCount, callgraphs)
 }
 
 func gatherGraphStatsFanout(graph *AbstractCallGraph) {

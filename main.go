@@ -105,19 +105,20 @@ func main() {
 	}
 
 	// ensure output sub directory for graphs exists
-	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/tainted", appname), os.ModePerm)
-	if err != nil {
-		logrus.Fatalf("error: %s", err.Error())
-	}
-	err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/untainted", appname), os.ModePerm)
-	if err != nil {
-		logrus.Fatalf("error: %s", err.Error())
-	}
-
-	// ensure output sub directory for graphs exists
-	err = os.MkdirAll(fmt.Sprintf("output/%s/ssa", appname), os.ModePerm)
-	if err != nil {
-		logrus.Fatalf("error: %s", err.Error())
+	if DEBUG {
+		err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/tainted", appname), os.ModePerm)
+		if err != nil {
+			logrus.Fatalf("error: %s", err.Error())
+		}
+		err = os.MkdirAll(fmt.Sprintf("output/%s/ssagraphs/untainted", appname), os.ModePerm)
+		if err != nil {
+			logrus.Fatalf("error: %s", err.Error())
+		}
+		// ensure output sub directory for graphs exists
+		err = os.MkdirAll(fmt.Sprintf("output/%s/ssa", appname), os.ModePerm)
+		if err != nil {
+			logrus.Fatalf("error: %s", err.Error())
+		}
 	}
 
 	// ------------ PART 2
@@ -289,6 +290,7 @@ func main() {
 			App:              app.GetName(),
 			NumMicroservices: app.NumberOfMicroservices(),
 			NumDatastores:    app.NumberOfDatastores(),
+			NumCallGraphs:    absgraph.ComputeAndGetNumCallGraphs(),
 			Blueprint:        elapsed_blueprint_compiler.Seconds(),
 			Rpcs:             absgraph.GetRPCCount(),
 			Total:            elapsed_total.Seconds(),
@@ -309,6 +311,7 @@ type AnalysisTimes struct {
 	App              string  `yaml:"app"`
 	NumMicroservices int     `yaml:"ms_count"`
 	NumDatastores    int     `yaml:"ds_count"`
+	NumCallGraphs    int     `yaml:"callgraphs"`
 	Rpcs             int     `yaml:"rpcs"`
 	Blueprint        float64 `yaml:"blueprint"`
 	Total            float64 `yaml:"total_s"`

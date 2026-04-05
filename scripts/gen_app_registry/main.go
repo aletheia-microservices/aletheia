@@ -20,11 +20,11 @@ var rawTemplate string
 var fileTemplate = template.Must(template.New("apps").Parse(rawTemplate))
 
 const (
-	DEFAULT_CONFIG_FILE = "apps.yaml"
-	DEFAULT_CONFIG_DIR  = "configs"
-	DEFAULT_OUTPUT_DIR  = "pkg/frameworks/blueprint/apps"
-	DEFAULT_BUILD_TAG   = "!eval"
-	DEFAULT_GO_MOD      = "go.mod"
+	DEFAULT_REGISTRY_FILE = "apps.yaml"
+	DEFAULT_REGISTRY_DIR  = "configs"
+	DEFAULT_OUTPUT_DIR    = "pkg/frameworks/blueprint/apps"
+	DEFAULT_BUILD_TAG     = "!eval"
+	DEFAULT_GO_MOD        = "go.mod"
 )
 
 type AppConfig struct {
@@ -79,7 +79,7 @@ func deriveSpecMethod(appName, specName string) string {
 func extractModulesFromAppRoot(appRoot string) (wiringModule, workflowModule, relativeBase string) {
 	wiringModule = appRoot + "/wiring"
 	workflowModule = appRoot + "/workflow"
-	relativeBase = "../blueprint/examples/" + path.Base(appRoot)
+	relativeBase = "./blueprint/examples/" + path.Base(appRoot)
 	return
 }
 
@@ -111,7 +111,7 @@ func updateGoMod(gomodPath string, apps []AppConfig) {
 			addLine(fmt.Sprintf("require %s v0.0.0", wiring))
 		}
 		if !has(workflow) {
-			addLine(fmt.Sprintf("require %s v0.0.0 // indirect", workflow))
+			addLine(fmt.Sprintf("require %s v0.0.0", workflow))
 		}
 		if !has("replace " + appRoot + " ") {
 			addLine(fmt.Sprintf("replace %s => %s", appRoot, relativeBase))
@@ -140,7 +140,6 @@ func updateGoMod(gomodPath string, apps []AppConfig) {
 	}
 	fmt.Printf("[INFO] updated %s\n", gomodPath)
 }
-
 
 func deriveOutputFile(configFile string) string {
 	base := path.Base(configFile)
@@ -204,21 +203,21 @@ func processConfigFile(configPath string) {
 }
 
 func main() {
-	configFile := flag.String("config", "", "path to apps YAML config (relative to configs/); if omitted, all YAML files in configs/ are processed")
+	configFile := flag.String("config", "", "path to apps YAML config (relative to registry/); if omitted, all YAML files in registry/ are processed")
 	flag.Parse()
 
 	if *configFile != "" {
-		processConfigFile(path.Join(DEFAULT_CONFIG_DIR, *configFile))
+		processConfigFile(path.Join(DEFAULT_REGISTRY_DIR, *configFile))
 		return
 	}
 
-	// no config specified — process all YAML files in DEFAULT_CONFIG_DIR
-	matches, err := filepath.Glob(filepath.Join(DEFAULT_CONFIG_DIR, "*.yaml"))
+	// no config specified — process all YAML files in DEFAULT_REGISTRY_DIR
+	matches, err := filepath.Glob(filepath.Join(DEFAULT_REGISTRY_DIR, "*.yaml"))
 	if err != nil {
 		log.Fatalf("[ERROR] error listing config dir: %v", err)
 	}
 	if len(matches) == 0 {
-		log.Fatalf("[ERROR] no YAML files found in %s", DEFAULT_CONFIG_DIR)
+		log.Fatalf("[ERROR] no YAML files found in %s", DEFAULT_REGISTRY_DIR)
 	}
 	for _, configPath := range matches {
 		processConfigFile(configPath)

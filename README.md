@@ -11,13 +11,13 @@ Aletheia operates in four steps:
 
 Integrity violations are detected by searching for the following patterns formalized in our paper:
 
-| ID | Constraint Type | Violation Pattern |
-| --- | --- | --- |
+| ID   | Constraint Type       | Violation Pattern            |
+| ---- | --------------------- | ---------------------------- |
 | RI-1 | Referential integrity | Absence of cascading effects |
-| RI-2 | Referential integrity | Concurrent operations |
-| RI-3 | Referential integrity | Uncoordinated replication |
-| EI-1 | Entity integrity | Uncoordinated replication |
-| Un-2 | Uniqueness | Conflicting writes |
+| RI-2 | Referential integrity | Concurrent operations        |
+| RI-3 | Referential integrity | Uncoordinated replication    |
+| EI-1 | Entity integrity      | Uncoordinated replication    |
+| Un-2 | Uniqueness            | Conflicting writes           |
 
 ## Overview
 
@@ -49,12 +49,20 @@ output/{app}/
 ├── app.json                            # High-level dependencies with services metadata (packages, fields, methods, etc.) and databases
 ├── schema.json                         # Extracted data schema
 └── analysis/                           # Results for each analyzed pattern
-    ├── foreign-key-cascade.txt         # RI-1 pattern
-    ├── foreign-key-concurrency.txt     # RI-2 pattern
-    ├── foreign-key-coordination.txt    # RI-3 pattern
-    ├── primary-key-coordination.txt    # EI-1 pattern
-    └── unicity-concurrency.txt         # Un-2 pattern
+│   ├── foreign-key-cascade.txt         # RI-1 pattern
+│   ├── foreign-key-concurrency.txt     # RI-2 pattern
+│   ├── foreign-key-coordination.txt    # RI-3 pattern
+│   ├── primary-key-coordination.txt    # EI-1 pattern
+│   └── unicity-concurrency.txt         # Un-2 pattern
 ```
+
+The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications. Within each YAML file, every application entry contains metadata such as `name`, `package_path`, the corresponding Blueprint `spec_name` and `spec_path`, and optional `sql_tables` or `nosql_path` fields for database constraints.
+
+The `scripts/gen_app_registry/` directory contains a script that uses the YAML files in `registry/` to: (1) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (2) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
+
+## Requirements
+
+- [Golang](https://go.dev/doc/install) >= 1.24.5
 
 ## Getting Started
 
@@ -64,33 +72,43 @@ After cloning the repository, initialize the Blueprint submodule:
 git submodule update --init --recursive
 ```
 
-## Requirements
+### Registering new Applications
 
-- [Golang](https://go.dev/doc/install) >= 1.24.5
+By default, Aletheia supports analysis for the following applications inside `blueprint/examples/`:
 
-## Registering new Applications
+- digota
+- sockshop
+- eshopmicroservices
+- postnotification
+- dsb_socialnetwork
+- dsb_mediamicroservices
+- trainticket
 
-By default, Aletheia supports analysis for the following applications:
+If you want to analyze your own application written in Blueprint, make sure it is placed in `blueprint/examples/`. The expected structure is:
 
- - digota
- - sockshop
- - eshopmicroservices
- - postnotification
- - dsb_socialnetwork
- - dsb_mediamicroservices
- - trainticket
+```
+blueprint/examples/{app}/
+├── wiring/             # blueprint specification
+├── workflow/           # blueprint workflow
+│   └── {app}/          # microservices code
+```
 
-To analyze new applications, add an entry to `configs/apps.yaml`, which contains information about the application location and corresponding Blueprint spec.
+Then, add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
+- `name`: application name
+- `package_path`: package path for application code
+- `spec_name`: blueprint spec name with format `{app_name}_{spec_name}` (e.g., `foobar_docker` => spec `Docker` for application `foobar`)
+- `spec_path`: package path for spec
+- `sql_tables` (optional): primary keys and uniqueness constraints for sql databases
+- `nosql_path` (optional): indexes constraints for nosql databases
 
-Generate the application registry. The following script that creates a Go file under `pkg/frameworks/blueprint/` and updates `go.mod` so that Aletheia can properly import applications to be analyzed:
+Generate the application registry:
 
 ```zsh
 # make sure you run from this directory so paths for the new Go file and the Go mod file are resolved correctly
-cd aletheia
 go run scripts/gen_app_registry/main.go
 ```
 
-## Running Aletheia
+### Running Aletheia
 
 Run Aletheia to analyze the application specified by the `app` parameter:
 
@@ -101,7 +119,7 @@ go run main.go {app}
 Example:
 
 ```zsh
-go run main.go sockshop
+go run main.go postnotification
 ```
 
-This will generate the analysis results under `output/sockshop`.
+This will print out and save the analysis results under `output/postnotification/`.

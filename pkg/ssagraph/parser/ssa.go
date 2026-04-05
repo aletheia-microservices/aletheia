@@ -198,8 +198,6 @@ func parseInstr(app *app.App, graph *ssagraph.SSAGraph, instr ssa.Instruction, i
 	case *ssa.Go:
 		if makeClosure, ok := t.Call.Value.(*ssa.MakeClosure); ok {
 			if fn, ok := makeClosure.Fn.(*ssa.Function); ok {
-				fmt.Printf("make_closure_fn: %s\n", makeClosure.Fn)
-				fmt.Printf("short_func_path: %s\n", utils.GetShortFunctionPath(fn.String()))
 				logrus.WithField("instr", instr.String()).Warnf("[SSA PARSE INSTR] found *ssa.Go")
 				iterateFunc(app, outFile, fn, funcGraphs, true)
 			}

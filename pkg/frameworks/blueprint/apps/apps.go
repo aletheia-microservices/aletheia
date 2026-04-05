@@ -4,22 +4,22 @@
 package blueprint_apps
 
 import (
-	specs_postnotification "github.com/blueprint-uservices/blueprint/examples/postnotification/wiring/specs"
 	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
-	specs_eshopmicroservices "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring/specs"
-	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
-	specs_sockshop "github.com/blueprint-uservices/blueprint/examples/sockshop/wiring/specs"
-	specs_dsb_socialnetwork "github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring/specs"
 	specs_dsb_hotel2 "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring/specs"
-	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/trainticket/wiring/specs"
+	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
+	specs_dsb_socialnetwork "github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring/specs"
+	specs_eshopmicroservices "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring/specs"
 	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
 	specs_foobar2 "github.com/blueprint-uservices/blueprint/examples/foobar2/wiring/specs"
+	specs_postnotification "github.com/blueprint-uservices/blueprint/examples/postnotification/wiring/specs"
+	specs_sockshop "github.com/blueprint-uservices/blueprint/examples/sockshop/wiring/specs"
+	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/trainticket/wiring/specs"
 	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 	"github.com/sirupsen/logrus"
 )
 
 func init() {
-	cfg, err := loadAppsConfig("configs/apps.yaml")
+	cfg, err := loadAppsConfig("registry/apps.yaml")
 	if err != nil {
 		logrus.Fatalf("failed to load apps config: %s", err)
 	}
