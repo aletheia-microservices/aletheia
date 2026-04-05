@@ -29,16 +29,16 @@ import (
 	"analyzer/pkg/utils"
 )
 
-var CACHE = false
+var INIT = false
 var EVAL = false
 var SYNTHETIC = false
 var INPUT_REFS = false
 var DEBUG = false
 
-const EVAL_METRICS_BASE = "../eval/output/metrics"
+const EVAL_METRICS_BASE = "eval/metrics"
 
 func main() {
-	flag.BoolVar(&CACHE, "cache", false, "enable cache mode")
+	flag.BoolVar(&INIT, "init", false, "enable init mode")
 	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
 	flag.BoolVar(&SYNTHETIC, "synthetic", false, "enable synthetic app")
 	flag.BoolVar(&INPUT_REFS, "refs", false, "enable input of references")
@@ -91,8 +91,8 @@ func main() {
 	app := app.NewApp(appname)
 	app.Init(SYNTHETIC)
 
-	if CACHE {
-		// load app from cache and skip analysis
+	if INIT {
+		// load app from init and skip analysis
 		return
 	}
 
