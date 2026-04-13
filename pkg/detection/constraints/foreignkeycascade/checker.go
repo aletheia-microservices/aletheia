@@ -133,6 +133,7 @@ func (detector *ForeignKeyCascadeDetector) markCascadingDelete(app *app.App, req
 				pendingFieldsToKeep = append(pendingFieldsToKeep, field)
 			}
 		}
+		
 		prevCascadeDelete.pendingFields = pendingFieldsToKeep
 	}
 }

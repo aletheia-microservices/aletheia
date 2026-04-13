@@ -29,11 +29,14 @@ import (
 	"analyzer/pkg/utils"
 )
 
-var INIT = false
-var EVAL = false
-var SYNTHETIC = false
-var INPUT_REFS = false
-var DEBUG = false
+var (
+	INIT             bool
+	EVAL             bool
+	SYNTHETIC        bool
+	INPUT_REFS       bool
+	DEBUG            bool
+	DETECTION_CONFIG string
+)
 
 const EVAL_METRICS_BASE = "eval/metrics"
 
@@ -43,10 +46,11 @@ func main() {
 	flag.BoolVar(&SYNTHETIC, "synthetic", false, "enable synthetic app")
 	flag.BoolVar(&INPUT_REFS, "refs", false, "enable input of references")
 	flag.BoolVar(&DEBUG, "debug", false, "enable debug output")
+	flag.StringVar(&DETECTION_CONFIG, "detection_config", "", "path to detection config yaml")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		fmt.Fprintf(os.Stderr, "usage: program [--eval] [--debug] <appname>\n")
+		fmt.Fprintf(os.Stderr, "usage: program [--eval] [--debug] [--detection_config filepath.yaml] <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
 		fmt.Fprintln(os.Stderr, "- foobar")
 		fmt.Fprintln(os.Stderr, "- postnotification")
@@ -79,6 +83,10 @@ func main() {
 	}
 
 	appname := flag.Arg(0)
+
+	if DETECTION_CONFIG != "" {
+		detection.LoadInputConfig(appname, DETECTION_CONFIG)
+	}
 
 	start := time.Now()
 

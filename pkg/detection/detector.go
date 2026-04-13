@@ -5,10 +5,18 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/sirupsen/logrus"
+
 	"analyzer/pkg/abstractgraph"
 	"analyzer/pkg/app"
+)
 
-	"github.com/sirupsen/logrus"
+const (
+	TEXT_BOLD_LIGHT_YELLOW = "\033[1;38;5;179m"
+	TEXT_BOLD_LIGHT_RED    = "\033[1;31m"
+	TEXT_RESET_COLOR       = "\033[0m"
+	TEXT_BOLD_LIGHT_BLUE   = "\033[1;38;5;68m"
+	TEXT_BOLD_LIGHT_GREEN  = "\033[1;32m"
 )
 
 type Detector interface {
@@ -31,12 +39,6 @@ type Detector interface {
 	OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
 	OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
 }
-
-const TEXT_BOLD_LIGHT_YELLOW = "\033[1;38;5;179m"
-const TEXT_BOLD_LIGHT_RED = "\033[1;31m"
-const TEXT_RESET_COLOR = "\033[0m"
-const TEXT_BOLD_LIGHT_BLUE = "\033[1;38;5;68m"
-const TEXT_BOLD_LIGHT_GREEN = "\033[1;32m"
 
 func SaveResults(app *app.App, detectors ...Detector) []string {
 	detectorsResults := make([]string, len(detectors))

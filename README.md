@@ -56,9 +56,11 @@ output/{app}/
 │   └── unicity-concurrency.txt         # Un-2 pattern
 ```
 
-The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications. Within each YAML file, every application entry contains metadata such as `name`, `package_path`, the corresponding Blueprint `spec_name` and `spec_path`, and optional `sql_tables` or `nosql_path` fields for database constraints.
+The `config/` folder contains YAML files that specify warnings to be ignored by Aletheia.
 
-The `scripts/gen_app_registry/` directory contains a script that uses the YAML files in `registry/` to: (1) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (2) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
+The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications.
+
+The `scripts/gen_app_registry/` folder contains a script that uses the YAML files in `registry/` to: (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
 
 ## Requirements
 
@@ -113,13 +115,16 @@ go run scripts/gen_app_registry/main.go
 Run Aletheia to analyze the application specified by the `app` parameter:
 
 ```zsh
-go run main.go {app}
+go run main.go [--detection_config <filepath.yaml>] {app}
 ```
 
-Example:
+Examples:
 
 ```zsh
 go run main.go postnotification
+go run main.go --detection_config config/sockshop.yaml sockshop
 ```
 
-This will print out and save the analysis results under `output/postnotification/`.
+The warnings related to integrity violations will be saved in `aletheia/output/{app}/analysis/`.
+
+The information about the application dependencies (microservices and datastores used) and the schema are saved in `aletheia/output/{app}/app.json` and `aletheia/output/{app}/schema.json`, respectively.
