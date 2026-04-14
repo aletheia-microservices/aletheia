@@ -122,13 +122,11 @@ func (taint *AbstractTaint) LongLongString() string {
 }
 
 func (taint *AbstractTaint) Similar(other *AbstractTaint) bool {
-	// EVAL: logrus.Tracef("[ABSTRACT TAINT] [SIMILAR] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID
 }
 
 func (taint *AbstractTaint) EqualExceptReadKeyAndReadVal(other *AbstractTaint) bool {
-	// EVAL: logrus.Tracef("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID &&
 		taint.dbOpType == other.dbOpType &&
@@ -137,7 +135,6 @@ func (taint *AbstractTaint) EqualExceptReadKeyAndReadVal(other *AbstractTaint) b
 }
 
 func (taint *AbstractTaint) EqualExceptPrimaryAndTrace(other *AbstractTaint) bool {
-	// EVAL: logrus.Tracef("[ABSTRACT TAINT] [EQUAL] checking if taints are equal:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	return taint.fieldpath == other.fieldpath &&
 		taint.dbcallID == other.dbcallID &&
 		taint.dbOpType == other.dbOpType &&
@@ -149,11 +146,8 @@ func (taint *AbstractTaint) EqualExceptPrimaryAndTrace(other *AbstractTaint) boo
 // - curr dbfield 	= notification
 // - other dbfield 	= notification.PostID
 func (taint *AbstractTaint) IsUpperTaint(other *AbstractTaint) (bool, string) {
-	// EVAL: logrus.Tracef("[ABSTRACT TAINT] [SUPER] checking if taint is super path:\n\t%s\n\t%s\n", taint.LongString(), other.LongString())
 	if ok, diff := utils.IsUpperPath(taint.fieldpath, other.fieldpath); ok {
-		// EVAL: logrus.Tracef("got subpath: %s\n", diff)
 		return taint.dbcallID == other.dbcallID, diff
 	}
-	// EVAL: logrus.Tracef("[ABSTRACT TAINT] [SUPER] returning false...\n")
 	return false, ""
 }

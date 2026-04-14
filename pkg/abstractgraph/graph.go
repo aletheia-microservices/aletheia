@@ -58,7 +58,6 @@ func (graph *AbstractCallGraph) AddNode(name string, node *AbstractNode) {
 }
 
 func (graph *AbstractCallGraph) AddEdge(edge *AbstractEdge) {
-	// EVAL: logrus.Tracef("[ABSTRACTGRAPH] added new edge: %s\n", edge.String())
 	graph.edges = append(graph.edges, edge)
 }
 
@@ -109,9 +108,9 @@ func (graph *AbstractCallGraph) WriteToDOTFile(appname string, detailed bool) er
 	var filename string
 
 	if detailed {
-		filename = fmt.Sprintf("output/%s/abstractcallgraph_detailed.dot", appname)
+		filename = fmt.Sprintf("output/%s/abstractcallgraph/abstractcallgraph_detailed.dot", appname)
 	} else {
-		filename = fmt.Sprintf("output/%s/abstractcallgraph.dot", appname)
+		filename = fmt.Sprintf("output/%s/abstractcallgraph/abstractcallgraph.dot", appname)
 	}
 	file, err := os.Create(filename)
 	if err != nil {

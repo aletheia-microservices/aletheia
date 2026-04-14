@@ -20,7 +20,7 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 	switch edge.GetType() {
 	case ssagraph.EDGE_MAP_UPDATE:
 		if upwards {
-			// TODO (similar to FIELD and INDEXES but needs more boring logic)
+			// TODO: implement logic similar to FIELD and INDEXES
 			break
 		}
 
@@ -91,8 +91,8 @@ func propagateTaintNearbyFromNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.
 		instr := toNode.GetInstruction().(*ssa.MapUpdate)
 		keyStr, ok := utils.ExtractStringFromValue(instr.Key)
 		if !ok {
+			// TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static
 			prefix = DYNAMIC_MAP_KEY // dynamic
-			// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 		} else {
 			prefix = "." + keyStr
 		}
@@ -201,8 +201,8 @@ func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SS
 		var prefix string
 		keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
 		if !ok {
+			// TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static
 			prefix = DYNAMIC_MAP_KEY // dynamic
-			// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 		} else {
 			prefix = "." + keyStr
 		}
@@ -225,8 +225,8 @@ func propagateTaintNearbyToNodeOnMap(graph *ssagraph.SSAGraph, edge *ssagraph.SS
 		var prefix string
 		keyStr, ok := utils.ExtractStringFromValue(node.GetValueLookup().Index)
 		if !ok {
+			// TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static
 			prefix = DYNAMIC_MAP_KEY // dynamic
-			// logrus.Fatalf("TODO: if one key is dynamic, then all keys must be dynamic, even if a subset is static!")
 		} else {
 			prefix = "." + keyStr
 		}

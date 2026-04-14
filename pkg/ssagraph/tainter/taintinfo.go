@@ -172,18 +172,12 @@ func (t TaintInfo) updateValue(val ssa.Value) TaintInfo {
 func (t TaintInfo) cutObjectPathSuffix(suffix string) (TaintInfo, bool) {
 	var ok bool
 	t.objpath, ok = strings.CutSuffix(t.objpath, suffix)
-	if !ok {
-		// EVAL: logrus.Tracef("[TAINTINFO] [WARNING] objectpath (%s) does not contain suffix (%s)\n", t.objpath, suffix)
-	}
 	return t, ok
 }
 
 func (t TaintInfo) cutObjectPathPrefix(prefix string) (TaintInfo, bool) {
 	var ok bool
 	t.objpath, ok = strings.CutPrefix(t.objpath, prefix)
-	if !ok {
-		// EVAL: logrus.Tracef("[TAINTINFO] [WARNING] objectpath (%s) does not contain prefix (%s)\n", t.objpath, prefix)
-	}
 	return t, ok
 }
 
@@ -203,9 +197,10 @@ func (t TaintInfo) setObjectPath(new string) TaintInfo {
 }
 
 func (t TaintInfo) updateCallPathSuffix(suffix string) TaintInfo {
-	if t.infoType == TAINT_INFO_DATABASE {
+	switch t.infoType {
+	case TAINT_INFO_DATABASE:
 		t.dbTaint.dbpath = t.dbTaint.dbpath + suffix
-	} else if t.infoType == TAINT_INFO_SERVICE {
+	case TAINT_INFO_SERVICE:
 		t.svTaint.svpath = t.svTaint.svpath + suffix
 	}
 	return t
@@ -213,9 +208,10 @@ func (t TaintInfo) updateCallPathSuffix(suffix string) TaintInfo {
 
 // full path: <database>.<table>.<fieldname>[.<any sub path> or [<any sub path>]
 func (t TaintInfo) updateCallPathPrefix(prefix string) TaintInfo {
-	if t.infoType == TAINT_INFO_DATABASE {
+	switch t.infoType {
+	case TAINT_INFO_DATABASE:
 		t.dbTaint.dbpath = insertAfterFieldName(t.dbTaint.dbpath, prefix)
-	} else if t.infoType == TAINT_INFO_SERVICE {
+	case TAINT_INFO_SERVICE:
 		t.svTaint.svpath = insertAfterFieldName(t.svTaint.svpath, prefix)
 	}
 	return t

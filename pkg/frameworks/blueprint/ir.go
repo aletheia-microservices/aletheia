@@ -34,7 +34,6 @@ func buildIR(name string, spec cmdbuilder.SpecOption) *cmdbuilder.CmdBuilder {
 		OutputDir: "build",
 	}
 	logging.DisableCompilerLogging()
-	//logging.EnableCompilerLogging()
 	builder.Registry[spec.Name] = spec
 	builder.Wiring = wiring.NewWiringSpec(builder.Name)
 	if builder.Wiring == nil {
@@ -60,8 +59,6 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 	databases := make(map[string]ir.IRNode)
 	args := make(map[*workflowspec.Service][]ir.IRNode)
 	var frontends []string
-	// EVAL: logrus.Tracef("[IR] inspecting ir %v\n", builder.IR)
-	// EVAL: logrus.Traceln()
 	for _, node := range builder.IR.Children {
 		if n, ok := node.(*address.Address[*http.GolangHttpServer]); ok {
 			if httpService, ok := n.GetDestination().(*http.GolangHttpServer); ok {
@@ -77,8 +74,6 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 						if nnnn, ok := child.(*goproc.Process); ok {
 							for _, child := range nnnn.Nodes {
 								if workflowHandler, ok := child.(*workflow.WorkflowHandler); ok {
-									// EVAL: logrus.Tracef("[IR NODE] [workflow.WorkflowHandler] got node %s (service_type = %v)\n", workflowHandler.Name(), workflowHandler.ServiceType)
-
 									if workflowHandler.ServiceType == "Runnable" {
 										logrus.Fatalf("[IR NODE] found Runnable service type for service (%s) -- cannot analyze application", workflowHandler.Name())
 									}
@@ -87,7 +82,6 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 									services[workflowHandler.ServiceInfo] = nil
 
 									for _, arg := range workflowHandler.Args {
-										// EVAL: logrus.Tracef("[IR HANDLER ARG] [%T] got node: %s\n", arg, arg)
 										switch t := arg.(type) {
 										case *redis.RedisGoClient, *memcached.MemcachedGoClient, *rabbitmq.RabbitmqGoClient, *mongodb.MongoDBGoClient, *mysql.MySQLDBGoClient:
 											databases[arg.Name()] = arg
@@ -102,24 +96,11 @@ func inspectIR(builder *cmdbuilder.CmdBuilder) (map[*workflowspec.Service][]gola
 									}
 								}
 							}
-						} else {
-							// EVAL: logrus.Tracef("unknown node type: [%T] %v\n", child, child)
 						}
 					}
-					// EVAL: logrus.Traceln()
 				}
 			}
-		} /* else if redisContainer, ok := node.(*redis.RedisContainer); ok {
-			// EVAL: logrus.Tracef("[IR INFO] ignoring redis.RedisContainer for node %s, interface %s\n", redisContainer.Name(), redisContainer.Iface)
-		} else if memachedContainer, ok := node.(*memcached.MemcachedContainer); ok {
-			// EVAL: logrus.Tracef("[IR INFO] ignoring memcached.MemcachedContainer for node %s, interface %s\n", memachedContainer.Name(), memachedContainer.Iface)
-		} else if rabbitContainer, ok := node.(*rabbitmq.RabbitmqContainer); ok {
-			// EVAL: logrus.Tracef("[IR INFO] ignoring rabbitmq.RabbitmqContainer for node %s, interface %s\n", rabbitContainer.Name(), rabbitContainer.Iface)
-		} else if mongoDbContainer, ok := node.(*mongodb.MongoDBContainer); ok {
-			// EVAL: logrus.Tracef("[IR INFO] ignoring mongodb.MongoDBContainer for node %s, interface %s\n", mongoDbContainer.Name(), mongoDbContainer.Iface)
-		} else if mysqlContainer, ok := node.(*mysql.MySQLDBContainer); ok {
-			// EVAL: logrus.Tracef("[IR INFO] ignoring mysql.MySQLDBContainer for node %s, interface %s\n", mysqlContainer.Name(), mysqlContainer.Iface)
-		} */
+		}
 	}
 	return services, databases, args, frontends
 }

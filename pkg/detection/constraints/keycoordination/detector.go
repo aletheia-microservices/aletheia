@@ -26,11 +26,6 @@ func NewDetector(keyType DetectionType) *KeyCoordinationDetector {
 		keyType:      keyType,
 		foreignReads: make(map[*Request][]*ForeignRead),
 	}
-	// EVAL: logrus.Traceln()
-	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	// EVAL: logrus.Tracef(" --------------------------------- INITIALIZING %s DETECTOR --------------------------------- \n", detector.GetTypeStringUpper())
-	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	// EVAL: logrus.Traceln()
 	return detector
 }
 
@@ -88,7 +83,6 @@ func (detector *KeyCoordinationDetector) OnEndRun(app *app.App) {
 func (detector *KeyCoordinationDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	// EVAL: logrus.Tracef("[%s | DETECTOR] on new request\n", detector.GetTypeStringUpper())
 }
 
 func (detector *KeyCoordinationDetector) OnEndRequest(app *app.App) {
@@ -107,7 +101,6 @@ func (detector *KeyCoordinationDetector) OnRead(app *app.App, reqIdx int, edge *
 	read := NewReadOperation(edge, edge.GetArguments(), reqIdx)
 	request := detector.getCurrentRequest()
 	request.AddOperation(read)
-	// EVAL: logrus.Tracef("[%s | DETECTOR] added new read: %v\n", detector.GetTypeStringUpper(), read)
 }
 
 func (detector *KeyCoordinationDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {

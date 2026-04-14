@@ -20,8 +20,7 @@ const BLUEPRINT_BACKEND_PACKAGE = "github.com/blueprint-uservices/blueprint/runt
 var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
 
-// TODO: UpdateMany (check foobar app)
-var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "DeleteMany", "FindMany", "UpdateOne" /* , "UpdateMany" */, "Upsert", "ReplaceOne"}
+var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "DeleteMany", "FindMany", "UpdateOne", "UpdateMany", "Upsert", "ReplaceOne"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
 var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select", "Get"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
@@ -47,7 +46,6 @@ type ValFieldPath struct {
 
 func isServiceCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, string, []ssa.Value, *ssa.Call, bool) {
 	if call, ok := val.(*ssa.Call); ok {
-		// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SVC] checking for service call: %s\n", val.String())
 
 		// Example:
 		// t0 = &s.barService [#1]
@@ -93,7 +91,6 @@ func isMethodCall(instr ssa.Instruction, val ssa.Value) (string, string, []ssa.V
 				if fn, ok := makeClosure.Fn.(*ssa.Function); ok {
 					fnShortPath := utils.GetShortFunctionPath(fn.String())
 					method := fn.Name()
-					logrus.WithField("fn_short_path", fnShortPath).WithField("method", method).Warnf("[METHOD CALL] found call for go routine: %s", goCall.String())
 					return method, fnShortPath, makeClosure.Bindings, goCall.Call.Args, nil, fn, true
 				}
 			}
@@ -108,7 +105,6 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 	}
 
 	if call, ok := val.(*ssa.Call); ok {
-		// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [DB] checking for database call: %s\n", val.String())
 
 		// --------------
 		// blueprint apps
@@ -116,7 +112,7 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 		if unOp, ok := call.Call.Value.(*ssa.UnOp); ok {
 			if queue, topic, opType, valFieldPathLst, ok := isBlueprintQueueCall(graph, call, unOp); ok {
 				// return all args except context
-				// NOTE: in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
+				// in this case (when call.Call.Value is UnOp) call.Call.Args does not contain the receiver
 				return queue, topic, call.Call.Method.Id(), opType, valFieldPathLst, true
 			} else if cache, namespace, opType, valFieldPathLst, ok := isBlueprintCacheCall(graph, call, unOp); ok {
 				return cache, namespace, call.Call.Method.Id(), opType, valFieldPathLst, true
@@ -130,9 +126,6 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 		}
 		if extr, ok := call.Call.Value.(*ssa.Extract); ok {
 			if database, collection, opType, valFieldPathLst, ok := isBlueprintNoSQLCollectionCall(graph, call, extr); ok {
-				/* if opType == common.OP_READ {
-					bsonFilter := call.Call.Args[]
-				} */
 				return database, collection, call.Call.Method.Id(), opType, valFieldPathLst, true
 			}
 		}
@@ -161,7 +154,6 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_RELATIONALDB, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
-			// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] found RelationalDB call: %v\n", call)
 
 			var dstVal, stmtVal, sliceArgsVal ssa.Value
 			if call.Call.Method.Name() == "Select" || call.Call.Method.Name() == "Get" {
@@ -204,7 +196,6 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 			var argVals []ssa.Value
 			if slice, ok := sliceArgsVal.(*ssa.Slice); ok {
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on ssa slice: %v\n", slice)
 				if alloc, ok := slice.X.(*ssa.Alloc); ok {
 					// example:
 					// t5 = new [2]any (varargs)
@@ -216,15 +207,12 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 					// TODO: also need to consider case when slice is declared earlier and
 					// reused for another write in possbly another DB
 					allocNode := graph.GetNodeByName(alloc.Name())
-					// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on alloc node: %v\n", allocNode)
 					for _, edge := range graph.GetEdgesFromNode(allocNode) {
 						if edge.GetType() == ssagraph.EDGE_INDEX {
 							idxNode := edge.GetToNode()
-							// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on idx node: %v\n", idxNode)
 							for _, edge := range graph.GetEdgesFromNode(idxNode) {
 								if edge.GetType() == ssagraph.EDGE_STORE_ADDRESS {
 									storeNode := edge.GetToNode()
-									// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [RELDB] on store node: %v\n", storeNode)
 									storeInstr, _ := storeNode.GetInstruction().(*ssa.Store)
 									argVals = append(argVals, storeInstr.Val)
 
@@ -242,37 +230,32 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 			var tableName string
 			var filterFields []string
 
-			if opType == common.OP_READ {
+			switch opType {
+			case common.OP_READ:
 				var tables []string
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [READ] parsing stmt: %s\n", stmt)
 				filterFields, fields, tables, ok = app.ParseSQLRead(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [READ] got filter fields: %v\n", filterFields)
 				tableName = tables[0]
 
 				// sanity check
 				if len(argVals) != len(fields) {
 					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
 				}
-			} else if opType == common.OP_WRITE {
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [WRITE] parsing stmt: %s\n", stmt)
+			case common.OP_WRITE:
 				var ok bool
 				fields, _, tableName, ok = app.ParseSQLWrite(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [WRITE] got written fields: %v\n", fields)
-			} else if opType == common.OP_DELETE {
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [DELETE] parsing stmt: %s\n", stmt)
+			case common.OP_DELETE:
 				var tables []string
 				var ok bool
 				filterFields, tables, ok = app.ParseSQLDelete(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [SQL] [DELETE] got filter fields: %v\n", filterFields)
 				tableName = tables[0]
 
 				// sanity check
@@ -294,7 +277,8 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				})
 			}
 
-			if opType == common.OP_READ {
+			switch opType {
+			case common.OP_READ:
 				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
 				// and the readField has format <database>.<table>
 				if call.Call.Method.Name() == "Select" && len(filterFields) > 0 {
@@ -310,7 +294,7 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 						logrus.Fatalf("dstval is nil")
 					}
 				}
-			} else if opType == common.OP_DELETE {
+			case common.OP_DELETE:
 				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
 				// and the readField has format <database>.<table>
 				for i, filterField := range filterFields {
@@ -397,8 +381,6 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				var valFieldPathLst []ValFieldPath
 				cacheKeyVal := call.Call.Args[1]
 				cacheValueVal := call.Call.Args[2]
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [CACHE] cache key [%T]: %v\n", cacheKeyVal, cacheKeyVal)
-				// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [CACHE] cache value [%T]: %v\n", cacheValueVal, cacheValueVal)
 
 				var keyField = "Key"
 				var valField = "Value"
@@ -432,8 +414,6 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 						})
 					}
 				} else {
-					logrus.WithField("graph", graph.String()).
-						Warnf("[CALLS BLUEPRINT] [CACHE] unknown cache key (%s)", cacheKeyVal.String())
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 						val:           cacheKeyVal,
 						fieldpath:     database + "." + namespace + "." + keyField,
@@ -443,14 +423,12 @@ func isBlueprintCacheCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.Un
 				}
 
 				if valFieldPathLst == nil {
-					// [TO BE IMPROVED]
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 						val:           cacheKeyVal,
 						fieldpath:     database + "." + namespace + "." + keyField,
 						cacheMultiget: opType == common.OP_READ_MANY,
 						readKey:       true,
 					})
-					// EVAL: logrus.Tracef("[CALLS CACHE] [%s] could not save any cache key for call: %v\n", graph.String(), call)
 				}
 
 				// track cache value
@@ -483,8 +461,7 @@ func isBlueprintNoSQLDatabaseCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp
 	return false
 }
 
-// e.g.
-// cursor, err := collection.FindOne(ctx, query)
+// e.g., cursor, err := collection.FindOne(ctx, query)
 func isBlueprintNoSQLCursorCall(graph *ssagraph.SSAGraph, call *ssa.Call, extr *ssa.Extract) (ssa.Value, bool) {
 	if typeNamed, ok := extr.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCursor" {
@@ -600,8 +577,7 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 
 					if opType == common.OP_UPDATE {
 						if call.Call.Method.Name() == "UpdateOne" {
-							//FIXME: change to call.Call.Args[2] (test with SockShop app)
-							updateVal := call.Call.Args[1]
+							updateVal := call.Call.Args[2]
 							bsonNode := findBsonNode(graph, updateVal)
 							if bsonNode != nil {
 								filterKeyToValues := computeNoSQLFilterKeyToValues(graph, bsonNode, nil, false)
@@ -655,7 +631,6 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 										fieldpath += "." + projections[0]
 									} else {
 										// TODO: add support for multiple projection values
-										logrus.Fatalf("TODO! projections = %v\n", projections)
 									}
 								} else {
 									// skip
@@ -741,7 +716,7 @@ func getValInStoreInstrForCurrentAddr(graph *ssagraph.SSAGraph, bsonValueNode *s
 // t27: slice t10[:]
 // t10: new [2]interface{} (slicelit)
 //
-// OBSERVATIONS:
+// Observations:
 // t9 is our bsonValueNode
 // t28 is the bson.A in Go code
 // t10 is the real slice
@@ -779,7 +754,7 @@ func computeNoSQLFilterKeyToValues_AND(graph *ssagraph.SSAGraph, bsonVal ssa.Val
 
 // helper to process bson slice node
 // if isProjection=true then we only want the key and not the value (which should be set to "true")
-// REMINDER: we assume that all keys present have value set to true, otherwise we need
+// we assume that all keys present have value set to true, otherwise we need
 // more code logic to know which key matches which value
 func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonArrayNode *ssagraph.SSANode, filterKeyToValues map[string][]ValFieldPath, isProjection bool) map[string][]ValFieldPath {
 	if filterKeyToValues == nil {
@@ -829,7 +804,7 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonArrayNode *ssag
 		}
 		if filterField == "$and" {
 			bsonArrayElemSliceNodes := computeNoSQLFilterKeyToValues_AND(graph, bsonArrayNode.GetValue(), bsonArrayElemNode)
-			// NOTE: the final appended filterKeyToValues will not contain the
+			// the final appended filterKeyToValues will not contain the
 			// filterObj for the "Key", which is good because we don't want taints with "$and"
 			for _, node := range bsonArrayElemSliceNodes {
 				filterKeyToValuesTmp := computeNoSQLFilterKeyToValues(graph, node, filterKeyToValues, isProjection)
@@ -842,6 +817,38 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonArrayNode *ssag
 				}
 			}
 			return filterKeyToValues
+		}
+
+		// handle MongoDB update operators (e.g., $set, $setOnInsert, $inc, $push):
+		// - key is the operator
+		// - value is a bson document where the keys are actual field names.
+		// recurse into the value and add those inner field names directly to filterKeyToValues
+		if strings.HasPrefix(filterField, "$") {
+			if !isProjection {
+				for _, edge := range graph.GetEdgesTypedFrom(bsonArrayElemNode, ssagraph.EDGE_FIELD) {
+					if edge.GetParam() == "Value" {
+						bsonArrayElemValNode := edge.GetToNode()
+						bsonArrayElemValNode.EnableUsedInBson()
+						for _, storeEdge := range graph.GetEdgesTypedFrom(bsonArrayElemValNode, ssagraph.EDGE_STORE_ADDRESS) {
+							storeInstr := storeEdge.GetToNode().GetInstruction().(*ssa.Store)
+							if iface, ok := storeInstr.Val.(*ssa.MakeInterface); ok {
+								innerBsonNode := findBsonNode(graph, iface.X)
+								if innerBsonNode != nil {
+									innerKeyToValues := computeNoSQLFilterKeyToValues(graph, innerBsonNode, nil, false)
+									for k, lst := range innerKeyToValues {
+										for _, v := range lst {
+											if !slices.Contains(filterKeyToValues[k], v) {
+												filterKeyToValues[k] = append(filterKeyToValues[k], v)
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			continue
 		}
 
 		if filterField == "" {
@@ -874,22 +881,26 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonArrayNode *ssag
 											filterObjTmp.bsonFilterKey = filterField
 											filterObjs = append(filterObjs, filterObjTmp)
 										}
-										//logrus.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
 									case "$gt":
 										for _, filterObjTmp := range filterObjsTmp {
 											filterObjTmp.bsonFilterIn = true
 											filterObjTmp.bsonFilterKey = filterField
 											filterObjs = append(filterObjs, filterObjTmp)
 										}
-										//logrus.Fatalf("[DEBUG] [BSON FILTER $in] FILTER OBJ TEMPS = %v\n", filterObjsTmp)
-									case "$each":
+									case "$each", "$position", "$addToSet":
 										// TODO
-										logrus.Warnf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
-									case "$position":
-										// TODO
-										logrus.Warnf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+										logrus.Warnf("[CALLS BLUEPRINT] [BSON] ignoring filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
 									default:
-										logrus.Fatalf("[CALLS BLUEPRINT] [BSON] unexpected filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+										if !strings.HasPrefix(filterFieldTmp, "$") {
+											// non-operator nested field key (e.g., $pull element-match: {followees: {UserID: v}})
+											// the values flow into a filter on the outer filterField
+											for _, filterObjTmp := range filterObjsTmp {
+												filterObjTmp.bsonFilterKey = filterField
+												filterObjs = append(filterObjs, filterObjTmp)
+											}
+										} else {
+											logrus.Warnf("[CALLS BLUEPRINT] [BSON] unknown filter key (%s) for objects: %v", filterFieldTmp, filterObjsTmp)
+										}
 									}
 								}
 							}
@@ -944,11 +955,8 @@ func findBsonNode(graph *ssagraph.SSAGraph, bsonSliceVal ssa.Value) *ssagraph.SS
 				bsonNode.EnableUsedInBson()
 				return bsonNode
 			}
-		} else {
-			logrus.WithField("graph", graph.String()).WithField("slice", slice.Name()).Warnf("slice is not used in mongo bson filter")
 		}
 	}
-	//logrus.WithField("graph", graph.String()).Warnf("nil bson node for val: %v\n", bsonSliceVal)
 	return nil
 }
 
@@ -981,13 +989,12 @@ func ssaValueIsMongoBsonFilter(val ssa.Value) bool {
 		return false
 	}
 	if alloc, ok := val.(*ssa.Alloc); ok {
-		// e.g.,
-		// [ssa.Alloc] t60: new [3]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+		// e.g., [ssa.Alloc] t60: new [3]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
 		if ptr, ok := alloc.Type().(*types.Pointer); ok {
 			if array, ok := ptr.Elem().Underlying().(*types.Array); ok {
 				if named, ok := array.Elem().(*types.Named); ok {
-					// e.g.,
-					// this is the real type: go.mongodb.org/mongo-driver/bson/primitive.E
+					// this is the real type
+					// e.g., go.mongodb.org/mongo-driver/bson/primitive.E
 					if named.Obj().Pkg() == nil {
 						return false
 					}
@@ -1010,12 +1017,12 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 		return true, false
 	}
 	if slice, ok := val.(*ssa.Slice); ok {
-		// e.g.,
-		// [ssa.Slice] t73: slice t60[:]
+		// e.g., [ssa.Slice] t73: slice t60[:]
 		if alias, ok := slice.Type().(*types.Alias); ok {
 			if aliasSlice, ok := alias.Underlying().(*types.Slice); ok {
 				if named, ok := aliasSlice.Elem().(*types.Named); ok {
-					// this is the alias type: go.mongodb.org/mongo-driver/bson/primitive.E
+					// this is the alias type
+					// e.g., go.mongodb.org/mongo-driver/bson/primitive.E
 					if named.Obj().Pkg().Path() == "go.mongodb.org/mongo-driver/bson/primitive" && named.Obj().Id() == "E" {
 						return true, false
 					}
@@ -1043,17 +1050,13 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 // it cannot be used for NoSQLDatabase calls because the collection is extracted beforehand
 func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (string, bool) {
 	if ssaFieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
-		// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] ssa field addr (field=%d): %s\n", ssaFieldAddr.Field, ssaFieldAddr.String())
 		if ssaParam, ok := ssaFieldAddr.X.(*ssa.Parameter); ok {
-			// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] queue loaded from parameter (%d)\n", ssaFieldAddr.Field)
 			if typesPointer, ok := ssaParam.Type().(*types.Pointer); ok {
 				if typeNamed, ok := typesPointer.Elem().(*types.Named); ok {
 					// e.g., github.com/blueprint-uservices/blueprint/examples/postnotification_simple/workflow/postnotification_simple.NotifyServiceImpl
 					serviceImplPath := typeNamed.String()
 					service := graph.GetApp().GetServiceWithImplPath(serviceImplPath)
-					// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] service fields: %v\n", service.GetAllFields())
 					field := service.GetFieldAt(ssaFieldAddr.Field)
-					// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [QUEUE] field: %s\n", field.String())
 
 					database := field.GetWiringName()
 
@@ -1061,8 +1064,7 @@ func extractDatabaseNameFromUnOp(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (stri
 						logrus.WithField("graph", graph.String()).WithField("field", field.String()).Fatalf("[CALLS BLUEPRINT] [QUEUE] empty database name!\n")
 					}
 
-					// sanity check
-					// keep this while database logic is not complete
+					// sanity check: keep this while database logic is not complete
 					if !graph.GetApp().HasDatabase(database) {
 						logrus.Fatalf("[CALLS BLUEPRINT] [QUEUE] database (%s) not found for app with databases: %v", database, graph.GetApp().GetAllDatabases())
 					}

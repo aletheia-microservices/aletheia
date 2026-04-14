@@ -19,11 +19,6 @@ type ForeignKeyCascadeDetector struct {
 }
 
 func NewDetector() *ForeignKeyCascadeDetector {
-	// EVAL: logrus.Traceln()
-	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	// EVAL: logrus.Traceln(" ------------------------------------ INITIALIZING FOREIGN KEY CASCADE DETECTOR ----------------------------------- ")
-	// EVAL: logrus.Traceln(" ------------------------------------------------------------------------------------------------------------------ ")
-	// EVAL: logrus.Traceln()
 	return &ForeignKeyCascadeDetector{
 		cascadeDeletes: make(map[*Request][]*CascadeDelete),
 	}
@@ -56,7 +51,6 @@ func (detector *ForeignKeyCascadeDetector) OnEndRun(app *app.App) {
 func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
 	request := NewRequest(len(detector.requests), node)
 	detector.requests = append(detector.requests, request)
-	// EVAL: logrus.Tracef("[DETECTOR - FOREIGN KEY CASCADE] on new request\n")
 }
 
 func (detector *ForeignKeyCascadeDetector) OnEndRequest(app *app.App) {
@@ -82,9 +76,7 @@ func getFields(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) []*ba
 		for _, fieldpath := range arg.GetAffectedDatabaseFieldsForCall(edge.GetID()) {
 			writtenField := app.ComputeDatabaseFieldFromPath(database, fieldpath)
 			for _, field := range app.GetAllDatabaseFieldsWithPrefixPath(writtenField, true) {
-				// EVAL: logrus.Tracef("\t[FOREIGN KEY CONCURRENCY | DETECTOR] field = %s\n", field.String())
 				if field.HasConstraintForeignKeyNonMandatory() && !slices.Contains(fields, field) {
-					// EVAL: logrus.Tracef("\t\t[FOREIGN KEY CONCURRENCY | DETECTOR] OK!\n")
 					fields = append(fields, field)
 				}
 			}

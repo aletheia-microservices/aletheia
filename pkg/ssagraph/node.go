@@ -250,7 +250,6 @@ func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, 
 		}
 	}
 	taint := NewSSATaintDB(dbpath, dbcall, readKey, readVal, callerT)
-	// EVAL: logrus.Tracef("added new taint: %s\n", taint.String())
 	node.taints[objpath] = append(lstTaints, taint)
 	return true
 }
@@ -285,9 +284,10 @@ func (node *SSANode) TaintAndTraceString() string {
 		builder.WriteByte('\n')
 		for _, taint := range taints {
 			builder.WriteString("[")
-			if taint.taintType == TAINT_DATABASE {
+			switch taint.taintType {
+			case TAINT_DATABASE:
 				builder.WriteString(common.OperationTypeToString(taint.GetDatabaseCall().GetOpType()))
-			} else if taint.taintType == TAINT_SERVICE {
+			case TAINT_SERVICE:
 				builder.WriteString("rpc")
 			}
 			builder.WriteString("]")

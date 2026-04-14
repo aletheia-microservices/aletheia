@@ -15,7 +15,6 @@ func FieldIndexToName(t *ssa.FieldAddr) string {
 // - <pkg name>.<member type>.<func name>
 // - <pkg name>.<func name>
 func GetShortFunctionPath(s string) string {
-	// EVAL: logrus.Tracef("[UTILS] get function short path for (%s)\n", s)
 	// remove leading (* if present
 	if strings.HasPrefix(s, "(*") {
 		s = s[2:]

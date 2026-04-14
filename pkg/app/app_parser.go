@@ -66,14 +66,12 @@ func (app *App) Init(synthetic bool) {
 
 func (app *App) InitServiceFields(pkgs []*ssa.Package) {
 	for _, pkg := range pkgs {
-		// EVAL: logrus.Tracef("[APP PARSER] analyzing package: %s\n", pkg.String())
 		for _, member := range pkg.Members {
 			if ssaType, ok := member.(*ssa.Type); ok {
 				service := app.GetServiceWithImplPathIfExists(ssaType.String())
 				if service == nil {
 					continue
 				}
-				// EVAL: logrus.Tracef("\t[APP PARSER] found service impl: %s\n", service.GetImpl())
 				if typeNamed, ok := ssaType.Type().(*types.Named); ok {
 					if typeStruct, ok := typeNamed.Underlying().(*types.Struct); ok {
 						i := 0
@@ -81,7 +79,6 @@ func (app *App) InitServiceFields(pkgs []*ssa.Package) {
 							typeVar := typeStruct.Field(i)
 							field := services.NewField(i, typeVar.Name())
 							service.AddField(field)
-							// EVAL: logrus.Tracef("\t\t[APP PARSER] created new field: %s\n", field.String())
 							i++
 						}
 					}

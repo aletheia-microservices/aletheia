@@ -60,8 +60,6 @@ func (app *App) ParseNoSQLSchemaFromUserFile() {
 }
 
 func parseJson(app *App, jsonSchema JSONSchema) {
-	// EVAL: logrus.Tracef("[JSON PARSER] parsing json data: %v", jsonSchema)
-
 	for _, field := range jsonSchema.Schema.UniqueItems {
 		database := app.GetDatabaseByName(jsonSchema.Schema.Database)
 		schema := database.GetOrCreateSchema(jsonSchema.Schema.Collection)

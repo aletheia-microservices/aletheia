@@ -176,7 +176,6 @@ func (graph *SSAGraph) GetCombinedGraphForMethodCallIfExists(call *MethodCall) *
 	if m, ok := graph.methodCallToCombinedGraphs[call]; ok {
 		return m
 	}
-	// EVAL: logrus.Tracef("[SSA GRAPH] combined graph not found for call (%s)\n", call.String())
 	return nil
 }
 
@@ -292,7 +291,6 @@ func (graph *SSAGraph) GetReturnsLst() [][]*SSANode {
 }
 
 func (graph *SSAGraph) GetFuncParametersExceptMemberAndContext() []*SSANode {
-	// EVAL: logrus.Tracef("[SSAGRAPH] filtered func parameters: %v\n", graph.params)
 	if len(graph.params) <= 2 {
 		return nil
 	}
@@ -385,12 +383,6 @@ func (graph *SSAGraph) GetEdgesToNode(node *SSANode) []*SSAEdge {
 
 func (graph *SSAGraph) Sort() {
 	sort.Slice(graph.nodes, func(i, j int) bool {
-		/* ni, err1 := strconv.Atoi(strings.TrimPrefix(graph.nodes[i].name, "t"))
-		nj, err2 := strconv.Atoi(strings.TrimPrefix(graph.nodes[j].name, "t"))
-		if err1 != nil || err2 != nil {
-			return graph.nodes[i].name < graph.nodes[j].name
-		}
-		return ni < nj */
 		return graph.nodes[i].id < graph.nodes[j].id
 	})
 }
@@ -414,12 +406,12 @@ func (graph *SSAGraph) CreateAndAddNewEdge(from *SSANode, to *SSANode, edgeType 
 		return nil, false
 	}
 	for _, edge := range graph.GetEdgesFromNode(from) {
-		if edge.to == to /* && edge.edgeType == edgeType */ {
+		if edge.to == to{
 			return edge, false
 		}
 	}
 	for _, edge := range graph.GetEdgesToNode(to) {
-		if edge.from == from /* && edge.edgeType == edgeType */ {
+		if edge.from == from {
 			return edge, false
 		}
 	}

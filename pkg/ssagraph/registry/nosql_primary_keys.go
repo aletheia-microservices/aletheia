@@ -24,11 +24,9 @@ func RegisterNoSQLPrimaryKey(app *app.App, databaseStr string, collectionStr str
 						constraint := backends.NewConstraint(backends.CONSTRAINT_PRIMARY, field)
 						field.AddConstraint(constraint)
 						schema.AddConstraint(constraint)
-						// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [NOSQL PK] registered primary key constraint: %s\n", constraint.String())
 					}
 				}
 			}
 		}
 	}
-	//// EVAL: logrus.Tracef("[CALLS BLUEPRINT] [NOSQL PK] skipping registerNoSQLPrimaryKey (database=%s, schema=%s)\n", database.GetName(), schema.GetName())
 }

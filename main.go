@@ -122,6 +122,10 @@ func main() {
 		if err != nil {
 			logrus.Fatalf("error: %s", err.Error())
 		}
+		err = os.MkdirAll(fmt.Sprintf("output/%s/abstractcallgraph", appname), os.ModePerm)
+		if err != nil {
+			logrus.Fatalf("error: %s", err.Error())
+		}
 		// ensure output sub directory for graphs exists
 		err = os.MkdirAll(fmt.Sprintf("output/%s/ssa", appname), os.ModePerm)
 		if err != nil {
@@ -307,11 +311,6 @@ func main() {
 			Detection:        elapsed_detection.Seconds(),
 		}
 		saveAnalysisTime(app, times)
-	}
-
-	if DEBUG {
-		abstractgraph.ComputeGraphStats(absgraph)
-		abstractgraph.GatherGraphStats(absgraph)
 	}
 }
 
