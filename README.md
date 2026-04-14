@@ -74,9 +74,9 @@ After cloning the repository, initialize the Blueprint submodule:
 git submodule update --init --recursive
 ```
 
-### Registering new Applications
+### Running Aletheia
 
-By default, Aletheia supports analysis for the following applications inside `blueprint/examples/`:
+Aletheia analyzes applications located in `blueprint/examples/`. Some examples include:
 
 - digota
 - sockshop
@@ -85,6 +85,34 @@ By default, Aletheia supports analysis for the following applications inside `bl
 - dsb_socialnetwork
 - dsb_mediamicroservices
 - trainticket
+
+To analyze an application, run Aletheia and specify the application name as the `app` parameter:
+
+```zsh
+go run main.go {app}
+```
+
+Example:
+
+```zsh
+go run main.go postnotification
+```
+
+The warnings related to integrity violations are saved in `output/postnotification/analysis/`. The information about the application dependencies (microservices and datastores used) and the schema are saved in `output/postnotification/app.json` and `output/postnotification/schema.json`, respectively. The application's SSA code are saved in `output/postnotification/ssa/`.
+
+You can also specify the `--debug` flag to obtain tainted *ssa graphs* and *abstract call graph* in `.dot` format saved under `output/postnotification/abstractcallgraph` and `output/postnotification/ssagraphs`, which can then be visualized in, for example, [Graphivz](https://dreampuf.github.io/GraphvizOnline/).
+
+```zsh
+go run main.go --debug postnotification
+```
+
+You can also specify which warnings should be suppressed by passing the `--detection_config` flag followed by the file path:
+
+```zsh
+go run main.go --detection_config config/sockshop.yaml sockshop
+```
+
+### Registering new Applications
 
 If you want to analyze your own application written in Blueprint, make sure it is placed in `blueprint/examples/`. The expected structure is:
 
@@ -110,21 +138,44 @@ Generate the application registry:
 go run scripts/gen_app_registry/main.go
 ```
 
-### Running Aletheia
+### Registering and Analyzing a Simple Application
 
-Run Aletheia to analyze the application specified by the `app` parameter:
+We now demonstrate how to run Aletheia to analyze a simple application (`simpleshop`) provided in `blueprint/examples/simpleshop/`. The application is composed of two microservices, Product Service and Inventory Service and allows clients to register new products and their respective inventory, as well as delete products.
 
-```zsh
-go run main.go [--detection_config <filepath.yaml>] {app}
+Add a new entry for the `simpleshop` application in the `aletheia/registry/apps.yaml`. This will tell Aletheia how to properly import and analyze the application:
+
+```yaml
+- name: simpleshop
+  app_root: github.com/blueprint-uservices/blueprint/examples/simpleshop
+  package_path: simpleshop/workflow/simpleshop
+  spec_name: simpleshop_docker
+  spec_path: github.com/blueprint-uservices/blueprint/examples/simpleshop/wiring/specs
 ```
 
-Examples:
+Go to `aletheia` directory:
 
 ```zsh
-go run main.go postnotification
-go run main.go --detection_config config/sockshop.yaml sockshop
+cd aletheia
 ```
 
-The warnings related to integrity violations will be saved in `aletheia/output/{app}/analysis/`.
+Generate the application registry:
 
-The information about the application dependencies (microservices and datastores used) and the schema are saved in `aletheia/output/{app}/app.json` and `aletheia/output/{app}/schema.json`, respectively.
+```zsh
+go run scripts/gen_app_registry/main.go
+```
+
+Now, you can run the analysis:
+
+```zsh
+go run main.go simpleshop
+```
+
+This command prints the analysis results and saves them in `aletheia/output/simpleshop/`. The warnings related to integrity violations are saved in `aletheia/output/simpleshop/analysis/`. Information about the application dependencies (microservices and datastores used) and the schema are saved in `aletheia/output/simpleshop/app.json` and `aletheia/output/simpleshop/schema.json`, respectively.
+
+The output should contain a referential integrity warning indicating a missing cascading delete. In this case, when a product is deleted, the effect is not propagated to the Inventory Service, leaving a dangling inventory record.
+
+```txt
+[NUM_WARNINGS = 1]
+delete: ProductService.DeleteProduct() ... product_db.product.DeleteOne()
+	missing cascade #1: database={inventory_db}, entity={inventory}, pending_fields={ID}
+```
