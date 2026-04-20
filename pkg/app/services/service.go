@@ -23,7 +23,7 @@ type Service struct {
 	fields []*Field
 
 	methods     []string
-	initializer bool     // true if it has Run method
+	initializer string   // set if it has Run / Init method
 	wiringNames []string // IDs for arguments passed in blueprint wiring
 }
 
@@ -73,14 +73,18 @@ func (service *Service) GetMethods() []string {
 
 func (service *Service) SetMethods(methods ...string) {
 	for _, method := range methods {
-		if method == "Run" {
-			service.initializer = true
+		if method == "Run" || method == "Init" {
+			service.initializer = method
 		}
 		service.methods = append(service.methods, method)
 	}
 }
 
 func (service *Service) HasInitializerMethod() bool {
+	return service.initializer != ""
+}
+
+func (service *Service) GetInitializerMethod() string {
 	return service.initializer
 }
 

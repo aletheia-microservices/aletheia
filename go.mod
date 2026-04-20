@@ -5,24 +5,13 @@ go 1.25.0
 require (
 	go.opentelemetry.io/otel v1.32.0 // indirect
 	go.opentelemetry.io/otel/metric v1.32.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.26.0 // indirect
-	golang.org/x/tools v0.33.0
+	go.opentelemetry.io/otel/sdk v1.32.0 // indirect.
+	golang.org/x/tools v0.44.0
 )
-
-replace go.opentelemetry.io/otel => go.opentelemetry.io/otel v1.26.0
-
-replace go.opentelemetry.io/otel/sdk => go.opentelemetry.io/otel/sdk v1.26.0
-
-replace go.opentelemetry.io/otel/metric => go.opentelemetry.io/otel/metric v1.26.0
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Rhymond/go-money v1.0.15 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow v0.0.0 // indirect
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow v0.0.0 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -62,15 +51,15 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	go.mongodb.org/mongo-driver v1.17.6 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v1.26.0 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.26.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v1.32.0 // indirect.
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.32.0 // indirect.
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/crypto v0.50.0 // indirect
 	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
-	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/mod v0.35.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240415180920-8c6c420018be // indirect
@@ -81,17 +70,12 @@ require (
 require (
 	github.com/auxten/postgresql-parser v1.0.1
 	github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring v0.0.0-00010101000000-000000000000
-	github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.3
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require go.opentelemetry.io/otel/sdk/metric v1.26.0 // indirect
+require go.opentelemetry.io/otel/sdk/metric v1.32.0 // indirect.
 
 require github.com/blueprint-uservices/blueprint/plugins v0.0.0
 
@@ -125,19 +109,9 @@ require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring v0.0
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/foobar/workflow v0.0.0 // indirect
-
-require github.com/blueprint-uservices/blueprint/examples/foobar/wiring v0.0.0
-
-require github.com/blueprint-uservices/blueprint/examples/foobar2/workflow v0.0.0 // indirect
-
-require github.com/blueprint-uservices/blueprint/examples/foobar2/wiring v0.0.0
-
 require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow v0.0.0 // indirect
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring v0.0.0
-
-require github.com/onsi/gomega v1.27.10 // indirect
 
 replace github.com/blueprint-uservices/blueprint/plugins => ./blueprint/plugins
 
@@ -187,50 +161,8 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/work
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring => ./blueprint/examples/dsb_socialnetwork/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/foobar => ./blueprint/examples/foobar
-
-replace github.com/blueprint-uservices/blueprint/examples/foobar/workflow => ./blueprint/examples/foobar/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/foobar/wiring => ./blueprint/examples/foobar/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/foobar2 => ./blueprint/examples/foobar2
-
-replace github.com/blueprint-uservices/blueprint/examples/foobar2/workflow => ./blueprint/examples/foobar2/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/foobar2/wiring => ./blueprint/examples/foobar2/wiring
-
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices => ./blueprint/examples/dsb_mediamicroservices
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ./blueprint/examples/dsb_mediamicroservices/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ./blueprint/examples/dsb_mediamicroservices/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1 => ./blueprint/examples/synthetic_app1
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow => ./blueprint/examples/synthetic_app1/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring => ./blueprint/examples/synthetic_app1/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2 => ./blueprint/examples/synthetic_app2
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow => ./blueprint/examples/synthetic_app2/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring => ./blueprint/examples/synthetic_app2/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3 => ./blueprint/examples/synthetic_app3
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow => ./blueprint/examples/synthetic_app3/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring => ./blueprint/examples/synthetic_app3/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4 => ./blueprint/examples/synthetic_app4
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow => ./blueprint/examples/synthetic_app4/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring => ./blueprint/examples/synthetic_app4/wiring
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5 => ./blueprint/examples/synthetic_app5
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow => ./blueprint/examples/synthetic_app5/workflow
-
-replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring => ./blueprint/examples/synthetic_app5/wiring

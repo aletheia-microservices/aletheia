@@ -52,7 +52,6 @@ func main() {
 	if flag.NArg() < 1 {
 		fmt.Fprintf(os.Stderr, "usage: program [--eval] [--debug] [--detection_config filepath.yaml] <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- foobar")
 		fmt.Fprintln(os.Stderr, "- postnotification")
 		fmt.Fprintln(os.Stderr, "- dsb_socialnetwork")
 		fmt.Fprintln(os.Stderr, "- digota")

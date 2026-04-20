@@ -9,8 +9,6 @@ import (
 	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
 	specs_dsb_socialnetwork "github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring/specs"
 	specs_eshopmicroservices "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring/specs"
-	specs_foobar "github.com/blueprint-uservices/blueprint/examples/foobar/wiring/specs"
-	specs_foobar2 "github.com/blueprint-uservices/blueprint/examples/foobar2/wiring/specs"
 	specs_postnotification "github.com/blueprint-uservices/blueprint/examples/postnotification/wiring/specs"
 	specs_sockshop "github.com/blueprint-uservices/blueprint/examples/sockshop/wiring/specs"
 	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/trainticket/wiring/specs"
@@ -44,10 +42,6 @@ func resolveSpec(name string) cmdbuilder.SpecOption {
 		return specs_dsb_hotel2.Original
 	case "trainticket_docker":
 		return specs_trainticket.Docker
-	case "foobar_docker":
-		return specs_foobar.Docker
-	case "foobar2_docker":
-		return specs_foobar2.Docker
 	default:
 		logrus.Fatalf("unknown spec name: %s", name)
 		return cmdbuilder.SpecOption{}

@@ -853,7 +853,7 @@ func computeNoSQLFilterKeyToValues(graph *ssagraph.SSAGraph, bsonArrayNode *ssag
 
 		if filterField == "" {
 			filterField = "*"
-			logrus.WithField("graph", graph.String).WithField("bson_array_node", bsonArrayNode.String()).Fatalf("empty filter field")
+			logrus.WithField("graph", graph.String).WithField("bson_array_node", bsonArrayNode.String()).Warnf("empty filter field")
 		}
 
 		if !isProjection {

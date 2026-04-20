@@ -59,7 +59,7 @@ func (app *App) Init(synthetic bool) {
 		if service.HasInitializerMethod() {
 			// Run() method can also be considered as entrypoint
 			// because they are always called when initializing services
-			app.AddEntrypoint(service, "Run")
+			app.AddEntrypoint(service, service.GetInitializerMethod())
 		}
 	}
 }

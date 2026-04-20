@@ -21,7 +21,7 @@ var fileTemplate = template.Must(template.New("apps").Parse(rawTemplate))
 
 const (
 	DEFAULT_REGISTRY_FILE = "apps.yaml"
-	DEFAULT_REGISTRY_DIR  = "configs"
+	DEFAULT_REGISTRY_DIR  = "registry"
 	DEFAULT_OUTPUT_DIR    = "pkg/frameworks/blueprint/apps"
 	DEFAULT_BUILD_TAG     = "!eval"
 	DEFAULT_GO_MOD        = "go.mod"
