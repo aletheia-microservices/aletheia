@@ -100,7 +100,7 @@ go run main.go postnotification
 
 The warnings related to integrity violations are saved in `output/postnotification/analysis/`. The information about the application dependencies (microservices and datastores used) and the schema are saved in `output/postnotification/app.json` and `output/postnotification/schema.json`, respectively. The application's SSA code are saved in `output/postnotification/ssa/`.
 
-You can also specify the `--debug` flag to obtain tainted *ssa graphs* and *abstract call graph* in `.dot` format saved under `output/postnotification/abstractcallgraph` and `output/postnotification/ssagraphs`, which can then be visualized in, for example, [Graphivz](https://dreampuf.github.io/GraphvizOnline/).
+You can also specify the `--debug` flag to obtain tainted _ssa graphs_ and _abstract call graph_ in `.dot` format saved under `output/postnotification/abstractcallgraph` and `output/postnotification/ssagraphs`, which can then be visualized in, for example, [Graphivz](https://dreampuf.github.io/GraphvizOnline/).
 
 ```zsh
 go run main.go --debug postnotification
@@ -124,6 +124,7 @@ blueprint/examples/{app}/
 ```
 
 Then, add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
+
 - `name`: application name
 - `package_path`: package path for application code
 - `spec_name`: blueprint spec name with format `{app_name}_{spec_name}` (e.g., `foobar_docker` => spec `Docker` for application `foobar`)
@@ -179,3 +180,36 @@ The output should contain a referential integrity warning indicating a missing c
 delete: ProductService.DeleteProduct() ... product_db.product.DeleteOne()
 	missing cascade #1: database={inventory_db}, entity={inventory}, pending_fields={ID}
 ```
+
+## Current Assumptions
+
+We list the assumptions in Aletheia that developers should take into account when analyzing their applications. These are temporary assumptions that can be addressed in the future by extending the current implementation:
+
+- The name of the database used in the wiring specification (e.g., `mongodb.Container`) must exactly match the name passed in service operations (e.g., `GetCollection`).
+
+  ```Go
+  // wiring
+  posts_db := mongodb.Container(spec, "posts_db")
+  // workflow
+  s.postsDb.GetCollection(ctx, "posts_db", ...)
+  ```
+
+- Service implementation functions must return the interface type (e.g., `StorageService`) rather than the concrete service struct (e.g., `StorageServiceImpl`).
+  ```Go
+  func NewStorageServiceImpl(ctx context.Context, ...) (StorageService, error) {
+  	return &StorageServiceImpl{...}, nil
+  }
+  ```
+- In NoSQL databases, bson tags/filters for writes/reads must match the corresponding Go struct field name. Note that the `_id` field is treated as a special case and is used to infer primary key constraints.
+  ```Go
+  type Movie struct {
+  	MovieID string `bson:"_id"`
+  	Title   string `bson:"Title"`
+  }
+  ...
+  movie := Movie{...}
+  collection.InsertOne(ctx, movie)
+  ...
+  query := bson.D{{Key: "Title", Value: title}}
+  collection.FindOne(ctx, query)
+  ```

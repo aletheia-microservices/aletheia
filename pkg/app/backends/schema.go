@@ -14,7 +14,10 @@ type Schema struct {
 	// index: (field0, field1) -> constraint
 	fkIndex map[[2]*Field]*Constraint
 	// no need to remove if referenced is deleted!
-	refBy   map[*Schema]bool
+	refBy map[*Schema]bool
+	// go-name field path -> bson-name field path
+	// (e.g. "db.col.FieldID" -> "db.col._id")
+	bsonFieldAliases map[string]string
 }
 
 func NewSchema(name string, database *Database) *Schema {
@@ -25,6 +28,13 @@ func NewSchema(name string, database *Database) *Schema {
 		fkIndex:  make(map[[2]*Field]*Constraint),
 		refBy:    make(map[*Schema]bool),
 	}
+}
+
+func (schema *Schema) AddBsonFieldAlias(goPath, bsonPath string) {
+	if schema.bsonFieldAliases == nil {
+		schema.bsonFieldAliases = make(map[string]string)
+	}
+	schema.bsonFieldAliases[goPath] = bsonPath
 }
 
 func (schema *Schema) getConstraintsForeignKey() []*Constraint {
@@ -129,15 +139,32 @@ func (schema *Schema) GetFieldByPath(path string) *Field {
 	return field
 }
 
+// used by detectors
 func (schema *Schema) GetFieldByPathIfExists(path string) *Field {
-	field, ok := schema.fields[path]
-	if ok {
-		return field
+	// in nosql databases, when a taint arrives via aliasPath (e.g. "db.col.FieldID"),
+	// lookups are redirected to bsonPath (e.g. "db.col._id")
+	if schema.bsonFieldAliases != nil && schema.GetDatabase().IsNoSQL() {
+		if bsonPath, ok := schema.bsonFieldAliases[path]; ok {
+			path = bsonPath
+		}
 	}
-	return nil
+	field, ok := schema.fields[path]
+	if !ok {
+		return nil
+	}
+	return field
 }
 
+// used by parsers (user input, sql statements, etc.) and abstractgraph tainter in PropagateNewTaintsToDatabaseSchemas()
+// not used by ssa tainter - taints may contain both original aliasPath (e.g. "db.col.FieldID") and bsonPath (e.g., `db.col._id)
 func (schema *Schema) GetOrCreateField(database *Database, path string) *Field {
+	// in nosql databases, when a taint arrives via aliasPath (e.g. "db.col.FieldID"),
+	// field creations are redirected to bsonPath (e.g. "db.col._id")
+	if schema.bsonFieldAliases != nil && schema.GetDatabase().IsNoSQL() {
+		if bsonPath, ok := schema.bsonFieldAliases[path]; ok {
+			path = bsonPath
+		}
+	}
 	field, ok := schema.fields[path]
 	if !ok {
 		field = NewField(path, database, schema)
