@@ -1,4 +1,4 @@
-package unicityconcurrency
+package uniquenessconcurrency
 
 import (
 	"analyzer/pkg/abstractgraph"

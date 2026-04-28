@@ -21,7 +21,7 @@ import (
 	"analyzer/pkg/detection/constraints/foreignkeycascade"
 	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
 	"analyzer/pkg/detection/constraints/keycoordination"
-	"analyzer/pkg/detection/constraints/unicityconcurrency"
+	"analyzer/pkg/detection/constraints/uniquenessconcurrency"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/registry"
@@ -237,7 +237,7 @@ func main() {
 	detector2 := keycoordination.NewDetector(keycoordination.DETECTION_TYPE_FOREIGN_KEY)
 	detector3 := foreignkeycascade.NewDetector()
 	detector4 := foreignkeyconcurrency.NewDetector()
-	detector5 := unicityconcurrency.NewDetector()
+	detector5 := uniquenessconcurrency.NewDetector()
 	iterator := detection.NewIterator(app, absgraph, detector1, detector2, detector3, detector4, detector5)
 
 	start_schema := time.Now()

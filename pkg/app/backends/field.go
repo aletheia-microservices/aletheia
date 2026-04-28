@@ -139,9 +139,9 @@ func (field *Field) HasConstraintForeignKey() bool {
 	return false
 }
 
-// searches for unicity in single field
+// searches for uniqueness in single field
 // EXCLUDES primary key
-func (field *Field) HasContraintUnicity() bool {
+func (field *Field) HasContraintUniqueness() bool {
 	for _, constraint := range field.constraints {
 		if constraint.t == CONSTRAINT_UNIQUE {
 			if len(constraint.fields) == 1 {

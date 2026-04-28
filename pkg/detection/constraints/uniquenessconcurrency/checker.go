@@ -1,4 +1,4 @@
-package unicityconcurrency
+package uniquenessconcurrency
 
 import (
 	"slices"
@@ -22,7 +22,7 @@ func (writeSet *VulnerableWriteSet) hasOtherOperation(op *WriteOperation) bool {
 	return slices.Contains(writeSet.otherOps, op)
 }
 
-func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, request *Request, currOp *WriteOperation) {
+func (detector *UniquenessConcurrencyDetector) checkInconsistency(app *app.App, request *Request, currOp *WriteOperation) {
 	dbname := currOp.call.GetToNode().GetDatabaseName()
 	db := app.GetDatabaseByName(dbname)
 
@@ -39,7 +39,7 @@ func (detector *UnicityConcurrencyDetector) checkInconsistency(app *app.App, req
 			// and then just check if the IDs match
 			if dbname == utils.ExtractDatabaseNameFromFieldPath(fieldpath) {
 				field := app.ComputeDatabaseFieldFromPath(db, fieldpath)
-				if field.HasContraintUnicity() && !slices.Contains(constrainedFields, field) {
+				if field.HasContraintUniqueness() && !slices.Contains(constrainedFields, field) {
 					constrainedFields = append(constrainedFields, field)
 				}
 			}
