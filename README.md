@@ -130,7 +130,7 @@ blueprint/examples/{app}/
 │   └── {app}/          # microservices code
 ```
 
-See [assumptions.md](assumptions.md) for the current analysis assumptions and limitations.
+See [assumptions.md](./assumptions.md) for the current analysis assumptions and limitations.
 
 First, you will need to add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
 

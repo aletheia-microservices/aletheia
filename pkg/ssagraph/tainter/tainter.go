@@ -340,7 +340,7 @@ func taintOnDatabaseCall(graph *ssagraph.SSAGraph, dbCall *ssagraph.DatabaseCall
 
 		taintInfo := NewTaintInfoDatabase(dbfield, "", nil, dbCall, valFieldPath.readKey, valFieldPath.readValue)
 
-		// e.g. dsb_hotel2: RecommendationService.LoadRecommendations()
+		// e.g. dsb_hotel: RecommendationService.LoadRecommendations()
 		// where &hotels is the destination
 		// -----------------------------------------------
 		// var hotels []Hotel

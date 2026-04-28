@@ -63,7 +63,7 @@ func importAlias(name string) string {
 // deriveSpecMethod derives the Blueprint spec method name from spec_name by
 // stripping the "<app_name>_" prefix and title-casing the remainder
 // e.g. name="digota",    specName="digota_docker"     => "Docker"
-// e.g. name="dsb_hotel2",specName="dsb_hotel2_original" => "Original"
+// e.g. name="dsb_hotel",specName="dsb_hotel_original" => "Original"
 func deriveSpecMethod(appName, specName string) string {
 	suffix := strings.TrimPrefix(specName, appName+"_")
 	if suffix == specName || suffix == "" {

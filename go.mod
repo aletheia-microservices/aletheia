@@ -103,9 +103,9 @@ require github.com/blueprint-uservices/blueprint/examples/trainticket/workflow v
 
 require github.com/blueprint-uservices/blueprint/examples/trainticket/wiring v0.0.0
 
-require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow v0.0.0 // indirect
+require github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workflow v0.0.0 // indirect
 
-require github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring v0.0.0
 
 require github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/workflow v0.0.0 // indirect
 
@@ -149,11 +149,11 @@ replace github.com/blueprint-uservices/blueprint/examples/trainticket/workflow =
 
 replace github.com/blueprint-uservices/blueprint/examples/trainticket/wiring => ./blueprint/examples/trainticket/wiring
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2 => ./blueprint/examples/dsb_hotel2
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel => ./blueprint/examples/dsb_hotel
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/workflow => ./blueprint/examples/dsb_hotel2/workflow
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel/workflow => ./blueprint/examples/dsb_hotel/workflow
 
-replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring => ./blueprint/examples/dsb_hotel2/wiring
+replace github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring => ./blueprint/examples/dsb_hotel/wiring
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork => ./blueprint/examples/dsb_socialnetwork
 

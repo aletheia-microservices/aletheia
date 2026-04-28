@@ -4,13 +4,13 @@
 package blueprint_apps
 
 import (
-	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
-	specs_dsb_hotel2 "github.com/blueprint-uservices/blueprint/examples/dsb_hotel2/wiring/specs"
-	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
-	specs_dsb_socialnetwork "github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring/specs"
-	specs_eshopmicroservices "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring/specs"
 	specs_postnotification "github.com/blueprint-uservices/blueprint/examples/postnotification/wiring/specs"
+	specs_digota "github.com/blueprint-uservices/blueprint/examples/digota/wiring/specs"
+	specs_eshopmicroservices "github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/wiring/specs"
+	specs_dsb_mediamicroservices "github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring/specs"
 	specs_sockshop "github.com/blueprint-uservices/blueprint/examples/sockshop/wiring/specs"
+	specs_dsb_socialnetwork "github.com/blueprint-uservices/blueprint/examples/dsb_socialnetwork/wiring/specs"
+	specs_dsb_hotel "github.com/blueprint-uservices/blueprint/examples/dsb_hotel/wiring/specs"
 	specs_trainticket "github.com/blueprint-uservices/blueprint/examples/trainticket/wiring/specs"
 	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 	"github.com/sirupsen/logrus"
@@ -38,8 +38,8 @@ func resolveSpec(name string) cmdbuilder.SpecOption {
 		return specs_sockshop.Docker
 	case "dsb_socialnetwork_docker":
 		return specs_dsb_socialnetwork.Docker
-	case "dsb_hotel2_original":
-		return specs_dsb_hotel2.Original
+	case "dsb_hotel_original":
+		return specs_dsb_hotel.Original
 	case "trainticket_docker":
 		return specs_trainticket.Docker
 	default:
