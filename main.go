@@ -52,15 +52,13 @@ func main() {
 	if flag.NArg() < 1 {
 		fmt.Fprintf(os.Stderr, "usage: program [--eval] [--debug] [--detection_config filepath.yaml] <appname>\n")
 		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- postnotification")
-		fmt.Fprintln(os.Stderr, "- dsb_socialnetwork")
 		fmt.Fprintln(os.Stderr, "- digota")
-		fmt.Fprintln(os.Stderr, "- eshopmicroservices")
 		fmt.Fprintln(os.Stderr, "- sockshop")
 		fmt.Fprintln(os.Stderr, "- dsb_mediamicroservices")
-		fmt.Fprintln(os.Stderr, "- dsb_hotel2")
+		fmt.Fprintln(os.Stderr, "- dsb_socialnetwork")
+		fmt.Fprintln(os.Stderr, "- eshopmicroservices")
+		fmt.Fprintln(os.Stderr, "- postnotification")
 		fmt.Fprintln(os.Stderr, "- trainticket")
-		fmt.Fprintln(os.Stderr, "- synthetic")
 		os.Exit(1)
 	}
 

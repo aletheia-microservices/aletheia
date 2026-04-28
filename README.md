@@ -1,46 +1,53 @@
-# Aletheia: Automated Detection of Data Integrity Violations in Microservices
+# Aletheia
 
-Aletheia is a static analysis framework for detecting data integrity violations in microservice-based applications written in [Blueprint](https://github.com/Blueprint-uServices/blueprint).
+Aletheia is a static analysis framework for detecting data integrity violations in microservice-based applications.
 
-Aletheia operates in four steps:
+In microservice architectures, data is stored across heterogeneous systems, with data schemas partitioned and managed by separate services. Due to the complexity of microservices, it can be almost impossible for developers to have a comprehensive understanding of the entire system, making it challenging to reason about and maintain data integrity at the application level. 
 
-1. Intra-procedural analysis based on SSA graphs
-2. Inter-microservice analysis through construction of an abstract call graph
-3. Schema extraction for objects stored across databases
-4. Detection of code sections that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
+Aletheia solves this problem through static analysis, identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints, including entity integrity, referential integrity, and uniqueness.
 
-Integrity violations are detected by searching for the following patterns formalized in our paper:
+Currently, Aletheia analyzes applications developed with [Blueprint](https://github.com/Blueprint-uServices/blueprint) and located in `blueprint/examples/`.
 
-| ID   | Constraint Type       | Violation Pattern            |
-| ---- | --------------------- | ---------------------------- |
-| RI-1 | Referential integrity | Absence of cascading effects |
-| RI-2 | Referential integrity | Concurrent operations        |
-| RI-3 | Referential integrity | Uncoordinated replication    |
-| EI-1 | Entity integrity      | Uncoordinated replication    |
-| Un-2 | Uniqueness            | Conflicting writes           |
+The framework operates in four steps:
 
-## Overview
+1. **Intra-procedural analysis** based on Static Single-Assignment (SSA) graphs extracted from Go code to infer how values flow throughout execution by propagating taint information
+2. **Inter-microservice analysis** based on a new _abstract call graph_ that represents possible call graphs containing microservice invocations and database operations, along with filtered taint information from the SSA analysis
+3. **Schema extraction** for objects stored across databases
+4. **Detection of code sections** that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
 
-The `pkg` directory contains the core packages that implement the functionality:
+Integrity violations are detected by searching for the following patterns formalized in our paper and implemented by Aletheia in `pkg/detection/constraints/`.
+
+| ID   | Constraint Type       | Violation Pattern            | Implementation Package                            |
+| ---- | --------------------- | ---------------------------- | ------------------------------------------------- |
+| RI-1 | Referential integrity | Absence of cascading effects | `pkg/detection/constraints/foreignkeycascade`     |
+| RI-2 | Referential integrity | Concurrent operations        | `pkg/detection/constraints/foreignkeyconcurrency` |
+| RI-3 | Referential integrity | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
+| EI-1 | Entity integrity      | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
+| Un-1 | Uniqueness            | Conflicting writes           | `pkg/detection/constraints/uniquenessconcurrency` |
+
+## Project Structure
+
+The `pkg/` directory contains the packages that implement Aletheia and is organized as follows:
 
 ```
 pkg/
 ├── abstractgraph/                  # Abstract call graph construction and analysis
-├── app/                            # Application model with services and databases
+├── app/                            # Application metadata with services, databases, schemas, and constraints
 ├── common/
 ├── config/
-├── detection/                      # Data integrity violation detection for each pattern
-│   └── constraints
-│       ├── foreignkeycascade/      # RI-1 pattern
-│       ├── foreignkeyconcurrency/  # RI-2 pattern
-│       ├── keycoordination/        # RI-3 and EI-1 patterns
-│       └── unicityconcurrency/     # Un-2 pattern
-├── frameworks/                     # Framework-specific analysis code
+├── detection/                      # Detection for each pattern (RI-1, RI-2, RI-3, EI-1, Un-1)
+├── frameworks/                     # Framework-specific parsing code (e.g., wiring specs for Blueprint apps)
 │   ├── blueprint/
 │   └── components/
 ├── ssagraph/                       # SSA graph construction and analysis
 └── utils/
 ```
+
+The `config/` folder contains YAML files that specify warnings to be ignored by Aletheia.
+
+The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications.
+
+The `scripts/gen_app_registry/` folder contains a script that uses the YAML files in `registry/` to: (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
 
 After analyzing an application, the output will be stored in `output/{app}` according to the following structure:
 
@@ -53,14 +60,8 @@ output/{app}/
 │   ├── foreign-key-concurrency.txt     # RI-2 pattern
 │   ├── foreign-key-coordination.txt    # RI-3 pattern
 │   ├── primary-key-coordination.txt    # EI-1 pattern
-│   └── unicity-concurrency.txt         # Un-2 pattern
+│   └── uniqueness-concurrency.txt      # Un-1 pattern
 ```
-
-The `config/` folder contains YAML files that specify warnings to be ignored by Aletheia.
-
-The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications.
-
-The `scripts/gen_app_registry/` folder contains a script that uses the YAML files in `registry/` to: (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
 
 ## Requirements
 
@@ -80,10 +81,10 @@ Aletheia analyzes applications located in `blueprint/examples/`. Some examples i
 
 - digota
 - sockshop
+- dsb_mediamicroservices
+- dsb_socialnetwork
 - eshopmicroservices
 - postnotification
-- dsb_socialnetwork
-- dsb_mediamicroservices
 - trainticket
 
 To analyze an application, run Aletheia and specify the application name as the `app` parameter:
@@ -123,16 +124,18 @@ blueprint/examples/{app}/
 │   └── {app}/          # microservices code
 ```
 
-Then, add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
+See [assumptions.md](assumptions.md) for the current analysis assumptions and limitations.
+
+First, you will need to add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
 
 - `name`: application name
 - `package_path`: package path for application code
 - `spec_name`: blueprint spec name with format `{app_name}_{spec_name}` (e.g., `foobar_docker` => spec `Docker` for application `foobar`)
 - `spec_path`: package path for spec
 - `sql_tables` (optional): primary keys and uniqueness constraints for sql databases
-- `nosql_path` (optional): indexes constraints for nosql databases
+- `nosql_path` (optional): indexes constraints for nosql databases, which are then treated as uniqueness constraints
 
-Generate the application registry:
+Then, generate the application registry:
 
 ```zsh
 # make sure you run from this directory so paths for the new Go file and the Go mod file are resolved correctly
@@ -159,7 +162,7 @@ Go to `aletheia` directory:
 cd aletheia
 ```
 
-Generate the application registry:
+Now, you will need to generate the application registry according to the new entry added to `aletheia/registry/apps.yaml`. The following script will (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
 
 ```zsh
 go run scripts/gen_app_registry/main.go
@@ -181,35 +184,17 @@ delete: ProductService.DeleteProduct() ... product_db.product.DeleteOne()
 	missing cascade #1: database={inventory_db}, entity={inventory}, pending_fields={ID}
 ```
 
-## Current Assumptions
+If you want to suppress all warnings related to missing cascade deletes on the inventory, create a new YAML file at `aletheia/config/simpleshop.yaml` with the following content:
 
-We list the assumptions in Aletheia that developers should take into account when analyzing their applications. These are temporary assumptions that can be addressed in the future by extending the current implementation:
+```yaml
+app: simpleshop
+ignore_cascade:
+  - database: inventory_db
+    entity: inventory
+```
 
-- The name of the database used in the wiring specification (e.g., `mongodb.Container`) must exactly match the name passed in service operations (e.g., `GetCollection`).
+Then, you can run again the analysis and pass the `--detection_config` flag followed by the file path:
 
-  ```Go
-  // wiring
-  posts_db := mongodb.Container(spec, "posts_db")
-  // workflow
-  s.postsDb.GetCollection(ctx, "posts_db", ...)
-  ```
-
-- Service implementation functions must return the interface type (e.g., `StorageService`) rather than the concrete service struct (e.g., `StorageServiceImpl`).
-  ```Go
-  func NewStorageServiceImpl(ctx context.Context, ...) (StorageService, error) {
-  	return &StorageServiceImpl{...}, nil
-  }
-  ```
-- In NoSQL databases, bson tags/filters for writes/reads must match the corresponding Go struct field name. Note that the `_id` field is treated as a special case and is used to infer primary key constraints.
-  ```Go
-  type Movie struct {
-  	MovieID string `bson:"_id"`
-  	Title   string `bson:"Title"`
-  }
-  ...
-  movie := Movie{...}
-  collection.InsertOne(ctx, movie)
-  ...
-  query := bson.D{{Key: "Title", Value: title}}
-  collection.FindOne(ctx, query)
-  ```
+```zsh
+go run main.go --detection_config config/simpleshop.yaml simpleshop
+```
