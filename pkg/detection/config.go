@@ -9,8 +9,10 @@ import (
 )
 
 type IgnoreCascadeEntry struct {
-	Database string `yaml:"database"`
-	Entity   string `yaml:"entity"`
+	Database        string `yaml:"database"`
+	Entity          string `yaml:"entity"`
+	TriggerDatabase string `yaml:"trigger_database"`
+	TriggerEntity   string `yaml:"trigger_entity"`
 }
 
 type InputConfig struct {
@@ -34,7 +36,7 @@ func LoadInputConfig(appname string, path string) {
 	}
 
 	for _, entry := range Config.IgnoreCascade {
-		logrus.Infof("loaded ignore cascade entry: database = %s, entity = %s\n", entry.Database, entry.Entity)
+		logrus.Infof("loaded ignore cascade entry: database = %s, entity = %s, trigger_database = %s, trigger_entity = %s\n", entry.Database, entry.Entity, entry.TriggerDatabase, entry.TriggerEntity)
 	}
 
 	if appname != Config.App {

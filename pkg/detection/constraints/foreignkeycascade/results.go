@@ -6,8 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/sirupsen/logrus"
-
 	"analyzer/pkg/app"
 	"analyzer/pkg/app/backends"
 	"analyzer/pkg/detection"
@@ -40,7 +38,7 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 			// filter out pending fields that are ignored due to config
 			var filteredPendingFields []*backends.Field
 			for _, pendingField := range cascadeDelete.pendingFields {
-				if !detector.isIgnoredCascade(pendingField.GetSchema().GetDatabase().GetName(), pendingField.GetSchema().GetName()) {
+				if !detector.isIgnoredCascade(cascadeDelete.op.database, cascadeDelete.op.schema, pendingField.GetSchema().GetDatabase().GetName(), pendingField.GetSchema().GetName()) {
 					filteredPendingFields = append(filteredPendingFields, pendingField)
 				}
 			}
@@ -91,10 +89,16 @@ func (detector *ForeignKeyCascadeDetector) ComputeResults(app *app.App) {
 	detector.results = header + fmt.Sprintf("[NUM_WARNINGS = %d]\n", numWarnings) + results
 }
 
-func (detector *ForeignKeyCascadeDetector) isIgnoredCascade(database string, entity string) bool {
+func (detector *ForeignKeyCascadeDetector) isIgnoredCascade(delDatabase string, delEntity string, pendingDatabase string, pendingEntity string) bool {
 	for _, entry := range detection.Config.IgnoreCascade {
-		logrus.Infof("database: %s, entity: %s\n", entry.Database, entry.Entity)
-		if entry.Database == database && entry.Entity == entity {
+		if entry.Database == pendingDatabase && entry.Entity == pendingEntity {
+			if entry.TriggerDatabase != "" && entry.TriggerEntity != "" {
+				if entry.TriggerDatabase == delDatabase && entry.TriggerEntity == delEntity {
+					return true
+				} else {
+					continue
+				}
+			}
 			return true
 		}
 	}

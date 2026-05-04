@@ -69,7 +69,13 @@ output/{app}/
 
 ## Getting Started
 
-After cloning the repository, initialize the Blueprint submodule:
+Clone the repository:
+
+```zsh
+git clone --recurse-submodules https://github.com/aletheia-microservices/aletheia.git
+```
+
+If you already cloned the repository without `--recurse-submodules`, make sure to initialize the submodules:
 
 ```zsh
 git submodule update --init --recursive
@@ -156,12 +162,6 @@ Add a new entry for the `simpleshop` application in the `aletheia/registry/apps.
   spec_path: github.com/blueprint-uservices/blueprint/examples/simpleshop/wiring/specs
 ```
 
-Go to `aletheia` directory:
-
-```zsh
-cd aletheia
-```
-
 Now, you will need to generate the application registry according to the new entry added to `aletheia/registry/apps.yaml`. The following script will (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
 
 ```zsh
@@ -191,6 +191,10 @@ app: simpleshop
 ignore_cascade:
   - database: inventory_db
     entity: inventory
+    # optional fields for more fine-grained control
+    trigger_database: product_db
+    trigger_entity: product
+
 ```
 
 Then, you can run again the analysis and pass the `--detection_config` flag followed by the file path:
