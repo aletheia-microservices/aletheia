@@ -202,7 +202,20 @@ func processConfigFile(configPath string) {
 	updateGoMod(DEFAULT_GO_MOD, cfg.Apps)
 }
 
+func ensureRunFromAletheia() {
+	cwd, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("[ERROR] %v", err)
+	}
+	if filepath.Base(cwd) != "aletheia" {
+		fmt.Fprintf(os.Stderr, "[ERROR] this script must be run from the aletheia directory (current: %s)\n", cwd)
+		os.Exit(1)
+	}
+}
+
 func main() {
+	ensureRunFromAletheia()
+
 	configFile := flag.String("config", "", "path to apps YAML config (relative to registry/); if omitted, all YAML files in registry/ are processed")
 	flag.Parse()
 

@@ -144,7 +144,6 @@ First, you will need to add a new application entry to `registry/apps.yaml`. You
 Then, generate the application registry:
 
 ```zsh
-# make sure you run from this directory so paths for the new Go file and the Go mod file are resolved correctly
 go run scripts/gen_app_registry/main.go
 ```
 
