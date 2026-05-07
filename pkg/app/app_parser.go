@@ -57,6 +57,10 @@ func (app *App) Init(synthetic bool) {
 	}
 	for _, service := range app.GetAllServices() {
 		if service.HasInitializerMethod() {
+			if service.GetInitializerMethod() == "Init" {
+				// skip - already used as entrypoint by default for http 
+				continue
+			}
 			// Run() method can also be considered as entrypoint
 			// because they are always called when initializing services
 			app.AddEntrypoint(service, service.GetInitializerMethod())

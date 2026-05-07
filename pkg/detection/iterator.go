@@ -83,7 +83,7 @@ func (it *Iterator) Run(mode IterationPhase) {
 		}
 
 		// TODO(improvement): skip for now but, in the future, we could not append to the nodes list but let it attached to edges
-		if toNode.GetMethod() == "Run" {
+		if toNode.GetMethod() == "Run" || toNode.GetMethod() == "Init"  {
 			continue
 		}
 
