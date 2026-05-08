@@ -6,7 +6,15 @@ In microservice architectures, data is stored across heterogeneous systems, with
 
 Aletheia solves this problem through static analysis, identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints, including entity integrity, referential integrity, and uniqueness.
 
-Currently, Aletheia analyzes applications developed with [Blueprint](https://github.com/Blueprint-uServices/blueprint) and located in `blueprint/examples/`.
+You can read our paper and cite it if you plan to use Aletheia in your research:
+
+> **Aletheia: Automated Detection of Data Integrity Violations in Microservices** (TBA)
+
+See the [Aletheia - Artifact OSDI'26](https://github.com/aletheia-microservices/aletheia-artifact-osdi26) repository for the artifacts and instructions to reproduce the experiments from the paper accepted in OSDI'26.
+
+## Overview
+
+Aletheia analyzes applications targeting the [Blueprint](https://github.com/Blueprint-uServices/blueprint) compiler and located in `blueprint/examples/`.
 
 The framework operates in four steps:
 
@@ -15,7 +23,9 @@ The framework operates in four steps:
 3. **Schema extraction** for objects stored across databases
 4. **Detection of code sections** that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
 
-Integrity violations are detected by searching for the following patterns formalized in our paper and implemented by Aletheia in `pkg/detection/constraints/`.
+### Detection of Code Patterns
+
+Integrity violations are detected by searching for the following patterns, formalized in our paper and implemented in [`pkg/detection/constraints/`](./pkg/detection/constraints/):
 
 | ID   | Constraint Type       | Violation Pattern            | Implementation Package                            |
 | ---- | --------------------- | ---------------------------- | ------------------------------------------------- |
@@ -24,6 +34,18 @@ Integrity violations are detected by searching for the following patterns formal
 | RI-3 | Referential integrity | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
 | EI-1 | Entity integrity      | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
 | Un-1 | Uniqueness            | Conflicting writes           | `pkg/detection/constraints/uniquenessconcurrency` |
+
+### Cross-Microservice Foreign Key Inference
+
+Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go):
+
+| Operation Pair                          | Foreign Key Direction (Cross-Microservice) |
+|-----------------------------------------|--------------------------------------------|
+| `(write, write)`                        | `field2` references `field1`               |
+| `(read, write)`, `(read_key, read_key)` | `field2` references `field1`               |
+| `(write, read)`, `(read_val, read_key)` | `field1` references `field2`               |
+
+`read_key` denotes that the propagated object is used as a filter in the read operation, while `read_val` denotes that the propagated object is returned from the read operation.
 
 ## Project Structure
 
@@ -138,8 +160,16 @@ First, you will need to add a new application entry to `registry/apps.yaml`. You
 - `package_path`: package path for application code
 - `spec_name`: blueprint spec name with format `{app_name}_{spec_name}` (e.g., `foobar_docker` => spec `Docker` for application `foobar`)
 - `spec_path`: package path for spec
-- `sql_tables` (optional): primary keys and uniqueness constraints for sql databases
-- `nosql_path` (optional): indexes constraints for nosql databases, which are then treated as uniqueness constraints
+- `sql_tables` (optional): primary keys and uniqueness constraints for SQL databases
+- `nosql_path` (optional): indexes constraints for NoSQL databases, which are then treated as uniqueness constraints
+
+> [!NOTE]
+> Go struct fields annotated with the `_id` BSON tag for NoSQL databases such as MongoDB are automatically treated as primary keys in the global application schema, since these fields are typically indexed by default:
+> ```go
+> type User struct {
+>     ID string `bson:"_id"`
+> }
+> ```
 
 Then, generate the application registry:
 
@@ -149,7 +179,7 @@ go run scripts/gen_app_registry/main.go
 
 ### Registering and Analyzing a Simple Application
 
-We now demonstrate how to run Aletheia to analyze a simple application (`simpleshop`) provided in `blueprint/examples/simpleshop/`. The application is composed of two microservices, Product Service and Inventory Service and allows clients to register new products and their respective inventory, as well as delete products.
+We now demonstrate how to run Aletheia to analyze a simple application (`simpleshop`) provided in `blueprint/examples/simpleshop/`. The application is composed of two microservices, Product Service and Inventory Service, and allows clients to register new products and their respective inventory, as well as delete products.
 
 Add a new entry for the `simpleshop` application in the `aletheia/registry/apps.yaml`. This will tell Aletheia how to properly import and analyze the application:
 
@@ -196,7 +226,7 @@ ignore_cascade:
 
 ```
 
-Then, you can run again the analysis and pass the `--detection_config` flag followed by the file path:
+Then, you can run the analysis again and pass the `--detection_config` flag followed by the file path:
 
 ```zsh
 go run main.go --detection_config config/simpleshop.yaml simpleshop
