@@ -1,27 +1,33 @@
 # Aletheia
 
+**Aletheia: Automated Detection of Data Integrity Violations in Microservices**  
+*Mafalda Sofia Ferreira, João Ferreira Loff, João Garcia, and Rodrigo Rodrigues*  
+*INESC-ID, Instituto Superior Técnico, Universidade de Lisboa*  
+*In Proceedings of the 20th USENIX Symposium on Operating Systems Design and Implementation (**OSDI ’26**)*
+
+For instructions on how to reproduce the experiments from the paper, see the [Aletheia Artifact OSDI'26](https://github.com/aletheia-microservices/aletheia-artifact-osdi26) repository.
+
+---
+
+## Overview
+
 Aletheia is a static analysis framework for detecting data integrity violations in microservice-based applications.
 
 In microservice architectures, data is stored across heterogeneous systems, with data schemas partitioned and managed by separate services. Due to the complexity of microservices, it can be almost impossible for developers to have a comprehensive understanding of the entire system, making it challenging to reason about and maintain data integrity at the application level. 
 
-Aletheia solves this problem through static analysis, identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints, including entity integrity, referential integrity, and uniqueness.
+Aletheia solves this problem through static analysis, identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints, including:
+- entity integrity (primary keys)
+- referential integrity (foreign keys)
+- uniqueness
 
-You can read our paper and cite it if you plan to use Aletheia in your research:
-
-> **Aletheia: Automated Detection of Data Integrity Violations in Microservices** (TBA)
-
-See the [Aletheia - Artifact OSDI'26](https://github.com/aletheia-microservices/aletheia-artifact-osdi26) repository for the artifacts and instructions to reproduce the experiments from the paper accepted in OSDI'26.
-
-## Overview
-
-Aletheia analyzes applications targeting the [Blueprint](https://github.com/Blueprint-uServices/blueprint) compiler and located in `blueprint/examples/`.
+Aletheia analyzes applications targeting the [Blueprint](https://github.com/Blueprint-uServices/blueprint) compiler and located in `blueprint/examples/`, which includes a README summarizing the source repositories and versions used for each application.
 
 The framework operates in four steps:
 
 1. **Intra-procedural analysis** based on Static Single-Assignment (SSA) graphs extracted from Go code to infer how values flow throughout execution by propagating taint information
 2. **Inter-microservice analysis** based on a new _abstract call graph_ that represents possible call graphs containing microservice invocations and database operations, along with filtered taint information from the SSA analysis
 3. **Schema extraction** for objects stored across databases
-4. **Detection of code sections** that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
+4. **Detection of problematic code sections** that violate integrity constraints, including entity integrity (primary keys), referential integrity (foreign keys), and uniqueness
 
 ### Detection of Code Patterns
 
@@ -37,7 +43,9 @@ Integrity violations are detected by searching for the following patterns, forma
 
 ### Cross-Microservice Foreign Key Inference
 
-Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go):
+Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go).
+
+Rules are applied for each pair of operation (`op_1`, `op_2`) where `op_i` is either a `read` or a `write`. We use `field_1` and `field_2` to denote fields accessed (tainted) by the same object in `op_1` and `op_2`, respectively.
 
 | Operation Pair                          | Foreign Key Direction (Cross-Microservice) |
 |-----------------------------------------|--------------------------------------------|
