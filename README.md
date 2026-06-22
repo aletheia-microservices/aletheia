@@ -1,27 +1,36 @@
 # Aletheia
 
-Aletheia is a static analysis framework for detecting data integrity violations in microservice-based applications.
+**Aletheia: Automated Detection of Data Integrity Violations in Microservices**  
+_Mafalda Sofia Ferreira, João Ferreira Loff, João Garcia, and Rodrigo Rodrigues_  
+_INESC-ID, Instituto Superior Técnico, Universidade de Lisboa_  
+_In Proceedings of the 20th USENIX Symposium on Operating Systems Design and Implementation (**OSDI ’26**)_
 
-In microservice architectures, data is stored across heterogeneous systems, with data schemas partitioned and managed by separate services. Due to the complexity of microservices, it can be almost impossible for developers to have a comprehensive understanding of the entire system, making it challenging to reason about and maintain data integrity at the application level. 
+For instructions on how to reproduce the experiments from the paper, see the [Aletheia Artifact OSDI'26](https://github.com/aletheia-microservices/aletheia-artifact-osdi26) repository.
 
-Aletheia solves this problem through static analysis, identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints, including entity integrity, referential integrity, and uniqueness.
-
-You can read our paper and cite it if you plan to use Aletheia in your research:
-
-> **Aletheia: Automated Detection of Data Integrity Violations in Microservices** (TBA)
-
-See the [Aletheia - Artifact OSDI'26](https://github.com/aletheia-microservices/aletheia-artifact-osdi26) repository for the artifacts and instructions to reproduce the experiments from the paper accepted in OSDI'26.
+---
 
 ## Overview
 
-Aletheia analyzes applications targeting the [Blueprint](https://github.com/Blueprint-uServices/blueprint) compiler and located in `blueprint/examples/`.
+Aletheia is a static analysis framework for detecting data integrity violations in microservice-based applications.
+
+In microservice architectures, data is stored across heterogeneous systems, with data schemas partitioned and managed by separate services. Due to the complexity of microservices, it can be almost impossible for developers to have a comprehensive understanding of the entire system, making it challenging to reason about and maintain data integrity at the application level.
+
+Aletheia solves this problem through static analysis by identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints:
+
+- **Entity integrity constraints** (defined through primary keys)
+- **Referential integrity constraints** (defined through foreign keys)
+- **Uniqueness constraints**
+
+Aletheia analyzes applications targeting the [Blueprint](https://github.com/Blueprint-uServices/blueprint) compiler.
+
+The code of all applications is located in `blueprint/examples/`, which includes a [README](https://github.com/aletheia-microservices/blueprint/blob/osdi26/examples/README.md) summarizing the source repositories and versions used for each application.
 
 The framework operates in four steps:
 
 1. **Intra-procedural analysis** based on Static Single-Assignment (SSA) graphs extracted from Go code to infer how values flow throughout execution by propagating taint information
 2. **Inter-microservice analysis** based on a new _abstract call graph_ that represents possible call graphs containing microservice invocations and database operations, along with filtered taint information from the SSA analysis
 3. **Schema extraction** for objects stored across databases
-4. **Detection of code sections** that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
+4. **Detection of problematic code sections** that violate integrity constraints, including entity integrity (primary keys), referential integrity (foreign keys), and uniqueness
 
 ### Detection of Code Patterns
 
@@ -35,17 +44,30 @@ Integrity violations are detected by searching for the following patterns, forma
 | EI-1 | Entity integrity      | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
 | Un-1 | Uniqueness            | Conflicting writes           | `pkg/detection/constraints/uniquenessconcurrency` |
 
+> [!NOTE]
+> Refer to our paper for the formal definitions of these patterns.
+
 ### Cross-Microservice Foreign Key Inference
 
-Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go):
+Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go).
 
-| Operation Pair                          | Foreign Key Direction (Cross-Microservice) |
-|-----------------------------------------|--------------------------------------------|
-| `(write, write)`                        | `field2` references `field1`               |
-| `(read, write)`, `(read_key, read_key)` | `field2` references `field1`               |
-| `(write, read)`, `(read_val, read_key)` | `field1` references `field2`               |
+Rules are applied for each pair of operation (`op_1`, `op_2`) where `op_i` is either a `read` or a `write`. We use `field_1` and `field_2` to denote fields accessed (tainted) by the same object in `op_1` and `op_2`, respectively.
 
-`read_key` denotes that the propagated object is used as a filter in the read operation, while `read_val` denotes that the propagated object is returned from the read operation.
+| Operation Pair   | Foreign Key Direction        |
+| ---------------- | ---------------------------- |
+| `(write, write)` | `field2` references `field1` |
+| `(read, write)`  | `field2` references `field1` |
+| `(write, read)`  | `field1` references `field2` |
+
+In read operations, the `read_key` denotes that the propagated object is used as a filter in the read operation, while `read_val` denotes that the propagated object is returned from the read operation.
+
+| Operation Pair         | Foreign Key Direction        |
+| ---------------------- | ---------------------------- |
+| `(read_key, read_key)` | `field2` references `field1` |
+| `(read_val, read_key)` | `field1` references `field2` |
+
+> [!NOTE]
+> Refer to our paper for a detailed explanation of these inference rules.
 
 ## Project Structure
 
@@ -165,6 +187,7 @@ First, you will need to add a new application entry to `registry/apps.yaml`. You
 
 > [!NOTE]
 > Go struct fields annotated with the `_id` BSON tag for NoSQL databases such as MongoDB are automatically treated as primary keys in the global application schema, since these fields are typically indexed by default:
+>
 > ```go
 > type User struct {
 >     ID string `bson:"_id"`
@@ -223,7 +246,6 @@ ignore_cascade:
     # optional fields for more fine-grained control
     trigger_database: product_db
     trigger_entity: product
-
 ```
 
 Then, you can run the analysis again and pass the `--detection_config` flag followed by the file path:
