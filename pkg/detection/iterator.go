@@ -83,7 +83,7 @@ func (it *Iterator) Run(mode IterationPhase) {
 		}
 
 		// TODO(improvement): skip for now but, in the future, we could not append to the nodes list but let it attached to edges
-		if toNode.GetMethod() == "Run" || toNode.GetMethod() == "Init"  {
+		if toNode.GetMethod() == "Run" || toNode.GetMethod() == "Init" {
 			continue
 		}
 
@@ -176,7 +176,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 			// finalize phase by propagating to database schemas
 			if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), Config.IgnoreForeignKeys, taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 			}
 
 			// --------------------------
@@ -213,7 +213,7 @@ func (it *Iterator) transverse(node *abstractgraph.AbstractNode) {
 
 			// finalize phase by propagating to database schemas
 			if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
-				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+				abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), Config.IgnoreForeignKeys, taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 			}
 		}
 
@@ -284,7 +284,7 @@ func (it *Iterator) transverseQueue(node *abstractgraph.AbstractNode, currDB *ba
 		abstractgraph.PropagateTaintsToServiceCallObjects(it.graph, node, taintMapping, queueReadEdge, true, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 
 		if it.mode == PHASE_1_SCHEMA_BUILDER || it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY {
-			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
+			abstractgraph.PropagateNewTaintsToDatabaseSchemas(it.graph, it.currentReqIdx(), Config.IgnoreForeignKeys, taintMapping, it.mode == PHASE_1_SCHEMA_BUILDER_READ_ONLY)
 		}
 	}
 

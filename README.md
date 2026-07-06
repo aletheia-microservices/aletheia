@@ -157,7 +157,17 @@ You can also specify the `--debug` flag to obtain tainted _ssa graphs_ and _abst
 go run main.go --debug postnotification
 ```
 
-You can also specify which warnings should be suppressed by passing the `--detection_config` flag followed by the file path:
+#### Suppressing Detection Warnings
+
+You can also specify which warnings should be suppressed by passing the `--detection_config` flag followed by the file path.
+
+You can ignore certain foreign keys in. For example, in `postnotification`:
+
+```zsh
+go run main.go --detection_config config/postnotification.yaml postnotification
+```
+
+Or you can suppress cascading deletes warnings. For example, in `sockshop`:
 
 ```zsh
 go run main.go --detection_config config/sockshop.yaml sockshop

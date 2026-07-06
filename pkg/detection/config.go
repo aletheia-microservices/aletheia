@@ -14,10 +14,10 @@ type IgnoreCascadeEntry struct {
 	TriggerDatabase string `yaml:"trigger_database"`
 	TriggerEntity   string `yaml:"trigger_entity"`
 }
-
 type InputConfig struct {
-	App           string               `yaml:"app"`
-	IgnoreCascade []IgnoreCascadeEntry `yaml:"ignore_cascade"`
+	App               string               `yaml:"app"`
+	IgnoreCascade     []IgnoreCascadeEntry `yaml:"ignore_cascade"`
+	IgnoreForeignKeys []string             `yaml:"ignore_foreignkeys"`
 }
 
 var Config InputConfig
@@ -33,6 +33,10 @@ func LoadInputConfig(appname string, path string) {
 	if err := yaml.Unmarshal(data, &Config); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to parse detection config yaml: %v\n", err)
 		os.Exit(1)
+	}
+
+	for _, entry := range Config.IgnoreForeignKeys {
+		logrus.Infof("loaded ignore foreign key entry: %s\n", entry)
 	}
 
 	for _, entry := range Config.IgnoreCascade {

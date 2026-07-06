@@ -1,6 +1,8 @@
 package abstractgraph
 
 import (
+	"slices"
+
 	"github.com/sirupsen/logrus"
 
 	"analyzer/pkg/app/backends"
@@ -289,7 +291,7 @@ func createTransitiveReferenceIfExists(field1 *backends.Field, field2 *backends.
 	return len(seen) > 0
 }
 
-func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, taintMapping *TaintMapping, readOnly bool) bool {
+func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, ignoreForeignKeys []string, taintMapping *TaintMapping, readOnly bool) bool {
 	var modified bool
 	mappingKeys := taintMapping.GetMappingKeys()
 
@@ -347,22 +349,22 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 				if taint1.IsRead() && taint2.IsRead() {
 					logrus.WithField("taint1", taint1.String()).WithField("taint2", taint2.String()).
 						Tracef("[TAINTER] found read-read taint pair")
-					if propagateTaintsReadReadPair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
+					if propagateTaintsReadReadPair(graph, reqIdx, ignoreForeignKeys, taint2, taint1, db2, db1, field2, field1) {
 						modified = true
 					}
 				}
 			}
 			if !config.Global.DualPassSchemaBuilding || (config.Global.DualPassSchemaBuilding && !readOnly) {
 				if taint1.IsWriteOrUpdate() && taint2.IsWriteOrUpdate() {
-					if propagateTaintsWriteWritePair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
+					if propagateTaintsWriteWritePair(graph, reqIdx, ignoreForeignKeys, taint2, taint1, db2, db1, field2, field1) {
 						modified = true
 					}
 				} else if taint1.IsRead() && taint2.IsWriteOrUpdate() {
-					if propagateTaintsReadWritePair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
+					if propagateTaintsReadWritePair(graph, reqIdx, ignoreForeignKeys, taint2, taint1, db2, db1, field2, field1) {
 						modified = true
 					}
 				} else if taint1.IsWriteOrUpdate() && taint2.IsRead() {
-					if propagateTaintsWriteReadPair(graph, reqIdx, taint2, taint1, db2, db1, field2, field1) {
+					if propagateTaintsWriteReadPair(graph, reqIdx, ignoreForeignKeys, taint2, taint1, db2, db1, field2, field1) {
 						modified = true
 					}
 				} else if taint1.IsDelete() && (taint2.IsRead() || taint2.IsWrite() || taint2.IsDelete()) {
@@ -378,7 +380,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *AbstractCallGraph, reqIdx int, t
 	return modified
 }
 
-func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_write AbstractTaint, taint1_write AbstractTaint, db2_write *backends.Database, db1_write *backends.Database, field2_write *backends.Field, field1_write *backends.Field) bool {
+func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, ignoreForeignKeys []string, taint2_write AbstractTaint, taint1_write AbstractTaint, db2_write *backends.Database, db1_write *backends.Database, field2_write *backends.Field, field1_write *backends.Field) bool {
 	var modified bool
 	if constraint := field2_write.GetConstraintForeignKeyToField(field1_write); constraint != nil {
 		if taint1_write.IsWrite() && taint2_write.IsWrite() {
@@ -396,6 +398,12 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_
 		// 2nd condition is for sanity check
 		// may happen when iterating queue.Push() --> queue.Pop()
 
+		// foreign key: field1 <--- field2
+		// check if this foreign key should be ignored based on config file
+		if ignoreForeignKeys != nil && slices.Contains(ignoreForeignKeys, field2_write.GetPath()) {
+			return false
+		}
+
 		if ok := createTransitiveReferenceIfExists(field2_write, field1_write, reqIdx, true); ok {
 			modified = true
 		} else {
@@ -412,7 +420,7 @@ func propagateTaintsWriteWritePair(graph *AbstractCallGraph, reqIdx int, taint2_
 	return modified
 }
 
-func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_write AbstractTaint, taint1_read AbstractTaint, db2_write *backends.Database, db1_read *backends.Database, field2_write *backends.Field, field1_read *backends.Field) bool {
+func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, ignoreForeignKeys []string, taint2_write AbstractTaint, taint1_read AbstractTaint, db2_write *backends.Database, db1_read *backends.Database, field2_write *backends.Field, field1_read *backends.Field) bool {
 	var modified bool
 	if constraint := field2_write.GetConstraintForeignKeyToField(field1_read); constraint != nil {
 		if taint2_write.IsWrite() {
@@ -429,6 +437,12 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 	} else if !field2_write.HasConstraintForeignKeyToField(field1_read) && !field1_read.HasConstraintForeignKeyToField(field2_write) {
 		// 2nd condition is for sanity check
 		// may happen when iterating queue.Push() --> queue.Pop()
+
+		// foreign key: field1 <--- field2
+		// check if this foreign key should be ignored based on config file
+		if ignoreForeignKeys != nil && slices.Contains(ignoreForeignKeys, field2_write.GetPath()) {
+			return false
+		}
 
 		if ok := createTransitiveReferenceIfExists(field2_write, field1_read, reqIdx, false); ok {
 			modified = true
@@ -447,7 +461,7 @@ func propagateTaintsReadWritePair(graph *AbstractCallGraph, reqIdx int, taint2_w
 	return modified
 }
 
-func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_read AbstractTaint, taint1_write AbstractTaint, db2_read *backends.Database, db1_write *backends.Database, field2_read *backends.Field, field1_write *backends.Field) bool {
+func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, ignoreForeignKeys []string, taint2_read AbstractTaint, taint1_write AbstractTaint, db2_read *backends.Database, db1_write *backends.Database, field2_read *backends.Field, field1_write *backends.Field) bool {
 	var modified bool
 	// e.g.,
 	// postnotification:
@@ -475,6 +489,13 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 	} else if !field2_read.HasConstraintForeignKeyToField(field1_write) && !field1_write.HasConstraintForeignKeyToField(field2_read) {
 		// WRITE .. READ
 		// field_write --FK--> field_read
+
+		// foreign key: field1 ---> field2
+		// check if this foreign key should be ignored based on config file
+		if ignoreForeignKeys != nil && slices.Contains(ignoreForeignKeys, field1_write.GetPath()) {
+			return false
+		}
+
 		if taint2_read.IsReadValue() {
 			return false
 		}
@@ -495,7 +516,7 @@ func propagateTaintsWriteReadPair(graph *AbstractCallGraph, reqIdx int, taint2_r
 	return modified
 }
 
-func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 AbstractTaint, taint1 AbstractTaint, db2 *backends.Database, db1 *backends.Database, field2 *backends.Field, field1 *backends.Field) bool {
+func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, ignoreForeignKeys []string, taint2 AbstractTaint, taint1 AbstractTaint, db2 *backends.Database, db1 *backends.Database, field2 *backends.Field, field1 *backends.Field) bool {
 	if !config.Global.CreateReferencesFromReadReadPair {
 		return false
 	}
@@ -504,6 +525,10 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 	if !field2.HasConstraintForeignKeyToField(field1) && !field1.HasConstraintForeignKeyToField(field2) {
 		if taint1.IsReadKey() && taint2.IsReadKey() {
 			// foreign key: field1 <--- field2
+			// check if this foreign key should be ignored based on config file
+			if ignoreForeignKeys != nil && slices.Contains(ignoreForeignKeys, field2.GetPath()) {
+				return false
+			}
 
 			if field2.HasConstraintForeignKey() {
 				// original reference origin could actually be another field
@@ -521,6 +546,11 @@ func propagateTaintsReadReadPair(graph *AbstractCallGraph, reqIdx int, taint2 Ab
 			}
 		} else if taint1.IsReadValue() && taint2.IsReadKey() {
 			// foreign key: field1 ---> field2
+			// check if this foreign key should be ignored based on config file
+			if ignoreForeignKeys != nil && slices.Contains(ignoreForeignKeys, field1.GetPath()) {
+				return false
+			}
+
 			if !config.Global.CreateReferencesFromReadReadPairAndValKey {
 				return false
 			}
