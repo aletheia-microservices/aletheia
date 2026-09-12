@@ -11,14 +11,12 @@ For instructions on how to reproduce the experiments from the paper, see the [Al
 
 ## Overview
 
-Aletheia is a static analysis framework for detecting data integrity violations in microservice-based applications.
-
 In microservice architectures, data is stored across heterogeneous systems, with data schemas partitioned and managed by separate services. Due to the complexity of microservices, it can be almost impossible for developers to have a comprehensive understanding of the entire system, making it challenging to reason about and maintain data integrity at the application level.
 
 Aletheia solves this problem through static analysis by identifying semantic violations in microservice ecosystems (i.e., service interactions and operations that break data integrity) for various types of integrity constraints:
 
-- **Entity integrity constraints** (defined through primary keys)
-- **Referential integrity constraints** (defined through foreign keys)
+- **Entity integrity constraints** (defined through **primary keys**)
+- **Referential integrity constraints** (defined through **foreign keys**)
 - **Uniqueness constraints**
 
 Aletheia analyzes applications targeting the [Blueprint](https://github.com/Blueprint-uServices/blueprint) compiler.
@@ -30,44 +28,17 @@ The framework operates in four steps:
 1. **Intra-procedural analysis** based on Static Single-Assignment (SSA) graphs extracted from Go code to infer how values flow throughout execution by propagating taint information
 2. **Inter-microservice analysis** based on a new _abstract call graph_ that represents possible call graphs containing microservice invocations and database operations, along with filtered taint information from the SSA analysis
 3. **Schema extraction** for objects stored across databases
-4. **Detection of problematic code sections** that violate integrity constraints, including entity integrity (primary keys), referential integrity (foreign keys), and uniqueness
+4. **Detection of problematic code sections** that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
 
-### Detection of Code Patterns
+Integrity violations are detected by searching for the following patterns, formalized in our paper:
 
-Integrity violations are detected by searching for the following patterns, formalized in our paper and implemented in [`pkg/detection/constraints/`](./pkg/detection/constraints/):
-
-| ID   | Constraint Type       | Violation Pattern            | Implementation Package                            |
-| ---- | --------------------- | ---------------------------- | ------------------------------------------------- |
-| RI-1 | Referential integrity | Absence of cascading effects | `pkg/detection/constraints/foreignkeycascade`     |
-| RI-2 | Referential integrity | Concurrent operations        | `pkg/detection/constraints/foreignkeyconcurrency` |
-| RI-3 | Referential integrity | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
-| EI-1 | Entity integrity      | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
-| Un-1 | Uniqueness            | Conflicting writes           | `pkg/detection/constraints/uniquenessconcurrency` |
-
-> [!NOTE]
-> Refer to our paper for the formal definitions of these patterns.
-
-### Cross-Microservice Foreign Key Inference
-
-Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go).
-
-Rules are applied for each pair of operation (`op_1`, `op_2`) where `op_i` is either a `read` or a `write`. We use `field_1` and `field_2` to denote fields accessed (tainted) by the same object in `op_1` and `op_2`, respectively.
-
-| Operation Pair   | Foreign Key Direction        |
-| ---------------- | ---------------------------- |
-| `(write, write)` | `field2` references `field1` |
-| `(read, write)`  | `field2` references `field1` |
-| `(write, read)`  | `field1` references `field2` |
-
-In read operations, the `read_key` denotes that the propagated object is used as a filter in the read operation, while `read_val` denotes that the propagated object is returned from the read operation.
-
-| Operation Pair         | Foreign Key Direction        |
-| ---------------------- | ---------------------------- |
-| `(read_key, read_key)` | `field2` references `field1` |
-| `(read_val, read_key)` | `field1` references `field2` |
-
-> [!NOTE]
-> Refer to our paper for a detailed explanation of these inference rules.
+| Constraint            | Problematic Pattern          |
+| --------------------- | ---------------------------- |
+| Referential integrity | Absence of cascading effects |
+| Referential integrity | Concurrent operations        |
+| Referential integrity | Uncoordinated replication    |
+| Entity integrity      | Uncoordinated replication    |
+| Uniqueness            | Conflicting writes           |
 
 ## Project Structure
 
@@ -184,8 +155,6 @@ blueprint/examples/{app}/
 │   └── {app}/          # microservices code
 ```
 
-See [assumptions.md](./assumptions.md) for the current analysis assumptions and limitations.
-
 First, you will need to add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
 
 - `name`: application name
@@ -263,3 +232,46 @@ Then, you can run the analysis again and pass the `--detection_config` flag foll
 ```zsh
 go run main.go --detection_config config/simpleshop.yaml simpleshop
 ```
+
+## Technical Details
+
+### Detection of Code Patterns
+
+Integrity violations are detected by searching for the following patterns, formalized in our paper and implemented in [`pkg/detection/constraints/`](./pkg/detection/constraints/):
+
+| ID   | Constraint            |  Problematic Pattern         | Implementation Package                            |
+| ---- | --------------------- | ---------------------------- | ------------------------------------------------- |
+| RI-1 | Referential integrity | Absence of cascading effects | `pkg/detection/constraints/foreignkeycascade`     |
+| RI-2 | Referential integrity | Concurrent operations        | `pkg/detection/constraints/foreignkeyconcurrency` |
+| RI-3 | Referential integrity | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
+| EI-1 | Entity integrity      | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
+| Un-1 | Uniqueness            | Conflicting writes           | `pkg/detection/constraints/uniquenessconcurrency` |
+
+> [!NOTE]
+> Refer to our paper for the formal definitions of these patterns.
+
+### Cross-Microservice Foreign Key Inference
+
+Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go).
+
+Rules are applied for each pair of operation (`op_1`, `op_2`) where `op_i` is either a `read` or a `write`. We use `field_1` and `field_2` to denote fields accessed (tainted) by the same object in `op_1` and `op_2`, respectively.
+
+| Operation Pair   | Foreign Key Direction        |
+| ---------------- | ---------------------------- |
+| `(write, write)` | `field2` references `field1` |
+| `(read, write)`  | `field2` references `field1` |
+| `(write, read)`  | `field1` references `field2` |
+
+In read operations, the `read_key` denotes that the propagated object is used as a filter in the read operation, while `read_val` denotes that the propagated object is returned from the read operation.
+
+| Operation Pair         | Foreign Key Direction        |
+| ---------------------- | ---------------------------- |
+| `(read_key, read_key)` | `field2` references `field1` |
+| `(read_val, read_key)` | `field1` references `field2` |
+
+> [!NOTE]
+> Refer to our paper for a detailed explanation of these inference rules.
+
+### Current Limitations
+
+See [assumptions.md](./assumptions.md) for the current analysis assumptions and limitations.
