@@ -226,26 +226,26 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				}
 			}
 
-			var fields []string
+			var writeOrReadFields []string
 			var tableName string
 			var filterFields []string
 
 			switch opType {
 			case common.OP_READ:
 				var tables []string
-				filterFields, fields, tables, ok = app.ParseSQLRead(database, stmt)
+				writeOrReadFields, filterFields, tables, ok = app.ParseSQLRead(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
 				tableName = tables[0]
 
 				// sanity check
-				if len(argVals) != len(fields) {
-					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
+				if len(argVals) != len(filterFields) {
+					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] [R] length of arg vals (%d) does not match length fields (%d): \n STMT=%s", len(argVals), len(filterFields), stmt)
 				}
 			case common.OP_WRITE:
 				var ok bool
-				fields, _, tableName, ok = app.ParseSQLWrite(database, stmt)
+				writeOrReadFields, _, tableName, ok = app.ParseSQLWrite(database, stmt)
 				if !ok {
 					return "", "", -1, nil, false
 				}
@@ -260,53 +260,44 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 
 				// sanity check
 				if len(argVals) != len(filterFields) {
-					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] length of arg vals (%d) does not match length fields (%d)\n", len(argVals), len(fields))
+					logrus.Fatalf("[CALLS BLUEPRINT] [RELDB] [D] length of arg vals (%d) does not match length fields (%d)\n STMT=%s", len(argVals), len(filterFields), stmt)
 				}
 			}
 
+			// process WHERE clause
 			var valFieldPathLst []ValFieldPath
-			for i, field := range fields {
+			for i, filterField := range filterFields {
 				argVal := argVals[i]
 				if argVals[i] == nil {
 					logrus.Fatalf("field argvals[i] is nil")
 				}
 				valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 					val:       argVal,
-					fieldpath: field,
+					fieldpath: filterField,
 					readKey:   true,
 				})
 			}
 
 			switch opType {
 			case common.OP_READ:
+				// process destination value for reads (e.g., Select, Get)
+				// --
 				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
 				// and the readField has format <database>.<table>
-				if call.Call.Method.Name() == "Select" && len(filterFields) > 0 {
-					// select method reads entire row
-					filterField := filterFields[0]
+				if dstVal == nil { // sanity check
+					logrus.Fatalf("dstval is nil")
+				}
+
+				if len(writeOrReadFields) > 0 {
+					// call.Call.Method.Name() is either:
+					// - GET: 		reads entire row with '*'
+					// - SELECT: 	no need to support multiple select fields because blueprint supports only one dst field as interface
+					readField := writeOrReadFields[0]
 					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
 						val:       dstVal,
-						fieldpath: filterField,
+						fieldpath: readField,
 						readValue: true,
 					})
-
-					if dstVal == nil {
-						logrus.Fatalf("dstval is nil")
-					}
-				}
-			case common.OP_DELETE:
-				// for SQL Selects on all fields (i.e., '*') the readFields length is 1
-				// and the readField has format <database>.<table>
-				for i, filterField := range filterFields {
-					valFieldPathLst = append(valFieldPathLst, ValFieldPath{
-						val:       argVals[i],
-						fieldpath: filterField,
-						readKey:   true,
-					})
-
-					if argVals[i] == nil {
-						logrus.Fatalf("is nil")
-					}
 				}
 			}
 
