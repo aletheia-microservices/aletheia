@@ -15,38 +15,40 @@ type CascadeDelete struct {
 	pendingFields []*backends.Field
 }
 
-func (detector *ForeignKeyCascadeDetector) checkInconsistencies(app *app.App) {
-	for _, request := range detector.requests {
-
-		// check if there was a write before involving the association
-		// if thats the case, the bug is not flagged
-		var do_not_flag bool
-		for _, delete := range request.GetAllOperations() {
-			database := app.GetDatabaseByName(delete.database)
-			schema := database.GetSchemaByNameIfExists(delete.schema)
-			for _, write := range request.GetAllWriteOperations() {
-				for _, writtenField := range write.fields {
-					for _, deletedField := range schema.GetAllFieldsLst() {
-						if writtenField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {
-							do_not_flag = true
-							logrus.Warnf("[FOREIGN KEY CASCADE | CHECKER] skipping cascade delete due to write in same request\n")
-							break
-						}
+// checks each delete in the request against already-pending cascade deletes, and registers
+// any new pending cascade deletes of its own
+func (detector *ForeignKeyCascadeDetector) checkInconsistenciesForRequest(app *app.App, request *Request) {
+	// check if there was a write before involving the association
+	// if thats the case, the bug is not flagged
+	var do_not_flag bool
+	for _, delete := range request.GetAllOperations() {
+		database := app.GetDatabaseByName(delete.database)
+		schema := database.GetSchemaByNameIfExists(delete.schema)
+		for _, write := range request.GetAllWriteOperations() {
+			for _, writtenField := range write.fields {
+				for _, deletedField := range schema.GetAllFieldsLst() {
+					if writtenField.HasConstraintForeignKeyNonMandatoryToField(deletedField) {
+						do_not_flag = true
+						logrus.Warnf("[FOREIGN KEY CASCADE | CHECKER] skipping cascade delete due to write in same request\n")
+						break
 					}
 				}
 			}
-			if !do_not_flag {
-				cascadeDelete := detector.registerFutureCascadeDelete(app, delete)
-				if cascadeDelete != nil {
-					detector.markCascadingDelete(app, request, delete)
-					detector.addCascadeDelete(request, cascadeDelete)
-				}
+		}
+		if !do_not_flag {
+			// run for every delete, even leaf ones with no pending fields of their own:
+			// a leaf delete can still be what satisfies an earlier delete's pending cascade
+			detector.confirmPendingCascadeDelete(app, request, delete)
+			
+			cascadeDelete := detector.buildPendingCascadeDelete(app, delete)
+			if cascadeDelete != nil {
+				detector.addPendingCascadeDelete(request, cascadeDelete)
 			}
 		}
 	}
 }
 
-func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.App, currOp *DeleteOperation) *CascadeDelete {
+func (detector *ForeignKeyCascadeDetector) buildPendingCascadeDelete(app *app.App, currOp *DeleteOperation) *CascadeDelete {
 	var pendingFields []*backends.Field
 	currDB := app.GetDatabaseByName(currOp.call.GetToNode().GetDatabaseName())
 
@@ -86,7 +88,7 @@ func (detector *ForeignKeyCascadeDetector) registerFutureCascadeDelete(app *app.
 	return nil
 }
 
-func (detector *ForeignKeyCascadeDetector) markCascadingDelete(app *app.App, request *Request, currOp *DeleteOperation) {
+func (detector *ForeignKeyCascadeDetector) confirmPendingCascadeDelete(app *app.App, request *Request, currOp *DeleteOperation) {
 	currDB := app.GetDatabaseByName(currOp.call.GetToNode().GetDatabaseName())
 
 	for _, prevCascadeDelete := range detector.getCascadeDeletesForRequest(request) {

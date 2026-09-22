@@ -24,7 +24,7 @@ func NewDetector() *ForeignKeyCascadeDetector {
 	}
 }
 
-func (detector *ForeignKeyCascadeDetector) addCascadeDelete(req *Request, cascadeDelete *CascadeDelete) {
+func (detector *ForeignKeyCascadeDetector) addPendingCascadeDelete(req *Request, cascadeDelete *CascadeDelete) {
 	detector.cascadeDeletes[req] = append(detector.cascadeDeletes[req], cascadeDelete)
 }
 
@@ -45,7 +45,8 @@ func (detector *ForeignKeyCascadeDetector) OnNewRun(app *app.App) {
 }
 
 func (detector *ForeignKeyCascadeDetector) OnEndRun(app *app.App) {
-	detector.checkInconsistencies(app)
+	// intentionally left empty: the check now runs per-request, from OnEndRequest, before the
+	// Iterator wipes that request's secondary taints. See checkInconsistenciesForRequest.
 }
 
 func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int) {
@@ -54,7 +55,7 @@ func (detector *ForeignKeyCascadeDetector) OnNewRequest(node *abstractgraph.Abst
 }
 
 func (detector *ForeignKeyCascadeDetector) OnEndRequest(app *app.App) {
-	// nothing to do
+	detector.checkInconsistenciesForRequest(app, detector.getCurrentRequest())
 }
 
 func (detector *ForeignKeyCascadeDetector) OnNewNode(app *app.App, node *abstractgraph.AbstractNode) {
