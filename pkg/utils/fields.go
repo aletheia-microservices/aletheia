@@ -38,3 +38,22 @@ func IsUpperOrEqualPath(objpath1 string, objpath2 string) (bool, string) {
 	}
 	return false, ""
 }
+
+// InsertAfterFieldName inserts prefix right after the field name of path, where path has the form
+// <database>.<table>.<fieldname><subpath> and <subpath> is either empty or starts with '.' or '['
+// e.g., InsertAfterFieldName("db.users.address.city", ".home") returns "db.users.address.home.city"
+func InsertAfterFieldName(path, prefix string) string {
+	// find first '.'
+	first := strings.IndexByte(path, '.')
+	// find second '.' (after first)
+	second := strings.IndexByte(path[first+1:], '.') + first + 1
+
+	// fieldname starts at second+1
+	// ends at next '.' or '[' or end
+	i := second + 1
+	for i < len(path) && path[i] != '.' && path[i] != '[' {
+		i++
+	}
+	// insert prefix right after fieldname
+	return path[:i] + prefix + path[i:]
+}

@@ -2,6 +2,7 @@ package blueprint_apps
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/blueprint-uservices/blueprint/plugins/cmdbuilder"
 	"gopkg.in/yaml.v2"
@@ -31,8 +32,8 @@ type AppInfo struct {
 var APPS_INFO = map[string]AppInfo{}
 const BLUEPRINT_EXAMPLES_PKG_PREFIX    = "github.com/blueprint-uservices/blueprint/examples/"
 
-func loadAppsConfig(filepath string) (*AppsConfig, error) {
-	data, err := os.ReadFile(filepath)
+func loadAppsConfig(path string) (*AppsConfig, error) {
+	data, err := os.ReadFile(resolveFromAncestors(path))
 	if err != nil {
 		return nil, err
 	}
@@ -41,6 +42,27 @@ func loadAppsConfig(filepath string) (*AppsConfig, error) {
 		return nil, err
 	}
 	return &cfg, nil
+}
+
+// resolveFromAncestors returns the first existing path/relpath found when walking up from the
+// working directory, so that the registry is found when running from a package directory
+// (e.g., `go test ./pkg/...`); falls back to relpath unchanged
+func resolveFromAncestors(relpath string) string {
+	dir, err := os.Getwd()
+	if err != nil {
+		return relpath
+	}
+	for {
+		candidate := filepath.Join(dir, relpath)
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return relpath
+		}
+		dir = parent
+	}
 }
 
 func initAppsFromConfig(cfg *AppsConfig) {

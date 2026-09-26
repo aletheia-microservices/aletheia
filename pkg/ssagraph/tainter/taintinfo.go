@@ -7,6 +7,7 @@ import (
 	"golang.org/x/tools/go/ssa"
 
 	"analyzer/pkg/ssagraph"
+	"analyzer/pkg/utils"
 )
 
 type TaintMode int
@@ -210,26 +211,9 @@ func (t TaintInfo) updateCallPathSuffix(suffix string) TaintInfo {
 func (t TaintInfo) updateCallPathPrefix(prefix string) TaintInfo {
 	switch t.infoType {
 	case TAINT_INFO_DATABASE:
-		t.dbTaint.dbpath = insertAfterFieldName(t.dbTaint.dbpath, prefix)
+		t.dbTaint.dbpath = utils.InsertAfterFieldName(t.dbTaint.dbpath, prefix)
 	case TAINT_INFO_SERVICE:
-		t.svTaint.svpath = insertAfterFieldName(t.svTaint.svpath, prefix)
+		t.svTaint.svpath = utils.InsertAfterFieldName(t.svTaint.svpath, prefix)
 	}
 	return t
-}
-
-// full path: <database>.<table>.<fieldname>[.<any sub path> or [<any sub path>]
-func insertAfterFieldName(path, prefix string) string {
-	// find first '.'
-	first := strings.IndexByte(path, '.')
-	// find second '.' (after first)
-	second := strings.IndexByte(path[first+1:], '.') + first + 1
-
-	// fieldname starts at second+1
-	// ends at next '.' or '[' or end
-	i := second + 1
-	for i < len(path) && path[i] != '.' && path[i] != '[' {
-		i++
-	}
-	// insert prefix right after fieldname
-	return path[:i] + prefix + path[i:]
 }
