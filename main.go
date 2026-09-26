@@ -10,19 +10,21 @@ import (
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 
-	"analyzer/pkg/abstractgraph"
+	"analyzer/pkg/analysis/service-level/ssagraph"
+	"analyzer/pkg/analysis/service-level/ssagraph/parser"
+	"analyzer/pkg/analysis/service-level/ssagraph/registry"
+	"analyzer/pkg/analysis/service-level/ssagraph/tainter"
+	"analyzer/pkg/analysis/system-level/abstractgraph"
+	abstractgraphparser "analyzer/pkg/analysis/system-level/abstractgraph/parser"
+	"analyzer/pkg/analysis/system-level/detection"
+	"analyzer/pkg/analysis/system-level/detection/constraints/foreignkeycascade"
+	"analyzer/pkg/analysis/system-level/detection/constraints/foreignkeyconcurrency"
+	"analyzer/pkg/analysis/system-level/detection/constraints/keycoordination"
+	"analyzer/pkg/analysis/system-level/detection/constraints/uniquenessconcurrency"
 	"analyzer/pkg/app"
+	appparser "analyzer/pkg/app/parser"
 	"analyzer/pkg/config"
-	"analyzer/pkg/detection"
-	"analyzer/pkg/detection/constraints/foreignkeycascade"
-	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
-	"analyzer/pkg/detection/constraints/keycoordination"
-	"analyzer/pkg/detection/constraints/uniquenessconcurrency"
 	blueprint_apps "analyzer/pkg/frameworks/blueprint/apps"
-	"analyzer/pkg/ssagraph"
-	"analyzer/pkg/ssagraph/parser"
-	"analyzer/pkg/ssagraph/registry"
-	"analyzer/pkg/ssagraph/tainter"
 	"analyzer/pkg/utils"
 )
 
@@ -101,7 +103,7 @@ func main() {
 
 	apppath := utils.GetAppRootPackagePath(appname)
 	app := app.NewApp(appname)
-	app.Init(SYNTHETIC)
+	appparser.Init(app, SYNTHETIC)
 
 	if INIT {
 		// load app from init and skip analysis
@@ -145,12 +147,12 @@ func main() {
 		logrus.Fatalf("error: %s", err.Error())
 	}
 
-	app.InitServiceFields(pkgs)
-	app.ParseSQLSchemaFromUserFile()
-	app.ParseNoSQLSchemaFromUserFile()
+	appparser.InitServiceFields(app, pkgs)
+	appparser.ParseSQLSchemaFromUserFile(app)
+	appparser.ParseNoSQLSchemaFromUserFile(app)
 	if INPUT_REFS {
 		logrus_ctx.Infof("reading input refs...")
-		app.ParseUserInputReferences()
+		appparser.ParseUserInputReferences(app)
 	}
 
 	funcGraphs := make(map[string]*ssagraph.SSAGraph)
@@ -221,7 +223,7 @@ func main() {
 	logrus_ctx.Infof("[7/12] creating new abstract call graph")
 	absgraph := abstractgraph.NewAbstractCallGraph(app)
 	for _, entrypoint := range app.GetEntrypointsShortPaths() {
-		abstractgraph.Parse(absgraph, entrypoint, true, funcGraphs)
+		abstractgraphparser.Parse(absgraph, entrypoint, true, funcGraphs)
 	}
 
 	// ------------ PART 8

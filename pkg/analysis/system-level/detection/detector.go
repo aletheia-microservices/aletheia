@@ -1,0 +1,90 @@
+// Package detection walks the abstract call graph in each phase (schema building, pattern
+// detection), passes each database operation to the pattern detectors, saves their results, and
+// loads detection config files
+package detection
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+
+	"github.com/sirupsen/logrus"
+
+	"analyzer/pkg/analysis/system-level/abstractgraph"
+	"analyzer/pkg/app"
+)
+
+const (
+	TEXT_BOLD_LIGHT_YELLOW = "\033[1;38;5;179m"
+	TEXT_BOLD_LIGHT_RED    = "\033[1;31m"
+	TEXT_RESET_COLOR       = "\033[0m"
+	TEXT_BOLD_LIGHT_BLUE   = "\033[1;38;5;68m"
+	TEXT_BOLD_LIGHT_GREEN  = "\033[1;32m"
+)
+
+type Detector interface {
+	GetResults() string
+	GetSummary() string
+	SetSummary(summary string)
+	ComputeResults(app *app.App)
+	GetTypeString() string
+
+	OnNewRun(app *app.App)
+	OnEndRun(app *app.App)
+	OnNewRequest(node *abstractgraph.AbstractNode, reqIdx int)
+	OnEndRequest(app *app.App)
+	OnNewNode(app *app.App, node *abstractgraph.AbstractNode)
+	OnEndNode(app *app.App, node *abstractgraph.AbstractNode)
+
+	// database calls
+	OnRead(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+	OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+	OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+	OnDelete(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge)
+}
+
+func SaveResults(app *app.App, detectors ...Detector) []string {
+	detectorsResults := make([]string, len(detectors))
+	for i, detector := range detectors {
+		detector.ComputeResults(app)
+		results := detector.GetResults()
+
+		// ensure the path for the results file exists
+		path := fmt.Sprintf("output/%s/analysis/%s.txt", app.GetName(), detector.GetTypeString())
+		dir := filepath.Dir(path)
+		err := os.MkdirAll(dir, 0755)
+		if err != nil {
+			logrus.Fatalf("[%s] error creating directory %s: %s", path, dir, err.Error())
+		}
+
+		// read previous file (if it exists) and check if results have changed
+		var previousContent []byte
+		if _, err := os.Stat(path); err == nil {
+			previousContent, err = os.ReadFile(path)
+			if err != nil {
+				logrus.Fatalf("[%s] error reading existing file %s: %s", path, path, err.Error())
+			}
+		}
+
+		color := TEXT_BOLD_LIGHT_BLUE
+		if string(previousContent) == results {
+			str := color + "\t\t\t\t\t\t\t (unmodified) \n" + results + TEXT_RESET_COLOR + "\n\n"
+			detectorsResults[i] = str
+			continue
+		}
+
+		// if content changed but the analysis summary is the same then the result is printed in yellow
+		// otherwise (i.e., changes in both content and analysis summary), result is printed in red
+		color = TEXT_BOLD_LIGHT_RED
+
+		// if we have a new file or the content has changed then update the results
+		err = os.WriteFile(path, []byte(results), 0644)
+		if err != nil {
+			logrus.Fatalf("[%s] error writing data to %s: %s", path, path, err.Error())
+		}
+
+		str := fmt.Sprintf("%s\t\t\t\t\t\t\t   (modified)\n%s%s\n\n", color, results, TEXT_RESET_COLOR)
+		detectorsResults[i] = str
+	}
+	return detectorsResults
+}

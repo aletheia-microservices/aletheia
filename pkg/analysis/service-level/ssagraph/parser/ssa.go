@@ -1,0 +1,401 @@
+// Package parser builds the SSA graphs of the application's packages and saves the SSA code to
+// output/{app}/ssa/
+package parser
+
+import (
+	"crypto/rand"
+	"fmt"
+	"math/big"
+	"os"
+	"path/filepath"
+
+	"github.com/sirupsen/logrus"
+	"golang.org/x/tools/go/ssa"
+	"golang.org/x/tools/go/types/typeutil"
+
+	"analyzer/pkg/analysis/service-level/ssagraph"
+	"analyzer/pkg/app"
+	"analyzer/pkg/utils"
+)
+
+func RunSSAAnalysis(app *app.App, prog *ssa.Program, pkg *ssa.Package, funcGraphs map[string]*ssagraph.SSAGraph) {
+	path := fmt.Sprintf("output/%s/ssa/%s.ssa", app.GetName(), pkg.Pkg.Name())
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		panic(err)
+	}
+	ssaFile, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+	defer ssaFile.Close()
+
+	for _, member := range pkg.Members {
+		switch m := member.(type) {
+		case *ssa.Function:
+			iterateFunc(app, ssaFile, m, funcGraphs, false)
+
+		case *ssa.Global:
+			fmt.Fprintf(ssaFile, "\tGlobal: %s, Type: %s\n", m.Name(), m.Type().String())
+
+		case *ssa.Type:
+			fmt.Fprintf(ssaFile, "\tType: %s\n", m.Type())
+
+			// this logic was copied from
+			// package: golang.org/x/tools/go/ssa
+			// file: print.go
+			// function: func (p *Package) WriteTo(w io.Writer) (int64, error)
+			for _, sel := range typeutil.IntuitiveMethodSet(m.Type(), &prog.MethodSets) {
+				method := prog.MethodValue(sel)
+				if method != nil {
+					fmt.Fprintf(ssaFile, "\tMethod: %v\n", sel.Obj().Type())
+					if len(sel.Index()) != 1 {
+						// when a structure has an embedded field its methods are promoted and
+						// will appear for the current structure
+						//
+						// e.g. in dsb socialnetwork:
+						// type claimsT struct {
+						//		Username  string
+						//		UserID    string
+						//		Timestamp int64
+						//		jwt.StandardClaims
+						// }
+						// where jwt.StandardClaims has methods Valid(), VerifyAudience(), etc.
+						//
+						// WORKAROUND: just ignore them for now
+						continue
+					}
+					iterateFunc(app, ssaFile, method, funcGraphs, false)
+				}
+			}
+
+			methods := prog.MethodSets.MethodSet(m.Type().Underlying())
+			for i := 0; i < methods.Len(); i++ {
+				sel := methods.At(i)
+				fmt.Fprintf(ssaFile, "\tMethod: %v\n", sel.Obj().Type())
+				method := prog.MethodValue(sel)
+				if method != nil {
+					if len(sel.Index()) != 1 {
+						// same reason as above when iterating IntuitiveMethodSet
+						continue
+					}
+					iterateFunc(app, ssaFile, method, funcGraphs, false)
+				}
+			}
+
+		default:
+			fmt.Fprintf(ssaFile, "\tUnknown member type: %T\n", m)
+		}
+	}
+}
+
+func iterateFunc(app *app.App, ssaFile *os.File, fn *ssa.Function, funcGraphs map[string]*ssagraph.SSAGraph, goroutine bool) {
+	shortFuncPath := utils.GetShortFunctionPath(fn.String())
+	serviceName := utils.ExtractServiceNameFromShortFunctionPath(shortFuncPath)
+	methodName := utils.ExtractMethodNameFromShortFunctionPath(shortFuncPath)
+
+	graph := ssagraph.NewGraph(app, fn.Pkg.Pkg.Name(), shortFuncPath, serviceName, methodName)
+	if _, exists := funcGraphs[shortFuncPath]; exists {
+		return
+	}
+	if goroutine {
+		graph.EnableGoRoutine()
+	}
+	funcGraphs[shortFuncPath] = graph
+
+	var visited = make(map[ssa.Value]bool)
+
+	fmt.Fprintf(ssaFile, "\t\tParameters:\n")
+	for i, param := range fn.Params {
+		fmt.Fprintf(ssaFile, "\t\t\t%s = %s\n", param.Name(), param.String())
+		parseValue(graph, nil, -i-1, param, visited)
+	}
+
+	fmt.Fprintf(ssaFile, "Function: %s\n", shortFuncPath)
+	for i, block := range fn.Blocks {
+		fmt.Fprintf(ssaFile, "Block #%d: %s.%s\n", i, shortFuncPath, block.Comment)
+		for j, instr := range block.Instrs {
+			parseInstr(app, graph, instr, j, visited, ssaFile, funcGraphs)
+			if val, ok := instr.(ssa.Value); ok {
+				fmt.Fprintf(ssaFile, "\t\t\t%02d: %s = %s\n", j, val.Name(), instr.String())
+			} else {
+				fmt.Fprintf(ssaFile, "\t\t\t%02d: %s\n", j, instr.String())
+			}
+		}
+	}
+}
+
+func parseInstr(app *app.App, graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, visited map[ssa.Value]bool, ssaFile *os.File, funcGraphs map[string]*ssagraph.SSAGraph) *ssagraph.SSANode {
+	id := utils.ComputeInstructionID(instr)
+	if id == "" { // e.g., conditions or jumps (instructions and not values)
+		return nil
+	}
+
+	if val, ok := instr.(ssa.Value); ok {
+		return parseValue(graph, instr, instrIdx, val, visited)
+	}
+	node := ssagraph.RegisterNewNodeInstr(graph, instr, id)
+
+	switch t := instr.(type) {
+	case *ssa.Store:
+		// e.g., 04 [store] *t1 = currency
+		addrNode := parseValue(graph, instr, instrIdx, t.Addr, visited)
+		valNode := parseValue(graph, instr, instrIdx, t.Val, visited)
+
+		graph.CreateAndAddNewEdge(addrNode, node, ssagraph.EDGE_STORE_ADDRESS, 0, "")
+		graph.CreateAndAddNewEdge(valNode, node, ssagraph.EDGE_STORE_VALUE, 0, "")
+	case *ssa.Return:
+		var rets []*ssagraph.SSANode
+		for _, ret := range t.Results {
+			retNode := parseValue(graph, instr, instrIdx, ret, visited)
+			rets = append(rets, retNode)
+			graph.CreateAndAddNewEdge(retNode, node, ssagraph.EDGE_RETURN_ON, 0, "")
+		}
+		graph.AddReturnsToLst(rets)
+	case *ssa.MapUpdate:
+		mapNode := parseValue(graph, instr, instrIdx, t.Map, visited)
+		keyNode := parseValue(graph, instr, instrIdx, t.Key, visited)
+		valueNode := parseValue(graph, instr, instrIdx, t.Value, visited)
+
+		index := "[*]"
+		if val, ok := utils.ExtractStringFromValue(keyNode.GetValue()); ok {
+			index = val
+		}
+
+		graph.CreateAndAddNewEdge(mapNode, node, ssagraph.EDGE_MAP_UPDATE, 0, index)
+		graph.CreateAndAddNewEdge(keyNode, node, ssagraph.EDGE_MAP_KEY, 0, index)
+		graph.CreateAndAddNewEdge(valueNode, node, ssagraph.EDGE_MAP_VALUE, 0, index)
+
+	case *ssa.If, *ssa.Jump:
+		// nothing to do
+
+	case *ssa.Panic:
+		// ignore
+
+	case *ssa.Go:
+		if makeClosure, ok := t.Call.Value.(*ssa.MakeClosure); ok {
+			if fn, ok := makeClosure.Fn.(*ssa.Function); ok {
+				iterateFunc(app, ssaFile, fn, funcGraphs, true)
+			}
+		}
+
+	case *ssa.RunDefers, *ssa.Defer:
+		// TODO
+
+	default:
+		logrus.Fatalf("[SSA PARSE INSTR] ignoring... %02d [%T] %v\n", instrIdx, instr, instr.String())
+	}
+
+	return node
+}
+
+func parseValue(graph *ssagraph.SSAGraph, instr ssa.Instruction, instrIdx int, val ssa.Value, visited map[ssa.Value]bool) *ssagraph.SSANode {
+	if visited[val] {
+		return graph.GetNodeByName(val.Name())
+	}
+	visited[val] = true
+
+	id := computeValueID(val)
+	if id == "" { // sanity check
+		logrus.Fatalf("[SSA PARSE VALUE] unexpected invalid id for value: %v\n", val)
+		return nil
+	}
+
+	node, exists := graph.GetNodeByNameIfExists(val.Name())
+	if !exists {
+		node = ssagraph.RegisterNewNodeVal(graph, instr, val, id)
+	}
+
+	switch t := val.(type) {
+	case *ssa.Call:
+		for _, arg := range t.Call.Args {
+			for _, edges := range graph.GetEdgesFromNode(node) {
+				if edges.GetToNode().GetName() == arg.Name() {
+					continue
+				}
+			}
+			for _, edges := range graph.GetEdgesToNode(node) {
+				if edges.GetFromNode().GetName() == arg.Name() {
+					continue
+				}
+			}
+			argNode := parseValue(graph, instr, instrIdx, arg, visited)
+			graph.CreateAndAddNewEdge(argNode, node, ssagraph.EDGE_ARG_ON_CALL, 0, "")
+		}
+		if t.Call.IsInvoke() {
+			rcv := t.Call.Value
+			rcvNode := parseValue(graph, instr, instrIdx, rcv, visited)
+			graph.CreateAndAddNewEdge(rcvNode, node, ssagraph.EDGE_RECEIVER_ON_CALL, 0, "")
+		}
+	case *ssa.Alloc:
+		// nothing to do
+	case *ssa.Slice:
+		// nothing to do
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_USAGE, 0, "")
+	case *ssa.FieldAddr:
+		// e.g., 00 [field] t27 = &t0.Items [#3]
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		param := utils.FieldIndexToName(t)
+
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_FIELD, 0, param)
+	case *ssa.IndexAddr:
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		param := "*"
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_INDEX, 0, param)
+	case *ssa.Field:
+		// e.g., [*ssa.Field] t151 = t150.StartPlace [#1]
+		// where t150 is a map value
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		param := "*"
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_FIELD, 0, param)
+	case *ssa.UnOp:
+		// e.g., 01 [unary] t14 = *t13
+		// 05 [unary] t31 = *t30
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_LOAD, 0, "")
+
+	case *ssa.MakeInterface: // same as *ssa.UnOp
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_USAGE, 0, "")
+	case *ssa.Convert:
+		targetNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(targetNode, node, ssagraph.EDGE_USAGE, 0, "")
+
+	case *ssa.Parameter:
+		graph.AddParameter(node)
+		// nothing to do
+
+	case *ssa.FreeVar:
+		// in case of go routines (variables that are not passed as parameters but SSA assumes this)
+		graph.AddFreeVar(node)
+
+	case *ssa.Const:
+		// nothing to do
+
+	case *ssa.MakeMap:
+		// nothing to do
+
+	case *ssa.Global:
+		// nothing to do
+
+	case *ssa.Phi:
+		for _, phiEdge := range t.Edges {
+			for _, edges := range graph.GetEdgesFromNode(node) {
+				if edges.GetToNode().GetName() == phiEdge.Name() {
+					continue
+				}
+			}
+			for _, edges := range graph.GetEdgesToNode(node) {
+				if edges.GetFromNode().GetName() == phiEdge.Name() {
+					continue
+				}
+			}
+			edgeNode := parseValue(graph, instr, instrIdx, phiEdge, visited)
+			graph.CreateAndAddNewEdge(edgeNode, node, ssagraph.EDGE_PHI_ON, 0, "")
+		}
+
+	case *ssa.Extract:
+		extractFromNode := parseValue(graph, instr, instrIdx, t.Tuple, visited)
+		graph.CreateAndAddNewEdge(extractFromNode, node, ssagraph.EDGE_EXTRACT, t.Index, "")
+
+	case *ssa.BinOp:
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		yNode := parseValue(graph, instr, instrIdx, t.Y, visited)
+		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_BINOP_X, 0, "")
+		graph.CreateAndAddNewEdge(yNode, node, ssagraph.EDGE_BINOP_Y, 0, "")
+
+	case *ssa.Lookup:
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		idxNode := parseValue(graph, instr, instrIdx, t.Index, visited)
+
+		index := "[*]"
+		if val, ok := utils.ExtractStringFromValue(idxNode.GetValue()); ok {
+			index = val
+		}
+
+		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_LOOKUP_MAP, 0, index)
+		graph.CreateAndAddNewEdge(idxNode, node, ssagraph.EDGE_LOOKUP_MAP_INDEX, 0, index)
+
+	case *ssa.Range:
+		// e.g., dsb_sn2 at PostStorageService.ReadPosts:
+		// ----------------------------------------
+		// t0 = make map[int64]bool
+		// t71 = range t0
+		// ----------------------------------------
+		// for k := range unique_post_ids {
+		// 	  unique_pids = append(unique_pids, k)
+		// }
+		// ----------------------------------------
+		xNode := parseValue(graph, instr, instrIdx, t.X, visited)
+		graph.CreateAndAddNewEdge(xNode, node, ssagraph.EDGE_RANGE_OF, 0, "")
+	case *ssa.Next:
+		// e.g., dsb_sn2 at PostStorageService.ReadPosts:
+		// ----------------------------------------
+		// t0 = make map[int64]bool
+		// t71 = range t0
+		// t74 = next t71
+		// ----------------------------------------
+		// for k := range unique_post_ids {
+		// 	  unique_pids = append(unique_pids, k)
+		// }
+		// ----------------------------------------
+		iterNode := parseValue(graph, instr, instrIdx, t.Iter, visited)
+		graph.CreateAndAddNewEdge(iterNode, node, ssagraph.EDGE_ITERATOR_OF, 0, "")
+
+	case *ssa.MakeClosure, *ssa.Select, *ssa.MakeSlice, *ssa.ChangeInterface, *ssa.Index,
+		*ssa.TypeAssert, *ssa.ChangeType:
+		// TODO
+
+	default:
+		logrus.Warnf("[SSA PARSE VALUE] unknown ssa.Value... %s [%T] %s = %v\n", id, val, val.Name(), val.String())
+	}
+	return node
+}
+
+func computeValueID(val ssa.Value) string {
+	if !val.Pos().IsValid() { // meaning there is no position
+		if c, ok := val.(*ssa.Const); ok {
+			if c.IsNil() {
+				n, err := rand.Int(rand.Reader, big.NewInt(1<<31))
+				if err != nil {
+					return ""
+				}
+				return fmt.Sprintf("nil_%d", n)
+			}
+		}
+		return "val_" + valString(val) + val.Name()
+	}
+	return "val_" + valString(val) + "_" + fmt.Sprintf("%d", val.Pos())
+}
+
+func valString(val ssa.Value) string {
+	switch val.(type) {
+	case *ssa.Call:
+		return "call"
+	case *ssa.Alloc:
+		return "alloc"
+	case *ssa.Slice:
+		return "slice"
+	case *ssa.FieldAddr:
+		return "field"
+	case *ssa.IndexAddr:
+		return "index"
+	case *ssa.UnOp:
+		return "unary"
+	case *ssa.MakeInterface:
+		return "iface"
+	case *ssa.Convert:
+		return "conv"
+	case *ssa.Parameter:
+		return "param"
+	case *ssa.Global:
+		return "glob"
+	case *ssa.Phi:
+		return "phi"
+	case *ssa.Extract:
+		return "extr"
+	case *ssa.BinOp:
+		return "binary"
+	}
+	return ""
+}
