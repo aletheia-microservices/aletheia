@@ -1,3 +1,5 @@
+// Package blueprint loads a Blueprint application's wiring spec and extracts its services,
+// databases and entry points
 package blueprint
 
 import (

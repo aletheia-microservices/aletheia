@@ -1,3 +1,5 @@
+// Package utils provides helpers for loading programs, parsing function and field paths, and
+// comparing timestamps such as t4.t14
 package utils
 
 import (

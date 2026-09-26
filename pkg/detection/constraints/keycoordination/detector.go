@@ -1,3 +1,5 @@
+// Package keycoordination detects patterns RI-3 and EI-1 (uncoordinated replication): records written
+// together to different databases can be read while only one of them is visible
 package keycoordination
 
 import (

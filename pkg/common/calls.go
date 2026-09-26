@@ -1,3 +1,5 @@
+// Package common defines the database operation types (write, update, read, delete) shared across
+// packages
 package common
 
 type DatabaseOperationType int

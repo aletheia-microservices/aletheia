@@ -1,3 +1,4 @@
+// Package backends represents databases and their entities (schemas), fields and constraints
 package backends
 
 import (

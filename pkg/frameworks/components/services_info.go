@@ -1,3 +1,5 @@
+// Package components describes the services and datastores found in the wiring, independently of
+// the framework
 package components
 
 import (

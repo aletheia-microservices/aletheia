@@ -18,6 +18,7 @@ import (
 	"analyzer/pkg/detection/constraints/foreignkeyconcurrency"
 	"analyzer/pkg/detection/constraints/keycoordination"
 	"analyzer/pkg/detection/constraints/uniquenessconcurrency"
+	blueprint_apps "analyzer/pkg/frameworks/blueprint/apps"
 	"analyzer/pkg/ssagraph"
 	"analyzer/pkg/ssagraph/parser"
 	"analyzer/pkg/ssagraph/registry"
@@ -36,25 +37,37 @@ var (
 
 const EVAL_METRICS_BASE = "eval/metrics"
 
+func printUsage() {
+	out := flag.CommandLine.Output()
+	fmt.Fprintf(out, "usage: go run main.go [flags] <app>\n\n")
+	fmt.Fprintf(out, "Analyzes a Blueprint application registered in registry/apps.yaml and\nsaves the results in output/<app>/.\n\n")
+	fmt.Fprintln(out, "flags:")
+	flag.PrintDefaults()
+	fmt.Fprintln(out, "\nregistered apps:")
+	for _, name := range blueprint_apps.AppNames() {
+		fmt.Fprintf(out, "  %s\n", name)
+	}
+}
+
 func main() {
-	flag.BoolVar(&INIT, "init", false, "enable init mode")
-	flag.BoolVar(&EVAL, "eval", false, "enable evaluation mode")
-	flag.BoolVar(&SYNTHETIC, "synthetic", false, "enable synthetic app")
-	flag.BoolVar(&INPUT_REFS, "refs", false, "enable input of references")
-	flag.BoolVar(&DEBUG, "debug", false, "enable debug output")
-	flag.StringVar(&DETECTION_CONFIG, "detection_config", "", "path to detection config yaml")
+	flag.BoolVar(&INIT, "init", false, "only load the app's Blueprint wiring, then exit without analyzing it")
+	flag.BoolVar(&EVAL, "eval", false, "evaluation mode: skip intermediate outputs, print timings and save them in "+EVAL_METRICS_BASE+"/")
+	flag.BoolVar(&SYNTHETIC, "synthetic", false, "mark the app as synthetic (only changes where -eval saves timings)")
+	flag.BoolVar(&INPUT_REFS, "refs", false, "read extra foreign keys from input/<app>/*.yaml\n(one per line: FOREIGN_KEY db.table.field REFERENCES db.table.field)")
+	flag.BoolVar(&DEBUG, "debug", false, "also save the SSA graphs and the abstract call graph as .dot files, and print timings")
+	flag.StringVar(&DETECTION_CONFIG, "detection_config", "", "YAML file listing warnings to suppress (examples in config/)")
+	flag.Usage = printUsage
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		fmt.Fprintf(os.Stderr, "usage: program [--eval] [--debug] [--detection_config filepath.yaml] <appname>\n")
-		fmt.Fprintln(os.Stderr, "available appnames:")
-		fmt.Fprintln(os.Stderr, "- digota")
-		fmt.Fprintln(os.Stderr, "- sockshop")
-		fmt.Fprintln(os.Stderr, "- dsb_mediamicroservices")
-		fmt.Fprintln(os.Stderr, "- dsb_socialnetwork")
-		fmt.Fprintln(os.Stderr, "- eshopmicroservices")
-		fmt.Fprintln(os.Stderr, "- postnotification")
-		fmt.Fprintln(os.Stderr, "- trainticket")
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	appname := flag.Arg(0)
+	if _, ok := blueprint_apps.APPS_INFO[appname]; !ok {
+		fmt.Fprintf(os.Stderr, "unknown app %q\n\n", appname)
+		flag.Usage()
 		os.Exit(1)
 	}
 
@@ -74,8 +87,6 @@ func main() {
 			}
 		}()
 	}
-
-	appname := flag.Arg(0)
 
 	if DETECTION_CONFIG != "" {
 		detection.LoadInputConfig(appname, DETECTION_CONFIG)

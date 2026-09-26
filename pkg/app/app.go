@@ -1,3 +1,5 @@
+// Package app represents the analyzed application, with its services, databases, schemas and
+// constraints, and saves them to app.json and schema.json
 package app
 
 import (

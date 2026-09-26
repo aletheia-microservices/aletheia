@@ -1,3 +1,5 @@
+// Package foreignkeycascade detects pattern RI-1 (absence of cascading deletes): a request deletes a
+// record but not the records in other databases that reference it
 package foreignkeycascade
 
 import (

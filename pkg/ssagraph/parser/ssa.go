@@ -1,3 +1,5 @@
+// Package parser builds the SSA graphs of the application's packages and saves the SSA code to
+// output/{app}/ssa/
 package parser
 
 import (

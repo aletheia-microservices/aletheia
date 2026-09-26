@@ -1,3 +1,6 @@
+// Package abstractgraph builds the abstract call graph, which holds the service calls and database
+// operations reachable from each entry point together with the taints from the SSA analysis, and
+// infers cross-service foreign keys from it
 package abstractgraph
 
 import (

@@ -1,3 +1,4 @@
+// Package services represents services with their fields, methods, constructors and dependencies
 package services
 
 import (

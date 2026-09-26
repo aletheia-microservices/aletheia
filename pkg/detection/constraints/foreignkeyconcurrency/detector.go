@@ -1,3 +1,5 @@
+// Package foreignkeyconcurrency detects pattern RI-2 (concurrent operations): a request stores a
+// reference to a record while a concurrent request deletes that record
 package foreignkeyconcurrency
 
 import (

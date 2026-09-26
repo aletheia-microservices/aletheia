@@ -1,3 +1,4 @@
+// Package registry registers the service fields and NoSQL primary keys found in the SSA graphs
 package registry
 
 import (

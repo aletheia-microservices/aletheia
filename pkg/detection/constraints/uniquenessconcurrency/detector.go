@@ -1,3 +1,5 @@
+// Package uniquenessconcurrency detects pattern Un-1 (conflicting writes): concurrent requests write
+// the same unique value to one database and related data to another
 package uniquenessconcurrency
 
 import (

@@ -1,3 +1,5 @@
+// Package ssagraph represents per-function graphs built from Go's SSA representation, whose nodes
+// carry taints
 package ssagraph
 
 import (

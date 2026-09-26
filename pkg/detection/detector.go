@@ -1,3 +1,6 @@
+// Package detection walks the abstract call graph in each phase (schema building, pattern
+// detection), passes each database operation to the pattern detectors, saves their results, and
+// loads detection config files
 package detection
 
 import (
