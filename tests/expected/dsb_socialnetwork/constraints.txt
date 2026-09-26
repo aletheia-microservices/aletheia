@@ -1,0 +1,25 @@
+FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+FOREIGN_KEY hometimeline_cache.*.Value[*].Timestamp REFERENCES usertimeline_cache.*.Value[*].Timestamp [MANDATORY]
+FOREIGN_KEY hometimeline_cache.*.Value[*].Timestamp REFERENCES usertimeline_db.usertimeline.Posts[*].Timestamp [MANDATORY]
+FOREIGN_KEY socialgraph_cache.followees.Key REFERENCES user_db.user.UserID
+FOREIGN_KEY socialgraph_cache.followees.Value[*].FolloweeID REFERENCES user_db.user.UserID
+FOREIGN_KEY socialgraph_cache.followees.Value[*].FolloweeID REFERENCES usertimeline_db.usertimeline.UserID [T]
+FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES user_db.user.UserID
+FOREIGN_KEY socialgraph_cache.followers.Key REFERENCES usertimeline_db.usertimeline.UserID
+FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES post_db.post.UserMentions[*].UserID [MANDATORY]
+FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES user_cache.UserID.Value [MANDATORY]
+FOREIGN_KEY socialgraph_cache.followers.Value[*].FollowerID REFERENCES user_db.user.UserID
+FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_cache.UserID.Value
+FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES user_db.user.UserID
+FOREIGN_KEY socialgraph_db.socialgraph.UserID REFERENCES usertimeline_db.usertimeline.UserID
+FOREIGN_KEY socialgraph_db.socialgraph.followees REFERENCES socialgraph_cache.followees.Key [MANDATORY] [T]
+FOREIGN_KEY socialgraph_db.socialgraph.followees REFERENCES user_db.user.UserID
+FOREIGN_KEY socialgraph_db.socialgraph.followers REFERENCES user_cache.UserID.Value
+FOREIGN_KEY socialgraph_db.socialgraph.followers REFERENCES user_db.user.UserID
+FOREIGN_KEY user_cache.UserID.Value REFERENCES socialgraph_cache.followees.Key [MANDATORY]
+FOREIGN_KEY user_cache.UserID.Value REFERENCES usertimeline_db.usertimeline.UserID [T]
+FOREIGN_KEY usertimeline_cache.*.Key REFERENCES usertimeline_db.usertimeline.UserID [T]
+FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_cache.*.Key
+FOREIGN_KEY usertimeline_cache.*.Value[*] REFERENCES post_db.post.PostID
+FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]

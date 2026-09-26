@@ -1,0 +1,29 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 4]
+entry request: Dashboard.QueryOrderWithAllInfo()
+	FOREIGN KEY READS #1:
+		READ (FOREIGN KEY): AssuranceService.FindAssuranceByOrderId() ... assurance_db.assurance.FindOne()
+			- field: assurance_db.assurance.OrderID
+			- constraint: FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES order_db.order.ID [MANDATORY]
+		READ (ORIGIN): OrderService.GetOrderById() ... order_db.order.FindOne()
+			- field: order_db.order.ID
+	FOREIGN KEY READS #2:
+		READ (FOREIGN KEY): ConsignService.FindByOrderId() ... consign_db.consign_record.FindOne()
+			- field: consign_db.consign_record.OrderID
+			- constraint: FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]
+		READ (ORIGIN): OrderService.GetOrderById() ... order_db.order.FindOne()
+			- field: order_db.order.ID
+	FOREIGN KEY READS #3:
+		READ (FOREIGN KEY): DeliveryService.FindDelivery() ... delivery_db.delivery.FindOne()
+			- field: delivery_db.delivery.OrderID
+			- constraint: FOREIGN_KEY delivery_db.delivery.OrderID REFERENCES order_db.order.ID [MANDATORY] [T]
+		READ (ORIGIN): OrderService.GetOrderById() ... order_db.order.FindOne()
+			- field: order_db.order.ID
+	FOREIGN KEY READS #4:
+		READ (FOREIGN KEY): FoodService.FindFoodOrderByOrderId() ... food_db.food_order.FindOne()
+			- field: food_db.food_order.OrderID
+			- constraint: FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID [MANDATORY]
+		READ (ORIGIN): OrderService.GetOrderById() ... order_db.order.FindOne()
+			- field: order_db.order.ID

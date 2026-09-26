@@ -1,0 +1,42 @@
+FOREIGN_KEY compose_review_cache.movie_id.Value REFERENCES movie_id_db.movie._id
+FOREIGN_KEY compose_review_cache.movie_id.Value REFERENCES movie_info_cache.*.Key [MANDATORY] [T]
+FOREIGN_KEY compose_review_cache.movie_id.Value REFERENCES movie_info_db.movie_info._id [T]
+FOREIGN_KEY compose_review_cache.movie_id.Value REFERENCES movie_review_cache.*.Key [MANDATORY] [T]
+FOREIGN_KEY compose_review_cache.movie_id.Value REFERENCES movie_review_db.movie_review.MovieID [T]
+FOREIGN_KEY compose_review_cache.movie_id.Value REFERENCES rating_cache.uncommit_sum.Key [MANDATORY]
+FOREIGN_KEY compose_review_cache.user_id.Value REFERENCES user_cache.user_id.Value [MANDATORY]
+FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_info_cache.*.Key [MANDATORY]
+FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_info_db.movie_info._id
+FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_review_cache.*.Key [MANDATORY]
+FOREIGN_KEY movie_id_cache.*.Value REFERENCES movie_review_db.movie_review.MovieID
+FOREIGN_KEY movie_id_cache.*.Value REFERENCES rating_cache.uncommit_sum.Key [MANDATORY]
+FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_id_db.movie._id
+FOREIGN_KEY movie_info_cache.*.Key REFERENCES movie_info_db.movie_info._id [T]
+FOREIGN_KEY movie_info_cache.*.Value.Casts[*].CastInfoID REFERENCES cast_info_cache.*.Key
+FOREIGN_KEY movie_info_cache.*.Value.PlotID REFERENCES plot_cache.*.Key
+FOREIGN_KEY movie_info_cache.*.Value.PlotID REFERENCES plot_db.plot.PlotID
+FOREIGN_KEY movie_info_db.movie_info.Casts[*].CastInfoID REFERENCES cast_info_db.cast.CastInfoID [MANDATORY]
+FOREIGN_KEY movie_info_db.movie_info.PlotID REFERENCES plot_db.plot.PlotID [MANDATORY]
+FOREIGN_KEY movie_info_db.movie_info.Title REFERENCES movie_id_db.movie.Title [MANDATORY]
+FOREIGN_KEY movie_info_db.movie_info._id REFERENCES movie_id_db.movie._id [MANDATORY]
+FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_id_db.movie._id [T]
+FOREIGN_KEY movie_review_cache.*.Key REFERENCES movie_info_db.movie_info._id
+FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_cache.*.Key
+FOREIGN_KEY movie_review_cache.*.Value[*].ReviewID REFERENCES review_storage_db.review.ReviewID
+FOREIGN_KEY movie_review_cache.*.Value[*].Timestamp REFERENCES review_storage_db.review.Timestamp [MANDATORY]
+FOREIGN_KEY movie_review_db.movie_review.MovieID REFERENCES movie_id_db.movie._id [T]
+FOREIGN_KEY movie_review_db.movie_review.MovieID REFERENCES movie_info_db.movie_info._id [T]
+FOREIGN_KEY movie_review_db.movie_review.Reviews[*].ReviewID REFERENCES review_storage_cache.*.Key [T]
+FOREIGN_KEY movie_review_db.movie_review.Reviews[*].ReviewID REFERENCES review_storage_db.review.ReviewID [MANDATORY]
+FOREIGN_KEY movie_review_db.movie_review.Reviews[*].Timestamp REFERENCES review_storage_db.review.Timestamp [MANDATORY]
+FOREIGN_KEY rating_cache.uncommit_sum.Key REFERENCES movie_id_db.movie._id
+FOREIGN_KEY review_storage_db.review.MovieID REFERENCES movie_id_db.movie._id [T]
+FOREIGN_KEY review_storage_db.review.MovieID REFERENCES movie_info_db.movie_info._id [T]
+FOREIGN_KEY review_storage_db.review.UserID REFERENCES movie_review_db.movie_review.UserID [MANDATORY]
+FOREIGN_KEY review_storage_db.review.UserID REFERENCES user_review_cache.*.Key [MANDATORY]
+FOREIGN_KEY user_review_cache.*.Value[*].ReviewID REFERENCES review_storage_cache.*.Key [T]
+FOREIGN_KEY user_review_cache.*.Value[*].ReviewID REFERENCES review_storage_db.review.ReviewID [MANDATORY]
+FOREIGN_KEY user_review_cache.*.Value[*].Timestamp REFERENCES review_storage_db.review.Timestamp [MANDATORY]
+PRIMARY KEY (movie_id_db.movie._id)
+PRIMARY KEY (movie_info_db.movie_info._id)
+UNIQUE (movie_id_db.movie.Title)

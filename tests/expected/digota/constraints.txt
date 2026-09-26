@@ -1,0 +1,6 @@
+FOREIGN_KEY orders_db.orders.Items[*].Parent REFERENCES skus_db.skus.Id
+FOREIGN_KEY payments_db.payments.ChargeAmount REFERENCES orders_db.orders.Amount
+FOREIGN_KEY payments_db.payments.Currency REFERENCES orders_db.orders.Currency
+FOREIGN_KEY payments_db.payments.Email REFERENCES orders_db.orders.Email
+FOREIGN_KEY payments_db.payments.Id REFERENCES orders_db.orders.ChargeId
+FOREIGN_KEY skus_db.skus.Parent REFERENCES products_db.products.Id

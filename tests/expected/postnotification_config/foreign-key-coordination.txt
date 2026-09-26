@@ -1,0 +1,11 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 1]
+entry request: UploadService.UploadPost()
+	FOREIGN KEY READS #1:
+		READ (FOREIGN KEY): NotifyService.Run() ... notifications_queue.notification.Pop()
+			- field: notifications_queue.notification.PostID
+			- constraint: FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID [MANDATORY]
+		READ (ORIGIN): StorageService.ReadPost() ... posts_db.post.FindOne()
+			- field: posts_db.post.PostID

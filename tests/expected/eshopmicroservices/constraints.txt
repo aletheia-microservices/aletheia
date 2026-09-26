@@ -1,0 +1,7 @@
+FOREIGN_KEY basket_db.basket.Items[*] REFERENCES catalog_db.product.Id
+FOREIGN_KEY basket_db.basket.Items[*] REFERENCES catalog_db.product.Name
+FOREIGN_KEY basket_db.basket.Items[*] REFERENCES catalog_db.product.Price
+FOREIGN_KEY basket_db.basket.Items[*].Price REFERENCES catalog_db.product.Price
+FOREIGN_KEY basket_db.basket.Items[*].ProductId REFERENCES catalog_db.product.Id
+FOREIGN_KEY basket_db.basket.Items[*].ProductName REFERENCES catalog_db.product.Name
+FOREIGN_KEY basket_db.basket.Items[*].ProductName REFERENCES discount_db.coupon.ProductName
