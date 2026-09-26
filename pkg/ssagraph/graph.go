@@ -135,7 +135,7 @@ func (graph *SSAGraph) SimpleCopy() *SSAGraph {
 		app:         graph.app,
 		pkgName:     graph.pkgName,
 		fnShortPath: graph.fnShortPath,
-		serviceName: graph.fnShortPath,
+		serviceName: graph.serviceName,
 		methodName:  graph.methodName,
 		nodes:       copyNodes,
 		edges:       newEdges,

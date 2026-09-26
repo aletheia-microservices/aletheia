@@ -157,7 +157,6 @@ func RegisterNewNodeInstr(graph *SSAGraph, instr ssa.Instruction, id string) *SS
 		taints: make(map[string][]*SSATaint),
 	}
 	graph.AddNode(node)
-	graph.nodes = append(graph.nodes, node)
 	return node
 }
 
@@ -241,7 +240,10 @@ func (node *SSANode) GetTaints() map[string][]*SSATaint {
 func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, dbcall *DatabaseCall, readKey bool, readVal bool, callerT string) bool {
 	lstTaints := node.taints[objpath]
 	for _, taint := range lstTaints {
-		if taint.IsDatabaseTaint() && taint.path == dbpath && taint.GetDatabaseCall().opType == dbcall.opType {
+		// a field can be reached both as a filter key and as part of the read value, so the key and
+		// value taints are kept separately and do not depend on which propagation arrives first
+		if taint.IsDatabaseTaint() && taint.path == dbpath && taint.GetDatabaseCall().opType == dbcall.opType &&
+			taint.readKey == readKey && taint.readValue == readVal {
 			return false // already exists
 		}
 	}
