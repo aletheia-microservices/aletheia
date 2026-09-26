@@ -74,17 +74,17 @@ func (it *Iterator) Run(mode IterationPhase) {
 		toNode := edge.GetToNode()
 		//logrus.WithField("node", toNode.String()).Infof("visiting frontend %d out of %d\n", i, n)
 
+		// TODO(improvement): skip for now but, in the future, we could not append to the nodes list but let it attached to edges
+		if toNode.GetMethod() == "Run" || toNode.GetMethod() == "Init" {
+			continue
+		}
+
 		it.newReqIdx()
 
 		if it.mode == PHASE_2_PATTERN_DETECTOR {
 			for _, detector := range it.detectors {
 				detector.OnNewRequest(toNode, it.currentReqIdx())
 			}
-		}
-
-		// TODO(improvement): skip for now but, in the future, we could not append to the nodes list but let it attached to edges
-		if toNode.GetMethod() == "Run" || toNode.GetMethod() == "Init" {
-			continue
 		}
 
 		it.transverse(toNode)

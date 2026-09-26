@@ -18,10 +18,10 @@ type CascadeDelete struct {
 // checks each delete in the request against already-pending cascade deletes, and registers
 // any new pending cascade deletes of its own
 func (detector *ForeignKeyCascadeDetector) checkInconsistenciesForRequest(app *app.App, request *Request) {
-	// check if there was a write before involving the association
-	// if thats the case, the bug is not flagged
-	var do_not_flag bool
 	for _, delete := range request.GetAllOperations() {
+		// check if there was a write before involving the association
+		// if thats the case, the bug is not flagged
+		var do_not_flag bool
 		database := app.GetDatabaseByName(delete.database)
 		schema := database.GetSchemaByNameIfExists(delete.schema)
 		for _, write := range request.GetAllWriteOperations() {
