@@ -1,10 +1,8 @@
-# Aletheia: Automated Detection of Data Integrity Violations in Microservices
-
-## Analysis Assumptions
+# Analysis Assumptions
 
 This document describes the assumptions made by Aletheia’s current implementation that developers should take into account when analyzing their applications. These are temporary assumptions that can be addressed in the future by extending the implementation:
 
-### Database Naming
+## Database Naming
 
 - The name of the database used in the wiring specification (e.g., `mongodb.Container`) must exactly match the name passed in service operations (e.g., `GetCollection`).
 
@@ -15,7 +13,7 @@ This document describes the assumptions made by Aletheia’s current implementat
   s.postsDb.GetCollection(ctx, "posts_db", ...)
   ```
 
-### Service Structure
+## Service Structure
 
 - The name of the service struct should be named `<service-interface>Impl`.
 
@@ -31,7 +29,7 @@ This document describes the assumptions made by Aletheia’s current implementat
   }
   ```
 
-### Schema Fields
+## Schema Fields
 
 - In NoSQL databases, bson tags/filters for writes/reads must match the corresponding Go struct field name. Note that the `_id` field is treated as a special case and is used to infer primary key constraints.
   ```Go

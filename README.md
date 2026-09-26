@@ -30,15 +30,39 @@ The framework operates in four steps:
 3. **Schema extraction** for objects stored across databases
 4. **Detection of problematic code sections** that violate integrity constraints, including entity integrity, referential integrity, and uniqueness
 
-Integrity violations are detected by searching for the following patterns, formalized in our paper:
+### Integrity Violation Patterns
 
-| Constraint            | Problematic Pattern          |
-| --------------------- | ---------------------------- |
-| Referential integrity | Absence of cascading effects |
-| Referential integrity | Concurrent operations        |
-| Referential integrity | Uncoordinated replication    |
-| Entity integrity      | Uncoordinated replication    |
-| Uniqueness            | Conflicting writes           |
+Aletheia searches the code for five patterns of operations that can break these constraints. Each pattern is formalized in Section 3 of our paper and illustrated in its Figure 2.
+
+- **RI-1: Referential integrity, absence of cascading deletes**
+
+  A request deletes a record in one database but not the records in other databases that reference it, so they point to a record that no longer exists.
+
+  _Example (`simpleshop`):_ `ProductService.DeleteProduct()` deletes a product from `product_db` but leaves its record in `inventory_db`.
+
+- **RI-2: Referential integrity, concurrent operations**
+
+  One request reads a record and stores a reference to it in another database, while a concurrent request deletes that record.
+
+  _Example (`eshopmicroservices`):_ `BasketService.StoreBasket()` saves product IDs in `basket_db` while `CatalogService.DeleteProduct()` can delete those products from `catalog_db` at the same time.
+
+- **RI-3: Referential integrity, uncoordinated replication**
+
+  A request writes a record to one database and a reference to it in another. Because the databases replicate independently, another request can see the reference before the record it points to.
+
+  _Example (`postnotification`):_ `UploadService.UploadPost()` saves a post in `posts_db` and pushes a notification with its `PostID` to `notifications_queue`. `NotifyService` can read the notification before the post is visible.
+
+- **EI-1: Entity integrity, uncoordinated replication**
+
+  A request splits one entity across two databases under the same primary key. Another request that reads both by that key can find the entity in one database but not yet in the other.
+
+  _Example (`dsb_mediamicroservices`):_ `APIService.RegisterMovie()` saves each movie in `movie_id_db` and `movie_info_db` under the same `MovieID`, and `APIService.ReadPage()` can find it in only one of them.
+
+- **Un-1: Uniqueness, conflicting writes**
+
+  A request writes a unique value to one database and related data to another. If the databases are replicated and two requests write the same unique value concurrently, the first database keeps only one write when replicas merge, but the second keeps both.
+
+  _Example (`dsb_mediamicroservices`):_ two concurrent `APIService.RegisterMovie()` calls with the same `Title` can leave one movie in `movie_id_db`, where `Title` is unique, but two in `movie_info_db`.
 
 ## Project Structure
 
@@ -48,17 +72,17 @@ The `pkg/` directory contains the packages that implement Aletheia and is organi
 pkg/
 ├── abstractgraph/                  # Abstract call graph construction and analysis
 ├── app/                            # Application metadata with services, databases, schemas, and constraints
-├── common/
-├── config/
+├── common/                         # Database operation types shared across packages
+├── config/                         # Global analysis settings (config.Global)
 ├── detection/                      # Detection for each pattern (RI-1, RI-2, RI-3, EI-1, Un-1)
 ├── frameworks/                     # Framework-specific parsing code (e.g., wiring specs for Blueprint apps)
 │   ├── blueprint/
 │   └── components/
 ├── ssagraph/                       # SSA graph construction and analysis
-└── utils/
+└── utils/                          # Helpers for loading programs, parsing function and field paths, and comparing timestamps
 ```
 
-The `config/` folder contains YAML files that specify warnings to be ignored by Aletheia.
+The `config/` folder contains per-application detection config files that suppress warnings (see [Suppressing Detection Warnings](#suppressing-detection-warnings)). Not to be confused with `pkg/config/`, which holds global analysis settings.
 
 The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications.
 
@@ -80,7 +104,7 @@ output/{app}/
 
 ## Requirements
 
-- [Golang](https://go.dev/doc/install) >= 1.24.5
+- [Golang](https://go.dev/doc/install) >= 1.26
 
 ## Getting Started
 
@@ -95,6 +119,8 @@ If you already cloned the repository without `--recurse-submodules`, make sure t
 ```zsh
 git submodule update --init --recursive
 ```
+
+To get started, run one of the included apps as shown below, then follow the [simpleshop tutorial](#tutorial-analyzing-your-first-application-simpleshop), which walks through registering an app, running the analysis, reading the warning, and suppressing it.
 
 ### Running Aletheia
 
@@ -120,7 +146,12 @@ Example:
 go run main.go postnotification
 ```
 
-The warnings related to integrity violations are saved in `output/postnotification/analysis/`. The information about the application dependencies (microservices and datastores used) and the schema are saved in `output/postnotification/app.json` and `output/postnotification/schema.json`, respectively. The application's SSA code are saved in `output/postnotification/ssa/`.
+The results are saved in `output/postnotification/`:
+
+- `ssa/`: the application's SSA code
+- `app.json`: application dependencies (microservices and datastores used)
+- `schema.json`: inferred data schema
+- `analysis/`: warnings related to integrity violations
 
 You can also specify the `--debug` flag to obtain tainted _ssa graphs_ and _abstract call graph_ in `.dot` format saved under `output/postnotification/abstractcallgraph` and `output/postnotification/ssagraphs`, which can then be visualized in, for example, [Graphivz](https://dreampuf.github.io/GraphvizOnline/).
 
@@ -128,72 +159,148 @@ You can also specify the `--debug` flag to obtain tainted _ssa graphs_ and _abst
 go run main.go --debug postnotification
 ```
 
+### Reading the Output
+
+Each file in `output/{app}/analysis/` starts with `[NUM_WARNINGS = N]`, followed by one block per warning. All files use the same notation:
+
+- **Call paths** show which service method runs a database operation. For example, `StorageService.ReadPost() ... posts_db.post.FindOne()` means that `StorageService.ReadPost()` runs `FindOne()` on entity `post` in database `posts_db`. Calls in between are left out. Some paths start with a third element: the entry point of the request (e.g., `UploadService.UploadPost() ... StorageService.StorePost() ... posts_db.post.InsertOne()`).
+- **Fields** are written as `database.entity.field`. For example, `posts_db.post.Creator.Username` is the `Username` of the post's `Creator`, and `posts_db.post.Mentions[*]` refers to every element of the list `Mentions`.
+- **Foreign keys** are inferred by Aletheia. For example, `FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID [MANDATORY]` means that each notification's `PostID` points to a post in `posts_db`. Foreign keys can have two tags:
+  - `[MANDATORY]`: every request that creates the reference also writes the record it points to. Here, `UploadService.UploadPost()` writes both the post and its notification.
+  - `[T]`: transitive, derived from two other foreign keys (if X references Y and Y references Z, then X references Z).
+
+Expand each pattern below for an annotated example.
+
+<details>
+<summary><b>RI-1</b> <code>foreign-key-cascade.txt</code>: missing cascading deletes</summary>
+
+```txt
+delete: ProductService.Delete() ... products_db.products.DeleteOne()
+    missing cascade #1: database={skus_db}, entity={skus}, pending_fields={Parent}
+```
+
+- `delete:` is the operation that deletes a record.
+- `missing cascade #N` names a database and entity whose records can still reference the deleted record, through the fields in `pending_fields`.
+
+</details>
+
+<details>
+<summary><b>RI-2</b> <code>foreign-key-concurrency.txt</code>: concurrent delete and write</summary>
+
+```txt
+delete: ProductService.Delete() ... products_db.products.DeleteOne()
+    write #1: SkuService.New() ... SkuService.New() ... skus_db.skus.InsertOne()
+        - database={skus_db}, entity={skus}, written_fields={Parent}
+```
+
+- `delete:` is the operation that deletes a record.
+- `write #N` is an operation in another request that can store a reference to that record at the same time, through the fields in `written_fields`.
+
+</details>
+
+<details>
+<summary><b>RI-3</b> <code>foreign-key-coordination.txt</code>: reference visible before the record</summary>
+
+```txt
+entry request: UploadService.UploadPost()
+    FOREIGN KEY READS #1:
+        READ (FOREIGN KEY): NotifyService.Run() ... notifications_queue.notification.Pop()
+            - field: notifications_queue.notification.PostID
+            - constraint: FOREIGN_KEY notifications_queue.notification.PostID REFERENCES posts_db.post.PostID [MANDATORY]
+        READ (ORIGIN): StorageService.ReadPost() ... posts_db.post.FindOne()
+            - field: posts_db.post.PostID
+```
+
+- `entry request` is the client request that leads to the two reads.
+- `READ (FOREIGN KEY)` reads a record that holds a reference (`field`, following `constraint`).
+- `READ (ORIGIN)` reads the record that the reference points to.
+
+</details>
+
+<details>
+<summary><b>EI-1</b> <code>primary-key-coordination.txt</code>: entity split across databases</summary>
+
+```txt
+entry request: APIService.ReadPage()
+    PRIMARY KEY READS #1:
+        READ: MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
+            - field: movie_info_db.movie_info._id
+            - constraint: PRIMARY KEY (movie_info_db.movie_info._id)
+        READ: MovieIdService.ReadMovieId() ... movie_id_db.movie.FindOne()
+            - field: movie_id_db.movie._id
+            - constraint: PRIMARY KEY (movie_id_db.movie._id)
+```
+
+- `entry request` is the client request that leads to the two reads.
+- Each `READ` reads one part of the entity from a different database, using the same primary key.
+
+</details>
+
+<details>
+<summary><b>Un-1</b> <code>uniqueness-concurrency.txt</code>: conflicting writes of a unique value</summary>
+
+```txt
+entry request: APIService.RegisterMovie()
+write (origin): APIService.RegisterMovie() ... MovieIdService.RegisterMovieId() ... movie_id_db.movie.InsertOne()
+        - field (constrained): movie_id_db.movie.Title (UNIQUE)
+    - affected write #1: MovieInfoService.WriteMovieInfo() ... movie_info_db.movie_info.InsertOne()
+```
+
+- `write (origin)` writes the unique field shown in `field (constrained)`.
+- `affected write #N` is a related write to another database in the same request. Its effect remains even if the unique write is discarded.
+
+To review a warning, follow its call path in the code. Fix real problems, and suppress false positives as described below.
+
+</details>
+
 #### Suppressing Detection Warnings
 
-You can also specify which warnings should be suppressed by passing the `--detection_config` flag followed by the file path.
+To suppress warnings, write a detection config file and pass its path with the `--detection_config` flag. A detection config file has the following format:
 
-You can ignore certain foreign keys in. For example, in `postnotification`:
+```yaml
+app: <app>                        # must match the app name passed to Aletheia
+ignore_foreignkeys:               # inferred foreign keys to ignore (all patterns)
+  - <database>.<entity>.<field>   # the referencing field, as shown in schema.json
+ignore_cascade:                   # missing cascading deletes to ignore (RI-1 only)
+  - database: <database>          # database of the records left behind
+    entity: <entity>
+    trigger_database: <database>  # optional, together with trigger_entity: only when
+    trigger_entity: <entity>      # the deleted record is in this database and entity
+```
+
+- `ignore_foreignkeys` stops Aletheia from inferring foreign keys from the listed fields, so those foreign keys do not appear in `schema.json` and do not lead to warnings.
+- `ignore_cascade` hides RI-1 warnings about records left behind in the given `database` and `entity`. To hide them only when the delete happens in a specific database and entity, set both `trigger_database` and `trigger_entity`. If only one of them is set, it has no effect.
+
+You can ignore specific inferred foreign keys. For example, `config/postnotification.yaml` ignores the foreign key on `notifications_queue.notification.ReqID`:
 
 ```zsh
 go run main.go --detection_config config/postnotification.yaml postnotification
 ```
 
-Or you can suppress cascading deletes warnings. For example, in `sockshop`:
+Or you can suppress missing cascading delete warnings. For example, `config/sockshop.yaml` ignores missing cascades from `cart_db.carts` to `order_db.orders`:
 
 ```zsh
 go run main.go --detection_config config/sockshop.yaml sockshop
 ```
 
-### Registering new Applications
-
-If you want to analyze your own application written in Blueprint, make sure it is placed in `blueprint/examples/`. The expected structure is:
-
-```
-blueprint/examples/{app}/
-├── wiring/             # blueprint specification
-├── workflow/           # blueprint workflow
-│   └── {app}/          # microservices code
-```
-
-First, you will need to add a new application entry to `registry/apps.yaml`. You can use the existing entries as examples. The new entry should contain the following values:
-
-- `name`: application name
-- `package_path`: package path for application code
-- `spec_name`: blueprint spec name with format `{app_name}_{spec_name}` (e.g., `foobar_docker` => spec `Docker` for application `foobar`)
-- `spec_path`: package path for spec
-- `sql_tables` (optional): primary keys and uniqueness constraints for SQL databases
-- `nosql_path` (optional): indexes constraints for NoSQL databases, which are then treated as uniqueness constraints
-
-> [!NOTE]
-> Go struct fields annotated with the `_id` BSON tag for NoSQL databases such as MongoDB are automatically treated as primary keys in the global application schema, since these fields are typically indexed by default:
->
-> ```go
-> type User struct {
->     ID string `bson:"_id"`
-> }
-> ```
-
-Then, generate the application registry:
-
-```zsh
-go run scripts/gen_app_registry/main.go
-```
-
-### Registering and Analyzing a Simple Application
+### Tutorial: Analyzing Your First Application (simpleshop)
 
 We now demonstrate how to run Aletheia to analyze a simple application (`simpleshop`) provided in `blueprint/examples/simpleshop/`. The application is composed of two microservices, Product Service and Inventory Service, and allows clients to register new products and their respective inventory, as well as delete products.
 
-Add a new entry for the `simpleshop` application in the `aletheia/registry/apps.yaml`. This will tell Aletheia how to properly import and analyze the application:
+Add a new entry for the `simpleshop` application at the end of the `apps` list in `registry/apps.yaml`. This will tell Aletheia how to properly import and analyze the application:
 
 ```yaml
-- name: simpleshop
-  app_root: github.com/blueprint-uservices/blueprint/examples/simpleshop
-  package_path: simpleshop/workflow/simpleshop
-  spec_name: simpleshop_docker
-  spec_path: github.com/blueprint-uservices/blueprint/examples/simpleshop/wiring/specs
+apps:
+  # ... existing entries ...
+
+  - name: simpleshop
+    app_root: github.com/blueprint-uservices/blueprint/examples/simpleshop
+    package_path: simpleshop/workflow/simpleshop
+    spec_name: simpleshop_docker
+    spec_path: github.com/blueprint-uservices/blueprint/examples/simpleshop/wiring/specs
 ```
 
-Now, you will need to generate the application registry according to the new entry added to `aletheia/registry/apps.yaml`. The following script will (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
+Now, you will need to generate the application registry according to the new entry added to `registry/apps.yaml`. The following script will (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
 
 ```zsh
 go run scripts/gen_app_registry/main.go
@@ -205,9 +312,9 @@ Now, you can run the analysis:
 go run main.go simpleshop
 ```
 
-This command prints the analysis results and saves them in `aletheia/output/simpleshop/`. The warnings related to integrity violations are saved in `aletheia/output/simpleshop/analysis/`. Information about the application dependencies (microservices and datastores used) and the schema are saved in `aletheia/output/simpleshop/app.json` and `aletheia/output/simpleshop/schema.json`, respectively.
+This command prints the analysis results and saves them in `output/simpleshop/`.
 
-The output should contain a referential integrity warning indicating a missing cascading delete. In this case, when a product is deleted, the effect is not propagated to the Inventory Service, leaving a dangling inventory record.
+The output should contain a referential integrity warning indicating a missing cascading delete (pattern RI-1, see [Reading the Output](#reading-the-output)). In this case, when a product is deleted, the effect is not propagated to the Inventory Service, leaving a dangling inventory record.
 
 ```txt
 [NUM_WARNINGS = 1]
@@ -215,7 +322,7 @@ delete: ProductService.DeleteProduct() ... product_db.product.DeleteOne()
 	missing cascade #1: database={inventory_db}, entity={inventory}, pending_fields={ID}
 ```
 
-If you want to suppress all warnings related to missing cascade deletes on the inventory, create a new YAML file at `aletheia/config/simpleshop.yaml` with the following content:
+If you want to suppress all warnings related to missing cascade deletes on the inventory, create a new YAML file at `config/simpleshop.yaml` with the following content:
 
 ```yaml
 app: simpleshop
@@ -233,45 +340,87 @@ Then, you can run the analysis again and pass the `--detection_config` flag foll
 go run main.go --detection_config config/simpleshop.yaml simpleshop
 ```
 
+The tutorial modifies files tracked by git. When you are done, you can undo these changes with:
+
+```zsh
+git restore registry/apps.yaml go.mod pkg/frameworks/blueprint/apps/apps.go
+rm config/simpleshop.yaml
+```
+
+### Analyzing Your Own Application
+
+Follow these steps to analyze your own application. The [simpleshop tutorial](#tutorial-analyzing-your-first-application-simpleshop) goes through steps 4 to 7 on a small example.
+
+**1. Port the application to Blueprint.** Skip this step if your application is already written with Blueprint. A Blueprint application has two parts: the _workflow_, where each service is a Go interface and its implementation, and the _wiring_, a spec that creates the services and databases and connects them. See Blueprint's guides on [workflow](https://github.com/Blueprint-uServices/blueprint/blob/main/docs/manual/workflow.md) and [wiring](https://github.com/Blueprint-uServices/blueprint/blob/main/docs/manual/wiring.md), and use the applications in `blueprint/examples/` as references (`simpleshop` is the smallest).
+
+**2. Place the application in `blueprint/examples/{app}/`**, with the following structure:
+
+```
+blueprint/examples/{app}/
+├── wiring/             # blueprint specification
+├── workflow/           # blueprint workflow
+│   └── {app}/          # microservices code
+```
+
+Note that `blueprint/` is a git submodule, so your application's code belongs to that repository, not to Aletheia's.
+
+**3. Follow Aletheia's naming conventions.** The current implementation makes a few assumptions about the application's code, described in [assumptions.md](./assumptions.md).
+
+**4. Register the application** by adding an entry at the end of the `apps` list in `registry/apps.yaml`, replacing `{app}` with the name of your application's folder and `{spec}` with the name of its wiring spec:
+
+```yaml
+apps:
+  # ... existing entries ...
+
+  - name: {app}
+    app_root: github.com/blueprint-uservices/blueprint/examples/{app}
+    package_path: {app}/workflow/{app}
+    spec_name: {app}_{spec}
+    spec_path: github.com/blueprint-uservices/blueprint/examples/{app}/wiring/specs
+    # optional
+    sql_tables:
+      - "{database_name}:blueprint/examples/{app}/workflow/{app}/database/{database_filename}.sql"
+    nosql_path: blueprint/examples/{app}/workflow/{app}/{path}
+```
+
+The last two fields are optional and declare constraints that Aletheia cannot infer from the code:
+
+- `sql_tables`: SQL files with `CREATE TABLE` statements (PostgreSQL syntax), whose `PRIMARY KEY` and `UNIQUE` columns become constraints.
+- `nosql_path`: folder that holds one JSON file per NoSQL collection, whose `uniqueItems` become uniqueness constraints (see `blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices/database/`).
+
+**5. Generate the application registry**, which updates `go.mod` and `pkg/frameworks/blueprint/apps/apps.go`:
+
+```zsh
+go run scripts/gen_app_registry/main.go
+```
+
+**6. Check that the wiring loads.** The `--init` flag only loads the application's wiring and exits, which is a quick way to find registration errors:
+
+```zsh
+go run main.go --init {app}
+```
+
+**7. Run the analysis and review the warnings.** Run `go run main.go {app}`, then see [Reading the Output](#reading-the-output) to interpret the warnings and [Suppressing Detection Warnings](#suppressing-detection-warnings) to ignore false positives.
+
 ## Technical Details
 
-### Detection of Code Patterns
+See [technical-details.md](./technical-details.md) for how each pattern maps to the code, how cross-microservice foreign keys are inferred, and the current limitations.
 
-Integrity violations are detected by searching for the following patterns, formalized in our paper and implemented in [`pkg/detection/constraints/`](./pkg/detection/constraints/):
+## Citation
 
-| ID   | Constraint            |  Problematic Pattern         | Implementation Package                            |
-| ---- | --------------------- | ---------------------------- | ------------------------------------------------- |
-| RI-1 | Referential integrity | Absence of cascading effects | `pkg/detection/constraints/foreignkeycascade`     |
-| RI-2 | Referential integrity | Concurrent operations        | `pkg/detection/constraints/foreignkeyconcurrency` |
-| RI-3 | Referential integrity | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
-| EI-1 | Entity integrity      | Uncoordinated replication    | `pkg/detection/constraints/keycoordination`       |
-| Un-1 | Uniqueness            | Conflicting writes           | `pkg/detection/constraints/uniquenessconcurrency` |
+If you use Aletheia in your work, please cite our paper:
 
-> [!NOTE]
-> Refer to our paper for the formal definitions of these patterns.
-
-### Cross-Microservice Foreign Key Inference
-
-Data associations across microservices are inferred from taints propagated through related objects used in database operations in the _abstract call graph_. The inference is performed according to the rules implemented in [`pkg/abstractgraph/tainter.go`](./pkg/abstractgraph/tainter.go).
-
-Rules are applied for each pair of operation (`op_1`, `op_2`) where `op_i` is either a `read` or a `write`. We use `field_1` and `field_2` to denote fields accessed (tainted) by the same object in `op_1` and `op_2`, respectively.
-
-| Operation Pair   | Foreign Key Direction        |
-| ---------------- | ---------------------------- |
-| `(write, write)` | `field2` references `field1` |
-| `(read, write)`  | `field2` references `field1` |
-| `(write, read)`  | `field1` references `field2` |
-
-In read operations, the `read_key` denotes that the propagated object is used as a filter in the read operation, while `read_val` denotes that the propagated object is returned from the read operation.
-
-| Operation Pair         | Foreign Key Direction        |
-| ---------------------- | ---------------------------- |
-| `(read_key, read_key)` | `field2` references `field1` |
-| `(read_val, read_key)` | `field1` references `field2` |
-
-> [!NOTE]
-> Refer to our paper for a detailed explanation of these inference rules.
-
-### Current Limitations
-
-See [assumptions.md](./assumptions.md) for the current analysis assumptions and limitations.
+```bibtex
+@inproceedings{ferreira2026aletheia,
+  author = {Mafalda Sofia Ferreira and Jo{\~a}o Ferreira Loff and Jo{\~a}o Garcia and Rodrigo Rodrigues},
+  title = {Aletheia: Automated Detection of Data Integrity Violations in Microservices},
+  booktitle = {20th USENIX Symposium on Operating Systems Design and Implementation (OSDI 26)},
+  year = {2026},
+  isbn = {978-1-939133-55-7},
+  address = {Seattle, WA},
+  pages = {721--737},
+  url = {https://www.usenix.org/conference/osdi26/presentation/ferreira},
+  publisher = {USENIX Association},
+  month = jul
+}
+```
