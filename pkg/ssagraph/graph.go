@@ -32,7 +32,7 @@ type SSAGraph struct {
 	svcCalls    []*ServiceCall
 	methodCalls []*MethodCall
 	dbCalls     []*DatabaseCall
-	allCalls    []interface{}
+	allCalls    []Call
 
 	// managed by combiner.go
 	combinedGraphs             []*SSAGraph
@@ -245,7 +245,7 @@ func (graph *SSAGraph) GetEdges() []*SSAEdge {
 	return graph.edges
 }
 
-func (graph *SSAGraph) AddCall(call interface{}) {
+func (graph *SSAGraph) AddCall(call Call) {
 	graph.allCalls = append(graph.allCalls, call)
 }
 
@@ -257,16 +257,16 @@ func (graph *SSAGraph) AddMethodCall(call *MethodCall) {
 	graph.methodCalls = append(graph.methodCalls, call)
 }
 
-func (graph *SSAGraph) HasMethodCall(call *MethodCall) bool {
+func (graph *SSAGraph) HasMethodCall(callID string) bool {
 	for _, c := range graph.methodCalls {
-		if c.ID == call.ID {
+		if c.GetID() == callID {
 			return true
 		}
 	}
 	return false
 }
 
-func (graph *SSAGraph) GetAllCalls() []interface{} {
+func (graph *SSAGraph) GetAllCalls() []Call {
 	return graph.allCalls
 }
 

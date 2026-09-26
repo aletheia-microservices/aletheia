@@ -290,7 +290,7 @@ func registerMethodCall(graph *ssagraph.SSAGraph, node *ssagraph.SSANode) bool {
 
 			callId := utils.GetShortFunctionPath(fn.String())
 			// because instructions may appear multiple times
-			if graph.HasMethodCall(&ssagraph.MethodCall{ID: callId}) {
+			if graph.HasMethodCall(callId) {
 				return false
 			}
 			methodCall = ssagraph.NewMethodCallGoRoutine(callId, node.GetID(), node, bindNodes, argNodes, retNodes, method, fnShortPath)

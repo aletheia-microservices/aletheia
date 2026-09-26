@@ -20,70 +20,55 @@ const (
 )
 
 type SSATaint struct {
+	// --- input for abstract call graph ---
 	taintType TaintType
-	dbpath    string
-	dbcall    *DatabaseCall
-	svpath    string
-	svcall    *ServiceCall
-
+	callerTS  string // originated at combiner.go
+	path      string // database path for TAINT_DATABASE; service path for TAINT_SERVICE
+	call      Call   // *DatabaseCall for TAINT_DATABASE; *ServiceCall for TAINT_SERVICE
+	// database-specific info
 	readKey   bool // aka filter key
 	readValue bool // aka retrived value
-
-	callerT string // originated at combiner.go
 }
 
-func NewSSATaintDB(dbpath string, dbcall *DatabaseCall, readKey bool, readValue bool, callerT string) *SSATaint {
+func newSSATaint(taintType TaintType, path string, call Call, readKey bool, readValue bool, callerT string) *SSATaint {
 	return &SSATaint{
-		taintType: TAINT_DATABASE,
-		dbpath:    dbpath,
-		dbcall:    dbcall,
+		taintType: taintType,
+		path:      path,
+		call:      call,
 		readKey:   readKey,
 		readValue: readValue,
-		callerT:   callerT,
-	}
-}
-
-func NewSSATaintSV(svpath string, svcall *ServiceCall, callerT string) *SSATaint {
-	return &SSATaint{
-		taintType: TAINT_SERVICE,
-		svpath:    svpath,
-		svcall:    svcall,
-		callerT:   callerT,
+		callerTS:  callerT,
 	}
 }
 
 func (taint *SSATaint) SimpleCopy() *SSATaint {
 	return &SSATaint{
 		taintType: taint.taintType,
-		dbpath:    taint.dbpath,
-		svpath:    taint.svpath,
+		path:      taint.path,
 		readKey:   taint.readKey,
 		readValue: taint.readValue,
-		callerT:   taint.callerT,
+		callerTS:  taint.callerTS,
 	}
 }
 
 func (taint *SSATaint) SetCallerT(callerT string) {
-	if taint.callerT != "" {
-		logrus.Fatalf("callerT already existis for taint (existing_callerT=%s) (new_callerT=%s) (taint=%s)", taint.callerT, callerT, taint.String())
+	if taint.callerTS != "" {
+		logrus.Fatalf("callerT already existis for taint (existing_callerT=%s) (new_callerT=%s) (taint=%s)", taint.callerTS, callerT, taint.String())
 	}
 
-	taint.callerT = callerT
+	taint.callerTS = callerT
 }
 
 func (taint *SSATaint) GetCallerT() string {
-	return taint.callerT
+	return taint.callerTS
 }
 
 func (taint *SSATaint) GetT() string {
 	var prefix string
-	if taint.callerT != "" {
-		prefix = taint.callerT + "."
+	if taint.callerTS != "" {
+		prefix = taint.callerTS + "."
 	}
-	if taint.IsDatabaseTaint() {
-		return prefix + taint.dbcall.GetT()
-	}
-	return prefix + taint.svcall.GetT()
+	return prefix + taint.call.GetT()
 }
 
 func (taint *SSATaint) IsDatabaseTaint() bool {
@@ -102,42 +87,53 @@ func (taint *SSATaint) IsReadValue() bool {
 	return taint.readValue
 }
 
+func (taint *SSATaint) GetPath() string {
+	return taint.path
+}
+
+func (taint *SSATaint) GetCall() Call {
+	return taint.call
+}
+
 func (taint *SSATaint) GetDatabasePath() string {
-	return taint.dbpath
+	if !taint.IsDatabaseTaint() {
+		return ""
+	}
+	return taint.path
 }
 
 func (taint *SSATaint) GetDatabaseCall() *DatabaseCall {
-	return taint.dbcall
+	dbcall, _ := taint.call.(*DatabaseCall)
+	return dbcall
 }
 
 func (taint *SSATaint) GetServicePath() string {
-	return taint.svpath
+	if !taint.IsServiceTaint() {
+		return ""
+	}
+	return taint.path
 }
 
 func (taint *SSATaint) GetServiceCall() *ServiceCall {
-	return taint.svcall
+	svcall, _ := taint.call.(*ServiceCall)
+	return svcall
 }
 
 func (taint *SSATaint) String() string {
-	if taint.taintType == TAINT_DATABASE {
-		return taint.dbpath
-	}
-	return taint.svpath
+	return taint.path
 }
 
 type SSANode struct {
-	id         string
-	name       string
+	// --- input for abstract call graph ---
+	name   string
+	taints map[string][]*SSATaint // key format: _obj.<object path>; e.g., _obj.ID
+
+	// --- extra info for SSA graph ---
+	id         string //format: val_<SSA value name>; not used anywhere (nor in abstract call graph), but useful for debugging and testing
 	val        ssa.Value
 	instr      ssa.Instruction
 	inDefs     bool
 	usedInBson bool
-
-	// maps object to database field, e.g.:
-	// key: Product    // SSATaint.dbfield: prod_db.Product
-	// key: Product.ID // SSATaint.dbfield: prod_db.Product.ID
-	// key: Product.ID // SSATaint.dbfield: sku_db.Sku.ProductID
-	taints map[string][]*SSATaint
 }
 
 func RegisterNewNodeVal(graph *SSAGraph, instr ssa.Instruction, val ssa.Value, id string) *SSANode {
@@ -245,23 +241,22 @@ func (node *SSANode) GetTaints() map[string][]*SSATaint {
 func (node *SSANode) AddDatabaseTaintIfNotExists(objpath string, dbpath string, dbcall *DatabaseCall, readKey bool, readVal bool, callerT string) bool {
 	lstTaints := node.taints[objpath]
 	for _, taint := range lstTaints {
-		if taint.dbpath == dbpath && taint.dbcall.opType == dbcall.opType {
+		if taint.IsDatabaseTaint() && taint.path == dbpath && taint.GetDatabaseCall().opType == dbcall.opType {
 			return false // already exists
 		}
 	}
-	taint := NewSSATaintDB(dbpath, dbcall, readKey, readVal, callerT)
-	node.taints[objpath] = append(lstTaints, taint)
+	node.taints[objpath] = append(lstTaints, newSSATaint(TAINT_DATABASE, dbpath, dbcall, readKey, readVal, callerT))
 	return true
 }
 
 func (node *SSANode) AddServiceTaintIfNotExists(objpath string, svpath string, svcall *ServiceCall, callerT string) bool {
 	lstTaints := node.taints[objpath]
 	for _, taint := range lstTaints {
-		if taint.svpath == svpath {
+		if taint.IsServiceTaint() && taint.path == svpath {
 			return false // already exists
 		}
 	}
-	node.taints[objpath] = append(lstTaints, NewSSATaintSV(svpath, svcall, callerT))
+	node.taints[objpath] = append(lstTaints, newSSATaint(TAINT_SERVICE, svpath, svcall, false, false, callerT))
 	return true
 }
 
