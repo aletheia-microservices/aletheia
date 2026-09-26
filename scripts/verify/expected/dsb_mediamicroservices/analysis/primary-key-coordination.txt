@@ -1,0 +1,12 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: PRIMARY KEY COORDINATION -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 1]
+entry request: APIService.ReadPage()
+	PRIMARY KEY READS #1:
+		READ: MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
+			- field: movie_info_db.movie_info._id
+			- constraint: PRIMARY KEY (movie_info_db.movie_info._id)
+		READ: MovieIdService.ReadMovieId() ... movie_id_db.movie.FindOne()
+			- field: movie_id_db.movie._id
+			- constraint: PRIMARY KEY (movie_id_db.movie._id)

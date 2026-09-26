@@ -1,4 +1,4 @@
-module analyzer
+module github.com/aletheia-microservices/aletheia
 
 go 1.26.0
 
@@ -166,3 +166,31 @@ replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow => ./blueprint/examples/dsb_mediamicroservices/workflow
 
 replace github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/wiring => ./blueprint/examples/dsb_mediamicroservices/wiring
+
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow v0.0.0
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5 => ./blueprint/examples/synthetic_app5
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/workflow => ./blueprint/examples/synthetic_app5/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app5/wiring => ./blueprint/examples/synthetic_app5/wiring
+
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow v0.0.0
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4 => ./blueprint/examples/synthetic_app4
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4/workflow => ./blueprint/examples/synthetic_app4/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app4/wiring => ./blueprint/examples/synthetic_app4/wiring
+
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow v0.0.0
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1 => ./blueprint/examples/synthetic_app1
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/workflow => ./blueprint/examples/synthetic_app1/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app1/wiring => ./blueprint/examples/synthetic_app1/wiring
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow v0.0.0
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2 => ./blueprint/examples/synthetic_app2
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2/workflow => ./blueprint/examples/synthetic_app2/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app2/wiring => ./blueprint/examples/synthetic_app2/wiring
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring v0.0.0
+require github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow v0.0.0
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3 => ./blueprint/examples/synthetic_app3
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3/workflow => ./blueprint/examples/synthetic_app3/workflow
+replace github.com/blueprint-uservices/blueprint/examples/synthetic_app3/wiring => ./blueprint/examples/synthetic_app3/wiring

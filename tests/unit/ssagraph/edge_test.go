@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"analyzer/pkg/analysis/service-level/ssagraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 )
 
 func TestEdgeTypeString(t *testing.T) {

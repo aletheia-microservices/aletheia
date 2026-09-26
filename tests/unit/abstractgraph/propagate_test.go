@@ -4,8 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	abstractgraphtainter "analyzer/pkg/analysis/system-level/abstractgraph/tainter"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	abstractgraphtainter "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/tainter"
 )
 
 // new taints mapped to a primary taint must reach the database call arguments that hold that

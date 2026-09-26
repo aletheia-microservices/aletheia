@@ -1,0 +1,206 @@
+		Parameters:
+			ctx = parameter ctx : context.Context
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: shipping.NewShippingServiceImpl
+Block #0: shipping.NewShippingServiceImpl.entry
+			00: t0 = new ShippingServiceImpl (complit)
+			01: t1 = &t0.q [#0]
+			02: t2 = &t0.db [#1]
+			03: *t1 = queue
+			04: *t2 = db
+			05: t3 = make ShippingService <- *ShippingServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.ShippingServiceImpl
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment, error)
+		Parameters:
+			s = parameter s : *ShippingServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: shipping.ShippingService.GetShipment
+Block #0: shipping.ShippingService.GetShipment.entry
+			00: t0 = &s.db [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: shipping.ShippingService.GetShipment.if.then
+			00: return Shipment{}:Shipment, t4
+Block #2: shipping.ShippingService.GetShipment.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "ID":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: shipping.ShippingService.GetShipment.if.then
+			00: return Shipment{}:Shipment, t14
+Block #4: shipping.ShippingService.GetShipment.if.done
+			00: t16 = new Shipment (shipment)
+			01: t17 = make interface{} <- *Shipment (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: shipping.ShippingService.GetShipment.if.then
+			00: return Shipment{}:Shipment, t20
+Block #6: shipping.ShippingService.GetShipment.if.else
+			00: if t19 goto 8 else 7
+Block #7: shipping.ShippingService.GetShipment.if.then
+			00: t22 = new [1]interface{} (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make interface{} <- string (id)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = github.com/pkg/errors.Errorf("unknown shipment %v":string, t25...)
+			06: return Shipment{}:Shipment, t26
+Block #8: shipping.ShippingService.GetShipment.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context, shipment github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment, error)
+		Parameters:
+			service = parameter service : *ShippingServiceImpl
+			ctx = parameter ctx : context.Context
+			shipment = parameter shipment : Shipment
+Function: shipping.ShippingService.PostShipping
+Block #0: shipping.ShippingService.PostShipping.entry
+			00: t0 = local Shipment (shipment)
+			01: *t0 = shipment
+			02: t1 = &service.q [#0]
+			03: t2 = *t1
+			04: t3 = *t0
+			05: t4 = make interface{} <- Shipment (t3)
+			06: t5 = invoke t2.Push(ctx, t4)
+			07: t6 = extract t5 #0
+			08: t7 = extract t5 #1
+			09: t8 = t7 != nil:error
+			10: if t8 goto 1 else 2
+Block #1: shipping.ShippingService.PostShipping.if.then
+			00: t9 = *t0
+			01: return t9, t7
+Block #2: shipping.ShippingService.PostShipping.if.else
+			00: if t6 goto 4 else 3
+Block #3: shipping.ShippingService.PostShipping.if.then
+			00: t10 = *t0
+			01: t11 = &t0.ID [#0]
+			02: t12 = *t11
+			03: t13 = &t0.Name [#1]
+			04: t14 = *t13
+			05: t15 = new [2]interface{} (varargs)
+			06: t16 = &t15[0:int]
+			07: t17 = make interface{} <- string (t12)
+			08: *t16 = t17
+			09: t18 = &t15[1:int]
+			10: t19 = make interface{} <- string (t14)
+			11: *t18 = t19
+			12: t20 = slice t15[:]
+			13: t21 = github.com/pkg/errors.Errorf("Unable to submit ...":string, t20...)
+			14: return t10, t21
+Block #4: shipping.ShippingService.PostShipping.if.done
+			00: t22 = &service.db [#1]
+			01: t23 = *t22
+			02: t24 = invoke t23.GetCollection(ctx, "ship_db":string, "shipments":string)
+			03: t25 = extract t24 #0
+			04: t26 = extract t24 #1
+			05: t27 = t26 != nil:error
+			06: if t27 goto 5 else 6
+Block #5: shipping.ShippingService.PostShipping.if.then
+			00: return Shipment{}:Shipment, t26
+Block #6: shipping.ShippingService.PostShipping.if.done
+			00: t28 = *t0
+			01: t29 = *t0
+			02: t30 = make interface{} <- Shipment (t29)
+			03: t31 = invoke t25.InsertOne(ctx, t30)
+			04: return t28, t31
+	Method: func(ctx context.Context, id string, status string) error
+		Parameters:
+			s = parameter s : *ShippingServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+			status = parameter status : string
+Function: shipping.ShippingService.UpdateStatus
+Block #0: shipping.ShippingService.UpdateStatus.entry
+			00: t0 = &s.db [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "ship_db":string, "shipments":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: shipping.ShippingService.UpdateStatus.if.then
+			00: return t4
+Block #2: shipping.ShippingService.UpdateStatus.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "ID":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t13 = &t12[0:int]
+			10: t14 = &t13.Key [#0]
+			11: t15 = &t13.Value [#1]
+			12: t16 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			13: t17 = &t16[0:int]
+			14: t18 = &t17.Key [#0]
+			15: t19 = &t17.Value [#1]
+			16: *t18 = "status":string
+			17: t20 = make interface{} <- string (status)
+			18: *t19 = t20
+			19: t21 = slice t16[:]
+			20: *t14 = "$set":string
+			21: t22 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t21)
+			22: *t15 = t22
+			23: t23 = slice t12[:]
+			24: t24 = invoke t3.UpdateOne(ctx, t11, t23)
+			25: t25 = extract t24 #0
+			26: t26 = extract t24 #1
+			27: t27 = t26 != nil:error
+			28: if t27 goto 3 else 4
+Block #3: shipping.ShippingService.UpdateStatus.if.then
+			00: return t26
+Block #4: shipping.ShippingService.UpdateStatus.if.else
+			00: t28 = t25 == 0:int
+			01: if t28 goto 5 else 6
+Block #5: shipping.ShippingService.UpdateStatus.if.then
+			00: t29 = new [1]interface{} (varargs)
+			01: t30 = &t29[0:int]
+			02: t31 = make interface{} <- string (id)
+			03: *t30 = t31
+			04: t32 = slice t29[:]
+			05: t33 = github.com/pkg/errors.Errorf("unknown shipment %v":string, t32...)
+			06: return t33
+Block #6: shipping.ShippingService.UpdateStatus.if.done
+			00: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: shipping.init
+Block #0: shipping.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: shipping.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			03: t3 = github.com/pkg/errors.init()
+			04: t4 = go.mongodb.org/mongo-driver/bson.init()
+			05: jump 2
+Block #2: shipping.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.ShippingService
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment, error)
+	Method: func(ctx context.Context, shipment github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment, error)
+	Method: func(ctx context.Context, id string, status string) error

@@ -4,9 +4,9 @@ import (
 	"slices"
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	abstractgraphtainter "analyzer/pkg/analysis/system-level/abstractgraph/tainter"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	abstractgraphtainter "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/tainter"
 )
 
 // MergeTaints is the core of inter-service taint propagation: merging a (secondary) taint into an

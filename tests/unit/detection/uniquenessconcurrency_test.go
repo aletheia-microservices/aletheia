@@ -3,11 +3,11 @@ package detection_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	"analyzer/pkg/analysis/system-level/detection/constraints/uniquenessconcurrency"
-	"analyzer/pkg/app"
-	"analyzer/pkg/app/backends"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection/constraints/uniquenessconcurrency"
+	"github.com/aletheia-microservices/aletheia/internal/app"
+	"github.com/aletheia-microservices/aletheia/internal/app/backends"
 )
 
 // newMovieRegistrationApp builds the dsb_mediamicroservices schema written by RegisterMovie, where

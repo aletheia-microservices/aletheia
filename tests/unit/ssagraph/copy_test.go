@@ -3,8 +3,8 @@ package ssagraph_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/service-level/ssagraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 )
 
 func TestSimpleCopyClonesStructureWithoutTaints(t *testing.T) {

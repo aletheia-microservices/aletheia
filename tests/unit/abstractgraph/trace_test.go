@@ -3,7 +3,7 @@ package abstractgraph_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
 )
 
 func TestAbstractTraceArgument(t *testing.T) {

@@ -1,0 +1,94 @@
+package appparser
+
+import (
+	"go/types"
+	"log"
+	"sort"
+
+	"golang.org/x/tools/go/ssa"
+
+	"github.com/aletheia-microservices/aletheia/internal/app"
+	"github.com/aletheia-microservices/aletheia/internal/app/backends"
+	"github.com/aletheia-microservices/aletheia/internal/app/services"
+	"github.com/aletheia-microservices/aletheia/internal/frameworks/blueprint"
+)
+
+func Init(app *app.App, synthetic bool) {
+	servicesInfo, datastoresInfo, frontends := blueprint.LoadWiring(app.GetName(), synthetic)
+	sort.Strings(frontends)
+
+	// parse services
+	for _, svcInfo := range servicesInfo {
+		name := svcInfo.Name
+		constructor := svcInfo.ConstructorName
+		pkg := svcInfo.Package
+		pkgpath := svcInfo.PackagePath
+		path := svcInfo.PackagePath + "." + svcInfo.Name
+		impl := svcInfo.Name + "Impl"
+		methods := svcInfo.Methods
+		args := svcInfo.ServiceArgs
+
+		service := services.NewService(name, impl, pkg, pkgpath, path, constructor, args)
+		service.SetMethods(methods...)
+		app.AddService(service)
+	}
+
+	for _, svcInfo := range servicesInfo {
+		log.Printf("service = %s, args = %v\n", svcInfo.Name, svcInfo.ServiceArgs)
+	}
+
+	for _, svcInfo := range servicesInfo {
+		service := app.GetServiceByName(svcInfo.Name)
+		for _, dep := range svcInfo.Edges {
+			otherService := app.GetServiceByName(dep)
+			service.AddDependency(otherService)
+		}
+	}
+
+	// parse databases
+	for _, dsInfo := range datastoresInfo {
+		database := backends.NewDatabase(dsInfo.Name, dsInfo.GetTypeString())
+		app.AddDatabase(database)
+	}
+
+	// parse entrypoints
+	for _, serviceName := range frontends {
+		service := app.GetServiceByName(serviceName)
+		app.SetServiceEntrypoints(service, service.GetMethods())
+	}
+	for _, service := range app.GetAllServices() {
+		if service.HasInitializerMethod() {
+			if service.GetInitializerMethod() == "Init" {
+				// skip - already used as entrypoint by default for http 
+				continue
+			}
+			// Run() method can also be considered as entrypoint
+			// because they are always called when initializing services
+			app.AddEntrypoint(service, service.GetInitializerMethod())
+		}
+	}
+}
+
+func InitServiceFields(app *app.App, pkgs []*ssa.Package) {
+	for _, pkg := range pkgs {
+		for _, member := range pkg.Members {
+			if ssaType, ok := member.(*ssa.Type); ok {
+				service := app.GetServiceWithImplPathIfExists(ssaType.String())
+				if service == nil {
+					continue
+				}
+				if typeNamed, ok := ssaType.Type().(*types.Named); ok {
+					if typeStruct, ok := typeNamed.Underlying().(*types.Struct); ok {
+						i := 0
+						for i < typeStruct.NumFields() {
+							typeVar := typeStruct.Field(i)
+							field := services.NewField(i, typeVar.Name())
+							service.AddField(field)
+							i++
+						}
+					}
+				}
+			}
+		}
+	}
+}

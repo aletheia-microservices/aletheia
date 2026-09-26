@@ -1,0 +1,273 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: discount.NewDiscountServiceImpl
+Block #0: discount.NewDiscountServiceImpl.entry
+			00: t0 = new DiscountServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: *t1 = database
+			03: t2 = make DiscountService <- *DiscountServiceImpl (t0)
+			04: return t2, nil:error
+		Parameters:
+Function: discount.init
+Block #0: discount.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: discount.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = go.mongodb.org/mongo-driver/bson.init()
+			05: jump 2
+Block #2: discount.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DeleteDiscountRequest
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DeleteDiscountResponse
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DiscountService
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.CreateDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DeleteDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DeleteDiscountResponse, error)
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.GetDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.UpdateDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DiscountServiceImpl
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.CreateDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			request = parameter request : CreateDiscountRequest
+Function: discount.DiscountService.CreateDiscount
+Block #0: discount.DiscountService.CreateDiscount.entry
+			00: t0 = local CreateDiscountRequest (request)
+			01: *t0 = request
+			02: t1 = &t0.Coupon [#0]
+			03: t2 = *t1
+			04: t3 = (*DiscountServiceImpl).add(s, ctx, t2)
+			05: t4 = t3 != nil:error
+			06: if t4 goto 1 else 2
+Block #1: discount.DiscountService.CreateDiscount.if.then
+			00: return Coupon{}:Coupon, t3
+Block #2: discount.DiscountService.CreateDiscount.if.done
+			00: t5 = &t0.Coupon [#0]
+			01: t6 = *t5
+			02: return t6, nil:error
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DeleteDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DeleteDiscountResponse, error)
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			request = parameter request : DeleteDiscountRequest
+Function: discount.DiscountService.DeleteDiscount
+Block #0: discount.DiscountService.DeleteDiscount.entry
+			00: t0 = local DeleteDiscountRequest (request)
+			01: *t0 = request
+			02: t1 = &t0.ProductName [#0]
+			03: t2 = *t1
+			04: t3 = (*DiscountServiceImpl).remove(s, ctx, t2)
+			05: t4 = t3 != nil:error
+			06: if t4 goto 1 else 2
+Block #1: discount.DiscountService.DeleteDiscount.if.then
+			00: t5 = local DeleteDiscountResponse (complit)
+			01: t6 = &t5.Success [#0]
+			02: *t6 = false:bool
+			03: t7 = *t5
+			04: return t7, t3
+Block #2: discount.DiscountService.DeleteDiscount.if.done
+			00: t8 = local DeleteDiscountResponse (complit)
+			01: t9 = &t8.Success [#0]
+			02: *t9 = true:bool
+			03: t10 = *t8
+			04: return t10, nil:error
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.GetDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			request = parameter request : GetDiscountRequest
+Function: discount.DiscountService.GetDiscount
+Block #0: discount.DiscountService.GetDiscount.entry
+			00: t0 = local GetDiscountRequest (request)
+			01: *t0 = request
+			02: t1 = &t0.ProductName [#0]
+			03: t2 = *t1
+			04: t3 = (*DiscountServiceImpl).get(s, ctx, t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: return t4, t5
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.UpdateDiscountRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			request = parameter request : UpdateDiscountRequest
+Function: discount.DiscountService.UpdateDiscount
+Block #0: discount.DiscountService.UpdateDiscount.entry
+			00: t0 = local UpdateDiscountRequest (request)
+			01: *t0 = request
+			02: t1 = &t0.Coupon [#0]
+			03: t2 = *t1
+			04: t3 = (*DiscountServiceImpl).update(s, ctx, t2)
+			05: t4 = t3 != nil:error
+			06: if t4 goto 1 else 2
+Block #1: discount.DiscountService.UpdateDiscount.if.then
+			00: return Coupon{}:Coupon, t3
+Block #2: discount.DiscountService.UpdateDiscount.if.done
+			00: t5 = &t0.Coupon [#0]
+			01: t6 = *t5
+			02: return t6, nil:error
+	Method: func(ctx context.Context, coupon github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon) error
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			coupon = parameter coupon : Coupon
+Function: discount.DiscountService.add
+Block #0: discount.DiscountService.add.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "discount_db":string, "coupon":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: discount.DiscountService.add.if.then
+			00: return t4
+Block #2: discount.DiscountService.add.if.done
+			00: t6 = make interface{} <- Coupon (coupon)
+			01: t7 = invoke t3.InsertOne(ctx, t6)
+			02: return t7
+	Method: func(ctx context.Context, productName string) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon, error)
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			productName = parameter productName : string
+Function: discount.DiscountService.get
+Block #0: discount.DiscountService.get.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "discount_db":string, "coupon":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: discount.DiscountService.get.if.then
+			00: return Coupon{}:Coupon, t4
+Block #2: discount.DiscountService.get.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "ProductName":string
+			05: t10 = make interface{} <- string (productName)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: discount.DiscountService.get.if.then
+			00: return Coupon{}:Coupon, t14
+Block #4: discount.DiscountService.get.if.done
+			00: t16 = new Coupon (coupon)
+			01: t17 = make interface{} <- *Coupon (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: discount.DiscountService.get.if.then
+			00: return Coupon{}:Coupon, t20
+Block #6: discount.DiscountService.get.if.done
+			00: if t19 goto 8 else 7
+Block #7: discount.DiscountService.get.if.then
+			00: t22 = new [1]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string (productName)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = fmt.Errorf("coupon not found ...":string, t25...)
+			06: return Coupon{}:Coupon, t26
+Block #8: discount.DiscountService.get.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context, productName string) error
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			productName = parameter productName : string
+Function: discount.DiscountService.remove
+Block #0: discount.DiscountService.remove.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "discount_db":string, "coupon":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: discount.DiscountService.remove.if.then
+			00: return t4
+Block #2: discount.DiscountService.remove.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "ProductName":string
+			05: t10 = make interface{} <- string (productName)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.DeleteOne(ctx, t11)
+			09: return t12
+	Method: func(ctx context.Context, coupon github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon) error
+		Parameters:
+			s = parameter s : *DiscountServiceImpl
+			ctx = parameter ctx : context.Context
+			coupon = parameter coupon : Coupon
+Function: discount.DiscountService.update
+Block #0: discount.DiscountService.update.entry
+			00: t0 = local Coupon (coupon)
+			01: *t0 = coupon
+			02: t1 = &s.database [#0]
+			03: t2 = *t1
+			04: t3 = invoke t2.GetCollection(ctx, "discount_db":string, "coupon":string)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: discount.DiscountService.update.if.then
+			00: return t5
+Block #2: discount.DiscountService.update.if.done
+			00: t7 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t8 = &t7[0:int]
+			02: t9 = &t8.Key [#0]
+			03: t10 = &t8.Value [#1]
+			04: t11 = &t0.Id [#0]
+			05: t12 = *t11
+			06: *t9 = "Id":string
+			07: t13 = make interface{} <- int (t12)
+			08: *t10 = t13
+			09: t14 = slice t7[:]
+			10: t15 = *t0
+			11: t16 = make interface{} <- Coupon (t15)
+			12: t17 = invoke t4.ReplaceOne(ctx, t14, t16)
+			13: t18 = extract t17 #0
+			14: t19 = extract t17 #1
+			15: t20 = t19 != nil:error
+			16: if t20 goto 3 else 4
+Block #3: discount.DiscountService.update.if.then
+			00: return t19
+Block #4: discount.DiscountService.update.if.done
+			00: t21 = t18 == 0:int
+			01: if t21 goto 5 else 6
+Block #5: discount.DiscountService.update.if.then
+			00: t22 = &t0.Id [#0]
+			01: t23 = *t22
+			02: t24 = new [1]any (varargs)
+			03: t25 = &t24[0:int]
+			04: t26 = make any <- int (t23)
+			05: *t25 = t26
+			06: t27 = slice t24[:]
+			07: t28 = fmt.Errorf("coupon not found ...":string, t27...)
+			08: return t28
+Block #6: discount.DiscountService.update.if.done
+			00: return nil:error
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.GetDiscountRequest
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.CreateDiscountRequest
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.UpdateDiscountRequest

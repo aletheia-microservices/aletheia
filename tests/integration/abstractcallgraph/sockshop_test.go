@@ -3,8 +3,8 @@ package abstractcallgraph
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // sockshop: a Frontend calls the cart, catalogue, order, payment, shipping and user services;

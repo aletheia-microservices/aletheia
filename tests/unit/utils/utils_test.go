@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"analyzer/pkg/utils"
+	"github.com/aletheia-microservices/aletheia/internal/utils"
 )
 
 func TestLessT(t *testing.T) {

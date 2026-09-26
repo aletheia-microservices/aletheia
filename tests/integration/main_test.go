@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 func TestMain(m *testing.M) {

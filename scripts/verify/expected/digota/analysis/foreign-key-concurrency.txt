@@ -1,0 +1,12 @@
+---------------------------------------------------------------------
+----------------- ANALYSIS: FOREIGN KEY CONCURRENCY -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 2]
+delete: ProductService.Delete() ... products_db.products.DeleteOne()
+	write #1: SkuService.New() ... SkuService.New() ... skus_db.skus.InsertOne()
+		- database={skus_db}, entity={skus}, written_fields={Parent}
+
+delete: SkuService.Delete() ... skus_db.skus.DeleteOne()
+	write #2: OrderService.New() ... OrderService.New() ... orders_db.orders.InsertOne()
+		- database={orders_db}, entity={orders}, written_fields={Items[*].Parent}
+

@@ -3,10 +3,10 @@ package detection_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	"analyzer/pkg/analysis/system-level/detection/constraints/keycoordination"
-	"analyzer/pkg/app"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection/constraints/keycoordination"
+	"github.com/aletheia-microservices/aletheia/internal/app"
 )
 
 // newPostnotificationApp builds the postnotification schema, where

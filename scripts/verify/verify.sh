@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Re-runs Aletheia and compares the [NUM_WARNINGS = N] of each analysis/*.txt in output/
-# against the baseline in output-expected/.
+# against the baseline in scripts/verify/expected/ (logs are saved in scripts/verify/logs/).
 #
 # usage: scripts/verify/verify.sh [--config] [app ...]
-#   app ...   apps to check (default: every app with a baseline in output-expected/)
+#   app ...   apps to check (default: every app with a baseline in scripts/verify/expected/)
 #   --config  pass config/{app}.yaml as --detection_config when it exists (the baseline was generated without it)
 #
 # Exit code is 0 if every app matches its baseline, 1 otherwise.
 
 set -o pipefail
 
-BASELINE=output-expected
+BASELINE=scripts/verify/expected
 OUTPUT=output
 USE_CONFIG=false
 
@@ -72,12 +72,12 @@ compare_warnings() {
     return $rc
 }
 
-LOGDIR="tmp/verify/$(date +%Y%m%d-%H%M%S)"
+LOGDIR="scripts/verify/logs/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$LOGDIR"
 BIN="$LOGDIR/aletheia"
 
 echo "building aletheia..."
-if ! go build -o "$BIN" main.go; then
+if ! go build -o "$BIN" ./cmd/aletheia; then
     say "$RED" "build failed"
     exit 1
 fi

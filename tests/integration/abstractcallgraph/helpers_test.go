@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	"analyzer/pkg/utils"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/utils"
 )
 
 func edgeKind(edge *abstractgraph.AbstractEdge) string {

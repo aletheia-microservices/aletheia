@@ -3,8 +3,8 @@ package abstractgraph_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
 )
 
 func TestAbstractTaintOperationTypes(t *testing.T) {

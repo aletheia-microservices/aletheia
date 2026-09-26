@@ -1,0 +1,3570 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.APIService
+	Method: func(ctx context.Context, reqID int64, username string, password string) error
+	Method: func(ctx context.Context, reqID int64, title string, reviewStart int, reviewStop int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+	Method: func(ctx context.Context, req github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.RegisterMovieRequest) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, error)
+	Method: func(ctx context.Context, reqID string, firstName string, lastName string, username string, password string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User, error)
+	Method: func(ctx context.Context, reqID int64, title string, rating int) error
+	Method: func(ctx context.Context, reqID int64, text string) error
+	Method: func(ctx context.Context, reqID int64) error
+	Method: func(ctx context.Context, reqID int64, username string) error
+	Method: func(ctx context.Context, reqID int64, castInfoID string, name string, gender string, intro string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, title string, casts []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Cast, plotID int64, thumbnailIDs []string, photoIDs []string, videoIDs []string, avgRating string, numRating int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, error)
+	Method: func(ctx context.Context, reqID int64, plotID int64, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			userService = parameter userService : UserService
+			textService = parameter textService : TextService
+			movieIdService = parameter movieIdService : MovieIdService
+			uniqueIdService = parameter uniqueIdService : UniqueIdService
+			movieInfoService = parameter movieInfoService : MovieInfoService
+			castInfoService = parameter castInfoService : CastInfoService
+			plotService = parameter plotService : PlotService
+			pageService = parameter pageService : PageService
+Function: mediamicroservices.NewAPIServiceImpl
+Block #0: mediamicroservices.NewAPIServiceImpl.entry
+			00: t0 = new APIServiceImpl (complit)
+			01: t1 = &t0.userService [#0]
+			02: t2 = &t0.textService [#1]
+			03: t3 = &t0.movieIdService [#2]
+			04: t4 = &t0.uniqueIdService [#3]
+			05: t5 = &t0.movieInfoService [#4]
+			06: t6 = &t0.castInfoService [#5]
+			07: t7 = &t0.plotService [#6]
+			08: t8 = &t0.pageService [#7]
+			09: *t1 = userService
+			10: *t2 = textService
+			11: *t3 = movieIdService
+			12: *t4 = uniqueIdService
+			13: *t5 = movieInfoService
+			14: *t6 = castInfoService
+			15: *t7 = plotService
+			16: *t8 = pageService
+			17: t9 = make APIService <- *APIServiceImpl (t0)
+			18: return t9, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.RegisterMovieRequest
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieIdServiceImpl
+	Method: func(ctx context.Context, reqID int64, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, error)
+		Parameters:
+			s = parameter s : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			title = parameter title : string
+Function: mediamicroservices.MovieIdService.ReadMovieId
+Block #0: mediamicroservices.MovieIdService.ReadMovieId.entry
+			00: t0 = new string (movieID)
+			01: t1 = new MovieId (movie)
+			02: t2 = &s.cache [#1]
+			03: t3 = *t2
+			04: t4 = make interface{} <- *string (t0)
+			05: t5 = invoke t3.Get(ctx, title, t4)
+			06: t6 = extract t5 #0
+			07: t7 = extract t5 #1
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: return MovieId{}:MovieId, t7
+Block #2: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: if t6 goto 3 else 5
+Block #3: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: t9 = &t1.MovieID [#0]
+			01: t10 = *t0
+			02: t11 = &t1.Title [#1]
+			03: *t9 = t10
+			04: *t11 = title
+			05: jump 4
+Block #4: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: t12 = &s.cache [#1]
+			01: t13 = *t12
+			02: t14 = *t0
+			03: t15 = make interface{} <- string (t14)
+			04: t16 = invoke t13.Put(ctx, title, t15)
+			05: t17 = t16 != nil:error
+			06: if t17 goto 14 else 15
+Block #5: mediamicroservices.MovieIdService.ReadMovieId.if.else
+			00: t18 = &s.database [#0]
+			01: t19 = *t18
+			02: t20 = invoke t19.GetCollection(ctx, "movie_id_db":string, "movie":string)
+			03: t21 = extract t20 #0
+			04: t22 = extract t20 #1
+			05: t23 = t22 != nil:error
+			06: if t23 goto 6 else 7
+Block #6: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: return MovieId{}:MovieId, t22
+Block #7: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: t24 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t25 = &t24[0:int]
+			02: t26 = &t25.Key [#0]
+			03: t27 = &t25.Value [#1]
+			04: *t26 = "Title":string
+			05: t28 = make interface{} <- string (title)
+			06: *t27 = t28
+			07: t29 = slice t24[:]
+			08: t30 = invoke t21.FindOne(ctx, t29, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t31 = extract t30 #0
+			10: t32 = extract t30 #1
+			11: t33 = t32 != nil:error
+			12: if t33 goto 8 else 9
+Block #8: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: return MovieId{}:MovieId, t32
+Block #9: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: t34 = make interface{} <- *MovieId (t1)
+			01: t35 = invoke t31.One(ctx, t34)
+			02: t36 = extract t35 #0
+			03: t37 = extract t35 #1
+			04: t38 = t37 != nil:error
+			05: if t38 goto 10 else 11
+Block #10: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: return MovieId{}:MovieId, t37
+Block #11: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: if t36 goto 13 else 12
+Block #12: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: t39 = new [1]any (varargs)
+			01: t40 = &t39[0:int]
+			02: t41 = make any <- string (title)
+			03: *t40 = t41
+			04: t42 = slice t39[:]
+			05: t43 = fmt.Errorf("movie %s not foun...":string, t42...)
+			06: return MovieId{}:MovieId, t43
+Block #13: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: t44 = &t1.MovieID [#0]
+			01: t45 = *t44
+			02: *t0 = t45
+			03: jump 4
+Block #14: mediamicroservices.MovieIdService.ReadMovieId.if.then
+			00: return MovieId{}:MovieId, t16
+Block #15: mediamicroservices.MovieIdService.ReadMovieId.if.done
+			00: t46 = *t1
+			01: return t46, nil:error
+	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, error)
+		Parameters:
+			s = parameter s : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			title = parameter title : string
+Function: mediamicroservices.MovieIdService.RegisterMovieId
+Block #0: mediamicroservices.MovieIdService.RegisterMovieId.entry
+			00: t0 = local MovieId (movie)
+			01: t1 = &t0.MovieID [#0]
+			02: t2 = &t0.Title [#1]
+			03: *t1 = movieID
+			04: *t2 = title
+			05: t3 = &s.database [#0]
+			06: t4 = *t3
+			07: t5 = invoke t4.GetCollection(ctx, "movie_id_db":string, "movie":string)
+			08: t6 = extract t5 #0
+			09: t7 = extract t5 #1
+			10: t8 = t7 != nil:error
+			11: if t8 goto 1 else 2
+Block #1: mediamicroservices.MovieIdService.RegisterMovieId.if.then
+			00: return MovieId{}:MovieId, t7
+Block #2: mediamicroservices.MovieIdService.RegisterMovieId.if.done
+			00: t9 = *t0
+			01: t10 = make interface{} <- MovieId (t9)
+			02: t11 = invoke t6.InsertOne(ctx, t10)
+			03: t12 = t11 != nil:error
+			04: if t12 goto 3 else 4
+Block #3: mediamicroservices.MovieIdService.RegisterMovieId.if.then
+			00: return MovieId{}:MovieId, t11
+Block #4: mediamicroservices.MovieIdService.RegisterMovieId.if.done
+			00: t13 = *t0
+			01: return t13, t11
+	Method: func(ctx context.Context, reqID int64, title string, rating int) error
+		Parameters:
+			s = parameter s : *MovieIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			title = parameter title : string
+			rating = parameter rating : int
+Function: mediamicroservices.MovieIdService.UploadNewMovieId
+Block #0: mediamicroservices.MovieIdService.UploadNewMovieId.entry
+			00: t0 = new string (movieID)
+			01: t1 = &s.cache [#1]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *string (t0)
+			04: t4 = invoke t2.Get(ctx, title, t3)
+			05: t5 = extract t4 #0
+			06: t6 = extract t4 #1
+			07: t7 = t6 != nil:error
+			08: if t7 goto 1 else 2
+Block #1: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t6
+Block #2: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: if t5 goto 4 else 3
+Block #3: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: t8 = new MovieId (movie)
+			01: t9 = &s.database [#0]
+			02: t10 = *t9
+			03: t11 = invoke t10.GetCollection(ctx, "movie_id_db":string, "movie":string)
+			04: t12 = extract t11 #0
+			05: t13 = extract t11 #1
+			06: t14 = t13 != nil:error
+			07: if t14 goto 5 else 6
+Block #4: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: t15 = &s.cache [#1]
+			01: t16 = *t15
+			02: t17 = *t0
+			03: t18 = make interface{} <- string (t17)
+			04: t19 = invoke t16.Put(ctx, title, t18)
+			05: t20 = t19 != nil:error
+			06: if t20 goto 13 else 14
+Block #5: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t13
+Block #6: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: t21 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t22 = &t21[0:int]
+			02: t23 = &t22.Key [#0]
+			03: t24 = &t22.Value [#1]
+			04: *t23 = "Title":string
+			05: t25 = make interface{} <- string (title)
+			06: *t24 = t25
+			07: t26 = slice t21[:]
+			08: t27 = invoke t12.FindOne(ctx, t26, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t28 = extract t27 #0
+			10: t29 = extract t27 #1
+			11: t30 = t29 != nil:error
+			12: if t30 goto 7 else 8
+Block #7: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t29
+Block #8: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: t31 = make interface{} <- *MovieId (t8)
+			01: t32 = invoke t28.One(ctx, t31)
+			02: t33 = extract t32 #0
+			03: t34 = extract t32 #1
+			04: t35 = t34 != nil:error
+			05: if t35 goto 9 else 10
+Block #9: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t34
+Block #10: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: if t33 goto 12 else 11
+Block #11: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: t36 = new [1]any (varargs)
+			01: t37 = &t36[0:int]
+			02: t38 = make any <- string (title)
+			03: *t37 = t38
+			04: t39 = slice t36[:]
+			05: t40 = fmt.Errorf("movie %s not foun...":string, t39...)
+			06: return t40
+Block #12: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: t41 = &t8.MovieID [#0]
+			01: t42 = *t41
+			02: *t0 = t42
+			03: jump 4
+Block #13: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t19
+Block #14: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: t43 = &s.composeReviewService [#2]
+			01: t44 = *t43
+			02: t45 = *t0
+			03: t46 = invoke t44.UploadMovieId(ctx, reqID, t45)
+			04: t47 = t46 != nil:error
+			05: if t47 goto 15 else 16
+Block #15: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t46
+Block #16: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: t48 = &s.ratingService [#3]
+			01: t49 = *t48
+			02: t50 = *t0
+			03: t51 = invoke t49.UploadNewRating(ctx, reqID, t50, rating)
+			04: t52 = t51 != nil:error
+			05: if t52 goto 17 else 18
+Block #17: mediamicroservices.MovieIdService.UploadNewMovieId.if.then
+			00: return t51
+Block #18: mediamicroservices.MovieIdService.UploadNewMovieId.if.done
+			00: return nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.PageServiceImpl
+	Method: func(ctx context.Context, reqID int64, movieID string, reviewStart int, reviewStop int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			s = parameter s : *PageServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			reviewStart = parameter reviewStart : int
+			reviewStop = parameter reviewStop : int
+Function: mediamicroservices.PageService.ReadPage
+Block #0: mediamicroservices.PageService.ReadPage.entry
+			00: t0 = local MovieInfo (movieInfo)
+			01: t1 = &s.movieInfoService [#0]
+			02: t2 = *t1
+			03: t3 = invoke t2.ReadMovieInfo(ctx, reqID, movieID)
+			04: t4 = extract t3 #0
+			05: *t0 = t4
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: mediamicroservices.PageService.ReadPage.if.then
+			00: return MovieInfo{}:MovieInfo, nil:[]Review, nil:[]CastInfo, Plot{}:Plot, t5
+Block #2: mediamicroservices.PageService.ReadPage.if.done
+			00: t7 = &s.movieReviewService [#1]
+			01: t8 = *t7
+			02: t9 = invoke t8.ReadMovieReviews(ctx, reqID, movieID, reviewStart, reviewStop)
+			03: t10 = extract t9 #0
+			04: t11 = extract t9 #1
+			05: t12 = t11 != nil:error
+			06: if t12 goto 3 else 4
+Block #3: mediamicroservices.PageService.ReadPage.if.then
+			00: return MovieInfo{}:MovieInfo, nil:[]Review, nil:[]CastInfo, Plot{}:Plot, t11
+Block #4: mediamicroservices.PageService.ReadPage.if.done
+			00: t13 = &t0.Casts [#2]
+			01: t14 = *t13
+			02: t15 = len(t14)
+			03: jump 5
+Block #5: mediamicroservices.PageService.ReadPage.rangeindex.loop
+			00: t16 = phi [4: nil:[]string, 6: t28] #castInfoIDs
+			01: t17 = phi [4: -1:int, 6: t18] #rangeindex
+			02: t18 = t17 + 1:int
+			03: t19 = t18 < t15
+			04: if t19 goto 6 else 7
+Block #6: mediamicroservices.PageService.ReadPage.rangeindex.body
+			00: t20 = &t14[t18]
+			01: t21 = *t20
+			02: t22 = local Cast (cast)
+			03: *t22 = t21
+			04: t23 = &t22.CastInfoID [#1]
+			05: t24 = *t23
+			06: t25 = new [1]string (varargs)
+			07: t26 = &t25[0:int]
+			08: *t26 = t24
+			09: t27 = slice t25[:]
+			10: t28 = append(t16, t27...)
+			11: jump 5
+Block #7: mediamicroservices.PageService.ReadPage.rangeindex.done
+			00: t29 = &s.castInfoService [#2]
+			01: t30 = *t29
+			02: t31 = invoke t30.ReadCastInfos(ctx, reqID, t16)
+			03: t32 = extract t31 #0
+			04: t33 = extract t31 #1
+			05: t34 = t33 != nil:error
+			06: if t34 goto 8 else 9
+Block #8: mediamicroservices.PageService.ReadPage.if.then
+			00: return MovieInfo{}:MovieInfo, nil:[]Review, nil:[]CastInfo, Plot{}:Plot, t33
+Block #9: mediamicroservices.PageService.ReadPage.if.done
+			00: t35 = &s.plotService [#3]
+			01: t36 = *t35
+			02: t37 = &t0.PlotID [#3]
+			03: t38 = *t37
+			04: t39 = invoke t36.ReadPlot(ctx, reqID, t38)
+			05: t40 = extract t39 #0
+			06: t41 = extract t39 #1
+			07: t42 = t41 != nil:error
+			08: if t42 goto 10 else 11
+Block #10: mediamicroservices.PageService.ReadPage.if.then
+			00: return MovieInfo{}:MovieInfo, nil:[]Review, nil:[]CastInfo, Plot{}:Plot, t41
+Block #11: mediamicroservices.PageService.ReadPage.if.done
+			00: t43 = *t0
+			01: return t43, t10, t32, t40, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UserReviewService
+	Method: func(ctx context.Context, reqID int64, userID int64, start int, stop int) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+	Method: func(ctx context.Context, reqID int64, userID int64, reviewID int64, timestamp int64) error
+		Parameters:
+			s = parameter s : string
+Function: mediamicroservices.hashSHA256
+Block #0: mediamicroservices.hashSHA256.entry
+			00: t0 = new [32]byte (sum)
+			01: t1 = convert []byte <- string (s)
+			02: t2 = crypto/sha256.Sum256(t1)
+			03: *t0 = t2
+			04: t3 = slice t0[:]
+			05: t4 = encoding/hex.EncodeToString(t3)
+			06: return t4
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfoService
+	Method: func(ctx context.Context, reqID int64, castInfoIDs []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, error)
+	Method: func(ctx context.Context, reqID int64, castInfoID string, name string, gender string, intro string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.ComposeReviewServiceImpl
+	Method: func(ctx context.Context, reqID int64, movieID string) error
+		Parameters:
+			s = parameter s : *ComposeReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+Function: mediamicroservices.ComposeReviewService.UploadMovieId
+Block #0: mediamicroservices.ComposeReviewService.UploadMovieId.entry
+			00: t0 = strconv.FormatInt(reqID, 10:int)
+			01: t1 = t0 + ":counter":string
+			02: t2 = strconv.FormatInt(reqID, 10:int)
+			03: t3 = t2 + ":movie_id":string
+			04: t4 = &s.cache [#0]
+			05: t5 = *t4
+			06: t6 = make interface{} <- string (movieID)
+			07: t7 = invoke t5.Put(ctx, t3, t6)
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.ComposeReviewService.UploadMovieId.if.then
+			00: return t7
+Block #2: mediamicroservices.ComposeReviewService.UploadMovieId.if.done
+			00: t9 = &s.cache [#0]
+			01: t10 = *t9
+			02: t11 = invoke t10.Incr(ctx, t1)
+			03: t12 = extract t11 #0
+			04: t13 = extract t11 #1
+			05: t14 = t13 != nil:error
+			06: if t14 goto 3 else 4
+Block #3: mediamicroservices.ComposeReviewService.UploadMovieId.if.then
+			00: return t13
+Block #4: mediamicroservices.ComposeReviewService.UploadMovieId.if.done
+			00: t15 = t12 == 5:int64
+			01: if t15 goto 5 else 6
+Block #5: mediamicroservices.ComposeReviewService.UploadMovieId.if.then
+			00: t16 = (*ComposeReviewServiceImpl)._ComposeAndUpload(s, ctx, reqID)
+			01: jump 6
+Block #6: mediamicroservices.ComposeReviewService.UploadMovieId.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, reqID int64, rating int) error
+		Parameters:
+			s = parameter s : *ComposeReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			rating = parameter rating : int
+Function: mediamicroservices.ComposeReviewService.UploadRating
+Block #0: mediamicroservices.ComposeReviewService.UploadRating.entry
+			00: t0 = strconv.FormatInt(reqID, 10:int)
+			01: t1 = t0 + ":counter":string
+			02: t2 = strconv.FormatInt(reqID, 10:int)
+			03: t3 = t2 + ":rating":string
+			04: t4 = &s.cache [#0]
+			05: t5 = *t4
+			06: t6 = make interface{} <- int (rating)
+			07: t7 = invoke t5.Put(ctx, t3, t6)
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.ComposeReviewService.UploadRating.if.then
+			00: return t7
+Block #2: mediamicroservices.ComposeReviewService.UploadRating.if.done
+			00: t9 = &s.cache [#0]
+			01: t10 = *t9
+			02: t11 = invoke t10.Incr(ctx, t1)
+			03: t12 = extract t11 #0
+			04: t13 = extract t11 #1
+			05: t14 = t13 != nil:error
+			06: if t14 goto 3 else 4
+Block #3: mediamicroservices.ComposeReviewService.UploadRating.if.then
+			00: return t13
+Block #4: mediamicroservices.ComposeReviewService.UploadRating.if.done
+			00: t15 = t12 == 5:int64
+			01: if t15 goto 5 else 6
+Block #5: mediamicroservices.ComposeReviewService.UploadRating.if.then
+			00: t16 = (*ComposeReviewServiceImpl)._ComposeAndUpload(s, ctx, reqID)
+			01: jump 6
+Block #6: mediamicroservices.ComposeReviewService.UploadRating.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, reqID int64, text string) error
+		Parameters:
+			s = parameter s : *ComposeReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			text = parameter text : string
+Function: mediamicroservices.ComposeReviewService.UploadText
+Block #0: mediamicroservices.ComposeReviewService.UploadText.entry
+			00: t0 = strconv.FormatInt(reqID, 10:int)
+			01: t1 = t0 + ":counter":string
+			02: t2 = strconv.FormatInt(reqID, 10:int)
+			03: t3 = t2 + ":text":string
+			04: t4 = &s.cache [#0]
+			05: t5 = *t4
+			06: t6 = make interface{} <- string (text)
+			07: t7 = invoke t5.Put(ctx, t3, t6)
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.ComposeReviewService.UploadText.if.then
+			00: return t7
+Block #2: mediamicroservices.ComposeReviewService.UploadText.if.done
+			00: t9 = &s.cache [#0]
+			01: t10 = *t9
+			02: t11 = invoke t10.Incr(ctx, t1)
+			03: t12 = extract t11 #0
+			04: t13 = extract t11 #1
+			05: t14 = t13 != nil:error
+			06: if t14 goto 3 else 4
+Block #3: mediamicroservices.ComposeReviewService.UploadText.if.then
+			00: return t13
+Block #4: mediamicroservices.ComposeReviewService.UploadText.if.done
+			00: t15 = t12 == 5:int64
+			01: if t15 goto 5 else 6
+Block #5: mediamicroservices.ComposeReviewService.UploadText.if.then
+			00: t16 = (*ComposeReviewServiceImpl)._ComposeAndUpload(s, ctx, reqID)
+			01: jump 6
+Block #6: mediamicroservices.ComposeReviewService.UploadText.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, reqID int64, reviewID int64) error
+		Parameters:
+			s = parameter s : *ComposeReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			reviewID = parameter reviewID : int64
+Function: mediamicroservices.ComposeReviewService.UploadUniqueId
+Block #0: mediamicroservices.ComposeReviewService.UploadUniqueId.entry
+			00: t0 = strconv.FormatInt(reqID, 10:int)
+			01: t1 = t0 + ":counter":string
+			02: t2 = strconv.FormatInt(reqID, 10:int)
+			03: t3 = t2 + ":review_id":string
+			04: t4 = &s.cache [#0]
+			05: t5 = *t4
+			06: t6 = make interface{} <- int64 (reviewID)
+			07: t7 = invoke t5.Put(ctx, t3, t6)
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.ComposeReviewService.UploadUniqueId.if.then
+			00: return t7
+Block #2: mediamicroservices.ComposeReviewService.UploadUniqueId.if.done
+			00: t9 = &s.cache [#0]
+			01: t10 = *t9
+			02: t11 = invoke t10.Incr(ctx, t1)
+			03: t12 = extract t11 #0
+			04: t13 = extract t11 #1
+			05: t14 = t13 != nil:error
+			06: if t14 goto 3 else 4
+Block #3: mediamicroservices.ComposeReviewService.UploadUniqueId.if.then
+			00: return t13
+Block #4: mediamicroservices.ComposeReviewService.UploadUniqueId.if.done
+			00: t15 = t12 == 5:int64
+			01: if t15 goto 5 else 6
+Block #5: mediamicroservices.ComposeReviewService.UploadUniqueId.if.then
+			00: t16 = (*ComposeReviewServiceImpl)._ComposeAndUpload(s, ctx, reqID)
+			01: jump 6
+Block #6: mediamicroservices.ComposeReviewService.UploadUniqueId.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, reqID int64, userID int64) error
+		Parameters:
+			s = parameter s : *ComposeReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			userID = parameter userID : int64
+Function: mediamicroservices.ComposeReviewService.UploadUserId
+Block #0: mediamicroservices.ComposeReviewService.UploadUserId.entry
+			00: t0 = strconv.FormatInt(reqID, 10:int)
+			01: t1 = t0 + ":counter":string
+			02: t2 = strconv.FormatInt(reqID, 10:int)
+			03: t3 = t2 + ":user_id":string
+			04: t4 = &s.cache [#0]
+			05: t5 = *t4
+			06: t6 = make interface{} <- int64 (userID)
+			07: t7 = invoke t5.Put(ctx, t3, t6)
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.ComposeReviewService.UploadUserId.if.then
+			00: return t7
+Block #2: mediamicroservices.ComposeReviewService.UploadUserId.if.done
+			00: t9 = &s.cache [#0]
+			01: t10 = *t9
+			02: t11 = invoke t10.Incr(ctx, t1)
+			03: t12 = extract t11 #0
+			04: t13 = extract t11 #1
+			05: t14 = t13 != nil:error
+			06: if t14 goto 3 else 4
+Block #3: mediamicroservices.ComposeReviewService.UploadUserId.if.then
+			00: return t13
+Block #4: mediamicroservices.ComposeReviewService.UploadUserId.if.done
+			00: t15 = t12 == 5:int64
+			01: if t15 goto 5 else 6
+Block #5: mediamicroservices.ComposeReviewService.UploadUserId.if.then
+			00: t16 = (*ComposeReviewServiceImpl)._ComposeAndUpload(s, ctx, reqID)
+			01: jump 6
+Block #6: mediamicroservices.ComposeReviewService.UploadUserId.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, reqID int64) error
+		Parameters:
+			s = parameter s : *ComposeReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+Function: mediamicroservices.ComposeReviewService._ComposeAndUpload
+Block #0: mediamicroservices.ComposeReviewService._ComposeAndUpload.entry
+			00: t0 = strconv.FormatInt(reqID, 10:int)
+			01: t1 = t0 + ":review_id":string
+			02: t2 = strconv.FormatInt(reqID, 10:int)
+			03: t3 = t2 + ":movie_id":string
+			04: t4 = strconv.FormatInt(reqID, 10:int)
+			05: t5 = t4 + ":user_id":string
+			06: t6 = strconv.FormatInt(reqID, 10:int)
+			07: t7 = t6 + ":text":string
+			08: t8 = strconv.FormatInt(reqID, 10:int)
+			09: t9 = t8 + ":rating":string
+			10: t10 = local Review (newReview)
+			11: t11 = new [5]string (slicelit)
+			12: t12 = &t11[0:int]
+			13: *t12 = t1
+			14: t13 = &t11[1:int]
+			15: *t13 = t3
+			16: t14 = &t11[2:int]
+			17: *t14 = t5
+			18: t15 = &t11[3:int]
+			19: *t15 = t7
+			20: t16 = &t11[4:int]
+			21: *t16 = t9
+			22: t17 = slice t11[:]
+			23: t18 = new [5]interface{} (slicelit)
+			24: t19 = &t18[0:int]
+			25: t20 = new int64 (new)
+			26: t21 = make interface{} <- *int64 (t20)
+			27: *t19 = t21
+			28: t22 = &t18[1:int]
+			29: t23 = new string (new)
+			30: t24 = make interface{} <- *string (t23)
+			31: *t22 = t24
+			32: t25 = &t18[2:int]
+			33: t26 = new int64 (new)
+			34: t27 = make interface{} <- *int64 (t26)
+			35: *t25 = t27
+			36: t28 = &t18[3:int]
+			37: t29 = new string (new)
+			38: t30 = make interface{} <- *string (t29)
+			39: *t28 = t30
+			40: t31 = &t18[4:int]
+			41: t32 = new int (new)
+			42: t33 = make interface{} <- *int (t32)
+			43: *t31 = t33
+			44: t34 = slice t18[:]
+			45: t35 = &s.cache [#0]
+			46: t36 = *t35
+			47: t37 = invoke t36.Mget(ctx, t17, t34)
+			48: t38 = t37 != nil:error
+			49: if t38 goto 1 else 2
+Block #1: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.then
+			00: return t37
+Block #2: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.done
+			00: t39 = len(t34)
+			01: jump 3
+Block #3: mediamicroservices.ComposeReviewService._ComposeAndUpload.rangeindex.loop
+			00: t40 = phi [2: -1:int, 6: t41, 7: t41, 9: t41, 11: t41, 13: t41, 14: t41] #rangeindex
+			01: t41 = t40 + 1:int
+			02: t42 = t41 < t39
+			03: if t42 goto 4 else 5
+Block #4: mediamicroservices.ComposeReviewService._ComposeAndUpload.rangeindex.body
+			00: t43 = &t34[t41]
+			01: t44 = *t43
+			02: t45 = &t17[t41]
+			03: t46 = *t45
+			04: t47 = t46 == t1
+			05: if t47 goto 6 else 8
+Block #5: mediamicroservices.ComposeReviewService._ComposeAndUpload.rangeindex.done
+			00: t48 = &s.reviewStorageService [#1]
+			01: t49 = *t48
+			02: t50 = *t10
+			03: t51 = invoke t49.StoreReview(ctx, reqID, t50)
+			04: t52 = extract t51 #0
+			05: t53 = extract t51 #1
+			06: t54 = t53 != nil:error
+			07: if t54 goto 15 else 16
+Block #6: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.body
+			00: t55 = typeassert t44.(*int64)
+			01: t56 = *t55
+			02: t57 = &t10.ReviewID [#0]
+			03: *t57 = t56
+			04: jump 3
+Block #7: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.body
+			00: t58 = typeassert t44.(*string)
+			01: t59 = *t58
+			02: t60 = &t10.MovieID [#4]
+			03: *t60 = t59
+			04: jump 3
+Block #8: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.next
+			00: t61 = t46 == t3
+			01: if t61 goto 7 else 10
+Block #9: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.body
+			00: t62 = typeassert t44.(*int64)
+			01: t63 = *t62
+			02: t64 = &t10.UserID [#3]
+			03: *t64 = t63
+			04: jump 3
+Block #10: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.next
+			00: t65 = t46 == t5
+			01: if t65 goto 9 else 12
+Block #11: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.body
+			00: t66 = typeassert t44.(*string)
+			01: t67 = *t66
+			02: t68 = &t10.Text [#5]
+			03: *t68 = t67
+			04: jump 3
+Block #12: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.next
+			00: t69 = t46 == t7
+			01: if t69 goto 11 else 14
+Block #13: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.body
+			00: t70 = typeassert t44.(*int)
+			01: t71 = *t70
+			02: t72 = &t10.Rating [#6]
+			03: *t72 = t71
+			04: jump 3
+Block #14: mediamicroservices.ComposeReviewService._ComposeAndUpload.switch.next
+			00: t73 = t46 == t9
+			01: if t73 goto 13 else 3
+Block #15: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.then
+			00: return t53
+Block #16: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.done
+			00: t74 = &s.userReviewService [#2]
+			01: t75 = *t74
+			02: t76 = &t10.UserID [#3]
+			03: t77 = *t76
+			04: t78 = &t10.ReviewID [#0]
+			05: t79 = *t78
+			06: t80 = &t10.Timestamp [#2]
+			07: t81 = *t80
+			08: t82 = invoke t75.UploadUserReview(ctx, reqID, t77, t79, t81)
+			09: t83 = t82 != nil:error
+			10: if t83 goto 17 else 18
+Block #17: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.then
+			00: return t82
+Block #18: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.done
+			00: t84 = &s.movieReviewService [#3]
+			01: t85 = *t84
+			02: t86 = &t10.MovieID [#4]
+			03: t87 = *t86
+			04: t88 = &t10.ReviewID [#0]
+			05: t89 = *t88
+			06: t90 = &t10.Timestamp [#2]
+			07: t91 = *t90
+			08: t92 = invoke t85.UploadMovieReview(ctx, reqID, t87, t89, t91)
+			09: t93 = t92 != nil:error
+			10: if t93 goto 19 else 20
+Block #19: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.then
+			00: return t92
+Block #20: mediamicroservices.ComposeReviewService._ComposeAndUpload.if.done
+			00: return nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			composeReviewService = parameter composeReviewService : ComposeReviewService
+Function: mediamicroservices.NewRatingServiceImpl
+Block #0: mediamicroservices.NewRatingServiceImpl.entry
+			00: t0 = new RatingServiceImpl (complit)
+			01: t1 = &t0.cache [#0]
+			02: t2 = &t0.composeReviewService [#1]
+			03: *t1 = cache
+			04: *t2 = composeReviewService
+			05: t3 = make RatingService <- *RatingServiceImpl (t0)
+			06: return t3, nil:error
+		Parameters:
+Function: mediamicroservices.init
+Block #0: mediamicroservices.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: mediamicroservices.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = errors.init()
+			03: t3 = fmt.init()
+			04: t4 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			05: t5 = go.mongodb.org/mongo-driver/bson.init()
+			06: t6 = strconv.init()
+			07: t7 = log.init()
+			08: t8 = strings.init()
+			09: t9 = time.init()
+			10: t10 = crypto/sha256.init()
+			11: t11 = encoding/hex.init()
+			12: t12 = math/rand.init()
+			13: t13 = bytes.init()
+			14: t14 = net.init()
+			15: jump 2
+Block #2: mediamicroservices.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.RegisterMovieRequestCast
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			composeReviewService = parameter composeReviewService : ComposeReviewService
+Function: mediamicroservices.NewUserServiceImpl
+Block #0: mediamicroservices.NewUserServiceImpl.entry
+			00: t0 = new UserServiceImpl (complit)
+			01: t1 = &t0.counter [#0]
+			02: t2 = &t0.currentTimestamp [#1]
+			03: t3 = &t0.machineID [#2]
+			04: t4 = GetMachineID()
+			05: t5 = &t0.database [#3]
+			06: t6 = &t0.cache [#4]
+			07: t7 = &t0.composeReviewService [#5]
+			08: *t1 = 0:int64
+			09: *t2 = -1:int64
+			10: *t3 = t4
+			11: *t5 = database
+			12: *t6 = cache
+			13: *t7 = composeReviewService
+			14: t8 = make UserService <- *UserServiceImpl (t0)
+			15: return t8, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.ComposeReview
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieIdService
+	Method: func(ctx context.Context, reqID int64, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, error)
+	Method: func(ctx context.Context, reqID int64, title string, rating int) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieReviewService
+	Method: func(ctx context.Context, reqID int64, movieID string, start int, stop int) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, reviewID int64, timestamp int64) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+Function: mediamicroservices.NewPlotServiceImpl
+Block #0: mediamicroservices.NewPlotServiceImpl.entry
+			00: t0 = new PlotServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: *t1 = database
+			04: *t2 = cache
+			05: t3 = make PlotService <- *PlotServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.ReviewStorageServiceImpl
+	Method: func(ctx context.Context, reqID int64, reviewIDs []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+		Parameters:
+			s = parameter s : *ReviewStorageServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			reviewIDs = parameter reviewIDs : []int64
+Function: mediamicroservices.ReviewStorageService.ReadReviews
+Block #0: mediamicroservices.ReviewStorageService.ReadReviews.entry
+			00: t0 = len(reviewIDs)
+			01: t1 = t0 == 0:int
+			02: if t1 goto 1 else 2
+Block #1: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: return nil:[]Review, nil:error
+Block #2: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t2 = make map[int64]bool 
+			01: t3 = len(reviewIDs)
+			02: jump 3
+Block #3: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.loop
+			00: t4 = phi [2: -1:int, 4: t5] #rangeindex
+			01: t5 = t4 + 1:int
+			02: t6 = t5 < t3
+			03: if t6 goto 4 else 5
+Block #4: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.body
+			00: t7 = &reviewIDs[t5]
+			01: t8 = *t7
+			02: t2[t8] = true:bool
+			03: jump 3
+Block #5: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.done
+			00: t9 = len(t2)
+			01: t10 = len(reviewIDs)
+			02: t11 = t9 != t10
+			03: if t11 goto 6 else 7
+Block #6: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t12 = errors.New("review_ids are du...":string)
+			01: return nil:[]Review, t12
+Block #7: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t13 = len(reviewIDs)
+			01: jump 8
+Block #8: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.loop
+			00: t14 = phi [7: nil:[]string, 9: t24] #keys
+			01: t15 = phi [7: -1:int, 9: t16] #rangeindex
+			02: t16 = t15 + 1:int
+			03: t17 = t16 < t13
+			04: if t17 goto 9 else 10
+Block #9: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.body
+			00: t18 = &reviewIDs[t16]
+			01: t19 = *t18
+			02: t20 = strconv.FormatInt(t19, 10:int)
+			03: t21 = new [1]string (varargs)
+			04: t22 = &t21[0:int]
+			05: *t22 = t20
+			06: t23 = slice t21[:]
+			07: t24 = append(t14, t23...)
+			08: jump 8
+Block #10: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.done
+			00: t25 = len(t14)
+			01: t26 = make []Review t25 t25
+			02: t27 = len(t26)
+			03: jump 11
+Block #11: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.loop
+			00: t28 = phi [10: nil:[]interface{}, 12: t37] #cachedValues
+			01: t29 = phi [10: -1:int, 12: t30] #rangeindex
+			02: t30 = t29 + 1:int
+			03: t31 = t30 < t27
+			04: if t31 goto 12 else 13
+Block #12: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.body
+			00: t32 = &t26[t30]
+			01: t33 = new [1]interface{} (varargs)
+			02: t34 = &t33[0:int]
+			03: t35 = make interface{} <- *Review (t32)
+			04: *t34 = t35
+			05: t36 = slice t33[:]
+			06: t37 = append(t28, t36...)
+			07: jump 11
+Block #13: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.done
+			00: t38 = &s.cache [#1]
+			01: t39 = *t38
+			02: t40 = invoke t39.Mget(ctx, t14, t28)
+			03: t41 = t40 != nil:error
+			04: if t41 goto 14 else 15
+Block #14: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: return nil:[]Review, t40
+Block #15: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t42 = len(t26)
+			01: jump 16
+Block #16: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.loop
+			00: t43 = phi [15: nil:[]Review, 17: t43, 19: t62] #returnReviews
+			01: t44 = phi [15: -1:int, 17: t45, 19: t45] #rangeindex
+			02: t45 = t44 + 1:int
+			03: t46 = t45 < t42
+			04: if t46 goto 17 else 18
+Block #17: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.body
+			00: t47 = &t26[t45]
+			01: t48 = *t47
+			02: t49 = local Review (review)
+			03: *t49 = t48
+			04: t50 = &t49.ReviewID [#0]
+			05: t51 = *t50
+			06: t52 = t51 != 0:int64
+			07: if t52 goto 19 else 16
+Block #18: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.done
+			00: t53 = len(t2)
+			01: t54 = t53 != 0:int
+			02: if t54 goto 20 else 21
+Block #19: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t55 = &t49.ReviewID [#0]
+			01: t56 = *t55
+			02: t57 = delete(t2, t56)
+			03: t58 = *t49
+			04: t59 = new [1]Review (varargs)
+			05: t60 = &t59[0:int]
+			06: *t60 = t58
+			07: t61 = slice t59[:]
+			08: t62 = append(t43, t61...)
+			09: jump 16
+Block #20: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t63 = new []Review (reviews)
+			01: t64 = range t2
+			02: jump 22
+Block #21: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t65 = phi [18: t43, 31: t109] #returnReviews
+			01: t66 = len(t65)
+			02: t67 = len(reviewIDs)
+			03: t68 = t66 != t67
+			04: if t68 goto 33 else 34
+Block #22: mediamicroservices.ReviewStorageService.ReadReviews.rangeiter.loop
+			00: t69 = phi [20: nil:[]int64, 23: t76] #unique_pids
+			01: t70 = next t64
+			02: t71 = extract t70 #0
+			03: if t71 goto 23 else 24
+Block #23: mediamicroservices.ReviewStorageService.ReadReviews.rangeiter.body
+			00: t72 = extract t70 #1
+			01: t73 = new [1]int64 (varargs)
+			02: t74 = &t73[0:int]
+			03: *t74 = t72
+			04: t75 = slice t73[:]
+			05: t76 = append(t69, t75...)
+			06: jump 22
+Block #24: mediamicroservices.ReviewStorageService.ReadReviews.rangeiter.done
+			00: t77 = &s.database [#0]
+			01: t78 = *t77
+			02: t79 = invoke t78.GetCollection(ctx, "review_storage_db":string, "review":string)
+			03: t80 = extract t79 #0
+			04: t81 = extract t79 #1
+			05: t82 = t81 != nil:error
+			06: if t82 goto 25 else 26
+Block #25: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t83 = new [0]Review (slicelit)
+			01: t84 = slice t83[:]
+			02: return t84, t81
+Block #26: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t85 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t86 = &t85[0:int]
+			02: t87 = &t86.Key [#0]
+			03: t88 = &t86.Value [#1]
+			04: t89 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t90 = &t89[0:int]
+			06: t91 = &t90.Key [#0]
+			07: t92 = &t90.Value [#1]
+			08: *t91 = "$in":string
+			09: t93 = make interface{} <- []int64 (t69)
+			10: *t92 = t93
+			11: t94 = slice t89[:]
+			12: *t87 = "ReviewID":string
+			13: t95 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t94)
+			14: *t88 = t95
+			15: t96 = slice t85[:]
+			16: t97 = invoke t80.FindMany(ctx, t96, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			17: t98 = extract t97 #0
+			18: t99 = extract t97 #1
+			19: t100 = t99 != nil:error
+			20: if t100 goto 27 else 28
+Block #27: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t101 = new [0]Review (slicelit)
+			01: t102 = slice t101[:]
+			02: return t102, t99
+Block #28: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t103 = make interface{} <- *[]Review (t63)
+			01: t104 = invoke t98.All(ctx, t103)
+			02: t105 = t104 != nil:error
+			03: if t105 goto 29 else 30
+Block #29: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t106 = new [0]Review (slicelit)
+			01: t107 = slice t106[:]
+			02: return t107, t104
+Block #30: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: t108 = *t63
+			01: t109 = append(t43, t108...)
+			02: t110 = *t63
+			03: t111 = len(t110)
+			04: jump 31
+Block #31: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.loop
+			00: t112 = phi [30: -1:int, 32: t113] #rangeindex
+			01: t113 = t112 + 1:int
+			02: t114 = t113 < t111
+			03: if t114 goto 32 else 21
+Block #32: mediamicroservices.ReviewStorageService.ReadReviews.rangeindex.body
+			00: t115 = &t110[t113]
+			01: t116 = *t115
+			02: t117 = local Review (review)
+			03: *t117 = t116
+			04: t118 = &s.cache [#1]
+			05: t119 = *t118
+			06: t120 = &t117.ReviewID [#0]
+			07: t121 = *t120
+			08: t122 = strconv.FormatInt(t121, 10:int)
+			09: t123 = *t117
+			10: t124 = make interface{} <- Review (t123)
+			11: t125 = invoke t119.Put(ctx, t122, t124)
+			12: jump 31
+Block #33: mediamicroservices.ReviewStorageService.ReadReviews.if.then
+			00: t126 = fmt.Errorf("return set incomp...":string, nil:[]any...)
+			01: return nil:[]Review, t126
+Block #34: mediamicroservices.ReviewStorageService.ReadReviews.if.done
+			00: return t65, nil:error
+	Method: func(ctx context.Context, reqID int64, review github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+		Parameters:
+			s = parameter s : *ReviewStorageServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			review = parameter review : Review
+Function: mediamicroservices.ReviewStorageService.StoreReview
+Block #0: mediamicroservices.ReviewStorageService.StoreReview.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "review_storage_db":string, "review":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: mediamicroservices.ReviewStorageService.StoreReview.if.then
+			00: return Review{}:Review, t4
+Block #2: mediamicroservices.ReviewStorageService.StoreReview.if.done
+			00: t6 = make interface{} <- Review (review)
+			01: t7 = invoke t3.InsertOne(ctx, t6)
+			02: t8 = t7 != nil:error
+			03: if t8 goto 3 else 4
+Block #3: mediamicroservices.ReviewStorageService.StoreReview.if.then
+			00: return Review{}:Review, t7
+Block #4: mediamicroservices.ReviewStorageService.StoreReview.if.done
+			00: return review, t7
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UniqueIdServiceImpl
+	Method: func() (int64, error)
+		Parameters:
+			s = parameter s : *UniqueIdServiceImpl
+Function: mediamicroservices.UniqueIdService.GenerateUniqueId
+Block #0: mediamicroservices.UniqueIdService.GenerateUniqueId.entry
+			00: t0 = time.Now()
+			01: t1 = (time.Time).UnixNano(t0)
+			02: t2 = t1 / 1000000:int64
+			03: t3 = (*UniqueIdServiceImpl).GetCounter(s, t2)
+			04: t4 = strconv.FormatInt(t2, 16:int)
+			05: t5 = len(t4)
+			06: t6 = t5 > 10:int
+			07: if t6 goto 1 else 3
+Block #1: mediamicroservices.UniqueIdService.GenerateUniqueId.if.then
+			00: t7 = slice t4[:10:int]
+			01: jump 2
+Block #2: mediamicroservices.UniqueIdService.GenerateUniqueId.if.done
+			00: t8 = phi [1: t7, 3: t4, 4: t17] #timestamp_hex
+			01: t9 = strconv.FormatInt(t3, 16:int)
+			02: t10 = len(t9)
+			03: t11 = t10 > 1:int
+			04: if t11 goto 5 else 7
+Block #3: mediamicroservices.UniqueIdService.GenerateUniqueId.if.else
+			00: t12 = len(t4)
+			01: t13 = t12 < 10:int
+			02: if t13 goto 4 else 2
+Block #4: mediamicroservices.UniqueIdService.GenerateUniqueId.if.then
+			00: t14 = len(t4)
+			01: t15 = 10:int - t14
+			02: t16 = strings.Repeat("0":string, t15)
+			03: t17 = t16 + t4
+			04: jump 2
+Block #5: mediamicroservices.UniqueIdService.GenerateUniqueId.if.then
+			00: t18 = slice t9[:1:int]
+			01: jump 6
+Block #6: mediamicroservices.UniqueIdService.GenerateUniqueId.if.done
+			00: t19 = phi [5: t18, 7: t9, 8: t44] #counter_hex
+			01: t20 = &s.machineID [#2]
+			02: t21 = *t20
+			03: t22 = new [3]any (varargs)
+			04: t23 = &t22[0:int]
+			05: t24 = make any <- string (t21)
+			06: *t23 = t24
+			07: t25 = &t22[1:int]
+			08: t26 = make any <- string (t8)
+			09: *t25 = t26
+			10: t27 = &t22[2:int]
+			11: t28 = make any <- string (t19)
+			12: *t27 = t28
+			13: t29 = slice t22[:]
+			14: t30 = log.Println(t29...)
+			15: t31 = &s.machineID [#2]
+			16: t32 = *t31
+			17: t33 = t32 + t8
+			18: t34 = t33 + t19
+			19: t35 = strconv.ParseInt(t34, 16:int, 64:int)
+			20: t36 = extract t35 #0
+			21: t37 = extract t35 #1
+			22: t38 = t37 != nil:error
+			23: if t38 goto 9 else 10
+Block #7: mediamicroservices.UniqueIdService.GenerateUniqueId.if.else
+			00: t39 = len(t9)
+			01: t40 = t39 < 1:int
+			02: if t40 goto 8 else 6
+Block #8: mediamicroservices.UniqueIdService.GenerateUniqueId.if.then
+			00: t41 = len(t9)
+			01: t42 = 1:int - t41
+			02: t43 = strings.Repeat("0":string, t42)
+			03: t44 = t43 + t9
+			04: jump 6
+Block #9: mediamicroservices.UniqueIdService.GenerateUniqueId.if.then
+			00: return 0:int64, t37
+Block #10: mediamicroservices.UniqueIdService.GenerateUniqueId.if.done
+			00: t45 = t36 & 9223372036854775807:int64
+			01: return t45, nil:error
+	Method: func(timestamp int64) int64
+		Parameters:
+			s = parameter s : *UniqueIdServiceImpl
+			timestamp = parameter timestamp : int64
+Function: mediamicroservices.UniqueIdService.GetCounter
+Block #0: mediamicroservices.UniqueIdService.GetCounter.entry
+			00: t0 = &s.currentTimestamp [#1]
+			01: t1 = *t0
+			02: t2 = t1 == timestamp
+			03: if t2 goto 1 else 2
+Block #1: mediamicroservices.UniqueIdService.GetCounter.if.then
+			00: t3 = &s.counter [#0]
+			01: t4 = *t3
+			02: t5 = &s.counter [#0]
+			03: t6 = *t5
+			04: t7 = t6 + 1:int64
+			05: t8 = &s.counter [#0]
+			06: *t8 = t7
+			07: return t4
+Block #2: mediamicroservices.UniqueIdService.GetCounter.if.else
+			00: t9 = &s.currentTimestamp [#1]
+			01: *t9 = timestamp
+			02: t10 = &s.counter [#0]
+			03: *t10 = 1:int64
+			04: return 0:int64
+	Method: func(ctx context.Context, reqID int64) error
+		Parameters:
+			s = parameter s : *UniqueIdServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+Function: mediamicroservices.UniqueIdService.UploadNewUniqueId
+Block #0: mediamicroservices.UniqueIdService.UploadNewUniqueId.entry
+			00: t0 = (*UniqueIdServiceImpl).GenerateUniqueId(s)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: mediamicroservices.UniqueIdService.UploadNewUniqueId.if.then
+			00: return t2
+Block #2: mediamicroservices.UniqueIdService.UploadNewUniqueId.if.done
+			00: t4 = &s.composeReviewService [#3]
+			01: t5 = *t4
+			02: t6 = invoke t5.UploadUniqueId(ctx, reqID, t1)
+			03: return t6
+	Global: init$guard, Type: *bool
+		Parameters:
+			ctx = parameter ctx : context.Context
+			composeReviewService = parameter composeReviewService : ComposeReviewService
+Function: mediamicroservices.NewUniqueIdServiceImpl
+Block #0: mediamicroservices.NewUniqueIdServiceImpl.entry
+			00: t0 = new UniqueIdServiceImpl (complit)
+			01: t1 = &t0.counter [#0]
+			02: t2 = &t0.currentTimestamp [#1]
+			03: t3 = &t0.machineID [#2]
+			04: t4 = GetMachineID()
+			05: t5 = &t0.composeReviewService [#3]
+			06: *t1 = 0:int64
+			07: *t2 = -1:int64
+			08: *t3 = t4
+			09: *t5 = composeReviewService
+			10: t6 = make UniqueIdService <- *UniqueIdServiceImpl (t0)
+			11: return t6, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo
+	Unknown member type: *ssa.NamedConst
+		Parameters:
+			ctx = parameter ctx : context.Context
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			reviewStorageService = parameter reviewStorageService : ReviewStorageService
+			userReviewService = parameter userReviewService : UserReviewService
+			movieReviewService = parameter movieReviewService : MovieReviewService
+Function: mediamicroservices.NewComposeReviewServiceImpl
+Block #0: mediamicroservices.NewComposeReviewServiceImpl.entry
+			00: t0 = new ComposeReviewServiceImpl (complit)
+			01: t1 = &t0.cache [#0]
+			02: t2 = &t0.reviewStorageService [#1]
+			03: t3 = &t0.userReviewService [#2]
+			04: t4 = &t0.movieReviewService [#3]
+			05: *t1 = cache
+			06: *t2 = reviewStorageService
+			07: *t3 = userReviewService
+			08: *t4 = movieReviewService
+			09: t5 = make ComposeReviewService <- *ComposeReviewServiceImpl (t0)
+			10: return t5, nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			composeReviewService = parameter composeReviewService : ComposeReviewService
+			ratingService = parameter ratingService : RatingService
+Function: mediamicroservices.NewMovieIdServiceImpl
+Block #0: mediamicroservices.NewMovieIdServiceImpl.entry
+			00: t0 = new MovieIdServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: t3 = &t0.composeReviewService [#2]
+			04: t4 = &t0.ratingService [#3]
+			05: *t1 = database
+			06: *t2 = cache
+			07: *t3 = composeReviewService
+			08: *t4 = ratingService
+			09: t5 = make MovieIdService <- *MovieIdServiceImpl (t0)
+			10: return t5, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfoServiceImpl
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, error)
+		Parameters:
+			s = parameter s : *MovieInfoServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+Function: mediamicroservices.MovieInfoService.ReadMovieInfo
+Block #0: mediamicroservices.MovieInfoService.ReadMovieInfo.entry
+			00: t0 = new MovieInfo (movieInfo)
+			01: t1 = new interface{} (cachedMovieInfo)
+			02: t2 = &s.cache [#1]
+			03: t3 = *t2
+			04: t4 = make interface{} <- *interface{} (t1)
+			05: t5 = invoke t3.Get(ctx, movieID, t4)
+			06: t6 = extract t5 #0
+			07: t7 = extract t5 #1
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: t9 = *t0
+			01: return t9, t7
+Block #2: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: if t6 goto 3 else 4
+Block #3: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: t10 = *t1
+			01: t11 = typeassert t10.(MovieInfo)
+			02: *t0 = t11
+			03: t12 = *t0
+			04: return t12, nil:error
+Block #4: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: t13 = &s.database [#0]
+			01: t14 = *t13
+			02: t15 = invoke t14.GetCollection(ctx, "movie_info_db":string, "movie_info":string)
+			03: t16 = extract t15 #0
+			04: t17 = extract t15 #1
+			05: t18 = t17 != nil:error
+			06: if t18 goto 5 else 6
+Block #5: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: t19 = *t0
+			01: return t19, t17
+Block #6: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: t20 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t21 = &t20[0:int]
+			02: t22 = &t21.Key [#0]
+			03: t23 = &t21.Value [#1]
+			04: *t22 = "_id":string
+			05: t24 = make interface{} <- string (movieID)
+			06: *t23 = t24
+			07: t25 = slice t20[:]
+			08: t26 = invoke t16.FindOne(ctx, t25, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t27 = extract t26 #0
+			10: t28 = extract t26 #1
+			11: t29 = t28 != nil:error
+			12: if t29 goto 7 else 8
+Block #7: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: t30 = *t0
+			01: return t30, t28
+Block #8: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: t31 = make interface{} <- *MovieInfo (t0)
+			01: t32 = invoke t27.One(ctx, t31)
+			02: t33 = extract t32 #0
+			03: t34 = extract t32 #1
+			04: t35 = t34 != nil:error
+			05: if t35 goto 9 else 10
+Block #9: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: return MovieInfo{}:MovieInfo, t34
+Block #10: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: if t33 goto 12 else 11
+Block #11: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: t36 = new [1]any (varargs)
+			01: t37 = &t36[0:int]
+			02: t38 = make any <- string (movieID)
+			03: *t37 = t38
+			04: t39 = slice t36[:]
+			05: t40 = fmt.Errorf("movie %s not foun...":string, t39...)
+			06: return MovieInfo{}:MovieInfo, t40
+Block #12: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: t41 = &s.cache [#1]
+			01: t42 = *t41
+			02: t43 = *t0
+			03: t44 = make interface{} <- MovieInfo (t43)
+			04: t45 = invoke t42.Put(ctx, movieID, t44)
+			05: t46 = t45 != nil:error
+			06: if t46 goto 13 else 14
+Block #13: mediamicroservices.MovieInfoService.ReadMovieInfo.if.then
+			00: t47 = *t0
+			01: return t47, t45
+Block #14: mediamicroservices.MovieInfoService.ReadMovieInfo.if.done
+			00: t48 = *t0
+			01: return t48, t45
+	Method: func(ctx context.Context, reqID int64, movieID string, sumUncommittedRating int, numUncommittedRating int) error
+		Parameters:
+			s = parameter s : *MovieInfoServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			sumUncommittedRating = parameter sumUncommittedRating : int
+			numUncommittedRating = parameter numUncommittedRating : int
+Function: mediamicroservices.MovieInfoService.UpdateRating
+Block #0: mediamicroservices.MovieInfoService.UpdateRating.entry
+			00: t0 = &s.socialGraphDB [#2]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "social_graph_db":string, "social_graph":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: mediamicroservices.MovieInfoService.UpdateRating.if.then
+			00: return t4
+Block #2: mediamicroservices.MovieInfoService.UpdateRating.if.done
+			00: t6 = new Rating (rating)
+			01: t7 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			02: t8 = &t7[0:int]
+			03: t9 = &t8.Key [#0]
+			04: t10 = &t8.Value [#1]
+			05: *t9 = "_id":string
+			06: t11 = make interface{} <- string (movieID)
+			07: *t10 = t11
+			08: t12 = slice t7[:]
+			09: t13 = invoke t3.FindOne(ctx, t12, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			10: t14 = extract t13 #0
+			11: t15 = extract t13 #1
+			12: t16 = t15 != nil:error
+			13: if t16 goto 3 else 4
+Block #3: mediamicroservices.MovieInfoService.UpdateRating.if.then
+			00: return t15
+Block #4: mediamicroservices.MovieInfoService.UpdateRating.if.done
+			00: t17 = make interface{} <- *Rating (t6)
+			01: t18 = invoke t14.One(ctx, t17)
+			02: t19 = extract t18 #0
+			03: t20 = extract t18 #1
+			04: t21 = t20 != nil:error
+			05: if t21 goto 5 else 6
+Block #5: mediamicroservices.MovieInfoService.UpdateRating.if.then
+			00: return t20
+Block #6: mediamicroservices.MovieInfoService.UpdateRating.if.done
+			00: if t19 goto 8 else 7
+Block #7: mediamicroservices.MovieInfoService.UpdateRating.if.then
+			00: t22 = new [1]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string (movieID)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = fmt.Errorf("movie %s not found":string, t25...)
+			06: return t26
+Block #8: mediamicroservices.MovieInfoService.UpdateRating.if.done
+			00: t27 = &t6.AvgRating [#0]
+			01: t28 = *t27
+			02: t29 = &t6.NumRating [#1]
+			03: t30 = *t29
+			04: t31 = convert float64 <- int (t30)
+			05: t32 = t28 * t31
+			06: t33 = convert float64 <- int (sumUncommittedRating)
+			07: t34 = t32 + t33
+			08: t35 = t30 + numUncommittedRating
+			09: t36 = convert float64 <- int (t35)
+			10: t37 = t34 / t36
+			11: t38 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			12: t39 = &t38[0:int]
+			13: t40 = &t39.Key [#0]
+			14: t41 = &t39.Value [#1]
+			15: t42 = new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			16: t43 = &t42[0:int]
+			17: t44 = &t43.Key [#0]
+			18: t45 = &t43.Value [#1]
+			19: *t44 = "AvgRating":string
+			20: t46 = make interface{} <- float64 (t37)
+			21: *t45 = t46
+			22: t47 = &t42[1:int]
+			23: t48 = &t47.Key [#0]
+			24: t49 = &t47.Value [#1]
+			25: *t48 = "NumRating":string
+			26: t50 = make interface{} <- int (t30)
+			27: *t49 = t50
+			28: t51 = slice t42[:]
+			29: *t40 = "$set":string
+			30: t52 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t51)
+			31: *t41 = t52
+			32: t53 = slice t38[:]
+			33: t54 = invoke t3.UpdateOne(ctx, t12, t53)
+			34: t55 = extract t54 #0
+			35: t56 = extract t54 #1
+			36: t57 = t56 != nil:error
+			37: if t57 goto 9 else 10
+Block #9: mediamicroservices.MovieInfoService.UpdateRating.if.then
+			00: return t56
+Block #10: mediamicroservices.MovieInfoService.UpdateRating.if.done
+			00: t58 = t55 == 0:int
+			01: if t58 goto 11 else 12
+Block #11: mediamicroservices.MovieInfoService.UpdateRating.if.then
+			00: t59 = new [1]any (varargs)
+			01: t60 = &t59[0:int]
+			02: t61 = make any <- string (movieID)
+			03: *t60 = t61
+			04: t62 = slice t59[:]
+			05: t63 = fmt.Errorf("movie %s not found":string, t62...)
+			06: return t63
+Block #12: mediamicroservices.MovieInfoService.UpdateRating.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, reqID int64, movieID string, title string, casts []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Cast, plotID int64, thumbnailIDs []string, photoIDs []string, videoIDs []string, avgRating string, numRating int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, error)
+		Parameters:
+			s = parameter s : *MovieInfoServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			title = parameter title : string
+			casts = parameter casts : []Cast
+			plotID = parameter plotID : int64
+			thumbnailIDs = parameter thumbnailIDs : []string
+			photoIDs = parameter photoIDs : []string
+			videoIDs = parameter videoIDs : []string
+			avgRating = parameter avgRating : string
+			numRating = parameter numRating : int
+Function: mediamicroservices.MovieInfoService.WriteMovieInfo
+Block #0: mediamicroservices.MovieInfoService.WriteMovieInfo.entry
+			00: t0 = local MovieInfo (movieInfo)
+			01: t1 = &t0.MovieID [#0]
+			02: t2 = &t0.Title [#1]
+			03: t3 = &t0.Casts [#2]
+			04: t4 = &t0.PlotID [#3]
+			05: *t1 = movieID
+			06: *t2 = title
+			07: *t3 = casts
+			08: *t4 = plotID
+			09: t5 = &s.database [#0]
+			10: t6 = *t5
+			11: t7 = invoke t6.GetCollection(ctx, "movie_info_db":string, "movie_info":string)
+			12: t8 = extract t7 #0
+			13: t9 = extract t7 #1
+			14: t10 = t9 != nil:error
+			15: if t10 goto 1 else 2
+Block #1: mediamicroservices.MovieInfoService.WriteMovieInfo.if.then
+			00: return MovieInfo{}:MovieInfo, t9
+Block #2: mediamicroservices.MovieInfoService.WriteMovieInfo.if.done
+			00: t11 = *t0
+			01: t12 = make interface{} <- MovieInfo (t11)
+			02: t13 = invoke t8.InsertOne(ctx, t12)
+			03: t14 = t13 != nil:error
+			04: if t14 goto 3 else 4
+Block #3: mediamicroservices.MovieInfoService.WriteMovieInfo.if.then
+			00: return MovieInfo{}:MovieInfo, t13
+Block #4: mediamicroservices.MovieInfoService.WriteMovieInfo.if.done
+			00: t15 = *t0
+			01: return t15, t13
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieReviewData
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+Function: mediamicroservices.NewCastInfoServiceImpl
+Block #0: mediamicroservices.NewCastInfoServiceImpl.entry
+			00: t0 = new CastInfoServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: *t1 = database
+			04: *t2 = cache
+			05: t3 = make CastInfoService <- *CastInfoServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfoService
+	Method: func(ctx context.Context, reqID int64, movieID string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, error)
+	Method: func(ctx context.Context, reqID int64, movieID string, sumUncommittedRating int, numUncommittedRating int) error
+	Method: func(ctx context.Context, reqID int64, movieID string, title string, casts []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Cast, plotID int64, thumbnailIDs []string, photoIDs []string, videoIDs []string, avgRating string, numRating int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			socialGraphDB = parameter socialGraphDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: mediamicroservices.NewMovieInfoServiceImpl
+Block #0: mediamicroservices.NewMovieInfoServiceImpl.entry
+			00: t0 = new MovieInfoServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: t3 = &t0.socialGraphDB [#2]
+			04: *t1 = database
+			05: *t2 = cache
+			06: *t3 = socialGraphDB
+			07: t4 = make MovieInfoService <- *MovieInfoServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.PageService
+	Method: func(ctx context.Context, reqID int64, movieID string, reviewStart int, reviewStop int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			composeReviewService = parameter composeReviewService : ComposeReviewService
+Function: mediamicroservices.NewTextServiceImpl
+Block #0: mediamicroservices.NewTextServiceImpl.entry
+			00: t0 = new TextServiceImpl (complit)
+			01: t1 = &t0.composeReviewService [#0]
+			02: *t1 = composeReviewService
+			03: t2 = make TextService <- *TextServiceImpl (t0)
+			04: return t2, nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+Function: mediamicroservices.NewReviewStorageServiceImpl
+Block #0: mediamicroservices.NewReviewStorageServiceImpl.entry
+			00: t0 = new ReviewStorageServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: *t1 = database
+			04: *t2 = cache
+			05: t3 = make ReviewStorageService <- *ReviewStorageServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.TextServiceImpl
+	Method: func(ctx context.Context, reqID int64, text string) error
+		Parameters:
+			s = parameter s : *TextServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			text = parameter text : string
+Function: mediamicroservices.TextService.UploadNewText
+Block #0: mediamicroservices.TextService.UploadNewText.entry
+			00: t0 = &s.composeReviewService [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadText(ctx, reqID, text)
+			03: return t2
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UserReview
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Cast
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UserReviewData
+		Parameters:
+Function: mediamicroservices.GetMachineID
+Block #0: mediamicroservices.GetMachineID.entry
+			00: t0 = net.Interfaces()
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: mediamicroservices.GetMachineID.if.then
+			00: return "0":string
+Block #2: mediamicroservices.GetMachineID.if.done
+			00: t4 = len(t1)
+			01: jump 3
+Block #3: mediamicroservices.GetMachineID.rangeindex.loop
+			00: t5 = phi [2: -1:int, 6: t6, 4: t6, 7: t6] #rangeindex
+			01: t6 = t5 + 1:int
+			02: t7 = t6 < t4
+			03: if t7 goto 4 else 5
+Block #4: mediamicroservices.GetMachineID.rangeindex.body
+			00: t8 = &t1[t6]
+			01: t9 = *t8
+			02: t10 = local net.Interface (i)
+			03: *t10 = t9
+			04: t11 = &t10.Flags [#4]
+			05: t12 = *t11
+			06: t13 = t12 & 1:net.Flags
+			07: t14 = t13 != 0:net.Flags
+			08: if t14 goto 7 else 3
+Block #5: mediamicroservices.GetMachineID.rangeindex.done
+			00: return "0":string
+Block #6: mediamicroservices.GetMachineID.if.then
+			00: t15 = &t10.HardwareAddr [#3]
+			01: t16 = *t15
+			02: t17 = &t16[0:int]
+			03: t18 = *t17
+			04: t19 = t18 & 2:byte
+			05: t20 = t19 == 2:byte
+			06: if t20 goto 3 else 8
+Block #7: mediamicroservices.GetMachineID.cond.true
+			00: t21 = &t10.HardwareAddr [#3]
+			01: t22 = *t21
+			02: t23 = changetype []byte <- net.HardwareAddr (t22)
+			03: t24 = bytes.Compare(t23, nil:[]byte)
+			04: t25 = t24 != 0:int
+			05: if t25 goto 6 else 3
+Block #8: mediamicroservices.GetMachineID.if.done
+			00: t26 = &t10.HardwareAddr [#3]
+			01: t27 = *t26
+			02: t28 = len(t27)
+			03: jump 9
+Block #9: mediamicroservices.GetMachineID.rangeindex.loop
+			00: t29 = phi [8: 0:uint64, 12: t41] #mac
+			01: t30 = phi [8: -1:int, 12: t31] #rangeindex
+			02: t31 = t30 + 1:int
+			03: t32 = t31 < t28
+			04: if t32 goto 10 else 11
+Block #10: mediamicroservices.GetMachineID.rangeindex.body
+			00: t33 = &t27[t31]
+			01: t34 = *t33
+			02: t35 = t31 >= 8:int
+			03: if t35 goto 11 else 12
+Block #11: mediamicroservices.GetMachineID.rangeindex.done
+			00: t36 = convert uint16 <- uint64 (t29)
+			01: t37 = convert uint64 <- uint16 (t36)
+			02: t38 = strconv.FormatUint(t37, 16:int)
+			03: return t38
+Block #12: mediamicroservices.GetMachineID.if.done
+			00: t39 = t29 << 8:uint
+			01: t40 = convert uint64 <- byte (t34)
+			02: t41 = t39 + t40
+			03: jump 9
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfoServiceImpl
+	Method: func(ctx context.Context, reqID int64, castInfoIDs []string) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, error)
+		Parameters:
+			s = parameter s : *CastInfoServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			castInfoIDs = parameter castInfoIDs : []string
+Function: mediamicroservices.CastInfoService.ReadCastInfos
+Block #0: mediamicroservices.CastInfoService.ReadCastInfos.entry
+			00: t0 = len(castInfoIDs)
+			01: t1 = t0 == 0:int
+			02: if t1 goto 1 else 2
+Block #1: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: return nil:[]CastInfo, nil:error
+Block #2: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t2 = make map[string]bool 
+			01: t3 = len(castInfoIDs)
+			02: jump 3
+Block #3: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.loop
+			00: t4 = phi [2: -1:int, 4: t5] #rangeindex
+			01: t5 = t4 + 1:int
+			02: t6 = t5 < t3
+			03: if t6 goto 4 else 5
+Block #4: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.body
+			00: t7 = &castInfoIDs[t5]
+			01: t8 = *t7
+			02: t2[t8] = true:bool
+			03: jump 3
+Block #5: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.done
+			00: t9 = len(t2)
+			01: t10 = len(castInfoIDs)
+			02: t11 = t9 != t10
+			03: if t11 goto 6 else 7
+Block #6: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: t12 = new [0]CastInfo (slicelit)
+			01: t13 = slice t12[:]
+			02: t14 = errors.New("cast_info_ids are...":string)
+			03: return t13, t14
+Block #7: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t15 = len(castInfoIDs)
+			01: jump 8
+Block #8: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.loop
+			00: t16 = phi [7: nil:[]string, 9: t25] #cache_keys
+			01: t17 = phi [7: -1:int, 9: t18] #rangeindex
+			02: t18 = t17 + 1:int
+			03: t19 = t18 < t15
+			04: if t19 goto 9 else 10
+Block #9: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.body
+			00: t20 = &castInfoIDs[t18]
+			01: t21 = *t20
+			02: t22 = new [1]string (varargs)
+			03: t23 = &t22[0:int]
+			04: *t23 = t21
+			05: t24 = slice t22[:]
+			06: t25 = append(t16, t24...)
+			07: jump 8
+Block #10: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.done
+			00: t26 = len(t16)
+			01: t27 = make []CastInfo t26 t26
+			02: t28 = len(t27)
+			03: jump 11
+Block #11: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.loop
+			00: t29 = phi [10: nil:[]interface{}, 12: t38] #cached_values
+			01: t30 = phi [10: -1:int, 12: t31] #rangeindex
+			02: t31 = t30 + 1:int
+			03: t32 = t31 < t28
+			04: if t32 goto 12 else 13
+Block #12: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.body
+			00: t33 = &t27[t31]
+			01: t34 = new [1]interface{} (varargs)
+			02: t35 = &t34[0:int]
+			03: t36 = make interface{} <- *CastInfo (t33)
+			04: *t35 = t36
+			05: t37 = slice t34[:]
+			06: t38 = append(t29, t37...)
+			07: jump 11
+Block #13: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.done
+			00: t39 = &s.cache [#1]
+			01: t40 = *t39
+			02: t41 = invoke t40.Mget(ctx, castInfoIDs, t29)
+			03: t42 = t41 != nil:error
+			04: if t42 goto 14 else 15
+Block #14: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: return nil:[]CastInfo, t41
+Block #15: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t43 = len(t27)
+			01: jump 16
+Block #16: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.loop
+			00: t44 = phi [15: -1:int, 17: t45] #rangeindex
+			01: t45 = t44 + 1:int
+			02: t46 = t45 < t43
+			03: if t46 goto 17 else 18
+Block #17: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.body
+			00: t47 = &t27[t45]
+			01: t48 = *t47
+			02: t49 = local CastInfo (cast_info)
+			03: *t49 = t48
+			04: t50 = &t49.CastInfoID [#0]
+			05: t51 = *t50
+			06: t52 = delete(t2, t51)
+			07: jump 16
+Block #18: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.done
+			00: t53 = len(t2)
+			01: t54 = t53 > 0:int
+			02: if t54 goto 19 else 20
+Block #19: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: t55 = new []CastInfo (new_cast_infos)
+			01: t56 = &s.database [#0]
+			02: t57 = *t56
+			03: t58 = invoke t57.GetCollection(ctx, "cast_info_db":string, "cast":string)
+			04: t59 = extract t58 #0
+			05: t60 = extract t58 #1
+			06: t61 = t60 != nil:error
+			07: if t61 goto 21 else 22
+Block #20: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t62 = phi [18: t27, 30: t95] #ret_cast_infos
+			01: t63 = len(t62)
+			02: t64 = len(castInfoIDs)
+			03: t65 = t63 != t64
+			04: if t65 goto 32 else 33
+Block #21: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: return nil:[]CastInfo, t60
+Block #22: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t66 = range t2
+			01: jump 23
+Block #23: mediamicroservices.CastInfoService.ReadCastInfos.rangeiter.loop
+			00: t67 = phi [22: nil:[]string, 24: t74] #ids
+			01: t68 = next t66
+			02: t69 = extract t68 #0
+			03: if t69 goto 24 else 25
+Block #24: mediamicroservices.CastInfoService.ReadCastInfos.rangeiter.body
+			00: t70 = extract t68 #1
+			01: t71 = new [1]string (varargs)
+			02: t72 = &t71[0:int]
+			03: *t72 = t70
+			04: t73 = slice t71[:]
+			05: t74 = append(t67, t73...)
+			06: jump 23
+Block #25: mediamicroservices.CastInfoService.ReadCastInfos.rangeiter.done
+			00: t75 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t76 = &t75[0:int]
+			02: t77 = &t76.Key [#0]
+			03: t78 = &t76.Value [#1]
+			04: t79 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t80 = &t79[0:int]
+			06: t81 = &t80.Key [#0]
+			07: t82 = &t80.Value [#1]
+			08: *t81 = "$in":string
+			09: t83 = make interface{} <- []string (t67)
+			10: *t82 = t83
+			11: t84 = slice t79[:]
+			12: *t77 = "CastInfoID":string
+			13: t85 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t84)
+			14: *t78 = t85
+			15: t86 = slice t75[:]
+			16: t87 = invoke t59.FindMany(ctx, t86, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			17: t88 = extract t87 #0
+			18: t89 = extract t87 #1
+			19: t90 = t89 != nil:error
+			20: if t90 goto 26 else 27
+Block #26: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: return nil:[]CastInfo, t89
+Block #27: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t91 = make interface{} <- *[]CastInfo (t55)
+			01: t92 = invoke t88.All(ctx, t91)
+			02: t93 = t92 != nil:error
+			03: if t93 goto 28 else 29
+Block #28: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: return nil:[]CastInfo, t92
+Block #29: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: t94 = *t55
+			01: t95 = append(t27, t94...)
+			02: t96 = *t55
+			03: t97 = len(t96)
+			04: jump 30
+Block #30: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.loop
+			00: t98 = phi [29: -1:int, 31: t99] #rangeindex
+			01: t99 = t98 + 1:int
+			02: t100 = t99 < t97
+			03: if t100 goto 31 else 20
+Block #31: mediamicroservices.CastInfoService.ReadCastInfos.rangeindex.body
+			00: t101 = &t96[t99]
+			01: t102 = *t101
+			02: t103 = local CastInfo (new_cast_info)
+			03: *t103 = t102
+			04: t104 = &s.cache [#1]
+			05: t105 = *t104
+			06: t106 = &t103.CastInfoID [#0]
+			07: t107 = *t106
+			08: t108 = *t103
+			09: t109 = make interface{} <- CastInfo (t108)
+			10: t110 = invoke t105.Put(ctx, t107, t109)
+			11: jump 30
+Block #32: mediamicroservices.CastInfoService.ReadCastInfos.if.then
+			00: t111 = fmt.Errorf("cast-info-service...":string, nil:[]any...)
+			01: return nil:[]CastInfo, t111
+Block #33: mediamicroservices.CastInfoService.ReadCastInfos.if.done
+			00: return t62, t41
+	Method: func(ctx context.Context, reqID int64, castInfoID string, name string, gender string, intro string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, error)
+		Parameters:
+			s = parameter s : *CastInfoServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			castInfoID = parameter castInfoID : string
+			name = parameter name : string
+			gender = parameter gender : string
+			intro = parameter intro : string
+Function: mediamicroservices.CastInfoService.WriteCastInfo
+Block #0: mediamicroservices.CastInfoService.WriteCastInfo.entry
+			00: t0 = local CastInfo (castInfo)
+			01: t1 = &t0.CastInfoID [#0]
+			02: t2 = &t0.Name [#1]
+			03: t3 = &t0.Gender [#2]
+			04: t4 = &t0.Intro [#3]
+			05: *t1 = castInfoID
+			06: *t2 = name
+			07: *t3 = gender
+			08: *t4 = intro
+			09: t5 = &s.database [#0]
+			10: t6 = *t5
+			11: t7 = invoke t6.GetCollection(ctx, "cast_info_db":string, "cast":string)
+			12: t8 = extract t7 #0
+			13: t9 = extract t7 #1
+			14: t10 = t9 != nil:error
+			15: if t10 goto 1 else 2
+Block #1: mediamicroservices.CastInfoService.WriteCastInfo.if.then
+			00: return CastInfo{}:CastInfo, t9
+Block #2: mediamicroservices.CastInfoService.WriteCastInfo.if.done
+			00: t11 = *t0
+			01: t12 = make interface{} <- CastInfo (t11)
+			02: t13 = invoke t8.InsertOne(ctx, t12)
+			03: t14 = t13 != nil:error
+			04: if t14 goto 3 else 4
+Block #3: mediamicroservices.CastInfoService.WriteCastInfo.if.then
+			00: return CastInfo{}:CastInfo, t13
+Block #4: mediamicroservices.CastInfoService.WriteCastInfo.if.done
+			00: t15 = *t0
+			01: return t15, t13
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.ComposeReviewService
+	Method: func(ctx context.Context, reqID int64, movieID string) error
+	Method: func(ctx context.Context, reqID int64, rating int) error
+	Method: func(ctx context.Context, reqID int64, text string) error
+	Method: func(ctx context.Context, reqID int64, reviewID int64) error
+	Method: func(ctx context.Context, reqID int64, userID int64) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieReview
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UserServiceImpl
+	Method: func() (int64, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+Function: mediamicroservices.UserService.GenerateUniqueId
+Block #0: mediamicroservices.UserService.GenerateUniqueId.entry
+			00: t0 = time.Now()
+			01: t1 = (time.Time).UnixNano(t0)
+			02: t2 = t1 / 1000000:int64
+			03: t3 = (*UserServiceImpl).GetCounter(s, t2)
+			04: t4 = strconv.FormatInt(t2, 16:int)
+			05: t5 = len(t4)
+			06: t6 = t5 > 10:int
+			07: if t6 goto 1 else 3
+Block #1: mediamicroservices.UserService.GenerateUniqueId.if.then
+			00: t7 = slice t4[:10:int]
+			01: jump 2
+Block #2: mediamicroservices.UserService.GenerateUniqueId.if.done
+			00: t8 = phi [1: t7, 3: t4, 4: t17] #timestamp_hex
+			01: t9 = strconv.FormatInt(t3, 16:int)
+			02: t10 = len(t9)
+			03: t11 = t10 > 1:int
+			04: if t11 goto 5 else 7
+Block #3: mediamicroservices.UserService.GenerateUniqueId.if.else
+			00: t12 = len(t4)
+			01: t13 = t12 < 10:int
+			02: if t13 goto 4 else 2
+Block #4: mediamicroservices.UserService.GenerateUniqueId.if.then
+			00: t14 = len(t4)
+			01: t15 = 10:int - t14
+			02: t16 = strings.Repeat("0":string, t15)
+			03: t17 = t16 + t4
+			04: jump 2
+Block #5: mediamicroservices.UserService.GenerateUniqueId.if.then
+			00: t18 = slice t9[:1:int]
+			01: jump 6
+Block #6: mediamicroservices.UserService.GenerateUniqueId.if.done
+			00: t19 = phi [5: t18, 7: t9, 8: t44] #counter_hex
+			01: t20 = &s.machineID [#2]
+			02: t21 = *t20
+			03: t22 = new [3]any (varargs)
+			04: t23 = &t22[0:int]
+			05: t24 = make any <- string (t21)
+			06: *t23 = t24
+			07: t25 = &t22[1:int]
+			08: t26 = make any <- string (t8)
+			09: *t25 = t26
+			10: t27 = &t22[2:int]
+			11: t28 = make any <- string (t19)
+			12: *t27 = t28
+			13: t29 = slice t22[:]
+			14: t30 = log.Println(t29...)
+			15: t31 = &s.machineID [#2]
+			16: t32 = *t31
+			17: t33 = t32 + t8
+			18: t34 = t33 + t19
+			19: t35 = strconv.ParseInt(t34, 16:int, 64:int)
+			20: t36 = extract t35 #0
+			21: t37 = extract t35 #1
+			22: t38 = t37 != nil:error
+			23: if t38 goto 9 else 10
+Block #7: mediamicroservices.UserService.GenerateUniqueId.if.else
+			00: t39 = len(t9)
+			01: t40 = t39 < 1:int
+			02: if t40 goto 8 else 6
+Block #8: mediamicroservices.UserService.GenerateUniqueId.if.then
+			00: t41 = len(t9)
+			01: t42 = 1:int - t41
+			02: t43 = strings.Repeat("0":string, t42)
+			03: t44 = t43 + t9
+			04: jump 6
+Block #9: mediamicroservices.UserService.GenerateUniqueId.if.then
+			00: return 0:int64, t37
+Block #10: mediamicroservices.UserService.GenerateUniqueId.if.done
+			00: t45 = t36 & 9223372036854775807:int64
+			01: return t45, nil:error
+	Method: func(timestamp int64) int64
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			timestamp = parameter timestamp : int64
+Function: mediamicroservices.UserService.GetCounter
+Block #0: mediamicroservices.UserService.GetCounter.entry
+			00: t0 = &s.currentTimestamp [#1]
+			01: t1 = *t0
+			02: t2 = t1 == timestamp
+			03: if t2 goto 1 else 2
+Block #1: mediamicroservices.UserService.GetCounter.if.then
+			00: t3 = &s.counter [#0]
+			01: t4 = *t3
+			02: t5 = &s.counter [#0]
+			03: t6 = *t5
+			04: t7 = t6 + 1:int64
+			05: t8 = &s.counter [#0]
+			06: *t8 = t7
+			07: return t4
+Block #2: mediamicroservices.UserService.GetCounter.if.else
+			00: t9 = &s.currentTimestamp [#1]
+			01: *t9 = timestamp
+			02: t10 = &s.counter [#0]
+			03: *t10 = 1:int64
+			04: return 0:int64
+	Method: func(ctx context.Context, reqID int64, username string, password string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+			password = parameter password : string
+Function: mediamicroservices.UserService.Login
+Block #0: mediamicroservices.UserService.Login.entry
+			00: t0 = new string (passwordHashed)
+			01: t1 = &s.cache [#4]
+			02: t2 = *t1
+			03: t3 = username + ":password":string
+			04: t4 = make interface{} <- *string (t0)
+			05: t5 = invoke t2.Get(ctx, t3, t4)
+			06: t6 = extract t5 #0
+			07: t7 = extract t5 #1
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.UserService.Login.if.then
+			00: return t7
+Block #2: mediamicroservices.UserService.Login.if.done
+			00: t9 = new string (salt)
+			01: t10 = &s.cache [#4]
+			02: t11 = *t10
+			03: t12 = username + ":salt":string
+			04: t13 = make interface{} <- *string (t9)
+			05: t14 = invoke t11.Get(ctx, t12, t13)
+			06: t15 = extract t14 #0
+			07: t16 = extract t14 #1
+			08: t17 = t16 != nil:error
+			09: if t17 goto 3 else 4
+Block #3: mediamicroservices.UserService.Login.if.then
+			00: return t16
+Block #4: mediamicroservices.UserService.Login.if.done
+			00: t18 = new int64 (userID)
+			01: t19 = &s.cache [#4]
+			02: t20 = *t19
+			03: t21 = username + ":user_id":string
+			04: t22 = make interface{} <- *int64 (t18)
+			05: t23 = invoke t20.Get(ctx, t21, t22)
+			06: t24 = extract t23 #0
+			07: t25 = extract t23 #1
+			08: t26 = t25 != nil:error
+			09: if t26 goto 5 else 6
+Block #5: mediamicroservices.UserService.Login.if.then
+			00: return t25
+Block #6: mediamicroservices.UserService.Login.if.done
+			00: if t6 goto 10 else 7
+Block #7: mediamicroservices.UserService.Login.if.then
+			00: t27 = new User (user)
+			01: t28 = &s.database [#3]
+			02: t29 = *t28
+			03: t30 = invoke t29.GetCollection(ctx, "user_db":string, "user":string)
+			04: t31 = extract t30 #0
+			05: t32 = extract t30 #1
+			06: t33 = t32 != nil:error
+			07: if t33 goto 11 else 12
+Block #8: mediamicroservices.UserService.Login.if.done
+			00: return nil:error
+Block #9: mediamicroservices.UserService.Login.cond.false
+			00: if t24 goto 8 else 7
+Block #10: mediamicroservices.UserService.Login.cond.false
+			00: if t15 goto 9 else 7
+Block #11: mediamicroservices.UserService.Login.if.then
+			00: return t32
+Block #12: mediamicroservices.UserService.Login.if.done
+			00: t34 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t35 = &t34[0:int]
+			02: t36 = &t35.Key [#0]
+			03: t37 = &t35.Value [#1]
+			04: *t36 = "Username":string
+			05: t38 = make interface{} <- string (username)
+			06: *t37 = t38
+			07: t39 = slice t34[:]
+			08: t40 = invoke t31.FindOne(ctx, t39, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t41 = extract t40 #0
+			10: t42 = extract t40 #1
+			11: t43 = t42 != nil:error
+			12: if t43 goto 13 else 14
+Block #13: mediamicroservices.UserService.Login.if.then
+			00: return t42
+Block #14: mediamicroservices.UserService.Login.if.done
+			00: t44 = make interface{} <- *User (t27)
+			01: t45 = invoke t41.One(ctx, t44)
+			02: t46 = extract t45 #0
+			03: t47 = extract t45 #1
+			04: if t46 goto 17 else 15
+Block #15: mediamicroservices.UserService.Login.if.then
+			00: return t47
+Block #16: mediamicroservices.UserService.Login.if.done
+			00: if t6 goto 19 else 18
+Block #17: mediamicroservices.UserService.Login.cond.false
+			00: t48 = t47 != nil:error
+			01: if t48 goto 15 else 16
+Block #18: mediamicroservices.UserService.Login.if.then
+			00: t49 = &t27.Password [#4]
+			01: t50 = *t49
+			02: *t0 = t50
+			03: jump 19
+Block #19: mediamicroservices.UserService.Login.if.done
+			00: if t15 goto 21 else 20
+Block #20: mediamicroservices.UserService.Login.if.then
+			00: t51 = &t27.Salt [#5]
+			01: t52 = *t51
+			02: *t9 = t52
+			03: jump 21
+Block #21: mediamicroservices.UserService.Login.if.done
+			00: if t24 goto 8 else 22
+Block #22: mediamicroservices.UserService.Login.if.then
+			00: t53 = &t27.UserID [#0]
+			01: t54 = *t53
+			02: *t18 = t54
+			03: jump 8
+	Method: func(ctx context.Context, reqID string, firstName string, lastName string, username string, password string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : string
+			firstName = parameter firstName : string
+			lastName = parameter lastName : string
+			username = parameter username : string
+			password = parameter password : string
+Function: mediamicroservices.UserService.RegisterUser
+Block #0: mediamicroservices.UserService.RegisterUser.entry
+			00: t0 = (*UserServiceImpl).GenerateUniqueId(s)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: mediamicroservices.UserService.RegisterUser.if.then
+			00: return User{}:User, t2
+Block #2: mediamicroservices.UserService.RegisterUser.if.done
+			00: t4 = genRandomString(32:int)
+			01: t5 = password + t4
+			02: t6 = hashSHA256(t5)
+			03: t7 = local User (user)
+			04: t8 = &t7.UserID [#0]
+			05: t9 = &t7.Username [#1]
+			06: t10 = &t7.FirstName [#2]
+			07: t11 = &t7.LastName [#3]
+			08: t12 = &t7.Salt [#5]
+			09: t13 = &t7.Password [#4]
+			10: *t8 = t1
+			11: *t9 = username
+			12: *t10 = firstName
+			13: *t11 = lastName
+			14: *t12 = t4
+			15: *t13 = t6
+			16: t14 = &s.database [#3]
+			17: t15 = *t14
+			18: t16 = invoke t15.GetCollection(ctx, "user_db":string, "user":string)
+			19: t17 = extract t16 #0
+			20: t18 = extract t16 #1
+			21: t19 = t18 != nil:error
+			22: if t19 goto 3 else 4
+Block #3: mediamicroservices.UserService.RegisterUser.if.then
+			00: return User{}:User, t18
+Block #4: mediamicroservices.UserService.RegisterUser.if.done
+			00: t20 = *t7
+			01: t21 = make interface{} <- User (t20)
+			02: t22 = invoke t17.InsertOne(ctx, t21)
+			03: t23 = t22 != nil:error
+			04: if t23 goto 5 else 6
+Block #5: mediamicroservices.UserService.RegisterUser.if.then
+			00: return User{}:User, t22
+Block #6: mediamicroservices.UserService.RegisterUser.if.done
+			00: t24 = *t7
+			01: return t24, nil:error
+	Method: func(ctx context.Context, reqID string, firstName string, lastName string, username string, password string, userID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : string
+			firstName = parameter firstName : string
+			lastName = parameter lastName : string
+			username = parameter username : string
+			password = parameter password : string
+			userID = parameter userID : int64
+Function: mediamicroservices.UserService.RegisterUserWithId
+Block #0: mediamicroservices.UserService.RegisterUserWithId.entry
+			00: t0 = genRandomString(32:int)
+			01: t1 = password + t0
+			02: t2 = hashSHA256(t1)
+			03: t3 = local User (user)
+			04: t4 = &t3.UserID [#0]
+			05: t5 = &t3.Username [#1]
+			06: t6 = &t3.FirstName [#2]
+			07: t7 = &t3.LastName [#3]
+			08: t8 = &t3.Salt [#5]
+			09: t9 = &t3.Password [#4]
+			10: *t4 = userID
+			11: *t5 = username
+			12: *t6 = firstName
+			13: *t7 = lastName
+			14: *t8 = t0
+			15: *t9 = t2
+			16: t10 = &s.database [#3]
+			17: t11 = *t10
+			18: t12 = invoke t11.GetCollection(ctx, "user_db":string, "user":string)
+			19: t13 = extract t12 #0
+			20: t14 = extract t12 #1
+			21: t15 = t14 != nil:error
+			22: if t15 goto 1 else 2
+Block #1: mediamicroservices.UserService.RegisterUserWithId.if.then
+			00: return User{}:User, t14
+Block #2: mediamicroservices.UserService.RegisterUserWithId.if.done
+			00: t16 = *t3
+			01: t17 = make interface{} <- User (t16)
+			02: t18 = invoke t13.InsertOne(ctx, t17)
+			03: t19 = t18 != nil:error
+			04: if t19 goto 3 else 4
+Block #3: mediamicroservices.UserService.RegisterUserWithId.if.then
+			00: return User{}:User, t18
+Block #4: mediamicroservices.UserService.RegisterUserWithId.if.done
+			00: t20 = *t3
+			01: return t20, nil:error
+	Method: func(ctx context.Context, reqID int64, userID int64) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			userID = parameter userID : int64
+Function: mediamicroservices.UserService.UploadUserWithUserId
+Block #0: mediamicroservices.UserService.UploadUserWithUserId.entry
+			00: t0 = &s.composeReviewService [#5]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadUserId(ctx, reqID, userID)
+			03: return t2
+	Method: func(ctx context.Context, reqID int64, username string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+Function: mediamicroservices.UserService.UploadUserWithUsername
+Block #0: mediamicroservices.UserService.UploadUserWithUsername.entry
+			00: t0 = new int64 (userID)
+			01: t1 = &s.cache [#4]
+			02: t2 = *t1
+			03: t3 = username + ":user_id":string
+			04: t4 = make interface{} <- *int64 (t0)
+			05: t5 = invoke t2.Get(ctx, t3, t4)
+			06: t6 = extract t5 #0
+			07: t7 = extract t5 #1
+			08: t8 = t7 != nil:error
+			09: if t8 goto 1 else 2
+Block #1: mediamicroservices.UserService.UploadUserWithUsername.if.then
+			00: return t7
+Block #2: mediamicroservices.UserService.UploadUserWithUsername.if.done
+			00: if t6 goto 4 else 3
+Block #3: mediamicroservices.UserService.UploadUserWithUsername.if.then
+			00: t9 = new User (user)
+			01: t10 = &s.database [#3]
+			02: t11 = *t10
+			03: t12 = invoke t11.GetCollection(ctx, "user_db":string, "user":string)
+			04: t13 = extract t12 #0
+			05: t14 = extract t12 #1
+			06: t15 = t14 != nil:error
+			07: if t15 goto 5 else 6
+Block #4: mediamicroservices.UserService.UploadUserWithUsername.if.done
+			00: t16 = &s.composeReviewService [#5]
+			01: t17 = *t16
+			02: t18 = *t0
+			03: t19 = invoke t17.UploadUserId(ctx, reqID, t18)
+			04: t20 = t19 != nil:error
+			05: if t20 goto 12 else 13
+Block #5: mediamicroservices.UserService.UploadUserWithUsername.if.then
+			00: return t14
+Block #6: mediamicroservices.UserService.UploadUserWithUsername.if.done
+			00: t21 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t22 = &t21[0:int]
+			02: t23 = &t22.Key [#0]
+			03: t24 = &t22.Value [#1]
+			04: *t23 = "Username":string
+			05: t25 = make interface{} <- string (username)
+			06: *t24 = t25
+			07: t26 = slice t21[:]
+			08: t27 = invoke t13.FindOne(ctx, t26, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t28 = extract t27 #0
+			10: t29 = extract t27 #1
+			11: t30 = t29 != nil:error
+			12: if t30 goto 7 else 8
+Block #7: mediamicroservices.UserService.UploadUserWithUsername.if.then
+			00: return t29
+Block #8: mediamicroservices.UserService.UploadUserWithUsername.if.done
+			00: t31 = make interface{} <- *User (t9)
+			01: t32 = invoke t28.One(ctx, t31)
+			02: t33 = extract t32 #0
+			03: t34 = extract t32 #1
+			04: if t33 goto 11 else 9
+Block #9: mediamicroservices.UserService.UploadUserWithUsername.if.then
+			00: return t34
+Block #10: mediamicroservices.UserService.UploadUserWithUsername.if.done
+			00: t35 = &t9.UserID [#0]
+			01: t36 = *t35
+			02: *t0 = t36
+			03: jump 4
+Block #11: mediamicroservices.UserService.UploadUserWithUsername.cond.false
+			00: t37 = t34 != nil:error
+			01: if t37 goto 9 else 10
+Block #12: mediamicroservices.UserService.UploadUserWithUsername.if.then
+			00: return t19
+Block #13: mediamicroservices.UserService.UploadUserWithUsername.if.done
+			00: t38 = &s.cache [#4]
+			01: t39 = *t38
+			02: t40 = username + ":user_id":string
+			03: t41 = *t0
+			04: t42 = make interface{} <- int64 (t41)
+			05: t43 = invoke t39.Put(ctx, t40, t42)
+			06: return t43
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Rating
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			reviewStorageService = parameter reviewStorageService : ReviewStorageService
+Function: mediamicroservices.NewMovieReviewServiceImpl
+Block #0: mediamicroservices.NewMovieReviewServiceImpl.entry
+			00: t0 = new MovieReviewServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: t3 = &t0.reviewStorageService [#2]
+			04: *t1 = database
+			05: *t2 = cache
+			06: *t3 = reviewStorageService
+			07: t4 = make MovieReviewService <- *MovieReviewServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.ReviewStorageService
+	Method: func(ctx context.Context, reqID int64, reviewIDs []int64) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+	Method: func(ctx context.Context, reqID int64, review github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+		Parameters:
+			n = parameter n : int
+Function: mediamicroservices.genRandomString
+Block #0: mediamicroservices.genRandomString.entry
+			00: t0 = convert []byte <- string ("0123456789ABCDEFG...":string)
+			01: t1 = time.Now()
+			02: t2 = (time.Time).UnixNano(t1)
+			03: t3 = math/rand.NewSource(t2)
+			04: t4 = math/rand.New(t3)
+			05: t5 = make []byte n n
+			06: t6 = len(t5)
+			07: jump 1
+Block #1: mediamicroservices.genRandomString.rangeindex.loop
+			00: t7 = phi [0: -1:int, 2: t8] #rangeindex
+			01: t8 = t7 + 1:int
+			02: t9 = t8 < t6
+			03: if t9 goto 2 else 3
+Block #2: mediamicroservices.genRandomString.rangeindex.body
+			00: t10 = len(t0)
+			01: t11 = (*math/rand.Rand).Intn(t4, t10)
+			02: t12 = &t0[t11]
+			03: t13 = *t12
+			04: t14 = &t5[t8]
+			05: *t14 = t13
+			06: jump 1
+Block #3: mediamicroservices.genRandomString.rangeindex.done
+			00: t15 = convert string <- []byte (t5)
+			01: return t15
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.PlotService
+	Method: func(ctx context.Context, reqID int64, plotID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+	Method: func(ctx context.Context, reqID int64, plotID int64, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.RatingService
+	Method: func(ctx context.Context, reqID int64, movieID string, rating int) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Text
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UniqueIdService
+	Method: func(ctx context.Context, reqID int64) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UserReviewServiceImpl
+	Method: func(ctx context.Context, reqID int64, userID int64, start int, stop int) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+		Parameters:
+			s = parameter s : *UserReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			userID = parameter userID : int64
+			start = parameter start : int
+			stop = parameter stop : int
+Function: mediamicroservices.UserReviewService.ReadUserReviews
+Block #0: mediamicroservices.UserReviewService.ReadUserReviews.entry
+			00: t0 = stop <= start
+			01: if t0 goto 1 else 3
+Block #1: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, nil:error
+Block #2: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t1 = new []Review (reviews)
+			01: t2 = strconv.FormatInt(userID, 10:int)
+			02: t3 = &s.cache [#1]
+			03: t4 = *t3
+			04: t5 = make interface{} <- *[]Review (t1)
+			05: t6 = invoke t4.Get(ctx, t2, t5)
+			06: t7 = extract t6 #0
+			07: t8 = extract t6 #1
+			08: t9 = t8 != nil:error
+			09: if t9 goto 4 else 5
+Block #3: mediamicroservices.UserReviewService.ReadUserReviews.cond.false
+			00: t10 = start < 0:int
+			01: if t10 goto 1 else 2
+Block #4: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, t8
+Block #5: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t11 = make map[int64]bool 
+			01: t12 = *t1
+			02: t13 = len(t12)
+			03: jump 6
+Block #6: mediamicroservices.UserReviewService.ReadUserReviews.rangeindex.loop
+			00: t14 = phi [5: nil:[]int64, 7: t26] #reviewIds
+			01: t15 = phi [5: -1:int, 7: t16] #rangeindex
+			02: t16 = t15 + 1:int
+			03: t17 = t16 < t13
+			04: if t17 goto 7 else 8
+Block #7: mediamicroservices.UserReviewService.ReadUserReviews.rangeindex.body
+			00: t18 = &t12[t16]
+			01: t19 = *t18
+			02: t20 = local Review (review)
+			03: *t20 = t19
+			04: t21 = &t20.ReviewID [#0]
+			05: t22 = *t21
+			06: t23 = new [1]int64 (varargs)
+			07: t24 = &t23[0:int]
+			08: *t24 = t22
+			09: t25 = slice t23[:]
+			10: t26 = append(t14, t25...)
+			11: t27 = &t20.ReviewID [#0]
+			12: t28 = *t27
+			13: t11[t28] = true:bool
+			14: jump 6
+Block #8: mediamicroservices.UserReviewService.ReadUserReviews.rangeindex.done
+			00: t29 = len(t14)
+			01: t30 = start + t29
+			02: t31 = t30 < stop
+			03: if t31 goto 9 else 10
+Block #9: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: t32 = &s.database [#0]
+			01: t33 = *t32
+			02: t34 = invoke t33.GetCollection(ctx, "user_review_db":string, "user_review":string)
+			03: t35 = extract t34 #0
+			04: t36 = extract t34 #1
+			05: t37 = t36 != nil:error
+			06: if t37 goto 11 else 12
+Block #10: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t38 = phi [8: nil:[]int64, 19: t87] #new_reviews_ids
+			01: t39 = append(t38, t14...)
+			02: t40 = &s.reviewStorageService [#2]
+			03: t41 = *t40
+			04: t42 = invoke t41.ReadReviews(ctx, reqID, t39)
+			05: t43 = extract t42 #0
+			06: *t1 = t43
+			07: t44 = extract t42 #1
+			08: t45 = t44 != nil:error
+			09: if t45 goto 22 else 23
+Block #11: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, t36
+Block #12: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t46 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t47 = &t46[0:int]
+			02: t48 = &t47.Key [#0]
+			03: t49 = &t47.Value [#1]
+			04: *t48 = "UserID":string
+			05: t50 = make interface{} <- int64 (userID)
+			06: *t49 = t50
+			07: t51 = slice t46[:]
+			08: t52 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t53 = &t52[0:int]
+			10: t54 = &t53.Key [#0]
+			11: t55 = &t53.Value [#1]
+			12: t56 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			13: t57 = &t56[0:int]
+			14: t58 = &t57.Key [#0]
+			15: t59 = &t57.Value [#1]
+			16: t60 = new [2]interface{} (slicelit)
+			17: t61 = &t60[0:int]
+			18: t62 = make interface{} <- int (0:int)
+			19: *t61 = t62
+			20: t63 = &t60[1:int]
+			21: t64 = make interface{} <- int (stop)
+			22: *t63 = t64
+			23: t65 = slice t60[:]
+			24: *t58 = "$slice":string
+			25: t66 = make interface{} <- go.mongodb.org/mongo-driver/bson.A (t65)
+			26: *t59 = t66
+			27: t67 = slice t56[:]
+			28: *t54 = "posts":string
+			29: t68 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t67)
+			30: *t55 = t68
+			31: t69 = slice t52[:]
+			32: t70 = new [1]go.mongodb.org/mongo-driver/bson.D (varargs)
+			33: t71 = &t70[0:int]
+			34: *t71 = t69
+			35: t72 = slice t70[:]
+			36: t73 = invoke t35.FindOne(ctx, t51, t72...)
+			37: t74 = extract t73 #0
+			38: t75 = extract t73 #1
+			39: t76 = t75 != nil:error
+			40: if t76 goto 13 else 14
+Block #13: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, t75
+Block #14: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t77 = new UserReview (userReview)
+			01: t78 = make interface{} <- *UserReview (t77)
+			02: t79 = invoke t74.One(ctx, t78)
+			03: t80 = extract t79 #0
+			04: t81 = extract t79 #1
+			05: t82 = t81 != nil:error
+			06: if t82 goto 15 else 16
+Block #15: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, t81
+Block #16: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: if t80 goto 18 else 17
+Block #17: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: t83 = errors.New("Failed to find po...":string)
+			01: return nil:[]Review, t83
+Block #18: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t84 = &t77.Reviews [#1]
+			01: t85 = *t84
+			02: t86 = len(t85)
+			03: jump 19
+Block #19: mediamicroservices.UserReviewService.ReadUserReviews.rangeindex.loop
+			00: t87 = phi [18: nil:[]int64, 20: t87, 21: t104] #new_reviews_ids
+			01: t88 = phi [18: -1:int, 20: t89, 21: t89] #rangeindex
+			02: t89 = t88 + 1:int
+			03: t90 = t89 < t86
+			04: if t90 goto 20 else 10
+Block #20: mediamicroservices.UserReviewService.ReadUserReviews.rangeindex.body
+			00: t91 = &t85[t89]
+			01: t92 = *t91
+			02: t93 = local UserReviewData (review)
+			03: *t93 = t92
+			04: t94 = &t93.ReviewID [#0]
+			05: t95 = *t94
+			06: t96 = t11[t95],ok
+			07: t97 = extract t96 #0
+			08: t98 = extract t96 #1
+			09: if t98 goto 19 else 21
+Block #21: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t99 = &t93.ReviewID [#0]
+			01: t100 = *t99
+			02: t101 = new [1]int64 (varargs)
+			03: t102 = &t101[0:int]
+			04: *t102 = t100
+			05: t103 = slice t101[:]
+			06: t104 = append(t87, t103...)
+			07: jump 19
+Block #22: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, t44
+Block #23: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t105 = len(t38)
+			01: t106 = t105 > 0:int
+			02: if t106 goto 24 else 25
+Block #24: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: t107 = &s.cache [#1]
+			01: t108 = *t107
+			02: t109 = *t1
+			03: t110 = make interface{} <- []Review (t109)
+			04: t111 = invoke t108.Put(ctx, t2, t110)
+			05: t112 = t111 != nil:error
+			06: if t112 goto 26 else 25
+Block #25: mediamicroservices.UserReviewService.ReadUserReviews.if.done
+			00: t113 = *t1
+			01: return t113, nil:error
+Block #26: mediamicroservices.UserReviewService.ReadUserReviews.if.then
+			00: return nil:[]Review, t111
+	Method: func(ctx context.Context, reqID int64, userID int64, reviewID int64, timestamp int64) error
+		Parameters:
+			s = parameter s : *UserReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			userID = parameter userID : int64
+			reviewID = parameter reviewID : int64
+			timestamp = parameter timestamp : int64
+Function: mediamicroservices.UserReviewService.UploadUserReview
+Block #0: mediamicroservices.UserReviewService.UploadUserReview.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "movie_review_db":string, "movie_review":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: return t4
+Block #2: mediamicroservices.UserReviewService.UploadUserReview.if.done
+			00: t6 = new UserReview (movieReview)
+			01: t7 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			02: t8 = &t7[0:int]
+			03: t9 = &t8.Key [#0]
+			04: t10 = &t8.Value [#1]
+			05: *t9 = "UserID":string
+			06: t11 = make interface{} <- int64 (userID)
+			07: *t10 = t11
+			08: t12 = slice t7[:]
+			09: t13 = invoke t3.FindOne(ctx, t12, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			10: t14 = extract t13 #0
+			11: t15 = extract t13 #1
+			12: t16 = t15 != nil:error
+			13: if t16 goto 3 else 4
+Block #3: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: return t15
+Block #4: mediamicroservices.UserReviewService.UploadUserReview.if.done
+			00: t17 = make interface{} <- *UserReview (t6)
+			01: t18 = invoke t14.One(ctx, t17)
+			02: t19 = extract t18 #0
+			03: t20 = extract t18 #1
+			04: t21 = t20 != nil:error
+			05: if t21 goto 5 else 6
+Block #5: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: return t20
+Block #6: mediamicroservices.UserReviewService.UploadUserReview.if.done
+			00: if t19 goto 9 else 7
+Block #7: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: t22 = &t6.UserID [#0]
+			01: t23 = &t6.Reviews [#1]
+			02: t24 = new [1]UserReviewData (slicelit)
+			03: t25 = &t24[0:int]
+			04: t26 = &t25.ReviewID [#0]
+			05: t27 = &t25.Timestamp [#1]
+			06: *t26 = reviewID
+			07: *t27 = timestamp
+			08: t28 = slice t24[:]
+			09: *t22 = userID
+			10: *t23 = t28
+			11: t29 = *t6
+			12: t30 = make interface{} <- UserReview (t29)
+			13: t31 = invoke t3.InsertOne(ctx, t30)
+			14: t32 = t31 != nil:error
+			15: if t32 goto 10 else 8
+Block #8: mediamicroservices.UserReviewService.UploadUserReview.if.done
+			00: t33 = new []UserReviewData (reviews)
+			01: t34 = strconv.FormatInt(userID, 10:int)
+			02: t35 = &s.cache [#1]
+			03: t36 = *t35
+			04: t37 = make interface{} <- *[]UserReviewData (t33)
+			05: t38 = invoke t36.Get(ctx, t34, t37)
+			06: t39 = extract t38 #0
+			07: t40 = extract t38 #1
+			08: t41 = t40 != nil:error
+			09: if t41 goto 12 else 13
+Block #9: mediamicroservices.UserReviewService.UploadUserReview.if.else
+			00: t42 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t43 = &t42[0:int]
+			02: t44 = &t43.Key [#0]
+			03: t45 = &t43.Value [#1]
+			04: t46 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t47 = &t46[0:int]
+			06: t48 = &t47.Key [#0]
+			07: t49 = &t47.Value [#1]
+			08: t50 = new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t51 = &t50[0:int]
+			10: t52 = &t51.Key [#0]
+			11: t53 = &t51.Value [#1]
+			12: t54 = new [1]interface{} (slicelit)
+			13: t55 = &t54[0:int]
+			14: t56 = new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			15: t57 = &t56[0:int]
+			16: t58 = &t57.Key [#0]
+			17: t59 = &t57.Value [#1]
+			18: *t58 = "ReviewID":string
+			19: t60 = make interface{} <- int64 (reviewID)
+			20: *t59 = t60
+			21: t61 = &t56[1:int]
+			22: t62 = &t61.Key [#0]
+			23: t63 = &t61.Value [#1]
+			24: *t62 = "Timestamp":string
+			25: t64 = make interface{} <- int64 (timestamp)
+			26: *t63 = t64
+			27: t65 = slice t56[:]
+			28: t66 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t65)
+			29: *t55 = t66
+			30: t67 = slice t54[:]
+			31: *t52 = "$each":string
+			32: t68 = make interface{} <- go.mongodb.org/mongo-driver/bson.A (t67)
+			33: *t53 = t68
+			34: t69 = &t50[1:int]
+			35: t70 = &t69.Key [#0]
+			36: t71 = &t69.Value [#1]
+			37: *t70 = "$position":string
+			38: t72 = make interface{} <- int (0:int)
+			39: *t71 = t72
+			40: t73 = slice t50[:]
+			41: *t48 = "Reviews":string
+			42: t74 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t73)
+			43: *t49 = t74
+			44: t75 = slice t46[:]
+			45: *t44 = "$push":string
+			46: t76 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t75)
+			47: *t45 = t76
+			48: t77 = slice t42[:]
+			49: t78 = invoke t3.UpdateMany(ctx, t12, t77)
+			50: t79 = extract t78 #0
+			51: t80 = extract t78 #1
+			52: t81 = t80 != nil:error
+			53: if t81 goto 11 else 8
+Block #10: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: return t31
+Block #11: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: t82 = errors.New("Failed to insert ...":string)
+			01: return t82
+Block #12: mediamicroservices.UserReviewService.UploadUserReview.if.then
+			00: return t40
+Block #13: mediamicroservices.UserReviewService.UploadUserReview.if.done
+			00: t83 = *t33
+			01: t84 = local UserReviewData (complit)
+			02: t85 = &t84.ReviewID [#0]
+			03: t86 = &t84.Timestamp [#1]
+			04: *t85 = reviewID
+			05: *t86 = timestamp
+			06: t87 = *t84
+			07: t88 = new [1]UserReviewData (varargs)
+			08: t89 = &t88[0:int]
+			09: *t89 = t87
+			10: t90 = slice t88[:]
+			11: t91 = append(t83, t90...)
+			12: *t33 = t91
+			13: t92 = &s.cache [#1]
+			14: t93 = *t92
+			15: t94 = *t33
+			16: t95 = make interface{} <- []UserReviewData (t94)
+			17: t96 = invoke t93.Put(ctx, t34, t95)
+			18: return t96
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			cache = parameter cache : github.com/blueprint-uservices/blueprint/runtime/core/backend.Cache
+			reviewStorageService = parameter reviewStorageService : ReviewStorageService
+Function: mediamicroservices.NewUserReviewServiceImpl
+Block #0: mediamicroservices.NewUserReviewServiceImpl.entry
+			00: t0 = new UserReviewServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.cache [#1]
+			03: t3 = &t0.reviewStorageService [#2]
+			04: *t1 = database
+			05: *t2 = cache
+			06: *t3 = reviewStorageService
+			07: t4 = make UserReviewService <- *UserReviewServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.APIServiceImpl
+	Method: func(ctx context.Context, reqID int64, username string, password string) error
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+			password = parameter password : string
+Function: mediamicroservices.APIService.Login
+Block #0: mediamicroservices.APIService.Login.entry
+			00: t0 = &api.userService [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.Login(ctx, reqID, username, password)
+			03: return t2
+	Method: func(ctx context.Context, reqID int64, title string, reviewStart int, reviewStop int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			title = parameter title : string
+			reviewStart = parameter reviewStart : int
+			reviewStop = parameter reviewStop : int
+Function: mediamicroservices.APIService.ReadPage
+Block #0: mediamicroservices.APIService.ReadPage.entry
+			00: t0 = local MovieId (movie)
+			01: t1 = &api.movieIdService [#2]
+			02: t2 = *t1
+			03: t3 = invoke t2.ReadMovieId(ctx, reqID, title)
+			04: t4 = extract t3 #0
+			05: *t0 = t4
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: mediamicroservices.APIService.ReadPage.if.then
+			00: return MovieId{}:MovieId, MovieInfo{}:MovieInfo, nil:[]Review, nil:[]CastInfo, Plot{}:Plot, t5
+Block #2: mediamicroservices.APIService.ReadPage.if.done
+			00: t7 = &api.pageService [#7]
+			01: t8 = *t7
+			02: t9 = &t0.MovieID [#0]
+			03: t10 = *t9
+			04: t11 = invoke t8.ReadPage(ctx, reqID, t10, reviewStart, reviewStop)
+			05: t12 = extract t11 #0
+			06: t13 = extract t11 #1
+			07: t14 = extract t11 #2
+			08: t15 = extract t11 #3
+			09: t16 = extract t11 #4
+			10: t17 = t16 != nil:error
+			11: if t17 goto 3 else 4
+Block #3: mediamicroservices.APIService.ReadPage.if.then
+			00: return MovieId{}:MovieId, MovieInfo{}:MovieInfo, nil:[]Review, nil:[]CastInfo, Plot{}:Plot, t16
+Block #4: mediamicroservices.APIService.ReadPage.if.done
+			00: t18 = *t0
+			01: return t18, t12, t13, t14, t15, nil:error
+	Method: func(ctx context.Context, req github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.RegisterMovieRequest) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			req = parameter req : RegisterMovieRequest
+Function: mediamicroservices.APIService.RegisterMovie
+Block #0: mediamicroservices.APIService.RegisterMovie.entry
+			00: t0 = local RegisterMovieRequest (req)
+			01: *t0 = req
+			02: t1 = &t0.casts [#8]
+			03: t2 = *t1
+			04: t3 = len(t2)
+			05: jump 1
+Block #1: mediamicroservices.APIService.RegisterMovie.rangeindex.loop
+			00: t4 = phi [0: nil:[]Cast, 2: t25] #casts
+			01: t5 = phi [0: -1:int, 2: t6] #rangeindex
+			02: t6 = t5 + 1:int
+			03: t7 = t6 < t3
+			04: if t7 goto 2 else 3
+Block #2: mediamicroservices.APIService.RegisterMovie.rangeindex.body
+			00: t8 = &t2[t6]
+			01: t9 = *t8
+			02: t10 = local RegisterMovieRequestCast (cast)
+			03: *t10 = t9
+			04: t11 = local Cast (complit)
+			05: t12 = &t11.CastID [#0]
+			06: t13 = &t10.CastID [#0]
+			07: t14 = *t13
+			08: t15 = &t11.CastInfoID [#1]
+			09: t16 = &t10.CastInfoID [#1]
+			10: t17 = *t16
+			11: t18 = &t11.Character [#2]
+			12: t19 = &t10.Character [#2]
+			13: t20 = *t19
+			14: *t12 = t14
+			15: *t15 = t17
+			16: *t18 = t20
+			17: t21 = *t11
+			18: t22 = new [1]Cast (varargs)
+			19: t23 = &t22[0:int]
+			20: *t23 = t21
+			21: t24 = slice t22[:]
+			22: t25 = append(t4, t24...)
+			23: jump 1
+Block #3: mediamicroservices.APIService.RegisterMovie.rangeindex.done
+			00: t26 = &t0.casts [#8]
+			01: t27 = *t26
+			02: t28 = len(t27)
+			03: jump 4
+Block #4: mediamicroservices.APIService.RegisterMovie.rangeindex.loop
+			00: t29 = phi [3: -1:int, 5: t30] #rangeindex
+			01: t30 = t29 + 1:int
+			02: t31 = t30 < t28
+			03: if t31 goto 5 else 6
+Block #5: mediamicroservices.APIService.RegisterMovie.rangeindex.body
+			00: t32 = &t27[t30]
+			01: t33 = *t32
+			02: t34 = local RegisterMovieRequestCast (cast)
+			03: *t34 = t33
+			04: t35 = &api.castInfoService [#5]
+			05: t36 = *t35
+			06: t37 = &t0.reqID [#0]
+			07: t38 = *t37
+			08: t39 = &t34.CastInfoID [#1]
+			09: t40 = *t39
+			10: t41 = &t34.Name [#3]
+			11: t42 = *t41
+			12: t43 = &t34.Gender [#4]
+			13: t44 = *t43
+			14: t45 = &t34.Intro [#5]
+			15: t46 = *t45
+			16: t47 = invoke t36.WriteCastInfo(ctx, t38, t40, t42, t44, t46)
+			17: t48 = extract t47 #0
+			18: t49 = extract t47 #1
+			19: t50 = t49 != nil:error
+			20: if t50 goto 7 else 4
+Block #6: mediamicroservices.APIService.RegisterMovie.rangeindex.done
+			00: t51 = &api.plotService [#6]
+			01: t52 = *t51
+			02: t53 = &t0.reqID [#0]
+			03: t54 = *t53
+			04: t55 = &t0.plotID [#9]
+			05: t56 = *t55
+			06: t57 = &t0.plotText [#10]
+			07: t58 = *t57
+			08: t59 = invoke t52.WritePlot(ctx, t54, t56, t58)
+			09: t60 = extract t59 #0
+			10: t61 = extract t59 #1
+			11: t62 = t61 != nil:error
+			12: if t62 goto 8 else 9
+Block #7: mediamicroservices.APIService.RegisterMovie.if.then
+			00: return MovieId{}:MovieId, MovieInfo{}:MovieInfo, Plot{}:Plot, t49
+Block #8: mediamicroservices.APIService.RegisterMovie.if.then
+			00: return MovieId{}:MovieId, MovieInfo{}:MovieInfo, Plot{}:Plot, t61
+Block #9: mediamicroservices.APIService.RegisterMovie.if.done
+			00: t63 = local MovieId (movie)
+			01: t64 = &api.movieIdService [#2]
+			02: t65 = *t64
+			03: t66 = &t0.reqID [#0]
+			04: t67 = *t66
+			05: t68 = &t0.movieID [#1]
+			06: t69 = *t68
+			07: t70 = &t0.title [#2]
+			08: t71 = *t70
+			09: t72 = invoke t65.RegisterMovieId(ctx, t67, t69, t71)
+			10: t73 = extract t72 #0
+			11: *t63 = t73
+			12: t74 = extract t72 #1
+			13: t75 = t74 != nil:error
+			14: if t75 goto 10 else 11
+Block #10: mediamicroservices.APIService.RegisterMovie.if.then
+			00: return MovieId{}:MovieId, MovieInfo{}:MovieInfo, Plot{}:Plot, t74
+Block #11: mediamicroservices.APIService.RegisterMovie.if.done
+			00: t76 = &api.movieInfoService [#4]
+			01: t77 = *t76
+			02: t78 = &t0.reqID [#0]
+			03: t79 = *t78
+			04: t80 = &t63.MovieID [#0]
+			05: t81 = *t80
+			06: t82 = &t0.title [#2]
+			07: t83 = *t82
+			08: t84 = &t0.plotID [#9]
+			09: t85 = *t84
+			10: t86 = &t0.thumbnailIDs [#3]
+			11: t87 = *t86
+			12: t88 = &t0.photoIDs [#4]
+			13: t89 = *t88
+			14: t90 = &t0.videoIDs [#5]
+			15: t91 = *t90
+			16: t92 = &t0.avgRating [#6]
+			17: t93 = *t92
+			18: t94 = &t0.numRating [#7]
+			19: t95 = *t94
+			20: t96 = invoke t77.WriteMovieInfo(ctx, t79, t81, t83, t4, t85, t87, t89, t91, t93, t95)
+			21: t97 = extract t96 #0
+			22: t98 = extract t96 #1
+			23: t99 = t98 != nil:error
+			24: if t99 goto 12 else 13
+Block #12: mediamicroservices.APIService.RegisterMovie.if.then
+			00: return MovieId{}:MovieId, MovieInfo{}:MovieInfo, Plot{}:Plot, t98
+Block #13: mediamicroservices.APIService.RegisterMovie.if.done
+			00: t100 = *t63
+			01: return t100, t97, t60, nil:error
+	Method: func(ctx context.Context, reqID int64, movieID string, title string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieId, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			title = parameter title : string
+Function: mediamicroservices.APIService.RegisterMovieId
+Block #0: mediamicroservices.APIService.RegisterMovieId.entry
+			00: t0 = &api.movieIdService [#2]
+			01: t1 = *t0
+			02: t2 = invoke t1.RegisterMovieId(ctx, reqID, movieID, title)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: return t3, t4
+	Method: func(ctx context.Context, reqID string, firstName string, lastName string, username string, password string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : string
+			firstName = parameter firstName : string
+			lastName = parameter lastName : string
+			username = parameter username : string
+			password = parameter password : string
+Function: mediamicroservices.APIService.RegisterUser
+Block #0: mediamicroservices.APIService.RegisterUser.entry
+			00: t0 = &api.userService [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.RegisterUser(ctx, reqID, firstName, lastName, username, password)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: return t3, t4
+	Method: func(ctx context.Context, reqID int64, title string, rating int) error
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			title = parameter title : string
+			rating = parameter rating : int
+Function: mediamicroservices.APIService.UploadMovieId
+Block #0: mediamicroservices.APIService.UploadMovieId.entry
+			00: t0 = &api.movieIdService [#2]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadNewMovieId(ctx, reqID, title, rating)
+			03: return t2
+	Method: func(ctx context.Context, reqID int64, text string) error
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			text = parameter text : string
+Function: mediamicroservices.APIService.UploadText
+Block #0: mediamicroservices.APIService.UploadText.entry
+			00: t0 = &api.textService [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadNewText(ctx, reqID, text)
+			03: return t2
+	Method: func(ctx context.Context, reqID int64) error
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+Function: mediamicroservices.APIService.UploadUniqueId
+Block #0: mediamicroservices.APIService.UploadUniqueId.entry
+			00: t0 = &api.uniqueIdService [#3]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadNewUniqueId(ctx, reqID)
+			03: return t2
+	Method: func(ctx context.Context, reqID int64, username string) error
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			username = parameter username : string
+Function: mediamicroservices.APIService.UploadUserWithUsername
+Block #0: mediamicroservices.APIService.UploadUserWithUsername.entry
+			00: t0 = &api.userService [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadUserWithUsername(ctx, reqID, username)
+			03: return t2
+	Method: func(ctx context.Context, reqID int64, castInfoID string, name string, gender string, intro string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.CastInfo, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			castInfoID = parameter castInfoID : string
+			name = parameter name : string
+			gender = parameter gender : string
+			intro = parameter intro : string
+Function: mediamicroservices.APIService.WriteCastInfo
+Block #0: mediamicroservices.APIService.WriteCastInfo.entry
+			00: t0 = &api.castInfoService [#5]
+			01: t1 = *t0
+			02: t2 = invoke t1.WriteCastInfo(ctx, reqID, castInfoID, name, gender, intro)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: return t3, t4
+	Method: func(ctx context.Context, reqID int64, movieID string, title string, casts []github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Cast, plotID int64, thumbnailIDs []string, photoIDs []string, videoIDs []string, avgRating string, numRating int) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			title = parameter title : string
+			casts = parameter casts : []Cast
+			plotID = parameter plotID : int64
+			thumbnailIDs = parameter thumbnailIDs : []string
+			photoIDs = parameter photoIDs : []string
+			videoIDs = parameter videoIDs : []string
+			avgRating = parameter avgRating : string
+			numRating = parameter numRating : int
+Function: mediamicroservices.APIService.WriteMovieInfo
+Block #0: mediamicroservices.APIService.WriteMovieInfo.entry
+			00: t0 = &api.movieInfoService [#4]
+			01: t1 = *t0
+			02: t2 = invoke t1.WriteMovieInfo(ctx, reqID, movieID, title, casts, plotID, thumbnailIDs, photoIDs, videoIDs, avgRating, numRating)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: return t3, t4
+	Method: func(ctx context.Context, reqID int64, plotID int64, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			api = parameter api : *APIServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			plotID = parameter plotID : int64
+			plotText = parameter plotText : string
+Function: mediamicroservices.APIService.WritePlot
+Block #0: mediamicroservices.APIService.WritePlot.entry
+			00: t0 = &api.plotService [#6]
+			01: t1 = *t0
+			02: t2 = invoke t1.WritePlot(ctx, reqID, plotID, plotText)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: return t3, t4
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieReviewServiceImpl
+	Method: func(ctx context.Context, reqID int64, movieID string, start int, stop int) ([]github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Review, error)
+		Parameters:
+			s = parameter s : *MovieReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			start = parameter start : int
+			stop = parameter stop : int
+Function: mediamicroservices.MovieReviewService.ReadMovieReviews
+Block #0: mediamicroservices.MovieReviewService.ReadMovieReviews.entry
+			00: t0 = stop <= start
+			01: if t0 goto 1 else 3
+Block #1: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, nil:error
+Block #2: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t1 = new []MovieReviewData (reviews)
+			01: t2 = &s.cache [#1]
+			02: t3 = *t2
+			03: t4 = make interface{} <- *[]MovieReviewData (t1)
+			04: t5 = invoke t3.Get(ctx, movieID, t4)
+			05: t6 = extract t5 #0
+			06: t7 = extract t5 #1
+			07: t8 = t7 != nil:error
+			08: if t8 goto 4 else 5
+Block #3: mediamicroservices.MovieReviewService.ReadMovieReviews.cond.false
+			00: t9 = start < 0:int
+			01: if t9 goto 1 else 2
+Block #4: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, t7
+Block #5: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t10 = make map[int64]bool 
+			01: t11 = *t1
+			02: t12 = len(t11)
+			03: jump 6
+Block #6: mediamicroservices.MovieReviewService.ReadMovieReviews.rangeindex.loop
+			00: t13 = phi [5: nil:[]int64, 7: t25] #reviewIds
+			01: t14 = phi [5: -1:int, 7: t15] #rangeindex
+			02: t15 = t14 + 1:int
+			03: t16 = t15 < t12
+			04: if t16 goto 7 else 8
+Block #7: mediamicroservices.MovieReviewService.ReadMovieReviews.rangeindex.body
+			00: t17 = &t11[t15]
+			01: t18 = *t17
+			02: t19 = local MovieReviewData (review)
+			03: *t19 = t18
+			04: t20 = &t19.ReviewID [#0]
+			05: t21 = *t20
+			06: t22 = new [1]int64 (varargs)
+			07: t23 = &t22[0:int]
+			08: *t23 = t21
+			09: t24 = slice t22[:]
+			10: t25 = append(t13, t24...)
+			11: t26 = &t19.ReviewID [#0]
+			12: t27 = *t26
+			13: t10[t27] = true:bool
+			14: jump 6
+Block #8: mediamicroservices.MovieReviewService.ReadMovieReviews.rangeindex.done
+			00: t28 = len(t13)
+			01: t29 = start + t28
+			02: t30 = t29 < stop
+			03: if t30 goto 9 else 10
+Block #9: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: t31 = &s.database [#0]
+			01: t32 = *t31
+			02: t33 = invoke t32.GetCollection(ctx, "movie_review_db":string, "movie_review":string)
+			03: t34 = extract t33 #0
+			04: t35 = extract t33 #1
+			05: t36 = t35 != nil:error
+			06: if t36 goto 11 else 12
+Block #10: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t37 = phi [8: nil:[]int64, 19: t86] #new_reviews_ids
+			01: t38 = append(t37, t13...)
+			02: t39 = &s.reviewStorageService [#2]
+			03: t40 = *t39
+			04: t41 = invoke t40.ReadReviews(ctx, reqID, t38)
+			05: t42 = extract t41 #0
+			06: t43 = extract t41 #1
+			07: t44 = t43 != nil:error
+			08: if t44 goto 22 else 23
+Block #11: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, t35
+Block #12: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t45 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t46 = &t45[0:int]
+			02: t47 = &t46.Key [#0]
+			03: t48 = &t46.Value [#1]
+			04: *t47 = "MovieID":string
+			05: t49 = make interface{} <- string (movieID)
+			06: *t48 = t49
+			07: t50 = slice t45[:]
+			08: t51 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t52 = &t51[0:int]
+			10: t53 = &t52.Key [#0]
+			11: t54 = &t52.Value [#1]
+			12: t55 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			13: t56 = &t55[0:int]
+			14: t57 = &t56.Key [#0]
+			15: t58 = &t56.Value [#1]
+			16: t59 = new [2]interface{} (slicelit)
+			17: t60 = &t59[0:int]
+			18: t61 = make interface{} <- int (0:int)
+			19: *t60 = t61
+			20: t62 = &t59[1:int]
+			21: t63 = make interface{} <- int (stop)
+			22: *t62 = t63
+			23: t64 = slice t59[:]
+			24: *t57 = "$slice":string
+			25: t65 = make interface{} <- go.mongodb.org/mongo-driver/bson.A (t64)
+			26: *t58 = t65
+			27: t66 = slice t55[:]
+			28: *t53 = "posts":string
+			29: t67 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t66)
+			30: *t54 = t67
+			31: t68 = slice t51[:]
+			32: t69 = new [1]go.mongodb.org/mongo-driver/bson.D (varargs)
+			33: t70 = &t69[0:int]
+			34: *t70 = t68
+			35: t71 = slice t69[:]
+			36: t72 = invoke t34.FindOne(ctx, t50, t71...)
+			37: t73 = extract t72 #0
+			38: t74 = extract t72 #1
+			39: t75 = t74 != nil:error
+			40: if t75 goto 13 else 14
+Block #13: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, t74
+Block #14: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t76 = new MovieReview (movieReview)
+			01: t77 = make interface{} <- *MovieReview (t76)
+			02: t78 = invoke t73.One(ctx, t77)
+			03: t79 = extract t78 #0
+			04: t80 = extract t78 #1
+			05: t81 = t80 != nil:error
+			06: if t81 goto 15 else 16
+Block #15: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, t80
+Block #16: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: if t79 goto 18 else 17
+Block #17: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: t82 = errors.New("failed to find mo...":string)
+			01: return nil:[]Review, t82
+Block #18: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t83 = &t76.Reviews [#1]
+			01: t84 = *t83
+			02: t85 = len(t84)
+			03: jump 19
+Block #19: mediamicroservices.MovieReviewService.ReadMovieReviews.rangeindex.loop
+			00: t86 = phi [18: nil:[]int64, 20: t86, 21: t103] #new_reviews_ids
+			01: t87 = phi [18: -1:int, 20: t88, 21: t88] #rangeindex
+			02: t88 = t87 + 1:int
+			03: t89 = t88 < t85
+			04: if t89 goto 20 else 10
+Block #20: mediamicroservices.MovieReviewService.ReadMovieReviews.rangeindex.body
+			00: t90 = &t84[t88]
+			01: t91 = *t90
+			02: t92 = local MovieReviewData (review)
+			03: *t92 = t91
+			04: t93 = &t92.ReviewID [#0]
+			05: t94 = *t93
+			06: t95 = t10[t94],ok
+			07: t96 = extract t95 #0
+			08: t97 = extract t95 #1
+			09: if t97 goto 19 else 21
+Block #21: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t98 = &t92.ReviewID [#0]
+			01: t99 = *t98
+			02: t100 = new [1]int64 (varargs)
+			03: t101 = &t100[0:int]
+			04: *t101 = t99
+			05: t102 = slice t100[:]
+			06: t103 = append(t86, t102...)
+			07: jump 19
+Block #22: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, t43
+Block #23: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: t104 = len(t37)
+			01: t105 = t104 > 0:int
+			02: if t105 goto 24 else 25
+Block #24: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: t106 = &s.cache [#1]
+			01: t107 = *t106
+			02: t108 = *t1
+			03: t109 = make interface{} <- []MovieReviewData (t108)
+			04: t110 = invoke t107.Put(ctx, movieID, t109)
+			05: t111 = t110 != nil:error
+			06: if t111 goto 26 else 25
+Block #25: mediamicroservices.MovieReviewService.ReadMovieReviews.if.done
+			00: return t42, nil:error
+Block #26: mediamicroservices.MovieReviewService.ReadMovieReviews.if.then
+			00: return nil:[]Review, t110
+	Method: func(ctx context.Context, reqID int64, movieID string, reviewID int64, timestamp int64) error
+		Parameters:
+			s = parameter s : *MovieReviewServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			reviewID = parameter reviewID : int64
+			timestamp = parameter timestamp : int64
+Function: mediamicroservices.MovieReviewService.UploadMovieReview
+Block #0: mediamicroservices.MovieReviewService.UploadMovieReview.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "movie_review_db":string, "movie_review":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: return t4
+Block #2: mediamicroservices.MovieReviewService.UploadMovieReview.if.done
+			00: t6 = new MovieReview (movieReview)
+			01: t7 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			02: t8 = &t7[0:int]
+			03: t9 = &t8.Key [#0]
+			04: t10 = &t8.Value [#1]
+			05: *t9 = "MovieID":string
+			06: t11 = make interface{} <- string (movieID)
+			07: *t10 = t11
+			08: t12 = slice t7[:]
+			09: t13 = invoke t3.FindOne(ctx, t12, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			10: t14 = extract t13 #0
+			11: t15 = extract t13 #1
+			12: t16 = t15 != nil:error
+			13: if t16 goto 3 else 4
+Block #3: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: return t15
+Block #4: mediamicroservices.MovieReviewService.UploadMovieReview.if.done
+			00: t17 = make interface{} <- *MovieReview (t6)
+			01: t18 = invoke t14.One(ctx, t17)
+			02: t19 = extract t18 #0
+			03: t20 = extract t18 #1
+			04: t21 = t20 != nil:error
+			05: if t21 goto 5 else 6
+Block #5: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: return t20
+Block #6: mediamicroservices.MovieReviewService.UploadMovieReview.if.done
+			00: if t19 goto 9 else 7
+Block #7: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: t22 = &t6.MovieID [#0]
+			01: t23 = &t6.Reviews [#1]
+			02: t24 = new [1]MovieReviewData (slicelit)
+			03: t25 = &t24[0:int]
+			04: t26 = &t25.ReviewID [#0]
+			05: t27 = &t25.Timestamp [#1]
+			06: *t26 = reviewID
+			07: *t27 = timestamp
+			08: t28 = slice t24[:]
+			09: *t22 = movieID
+			10: *t23 = t28
+			11: t29 = *t6
+			12: t30 = make interface{} <- MovieReview (t29)
+			13: t31 = invoke t3.InsertOne(ctx, t30)
+			14: t32 = t31 != nil:error
+			15: if t32 goto 10 else 8
+Block #8: mediamicroservices.MovieReviewService.UploadMovieReview.if.done
+			00: t33 = new []MovieReviewData (reviews)
+			01: t34 = &s.cache [#1]
+			02: t35 = *t34
+			03: t36 = make interface{} <- *[]MovieReviewData (t33)
+			04: t37 = invoke t35.Get(ctx, movieID, t36)
+			05: t38 = extract t37 #0
+			06: t39 = extract t37 #1
+			07: t40 = t39 != nil:error
+			08: if t40 goto 12 else 13
+Block #9: mediamicroservices.MovieReviewService.UploadMovieReview.if.else
+			00: t41 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t42 = &t41[0:int]
+			02: t43 = &t42.Key [#0]
+			03: t44 = &t42.Value [#1]
+			04: t45 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t46 = &t45[0:int]
+			06: t47 = &t46.Key [#0]
+			07: t48 = &t46.Value [#1]
+			08: t49 = new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t50 = &t49[0:int]
+			10: t51 = &t50.Key [#0]
+			11: t52 = &t50.Value [#1]
+			12: t53 = new [1]interface{} (slicelit)
+			13: t54 = &t53[0:int]
+			14: t55 = new [2]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			15: t56 = &t55[0:int]
+			16: t57 = &t56.Key [#0]
+			17: t58 = &t56.Value [#1]
+			18: *t57 = "ReviewID":string
+			19: t59 = make interface{} <- int64 (reviewID)
+			20: *t58 = t59
+			21: t60 = &t55[1:int]
+			22: t61 = &t60.Key [#0]
+			23: t62 = &t60.Value [#1]
+			24: *t61 = "Timestamp":string
+			25: t63 = make interface{} <- int64 (timestamp)
+			26: *t62 = t63
+			27: t64 = slice t55[:]
+			28: t65 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t64)
+			29: *t54 = t65
+			30: t66 = slice t53[:]
+			31: *t51 = "$each":string
+			32: t67 = make interface{} <- go.mongodb.org/mongo-driver/bson.A (t66)
+			33: *t52 = t67
+			34: t68 = &t49[1:int]
+			35: t69 = &t68.Key [#0]
+			36: t70 = &t68.Value [#1]
+			37: *t69 = "$position":string
+			38: t71 = make interface{} <- int (0:int)
+			39: *t70 = t71
+			40: t72 = slice t49[:]
+			41: *t47 = "Reviews":string
+			42: t73 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t72)
+			43: *t48 = t73
+			44: t74 = slice t45[:]
+			45: *t43 = "$push":string
+			46: t75 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t74)
+			47: *t44 = t75
+			48: t76 = slice t41[:]
+			49: t77 = invoke t3.UpdateMany(ctx, t12, t76)
+			50: t78 = extract t77 #0
+			51: t79 = extract t77 #1
+			52: t80 = t79 != nil:error
+			53: if t80 goto 11 else 8
+Block #10: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: return t31
+Block #11: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: t81 = errors.New("Failed to insert ...":string)
+			01: return t81
+Block #12: mediamicroservices.MovieReviewService.UploadMovieReview.if.then
+			00: return t39
+Block #13: mediamicroservices.MovieReviewService.UploadMovieReview.if.done
+			00: t82 = *t33
+			01: t83 = local MovieReviewData (complit)
+			02: t84 = &t83.ReviewID [#0]
+			03: t85 = &t83.Timestamp [#1]
+			04: *t84 = reviewID
+			05: *t85 = timestamp
+			06: t86 = *t83
+			07: t87 = new [1]MovieReviewData (varargs)
+			08: t88 = &t87[0:int]
+			09: *t88 = t86
+			10: t89 = slice t87[:]
+			11: t90 = append(t82, t89...)
+			12: *t33 = t90
+			13: t91 = &s.cache [#1]
+			14: t92 = *t91
+			15: t93 = *t33
+			16: t94 = make interface{} <- []MovieReviewData (t93)
+			17: t95 = invoke t92.Put(ctx, movieID, t94)
+			18: return t95
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.RatingServiceImpl
+	Method: func(ctx context.Context, reqID int64, movieID string, rating int) error
+		Parameters:
+			s = parameter s : *RatingServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			movieID = parameter movieID : string
+			rating = parameter rating : int
+Function: mediamicroservices.RatingService.UploadNewRating
+Block #0: mediamicroservices.RatingService.UploadNewRating.entry
+			00: t0 = &s.composeReviewService [#1]
+			01: t1 = *t0
+			02: t2 = invoke t1.UploadRating(ctx, reqID, rating)
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: mediamicroservices.RatingService.UploadNewRating.if.then
+			00: return t2
+Block #2: mediamicroservices.RatingService.UploadNewRating.if.done
+			00: t4 = new int (cachedUncommitSum)
+			01: t5 = &s.cache [#0]
+			02: t6 = *t5
+			03: t7 = movieID + ":uncommit_sum":string
+			04: t8 = make interface{} <- *int (t4)
+			05: t9 = invoke t6.Get(ctx, t7, t8)
+			06: t10 = extract t9 #0
+			07: t11 = extract t9 #1
+			08: t12 = t11 != nil:error
+			09: if t12 goto 3 else 4
+Block #3: mediamicroservices.RatingService.UploadNewRating.if.then
+			00: return t11
+Block #4: mediamicroservices.RatingService.UploadNewRating.if.done
+			00: t13 = &s.cache [#0]
+			01: t14 = *t13
+			02: t15 = movieID + ":uncommit_sum":string
+			03: t16 = *t4
+			04: t17 = t16 + rating
+			05: t18 = make interface{} <- int (t17)
+			06: t19 = invoke t14.Put(ctx, t15, t18)
+			07: t20 = t19 != nil:error
+			08: if t20 goto 5 else 6
+Block #5: mediamicroservices.RatingService.UploadNewRating.if.then
+			00: return t19
+Block #6: mediamicroservices.RatingService.UploadNewRating.if.done
+			00: t21 = &s.cache [#0]
+			01: t22 = *t21
+			02: t23 = movieID + ":uncommit_num":string
+			03: t24 = invoke t22.Incr(ctx, t23)
+			04: t25 = extract t24 #0
+			05: t26 = extract t24 #1
+			06: t27 = t26 != nil:error
+			07: if t27 goto 7 else 8
+Block #7: mediamicroservices.RatingService.UploadNewRating.if.then
+			00: return t26
+Block #8: mediamicroservices.RatingService.UploadNewRating.if.done
+			00: return t26
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.UserService
+	Method: func(ctx context.Context, reqID int64, username string, password string) error
+	Method: func(ctx context.Context, reqID string, firstName string, lastName string, username string, password string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User, error)
+	Method: func(ctx context.Context, reqID string, firstName string, lastName string, username string, password string, userID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.User, error)
+	Method: func(ctx context.Context, reqID int64, userID int64) error
+	Method: func(ctx context.Context, reqID int64, username string) error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.MovieInfo
+		Parameters:
+			ctx = parameter ctx : context.Context
+			movieInfoService = parameter movieInfoService : MovieInfoService
+			movieReviewService = parameter movieReviewService : MovieReviewService
+			castInfoService = parameter castInfoService : CastInfoService
+			plotService = parameter plotService : PlotService
+Function: mediamicroservices.NewPageServiceImpl
+Block #0: mediamicroservices.NewPageServiceImpl.entry
+			00: t0 = new PageServiceImpl (complit)
+			01: t1 = &t0.movieInfoService [#0]
+			02: t2 = &t0.movieReviewService [#1]
+			03: t3 = &t0.castInfoService [#2]
+			04: t4 = &t0.plotService [#3]
+			05: *t1 = movieInfoService
+			06: *t2 = movieReviewService
+			07: *t3 = castInfoService
+			08: *t4 = plotService
+			09: t5 = make PageService <- *PageServiceImpl (t0)
+			10: return t5, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.PlotServiceImpl
+	Method: func(ctx context.Context, reqID int64, plotID int64) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			s = parameter s : *PlotServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			plotID = parameter plotID : int64
+Function: mediamicroservices.PlotService.ReadPlot
+Block #0: mediamicroservices.PlotService.ReadPlot.entry
+			00: t0 = new Plot (plot)
+			01: t1 = new interface{} (cachedPlot)
+			02: t2 = strconv.FormatInt(plotID, 10:int)
+			03: t3 = &s.cache [#1]
+			04: t4 = *t3
+			05: t5 = make interface{} <- *interface{} (t1)
+			06: t6 = invoke t4.Get(ctx, t2, t5)
+			07: t7 = extract t6 #0
+			08: t8 = extract t6 #1
+			09: t9 = t8 != nil:error
+			10: if t9 goto 1 else 2
+Block #1: mediamicroservices.PlotService.ReadPlot.if.then
+			00: return Plot{}:Plot, t8
+Block #2: mediamicroservices.PlotService.ReadPlot.if.done
+			00: if t7 goto 3 else 4
+Block #3: mediamicroservices.PlotService.ReadPlot.if.then
+			00: t10 = *t1
+			01: t11 = typeassert t10.(Plot)
+			02: *t0 = t11
+			03: t12 = *t0
+			04: return t12, nil:error
+Block #4: mediamicroservices.PlotService.ReadPlot.if.done
+			00: t13 = &s.database [#0]
+			01: t14 = *t13
+			02: t15 = invoke t14.GetCollection(ctx, "plot_db":string, "plot":string)
+			03: t16 = extract t15 #0
+			04: t17 = extract t15 #1
+			05: t18 = t17 != nil:error
+			06: if t18 goto 5 else 6
+Block #5: mediamicroservices.PlotService.ReadPlot.if.then
+			00: t19 = *t0
+			01: return t19, t17
+Block #6: mediamicroservices.PlotService.ReadPlot.if.done
+			00: t20 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t21 = &t20[0:int]
+			02: t22 = &t21.Key [#0]
+			03: t23 = &t21.Value [#1]
+			04: *t22 = "PlotID":string
+			05: t24 = make interface{} <- int64 (plotID)
+			06: *t23 = t24
+			07: t25 = slice t20[:]
+			08: t26 = invoke t16.FindOne(ctx, t25, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t27 = extract t26 #0
+			10: t28 = extract t26 #1
+			11: t29 = t28 != nil:error
+			12: if t29 goto 7 else 8
+Block #7: mediamicroservices.PlotService.ReadPlot.if.then
+			00: t30 = *t0
+			01: return t30, t28
+Block #8: mediamicroservices.PlotService.ReadPlot.if.done
+			00: t31 = make interface{} <- *Plot (t0)
+			01: t32 = invoke t27.One(ctx, t31)
+			02: t33 = extract t32 #0
+			03: t34 = extract t32 #1
+			04: t35 = t34 != nil:error
+			05: if t35 goto 9 else 10
+Block #9: mediamicroservices.PlotService.ReadPlot.if.then
+			00: return Plot{}:Plot, t34
+Block #10: mediamicroservices.PlotService.ReadPlot.if.done
+			00: if t33 goto 12 else 11
+Block #11: mediamicroservices.PlotService.ReadPlot.if.then
+			00: t36 = new [1]any (varargs)
+			01: t37 = &t36[0:int]
+			02: t38 = make any <- int64 (plotID)
+			03: *t37 = t38
+			04: t39 = slice t36[:]
+			05: t40 = fmt.Errorf("plot %d not found":string, t39...)
+			06: return Plot{}:Plot, t40
+Block #12: mediamicroservices.PlotService.ReadPlot.if.done
+			00: t41 = *t0
+			01: return t41, t34
+	Method: func(ctx context.Context, reqID int64, plotID int64, plotText string) (github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.Plot, error)
+		Parameters:
+			s = parameter s : *PlotServiceImpl
+			ctx = parameter ctx : context.Context
+			reqID = parameter reqID : int64
+			plotID = parameter plotID : int64
+			plotText = parameter plotText : string
+Function: mediamicroservices.PlotService.WritePlot
+Block #0: mediamicroservices.PlotService.WritePlot.entry
+			00: t0 = local Plot (plot)
+			01: t1 = &t0.PlotID [#0]
+			02: t2 = &t0.Plot [#1]
+			03: *t1 = plotID
+			04: *t2 = plotText
+			05: t3 = &s.database [#0]
+			06: t4 = *t3
+			07: t5 = invoke t4.GetCollection(ctx, "plot_db":string, "plot":string)
+			08: t6 = extract t5 #0
+			09: t7 = extract t5 #1
+			10: t8 = t7 != nil:error
+			11: if t8 goto 1 else 2
+Block #1: mediamicroservices.PlotService.WritePlot.if.then
+			00: return Plot{}:Plot, t7
+Block #2: mediamicroservices.PlotService.WritePlot.if.done
+			00: t9 = *t0
+			01: t10 = make interface{} <- Plot (t9)
+			02: t11 = invoke t6.InsertOne(ctx, t10)
+			03: t12 = t11 != nil:error
+			04: if t12 goto 3 else 4
+Block #3: mediamicroservices.PlotService.WritePlot.if.then
+			00: return Plot{}:Plot, t11
+Block #4: mediamicroservices.PlotService.WritePlot.if.done
+			00: t13 = *t0
+			01: return t13, t11
+	Type: github.com/blueprint-uservices/blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices.TextService
+	Method: func(ctx context.Context, reqID int64, text string) error

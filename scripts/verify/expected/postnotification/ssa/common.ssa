@@ -1,0 +1,31 @@
+		Parameters:
+Function: postnotification/common.init
+Block #0: postnotification/common.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: postnotification/common.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = strconv.init()
+			02: jump 2
+Block #2: postnotification/common.init.init.done
+			00: return
+		Parameters:
+			i = parameter i : int64
+Function: postnotification/common.Int64ToString
+Block #0: postnotification/common.Int64ToString.entry
+			00: t0 = strconv.FormatInt(i, 10:int)
+			01: return t0
+		Parameters:
+			s = parameter s : string
+Function: postnotification/common.StringToInt64
+Block #0: postnotification/common.StringToInt64.entry
+			00: t0 = strconv.ParseInt(s, 10:int, 64:int)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: postnotification/common.StringToInt64.if.then
+			00: return 0:int64, t2
+Block #2: postnotification/common.StringToInt64.if.done
+			00: return t1, nil:error
+	Global: init$guard, Type: *bool

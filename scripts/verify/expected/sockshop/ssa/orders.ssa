@@ -1,0 +1,424 @@
+		Parameters:
+			ctx = parameter ctx : context.Context
+			userService = parameter userService : github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.UserService
+			cartService = parameter cartService : github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/carts.CartService
+			payments = parameter payments : github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.PaymentService
+			shipping = parameter shipping : github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.ShippingService
+			orderDB = parameter orderDB : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: orders.NewOrderServiceImpl
+Block #0: orders.NewOrderServiceImpl.entry
+			00: t0 = new OrderServiceImpl (complit)
+			01: t1 = &t0.users [#0]
+			02: t2 = &t0.carts [#1]
+			03: t3 = &t0.payments [#2]
+			04: t4 = &t0.shipping [#3]
+			05: t5 = &t0.db [#4]
+			06: *t1 = userService
+			07: *t2 = cartService
+			08: *t3 = payments
+			09: *t4 = shipping
+			10: *t5 = orderDB
+			11: t6 = make OrderService <- *OrderServiceImpl (t0)
+			12: return t6, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.OrderServiceImpl
+	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			orderID = parameter orderID : string
+Function: orders.OrderService.GetOrder
+Block #0: orders.OrderService.GetOrder.entry
+			00: t0 = &s.db [#4]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "order_db":string, "orders":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: orders.OrderService.GetOrder.if.then
+			00: return Order{}:Order, t4
+Block #2: orders.OrderService.GetOrder.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "ID":string
+			05: t10 = make interface{} <- string (orderID)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: orders.OrderService.GetOrder.if.then
+			00: return Order{}:Order, t14
+Block #4: orders.OrderService.GetOrder.if.done
+			00: t16 = new Order (order)
+			01: t17 = make interface{} <- *Order (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: orders.OrderService.GetOrder.if.then
+			00: return Order{}:Order, t20
+Block #6: orders.OrderService.GetOrder.if.done
+			00: if t19 goto 8 else 7
+Block #7: orders.OrderService.GetOrder.if.then
+			00: t22 = new [1]interface{} (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make interface{} <- string (orderID)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = github.com/pkg/errors.Errorf("order %v does not...":string, t25...)
+			06: return Order{}:Order, t26
+Block #8: orders.OrderService.GetOrder.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context, customerID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			customerID = parameter customerID : string
+Function: orders.OrderService.GetOrders
+Block #0: orders.OrderService.GetOrders.entry
+			00: t0 = &s.db [#4]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "order_db":string, "orders":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: orders.OrderService.GetOrders.if.then
+			00: return nil:[]Order, t4
+Block #2: orders.OrderService.GetOrders.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "CustomerID":string
+			05: t10 = make interface{} <- string (customerID)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindMany(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: orders.OrderService.GetOrders.if.then
+			00: return nil:[]Order, t14
+Block #4: orders.OrderService.GetOrders.if.done
+			00: t16 = new []Order (orders)
+			01: t17 = make interface{} <- *[]Order (t16)
+			02: t18 = invoke t13.All(ctx, t17)
+			03: t19 = t18 != nil:error
+			04: if t19 goto 5 else 6
+Block #5: orders.OrderService.GetOrders.if.then
+			00: return nil:[]Order, t18
+Block #6: orders.OrderService.GetOrders.if.done
+			00: t20 = *t16
+			01: return t20, nil:error
+	Method: func(ctx context.Context, customerID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			customerID = parameter customerID : string
+			addressID = parameter addressID : string
+			cardID = parameter cardID : string
+			cartID = parameter cartID : string
+Function: orders.OrderService.NewOrder
+Block #0: orders.OrderService.NewOrder.entry
+			00: t0 = customerID == "":string
+			01: if t0 goto 1 else 2
+Block #1: orders.OrderService.NewOrder.if.then
+			00: t1 = github.com/pkg/errors.Errorf("missing customerID":string, nil:[]interface{}...)
+			01: return Order{}:Order, t1
+Block #2: orders.OrderService.NewOrder.if.else
+			00: t2 = addressID == "":string
+			01: if t2 goto 3 else 4
+Block #3: orders.OrderService.NewOrder.if.then
+			00: t3 = github.com/pkg/errors.Errorf("missing addressID":string, nil:[]interface{}...)
+			01: return Order{}:Order, t3
+Block #4: orders.OrderService.NewOrder.if.else
+			00: t4 = cardID == "":string
+			01: if t4 goto 5 else 6
+Block #5: orders.OrderService.NewOrder.if.then
+			00: t5 = github.com/pkg/errors.Errorf("missing cardID":string, nil:[]interface{}...)
+			01: return Order{}:Order, t5
+Block #6: orders.OrderService.NewOrder.if.else
+			00: t6 = cartID == "":string
+			01: if t6 goto 7 else 8
+Block #7: orders.OrderService.NewOrder.if.then
+			00: t7 = github.com/pkg/errors.Errorf("missing cartID":string, nil:[]interface{}...)
+			01: return Order{}:Order, t7
+Block #8: orders.OrderService.NewOrder.if.done
+			00: t8 = &s.carts [#1]
+			01: t9 = *t8
+			02: t10 = invoke t9.GetCart(ctx, cartID)
+			03: t11 = extract t10 #0
+			04: t12 = extract t10 #1
+			05: t13 = t12 != nil:error
+			06: if t13 goto 9 else 10
+Block #9: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t12
+Block #10: orders.OrderService.NewOrder.if.done
+			00: t14 = &s.users [#0]
+			01: t15 = *t14
+			02: t16 = invoke t15.GetUsers(ctx, customerID)
+			03: t17 = extract t16 #0
+			04: t18 = extract t16 #1
+			05: t19 = t18 != nil:error
+			06: if t19 goto 11 else 12
+Block #11: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t18
+Block #12: orders.OrderService.NewOrder.if.done
+			00: t20 = &s.users [#0]
+			01: t21 = *t20
+			02: t22 = invoke t21.GetAddresses(ctx, addressID)
+			03: t23 = extract t22 #0
+			04: t24 = extract t22 #1
+			05: t25 = t24 != nil:error
+			06: if t25 goto 13 else 14
+Block #13: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t24
+Block #14: orders.OrderService.NewOrder.if.done
+			00: t26 = &s.users [#0]
+			01: t27 = *t26
+			02: t28 = invoke t27.GetCards(ctx, cardID)
+			03: t29 = extract t28 #0
+			04: t30 = extract t28 #1
+			05: t31 = t30 != nil:error
+			06: if t31 goto 15 else 16
+Block #15: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t30
+Block #16: orders.OrderService.NewOrder.if.done
+			00: t32 = new [4]error (varargs)
+			01: t33 = &t32[0:int]
+			02: *t33 = t12
+			03: t34 = &t32[1:int]
+			04: *t34 = t18
+			05: t35 = &t32[2:int]
+			06: *t35 = t24
+			07: t36 = &t32[3:int]
+			08: *t36 = t30
+			09: t37 = slice t32[:]
+			10: t38 = any(t37...)
+			11: t39 = t38 != nil:error
+			12: if t39 goto 17 else 18
+Block #17: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t38
+Block #18: orders.OrderService.NewOrder.if.done
+			00: t40 = len(t11)
+			01: t41 = t40 == 0:int
+			02: if t41 goto 19 else 20
+Block #19: orders.OrderService.NewOrder.if.then
+			00: t42 = github.com/pkg/errors.Errorf("no items in cart":string, nil:[]interface{}...)
+			01: return Order{}:Order, t42
+Block #20: orders.OrderService.NewOrder.if.else
+			00: t43 = len(t17)
+			01: t44 = t43 == 0:int
+			02: if t44 goto 21 else 22
+Block #21: orders.OrderService.NewOrder.if.then
+			00: t45 = new [1]interface{} (varargs)
+			01: t46 = &t45[0:int]
+			02: t47 = make interface{} <- string (customerID)
+			03: *t46 = t47
+			04: t48 = slice t45[:]
+			05: t49 = github.com/pkg/errors.Errorf("unknown customer %v":string, t48...)
+			06: return Order{}:Order, t49
+Block #22: orders.OrderService.NewOrder.if.else
+			00: t50 = len(t23)
+			01: t51 = t50 == 0:int
+			02: if t51 goto 23 else 24
+Block #23: orders.OrderService.NewOrder.if.then
+			00: t52 = new [1]interface{} (varargs)
+			01: t53 = &t52[0:int]
+			02: t54 = make interface{} <- string (addressID)
+			03: *t53 = t54
+			04: t55 = slice t52[:]
+			05: t56 = github.com/pkg/errors.Errorf("invalid address %v":string, t55...)
+			06: return Order{}:Order, t56
+Block #24: orders.OrderService.NewOrder.if.else
+			00: t57 = len(t29)
+			01: t58 = t57 == 0:int
+			02: if t58 goto 25 else 26
+Block #25: orders.OrderService.NewOrder.if.then
+			00: t59 = new [1]interface{} (varargs)
+			01: t60 = &t59[0:int]
+			02: t61 = make interface{} <- string (cardID)
+			03: *t60 = t61
+			04: t62 = slice t59[:]
+			05: t63 = github.com/pkg/errors.Errorf("invalid card %v":string, t62...)
+			06: return Order{}:Order, t63
+Block #26: orders.OrderService.NewOrder.if.done
+			00: t64 = calculateTotal(t11)
+			01: t65 = local github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.Authorisation (auth)
+			02: t66 = &s.payments [#2]
+			03: t67 = *t66
+			04: t68 = invoke t67.Authorise(ctx, t64)
+			05: t69 = extract t68 #0
+			06: *t65 = t69
+			07: t70 = extract t68 #1
+			08: t71 = t70 != nil:error
+			09: if t71 goto 27 else 28
+Block #27: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t70
+Block #28: orders.OrderService.NewOrder.if.else
+			00: t72 = &t65.Authorised [#0]
+			01: t73 = *t72
+			02: if t73 goto 30 else 29
+Block #29: orders.OrderService.NewOrder.if.then
+			00: t74 = &t65.Message [#1]
+			01: t75 = *t74
+			02: t76 = new [1]interface{} (varargs)
+			03: t77 = &t76[0:int]
+			04: t78 = make interface{} <- string (t75)
+			05: *t77 = t78
+			06: t79 = slice t76[:]
+			07: t80 = github.com/pkg/errors.Errorf("payment not autho...":string, t79...)
+			08: return Order{}:Order, t80
+Block #30: orders.OrderService.NewOrder.if.done
+			00: t81 = local github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment (shipment)
+			01: t82 = &t81.ID [#0]
+			02: t83 = github.com/google/uuid.NewString()
+			03: t84 = &t81.Name [#1]
+			04: t85 = &t81.Status [#2]
+			05: *t82 = t83
+			06: *t84 = customerID
+			07: *t85 = "awaiting shipment":string
+			08: t86 = &s.shipping [#3]
+			09: t87 = *t86
+			10: t88 = *t81
+			11: t89 = invoke t87.PostShipping(ctx, t88)
+			12: t90 = extract t89 #0
+			13: *t81 = t90
+			14: t91 = extract t89 #1
+			15: t92 = t91 != nil:error
+			16: if t92 goto 31 else 32
+Block #31: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t91
+Block #32: orders.OrderService.NewOrder.if.done
+			00: t93 = local Order (order)
+			01: t94 = &t93.ID [#0]
+			02: t95 = &t81.ID [#0]
+			03: t96 = *t95
+			04: t97 = &t93.CustomerID [#1]
+			05: t98 = &t93.Address [#3]
+			06: t99 = &t23[0:int]
+			07: t100 = *t99
+			08: t101 = &t93.Card [#4]
+			09: t102 = &t29[0:int]
+			10: t103 = *t102
+			11: t104 = &t93.Items [#5]
+			12: t105 = &t93.Shipment [#6]
+			13: t106 = *t81
+			14: t107 = &t93.Date [#7]
+			15: t108 = time.Now()
+			16: t109 = (time.Time).String(t108)
+			17: t110 = &t93.Total [#8]
+			18: *t94 = t96
+			19: *t97 = customerID
+			20: *t98 = t100
+			21: *t101 = t103
+			22: *t104 = t11
+			23: *t105 = t106
+			24: *t107 = t109
+			25: *t110 = t64
+			26: t111 = &s.db [#4]
+			27: t112 = *t111
+			28: t113 = invoke t112.GetCollection(ctx, "order_db":string, "orders":string)
+			29: t114 = extract t113 #0
+			30: t115 = extract t113 #1
+			31: t116 = t115 != nil:error
+			32: if t116 goto 33 else 34
+Block #33: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t115
+Block #34: orders.OrderService.NewOrder.if.done
+			00: t117 = *t93
+			01: t118 = make interface{} <- Order (t117)
+			02: t119 = invoke t114.InsertOne(ctx, t118)
+			03: t120 = t119 != nil:error
+			04: if t120 goto 35 else 36
+Block #35: orders.OrderService.NewOrder.if.then
+			00: return Order{}:Order, t119
+Block #36: orders.OrderService.NewOrder.if.done
+			00: t121 = &s.carts [#1]
+			01: t122 = *t121
+			02: t123 = invoke t122.DeleteCart(ctx, customerID)
+			03: t124 = *t93
+			04: return t124, nil:error
+		Parameters:
+			items = parameter items : []github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/carts.Item
+Function: orders.calculateTotal
+Block #0: orders.calculateTotal.entry
+			00: t0 = len(items)
+			01: jump 1
+Block #1: orders.calculateTotal.rangeindex.loop
+			00: t1 = phi [0: 0:float32, 2: t14] #amount
+			01: t2 = phi [0: -1:int, 2: t3] #rangeindex
+			02: t3 = t2 + 1:int
+			03: t4 = t3 < t0
+			04: if t4 goto 2 else 3
+Block #2: orders.calculateTotal.rangeindex.body
+			00: t5 = &items[t3]
+			01: t6 = *t5
+			02: t7 = local github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/carts.Item (item)
+			03: *t7 = t6
+			04: t8 = &t7.Quantity [#1]
+			05: t9 = *t8
+			06: t10 = convert float32 <- int (t9)
+			07: t11 = &t7.UnitPrice [#2]
+			08: t12 = *t11
+			09: t13 = t10 * t12
+			10: t14 = t1 + t13
+			11: jump 1
+Block #3: orders.calculateTotal.rangeindex.done
+			00: t15 = t1 + 4.99:float32
+			01: return t15
+		Parameters:
+			errs = parameter errs : []error
+Function: orders.any
+Block #0: orders.any.entry
+			00: t0 = len(errs)
+			01: jump 1
+Block #1: orders.any.rangeindex.loop
+			00: t1 = phi [0: -1:int, 2: t2] #rangeindex
+			01: t2 = t1 + 1:int
+			02: t3 = t2 < t0
+			03: if t3 goto 2 else 3
+Block #2: orders.any.rangeindex.body
+			00: t4 = &errs[t2]
+			01: t5 = *t4
+			02: t6 = t5 != nil:error
+			03: if t6 goto 4 else 1
+Block #3: orders.any.rangeindex.done
+			00: return nil:error
+Block #4: orders.any.if.then
+			00: return t5
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: orders.init
+Block #0: orders.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: orders.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = time.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = github.com/google/uuid.init()
+			05: t5 = github.com/pkg/errors.init()
+			06: t6 = go.mongodb.org/mongo-driver/bson.init()
+			07: t7 = github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/carts.init()
+			08: t8 = github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.init()
+			09: t9 = github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.init()
+			10: t10 = github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.init()
+			11: jump 2
+Block #2: orders.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.OrderService
+	Method: func(ctx context.Context, orderID string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order, error)
+	Method: func(ctx context.Context, customerID string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order, error)
+	Method: func(ctx context.Context, customerID string, addressID string, cardID string, cartID string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/orders.Order, error)

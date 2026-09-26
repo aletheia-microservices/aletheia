@@ -3,11 +3,11 @@ package detection_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	"analyzer/pkg/analysis/system-level/detection/constraints/foreignkeyconcurrency"
-	"analyzer/pkg/app"
-	"analyzer/pkg/config"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection/constraints/foreignkeyconcurrency"
+	"github.com/aletheia-microservices/aletheia/internal/app"
+	"github.com/aletheia-microservices/aletheia/internal/config"
 )
 
 // newDigotaApp builds the digota schema, where skus_db.skus.Parent references products_db.products.Id

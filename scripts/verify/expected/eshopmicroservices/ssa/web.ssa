@@ -1,0 +1,405 @@
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: web.init
+Block #0: web.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: web.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.init()
+			04: t4 = github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.init()
+			05: t5 = github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.init()
+			06: jump 2
+Block #2: web.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/web.WebApp
+	Method: func(ctx context.Context) ([]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto, error)
+	Method: func(ctx context.Context, categoryName string) ([]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, []string, string, error)
+	Method: func(ctx context.Context, productId string) error
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context, productId string) error
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/web.WebAppImpl
+	Method: func(ctx context.Context) ([]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto, error)
+		Parameters:
+			webapp = parameter webapp : *WebAppImpl
+			ctx = parameter ctx : context.Context
+Function: web.WebApp.OnGetOrdersAsync
+Block #0: web.WebApp.OnGetOrdersAsync.entry
+			00: t0 = &webapp.customerId [#4]
+			01: t1 = *t0
+			02: t2 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerResult (response)
+			03: t3 = &webapp.orderService [#3]
+			04: t4 = *t3
+			05: t5 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerQuery (complit)
+			06: t6 = &t5.CustomerId [#0]
+			07: *t6 = t1
+			08: t7 = *t5
+			09: t8 = invoke t4.GetOrdersByCustomer(ctx, t7)
+			10: t9 = extract t8 #0
+			11: *t2 = t9
+			12: t10 = extract t8 #1
+			13: t11 = t10 != nil:error
+			14: if t11 goto 1 else 2
+Block #1: web.WebApp.OnGetOrdersAsync.if.then
+			00: return nil:[]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto, t10
+Block #2: web.WebApp.OnGetOrdersAsync.if.done
+			00: t12 = &t2.Orders [#0]
+			01: t13 = *t12
+			02: return t13, nil:error
+	Method: func(ctx context.Context, categoryName string) ([]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, []string, string, error)
+		Parameters:
+			webapp = parameter webapp : *WebAppImpl
+			ctx = parameter ctx : context.Context
+			categoryName = parameter categoryName : string
+Function: web.WebApp.OnGetProductsAsync
+Block #0: web.WebApp.OnGetProductsAsync.entry
+			00: t0 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductsResponse (response)
+			01: t1 = &webapp.catalogService [#1]
+			02: t2 = *t1
+			03: t3 = invoke t2.GetProducts(ctx)
+			04: t4 = extract t3 #0
+			05: *t0 = t4
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: web.WebApp.OnGetProductsAsync.if.then
+			00: return nil:[]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, nil:[]string, "":string, t5
+Block #2: web.WebApp.OnGetProductsAsync.if.done
+			00: t7 = make map[string]bool 
+			01: t8 = &t0.Products [#0]
+			02: t9 = *t8
+			03: t10 = len(t9)
+			04: jump 3
+Block #3: web.WebApp.OnGetProductsAsync.rangeindex.loop
+			00: t11 = phi [2: -1:int, 6: t12] #rangeindex
+			01: t12 = t11 + 1:int
+			02: t13 = t12 < t10
+			03: if t13 goto 4 else 5
+Block #4: web.WebApp.OnGetProductsAsync.rangeindex.body
+			00: t14 = &t9[t12]
+			01: t15 = *t14
+			02: t16 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product (p)
+			03: *t16 = t15
+			04: t17 = &t16.Category [#2]
+			05: t18 = *t17
+			06: t19 = len(t18)
+			07: jump 6
+Block #5: web.WebApp.OnGetProductsAsync.rangeindex.done
+			00: t20 = range t7
+			01: jump 8
+Block #6: web.WebApp.OnGetProductsAsync.rangeindex.loop
+			00: t21 = phi [4: -1:int, 7: t22] #rangeindex
+			01: t22 = t21 + 1:int
+			02: t23 = t22 < t19
+			03: if t23 goto 7 else 3
+Block #7: web.WebApp.OnGetProductsAsync.rangeindex.body
+			00: t24 = &t18[t22]
+			01: t25 = *t24
+			02: t7[t25] = true:bool
+			03: jump 6
+Block #8: web.WebApp.OnGetProductsAsync.rangeiter.loop
+			00: t26 = phi [5: nil:[]string, 9: t33] #categoryList
+			01: t27 = next t20
+			02: t28 = extract t27 #0
+			03: if t28 goto 9 else 10
+Block #9: web.WebApp.OnGetProductsAsync.rangeiter.body
+			00: t29 = extract t27 #1
+			01: t30 = new [1]string (varargs)
+			02: t31 = &t30[0:int]
+			03: *t31 = t29
+			04: t32 = slice t30[:]
+			05: t33 = append(t26, t32...)
+			06: jump 8
+Block #10: web.WebApp.OnGetProductsAsync.rangeiter.done
+			00: t34 = categoryName != "":string
+			01: if t34 goto 11 else 13
+Block #11: web.WebApp.OnGetProductsAsync.if.then
+			00: t35 = &t0.Products [#0]
+			01: t36 = *t35
+			02: t37 = len(t36)
+			03: jump 14
+Block #12: web.WebApp.OnGetProductsAsync.if.done
+			00: t38 = phi [16: t42, 13: t41] #productList
+			01: t39 = phi [16: categoryName, 13: "":string] #selectedCategory
+			02: return t38, t26, t39, nil:error
+Block #13: web.WebApp.OnGetProductsAsync.if.else
+			00: t40 = &t0.Products [#0]
+			01: t41 = *t40
+			02: jump 12
+Block #14: web.WebApp.OnGetProductsAsync.rangeindex.loop
+			00: t42 = phi [11: nil:[]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, 17: t42, 19: t62] #productList
+			01: t43 = phi [11: -1:int, 17: t44, 19: t44] #rangeindex
+			02: t44 = t43 + 1:int
+			03: t45 = t44 < t37
+			04: if t45 goto 15 else 16
+Block #15: web.WebApp.OnGetProductsAsync.rangeindex.body
+			00: t46 = &t36[t44]
+			01: t47 = *t46
+			02: t48 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product (p)
+			03: *t48 = t47
+			04: t49 = &t48.Category [#2]
+			05: t50 = *t49
+			06: t51 = len(t50)
+			07: jump 17
+Block #16: web.WebApp.OnGetProductsAsync.rangeindex.done
+			00: jump 12
+Block #17: web.WebApp.OnGetProductsAsync.rangeindex.loop
+			00: t52 = phi [15: -1:int, 18: t53] #rangeindex
+			01: t53 = t52 + 1:int
+			02: t54 = t53 < t51
+			03: if t54 goto 18 else 14
+Block #18: web.WebApp.OnGetProductsAsync.rangeindex.body
+			00: t55 = &t50[t53]
+			01: t56 = *t55
+			02: t57 = t56 == categoryName
+			03: if t57 goto 19 else 17
+Block #19: web.WebApp.OnGetProductsAsync.if.then
+			00: t58 = *t48
+			01: t59 = new [1]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product (varargs)
+			02: t60 = &t59[0:int]
+			03: *t60 = t58
+			04: t61 = slice t59[:]
+			05: t62 = append(t42, t61...)
+			06: jump 14
+	Method: func(ctx context.Context, productId string) error
+		Parameters:
+			webapp = parameter webapp : *WebAppImpl
+			ctx = parameter ctx : context.Context
+			productId = parameter productId : string
+Function: web.WebApp.OnPostAddToCartAsync
+Block #0: web.WebApp.OnPostAddToCartAsync.entry
+			00: t0 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdResponse (productResponse)
+			01: t1 = &webapp.catalogService [#1]
+			02: t2 = *t1
+			03: t3 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdQuery (complit)
+			04: t4 = &t3.Id [#0]
+			05: *t4 = productId
+			06: t5 = *t3
+			07: t6 = invoke t2.GetProductById(ctx, t5)
+			08: t7 = extract t6 #0
+			09: *t0 = t7
+			10: t8 = extract t6 #1
+			11: t9 = t8 != nil:error
+			12: if t9 goto 1 else 2
+Block #1: web.WebApp.OnPostAddToCartAsync.if.then
+			00: return t8
+Block #2: web.WebApp.OnPostAddToCartAsync.if.done
+			00: t10 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketResult (basketResponse)
+			01: t11 = &webapp.basketService [#0]
+			02: t12 = *t11
+			03: t13 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketQuery (complit)
+			04: t14 = &t13.UserName [#0]
+			05: *t14 = "swn":string
+			06: t15 = *t13
+			07: t16 = invoke t12.GetBasket(ctx, t15)
+			08: t17 = extract t16 #0
+			09: *t10 = t17
+			10: t18 = extract t16 #1
+			11: t19 = t18 != nil:error
+			12: if t19 goto 3 else 4
+Block #3: web.WebApp.OnPostAddToCartAsync.if.then
+			00: return t18
+Block #4: web.WebApp.OnPostAddToCartAsync.if.done
+			00: t20 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart (retBasket)
+			01: t21 = &t10.Cart [#0]
+			02: t22 = *t21
+			03: *t20 = t22
+			04: t23 = &t20.Items [#1]
+			05: t24 = *t23
+			06: t25 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCartItem (complit)
+			07: t26 = &t25.ProductId [#3]
+			08: t27 = &t25.ProductName [#4]
+			09: t28 = &t0.Product [#0]
+			10: t29 = &t28.Name [#1]
+			11: t30 = *t29
+			12: t31 = &t25.Price [#2]
+			13: t32 = &t0.Product [#0]
+			14: t33 = &t32.Price [#5]
+			15: t34 = *t33
+			16: t35 = &t25.Quantity [#0]
+			17: t36 = *quantity
+			18: t37 = &t25.Color [#1]
+			19: t38 = *color
+			20: *t26 = productId
+			21: *t27 = t30
+			22: *t31 = t34
+			23: *t35 = t36
+			24: *t37 = t38
+			25: t39 = *t25
+			26: t40 = new [1]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCartItem (varargs)
+			27: t41 = &t40[0:int]
+			28: *t41 = t39
+			29: t42 = slice t40[:]
+			30: t43 = append(t24, t42...)
+			31: t44 = &t20.Items [#1]
+			32: *t44 = t43
+			33: t45 = &webapp.basketService [#0]
+			34: t46 = *t45
+			35: t47 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketRequest (complit)
+			36: t48 = &t47.Cart [#0]
+			37: t49 = *t20
+			38: *t48 = t49
+			39: t50 = *t47
+			40: t51 = invoke t46.StoreBasket(ctx, t50)
+			41: t52 = extract t51 #0
+			42: t53 = extract t51 #1
+			43: t54 = t53 != nil:error
+			44: if t54 goto 5 else 6
+Block #5: web.WebApp.OnPostAddToCartAsync.if.then
+			00: return t53
+Block #6: web.WebApp.OnPostAddToCartAsync.if.done
+			00: return nil:error
+	Method: func(ctx context.Context) error
+		Parameters:
+			webapp = parameter webapp : *WebAppImpl
+			ctx = parameter ctx : context.Context
+Function: web.WebApp.OnPostCheckoutAsync
+Block #0: web.WebApp.OnPostCheckoutAsync.entry
+			00: t0 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketResult (basketResponse)
+			01: t1 = &webapp.basketService [#0]
+			02: t2 = *t1
+			03: t3 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketQuery (complit)
+			04: t4 = &t3.UserName [#0]
+			05: *t4 = "swn":string
+			06: t5 = *t3
+			07: t6 = invoke t2.GetBasket(ctx, t5)
+			08: t7 = extract t6 #0
+			09: *t0 = t7
+			10: t8 = extract t6 #1
+			11: t9 = t8 != nil:error
+			12: if t9 goto 1 else 2
+Block #1: web.WebApp.OnPostCheckoutAsync.if.then
+			00: return t8
+Block #2: web.WebApp.OnPostCheckoutAsync.if.done
+			00: t10 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart (cart)
+			01: t11 = &t0.Cart [#0]
+			02: t12 = *t11
+			03: *t10 = t12
+			04: t13 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketCheckoutDto (order)
+			05: t14 = &webapp.customerId [#4]
+			06: t15 = *t14
+			07: t16 = &t13.CustomerId [#1]
+			08: *t16 = t15
+			09: t17 = &t10.UserName [#0]
+			10: t18 = *t17
+			11: t19 = &t13.UserName [#0]
+			12: *t19 = t18
+			13: t20 = &t10.TotalPrice [#2]
+			14: t21 = *t20
+			15: t22 = &t13.TotalPrice [#2]
+			16: *t22 = t21
+			17: t23 = &webapp.basketService [#0]
+			18: t24 = *t23
+			19: t25 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketCommand (complit)
+			20: t26 = &t25.BasketCheckoutDto [#0]
+			21: t27 = *t13
+			22: *t26 = t27
+			23: t28 = *t25
+			24: t29 = invoke t24.CheckoutBasket(ctx, t28)
+			25: return nil:error
+	Method: func(ctx context.Context, productId string) error
+		Parameters:
+			webapp = parameter webapp : *WebAppImpl
+			ctx = parameter ctx : context.Context
+			productId = parameter productId : string
+Function: web.WebApp.OnPostRemoveToCartAsync
+Block #0: web.WebApp.OnPostRemoveToCartAsync.entry
+			00: t0 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketResult (basketResponse)
+			01: t1 = &webapp.basketService [#0]
+			02: t2 = *t1
+			03: t3 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketQuery (complit)
+			04: t4 = &t3.UserName [#0]
+			05: *t4 = "swn":string
+			06: t5 = *t3
+			07: t6 = invoke t2.GetBasket(ctx, t5)
+			08: t7 = extract t6 #0
+			09: *t0 = t7
+			10: t8 = extract t6 #1
+			11: t9 = t8 != nil:error
+			12: if t9 goto 1 else 2
+Block #1: web.WebApp.OnPostRemoveToCartAsync.if.then
+			00: return t8
+Block #2: web.WebApp.OnPostRemoveToCartAsync.if.done
+			00: t10 = new github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart (cart)
+			01: t11 = &t0.Cart [#0]
+			02: t12 = *t11
+			03: *t10 = t12
+			04: t13 = removeAll(t10, productId)
+			05: t14 = &webapp.basketService [#0]
+			06: t15 = *t14
+			07: t16 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketRequest (complit)
+			08: t17 = &t16.Cart [#0]
+			09: t18 = *t10
+			10: *t17 = t18
+			11: t19 = *t16
+			12: t20 = invoke t15.StoreBasket(ctx, t19)
+			13: t21 = extract t20 #0
+			14: t22 = extract t20 #1
+			15: t23 = t22 != nil:error
+			16: if t23 goto 3 else 4
+Block #3: web.WebApp.OnPostRemoveToCartAsync.if.then
+			00: return t22
+Block #4: web.WebApp.OnPostRemoveToCartAsync.if.done
+			00: return nil:error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			basketService = parameter basketService : github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketService
+			catalogService = parameter catalogService : github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CatalogService
+			discountService = parameter discountService : github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DiscountService
+			orderService = parameter orderService : github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderService
+Function: web.NewWebAppImpl
+Block #0: web.NewWebAppImpl.entry
+			00: t0 = new WebAppImpl (complit)
+			01: t1 = &t0.basketService [#0]
+			02: t2 = &t0.catalogService [#1]
+			03: t3 = &t0.discountService [#2]
+			04: t4 = &t0.orderService [#3]
+			05: t5 = &t0.customerId [#4]
+			06: *t1 = basketService
+			07: *t2 = catalogService
+			08: *t3 = discountService
+			09: *t4 = orderService
+			10: *t5 = "5334c996-8457-4cf...":string
+			11: t6 = make WebApp <- *WebAppImpl (t0)
+			12: return t6, nil:error
+	Global: quantity, Type: *int
+	Global: color, Type: *string
+		Parameters:
+			cart = parameter cart : *github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart
+			productId = parameter productId : string
+Function: web.removeAll
+Block #0: web.removeAll.entry
+			00: t0 = &cart.Items [#1]
+			01: t1 = *t0
+			02: t2 = slice t1[:0:int]
+			03: t3 = &cart.Items [#1]
+			04: t4 = *t3
+			05: t5 = len(t4)
+			06: jump 1
+Block #1: web.removeAll.rangeindex.loop
+			00: t6 = phi [0: t2, 2: t6, 4: t20] #remainingItems
+			01: t7 = phi [0: -1:int, 2: t8, 4: t8] #rangeindex
+			02: t8 = t7 + 1:int
+			03: t9 = t8 < t5
+			04: if t9 goto 2 else 3
+Block #2: web.removeAll.rangeindex.body
+			00: t10 = &t4[t8]
+			01: t11 = *t10
+			02: t12 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCartItem (item)
+			03: *t12 = t11
+			04: t13 = &t12.ProductId [#3]
+			05: t14 = *t13
+			06: t15 = t14 != productId
+			07: if t15 goto 4 else 1
+Block #3: web.removeAll.rangeindex.done
+			00: return t6
+Block #4: web.removeAll.if.then
+			00: t16 = *t12
+			01: t17 = new [1]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCartItem (varargs)
+			02: t18 = &t17[0:int]
+			03: *t18 = t16
+			04: t19 = slice t17[:]
+			05: t20 = append(t6, t19...)
+			06: jump 1

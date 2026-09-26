@@ -1,8 +1,8 @@
 package abstractgraph_test
 
 import (
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
 )
 
 func primaryWrite(t string, dbpath string, callID string) *abstractgraph.AbstractTaint {

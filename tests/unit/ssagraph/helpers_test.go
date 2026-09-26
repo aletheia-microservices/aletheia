@@ -13,11 +13,11 @@ import (
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/service-level/ssagraph"
-	ssaparser "analyzer/pkg/analysis/service-level/ssagraph/parser"
-	"analyzer/pkg/analysis/service-level/ssagraph/tainter"
-	"analyzer/pkg/app"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
+	ssaparser "github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph/parser"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph/tainter"
+	"github.com/aletheia-microservices/aletheia/internal/app"
 )
 
 // newTestGraph returns an empty graph for a service method (no app is needed for these tests)

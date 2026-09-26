@@ -5,8 +5,8 @@ import (
 
 	"golang.org/x/tools/go/ssa"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/service-level/ssagraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 )
 
 func TestCreateAndAddNewEdgeDeduplicates(t *testing.T) {

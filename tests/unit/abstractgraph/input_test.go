@@ -1,7 +1,7 @@
 package abstractgraph_test
 
 import (
-	"analyzer/pkg/analysis/service-level/ssagraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 	"go/constant"
 	"go/types"
 	"os"
@@ -11,11 +11,11 @@ import (
 
 	"golang.org/x/tools/go/ssa"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	abstractgraphparser "analyzer/pkg/analysis/system-level/abstractgraph/parser"
-	"analyzer/pkg/app"
-	"analyzer/pkg/app/backends"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	abstractgraphparser "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/parser"
+	"github.com/aletheia-microservices/aletheia/internal/app"
+	"github.com/aletheia-microservices/aletheia/internal/app/backends"
 )
 
 const inputYAML = `calls:

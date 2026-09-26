@@ -1,0 +1,23 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 3]
+entry request: APIService.ReadPage()
+	FOREIGN KEY READS #1:
+		READ (FOREIGN KEY): MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
+			- field: movie_info_db.movie_info.Casts[*].CastInfoID
+			- constraint: FOREIGN_KEY movie_info_db.movie_info.Casts[*].CastInfoID REFERENCES cast_info_db.cast.CastInfoID [MANDATORY]
+		READ (ORIGIN): CastInfoService.ReadCastInfos() ... cast_info_db.cast.FindMany()
+			- field: cast_info_db.cast.CastInfoID
+	FOREIGN KEY READS #2:
+		READ (FOREIGN KEY): MovieInfoService.ReadMovieInfo() ... movie_info_db.movie_info.FindOne()
+			- field: movie_info_db.movie_info.PlotID
+			- constraint: FOREIGN_KEY movie_info_db.movie_info.PlotID REFERENCES plot_db.plot.PlotID [MANDATORY]
+		READ (ORIGIN): PlotService.ReadPlot() ... plot_db.plot.FindOne()
+			- field: plot_db.plot.PlotID
+	FOREIGN KEY READS #3:
+		READ (FOREIGN KEY): MovieReviewService.ReadMovieReviews() ... movie_review_db.movie_review.FindOne()
+			- field: movie_review_db.movie_review.Reviews[*].ReviewID
+			- constraint: FOREIGN_KEY movie_review_db.movie_review.Reviews[*].ReviewID REFERENCES review_storage_db.review.ReviewID [MANDATORY]
+		READ (ORIGIN): ReviewStorageService.ReadReviews() ... review_storage_db.review.FindMany()
+			- field: review_storage_db.review.ReviewID

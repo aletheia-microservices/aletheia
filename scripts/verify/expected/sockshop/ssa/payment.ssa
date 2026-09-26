@@ -1,0 +1,78 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.PaymentService
+	Method: func(ctx context.Context, amount float32) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.Authorisation, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			declineOverAmount = parameter declineOverAmount : string
+Function: payment.NewPaymentServiceImpl
+Block #0: payment.NewPaymentServiceImpl.entry
+			00: t0 = new PaymentServiceImpl (complit)
+			01: t1 = &t0.declineOverAmount [#0]
+			02: *t1 = 50:float32
+			03: t2 = make PaymentService <- *PaymentServiceImpl (t0)
+			04: return t2, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.PaymentServiceImpl
+	Method: func(ctx context.Context, amount float32) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.Authorisation, error)
+		Parameters:
+			s = parameter s : *PaymentServiceImpl
+			ctx = parameter ctx : context.Context
+			amount = parameter amount : float32
+Function: payment.PaymentService.Authorise
+Block #0: payment.PaymentService.Authorise.entry
+			00: t0 = amount == 0:float32
+			01: if t0 goto 1 else 2
+Block #1: payment.PaymentService.Authorise.if.then
+			00: t1 = *ErrInvalidPaymentAmount
+			01: return Authorisation{}:Authorisation, t1
+Block #2: payment.PaymentService.Authorise.if.done
+			00: t2 = amount < 0:float32
+			01: if t2 goto 3 else 4
+Block #3: payment.PaymentService.Authorise.if.then
+			00: t3 = *ErrInvalidPaymentAmount
+			01: return Authorisation{}:Authorisation, t3
+Block #4: payment.PaymentService.Authorise.if.done
+			00: t4 = &s.declineOverAmount [#0]
+			01: t5 = *t4
+			02: t6 = amount <= t5
+			03: if t6 goto 5 else 6
+Block #5: payment.PaymentService.Authorise.if.then
+			00: t7 = local Authorisation (complit)
+			01: t8 = &t7.Authorised [#0]
+			02: t9 = &t7.Message [#1]
+			03: *t8 = true:bool
+			04: *t9 = "Payment authorised":string
+			05: t10 = *t7
+			06: return t10, nil:error
+Block #6: payment.PaymentService.Authorise.if.done
+			00: t11 = local Authorisation (complit)
+			01: t12 = &t11.Authorised [#0]
+			02: t13 = &t11.Message [#1]
+			03: t14 = &s.declineOverAmount [#0]
+			04: t15 = *t14
+			05: t16 = new [1]any (varargs)
+			06: t17 = &t16[0:int]
+			07: t18 = make any <- float32 (t15)
+			08: *t17 = t18
+			09: t19 = slice t16[:]
+			10: t20 = fmt.Sprintf("Payment declined:...":string, t19...)
+			11: *t12 = false:bool
+			12: *t13 = t20
+			13: t21 = *t11
+			14: return t21, nil:error
+	Global: ErrInvalidPaymentAmount, Type: *error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/payment.Authorisation
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: payment.init
+Block #0: payment.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: payment.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = errors.init()
+			03: t3 = fmt.init()
+			04: t4 = errors.New("invalid payment a...":string)
+			05: *ErrInvalidPaymentAmount = t4
+			06: jump 2
+Block #2: payment.init.init.done
+			00: return

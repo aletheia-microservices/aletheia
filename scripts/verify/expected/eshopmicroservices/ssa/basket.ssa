@@ -1,0 +1,444 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketCheckoutDto
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketChekoutEvent
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketService
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketResponse, error)
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.DeleteBasketCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.DeleteBasketResult, error)
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketResult, error)
+	Method: func(ctx context.Context, request github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketResponse, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+			discountService = parameter discountService : github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.DiscountService
+Function: basket.NewBasketServiceImpl
+Block #0: basket.NewBasketServiceImpl.entry
+			00: t0 = new BasketServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.queue [#1]
+			03: t3 = &t0.discountService [#2]
+			04: *t1 = database
+			05: *t2 = queue
+			06: *t3 = discountService
+			07: t4 = make BasketService <- *BasketServiceImpl (t0)
+			08: return t4, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCartItem
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketResponse
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketRequest
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketResponse
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.DeleteBasketResult
+		Parameters:
+			basket = parameter basket : BasketCheckoutDto
+Function: basket.adapt
+Block #0: basket.adapt.entry
+			00: t0 = local BasketCheckoutDto (basket)
+			01: *t0 = basket
+			02: t1 = local BasketChekoutEvent (complit)
+			03: t2 = &t1.UserName [#0]
+			04: t3 = &t0.UserName [#0]
+			05: t4 = *t3
+			06: t5 = &t1.CustomerId [#1]
+			07: t6 = &t0.CustomerId [#1]
+			08: t7 = *t6
+			09: t8 = &t1.TotalPrice [#2]
+			10: t9 = &t0.TotalPrice [#2]
+			11: t10 = *t9
+			12: t11 = &t1.FirstName [#3]
+			13: t12 = &t0.FirstName [#3]
+			14: t13 = *t12
+			15: t14 = &t1.LastName [#4]
+			16: t15 = &t0.LastName [#4]
+			17: t16 = *t15
+			18: t17 = &t1.EmailAddress [#5]
+			19: t18 = &t0.EmailAddress [#5]
+			20: t19 = *t18
+			21: t20 = &t1.AddressLine [#6]
+			22: t21 = &t0.AddressLine [#6]
+			23: t22 = *t21
+			24: t23 = &t1.Country [#7]
+			25: t24 = &t0.Country [#7]
+			26: t25 = *t24
+			27: t26 = &t1.State [#8]
+			28: t27 = &t0.State [#8]
+			29: t28 = *t27
+			30: t29 = &t1.ZipCode [#9]
+			31: t30 = &t0.ZipCode [#9]
+			32: t31 = *t30
+			33: t32 = &t1.CardName [#10]
+			34: t33 = &t0.CardName [#10]
+			35: t34 = *t33
+			36: t35 = &t1.CardNumber [#11]
+			37: t36 = &t0.CardNumber [#11]
+			38: t37 = *t36
+			39: t38 = &t1.Expiration [#12]
+			40: t39 = &t0.Expiration [#12]
+			41: t40 = *t39
+			42: t41 = &t1.CVV [#13]
+			43: t42 = &t0.CVV [#13]
+			44: t43 = *t42
+			45: t44 = &t1.PaymentMethod [#14]
+			46: t45 = &t0.PaymentMethod [#14]
+			47: t46 = *t45
+			48: *t2 = t4
+			49: *t5 = t7
+			50: *t8 = t10
+			51: *t11 = t13
+			52: *t14 = t16
+			53: *t17 = t19
+			54: *t20 = t22
+			55: *t23 = t25
+			56: *t26 = t28
+			57: *t29 = t31
+			58: *t32 = t34
+			59: *t35 = t37
+			60: *t38 = t40
+			61: *t41 = t43
+			62: *t44 = t46
+			63: t47 = *t1
+			64: return t47
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: basket.init
+Block #0: basket.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: basket.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = go.mongodb.org/mongo-driver/bson.init()
+			05: t5 = github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.init()
+			06: jump 2
+Block #2: basket.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketResult
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.DeleteBasketCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketServiceImpl
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.CheckoutBasketResponse, error)
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : CheckoutBasketCommand
+Function: basket.BasketService.CheckoutBasket
+Block #0: basket.BasketService.CheckoutBasket.entry
+			00: t0 = local CheckoutBasketCommand (command)
+			01: *t0 = command
+			02: t1 = local ShoppingCart (basket)
+			03: t2 = &t0.BasketCheckoutDto [#0]
+			04: t3 = &t2.UserName [#0]
+			05: t4 = *t3
+			06: t5 = (*BasketServiceImpl).getBasket(s, ctx, t4)
+			07: t6 = extract t5 #0
+			08: *t1 = t6
+			09: t7 = extract t5 #1
+			10: t8 = t7 != nil:error
+			11: if t8 goto 1 else 2
+Block #1: basket.BasketService.CheckoutBasket.if.then
+			00: t9 = local CheckoutBasketResponse (complit)
+			01: t10 = &t9.IsSuccess [#0]
+			02: *t10 = false:bool
+			03: t11 = *t9
+			04: return t11, t7
+Block #2: basket.BasketService.CheckoutBasket.if.done
+			00: t12 = local BasketChekoutEvent (eventMessage)
+			01: t13 = &t0.BasketCheckoutDto [#0]
+			02: t14 = *t13
+			03: t15 = adapt(t14)
+			04: *t12 = t15
+			05: t16 = &t1.TotalPrice [#2]
+			06: t17 = *t16
+			07: t18 = &t12.TotalPrice [#2]
+			08: *t18 = t17
+			09: t19 = &s.queue [#1]
+			10: t20 = *t19
+			11: t21 = *t12
+			12: t22 = make interface{} <- BasketChekoutEvent (t21)
+			13: t23 = invoke t20.Push(ctx, t22)
+			14: t24 = extract t23 #0
+			15: t25 = extract t23 #1
+			16: t26 = t25 != nil:error
+			17: if t26 goto 3 else 5
+Block #3: basket.BasketService.CheckoutBasket.if.then
+			00: t27 = local CheckoutBasketResponse (complit)
+			01: t28 = &t27.IsSuccess [#0]
+			02: *t28 = false:bool
+			03: t29 = *t27
+			04: return t29, t25
+Block #4: basket.BasketService.CheckoutBasket.if.done
+			00: t30 = &t0.BasketCheckoutDto [#0]
+			01: t31 = &t30.UserName [#0]
+			02: t32 = *t31
+			03: t33 = (*BasketServiceImpl).deleteBasket(s, ctx, t32)
+			04: t34 = t33 != nil:error
+			05: if t34 goto 6 else 7
+Block #5: basket.BasketService.CheckoutBasket.cond.false
+			00: if t24 goto 4 else 3
+Block #6: basket.BasketService.CheckoutBasket.if.then
+			00: t35 = local CheckoutBasketResponse (complit)
+			01: t36 = &t35.IsSuccess [#0]
+			02: *t36 = false:bool
+			03: t37 = *t35
+			04: return t37, t33
+Block #7: basket.BasketService.CheckoutBasket.if.done
+			00: t38 = local CheckoutBasketResponse (complit)
+			01: t39 = &t38.IsSuccess [#0]
+			02: *t39 = true:bool
+			03: t40 = *t38
+			04: return t40, nil:error
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.DeleteBasketCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.DeleteBasketResult, error)
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			query = parameter query : DeleteBasketCommand
+Function: basket.BasketService.DeleteBasket
+Block #0: basket.BasketService.DeleteBasket.entry
+			00: t0 = local DeleteBasketCommand (query)
+			01: *t0 = query
+			02: t1 = &t0.UserName [#0]
+			03: t2 = *t1
+			04: t3 = (*BasketServiceImpl).deleteBasket(s, ctx, t2)
+			05: t4 = t3 != nil:error
+			06: if t4 goto 1 else 2
+Block #1: basket.BasketService.DeleteBasket.if.then
+			00: t5 = local DeleteBasketResult (complit)
+			01: t6 = &t5.IsSuccess [#0]
+			02: *t6 = false:bool
+			03: t7 = *t5
+			04: return t7, t3
+Block #2: basket.BasketService.DeleteBasket.if.done
+			00: t8 = local DeleteBasketResult (complit)
+			01: t9 = &t8.IsSuccess [#0]
+			02: *t9 = true:bool
+			03: t10 = *t8
+			04: return t10, nil:error
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketResult, error)
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			query = parameter query : GetBasketQuery
+Function: basket.BasketService.GetBasket
+Block #0: basket.BasketService.GetBasket.entry
+			00: t0 = local GetBasketQuery (query)
+			01: *t0 = query
+			02: t1 = &t0.UserName [#0]
+			03: t2 = *t1
+			04: t3 = (*BasketServiceImpl).getBasket(s, ctx, t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: basket.BasketService.GetBasket.if.then
+			00: return GetBasketResult{}:GetBasketResult, t5
+Block #2: basket.BasketService.GetBasket.if.done
+			00: t7 = local GetBasketResult (complit)
+			01: t8 = &t7.Cart [#0]
+			02: *t8 = t4
+			03: t9 = *t7
+			04: return t9, nil:error
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketRequest) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.StoreBasketResponse, error)
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : StoreBasketRequest
+Function: basket.BasketService.StoreBasket
+Block #0: basket.BasketService.StoreBasket.entry
+			00: t0 = local StoreBasketRequest (command)
+			01: *t0 = command
+			02: t1 = &t0.Cart [#0]
+			03: t2 = &t1.Items [#1]
+			04: t3 = *t2
+			05: t4 = len(t3)
+			06: jump 1
+Block #1: basket.BasketService.StoreBasket.rangeindex.loop
+			00: t5 = phi [0: -1:int, 2: t6, 4: t6] #rangeindex
+			01: t6 = t5 + 1:int
+			02: t7 = t6 < t4
+			03: if t7 goto 2 else 3
+Block #2: basket.BasketService.StoreBasket.rangeindex.body
+			00: t8 = &t3[t6]
+			01: t9 = *t8
+			02: t10 = local ShoppingCartItem (item)
+			03: *t10 = t9
+			04: t11 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.Coupon (coupon)
+			05: t12 = &s.discountService [#2]
+			06: t13 = *t12
+			07: t14 = local github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/discount.GetDiscountRequest (complit)
+			08: t15 = &t14.ProductName [#0]
+			09: t16 = &t10.ProductName [#4]
+			10: t17 = *t16
+			11: *t15 = t17
+			12: t18 = *t14
+			13: t19 = invoke t13.GetDiscount(ctx, t18)
+			14: t20 = extract t19 #0
+			15: *t11 = t20
+			16: t21 = extract t19 #1
+			17: t22 = t21 == nil:error
+			18: if t22 goto 4 else 1
+Block #3: basket.BasketService.StoreBasket.rangeindex.done
+			00: t23 = &t0.Cart [#0]
+			01: t24 = &t0.Cart [#0]
+			02: t25 = *t24
+			03: t26 = calculateTotalPrice(t25)
+			04: t27 = &t23.TotalPrice [#2]
+			05: *t27 = t26
+			06: t28 = &t0.Cart [#0]
+			07: t29 = *t28
+			08: t30 = (*BasketServiceImpl).storeBasket(s, ctx, t29)
+			09: t31 = t30 != nil:error
+			10: if t31 goto 5 else 6
+Block #4: basket.BasketService.StoreBasket.if.then
+			00: t32 = &t11.Amount [#3]
+			01: t33 = *t32
+			02: t34 = &t10.Price [#2]
+			03: t35 = *t34
+			04: t36 = t35 - t33
+			05: t37 = &t10.Price [#2]
+			06: *t37 = t36
+			07: jump 1
+Block #5: basket.BasketService.StoreBasket.if.then
+			00: return StoreBasketResponse{}:StoreBasketResponse, t30
+Block #6: basket.BasketService.StoreBasket.if.done
+			00: t38 = local StoreBasketResponse (complit)
+			01: t39 = &t38.UserName [#0]
+			02: t40 = &t0.Cart [#0]
+			03: t41 = &t40.UserName [#0]
+			04: t42 = *t41
+			05: *t39 = t42
+			06: t43 = *t38
+			07: return t43, nil:error
+	Method: func(ctx context.Context, username string) error
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+Function: basket.BasketService.deleteBasket
+Block #0: basket.BasketService.deleteBasket.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "basket_db":string, "basket":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: basket.BasketService.deleteBasket.if.then
+			00: return t4
+Block #2: basket.BasketService.deleteBasket.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "UserName":string
+			05: t10 = make interface{} <- string (username)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.DeleteOne(ctx, t11)
+			09: return t12
+	Method: func(ctx context.Context, username string) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart, error)
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+Function: basket.BasketService.getBasket
+Block #0: basket.BasketService.getBasket.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "basket_db":string, "basket":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: basket.BasketService.getBasket.if.then
+			00: return ShoppingCart{}:ShoppingCart, t4
+Block #2: basket.BasketService.getBasket.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "UserName":string
+			05: t10 = make interface{} <- string (username)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: basket.BasketService.getBasket.if.then
+			00: return ShoppingCart{}:ShoppingCart, t14
+Block #4: basket.BasketService.getBasket.if.done
+			00: t16 = new ShoppingCart (cart)
+			01: t17 = make interface{} <- *ShoppingCart (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: basket.BasketService.getBasket.if.then
+			00: return ShoppingCart{}:ShoppingCart, t20
+Block #6: basket.BasketService.getBasket.if.done
+			00: if t19 goto 8 else 7
+Block #7: basket.BasketService.getBasket.if.then
+			00: t22 = new [1]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string (username)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = fmt.Errorf("basket not found ...":string, t25...)
+			06: return ShoppingCart{}:ShoppingCart, t26
+Block #8: basket.BasketService.getBasket.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context, basket github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.ShoppingCart) error
+		Parameters:
+			s = parameter s : *BasketServiceImpl
+			ctx = parameter ctx : context.Context
+			basket = parameter basket : ShoppingCart
+Function: basket.BasketService.storeBasket
+Block #0: basket.BasketService.storeBasket.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "basket_db":string, "basket":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: basket.BasketService.storeBasket.if.then
+			00: return t4
+Block #2: basket.BasketService.storeBasket.if.done
+			00: t6 = make interface{} <- ShoppingCart (basket)
+			01: t7 = invoke t3.InsertOne(ctx, t6)
+			02: return t7
+		Parameters:
+			cart = parameter cart : ShoppingCart
+Function: basket.calculateTotalPrice
+Block #0: basket.calculateTotalPrice.entry
+			00: t0 = local ShoppingCart (cart)
+			01: *t0 = cart
+			02: t1 = &t0.Items [#1]
+			03: t2 = *t1
+			04: t3 = len(t2)
+			05: jump 1
+Block #1: basket.calculateTotalPrice.rangeindex.loop
+			00: t4 = phi [0: 0:float64, 2: t17] #total
+			01: t5 = phi [0: -1:int, 2: t6] #rangeindex
+			02: t6 = t5 + 1:int
+			03: t7 = t6 < t3
+			04: if t7 goto 2 else 3
+Block #2: basket.calculateTotalPrice.rangeindex.body
+			00: t8 = &t2[t6]
+			01: t9 = *t8
+			02: t10 = local ShoppingCartItem (item)
+			03: *t10 = t9
+			04: t11 = &t10.Price [#2]
+			05: t12 = *t11
+			06: t13 = &t10.Quantity [#0]
+			07: t14 = *t13
+			08: t15 = convert float64 <- int (t14)
+			09: t16 = t12 * t15
+			10: t17 = t4 + t16
+			11: jump 1
+Block #3: basket.calculateTotalPrice.rangeindex.done
+			00: return t4
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.GetBasketQuery

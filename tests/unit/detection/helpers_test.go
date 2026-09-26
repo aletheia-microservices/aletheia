@@ -6,12 +6,12 @@ import (
 	"strings"
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	"analyzer/pkg/analysis/system-level/detection"
-	"analyzer/pkg/app"
-	"analyzer/pkg/app/backends"
-	"analyzer/pkg/utils"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection"
+	"github.com/aletheia-microservices/aletheia/internal/app"
+	"github.com/aletheia-microservices/aletheia/internal/app/backends"
+	"github.com/aletheia-microservices/aletheia/internal/utils"
 )
 
 // newApp returns an app with the given databases, mapped from name to type (e.g., "NoSQLDatabase", "Queue")

@@ -1,0 +1,71 @@
+package foreignkeyconcurrency
+
+import (
+	"github.com/aletheia-microservices/aletheia/internal/app/backends"
+)
+
+type DangerousDelete struct {
+	delete           *DeleteOperation
+	concurrentWrites []*ConcurrentWrite
+}
+
+func (dd *DangerousDelete) CallString() string {
+	return dd.delete.call.String()
+}
+
+type ConcurrentWrite struct {
+	write          *WriteOperation
+	affectedFields []*backends.Field
+	database       *backends.Database
+	schema         *backends.Schema
+}
+
+func (cw *ConcurrentWrite) CallString() string {
+	return cw.write.call.String()
+}
+
+func (cw *ConcurrentWrite) EntryString() string {
+	return cw.write.request.entry.String()
+}
+
+func (detector *ForeignKeyConcurrencyDetector) checkInconsistencies() {
+	for _, request := range detector.requests {
+		for _, delete := range request.getAllDeleteOperations() {
+			var concurrentWrites map[*WriteOperation][]*backends.Field
+
+			for _, otherRequest := range detector.requests {
+				if otherRequest.idx == request.idx {
+					continue
+				}
+				for _, otherWrite := range otherRequest.getAllWriteOperations() {
+					for _, otherField := range otherWrite.fields {
+						for _, deletedField := range delete.schema.GetAllFieldsLst() {
+							if otherField.HasConstraintForeignKeyToField(deletedField) {
+								if concurrentWrites == nil {
+									concurrentWrites = make(map[*WriteOperation][]*backends.Field)
+								}
+								concurrentWrites[otherWrite] = append(concurrentWrites[otherWrite], otherField)
+							}
+						}
+					}
+				}
+			}
+
+			if concurrentWrites != nil {
+				dangerousDelete := &DangerousDelete{
+					delete: delete,
+				}
+				for concurrentWrite, affectedFields := range concurrentWrites {
+					concurrentWrite := &ConcurrentWrite{
+						write:          concurrentWrite,
+						affectedFields: affectedFields,
+					}
+					concurrentWrite.database = affectedFields[0].GetDatabase()
+					concurrentWrite.schema = affectedFields[0].GetSchema()
+					dangerousDelete.concurrentWrites = append(dangerousDelete.concurrentWrites, concurrentWrite)
+				}
+				detector.addDangerousDelete(request, dangerousDelete)
+			}
+		}
+	}
+}

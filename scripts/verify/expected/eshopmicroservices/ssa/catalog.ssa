@@ -1,0 +1,361 @@
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: catalog.init
+Block #0: catalog.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: catalog.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = github.com/google/uuid.init()
+			05: t5 = go.mongodb.org/mongo-driver/bson.init()
+			06: jump 2
+Block #2: catalog.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CreateProductCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.DeleteProductCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdQuery
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CatalogService
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CreateProductCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CreateProductResponse, error)
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.DeleteProductCommand) error
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByCategoryQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByCategoryResponse, error)
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdResponse, error)
+	Method: func(ctx context.Context) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductsResponse, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CatalogServiceImpl
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CreateProductCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CreateProductResponse, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : CreateProductCommand
+Function: catalog.CatalogService.CreateProduct
+Block #0: catalog.CatalogService.CreateProduct.entry
+			00: t0 = local CreateProductCommand (command)
+			01: *t0 = command
+			02: t1 = local Product (product)
+			03: t2 = &t1.Id [#0]
+			04: t3 = github.com/google/uuid.NewString()
+			05: t4 = &t1.Name [#1]
+			06: t5 = &t0.Name [#0]
+			07: t6 = *t5
+			08: t7 = &t1.Category [#2]
+			09: t8 = &t0.Category [#1]
+			10: t9 = *t8
+			11: t10 = &t1.Description [#3]
+			12: t11 = &t0.Description [#2]
+			13: t12 = *t11
+			14: t13 = &t1.ImageFile [#4]
+			15: t14 = &t0.ImageFile [#3]
+			16: t15 = *t14
+			17: t16 = &t1.Price [#5]
+			18: t17 = &t0.Price [#4]
+			19: t18 = *t17
+			20: *t2 = t3
+			21: *t4 = t6
+			22: *t7 = t9
+			23: *t10 = t12
+			24: *t13 = t15
+			25: *t16 = t18
+			26: t19 = *t1
+			27: t20 = (*CatalogServiceImpl).store(s, ctx, t19)
+			28: t21 = t20 != nil:error
+			29: if t21 goto 1 else 2
+Block #1: catalog.CatalogService.CreateProduct.if.then
+			00: return CreateProductResponse{}:CreateProductResponse, t20
+Block #2: catalog.CatalogService.CreateProduct.if.done
+			00: t22 = local CreateProductResponse (complit)
+			01: t23 = &t22.Product [#0]
+			02: t24 = *t1
+			03: *t23 = t24
+			04: t25 = *t22
+			05: return t25, nil:error
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.DeleteProductCommand) error
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : DeleteProductCommand
+Function: catalog.CatalogService.DeleteProduct
+Block #0: catalog.CatalogService.DeleteProduct.entry
+			00: t0 = local DeleteProductCommand (command)
+			01: *t0 = command
+			02: t1 = &t0.Id [#0]
+			03: t2 = *t1
+			04: t3 = (*CatalogServiceImpl).delete(s, ctx, t2)
+			05: return t3
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByCategoryQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByCategoryResponse, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			query = parameter query : GetProductByCategoryQuery
+Function: catalog.CatalogService.GetProductByCategory
+Block #0: catalog.CatalogService.GetProductByCategory.entry
+			00: t0 = local GetProductByCategoryQuery (query)
+			01: *t0 = query
+			02: t1 = &t0.Category [#0]
+			03: t2 = *t1
+			04: t3 = (*CatalogServiceImpl).loadByCategory(s, ctx, t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: catalog.CatalogService.GetProductByCategory.if.then
+			00: return GetProductByCategoryResponse{}:GetProductByCategoryResponse, t5
+Block #2: catalog.CatalogService.GetProductByCategory.if.done
+			00: t7 = local GetProductByCategoryResponse (complit)
+			01: t8 = &t7.Product [#0]
+			02: *t8 = t4
+			03: t9 = *t7
+			04: return t9, nil:error
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdResponse, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			query = parameter query : GetProductByIdQuery
+Function: catalog.CatalogService.GetProductById
+Block #0: catalog.CatalogService.GetProductById.entry
+			00: t0 = local GetProductByIdQuery (query)
+			01: *t0 = query
+			02: t1 = &t0.Id [#0]
+			03: t2 = *t1
+			04: t3 = (*CatalogServiceImpl).load(s, ctx, t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: catalog.CatalogService.GetProductById.if.then
+			00: return GetProductByIdResponse{}:GetProductByIdResponse, t5
+Block #2: catalog.CatalogService.GetProductById.if.done
+			00: t7 = local GetProductByIdResponse (complit)
+			01: t8 = &t7.Product [#0]
+			02: *t8 = t4
+			03: t9 = *t7
+			04: return t9, nil:error
+	Method: func(ctx context.Context) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductsResponse, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+Function: catalog.CatalogService.GetProducts
+Block #0: catalog.CatalogService.GetProducts.entry
+			00: t0 = (*CatalogServiceImpl).loadAll(s, ctx)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: catalog.CatalogService.GetProducts.if.then
+			00: return GetProductsResponse{}:GetProductsResponse, t2
+Block #2: catalog.CatalogService.GetProducts.if.done
+			00: t4 = local GetProductsResponse (complit)
+			01: t5 = &t4.Products [#0]
+			02: *t5 = t1
+			03: t6 = *t4
+			04: return t6, nil:error
+	Method: func(ctx context.Context, id string) error
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: catalog.CatalogService.delete
+Block #0: catalog.CatalogService.delete.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "catalog_db":string, "product":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: catalog.CatalogService.delete.if.then
+			00: return t4
+Block #2: catalog.CatalogService.delete.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "Id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.DeleteOne(ctx, t11)
+			09: return t12
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: catalog.CatalogService.load
+Block #0: catalog.CatalogService.load.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "catalog_db":string, "product":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: catalog.CatalogService.load.if.then
+			00: return Product{}:Product, t4
+Block #2: catalog.CatalogService.load.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "Id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: catalog.CatalogService.load.if.then
+			00: return Product{}:Product, t14
+Block #4: catalog.CatalogService.load.if.done
+			00: t16 = new Product (product)
+			01: t17 = make interface{} <- *Product (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: catalog.CatalogService.load.if.then
+			00: return Product{}:Product, t20
+Block #6: catalog.CatalogService.load.if.done
+			00: if t19 goto 8 else 7
+Block #7: catalog.CatalogService.load.if.then
+			00: t22 = new [1]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string (id)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = fmt.Errorf("product not found...":string, t25...)
+			06: return Product{}:Product, t26
+Block #8: catalog.CatalogService.load.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context) ([]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+Function: catalog.CatalogService.loadAll
+Block #0: catalog.CatalogService.loadAll.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "catalog_db":string, "product":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: catalog.CatalogService.loadAll.if.then
+			00: return nil:[]Product, t4
+Block #2: catalog.CatalogService.loadAll.if.done
+			00: t6 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = slice t6[:]
+			02: t8 = invoke t3.FindMany(ctx, t7, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			03: t9 = extract t8 #0
+			04: t10 = extract t8 #1
+			05: t11 = t10 != nil:error
+			06: if t11 goto 3 else 4
+Block #3: catalog.CatalogService.loadAll.if.then
+			00: return nil:[]Product, t10
+Block #4: catalog.CatalogService.loadAll.if.done
+			00: t12 = new []Product (products)
+			01: t13 = make interface{} <- *[]Product (t12)
+			02: t14 = invoke t9.All(ctx, t13)
+			03: t15 = t14 != nil:error
+			04: if t15 goto 5 else 6
+Block #5: catalog.CatalogService.loadAll.if.then
+			00: return nil:[]Product, t14
+Block #6: catalog.CatalogService.loadAll.if.done
+			00: t16 = *t12
+			01: return t16, nil:error
+	Method: func(ctx context.Context, category string) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product, error)
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			category = parameter category : string
+Function: catalog.CatalogService.loadByCategory
+Block #0: catalog.CatalogService.loadByCategory.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "catalog_db":string, "product":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: catalog.CatalogService.loadByCategory.if.then
+			00: return Product{}:Product, t4
+Block #2: catalog.CatalogService.loadByCategory.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "Category":string
+			05: t10 = make interface{} <- string (category)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: catalog.CatalogService.loadByCategory.if.then
+			00: return Product{}:Product, t14
+Block #4: catalog.CatalogService.loadByCategory.if.done
+			00: t16 = new Product (product)
+			01: t17 = make interface{} <- *Product (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: catalog.CatalogService.loadByCategory.if.then
+			00: return Product{}:Product, t20
+Block #6: catalog.CatalogService.loadByCategory.if.done
+			00: if t19 goto 8 else 7
+Block #7: catalog.CatalogService.loadByCategory.if.then
+			00: t22 = new [1]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string (category)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = fmt.Errorf("product not found...":string, t25...)
+			06: return Product{}:Product, t26
+Block #8: catalog.CatalogService.loadByCategory.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context, product github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.Product) error
+		Parameters:
+			s = parameter s : *CatalogServiceImpl
+			ctx = parameter ctx : context.Context
+			product = parameter product : Product
+Function: catalog.CatalogService.store
+Block #0: catalog.CatalogService.store.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "catalog_db":string, "product":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: catalog.CatalogService.store.if.then
+			00: return t4
+Block #2: catalog.CatalogService.store.if.done
+			00: t6 = make interface{} <- Product (product)
+			01: t7 = invoke t3.InsertOne(ctx, t6)
+			02: return t7
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.CreateProductResponse
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByIdResponse
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByCategoryQuery
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductByCategoryResponse
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/catalog.GetProductsResponse
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: catalog.NewCatalogServiceImpl
+Block #0: catalog.NewCatalogServiceImpl.entry
+			00: t0 = new CatalogServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: *t1 = database
+			03: t2 = make CatalogService <- *CatalogServiceImpl (t0)
+			04: return t2, nil:error

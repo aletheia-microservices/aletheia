@@ -1,0 +1,24 @@
+---------------------------------------------------------------------
+---------------- ANALYSIS: FOREIGN KEY COORDINATION -----------------
+---------------------------------------------------------------------
+[NUM_WARNINGS = 3]
+entry request: Wrk2APIService.ReadHomeTimeline()
+	FOREIGN KEY READS #1:
+		READ (FOREIGN KEY): HomeTimelineService.ReadHomeTimeline() ... hometimeline_cache.*.Get()
+			- field: hometimeline_cache.*.Value[*].PostID
+			- constraint: FOREIGN_KEY hometimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+		READ (ORIGIN): PostStorageService.ReadPosts() ... post_db.post.FindMany()
+			- field: post_db.post.PostID
+entry request: Wrk2APIService.ReadUserTimeline()
+	FOREIGN KEY READS #2:
+		READ (FOREIGN KEY): UserTimelineService.ReadUserTimeline() ... usertimeline_cache.*.Get()
+			- field: usertimeline_cache.*.Value[*].PostID
+			- constraint: FOREIGN_KEY usertimeline_cache.*.Value[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+		READ (ORIGIN): PostStorageService.ReadPosts() ... post_db.post.FindMany()
+			- field: post_db.post.PostID
+	FOREIGN KEY READS #3:
+		READ (FOREIGN KEY): UserTimelineService.ReadUserTimeline() ... usertimeline_db.usertimeline.FindOne()
+			- field: usertimeline_db.usertimeline.Posts[*].PostID
+			- constraint: FOREIGN_KEY usertimeline_db.usertimeline.Posts[*].PostID REFERENCES post_db.post.PostID [MANDATORY]
+		READ (ORIGIN): PostStorageService.ReadPosts() ... post_db.post.FindMany()
+			- field: post_db.post.PostID

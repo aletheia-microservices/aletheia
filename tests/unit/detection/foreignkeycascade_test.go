@@ -3,11 +3,11 @@ package detection_test
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/pkg/analysis/system-level/abstractgraph"
-	"analyzer/pkg/analysis/system-level/detection"
-	"analyzer/pkg/analysis/system-level/detection/constraints/foreignkeycascade"
-	"analyzer/pkg/app"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection/constraints/foreignkeycascade"
+	"github.com/aletheia-microservices/aletheia/internal/app"
 )
 
 // newSimpleshopApp builds the simpleshop schema, where inventory_db.inventory.ID references product_db.product.ID

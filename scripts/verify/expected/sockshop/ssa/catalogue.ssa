@@ -1,0 +1,661 @@
+	Global: createSockTable, Type: *string
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.tag
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: catalogue.init
+Block #0: catalogue.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: catalogue.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = strings.init()
+			03: t3 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			04: t4 = github.com/google/uuid.init()
+			05: t5 = github.com/pkg/errors.init()
+			06: *baseQuery = "SELECT sock.SockI...":string
+			07: *createSockTable = "CREATE TABLE IF N...":string
+			08: *createTagTable = "CREATE TABLE IF N...":string
+			09: *createTagTable2 = "CREATE TABLE IF N...":string
+			10: *createSockTagTable = "CREATE TABLE IF N...":string
+			11: jump 2
+Block #2: catalogue.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.CatalogueService
+	Method: func(ctx context.Context, sock github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock) (string, error)
+	Method: func(ctx context.Context, tags []string) error
+	Method: func(ctx context.Context, tags []string) (int, error)
+	Method: func(ctx context.Context, id string) error
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock, error)
+	Method: func(ctx context.Context, tags []string, order string, pageNum int, pageSize int) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock, error)
+	Method: func(ctx context.Context) ([]string, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			catalogue_db = parameter catalogue_db : github.com/blueprint-uservices/blueprint/runtime/core/backend.RelationalDB
+Function: catalogue.NewCatalogueServiceImpl
+Block #0: catalogue.NewCatalogueServiceImpl.entry
+			00: t0 = new CatalogueServiceImpl (complit)
+			01: t1 = &t0.catalogue_db [#0]
+			02: *t1 = catalogue_db
+			03: t2 = make CatalogueService <- *CatalogueServiceImpl (t0)
+			04: t3 = (*CatalogueServiceImpl).createTables(t0, ctx)
+			05: return t2, t3
+	Global: baseQuery, Type: *string
+		Parameters:
+			socks = parameter socks : []Sock
+			pageNum = parameter pageNum : int
+			pageSize = parameter pageSize : int
+Function: catalogue.cut
+Block #0: catalogue.cut.entry
+			00: t0 = pageNum == 0:int
+			01: if t0 goto 1 else 3
+Block #1: catalogue.cut.if.then
+			00: t1 = new [0]Sock (slicelit)
+			01: t2 = slice t1[:]
+			02: return t2
+Block #2: catalogue.cut.if.done
+			00: t3 = pageNum * pageSize
+			01: t4 = t3 - pageSize
+			02: t5 = len(socks)
+			03: t6 = t4 > t5
+			04: if t6 goto 4 else 5
+Block #3: catalogue.cut.cond.false
+			00: t7 = pageSize == 0:int
+			01: if t7 goto 1 else 2
+Block #4: catalogue.cut.if.then
+			00: t8 = new [0]Sock (slicelit)
+			01: t9 = slice t8[:]
+			02: return t9
+Block #5: catalogue.cut.if.done
+			00: t10 = pageNum * pageSize
+			01: t11 = len(socks)
+			02: t12 = t10 > t11
+			03: if t12 goto 6 else 7
+Block #6: catalogue.cut.if.then
+			00: t13 = len(socks)
+			01: jump 7
+Block #7: catalogue.cut.if.done
+			00: t14 = phi [5: t10, 6: t13] #end
+			01: t15 = slice socks[t4:t14]
+			02: return t15
+	Global: createTagTable, Type: *string
+	Global: createTagTable2, Type: *string
+	Global: createSockTagTable, Type: *string
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.CatalogueServiceImpl
+	Method: func(ctx context.Context, sock github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock) (string, error)
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			sock = parameter sock : Sock
+Function: catalogue.CatalogueService.AddSock
+Block #0: catalogue.CatalogueService.AddSock.entry
+			00: t0 = local Sock (sock)
+			01: *t0 = sock
+			02: t1 = &t0.SockID [#0]
+			03: t2 = *t1
+			04: t3 = t2 != "":string
+			05: if t3 goto 1 else 3
+Block #1: catalogue.CatalogueService.AddSock.if.then
+			00: t4 = &t0.SockID [#0]
+			01: t5 = *t4
+			02: t6 = (*CatalogueServiceImpl).DeleteSock(s, ctx, t5)
+			03: t7 = t6 != nil:error
+			04: if t7 goto 4 else 2
+Block #2: catalogue.CatalogueService.AddSock.if.done
+			00: t8 = &s.catalogue_db [#0]
+			01: t9 = *t8
+			02: t10 = &t0.SockID [#0]
+			03: t11 = *t10
+			04: t12 = &t0.Name [#1]
+			05: t13 = *t12
+			06: t14 = &t0.Description [#2]
+			07: t15 = *t14
+			08: t16 = &t0.Price [#6]
+			09: t17 = *t16
+			10: t18 = &t0.Quantity [#7]
+			11: t19 = *t18
+			12: t20 = &t0.ImageURL1 [#4]
+			13: t21 = *t20
+			14: t22 = &t0.ImageURL2 [#5]
+			15: t23 = *t22
+			16: t24 = new [7]any (varargs)
+			17: t25 = &t24[0:int]
+			18: t26 = make any <- string (t11)
+			19: *t25 = t26
+			20: t27 = &t24[1:int]
+			21: t28 = make any <- string (t13)
+			22: *t27 = t28
+			23: t29 = &t24[2:int]
+			24: t30 = make any <- string (t15)
+			25: *t29 = t30
+			26: t31 = &t24[3:int]
+			27: t32 = make any <- float32 (t17)
+			28: *t31 = t32
+			29: t33 = &t24[4:int]
+			30: t34 = make any <- int (t19)
+			31: *t33 = t34
+			32: t35 = &t24[5:int]
+			33: t36 = make any <- string (t21)
+			34: *t35 = t36
+			35: t37 = &t24[6:int]
+			36: t38 = make any <- string (t23)
+			37: *t37 = t38
+			38: t39 = slice t24[:]
+			39: t40 = invoke t9.Exec(ctx, "INSERT INTO sock ...":string, t39...)
+			40: t41 = extract t40 #0
+			41: t42 = extract t40 #1
+			42: t43 = t42 != nil:error
+			43: if t43 goto 5 else 6
+Block #3: catalogue.CatalogueService.AddSock.if.else
+			00: t44 = github.com/google/uuid.NewString()
+			01: t45 = &t0.SockID [#0]
+			02: *t45 = t44
+			03: jump 2
+Block #4: catalogue.CatalogueService.AddSock.if.then
+			00: return "":string, t6
+Block #5: catalogue.CatalogueService.AddSock.if.then
+			00: return "":string, t42
+Block #6: catalogue.CatalogueService.AddSock.if.done
+			00: t46 = &t0.Tags [#8]
+			01: t47 = *t46
+			02: t48 = (*CatalogueServiceImpl).addTags(s, ctx, t47...)
+			03: t49 = extract t48 #0
+			04: t50 = extract t48 #1
+			05: t51 = t50 != nil:error
+			06: if t51 goto 7 else 8
+Block #7: catalogue.CatalogueService.AddSock.if.then
+			00: return "":string, t50
+Block #8: catalogue.CatalogueService.AddSock.if.done
+			00: t52 = len(t49)
+			01: jump 9
+Block #9: catalogue.CatalogueService.AddSock.rangeindex.loop
+			00: t53 = phi [8: -1:int, 10: t54] #rangeindex
+			01: t54 = t53 + 1:int
+			02: t55 = t54 < t52
+			03: if t55 goto 10 else 11
+Block #10: catalogue.CatalogueService.AddSock.rangeindex.body
+			00: t56 = &t49[t54]
+			01: t57 = *t56
+			02: t58 = &s.catalogue_db [#0]
+			03: t59 = *t58
+			04: t60 = &t0.SockID [#0]
+			05: t61 = *t60
+			06: t62 = new [2]any (varargs)
+			07: t63 = &t62[0:int]
+			08: t64 = make any <- string (t61)
+			09: *t63 = t64
+			10: t65 = &t62[1:int]
+			11: t66 = make any <- int (t57)
+			12: *t65 = t66
+			13: t67 = slice t62[:]
+			14: t68 = invoke t59.Exec(ctx, "INSERT INTO sock_...":string, t67...)
+			15: t69 = extract t68 #0
+			16: t70 = extract t68 #1
+			17: t71 = t70 != nil:error
+			18: if t71 goto 12 else 9
+Block #11: catalogue.CatalogueService.AddSock.rangeindex.done
+			00: t72 = &t0.SockID [#0]
+			01: t73 = *t72
+			02: return t73, nil:error
+Block #12: catalogue.CatalogueService.AddSock.if.then
+			00: return "":string, t70
+	Method: func(ctx context.Context, tags []string) error
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			tags = parameter tags : []string
+Function: catalogue.CatalogueService.AddTags
+Block #0: catalogue.CatalogueService.AddTags.entry
+			00: t0 = (*CatalogueServiceImpl).addTags(s, ctx, tags...)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: return t2
+	Method: func(ctx context.Context, tags []string) (int, error)
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			tags = parameter tags : []string
+Function: catalogue.CatalogueService.Count
+Block #0: catalogue.CatalogueService.Count.entry
+			00: t0 = local int ()
+			01: t1 = local error ()
+			02: t2 = len(tags)
+			03: jump 1
+Block #1: catalogue.CatalogueService.Count.rangeindex.loop
+			00: t3 = phi [0: "SELECT COUNT(DIST...":string, 4: t18, 5: t24] #query
+			01: t4 = phi [0: nil:[]interface{}, 4: t23, 5: t29] #args
+			02: t5 = phi [0: -1:int, 4: t6, 5: t6] #rangeindex
+			03: t6 = t5 + 1:int
+			04: t7 = t6 < t2
+			05: if t7 goto 2 else 3
+Block #2: catalogue.CatalogueService.Count.rangeindex.body
+			00: t8 = &tags[t6]
+			01: t9 = *t8
+			02: t10 = t6 == 0:int
+			03: if t10 goto 4 else 5
+Block #3: catalogue.CatalogueService.Count.rangeindex.done
+			00: t11 = t3 + ";":string
+			01: t12 = &s.catalogue_db [#0]
+			02: t13 = *t12
+			03: t14 = invoke t13.Prepare(ctx, t11)
+			04: t15 = extract t14 #0
+			05: t16 = extract t14 #1
+			06: t17 = t16 != nil:error
+			07: if t17 goto 6 else 7
+Block #4: catalogue.CatalogueService.Count.if.then
+			00: t18 = t3 + " WHERE tag.Name=?":string
+			01: t19 = new [1]interface{} (varargs)
+			02: t20 = &t19[0:int]
+			03: t21 = make interface{} <- string (t9)
+			04: *t20 = t21
+			05: t22 = slice t19[:]
+			06: t23 = append(t4, t22...)
+			07: jump 1
+Block #5: catalogue.CatalogueService.Count.if.else
+			00: t24 = t3 + " OR tag.Name=?":string
+			01: t25 = new [1]interface{} (varargs)
+			02: t26 = &t25[0:int]
+			03: t27 = make interface{} <- string (t9)
+			04: *t26 = t27
+			05: t28 = slice t25[:]
+			06: t29 = append(t4, t28...)
+			07: jump 1
+Block #6: catalogue.CatalogueService.Count.if.then
+			00: *t0 = 0:int
+			01: *t1 = t16
+			02: rundefers
+			03: t30 = *t0
+			04: t31 = *t1
+			05: return t30, t31
+Block #7: catalogue.CatalogueService.Count.if.done
+			00: defer (*database/sql.Stmt).Close(t15)
+			01: t32 = new int (count)
+			02: t33 = (*database/sql.Stmt).QueryRow(t15, t4...)
+			03: t34 = new [1]any (varargs)
+			04: t35 = &t34[0:int]
+			05: t36 = make any <- *int (t32)
+			06: *t35 = t36
+			07: t37 = slice t34[:]
+			08: t38 = (*database/sql.Row).Scan(t33, t37...)
+			09: t39 = t38 != nil:error
+			10: if t39 goto 9 else 10
+Block #8: catalogue.CatalogueService.Count.recover
+			00: t40 = *t0
+			01: t41 = *t1
+			02: return t40, t41
+Block #9: catalogue.CatalogueService.Count.if.then
+			00: *t0 = 0:int
+			01: *t1 = t38
+			02: rundefers
+			03: t42 = *t0
+			04: t43 = *t1
+			05: return t42, t43
+Block #10: catalogue.CatalogueService.Count.if.done
+			00: t44 = *t32
+			01: *t0 = t44
+			02: *t1 = nil:error
+			03: rundefers
+			04: t45 = *t0
+			05: t46 = *t1
+			06: return t45, t46
+	Method: func(ctx context.Context, id string) error
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: catalogue.CatalogueService.DeleteSock
+Block #0: catalogue.CatalogueService.DeleteSock.entry
+			00: t0 = id == "":string
+			01: if t0 goto 1 else 2
+Block #1: catalogue.CatalogueService.DeleteSock.if.then
+			00: return nil:error
+Block #2: catalogue.CatalogueService.DeleteSock.if.done
+			00: t1 = &s.catalogue_db [#0]
+			01: t2 = *t1
+			02: t3 = new [1]any (varargs)
+			03: t4 = &t3[0:int]
+			04: t5 = make any <- string (id)
+			05: *t4 = t5
+			06: t6 = slice t3[:]
+			07: t7 = invoke t2.Exec(ctx, "DELETE FROM sock_...":string, t6...)
+			08: t8 = extract t7 #0
+			09: t9 = extract t7 #1
+			10: t10 = t9 != nil:error
+			11: if t10 goto 3 else 4
+Block #3: catalogue.CatalogueService.DeleteSock.if.then
+			00: return t9
+Block #4: catalogue.CatalogueService.DeleteSock.if.done
+			00: t11 = &s.catalogue_db [#0]
+			01: t12 = *t11
+			02: t13 = new [1]any (varargs)
+			03: t14 = &t13[0:int]
+			04: t15 = make any <- string (id)
+			05: *t14 = t15
+			06: t16 = slice t13[:]
+			07: t17 = invoke t12.Exec(ctx, "DELETE FROM sock ...":string, t16...)
+			08: t18 = extract t17 #0
+			09: t19 = extract t17 #1
+			10: t20 = t19 != nil:error
+			11: if t20 goto 5 else 6
+Block #5: catalogue.CatalogueService.DeleteSock.if.then
+			00: return t19
+Block #6: catalogue.CatalogueService.DeleteSock.if.done
+			00: return nil:error
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock, error)
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: catalogue.CatalogueService.Get
+Block #0: catalogue.CatalogueService.Get.entry
+			00: t0 = new Sock (sock)
+			01: t1 = &s.catalogue_db [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *Sock (t0)
+			04: t4 = new [1]any (varargs)
+			05: t5 = &t4[0:int]
+			06: t6 = make any <- string (id)
+			07: *t5 = t6
+			08: t7 = slice t4[:]
+			09: t8 = invoke t2.Get(ctx, t3, "SELECT * FROM soc...":string, t7...)
+			10: t9 = t8 != nil:error
+			11: if t9 goto 1 else 2
+Block #1: catalogue.CatalogueService.Get.if.then
+			00: t10 = new [1]interface{} (varargs)
+			01: t11 = &t10[0:int]
+			02: t12 = make interface{} <- string (id)
+			03: *t11 = t12
+			04: t13 = slice t10[:]
+			05: t14 = github.com/pkg/errors.Wrapf(t8, "CatalogueService....":string, t13...)
+			06: return Sock{}:Sock, t14
+Block #2: catalogue.CatalogueService.Get.if.done
+			00: t15 = new [2]string (slicelit)
+			01: t16 = &t15[0:int]
+			02: t17 = &t0.ImageURL1 [#4]
+			03: t18 = *t17
+			04: *t16 = t18
+			05: t19 = &t15[1:int]
+			06: t20 = &t0.ImageURL2 [#5]
+			07: t21 = *t20
+			08: *t19 = t21
+			09: t22 = slice t15[:]
+			10: t23 = &t0.ImageURL [#3]
+			11: *t23 = t22
+			12: t24 = &t0.TagString [#9]
+			13: t25 = *t24
+			14: t26 = strings.Split(t25, ",":string)
+			15: t27 = &t0.Tags [#8]
+			16: *t27 = t26
+			17: t28 = *t0
+			18: return t28, nil:error
+	Method: func(ctx context.Context, tags []string, order string, pageNum int, pageSize int) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/catalogue.Sock, error)
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			tags = parameter tags : []string
+			order = parameter order : string
+			pageNum = parameter pageNum : int
+			pageSize = parameter pageSize : int
+Function: catalogue.CatalogueService.List
+Block #0: catalogue.CatalogueService.List.entry
+			00: t0 = new []Sock (socks)
+			01: t1 = *baseQuery
+			02: t2 = len(tags)
+			03: jump 1
+Block #1: catalogue.CatalogueService.List.rangeindex.loop
+			00: t3 = phi [0: t1, 4: t13, 5: t19] #query
+			01: t4 = phi [0: nil:[]interface{}, 4: t18, 5: t24] #args
+			02: t5 = phi [0: -1:int, 4: t6, 5: t6] #rangeindex
+			03: t6 = t5 + 1:int
+			04: t7 = t6 < t2
+			05: if t7 goto 2 else 3
+Block #2: catalogue.CatalogueService.List.rangeindex.body
+			00: t8 = &tags[t6]
+			01: t9 = *t8
+			02: t10 = t6 == 0:int
+			03: if t10 goto 4 else 5
+Block #3: catalogue.CatalogueService.List.rangeindex.done
+			00: t11 = t3 + " GROUP BY sock.So...":string
+			01: t12 = order != "":string
+			02: if t12 goto 6 else 7
+Block #4: catalogue.CatalogueService.List.if.then
+			00: t13 = t3 + " WHERE tag.Name=?":string
+			01: t14 = new [1]interface{} (varargs)
+			02: t15 = &t14[0:int]
+			03: t16 = make interface{} <- string (t9)
+			04: *t15 = t16
+			05: t17 = slice t14[:]
+			06: t18 = append(t4, t17...)
+			07: jump 1
+Block #5: catalogue.CatalogueService.List.if.else
+			00: t19 = t3 + " OR tag.Name=?":string
+			01: t20 = new [1]interface{} (varargs)
+			02: t21 = &t20[0:int]
+			03: t22 = make interface{} <- string (t9)
+			04: *t21 = t22
+			05: t23 = slice t20[:]
+			06: t24 = append(t4, t23...)
+			07: jump 1
+Block #6: catalogue.CatalogueService.List.if.then
+			00: t25 = t11 + " ORDER BY ?":string
+			01: t26 = new [1]interface{} (varargs)
+			02: t27 = &t26[0:int]
+			03: t28 = make interface{} <- string (order)
+			04: *t27 = t28
+			05: t29 = slice t26[:]
+			06: t30 = append(t4, t29...)
+			07: jump 7
+Block #7: catalogue.CatalogueService.List.if.done
+			00: t31 = phi [3: t11, 6: t25] #query
+			01: t32 = phi [3: t4, 6: t30] #args
+			02: t33 = t31 + ";":string
+			03: t34 = &s.catalogue_db [#0]
+			04: t35 = *t34
+			05: t36 = make interface{} <- *[]Sock (t0)
+			06: t37 = invoke t35.Select(ctx, t36, t33, t32...)
+			07: t38 = t37 != nil:error
+			08: if t38 goto 8 else 9
+Block #8: catalogue.CatalogueService.List.if.then
+			00: t39 = new [0]Sock (slicelit)
+			01: t40 = slice t39[:]
+			02: return t40, t37
+Block #9: catalogue.CatalogueService.List.if.done
+			00: t41 = *t0
+			01: t42 = len(t41)
+			02: jump 10
+Block #10: catalogue.CatalogueService.List.rangeindex.loop
+			00: t43 = phi [9: -1:int, 11: t44] #rangeindex
+			01: t44 = t43 + 1:int
+			02: t45 = t44 < t42
+			03: if t45 goto 11 else 12
+Block #11: catalogue.CatalogueService.List.rangeindex.body
+			00: t46 = &t41[t44]
+			01: t47 = *t46
+			02: t48 = local Sock (s)
+			03: *t48 = t47
+			04: t49 = *t0
+			05: t50 = &t49[t44]
+			06: t51 = new [2]string (slicelit)
+			07: t52 = &t51[0:int]
+			08: t53 = &t48.ImageURL1 [#4]
+			09: t54 = *t53
+			10: *t52 = t54
+			11: t55 = &t51[1:int]
+			12: t56 = &t48.ImageURL2 [#5]
+			13: t57 = *t56
+			14: *t55 = t57
+			15: t58 = slice t51[:]
+			16: t59 = &t50.ImageURL [#3]
+			17: *t59 = t58
+			18: t60 = *t0
+			19: t61 = &t60[t44]
+			20: t62 = &t48.TagString [#9]
+			21: t63 = *t62
+			22: t64 = strings.Split(t63, ",":string)
+			23: t65 = &t61.Tags [#8]
+			24: *t65 = t64
+			25: jump 10
+Block #12: catalogue.CatalogueService.List.rangeindex.done
+			00: t66 = *t0
+			01: t67 = cut(t66, pageNum, pageSize)
+			02: *t0 = t67
+			03: t68 = *t0
+			04: return t68, nil:error
+	Method: func(ctx context.Context) ([]string, error)
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+Function: catalogue.CatalogueService.Tags
+Block #0: catalogue.CatalogueService.Tags.entry
+			00: t0 = new []string (tags)
+			01: t1 = &s.catalogue_db [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *[]string (t0)
+			04: t4 = invoke t2.Select(ctx, t3, "SELECT Name FROM tag":string, nil:[]any...)
+			05: t5 = *t0
+			06: return t5, t4
+	Method: func(ctx context.Context, tags ...string) ([]int, error)
+		Parameters:
+			s = parameter s : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+			tags = parameter tags : []string
+Function: catalogue.CatalogueService.addTags
+Block #0: catalogue.CatalogueService.addTags.entry
+			00: t0 = new []tag (currentTags)
+			01: t1 = &s.catalogue_db [#0]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *[]tag (t0)
+			04: t4 = invoke t2.Select(ctx, t3, "SELECT * FROM tag;":string, nil:[]any...)
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: catalogue.CatalogueService.addTags.if.then
+			00: return nil:[]int, t4
+Block #2: catalogue.CatalogueService.addTags.if.done
+			00: t6 = make map[string]int 
+			01: t7 = *t0
+			02: t8 = len(t7)
+			03: jump 3
+Block #3: catalogue.CatalogueService.addTags.rangeindex.loop
+			00: t9 = phi [2: -1:int, 4: t10] #rangeindex
+			01: t10 = t9 + 1:int
+			02: t11 = t10 < t8
+			03: if t11 goto 4 else 5
+Block #4: catalogue.CatalogueService.addTags.rangeindex.body
+			00: t12 = &t7[t10]
+			01: t13 = *t12
+			02: t14 = local tag (tag)
+			03: *t14 = t13
+			04: t15 = &t14.Name [#1]
+			05: t16 = *t15
+			06: t17 = &t14.TagID [#0]
+			07: t18 = *t17
+			08: t6[t16] = t18
+			09: jump 3
+Block #5: catalogue.CatalogueService.addTags.rangeindex.done
+			00: t19 = new [0]int (slicelit)
+			01: t20 = slice t19[:]
+			02: t21 = len(tags)
+			03: jump 6
+Block #6: catalogue.CatalogueService.addTags.rangeindex.loop
+			00: t22 = phi [5: t20, 10: t45] #tagIds
+			01: t23 = phi [5: -1:int, 10: t24] #rangeindex
+			02: t24 = t23 + 1:int
+			03: t25 = t24 < t21
+			04: if t25 goto 7 else 8
+Block #7: catalogue.CatalogueService.addTags.rangeindex.body
+			00: t26 = &tags[t24]
+			01: t27 = *t26
+			02: t28 = t6[t27],ok
+			03: t29 = extract t28 #0
+			04: t30 = extract t28 #1
+			05: if t30 goto 10 else 9
+Block #8: catalogue.CatalogueService.addTags.rangeindex.done
+			00: return t22, nil:error
+Block #9: catalogue.CatalogueService.addTags.if.then
+			00: t31 = &s.catalogue_db [#0]
+			01: t32 = *t31
+			02: t33 = new [1]any (varargs)
+			03: t34 = &t33[0:int]
+			04: t35 = make any <- string (t27)
+			05: *t34 = t35
+			06: t36 = slice t33[:]
+			07: t37 = invoke t32.Exec(ctx, "INSERT INTO tag (...":string, t36...)
+			08: t38 = extract t37 #0
+			09: t39 = extract t37 #1
+			10: t40 = t39 != nil:error
+			11: if t40 goto 11 else 12
+Block #10: catalogue.CatalogueService.addTags.if.done
+			00: t41 = t6[t27]
+			01: t42 = new [1]int (varargs)
+			02: t43 = &t42[0:int]
+			03: *t43 = t41
+			04: t44 = slice t42[:]
+			05: t45 = append(t22, t44...)
+			06: jump 6
+Block #11: catalogue.CatalogueService.addTags.if.then
+			00: return nil:[]int, t39
+Block #12: catalogue.CatalogueService.addTags.if.done
+			00: t46 = invoke t38.LastInsertId()
+			01: t47 = extract t46 #0
+			02: t48 = extract t46 #1
+			03: t49 = t48 != nil:error
+			04: if t49 goto 13 else 14
+Block #13: catalogue.CatalogueService.addTags.if.then
+			00: return nil:[]int, t48
+Block #14: catalogue.CatalogueService.addTags.if.done
+			00: t50 = convert int <- int64 (t47)
+			01: t6[t27] = t50
+			02: jump 10
+	Method: func(ctx context.Context) (err error)
+		Parameters:
+			c = parameter c : *CatalogueServiceImpl
+			ctx = parameter ctx : context.Context
+Function: catalogue.CatalogueService.createTables
+Block #0: catalogue.CatalogueService.createTables.entry
+			00: t0 = &c.catalogue_db [#0]
+			01: t1 = *t0
+			02: t2 = *createSockTable
+			03: t3 = invoke t1.Exec(ctx, t2, nil:[]any...)
+			04: t4 = extract t3 #0
+			05: t5 = extract t3 #1
+			06: t6 = t5 != nil:error
+			07: if t6 goto 1 else 2
+Block #1: catalogue.CatalogueService.createTables.if.then
+			00: t7 = github.com/pkg/errors.Wrap(t5, "unable to create ...":string)
+			01: return t7
+Block #2: catalogue.CatalogueService.createTables.if.done
+			00: t8 = &c.catalogue_db [#0]
+			01: t9 = *t8
+			02: t10 = *createTagTable
+			03: t11 = invoke t9.Exec(ctx, t10, nil:[]any...)
+			04: t12 = extract t11 #0
+			05: t13 = extract t11 #1
+			06: t14 = t13 != nil:error
+			07: if t14 goto 3 else 4
+Block #3: catalogue.CatalogueService.createTables.if.then
+			00: t15 = &c.catalogue_db [#0]
+			01: t16 = *t15
+			02: t17 = *createTagTable2
+			03: t18 = invoke t16.Exec(ctx, t17, nil:[]any...)
+			04: t19 = extract t18 #0
+			05: t20 = extract t18 #1
+			06: t21 = t20 != nil:error
+			07: if t21 goto 5 else 4
+Block #4: catalogue.CatalogueService.createTables.if.done
+			00: t22 = &c.catalogue_db [#0]
+			01: t23 = *t22
+			02: t24 = *createSockTagTable
+			03: t25 = invoke t23.Exec(ctx, t24, nil:[]any...)
+			04: t26 = extract t25 #0
+			05: t27 = extract t25 #1
+			06: t28 = t27 != nil:error
+			07: if t28 goto 6 else 7
+Block #5: catalogue.CatalogueService.createTables.if.then
+			00: t29 = github.com/pkg/errors.Wrap(t20, "unable to create ...":string)
+			01: return t29
+Block #6: catalogue.CatalogueService.createTables.if.then
+			00: t30 = github.com/pkg/errors.Wrap(t27, "unable to create ...":string)
+			01: return t30
+Block #7: catalogue.CatalogueService.createTables.if.done
+			00: return nil:error

@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"analyzer/pkg/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
 )
 
 func TestTaintMappingAddIfNotExists(t *testing.T) {

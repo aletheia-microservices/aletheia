@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // trainticket: the largest app, with 40+ services; PreserveService books a ticket by calling most

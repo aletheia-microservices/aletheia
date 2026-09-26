@@ -4,8 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"analyzer/pkg/analysis/service-level/ssagraph"
-	"analyzer/pkg/analysis/service-level/ssagraph/tainter"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph/tainter"
 )
 
 // each Call* function passes its arguments to a helper with a specific code shape

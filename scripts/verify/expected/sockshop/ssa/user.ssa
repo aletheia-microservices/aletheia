@@ -1,0 +1,1931 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.dbCard
+	Method: func()
+		Parameters:
+			hexes = parameter hexes : []string
+Function: user.hexToObjectIds
+Block #0: user.hexToObjectIds.entry
+			00: t0 = len(hexes)
+			01: t1 = make []go.mongodb.org/mongo-driver/bson/primitive.ObjectID 0:int t0
+			02: t2 = len(hexes)
+			03: jump 1
+Block #1: user.hexToObjectIds.rangeindex.loop
+			00: t3 = phi [0: t1, 5: t17] #ids
+			01: t4 = phi [0: -1:int, 5: t5] #rangeindex
+			02: t5 = t4 + 1:int
+			03: t6 = t5 < t2
+			04: if t6 goto 2 else 3
+Block #2: user.hexToObjectIds.rangeindex.body
+			00: t7 = &hexes[t5]
+			01: t8 = *t7
+			02: t9 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(t8)
+			03: t10 = extract t9 #0
+			04: t11 = extract t9 #1
+			05: t12 = t11 != nil:error
+			06: if t12 goto 4 else 5
+Block #3: user.hexToObjectIds.rangeindex.done
+			00: return t3, nil:error
+Block #4: user.hexToObjectIds.if.then
+			00: t13 = errors.New("invalid Id Hex":string)
+			01: return nil:[]go.mongodb.org/mongo-driver/bson/primitive.ObjectID, t13
+Block #5: user.hexToObjectIds.if.done
+			00: t14 = new [1]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (varargs)
+			01: t15 = &t14[0:int]
+			02: *t15 = t10
+			03: t16 = slice t14[:]
+			04: t17 = append(t3, t16...)
+			05: jump 1
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.UserService
+	Method: func(ctx context.Context, entity string, id string) error
+	Method: func(ctx context.Context, id string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address, error)
+	Method: func(ctx context.Context, cardid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card, error)
+	Method: func(ctx context.Context, id string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+	Method: func(ctx context.Context, username string, password string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+	Method: func(ctx context.Context, userid string, address github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address) (string, error)
+	Method: func(ctx context.Context, userid string, card github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card) (string, error)
+	Method: func(ctx context.Context, user github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User) (string, error)
+	Method: func(ctx context.Context, username string, password string, email string, first string, last string) (string, error)
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.UserServiceImpl
+	Method: func(ctx context.Context, entity string, id string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			entity = parameter entity : string
+			id = parameter id : string
+Function: user.UserService.Delete
+Block #0: user.UserService.Delete.entry
+			00: t0 = (*UserServiceImpl).userdb_Delete(s, ctx, entity, id)
+			01: return t0
+	Method: func(ctx context.Context, addressid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addressid = parameter addressid : string
+Function: user.UserService.GetAddresses
+Block #0: user.UserService.GetAddresses.entry
+			00: t0 = addressid == "":string
+			01: if t0 goto 1 else 2
+Block #1: user.UserService.GetAddresses.if.then
+			00: t1 = (*UserServiceImpl).addressdb_GetAllAddresses(s, ctx)
+			01: t2 = extract t1 #0
+			02: t3 = extract t1 #1
+			03: return t2, t3
+Block #2: user.UserService.GetAddresses.if.done
+			00: t4 = (*UserServiceImpl).addressdb_GetAddress(s, ctx, addressid)
+			01: t5 = extract t4 #0
+			02: t6 = extract t4 #1
+			03: t7 = new [1]Address (slicelit)
+			04: t8 = &t7[0:int]
+			05: *t8 = t5
+			06: t9 = slice t7[:]
+			07: return t9, t6
+	Method: func(ctx context.Context, cardid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cardid = parameter cardid : string
+Function: user.UserService.GetCards
+Block #0: user.UserService.GetCards.entry
+			00: t0 = cardid == "":string
+			01: if t0 goto 1 else 2
+Block #1: user.UserService.GetCards.if.then
+			00: t1 = (*UserServiceImpl).carddb_GetAllCards(s, ctx)
+			01: t2 = extract t1 #0
+			02: t3 = extract t1 #1
+			03: return t2, t3
+Block #2: user.UserService.GetCards.if.done
+			00: t4 = (*UserServiceImpl).carddb_GetCard(s, ctx, cardid)
+			01: t5 = extract t4 #0
+			02: t6 = extract t4 #1
+			03: t7 = new [1]Card (slicelit)
+			04: t8 = &t7[0:int]
+			05: *t8 = t5
+			06: t9 = slice t7[:]
+			07: return t9, t6
+	Method: func(ctx context.Context, userid string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+Function: user.UserService.GetUsers
+Block #0: user.UserService.GetUsers.entry
+			00: t0 = userid == "":string
+			01: if t0 goto 1 else 2
+Block #1: user.UserService.GetUsers.if.then
+			00: t1 = (*UserServiceImpl).userdb_GetUsers(s, ctx)
+			01: t2 = extract t1 #0
+			02: t3 = extract t1 #1
+			03: return t2, t3
+Block #2: user.UserService.GetUsers.if.done
+			00: t4 = (*UserServiceImpl).userdb_GetUser(s, ctx, userid)
+			01: t5 = extract t4 #0
+			02: t6 = extract t4 #1
+			03: t7 = new [1]User (slicelit)
+			04: t8 = &t7[0:int]
+			05: *t8 = t5
+			06: t9 = slice t7[:]
+			07: return t9, t6
+	Method: func(ctx context.Context, username string, password string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			password = parameter password : string
+Function: user.UserService.Login
+Block #0: user.UserService.Login.entry
+			00: t0 = new User (u)
+			01: t1 = (*UserServiceImpl).userdb_GetUserByName(s, ctx, username)
+			02: t2 = extract t1 #0
+			03: *t0 = t2
+			04: t3 = extract t1 #1
+			05: t4 = t3 != nil:error
+			06: if t4 goto 1 else 2
+Block #1: user.UserService.Login.if.then
+			00: t5 = *t0
+			01: return t5, t3
+Block #2: user.UserService.Login.if.done
+			00: t6 = &t0.Password [#4]
+			01: t7 = *t6
+			02: t8 = &t0.Salt [#8]
+			03: t9 = *t8
+			04: t10 = calculatePassHash(password, t9)
+			05: t11 = t7 != t10
+			06: if t11 goto 3 else 4
+Block #3: user.UserService.Login.if.then
+			00: t12 = errors.New("Unauthorized":string)
+			01: return User{}:User, t12
+Block #4: user.UserService.Login.if.done
+			00: t13 = (*UserServiceImpl).userdb_GetUserAttributes(s, ctx, t0)
+			01: t14 = t13 != nil:error
+			02: if t14 goto 5 else 6
+Block #5: user.UserService.Login.if.then
+			00: t15 = *t0
+			01: return t15, t13
+Block #6: user.UserService.Login.if.done
+			00: t16 = (*User).maskCCs(t0)
+			01: t17 = *t0
+			02: return t17, nil:error
+	Method: func(ctx context.Context, userid string, address github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+			address = parameter address : Address
+Function: user.UserService.PostAddress
+Block #0: user.UserService.PostAddress.entry
+			00: t0 = new Address (address)
+			01: *t0 = address
+			02: t1 = (*UserServiceImpl).userdb_CreateAddress(s, ctx, userid, t0)
+			03: t2 = &t0.ID [#5]
+			04: t3 = *t2
+			05: return t3, t1
+	Method: func(ctx context.Context, userid string, card github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+			card = parameter card : Card
+Function: user.UserService.PostCard
+Block #0: user.UserService.PostCard.entry
+			00: t0 = new Card (card)
+			01: *t0 = card
+			02: t1 = (*UserServiceImpl).userdb_CreateCard(s, ctx, userid, t0)
+			03: t2 = &t0.ID [#3]
+			04: t3 = *t2
+			05: return t3, t1
+	Method: func(ctx context.Context, u github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			u = parameter u : User
+Function: user.UserService.PostUser
+Block #0: user.UserService.PostUser.entry
+			00: t0 = new User (u)
+			01: *t0 = u
+			02: t1 = (*User).newSalt(t0)
+			03: t2 = &t0.Password [#4]
+			04: t3 = *t2
+			05: t4 = &t0.Salt [#8]
+			06: t5 = *t4
+			07: t6 = calculatePassHash(t3, t5)
+			08: t7 = &t0.Password [#4]
+			09: *t7 = t6
+			10: t8 = (*UserServiceImpl).userdb_CreateUser(s, ctx, t0)
+			11: t9 = &t0.UserID [#7]
+			12: t10 = *t9
+			13: return t10, t8
+	Method: func(ctx context.Context, username string, password string, email string, first string, last string) (string, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+			password = parameter password : string
+			email = parameter email : string
+			first = parameter first : string
+			last = parameter last : string
+Function: user.UserService.Register
+Block #0: user.UserService.Register.entry
+			00: t0 = new User (u)
+			01: t1 = &t0.Username [#3]
+			02: *t1 = username
+			03: t2 = &t0.Salt [#8]
+			04: t3 = *t2
+			05: t4 = calculatePassHash(password, t3)
+			06: t5 = &t0.Password [#4]
+			07: *t5 = t4
+			08: t6 = &t0.Email [#2]
+			09: *t6 = email
+			10: t7 = &t0.FirstName [#0]
+			11: *t7 = first
+			12: t8 = &t0.LastName [#1]
+			13: *t8 = last
+			14: t9 = new [0]Address (slicelit)
+			15: t10 = slice t9[:]
+			16: t11 = &t0.Addresses [#5]
+			17: *t11 = t10
+			18: t12 = new [0]Card (slicelit)
+			19: t13 = slice t12[:]
+			20: t14 = &t0.Cards [#6]
+			21: *t14 = t13
+			22: t15 = (*UserServiceImpl).userdb_CreateUser(s, ctx, t0)
+			23: t16 = &t0.UserID [#7]
+			24: t17 = *t16
+			25: return t17, t15
+	Method: func(ctx context.Context, address *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address) (go.mongodb.org/mongo-driver/bson/primitive.ObjectID, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			address = parameter address : *Address
+Function: user.UserService.addressdb_CreateAddress
+Block #0: user.UserService.addressdb_CreateAddress.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "address":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.addressdb_CreateAddress.if.then
+			00: return go.mongodb.org/mongo-driver/bson/primitive.ObjectID{}:go.mongodb.org/mongo-driver/bson/primitive.ObjectID, t4
+Block #2: user.UserService.addressdb_CreateAddress.if.done
+			00: t6 = local dbAddress (dbaddress)
+			01: t7 = &t6.Address [#0]
+			02: t8 = *address
+			03: t9 = &t6.ID [#1]
+			04: t10 = go.mongodb.org/mongo-driver/bson/primitive.NewObjectID()
+			05: *t7 = t8
+			06: *t9 = t10
+			07: t11 = &t6.ID [#1]
+			08: t12 = *t11
+			09: t13 = *t6
+			10: t14 = make interface{} <- dbAddress (t13)
+			11: t15 = invoke t3.UpsertID(ctx, t12, t14)
+			12: t16 = extract t15 #0
+			13: t17 = extract t15 #1
+			14: t18 = t17 != nil:error
+			15: if t18 goto 3 else 4
+Block #3: user.UserService.addressdb_CreateAddress.if.then
+			00: t19 = &t6.ID [#1]
+			01: t20 = *t19
+			02: return t20, t17
+Block #4: user.UserService.addressdb_CreateAddress.if.done
+			00: t21 = &t6.Address [#0]
+			01: t22 = &t6.ID [#1]
+			02: t23 = *t22
+			03: t24 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t23)
+			04: t25 = &t21.ID [#5]
+			05: *t25 = t24
+			06: t26 = &t6.Address [#0]
+			07: t27 = *t26
+			08: *address = t27
+			09: t28 = &t6.ID [#1]
+			10: t29 = *t28
+			11: return t29, nil:error
+	Method: func(ctx context.Context, addresses []github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address) ([]go.mongodb.org/mongo-driver/bson/primitive.ObjectID, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addresses = parameter addresses : []Address
+Function: user.UserService.addressdb_CreateAddresses
+Block #0: user.UserService.addressdb_CreateAddresses.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "address":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.addressdb_CreateAddresses.if.then
+			00: return nil:[]go.mongodb.org/mongo-driver/bson/primitive.ObjectID, t4
+Block #2: user.UserService.addressdb_CreateAddresses.if.done
+			00: t6 = len(addresses)
+			01: t7 = t6 == 0:int
+			02: if t7 goto 3 else 4
+Block #3: user.UserService.addressdb_CreateAddresses.if.then
+			00: t8 = new [0]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (slicelit)
+			01: t9 = slice t8[:]
+			02: return t9, nil:error
+Block #4: user.UserService.addressdb_CreateAddresses.if.done
+			00: t10 = new [0]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (makeslice)
+			01: t11 = slice t10[:0:int]
+			02: t12 = len(addresses)
+			03: jump 5
+Block #5: user.UserService.addressdb_CreateAddresses.rangeindex.loop
+			00: t13 = phi [4: t11, 9: t36] #createdIds
+			01: t14 = phi [4: -1:int, 9: t15] #rangeindex
+			02: t15 = t14 + 1:int
+			03: t16 = t15 < t12
+			04: if t16 goto 6 else 7
+Block #6: user.UserService.addressdb_CreateAddresses.rangeindex.body
+			00: t17 = &addresses[t15]
+			01: t18 = *t17
+			02: t19 = local dbAddress (toInsert)
+			03: t20 = &t19.Address [#0]
+			04: t21 = &t19.ID [#1]
+			05: t22 = go.mongodb.org/mongo-driver/bson/primitive.NewObjectID()
+			06: *t20 = t18
+			07: *t21 = t22
+			08: t23 = &t19.ID [#1]
+			09: t24 = *t23
+			10: t25 = *t19
+			11: t26 = make interface{} <- dbAddress (t25)
+			12: t27 = invoke t3.UpsertID(ctx, t24, t26)
+			13: t28 = extract t27 #0
+			14: t29 = extract t27 #1
+			15: t30 = t29 != nil:error
+			16: if t30 goto 8 else 9
+Block #7: user.UserService.addressdb_CreateAddresses.rangeindex.done
+			00: return t13, nil:error
+Block #8: user.UserService.addressdb_CreateAddresses.if.then
+			00: return t13, t29
+Block #9: user.UserService.addressdb_CreateAddresses.if.done
+			00: t31 = &t19.ID [#1]
+			01: t32 = *t31
+			02: t33 = new [1]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (varargs)
+			03: t34 = &t33[0:int]
+			04: *t34 = t32
+			05: t35 = slice t33[:]
+			06: t36 = append(t13, t35...)
+			07: jump 5
+	Method: func(ctx context.Context, addressid string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addressid = parameter addressid : string
+Function: user.UserService.addressdb_GetAddress
+Block #0: user.UserService.addressdb_GetAddress.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "address":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.addressdb_GetAddress.if.then
+			00: return Address{}:Address, t4
+Block #2: user.UserService.addressdb_GetAddress.if.done
+			00: t6 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(addressid)
+			01: t7 = extract t6 #0
+			02: t8 = extract t6 #1
+			03: t9 = t8 != nil:error
+			04: if t9 goto 3 else 4
+Block #3: user.UserService.addressdb_GetAddress.if.then
+			00: t10 = errors.New("invalid ID Hex":string)
+			01: return Address{}:Address, t10
+Block #4: user.UserService.addressdb_GetAddress.if.done
+			00: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t12 = &t11[0:int]
+			02: t13 = &t12.Key [#0]
+			03: t14 = &t12.Value [#1]
+			04: *t13 = "_id":string
+			05: t15 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t7)
+			06: *t14 = t15
+			07: t16 = slice t11[:]
+			08: t17 = invoke t3.FindOne(ctx, t16, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t18 = extract t17 #0
+			10: t19 = extract t17 #1
+			11: t20 = t19 != nil:error
+			12: if t20 goto 5 else 6
+Block #5: user.UserService.addressdb_GetAddress.if.then
+			00: return Address{}:Address, t19
+Block #6: user.UserService.addressdb_GetAddress.if.done
+			00: t21 = new dbAddress (address)
+			01: t22 = make interface{} <- *dbAddress (t21)
+			02: t23 = invoke t18.One(ctx, t22)
+			03: t24 = extract t23 #0
+			04: t25 = extract t23 #1
+			05: t26 = &t21.Address [#0]
+			06: t27 = &t21.ID [#1]
+			07: t28 = *t27
+			08: t29 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t28)
+			09: t30 = &t26.ID [#5]
+			10: *t30 = t29
+			11: t31 = &t21.Address [#0]
+			12: t32 = *t31
+			13: return t32, t25
+	Method: func(ctx context.Context, addressIds []string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addressIds = parameter addressIds : []string
+Function: user.UserService.addressdb_GetAddresses
+Block #0: user.UserService.addressdb_GetAddresses.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "address":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.addressdb_GetAddresses.if.then
+			00: return nil:[]Address, t4
+Block #2: user.UserService.addressdb_GetAddresses.if.done
+			00: t6 = len(addressIds)
+			01: t7 = t6 == 0:int
+			02: if t7 goto 3 else 4
+Block #3: user.UserService.addressdb_GetAddresses.if.then
+			00: return nil:[]Address, nil:error
+Block #4: user.UserService.addressdb_GetAddresses.if.done
+			00: t8 = hexToObjectIds(addressIds)
+			01: t9 = extract t8 #0
+			02: t10 = extract t8 #1
+			03: t11 = t10 != nil:error
+			04: if t11 goto 5 else 6
+Block #5: user.UserService.addressdb_GetAddresses.if.then
+			00: return nil:[]Address, t10
+Block #6: user.UserService.addressdb_GetAddresses.if.done
+			00: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t13 = &t12[0:int]
+			02: t14 = &t13.Key [#0]
+			03: t15 = &t13.Value [#1]
+			04: t16 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t17 = &t16[0:int]
+			06: t18 = &t17.Key [#0]
+			07: t19 = &t17.Value [#1]
+			08: *t18 = "$in":string
+			09: t20 = make interface{} <- []go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t9)
+			10: *t19 = t20
+			11: t21 = slice t16[:]
+			12: *t14 = "_id":string
+			13: t22 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t21)
+			14: *t15 = t22
+			15: t23 = slice t12[:]
+			16: t24 = invoke t3.FindMany(ctx, t23, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			17: t25 = extract t24 #0
+			18: t26 = extract t24 #1
+			19: t27 = t26 != nil:error
+			20: if t27 goto 7 else 8
+Block #7: user.UserService.addressdb_GetAddresses.if.then
+			00: return nil:[]Address, t26
+Block #8: user.UserService.addressdb_GetAddresses.if.done
+			00: t28 = new []dbAddress (dbAddresses)
+			01: t29 = len(addressIds)
+			02: t30 = make []dbAddress 0:int t29
+			03: *t28 = t30
+			04: t31 = make interface{} <- *[]dbAddress (t28)
+			05: t32 = invoke t25.All(ctx, t31)
+			06: t33 = *t28
+			07: t34 = len(t33)
+			08: t35 = make []Address 0:int t34
+			09: t36 = *t28
+			10: t37 = len(t36)
+			11: jump 9
+Block #9: user.UserService.addressdb_GetAddresses.rangeindex.loop
+			00: t38 = phi [8: t35, 10: t55] #addresses
+			01: t39 = phi [8: -1:int, 10: t40] #rangeindex
+			02: t40 = t39 + 1:int
+			03: t41 = t40 < t37
+			04: if t41 goto 10 else 11
+Block #10: user.UserService.addressdb_GetAddresses.rangeindex.body
+			00: t42 = &t36[t40]
+			01: t43 = *t42
+			02: t44 = local dbAddress (address)
+			03: *t44 = t43
+			04: t45 = &t44.Address [#0]
+			05: t46 = &t44.ID [#1]
+			06: t47 = *t46
+			07: t48 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t47)
+			08: t49 = &t45.ID [#5]
+			09: *t49 = t48
+			10: t50 = &t44.Address [#0]
+			11: t51 = *t50
+			12: t52 = new [1]Address (varargs)
+			13: t53 = &t52[0:int]
+			14: *t53 = t51
+			15: t54 = slice t52[:]
+			16: t55 = append(t38, t54...)
+			17: jump 9
+Block #11: user.UserService.addressdb_GetAddresses.rangeindex.done
+			00: return t38, t32
+	Method: func(ctx context.Context) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+Function: user.UserService.addressdb_GetAllAddresses
+Block #0: user.UserService.addressdb_GetAllAddresses.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "address":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.addressdb_GetAllAddresses.if.then
+			00: return nil:[]Address, t4
+Block #2: user.UserService.addressdb_GetAllAddresses.if.done
+			00: t6 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = slice t6[:]
+			02: t8 = invoke t3.FindMany(ctx, t7, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			03: t9 = extract t8 #0
+			04: t10 = extract t8 #1
+			05: t11 = t10 != nil:error
+			06: if t11 goto 3 else 4
+Block #3: user.UserService.addressdb_GetAllAddresses.if.then
+			00: return nil:[]Address, t10
+Block #4: user.UserService.addressdb_GetAllAddresses.if.done
+			00: t12 = new []dbAddress (dbAddresses)
+			01: t13 = new [0]dbAddress (makeslice)
+			02: t14 = slice t13[:0:int]
+			03: *t12 = t14
+			04: t15 = make interface{} <- *[]dbAddress (t12)
+			05: t16 = invoke t9.All(ctx, t15)
+			06: t17 = *t12
+			07: t18 = len(t17)
+			08: t19 = make []Address 0:int t18
+			09: t20 = *t12
+			10: t21 = len(t20)
+			11: jump 5
+Block #5: user.UserService.addressdb_GetAllAddresses.rangeindex.loop
+			00: t22 = phi [4: t19, 6: t39] #addresses
+			01: t23 = phi [4: -1:int, 6: t24] #rangeindex
+			02: t24 = t23 + 1:int
+			03: t25 = t24 < t21
+			04: if t25 goto 6 else 7
+Block #6: user.UserService.addressdb_GetAllAddresses.rangeindex.body
+			00: t26 = &t20[t24]
+			01: t27 = *t26
+			02: t28 = local dbAddress (address)
+			03: *t28 = t27
+			04: t29 = &t28.Address [#0]
+			05: t30 = &t28.ID [#1]
+			06: t31 = *t30
+			07: t32 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t31)
+			08: t33 = &t29.ID [#5]
+			09: *t33 = t32
+			10: t34 = &t28.Address [#0]
+			11: t35 = *t34
+			12: t36 = new [1]Address (varargs)
+			13: t37 = &t36[0:int]
+			14: *t37 = t35
+			15: t38 = slice t36[:]
+			16: t39 = append(t22, t38...)
+			17: jump 5
+Block #7: user.UserService.addressdb_GetAllAddresses.rangeindex.done
+			00: return t22, t16
+	Method: func(ctx context.Context, addressid string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addressid = parameter addressid : string
+Function: user.UserService.addressdb_RemoveAddress
+Block #0: user.UserService.addressdb_RemoveAddress.entry
+			00: t0 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(addressid)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: user.UserService.addressdb_RemoveAddress.if.then
+			00: t4 = errors.New("invalid ID Hex":string)
+			01: return t4
+Block #2: user.UserService.addressdb_RemoveAddress.if.done
+			00: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (slicelit)
+			01: t6 = &t5[0:int]
+			02: *t6 = t1
+			03: t7 = slice t5[:]
+			04: t8 = (*UserServiceImpl).addressdb_RemoveAddresses(s, ctx, t7)
+			05: return t8
+	Method: func(ctx context.Context, ids []go.mongodb.org/mongo-driver/bson/primitive.ObjectID) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			ids = parameter ids : []go.mongodb.org/mongo-driver/bson/primitive.ObjectID
+Function: user.UserService.addressdb_RemoveAddresses
+Block #0: user.UserService.addressdb_RemoveAddresses.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "address":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.addressdb_RemoveAddresses.if.then
+			00: return t4
+Block #2: user.UserService.addressdb_RemoveAddresses.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: t10 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t11 = &t10[0:int]
+			06: t12 = &t11.Key [#0]
+			07: t13 = &t11.Value [#1]
+			08: *t12 = "$in":string
+			09: t14 = make interface{} <- []go.mongodb.org/mongo-driver/bson/primitive.ObjectID (ids)
+			10: *t13 = t14
+			11: t15 = slice t10[:]
+			12: *t8 = "_id":string
+			13: t16 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t15)
+			14: *t9 = t16
+			15: t17 = slice t6[:]
+			16: t18 = invoke t3.DeleteMany(ctx, t17)
+			17: return t18
+	Method: func(ctx context.Context, card *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card) (go.mongodb.org/mongo-driver/bson/primitive.ObjectID, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			card = parameter card : *Card
+Function: user.UserService.carddb_CreateCard
+Block #0: user.UserService.carddb_CreateCard.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "card":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.carddb_CreateCard.if.then
+			00: return go.mongodb.org/mongo-driver/bson/primitive.ObjectID{}:go.mongodb.org/mongo-driver/bson/primitive.ObjectID, t4
+Block #2: user.UserService.carddb_CreateCard.if.done
+			00: t6 = local dbCard (dbcard)
+			01: t7 = &t6.Card [#0]
+			02: t8 = *card
+			03: t9 = &t6.ID [#1]
+			04: t10 = go.mongodb.org/mongo-driver/bson/primitive.NewObjectID()
+			05: *t7 = t8
+			06: *t9 = t10
+			07: t11 = &t6.ID [#1]
+			08: t12 = *t11
+			09: t13 = *t6
+			10: t14 = make interface{} <- dbCard (t13)
+			11: t15 = invoke t3.UpsertID(ctx, t12, t14)
+			12: t16 = extract t15 #0
+			13: t17 = extract t15 #1
+			14: t18 = t17 != nil:error
+			15: if t18 goto 3 else 4
+Block #3: user.UserService.carddb_CreateCard.if.then
+			00: t19 = &t6.ID [#1]
+			01: t20 = *t19
+			02: return t20, t17
+Block #4: user.UserService.carddb_CreateCard.if.done
+			00: t21 = &t6.Card [#0]
+			01: t22 = &t6.ID [#1]
+			02: t23 = *t22
+			03: t24 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t23)
+			04: t25 = &t21.ID [#3]
+			05: *t25 = t24
+			06: t26 = &t6.Card [#0]
+			07: t27 = *t26
+			08: *card = t27
+			09: t28 = &t6.ID [#1]
+			10: t29 = *t28
+			11: return t29, nil:error
+	Method: func(ctx context.Context, cards []github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card) ([]go.mongodb.org/mongo-driver/bson/primitive.ObjectID, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cards = parameter cards : []Card
+Function: user.UserService.carddb_CreateCards
+Block #0: user.UserService.carddb_CreateCards.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "card":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.carddb_CreateCards.if.then
+			00: return nil:[]go.mongodb.org/mongo-driver/bson/primitive.ObjectID, t4
+Block #2: user.UserService.carddb_CreateCards.if.done
+			00: t6 = len(cards)
+			01: t7 = t6 == 0:int
+			02: if t7 goto 3 else 4
+Block #3: user.UserService.carddb_CreateCards.if.then
+			00: t8 = new [0]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (slicelit)
+			01: t9 = slice t8[:]
+			02: return t9, nil:error
+Block #4: user.UserService.carddb_CreateCards.if.done
+			00: t10 = new [0]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (makeslice)
+			01: t11 = slice t10[:0:int]
+			02: t12 = len(cards)
+			03: jump 5
+Block #5: user.UserService.carddb_CreateCards.rangeindex.loop
+			00: t13 = phi [4: t11, 9: t36] #createdIds
+			01: t14 = phi [4: -1:int, 9: t15] #rangeindex
+			02: t15 = t14 + 1:int
+			03: t16 = t15 < t12
+			04: if t16 goto 6 else 7
+Block #6: user.UserService.carddb_CreateCards.rangeindex.body
+			00: t17 = &cards[t15]
+			01: t18 = *t17
+			02: t19 = local dbCard (toInsert)
+			03: t20 = &t19.Card [#0]
+			04: t21 = &t19.ID [#1]
+			05: t22 = go.mongodb.org/mongo-driver/bson/primitive.NewObjectID()
+			06: *t20 = t18
+			07: *t21 = t22
+			08: t23 = &t19.ID [#1]
+			09: t24 = *t23
+			10: t25 = *t19
+			11: t26 = make interface{} <- dbCard (t25)
+			12: t27 = invoke t3.UpsertID(ctx, t24, t26)
+			13: t28 = extract t27 #0
+			14: t29 = extract t27 #1
+			15: t30 = t29 != nil:error
+			16: if t30 goto 8 else 9
+Block #7: user.UserService.carddb_CreateCards.rangeindex.done
+			00: return t13, nil:error
+Block #8: user.UserService.carddb_CreateCards.if.then
+			00: return t13, t29
+Block #9: user.UserService.carddb_CreateCards.if.done
+			00: t31 = &t19.ID [#1]
+			01: t32 = *t31
+			02: t33 = new [1]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (varargs)
+			03: t34 = &t33[0:int]
+			04: *t34 = t32
+			05: t35 = slice t33[:]
+			06: t36 = append(t13, t35...)
+			07: jump 5
+	Method: func(ctx context.Context) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+Function: user.UserService.carddb_GetAllCards
+Block #0: user.UserService.carddb_GetAllCards.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "card":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.carddb_GetAllCards.if.then
+			00: return nil:[]Card, t4
+Block #2: user.UserService.carddb_GetAllCards.if.done
+			00: t6 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = slice t6[:]
+			02: t8 = invoke t3.FindMany(ctx, t7, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			03: t9 = extract t8 #0
+			04: t10 = extract t8 #1
+			05: t11 = t10 != nil:error
+			06: if t11 goto 3 else 4
+Block #3: user.UserService.carddb_GetAllCards.if.then
+			00: return nil:[]Card, t10
+Block #4: user.UserService.carddb_GetAllCards.if.done
+			00: t12 = new []dbCard (dbCards)
+			01: t13 = new [0]dbCard (makeslice)
+			02: t14 = slice t13[:0:int]
+			03: *t12 = t14
+			04: t15 = make interface{} <- *[]dbCard (t12)
+			05: t16 = invoke t9.All(ctx, t15)
+			06: t17 = *t12
+			07: t18 = len(t17)
+			08: t19 = make []Card 0:int t18
+			09: t20 = *t12
+			10: t21 = len(t20)
+			11: jump 5
+Block #5: user.UserService.carddb_GetAllCards.rangeindex.loop
+			00: t22 = phi [4: t19, 6: t39] #cards
+			01: t23 = phi [4: -1:int, 6: t24] #rangeindex
+			02: t24 = t23 + 1:int
+			03: t25 = t24 < t21
+			04: if t25 goto 6 else 7
+Block #6: user.UserService.carddb_GetAllCards.rangeindex.body
+			00: t26 = &t20[t24]
+			01: t27 = *t26
+			02: t28 = local dbCard (card)
+			03: *t28 = t27
+			04: t29 = &t28.Card [#0]
+			05: t30 = &t28.ID [#1]
+			06: t31 = *t30
+			07: t32 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t31)
+			08: t33 = &t29.ID [#3]
+			09: *t33 = t32
+			10: t34 = &t28.Card [#0]
+			11: t35 = *t34
+			12: t36 = new [1]Card (varargs)
+			13: t37 = &t36[0:int]
+			14: *t37 = t35
+			15: t38 = slice t36[:]
+			16: t39 = append(t22, t38...)
+			17: jump 5
+Block #7: user.UserService.carddb_GetAllCards.rangeindex.done
+			00: return t22, t16
+	Method: func(ctx context.Context, cardid string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cardid = parameter cardid : string
+Function: user.UserService.carddb_GetCard
+Block #0: user.UserService.carddb_GetCard.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "card":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.carddb_GetCard.if.then
+			00: return Card{}:Card, t4
+Block #2: user.UserService.carddb_GetCard.if.done
+			00: t6 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(cardid)
+			01: t7 = extract t6 #0
+			02: t8 = extract t6 #1
+			03: t9 = t8 != nil:error
+			04: if t9 goto 3 else 4
+Block #3: user.UserService.carddb_GetCard.if.then
+			00: t10 = errors.New("invalid ID Hex":string)
+			01: return Card{}:Card, t10
+Block #4: user.UserService.carddb_GetCard.if.done
+			00: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t12 = &t11[0:int]
+			02: t13 = &t12.Key [#0]
+			03: t14 = &t12.Value [#1]
+			04: *t13 = "_id":string
+			05: t15 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t7)
+			06: *t14 = t15
+			07: t16 = slice t11[:]
+			08: t17 = invoke t3.FindOne(ctx, t16, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t18 = extract t17 #0
+			10: t19 = extract t17 #1
+			11: t20 = t19 != nil:error
+			12: if t20 goto 5 else 6
+Block #5: user.UserService.carddb_GetCard.if.then
+			00: return Card{}:Card, t19
+Block #6: user.UserService.carddb_GetCard.if.done
+			00: t21 = new dbCard (card)
+			01: t22 = make interface{} <- *dbCard (t21)
+			02: t23 = invoke t18.One(ctx, t22)
+			03: t24 = extract t23 #0
+			04: t25 = extract t23 #1
+			05: t26 = &t21.Card [#0]
+			06: t27 = &t21.ID [#1]
+			07: t28 = *t27
+			08: t29 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t28)
+			09: t30 = &t26.ID [#3]
+			10: *t30 = t29
+			11: t31 = &t21.Card [#0]
+			12: t32 = *t31
+			13: return t32, t25
+	Method: func(ctx context.Context, cardIds []string) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cardIds = parameter cardIds : []string
+Function: user.UserService.carddb_GetCards
+Block #0: user.UserService.carddb_GetCards.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "card":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.carddb_GetCards.if.then
+			00: return nil:[]Card, t4
+Block #2: user.UserService.carddb_GetCards.if.done
+			00: t6 = len(cardIds)
+			01: t7 = t6 == 0:int
+			02: if t7 goto 3 else 4
+Block #3: user.UserService.carddb_GetCards.if.then
+			00: return nil:[]Card, nil:error
+Block #4: user.UserService.carddb_GetCards.if.done
+			00: t8 = hexToObjectIds(cardIds)
+			01: t9 = extract t8 #0
+			02: t10 = extract t8 #1
+			03: t11 = t10 != nil:error
+			04: if t11 goto 5 else 6
+Block #5: user.UserService.carddb_GetCards.if.then
+			00: return nil:[]Card, t10
+Block #6: user.UserService.carddb_GetCards.if.done
+			00: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t13 = &t12[0:int]
+			02: t14 = &t13.Key [#0]
+			03: t15 = &t13.Value [#1]
+			04: t16 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t17 = &t16[0:int]
+			06: t18 = &t17.Key [#0]
+			07: t19 = &t17.Value [#1]
+			08: *t18 = "$in":string
+			09: t20 = make interface{} <- []go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t9)
+			10: *t19 = t20
+			11: t21 = slice t16[:]
+			12: *t14 = "_id":string
+			13: t22 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t21)
+			14: *t15 = t22
+			15: t23 = slice t12[:]
+			16: t24 = invoke t3.FindMany(ctx, t23, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			17: t25 = extract t24 #0
+			18: t26 = extract t24 #1
+			19: t27 = t26 != nil:error
+			20: if t27 goto 7 else 8
+Block #7: user.UserService.carddb_GetCards.if.then
+			00: return nil:[]Card, t26
+Block #8: user.UserService.carddb_GetCards.if.done
+			00: t28 = new []dbCard (dbCards)
+			01: t29 = len(cardIds)
+			02: t30 = make []dbCard 0:int t29
+			03: *t28 = t30
+			04: t31 = make interface{} <- *[]dbCard (t28)
+			05: t32 = invoke t25.All(ctx, t31)
+			06: t33 = *t28
+			07: t34 = len(t33)
+			08: t35 = make []Card 0:int t34
+			09: t36 = *t28
+			10: t37 = len(t36)
+			11: jump 9
+Block #9: user.UserService.carddb_GetCards.rangeindex.loop
+			00: t38 = phi [8: t35, 10: t55] #cards
+			01: t39 = phi [8: -1:int, 10: t40] #rangeindex
+			02: t40 = t39 + 1:int
+			03: t41 = t40 < t37
+			04: if t41 goto 10 else 11
+Block #10: user.UserService.carddb_GetCards.rangeindex.body
+			00: t42 = &t36[t40]
+			01: t43 = *t42
+			02: t44 = local dbCard (card)
+			03: *t44 = t43
+			04: t45 = &t44.Card [#0]
+			05: t46 = &t44.ID [#1]
+			06: t47 = *t46
+			07: t48 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t47)
+			08: t49 = &t45.ID [#3]
+			09: *t49 = t48
+			10: t50 = &t44.Card [#0]
+			11: t51 = *t50
+			12: t52 = new [1]Card (varargs)
+			13: t53 = &t52[0:int]
+			14: *t53 = t51
+			15: t54 = slice t52[:]
+			16: t55 = append(t38, t54...)
+			17: jump 9
+Block #11: user.UserService.carddb_GetCards.rangeindex.done
+			00: return t38, t32
+	Method: func(ctx context.Context, cardid string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cardid = parameter cardid : string
+Function: user.UserService.carddb_RemoveCard
+Block #0: user.UserService.carddb_RemoveCard.entry
+			00: t0 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(cardid)
+			01: t1 = extract t0 #0
+			02: t2 = extract t0 #1
+			03: t3 = t2 != nil:error
+			04: if t3 goto 1 else 2
+Block #1: user.UserService.carddb_RemoveCard.if.then
+			00: t4 = errors.New("invalid ID Hex":string)
+			01: return t4
+Block #2: user.UserService.carddb_RemoveCard.if.done
+			00: t5 = new [1]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (slicelit)
+			01: t6 = &t5[0:int]
+			02: *t6 = t1
+			03: t7 = slice t5[:]
+			04: t8 = (*UserServiceImpl).carddb_RemoveCards(s, ctx, t7)
+			05: return t8
+	Method: func(ctx context.Context, ids []go.mongodb.org/mongo-driver/bson/primitive.ObjectID) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			ids = parameter ids : []go.mongodb.org/mongo-driver/bson/primitive.ObjectID
+Function: user.UserService.carddb_RemoveCards
+Block #0: user.UserService.carddb_RemoveCards.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "card":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.carddb_RemoveCards.if.then
+			00: return nil:error
+Block #2: user.UserService.carddb_RemoveCards.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: t10 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			05: t11 = &t10[0:int]
+			06: t12 = &t11.Key [#0]
+			07: t13 = &t11.Value [#1]
+			08: *t12 = "$in":string
+			09: t14 = make interface{} <- []go.mongodb.org/mongo-driver/bson/primitive.ObjectID (ids)
+			10: *t13 = t14
+			11: t15 = slice t10[:]
+			12: *t8 = "_id":string
+			13: t16 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t15)
+			14: *t9 = t16
+			15: t17 = slice t6[:]
+			16: t18 = invoke t3.DeleteMany(ctx, t17)
+			17: return t18
+	Method: func(ctx context.Context, userid string, address *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+			address = parameter address : *Address
+Function: user.UserService.userdb_CreateAddress
+Block #0: user.UserService.userdb_CreateAddress.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_CreateAddress.if.then
+			00: return t4
+Block #2: user.UserService.userdb_CreateAddress.if.done
+			00: t6 = userid == "":string
+			01: if t6 goto 3 else 4
+Block #3: user.UserService.userdb_CreateAddress.if.then
+			00: t7 = (*UserServiceImpl).addressdb_CreateAddress(s, ctx, address)
+			01: t8 = extract t7 #0
+			02: t9 = extract t7 #1
+			03: return t9
+Block #4: user.UserService.userdb_CreateAddress.if.done
+			00: t10 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(userid)
+			01: t11 = extract t10 #0
+			02: t12 = extract t10 #1
+			03: t13 = t12 != nil:error
+			04: if t13 goto 5 else 6
+Block #5: user.UserService.userdb_CreateAddress.if.then
+			00: t14 = errors.New("invalid ID Hex":string)
+			01: return t14
+Block #6: user.UserService.userdb_CreateAddress.if.done
+			00: t15 = (*UserServiceImpl).addressdb_CreateAddress(s, ctx, address)
+			01: t16 = extract t15 #0
+			02: t17 = extract t15 #1
+			03: t18 = t17 != nil:error
+			04: if t18 goto 7 else 8
+Block #7: user.UserService.userdb_CreateAddress.if.then
+			00: return t17
+Block #8: user.UserService.userdb_CreateAddress.if.done
+			00: t19 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t20 = &t19[0:int]
+			02: t21 = &t20.Key [#0]
+			03: t22 = &t20.Value [#1]
+			04: *t21 = "_id":string
+			05: t23 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t11)
+			06: *t22 = t23
+			07: t24 = slice t19[:]
+			08: t25 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t26 = &t25[0:int]
+			10: t27 = &t26.Key [#0]
+			11: t28 = &t26.Value [#1]
+			12: t29 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			13: t30 = &t29[0:int]
+			14: t31 = &t30.Key [#0]
+			15: t32 = &t30.Value [#1]
+			16: *t31 = "addresses":string
+			17: t33 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t16)
+			18: *t32 = t33
+			19: t34 = slice t29[:]
+			20: *t27 = "$addToSet":string
+			21: t35 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t34)
+			22: *t28 = t35
+			23: t36 = slice t25[:]
+			24: t37 = invoke t3.UpdateOne(ctx, t24, t36)
+			25: t38 = extract t37 #0
+			26: t39 = extract t37 #1
+			27: return t39
+	Method: func(ctx context.Context, userid string, card *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+			card = parameter card : *Card
+Function: user.UserService.userdb_CreateCard
+Block #0: user.UserService.userdb_CreateCard.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_CreateCard.if.then
+			00: return t4
+Block #2: user.UserService.userdb_CreateCard.if.done
+			00: t6 = userid == "":string
+			01: if t6 goto 3 else 4
+Block #3: user.UserService.userdb_CreateCard.if.then
+			00: t7 = (*UserServiceImpl).carddb_CreateCard(s, ctx, card)
+			01: t8 = extract t7 #0
+			02: t9 = extract t7 #1
+			03: return t9
+Block #4: user.UserService.userdb_CreateCard.if.done
+			00: t10 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(userid)
+			01: t11 = extract t10 #0
+			02: t12 = extract t10 #1
+			03: t13 = t12 != nil:error
+			04: if t13 goto 5 else 6
+Block #5: user.UserService.userdb_CreateCard.if.then
+			00: t14 = errors.New("invalid ID Hex":string)
+			01: return t14
+Block #6: user.UserService.userdb_CreateCard.if.done
+			00: t15 = (*UserServiceImpl).carddb_CreateCard(s, ctx, card)
+			01: t16 = extract t15 #0
+			02: t17 = extract t15 #1
+			03: t18 = t17 != nil:error
+			04: if t18 goto 7 else 8
+Block #7: user.UserService.userdb_CreateCard.if.then
+			00: return t17
+Block #8: user.UserService.userdb_CreateCard.if.done
+			00: t19 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t20 = &t19[0:int]
+			02: t21 = &t20.Key [#0]
+			03: t22 = &t20.Value [#1]
+			04: *t21 = "_id":string
+			05: t23 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t11)
+			06: *t22 = t23
+			07: t24 = slice t19[:]
+			08: t25 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t26 = &t25[0:int]
+			10: t27 = &t26.Key [#0]
+			11: t28 = &t26.Value [#1]
+			12: t29 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			13: t30 = &t29[0:int]
+			14: t31 = &t30.Key [#0]
+			15: t32 = &t30.Value [#1]
+			16: *t31 = "cards":string
+			17: t33 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t16)
+			18: *t32 = t33
+			19: t34 = slice t29[:]
+			20: *t27 = "$addToSet":string
+			21: t35 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t34)
+			22: *t28 = t35
+			23: t36 = slice t25[:]
+			24: t37 = invoke t3.UpdateOne(ctx, t24, t36)
+			25: t38 = extract t37 #0
+			26: t39 = extract t37 #1
+			27: return t39
+	Method: func(ctx context.Context, user *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			user = parameter user : *User
+Function: user.UserService.userdb_CreateUser
+Block #0: user.UserService.userdb_CreateUser.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_CreateUser.if.then
+			00: return t4
+Block #2: user.UserService.userdb_CreateUser.if.done
+			00: t6 = local dbUser (u)
+			01: t7 = &t6.User [#0]
+			02: t8 = *user
+			03: t9 = &t6.ID [#1]
+			04: t10 = go.mongodb.org/mongo-driver/bson/primitive.NewObjectID()
+			05: t11 = &t6.AddressIDs [#2]
+			06: t12 = new [0]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (slicelit)
+			07: t13 = slice t12[:]
+			08: t14 = &t6.CardIDs [#3]
+			09: t15 = new [0]go.mongodb.org/mongo-driver/bson/primitive.ObjectID (slicelit)
+			10: t16 = slice t15[:]
+			11: *t7 = t8
+			12: *t9 = t10
+			13: *t11 = t13
+			14: *t14 = t16
+			15: t17 = &user.Cards [#6]
+			16: t18 = *t17
+			17: t19 = (*UserServiceImpl).carddb_CreateCards(s, ctx, t18)
+			18: t20 = extract t19 #0
+			19: t21 = &t6.CardIDs [#3]
+			20: *t21 = t20
+			21: t22 = extract t19 #1
+			22: t23 = t22 != nil:error
+			23: if t23 goto 3 else 4
+Block #3: user.UserService.userdb_CreateUser.if.then
+			00: return t22
+Block #4: user.UserService.userdb_CreateUser.if.done
+			00: t24 = &user.Addresses [#5]
+			01: t25 = *t24
+			02: t26 = (*UserServiceImpl).addressdb_CreateAddresses(s, ctx, t25)
+			03: t27 = extract t26 #0
+			04: t28 = &t6.AddressIDs [#2]
+			05: *t28 = t27
+			06: t29 = extract t26 #1
+			07: t30 = t29 != nil:error
+			08: if t30 goto 5 else 6
+Block #5: user.UserService.userdb_CreateUser.if.then
+			00: return t29
+Block #6: user.UserService.userdb_CreateUser.if.done
+			00: t31 = &t6.ID [#1]
+			01: t32 = *t31
+			02: t33 = *t6
+			03: t34 = make interface{} <- dbUser (t33)
+			04: t35 = invoke t3.UpsertID(ctx, t32, t34)
+			05: t36 = extract t35 #0
+			06: t37 = extract t35 #1
+			07: t38 = t37 != nil:error
+			08: if t38 goto 7 else 8
+Block #7: user.UserService.userdb_CreateUser.if.then
+			00: t39 = &t6.AddressIDs [#2]
+			01: t40 = *t39
+			02: t41 = (*UserServiceImpl).addressdb_RemoveAddresses(s, ctx, t40)
+			03: t42 = &t6.CardIDs [#3]
+			04: t43 = *t42
+			05: t44 = (*UserServiceImpl).carddb_RemoveCards(s, ctx, t43)
+			06: return t37
+Block #8: user.UserService.userdb_CreateUser.if.done
+			00: t45 = &t6.User [#0]
+			01: t46 = &t6.ID [#1]
+			02: t47 = *t46
+			03: t48 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t47)
+			04: t49 = &t45.UserID [#7]
+			05: *t49 = t48
+			06: t50 = &t6.User [#0]
+			07: t51 = *t50
+			08: *user = t51
+			09: return nil:error
+	Method: func(ctx context.Context, entity string, id string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			entity = parameter entity : string
+			id = parameter id : string
+Function: user.UserService.userdb_Delete
+Block #0: user.UserService.userdb_Delete.entry
+			00: t0 = entity == "customers":string
+			01: if t0 goto 1 else 3
+Block #1: user.UserService.userdb_Delete.switch.body
+			00: t1 = (*UserServiceImpl).userdb_DeleteUser(s, ctx, id)
+			01: return t1
+Block #2: user.UserService.userdb_Delete.switch.body
+			00: t2 = (*UserServiceImpl).userdb_DeleteAddress(s, ctx, id)
+			01: return t2
+Block #3: user.UserService.userdb_Delete.switch.next
+			00: t3 = entity == "addresses":string
+			01: if t3 goto 2 else 5
+Block #4: user.UserService.userdb_Delete.switch.body
+			00: t4 = (*UserServiceImpl).userdb_DeleteCard(s, ctx, id)
+			01: return t4
+Block #5: user.UserService.userdb_Delete.switch.next
+			00: t5 = entity == "cards":string
+			01: if t5 goto 4 else 6
+Block #6: user.UserService.userdb_Delete.switch.next
+			00: t6 = "invalid entity ":string + entity
+			01: t7 = errors.New(t6)
+			02: return t7
+	Method: func(ctx context.Context, addressid string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			addressid = parameter addressid : string
+Function: user.UserService.userdb_DeleteAddress
+Block #0: user.UserService.userdb_DeleteAddress.entry
+			00: t0 = (*UserServiceImpl).userdb_DeleteAttr(s, ctx, "addresses":string, addressid)
+			01: t1 = t0 != nil:error
+			02: if t1 goto 1 else 2
+Block #1: user.UserService.userdb_DeleteAddress.if.then
+			00: return t0
+Block #2: user.UserService.userdb_DeleteAddress.if.done
+			00: t2 = (*UserServiceImpl).addressdb_RemoveAddress(s, ctx, addressid)
+			01: return t2
+	Method: func(ctx context.Context, attr string, idhex string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			attr = parameter attr : string
+			idhex = parameter idhex : string
+Function: user.UserService.userdb_DeleteAttr
+Block #0: user.UserService.userdb_DeleteAttr.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_DeleteAttr.if.then
+			00: return t4
+Block #2: user.UserService.userdb_DeleteAttr.if.done
+			00: t6 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(idhex)
+			01: t7 = extract t6 #0
+			02: t8 = extract t6 #1
+			03: t9 = t8 != nil:error
+			04: if t9 goto 3 else 4
+Block #3: user.UserService.userdb_DeleteAttr.if.then
+			00: t10 = errors.New("invalid Id Hex":string)
+			01: return t10
+Block #4: user.UserService.userdb_DeleteAttr.if.done
+			00: t11 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t12 = &t11[0:int]
+			02: t13 = &t12.Key [#0]
+			03: t14 = &t12.Value [#1]
+			04: *t13 = attr
+			05: t15 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t7)
+			06: *t14 = t15
+			07: t16 = slice t11[:]
+			08: t17 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			09: t18 = &t17[0:int]
+			10: t19 = &t18.Key [#0]
+			11: t20 = &t18.Value [#1]
+			12: t21 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			13: t22 = &t21[0:int]
+			14: t23 = &t22.Key [#0]
+			15: t24 = &t22.Value [#1]
+			16: *t23 = attr
+			17: t25 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t7)
+			18: *t24 = t25
+			19: t26 = slice t21[:]
+			20: *t19 = "$pull":string
+			21: t27 = make interface{} <- go.mongodb.org/mongo-driver/bson.D (t26)
+			22: *t20 = t27
+			23: t28 = slice t17[:]
+			24: t29 = invoke t3.UpdateMany(ctx, t16, t28)
+			25: t30 = extract t29 #0
+			26: t31 = extract t29 #1
+			27: return t31
+	Method: func(ctx context.Context, cardid string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			cardid = parameter cardid : string
+Function: user.UserService.userdb_DeleteCard
+Block #0: user.UserService.userdb_DeleteCard.entry
+			00: t0 = (*UserServiceImpl).userdb_DeleteAttr(s, ctx, "cards":string, cardid)
+			01: t1 = t0 != nil:error
+			02: if t1 goto 1 else 2
+Block #1: user.UserService.userdb_DeleteCard.if.then
+			00: return t0
+Block #2: user.UserService.userdb_DeleteCard.if.done
+			00: t2 = (*UserServiceImpl).carddb_RemoveCard(s, ctx, cardid)
+			01: return t2
+	Method: func(ctx context.Context, userid string) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+Function: user.UserService.userdb_DeleteUser
+Block #0: user.UserService.userdb_DeleteUser.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_DeleteUser.if.then
+			00: return t4
+Block #2: user.UserService.userdb_DeleteUser.if.done
+			00: t6 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(userid)
+			01: t7 = extract t6 #0
+			02: t8 = extract t6 #1
+			03: t9 = t8 != nil:error
+			04: if t9 goto 3 else 4
+Block #3: user.UserService.userdb_DeleteUser.if.then
+			00: t10 = errors.New("invalid Id Hex":string)
+			01: return t10
+Block #4: user.UserService.userdb_DeleteUser.if.done
+			00: t11 = new User (u)
+			01: t12 = (*UserServiceImpl).userdb_GetUser(s, ctx, userid)
+			02: t13 = extract t12 #0
+			03: *t11 = t13
+			04: t14 = extract t12 #1
+			05: t15 = t14 != nil:error
+			06: if t15 goto 5 else 6
+Block #5: user.UserService.userdb_DeleteUser.if.then
+			00: return t14
+Block #6: user.UserService.userdb_DeleteUser.if.done
+			00: t16 = (*User).addressIDs(t11)
+			01: t17 = hexToObjectIds(t16)
+			02: t18 = extract t17 #0
+			03: t19 = extract t17 #1
+			04: t20 = t19 != nil:error
+			05: if t20 goto 7 else 8
+Block #7: user.UserService.userdb_DeleteUser.if.then
+			00: return t19
+Block #8: user.UserService.userdb_DeleteUser.if.done
+			00: t21 = (*UserServiceImpl).addressdb_RemoveAddresses(s, ctx, t18)
+			01: t22 = t21 != nil:error
+			02: if t22 goto 9 else 10
+Block #9: user.UserService.userdb_DeleteUser.if.then
+			00: return t21
+Block #10: user.UserService.userdb_DeleteUser.if.done
+			00: t23 = (*User).cardIDs(t11)
+			01: t24 = hexToObjectIds(t23)
+			02: t25 = extract t24 #0
+			03: t26 = extract t24 #1
+			04: t27 = t26 != nil:error
+			05: if t27 goto 11 else 12
+Block #11: user.UserService.userdb_DeleteUser.if.then
+			00: return t26
+Block #12: user.UserService.userdb_DeleteUser.if.done
+			00: t28 = (*UserServiceImpl).carddb_RemoveCards(s, ctx, t25)
+			01: t29 = t28 != nil:error
+			02: if t29 goto 13 else 14
+Block #13: user.UserService.userdb_DeleteUser.if.then
+			00: return t28
+Block #14: user.UserService.userdb_DeleteUser.if.done
+			00: t30 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t31 = &t30[0:int]
+			02: t32 = &t31.Key [#0]
+			03: t33 = &t31.Value [#1]
+			04: *t32 = "_id":string
+			05: t34 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t7)
+			06: *t33 = t34
+			07: t35 = slice t30[:]
+			08: t36 = invoke t3.DeleteMany(ctx, t35)
+			09: return t36
+	Method: func(ctx context.Context, userid string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			userid = parameter userid : string
+Function: user.UserService.userdb_GetUser
+Block #0: user.UserService.userdb_GetUser.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_GetUser.if.then
+			00: return User{}:User, t4
+Block #2: user.UserService.userdb_GetUser.if.done
+			00: t6 = go.mongodb.org/mongo-driver/bson/primitive.ObjectIDFromHex(userid)
+			01: t7 = extract t6 #0
+			02: t8 = extract t6 #1
+			03: t9 = t8 != nil:error
+			04: if t9 goto 3 else 4
+Block #3: user.UserService.userdb_GetUser.if.then
+			00: t10 = newUser()
+			01: t11 = errors.New("invalid Id Hex":string)
+			02: return t10, t11
+Block #4: user.UserService.userdb_GetUser.if.done
+			00: t12 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t13 = &t12[0:int]
+			02: t14 = &t13.Key [#0]
+			03: t15 = &t13.Value [#1]
+			04: *t14 = "UserID":string
+			05: t16 = make interface{} <- go.mongodb.org/mongo-driver/bson/primitive.ObjectID (t7)
+			06: *t15 = t16
+			07: t17 = slice t12[:]
+			08: t18 = invoke t3.FindOne(ctx, t17, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t19 = extract t18 #0
+			10: t20 = extract t18 #1
+			11: t21 = t20 != nil:error
+			12: if t21 goto 5 else 6
+Block #5: user.UserService.userdb_GetUser.if.then
+			00: t22 = newUser()
+			01: return t22, t20
+Block #6: user.UserService.userdb_GetUser.if.done
+			00: t23 = new dbUser (u)
+			01: t24 = make interface{} <- *dbUser (t23)
+			02: t25 = invoke t19.One(ctx, t24)
+			03: t26 = extract t25 #0
+			04: t27 = extract t25 #1
+			05: t28 = t27 != nil:error
+			06: if t28 goto 7 else 8
+Block #7: user.UserService.userdb_GetUser.if.then
+			00: t29 = newUser()
+			01: return t29, t27
+Block #8: user.UserService.userdb_GetUser.if.done
+			00: t30 = (*dbUser).AddUserIDs(t23)
+			01: t31 = &t23.User [#0]
+			02: t32 = *t31
+			03: return t32, nil:error
+	Method: func(ctx context.Context, u *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User) error
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			u = parameter u : *User
+Function: user.UserService.userdb_GetUserAttributes
+Block #0: user.UserService.userdb_GetUserAttributes.entry
+			00: t0 = (*User).addressIDs(u)
+			01: t1 = (*UserServiceImpl).addressdb_GetAddresses(s, ctx, t0)
+			02: t2 = extract t1 #0
+			03: t3 = extract t1 #1
+			04: t4 = t3 != nil:error
+			05: if t4 goto 1 else 2
+Block #1: user.UserService.userdb_GetUserAttributes.if.then
+			00: return t3
+Block #2: user.UserService.userdb_GetUserAttributes.if.done
+			00: t5 = (*User).cardIDs(u)
+			01: t6 = (*UserServiceImpl).carddb_GetCards(s, ctx, t5)
+			02: t7 = extract t6 #0
+			03: t8 = extract t6 #1
+			04: t9 = t8 != nil:error
+			05: if t9 goto 3 else 4
+Block #3: user.UserService.userdb_GetUserAttributes.if.then
+			00: return t8
+Block #4: user.UserService.userdb_GetUserAttributes.if.done
+			00: t10 = &u.Addresses [#5]
+			01: *t10 = t2
+			02: t11 = &u.Cards [#6]
+			03: *t11 = t7
+			04: return nil:error
+	Method: func(ctx context.Context, username string) (github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+			username = parameter username : string
+Function: user.UserService.userdb_GetUserByName
+Block #0: user.UserService.userdb_GetUserByName.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_GetUserByName.if.then
+			00: return User{}:User, t4
+Block #2: user.UserService.userdb_GetUserByName.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "Username":string
+			05: t10 = make interface{} <- string (username)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: user.UserService.userdb_GetUserByName.if.then
+			00: t16 = newUser()
+			01: return t16, t14
+Block #4: user.UserService.userdb_GetUserByName.if.done
+			00: t17 = new dbUser (u)
+			01: t18 = make interface{} <- *dbUser (t17)
+			02: t19 = invoke t13.One(ctx, t18)
+			03: t20 = extract t19 #0
+			04: t21 = extract t19 #1
+			05: t22 = t21 != nil:error
+			06: if t22 goto 5 else 6
+Block #5: user.UserService.userdb_GetUserByName.if.then
+			00: t23 = newUser()
+			01: return t23, t21
+Block #6: user.UserService.userdb_GetUserByName.if.done
+			00: t24 = (*dbUser).AddUserIDs(t17)
+			01: t25 = &t17.User [#0]
+			02: t26 = *t25
+			03: return t26, nil:error
+	Method: func(ctx context.Context) ([]github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User, error)
+		Parameters:
+			s = parameter s : *UserServiceImpl
+			ctx = parameter ctx : context.Context
+Function: user.UserService.userdb_GetUsers
+Block #0: user.UserService.userdb_GetUsers.entry
+			00: t0 = &s.db [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "user_db":string, "user":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: user.UserService.userdb_GetUsers.if.then
+			00: return nil:[]User, t4
+Block #2: user.UserService.userdb_GetUsers.if.done
+			00: t6 = new [0]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = slice t6[:]
+			02: t8 = invoke t3.FindMany(ctx, t7, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			03: t9 = extract t8 #0
+			04: t10 = extract t8 #1
+			05: t11 = t10 != nil:error
+			06: if t11 goto 3 else 4
+Block #3: user.UserService.userdb_GetUsers.if.then
+			00: return nil:[]User, t10
+Block #4: user.UserService.userdb_GetUsers.if.done
+			00: t12 = new []dbUser (dbUsers)
+			01: t13 = new [0]dbUser (slicelit)
+			02: t14 = slice t13[:]
+			03: *t12 = t14
+			04: t15 = make interface{} <- *[]dbUser (t12)
+			05: t16 = invoke t9.All(ctx, t15)
+			06: t17 = t16 != nil:error
+			07: if t17 goto 5 else 6
+Block #5: user.UserService.userdb_GetUsers.if.then
+			00: return nil:[]User, t16
+Block #6: user.UserService.userdb_GetUsers.if.done
+			00: t18 = new [0]User (slicelit)
+			01: t19 = slice t18[:]
+			02: t20 = *t12
+			03: t21 = len(t20)
+			04: jump 7
+Block #7: user.UserService.userdb_GetUsers.rangeindex.loop
+			00: t22 = phi [6: t19, 8: t35] #users
+			01: t23 = phi [6: -1:int, 8: t24] #rangeindex
+			02: t24 = t23 + 1:int
+			03: t25 = t24 < t21
+			04: if t25 goto 8 else 9
+Block #8: user.UserService.userdb_GetUsers.rangeindex.body
+			00: t26 = &t20[t24]
+			01: t27 = *t26
+			02: t28 = new dbUser (dbUser)
+			03: *t28 = t27
+			04: t29 = (*dbUser).AddUserIDs(t28)
+			05: t30 = &t28.User [#0]
+			06: t31 = *t30
+			07: t32 = new [1]User (varargs)
+			08: t33 = &t32[0:int]
+			09: *t33 = t31
+			10: t34 = slice t32[:]
+			11: t35 = append(t22, t34...)
+			12: jump 7
+Block #9: user.UserService.userdb_GetUsers.rangeindex.done
+			00: return t22, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.User
+	Method: func() []string
+		Parameters:
+			u = parameter u : *User
+Function: user.User.addressIDs
+Block #0: user.User.addressIDs.entry
+			00: t0 = new [0]string (slicelit)
+			01: t1 = slice t0[:]
+			02: t2 = &u.Addresses [#5]
+			03: t3 = *t2
+			04: t4 = len(t3)
+			05: jump 1
+Block #1: user.User.addressIDs.rangeindex.loop
+			00: t5 = phi [0: t1, 2: t17] #ids
+			01: t6 = phi [0: -1:int, 2: t7] #rangeindex
+			02: t7 = t6 + 1:int
+			03: t8 = t7 < t4
+			04: if t8 goto 2 else 3
+Block #2: user.User.addressIDs.rangeindex.body
+			00: t9 = &t3[t7]
+			01: t10 = *t9
+			02: t11 = local Address (address)
+			03: *t11 = t10
+			04: t12 = &t11.ID [#5]
+			05: t13 = *t12
+			06: t14 = new [1]string (varargs)
+			07: t15 = &t14[0:int]
+			08: *t15 = t13
+			09: t16 = slice t14[:]
+			10: t17 = append(t5, t16...)
+			11: jump 1
+Block #3: user.User.addressIDs.rangeindex.done
+			00: return t5
+	Method: func() []string
+		Parameters:
+			u = parameter u : *User
+Function: user.User.cardIDs
+Block #0: user.User.cardIDs.entry
+			00: t0 = new [0]string (slicelit)
+			01: t1 = slice t0[:]
+			02: t2 = &u.Cards [#6]
+			03: t3 = *t2
+			04: t4 = len(t3)
+			05: jump 1
+Block #1: user.User.cardIDs.rangeindex.loop
+			00: t5 = phi [0: t1, 2: t17] #ids
+			01: t6 = phi [0: -1:int, 2: t7] #rangeindex
+			02: t7 = t6 + 1:int
+			03: t8 = t7 < t4
+			04: if t8 goto 2 else 3
+Block #2: user.User.cardIDs.rangeindex.body
+			00: t9 = &t3[t7]
+			01: t10 = *t9
+			02: t11 = local Card (card)
+			03: *t11 = t10
+			04: t12 = &t11.ID [#3]
+			05: t13 = *t12
+			06: t14 = new [1]string (varargs)
+			07: t15 = &t14[0:int]
+			08: *t15 = t13
+			09: t16 = slice t14[:]
+			10: t17 = append(t5, t16...)
+			11: jump 1
+Block #3: user.User.cardIDs.rangeindex.done
+			00: return t5
+	Method: func()
+		Parameters:
+			u = parameter u : *User
+Function: user.User.maskCCs
+Block #0: user.User.maskCCs.entry
+			00: t0 = &u.Cards [#6]
+			01: t1 = *t0
+			02: t2 = len(t1)
+			03: jump 1
+Block #1: user.User.maskCCs.rangeindex.loop
+			00: t3 = phi [0: -1:int, 2: t4] #rangeindex
+			01: t4 = t3 + 1:int
+			02: t5 = t4 < t2
+			03: if t5 goto 2 else 3
+Block #2: user.User.maskCCs.rangeindex.body
+			00: t6 = &u.Cards [#6]
+			01: t7 = *t6
+			02: t8 = &t7[t4]
+			03: t9 = (*Card).maskCC(t8)
+			04: jump 1
+Block #3: user.User.maskCCs.rangeindex.done
+			00: return
+	Method: func()
+		Parameters:
+			u = parameter u : *User
+Function: user.User.newSalt
+Block #0: user.User.newSalt.entry
+			00: t0 = crypto/sha1.New()
+			01: t1 = time.Now()
+			02: t2 = (time.Time).UnixNano(t1)
+			03: t3 = convert int <- int64 (t2)
+			04: t4 = strconv.Itoa(t3)
+			05: t5 = change interface io.Writer <- hash.Hash (t0)
+			06: t6 = io.WriteString(t5, t4)
+			07: t7 = invoke t0.Sum(nil:[]byte)
+			08: t8 = new [1]any (varargs)
+			09: t9 = &t8[0:int]
+			10: t10 = make any <- []byte (t7)
+			11: *t9 = t10
+			12: t11 = slice t8[:]
+			13: t12 = fmt.Sprintf("%x":string, t11...)
+			14: t13 = &u.Salt [#8]
+			15: *t13 = t12
+			16: return
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Address
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.Card
+	Method: func()
+		Parameters:
+			c = parameter c : *Card
+Function: user.Card.maskCC
+Block #0: user.Card.maskCC.entry
+			00: t0 = &c.LongNum [#0]
+			01: t1 = *t0
+			02: t2 = len(t1)
+			03: t3 = t2 - 4:int
+			04: t4 = strings.Repeat("*":string, t3)
+			05: t5 = &c.LongNum [#0]
+			06: t6 = *t5
+			07: t7 = slice t6[t3:]
+			08: t8 = new [2]any (varargs)
+			09: t9 = &t8[0:int]
+			10: t10 = make any <- string (t4)
+			11: *t9 = t10
+			12: t11 = &t8[1:int]
+			13: t12 = make any <- string (t7)
+			14: *t11 = t12
+			15: t13 = slice t8[:]
+			16: t14 = fmt.Sprintf("%v%v":string, t13...)
+			17: t15 = &c.LongNum [#0]
+			18: *t15 = t14
+			19: return
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.dbAddress
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/user.dbUser
+	Method: func()
+		Parameters:
+			u = parameter u : *dbUser
+Function: user.dbUser.AddUserIDs
+Block #0: user.dbUser.AddUserIDs.entry
+			00: t0 = &u.User [#0]
+			01: t1 = &u.ID [#1]
+			02: t2 = *t1
+			03: t3 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t2)
+			04: t4 = &t0.UserID [#7]
+			05: *t4 = t3
+			06: t5 = &u.User [#0]
+			07: t6 = &t5.Addresses [#5]
+			08: *t6 = nil:[]Address
+			09: t7 = &u.User [#0]
+			10: t8 = &t7.Cards [#6]
+			11: *t8 = nil:[]Card
+			12: t9 = &u.AddressIDs [#2]
+			13: t10 = *t9
+			14: t11 = len(t10)
+			15: jump 1
+Block #1: user.dbUser.AddUserIDs.rangeindex.loop
+			00: t12 = phi [0: -1:int, 2: t13] #rangeindex
+			01: t13 = t12 + 1:int
+			02: t14 = t13 < t11
+			03: if t14 goto 2 else 3
+Block #2: user.dbUser.AddUserIDs.rangeindex.body
+			00: t15 = &t10[t13]
+			01: t16 = *t15
+			02: t17 = &u.User [#0]
+			03: t18 = &u.User [#0]
+			04: t19 = &t18.Addresses [#5]
+			05: t20 = *t19
+			06: t21 = local Address (complit)
+			07: t22 = &t21.ID [#5]
+			08: t23 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t16)
+			09: *t22 = t23
+			10: t24 = *t21
+			11: t25 = new [1]Address (varargs)
+			12: t26 = &t25[0:int]
+			13: *t26 = t24
+			14: t27 = slice t25[:]
+			15: t28 = append(t20, t27...)
+			16: t29 = &t17.Addresses [#5]
+			17: *t29 = t28
+			18: jump 1
+Block #3: user.dbUser.AddUserIDs.rangeindex.done
+			00: t30 = &u.CardIDs [#3]
+			01: t31 = *t30
+			02: t32 = len(t31)
+			03: jump 4
+Block #4: user.dbUser.AddUserIDs.rangeindex.loop
+			00: t33 = phi [3: -1:int, 5: t34] #rangeindex
+			01: t34 = t33 + 1:int
+			02: t35 = t34 < t32
+			03: if t35 goto 5 else 6
+Block #5: user.dbUser.AddUserIDs.rangeindex.body
+			00: t36 = &t31[t34]
+			01: t37 = *t36
+			02: t38 = &u.User [#0]
+			03: t39 = &u.User [#0]
+			04: t40 = &t39.Cards [#6]
+			05: t41 = *t40
+			06: t42 = local Card (complit)
+			07: t43 = &t42.ID [#3]
+			08: t44 = (go.mongodb.org/mongo-driver/bson/primitive.ObjectID).Hex(t37)
+			09: *t43 = t44
+			10: t45 = *t42
+			11: t46 = new [1]Card (varargs)
+			12: t47 = &t46[0:int]
+			13: *t47 = t45
+			14: t48 = slice t46[:]
+			15: t49 = append(t41, t48...)
+			16: t50 = &t38.Cards [#6]
+			17: *t50 = t49
+			18: jump 4
+Block #6: user.dbUser.AddUserIDs.rangeindex.done
+			00: return
+	Method: func() []string
+	Method: func() []string
+	Method: func()
+	Method: func()
+		Parameters:
+			ctx = parameter ctx : context.Context
+			db = parameter db : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+Function: user.NewUserServiceImpl
+Block #0: user.NewUserServiceImpl.entry
+			00: t0 = new UserServiceImpl (complit)
+			01: t1 = &t0.db [#0]
+			02: *t1 = db
+			03: t2 = make UserService <- *UserServiceImpl (t0)
+			04: return t2, nil:error
+		Parameters:
+			pass = parameter pass : string
+			salt = parameter salt : string
+Function: user.calculatePassHash
+Block #0: user.calculatePassHash.entry
+			00: t0 = crypto/sha1.New()
+			01: t1 = change interface io.Writer <- hash.Hash (t0)
+			02: t2 = io.WriteString(t1, salt)
+			03: t3 = change interface io.Writer <- hash.Hash (t0)
+			04: t4 = io.WriteString(t3, pass)
+			05: t5 = invoke t0.Sum(nil:[]byte)
+			06: t6 = new [1]any (varargs)
+			07: t7 = &t6[0:int]
+			08: t8 = make any <- []byte (t5)
+			09: *t7 = t8
+			10: t9 = slice t6[:]
+			11: t10 = fmt.Sprintf("%x":string, t9...)
+			12: return t10
+		Parameters:
+Function: user.newUser
+Block #0: user.newUser.entry
+			00: t0 = new User (u)
+			01: t1 = &t0.Addresses [#5]
+			02: t2 = new [0]Address (makeslice)
+			03: t3 = slice t2[:0:int]
+			04: t4 = &t0.Cards [#6]
+			05: t5 = new [0]Card (makeslice)
+			06: t6 = slice t5[:0:int]
+			07: *t1 = t3
+			08: *t4 = t6
+			09: t7 = (*User).newSalt(t0)
+			10: t8 = *t0
+			11: return t8
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: user.init
+Block #0: user.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: user.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = errors.init()
+			03: t3 = go.mongodb.org/mongo-driver/bson.init()
+			04: t4 = go.mongodb.org/mongo-driver/bson/primitive.init()
+			05: t5 = crypto/sha1.init()
+			06: t6 = fmt.init()
+			07: t7 = io.init()
+			08: t8 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			09: t9 = strconv.init()
+			10: t10 = strings.init()
+			11: t11 = time.init()
+			12: jump 2
+Block #2: user.init.init.done
+			00: return

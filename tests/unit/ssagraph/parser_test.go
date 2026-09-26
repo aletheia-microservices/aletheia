@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"analyzer/pkg/analysis/service-level/ssagraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 )
 
 const parserSrc = `package shop

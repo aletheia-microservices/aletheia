@@ -1,0 +1,551 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.CreateOrderCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.UpdateOrderResult
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerQuery
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderItemDto
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderServiceImpl
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.CreateOrderCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.CreateOrderResult, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : CreateOrderCommand
+Function: order.OrderService.CreateNewOrder
+Block #0: order.OrderService.CreateNewOrder.entry
+			00: t0 = local CreateOrderCommand (command)
+			01: *t0 = command
+			02: t1 = &t0.OrderDto [#0]
+			03: t2 = github.com/google/uuid.NewString()
+			04: t3 = &t1.Id [#0]
+			05: *t3 = t2
+			06: t4 = &t0.OrderDto [#0]
+			07: t5 = *t4
+			08: t6 = (*OrderServiceImpl).add(s, ctx, t5)
+			09: t7 = t6 != nil:error
+			10: if t7 goto 1 else 2
+Block #1: order.OrderService.CreateNewOrder.if.then
+			00: return CreateOrderResult{}:CreateOrderResult, t6
+Block #2: order.OrderService.CreateNewOrder.if.done
+			00: t8 = local CreateOrderResult (complit)
+			01: t9 = &t8.Id [#0]
+			02: t10 = &t0.OrderDto [#0]
+			03: t11 = &t10.Id [#0]
+			04: t12 = *t11
+			05: *t9 = t12
+			06: t13 = *t8
+			07: return t13, nil:error
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.DeleteOrderCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.DeleteOrderResult, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : DeleteOrderCommand
+Function: order.OrderService.DeleteOrder
+Block #0: order.OrderService.DeleteOrder.entry
+			00: t0 = local DeleteOrderCommand (command)
+			01: *t0 = command
+			02: t1 = &t0.Id [#0]
+			03: t2 = *t1
+			04: t3 = (*OrderServiceImpl).find(s, ctx, t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: order.OrderService.DeleteOrder.if.then
+			00: t7 = local DeleteOrderResult (complit)
+			01: t8 = &t7.IsSuccess [#0]
+			02: *t8 = false:bool
+			03: t9 = *t7
+			04: return t9, t5
+Block #2: order.OrderService.DeleteOrder.if.done
+			00: t10 = (*OrderServiceImpl).remove(s, ctx, t2)
+			01: t11 = local DeleteOrderResult (complit)
+			02: t12 = &t11.IsSuccess [#0]
+			03: *t12 = true:bool
+			04: t13 = *t11
+			05: return t13, nil:error
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerResult, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			query = parameter query : GetOrdersByCustomerQuery
+Function: order.OrderService.GetOrdersByCustomer
+Block #0: order.OrderService.GetOrdersByCustomer.entry
+			00: t0 = local GetOrdersByCustomerQuery (query)
+			01: *t0 = query
+			02: t1 = &t0.CustomerId [#0]
+			03: t2 = *t1
+			04: t3 = (*OrderServiceImpl).findByCustomer(s, ctx, t2)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: order.OrderService.GetOrdersByCustomer.if.then
+			00: t7 = local GetOrdersByCustomerResult (complit)
+			01: t8 = &t7.Orders [#0]
+			02: *t8 = nil:[]OrderDto
+			03: t9 = *t7
+			04: return t9, t5
+Block #2: order.OrderService.GetOrdersByCustomer.if.done
+			00: t10 = local GetOrdersByCustomerResult (complit)
+			01: t11 = &t10.Orders [#0]
+			02: *t11 = t4
+			03: t12 = *t10
+			04: return t12, nil:error
+	Method: func(ctx context.Context) error
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+Function: order.OrderService.Init
+Block #0: order.OrderService.Init.entry
+			00: jump 1
+Block #1: order.OrderService.Init.for.body
+			00: t0 = new github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketChekoutEvent (message)
+			01: t1 = &s.queue [#1]
+			02: t2 = *t1
+			03: t3 = make interface{} <- *github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.BasketChekoutEvent (t0)
+			04: t4 = invoke t2.Pop(ctx, t3)
+			05: t5 = extract t4 #0
+			06: t6 = extract t4 #1
+			07: t7 = t6 != nil:error
+			08: if t7 goto 2 else 3
+Block #2: order.OrderService.Init.if.then
+			00: t8 = invoke t6.Error()
+			01: t9 = new [1]any (varargs)
+			02: t10 = &t9[0:int]
+			03: t11 = make any <- string (t8)
+			04: *t10 = t11
+			05: t12 = slice t9[:]
+			06: t13 = log.Printf("[ERROR] init: err...":string, t12...)
+			07: jump 1
+Block #3: order.OrderService.Init.if.done
+			00: if t5 goto 5 else 4
+Block #4: order.OrderService.Init.if.then
+			00: t14 = log.Printf("[ERROR] init: no ...":string, nil:[]any...)
+			01: jump 1
+Block #5: order.OrderService.Init.if.done
+			00: t15 = local AddressDto (addressDto)
+			01: t16 = &t15.FirstName [#0]
+			02: t17 = &t0.FirstName [#3]
+			03: t18 = *t17
+			04: t19 = &t15.LastName [#1]
+			05: t20 = &t0.LastName [#4]
+			06: t21 = *t20
+			07: t22 = &t15.EmailAddress [#2]
+			08: t23 = &t0.EmailAddress [#5]
+			09: t24 = *t23
+			10: t25 = &t15.AddressLine [#3]
+			11: t26 = &t0.AddressLine [#6]
+			12: t27 = *t26
+			13: t28 = &t15.Country [#4]
+			14: t29 = &t0.Country [#7]
+			15: t30 = *t29
+			16: t31 = &t15.State [#5]
+			17: t32 = &t0.State [#8]
+			18: t33 = *t32
+			19: t34 = &t15.ZipCode [#6]
+			20: t35 = &t0.ZipCode [#9]
+			21: t36 = *t35
+			22: *t16 = t18
+			23: *t19 = t21
+			24: *t22 = t24
+			25: *t25 = t27
+			26: *t28 = t30
+			27: *t31 = t33
+			28: *t34 = t36
+			29: t37 = local PaymentDto (paymentDto)
+			30: t38 = &t37.CardName [#0]
+			31: t39 = &t0.CardName [#10]
+			32: t40 = *t39
+			33: t41 = &t37.CardNumber [#1]
+			34: t42 = &t0.CardNumber [#11]
+			35: t43 = *t42
+			36: t44 = &t37.Expiration [#2]
+			37: t45 = &t0.Expiration [#12]
+			38: t46 = *t45
+			39: t47 = &t37.CCV [#3]
+			40: t48 = &t0.CVV [#13]
+			41: t49 = *t48
+			42: t50 = &t37.PaymentMethod [#4]
+			43: t51 = &t0.PaymentMethod [#14]
+			44: t52 = *t51
+			45: *t38 = t40
+			46: *t41 = t43
+			47: *t44 = t46
+			48: *t47 = t49
+			49: *t50 = t52
+			50: t53 = github.com/google/uuid.NewString()
+			51: t54 = local OrderDto (orderDto)
+			52: t55 = &t54.Id [#0]
+			53: t56 = &t54.CustomerId [#1]
+			54: t57 = &t0.CustomerId [#1]
+			55: t58 = *t57
+			56: t59 = &t54.OrderName [#2]
+			57: t60 = &t0.UserName [#0]
+			58: t61 = *t60
+			59: t62 = &t54.ShippingAddress [#3]
+			60: t63 = *t15
+			61: t64 = &t54.BillingAddress [#4]
+			62: t65 = *t15
+			63: t66 = &t54.Payment [#5]
+			64: t67 = *t37
+			65: t68 = &t54.Status [#6]
+			66: t69 = &t54.OrderItems [#7]
+			67: t70 = new [2]OrderItemDto (slicelit)
+			68: t71 = &t70[0:int]
+			69: t72 = &t71.OrderId [#0]
+			70: t73 = &t71.ProductID [#1]
+			71: t74 = &t71.Quantity [#2]
+			72: t75 = &t71.Price [#3]
+			73: *t72 = t53
+			74: *t73 = "5334c996-8457-4cf...":string
+			75: *t74 = 2:int
+			76: *t75 = 500:float64
+			77: t76 = &t70[1:int]
+			78: t77 = &t76.OrderId [#0]
+			79: t78 = &t76.ProductID [#1]
+			80: t79 = &t76.Quantity [#2]
+			81: t80 = &t76.Price [#3]
+			82: *t77 = t53
+			83: *t78 = "c67d6323-e8b1-4bd...":string
+			84: *t79 = 1:int
+			85: *t80 = 400:float64
+			86: t81 = slice t70[:]
+			87: *t55 = t53
+			88: *t56 = t58
+			89: *t59 = t61
+			90: *t62 = t63
+			91: *t64 = t65
+			92: *t66 = t67
+			93: *t68 = 2:OrderStatus
+			94: *t69 = t81
+			95: t82 = local CreateOrderCommand (complit)
+			96: t83 = &t82.OrderDto [#0]
+			97: t84 = *t54
+			98: *t83 = t84
+			99: t85 = *t82
+			100: t86 = (*OrderServiceImpl).CreateNewOrder(s, ctx, t85)
+			101: t87 = extract t86 #0
+			102: t88 = extract t86 #1
+			103: t89 = t88 != nil:error
+			104: if t89 goto 6 else 1
+Block #6: order.OrderService.Init.if.then
+			00: t90 = invoke t88.Error()
+			01: t91 = new [1]any (varargs)
+			02: t92 = &t91[0:int]
+			03: t93 = make any <- string (t90)
+			04: *t92 = t93
+			05: t94 = slice t91[:]
+			06: t95 = log.Printf("[ERROR] init: err...":string, t94...)
+			07: return t88
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.UpdateOrderCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.UpdateOrderResult, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			command = parameter command : UpdateOrderCommand
+Function: order.OrderService.UpdateOrder
+Block #0: order.OrderService.UpdateOrder.entry
+			00: t0 = new UpdateOrderCommand (command)
+			01: *t0 = command
+			02: t1 = &t0.OrderDto [#0]
+			03: t2 = &t1.Id [#0]
+			04: t3 = *t2
+			05: t4 = (*OrderServiceImpl).find(s, ctx, t3)
+			06: t5 = extract t4 #0
+			07: t6 = extract t4 #1
+			08: t7 = t6 != nil:error
+			09: if t7 goto 1 else 2
+Block #1: order.OrderService.UpdateOrder.if.then
+			00: t8 = local UpdateOrderResult (complit)
+			01: t9 = &t8.IsSuccess [#0]
+			02: *t9 = false:bool
+			03: t10 = *t8
+			04: return t10, t6
+Block #2: order.OrderService.UpdateOrder.if.done
+			00: t11 = new OrderDto (newOrder)
+			01: t12 = &t0.OrderDto [#0]
+			02: t13 = updateOrderWithNewValues(t11, t12)
+			03: t14 = *t11
+			04: t15 = (*OrderServiceImpl).update(s, ctx, t14)
+			05: t16 = local UpdateOrderResult (complit)
+			06: t17 = &t16.IsSuccess [#0]
+			07: *t17 = true:bool
+			08: t18 = *t16
+			09: return t18, nil:error
+	Method: func(ctx context.Context, order github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto) error
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			order = parameter order : OrderDto
+Function: order.OrderService.add
+Block #0: order.OrderService.add.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "order_db":string, "order":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: order.OrderService.add.if.then
+			00: return t4
+Block #2: order.OrderService.add.if.done
+			00: t6 = make interface{} <- OrderDto (order)
+			01: t7 = invoke t3.InsertOne(ctx, t6)
+			02: return t7
+	Method: func(ctx context.Context, id string) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: order.OrderService.find
+Block #0: order.OrderService.find.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "order_db":string, "order":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: order.OrderService.find.if.then
+			00: return OrderDto{}:OrderDto, t4
+Block #2: order.OrderService.find.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "Id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindOne(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: order.OrderService.find.if.then
+			00: return OrderDto{}:OrderDto, t14
+Block #4: order.OrderService.find.if.done
+			00: t16 = new OrderDto (order)
+			01: t17 = make interface{} <- *OrderDto (t16)
+			02: t18 = invoke t13.One(ctx, t17)
+			03: t19 = extract t18 #0
+			04: t20 = extract t18 #1
+			05: t21 = t20 != nil:error
+			06: if t21 goto 5 else 6
+Block #5: order.OrderService.find.if.then
+			00: return OrderDto{}:OrderDto, t20
+Block #6: order.OrderService.find.if.done
+			00: if t19 goto 8 else 7
+Block #7: order.OrderService.find.if.then
+			00: t22 = new [1]any (varargs)
+			01: t23 = &t22[0:int]
+			02: t24 = make any <- string (id)
+			03: *t23 = t24
+			04: t25 = slice t22[:]
+			05: t26 = fmt.Errorf("order not found f...":string, t25...)
+			06: return OrderDto{}:OrderDto, t26
+Block #8: order.OrderService.find.if.done
+			00: t27 = *t16
+			01: return t27, nil:error
+	Method: func(ctx context.Context, customerId string) ([]github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			customerId = parameter customerId : string
+Function: order.OrderService.findByCustomer
+Block #0: order.OrderService.findByCustomer.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "order_db":string, "order":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: order.OrderService.findByCustomer.if.then
+			00: return nil:[]OrderDto, t4
+Block #2: order.OrderService.findByCustomer.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "CustomerId":string
+			05: t10 = make interface{} <- string (customerId)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.FindMany(ctx, t11, nil:[]go.mongodb.org/mongo-driver/bson.D...)
+			09: t13 = extract t12 #0
+			10: t14 = extract t12 #1
+			11: t15 = t14 != nil:error
+			12: if t15 goto 3 else 4
+Block #3: order.OrderService.findByCustomer.if.then
+			00: return nil:[]OrderDto, t14
+Block #4: order.OrderService.findByCustomer.if.done
+			00: t16 = new []OrderDto (orders)
+			01: t17 = make interface{} <- *[]OrderDto (t16)
+			02: t18 = invoke t13.All(ctx, t17)
+			03: t19 = t18 != nil:error
+			04: if t19 goto 5 else 6
+Block #5: order.OrderService.findByCustomer.if.then
+			00: return nil:[]OrderDto, t18
+Block #6: order.OrderService.findByCustomer.if.done
+			00: t20 = *t16
+			01: t21 = make closure (*OrderServiceImpl).findByCustomer$1 [t16]
+			02: t22 = make any <- []OrderDto (t20)
+			03: t23 = sort.Slice(t22, t21)
+			04: t24 = *t16
+			05: return t24, nil:error
+	Method: func(ctx context.Context, id string) error
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			id = parameter id : string
+Function: order.OrderService.remove
+Block #0: order.OrderService.remove.entry
+			00: t0 = &s.database [#0]
+			01: t1 = *t0
+			02: t2 = invoke t1.GetCollection(ctx, "order_db":string, "order":string)
+			03: t3 = extract t2 #0
+			04: t4 = extract t2 #1
+			05: t5 = t4 != nil:error
+			06: if t5 goto 1 else 2
+Block #1: order.OrderService.remove.if.then
+			00: return t4
+Block #2: order.OrderService.remove.if.done
+			00: t6 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t7 = &t6[0:int]
+			02: t8 = &t7.Key [#0]
+			03: t9 = &t7.Value [#1]
+			04: *t8 = "Id":string
+			05: t10 = make interface{} <- string (id)
+			06: *t9 = t10
+			07: t11 = slice t6[:]
+			08: t12 = invoke t3.DeleteOne(ctx, t11)
+			09: return t12
+	Method: func(ctx context.Context, order github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto, error)
+		Parameters:
+			s = parameter s : *OrderServiceImpl
+			ctx = parameter ctx : context.Context
+			order = parameter order : OrderDto
+Function: order.OrderService.update
+Block #0: order.OrderService.update.entry
+			00: t0 = local OrderDto (order)
+			01: *t0 = order
+			02: t1 = &s.database [#0]
+			03: t2 = *t1
+			04: t3 = invoke t2.GetCollection(ctx, "order_db":string, "order":string)
+			05: t4 = extract t3 #0
+			06: t5 = extract t3 #1
+			07: t6 = t5 != nil:error
+			08: if t6 goto 1 else 2
+Block #1: order.OrderService.update.if.then
+			00: return OrderDto{}:OrderDto, t5
+Block #2: order.OrderService.update.if.done
+			00: t7 = new [1]go.mongodb.org/mongo-driver/bson/primitive.E (slicelit)
+			01: t8 = &t7[0:int]
+			02: t9 = &t8.Key [#0]
+			03: t10 = &t8.Value [#1]
+			04: t11 = &t0.Id [#0]
+			05: t12 = *t11
+			06: *t9 = "Id":string
+			07: t13 = make interface{} <- string (t12)
+			08: *t10 = t13
+			09: t14 = slice t7[:]
+			10: t15 = *t0
+			11: t16 = make interface{} <- OrderDto (t15)
+			12: t17 = invoke t4.ReplaceOne(ctx, t14, t16)
+			13: t18 = extract t17 #0
+			14: t19 = extract t17 #1
+			15: t20 = t19 != nil:error
+			16: if t20 goto 3 else 4
+Block #3: order.OrderService.update.if.then
+			00: return OrderDto{}:OrderDto, t19
+Block #4: order.OrderService.update.if.done
+			00: t21 = t18 == 0:int
+			01: if t21 goto 5 else 6
+Block #5: order.OrderService.update.if.then
+			00: t22 = &t0.Id [#0]
+			01: t23 = *t22
+			02: t24 = new [1]any (varargs)
+			03: t25 = &t24[0:int]
+			04: t26 = make any <- string (t23)
+			05: *t25 = t26
+			06: t27 = slice t24[:]
+			07: t28 = fmt.Errorf("order not found f...":string, t27...)
+			08: return OrderDto{}:OrderDto, t28
+Block #6: order.OrderService.update.if.done
+			00: t29 = *t0
+			01: return t29, nil:error
+		Parameters:
+Function: order.init
+Block #0: order.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: order.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = log.init()
+			04: t4 = sort.init()
+			05: t5 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			06: t6 = github.com/google/uuid.init()
+			07: t7 = go.mongodb.org/mongo-driver/bson.init()
+			08: t8 = github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/basket.init()
+			09: jump 2
+Block #2: order.init.init.done
+			00: return
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.CreateOrderResult
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.UpdateOrderCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerResult
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.AddressDto
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderService
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.CreateOrderCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.CreateOrderResult, error)
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.DeleteOrderCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.DeleteOrderResult, error)
+	Method: func(ctx context.Context, query github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerQuery) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.GetOrdersByCustomerResult, error)
+	Method: func(ctx context.Context) error
+	Method: func(ctx context.Context, command github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.UpdateOrderCommand) (github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.UpdateOrderResult, error)
+		Parameters:
+			ctx = parameter ctx : context.Context
+			database = parameter database : github.com/blueprint-uservices/blueprint/runtime/core/backend.NoSQLDatabase
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+Function: order.NewOrderServiceImpl
+Block #0: order.NewOrderServiceImpl.entry
+			00: t0 = new OrderServiceImpl (complit)
+			01: t1 = &t0.database [#0]
+			02: t2 = &t0.queue [#1]
+			03: *t1 = database
+			04: *t2 = queue
+			05: t3 = make OrderService <- *OrderServiceImpl (t0)
+			06: return t3, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderStatus
+	Unknown member type: *ssa.NamedConst
+	Unknown member type: *ssa.NamedConst
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.OrderDto
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.PaymentDto
+	Global: init$guard, Type: *bool
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.DeleteOrderCommand
+	Type: github.com/blueprint-uservices/blueprint/examples/eshopmicroservices/workflow/order.DeleteOrderResult
+	Unknown member type: *ssa.NamedConst
+		Parameters:
+			order = parameter order : *OrderDto
+			orderUpdate = parameter orderUpdate : *OrderDto
+Function: order.updateOrderWithNewValues
+Block #0: order.updateOrderWithNewValues.entry
+			00: t0 = &orderUpdate.ShippingAddress [#3]
+			01: t1 = *t0
+			02: t2 = &orderUpdate.BillingAddress [#4]
+			03: t3 = *t2
+			04: t4 = &orderUpdate.Payment [#5]
+			05: t5 = *t4
+			06: t6 = &orderUpdate.OrderName [#2]
+			07: t7 = *t6
+			08: t8 = &order.OrderName [#2]
+			09: *t8 = t7
+			10: t9 = &order.ShippingAddress [#3]
+			11: *t9 = t1
+			12: t10 = &order.BillingAddress [#4]
+			13: *t10 = t3
+			14: t11 = &order.Payment [#5]
+			15: *t11 = t5
+			16: t12 = &orderUpdate.Status [#6]
+			17: t13 = *t12
+			18: t14 = &order.Status [#6]
+			19: *t14 = t13
+			20: return

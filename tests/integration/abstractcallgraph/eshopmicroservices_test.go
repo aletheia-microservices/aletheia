@@ -3,8 +3,8 @@ package abstractcallgraph
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // eshopmicroservices: a WebApp calls the basket, catalog, discount and order services; checking

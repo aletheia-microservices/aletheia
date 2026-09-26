@@ -4,8 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // postnotification: UploadService stores a post with StorageService and pushes a notification to a

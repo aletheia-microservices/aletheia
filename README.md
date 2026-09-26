@@ -66,27 +66,48 @@ Aletheia searches the code for five patterns of operations that can break these 
 
 ## Project Structure
 
-The `pkg/` directory contains the packages that implement Aletheia and is organized as follows:
+```
+aletheia/
+├── cmd/aletheia/          # CLI entry point (flags, printing results, saving eval metrics)
+├── internal/              # Packages that implement Aletheia (see below)
+├── scripts/
+│   ├── gen-registry/      # Generates the app registry from registry/*.yaml
+│   └── verify/            # Compares warning counts of every app against a baseline
+├── registry/              # Registered applications (apps.yaml)
+├── config/                # Per-application detection configs that suppress warnings
+├── tests/                 # Unit and integration tests (see tests/README.md)
+├── docs/                  # Technical details and assumptions
+├── blueprint/             # Blueprint framework and example applications (git submodule)
+└── Makefile
+```
+
+The `internal/` directory is organized as follows:
 
 ```
-pkg/
-├── abstractgraph/                  # Abstract call graph construction and analysis
+internal/
+├── pipeline/                       # Runs every stage of the analysis for one app (used by the CLI and the tests)
+├── analysis/
+│   ├── common/                     # Database operation types shared across packages
+│   ├── service-level/              # Implementation for intra-service analysis
+│   │   └── ssagraph/               # SSA graph construction and taint propagation within each service
+|   |
+│   └── system-level/               # Implementation for intra-service analysis
+│       ├── abstractgraph/          # Abstract call graph construction and analysis across services
+│       └── detection/              # Detection for each pattern (RI-1, RI-2, RI-3, EI-1, Un-1)
+|
 ├── app/                            # Application metadata with services, databases, schemas, and constraints
-├── common/                         # Database operation types shared across packages
 ├── config/                         # Global analysis settings (config.Global)
-├── detection/                      # Detection for each pattern (RI-1, RI-2, RI-3, EI-1, Un-1)
 ├── frameworks/                     # Framework-specific parsing code (e.g., wiring specs for Blueprint apps)
 │   ├── blueprint/
 │   └── components/
-├── ssagraph/                       # SSA graph construction and analysis
 └── utils/                          # Helpers for loading programs, parsing function and field paths, and comparing timestamps
 ```
 
-The `config/` folder contains per-application detection config files that suppress warnings (see [Suppressing Detection Warnings](#suppressing-detection-warnings)). Not to be confused with `pkg/config/`, which holds global analysis settings.
+The `config/` folder contains per-application detection config files that suppress warnings (see [Suppressing Detection Warnings](#suppressing-detection-warnings)). Not to be confused with `internal/config/`, which holds global analysis settings.
 
 The `registry/` folder contains YAML files needed by Aletheia to properly import and analyze applications.
 
-The `scripts/gen_app_registry/` folder contains a script that uses the YAML files in `registry/` to: (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
+The `scripts/gen-registry/` generator (run with `make registry`) reads `registry/*.yaml` and: (i) writes `internal/frameworks/blueprint/apps/apps.go`, which imports each application's Blueprint wiring spec, and (ii) adds `replace` entries to `go.mod` that point each application to its folder in `blueprint/examples/`.
 
 After analyzing an application, the output will be stored in `output/{app}` according to the following structure:
 
@@ -120,6 +141,21 @@ If you already cloned the repository without `--recurse-submodules`, make sure t
 git submodule update --init --recursive
 ```
 
+Build Aletheia binary from the repository root:
+
+```zsh
+make build
+```
+
+Run `make help` to list the other targets (`test`, `verify`, `registry`, ...). 
+
+Always run Aletheia from the repository root, since it loads the applications through the `replace` directives in `go.mod` and reads `registry/` and `config/` relative to the working directory.
+
+The rest of this README uses `./bin/aletheia`, but either of these alternatives also works:
+
+- `go run ./cmd/aletheia {app}`: skips the build step and always runs your latest changes.
+- `make install`, then `aletheia {app}`: installs into `$GOBIN` (or `$(go env GOPATH)/bin`), which must be on your `PATH`. Rerun `make install` after changing the code or running `make registry`.
+
 To get started, run one of the included apps as shown below, then follow the [simpleshop tutorial](#tutorial-analyzing-your-first-application-simpleshop), which walks through registering an app, running the analysis, reading the warning, and suppressing it.
 
 ### Running Aletheia
@@ -137,13 +173,13 @@ Aletheia analyzes applications located in `blueprint/examples/`. Some examples i
 To analyze an application, run Aletheia and specify the application name as the `app` parameter:
 
 ```zsh
-go run main.go {app}
+./bin/aletheia {app}
 ```
 
 Example:
 
 ```zsh
-go run main.go postnotification
+./bin/aletheia postnotification
 ```
 
 The results are saved in `output/postnotification/`:
@@ -156,7 +192,7 @@ The results are saved in `output/postnotification/`:
 You can also specify the `--debug` flag to obtain tainted _ssa graphs_ and _abstract call graph_ in `.dot` format saved under `output/postnotification/abstractcallgraph` and `output/postnotification/ssagraphs`, which can then be visualized in, for example, [Graphivz](https://dreampuf.github.io/GraphvizOnline/).
 
 ```zsh
-go run main.go --debug postnotification
+./bin/aletheia --debug postnotification
 ```
 
 ### Reading the Output
@@ -169,7 +205,7 @@ Each file in `output/{app}/analysis/` starts with `[NUM_WARNINGS = N]`, followed
   - `[MANDATORY]`: every request that creates the reference also writes the record it points to. Here, `UploadService.UploadPost()` writes both the post and its notification.
   - `[T]`: transitive, derived from two other foreign keys (if X references Y and Y references Z, then X references Z).
 
-Expand each pattern below for an annotated example.
+Click a pattern below to see an example warning explained.
 
 <details>
 <summary><b>RI-1</b> <code>foreign-key-cascade.txt</code>: missing cascading deletes</summary>
@@ -274,13 +310,13 @@ ignore_cascade:                   # missing cascading deletes to ignore (RI-1 on
 You can ignore specific inferred foreign keys. For example, `config/postnotification.yaml` ignores the foreign key on `notifications_queue.notification.ReqID`:
 
 ```zsh
-go run main.go --detection_config config/postnotification.yaml postnotification
+./bin/aletheia --detection_config config/postnotification.yaml postnotification
 ```
 
 Or you can suppress missing cascading delete warnings. For example, `config/sockshop.yaml` ignores missing cascades from `cart_db.carts` to `order_db.orders`:
 
 ```zsh
-go run main.go --detection_config config/sockshop.yaml sockshop
+./bin/aletheia --detection_config config/sockshop.yaml sockshop
 ```
 
 ### Tutorial: Analyzing Your First Application (simpleshop)
@@ -300,16 +336,16 @@ apps:
     spec_path: github.com/blueprint-uservices/blueprint/examples/simpleshop/wiring/specs
 ```
 
-Now, you will need to generate the application registry according to the new entry added to `registry/apps.yaml`. The following script will (i) generate a Go file under `pkg/frameworks/blueprint/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, and (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path.
+Now, you will need to generate the application registry according to the new entry added to `registry/apps.yaml`. The following command will (i) generate a Go file under `internal/frameworks/blueprint/apps/` defining how Aletheia locates applications and imports their corresponding Blueprint specs, (ii) update `go.mod` with new entries so that Go can locate applications relative to Aletheia's path, and (iii) rebuild `bin/aletheia` so that it includes the new application.
 
 ```zsh
-go run scripts/gen_app_registry/main.go
+make registry
 ```
 
 Now, you can run the analysis:
 
 ```zsh
-go run main.go simpleshop
+./bin/aletheia simpleshop
 ```
 
 This command prints the analysis results and saves them in `output/simpleshop/`.
@@ -337,13 +373,14 @@ ignore_cascade:
 Then, you can run the analysis again and pass the `--detection_config` flag followed by the file path:
 
 ```zsh
-go run main.go --detection_config config/simpleshop.yaml simpleshop
+./bin/aletheia --detection_config config/simpleshop.yaml simpleshop
 ```
 
 The tutorial modifies files tracked by git. When you are done, you can undo these changes with:
 
 ```zsh
-git restore registry/apps.yaml go.mod pkg/frameworks/blueprint/apps/apps.go
+git restore registry/apps.yaml go.mod internal/frameworks/blueprint/apps/apps.go
+make build
 rm config/simpleshop.yaml
 ```
 
@@ -364,7 +401,7 @@ blueprint/examples/{app}/
 
 Note that `blueprint/` is a git submodule, so your application's code belongs to that repository, not to Aletheia's.
 
-**3. Follow Aletheia's naming conventions.** The current implementation makes a few assumptions about the application's code, described in [assumptions.md](./assumptions.md).
+**3. Follow Aletheia's naming conventions.** The current implementation makes a few assumptions about the application's code, described in [technical-assumptions.md](./docs/technical-assumptions.md).
 
 **4. Register the application** by adding an entry at the end of the `apps` list in `registry/apps.yaml`, replacing `{app}` with the name of your application's folder and `{spec}` with the name of its wiring spec:
 
@@ -388,23 +425,23 @@ The last two fields are optional and declare constraints that Aletheia cannot in
 - `sql_tables`: SQL files with `CREATE TABLE` statements (PostgreSQL syntax), whose `PRIMARY KEY` and `UNIQUE` columns become constraints.
 - `nosql_path`: folder that holds one JSON file per NoSQL collection, whose `uniqueItems` become uniqueness constraints (see `blueprint/examples/dsb_mediamicroservices/workflow/mediamicroservices/database/`).
 
-**5. Generate the application registry**, which updates `go.mod` and `pkg/frameworks/blueprint/apps/apps.go`:
+**5. Generate the application registry**, which updates `go.mod` and `internal/frameworks/blueprint/apps/apps.go` and rebuilds `bin/aletheia`:
 
 ```zsh
-go run scripts/gen_app_registry/main.go
+make registry
 ```
 
 **6. Check that the wiring loads.** The `--init` flag only loads the application's wiring and exits, which is a quick way to find registration errors:
 
 ```zsh
-go run main.go --init {app}
+./bin/aletheia --init {app}
 ```
 
-**7. Run the analysis and review the warnings.** Run `go run main.go {app}`, then see [Reading the Output](#reading-the-output) to interpret the warnings and [Suppressing Detection Warnings](#suppressing-detection-warnings) to ignore false positives.
+**7. Run the analysis and review the warnings.** Run `./bin/aletheia {app}`, then see [Reading the Output](#reading-the-output) to interpret the warnings and [Suppressing Detection Warnings](#suppressing-detection-warnings) to ignore false positives.
 
 ## Technical Details
 
-See [technical-details.md](./technical-details.md) for how each pattern maps to the code, how cross-microservice foreign keys are inferred, and the current limitations.
+See [technical-details.md](./docs/technical-details.md) for how each pattern maps to the code, how cross-microservice foreign keys are inferred, and the current limitations.
 
 ## Citation
 

@@ -3,8 +3,8 @@ package abstractcallgraph
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // dsb_socialnetwork (DeathStarBench): a Wrk2APIService composes posts, follows users and reads

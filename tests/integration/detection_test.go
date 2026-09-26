@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // regenerate the expected output with: go test ./tests/integration -run TestDetectionOutput -update

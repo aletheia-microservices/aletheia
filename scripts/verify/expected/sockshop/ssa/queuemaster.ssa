@@ -1,0 +1,130 @@
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/queuemaster.QueueMaster
+	Method: func(ctx context.Context) error
+		Parameters:
+			ctx = parameter ctx : context.Context
+			queue = parameter queue : github.com/blueprint-uservices/blueprint/runtime/core/backend.Queue
+			shipping = parameter shipping : github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.ShippingService
+Function: queuemaster.NewQueueMasterImpl
+Block #0: queuemaster.NewQueueMasterImpl.entry
+			00: t0 = new QueueMasterImpl (complit)
+			01: t1 = &t0.q [#0]
+			02: t2 = &t0.shipping [#1]
+			03: t3 = &t0.exitOnError [#2]
+			04: t4 = &t0.processed [#3]
+			05: *t1 = queue
+			06: *t2 = shipping
+			07: *t3 = false:bool
+			08: *t4 = 0:int32
+			09: t5 = make QueueMaster <- *QueueMasterImpl (t0)
+			10: return t5, nil:error
+	Type: github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/queuemaster.QueueMasterImpl
+	Method: func(ctx context.Context) error
+		Parameters:
+			q = parameter q : *QueueMasterImpl
+			ctx = parameter ctx : context.Context
+Function: queuemaster.QueueMaster.Run
+Block #0: queuemaster.QueueMaster.Run.entry
+			00: jump 1
+Block #1: queuemaster.QueueMaster.Run.for.body
+			00: t0 = invoke ctx.Done()
+			01: t1 = select nonblocking [<-t0]
+			02: t2 = extract t1 #0
+			03: t3 = t2 == 0:int
+			04: if t3 goto 2 else 3
+Block #2: queuemaster.QueueMaster.Run.select.body
+			00: return nil:error
+Block #3: queuemaster.QueueMaster.Run.select.next
+			00: t4 = new github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment (shipment)
+			01: t5 = &q.q [#0]
+			02: t6 = *t5
+			03: t7 = make interface{} <- *github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.Shipment (t4)
+			04: t8 = invoke t6.Pop(ctx, t7)
+			05: t9 = extract t8 #0
+			06: t10 = extract t8 #1
+			07: t11 = t10 != nil:error
+			08: if t11 goto 4 else 5
+Block #4: queuemaster.QueueMaster.Run.if.then
+			00: t12 = &q.exitOnError [#2]
+			01: t13 = *t12
+			02: if t13 goto 6 else 7
+Block #5: queuemaster.QueueMaster.Run.if.done
+			00: if t9 goto 8 else 1
+Block #6: queuemaster.QueueMaster.Run.if.then
+			00: return t10
+Block #7: queuemaster.QueueMaster.Run.if.else
+			00: t14 = new [1]any (varargs)
+			01: t15 = &t14[0:int]
+			02: t16 = change interface any <- error (t10)
+			03: *t15 = t16
+			04: t17 = slice t14[:]
+			05: t18 = fmt.Sprintf("QueueMaster unabl...":string, t17...)
+			06: t19 = log/slog.Error(t18, nil:[]any...)
+			07: jump 1
+Block #8: queuemaster.QueueMaster.Run.if.then
+			00: t20 = &q.processed [#3]
+			01: t21 = sync/atomic.AddInt32(t20, 1:int32)
+			02: t22 = &t4.ID [#0]
+			03: t23 = *t22
+			04: t24 = &t4.Name [#1]
+			05: t25 = *t24
+			06: t26 = new [3]any (varargs)
+			07: t27 = &t26[0:int]
+			08: t28 = make any <- int32 (t21)
+			09: *t27 = t28
+			10: t29 = &t26[1:int]
+			11: t30 = make any <- string (t23)
+			12: *t29 = t30
+			13: t31 = &t26[2:int]
+			14: t32 = make any <- string (t25)
+			15: *t31 = t32
+			16: t33 = slice t26[:]
+			17: t34 = fmt.Sprintf("Received shipment...":string, t33...)
+			18: t35 = log/slog.Info(t34, nil:[]any...)
+			19: jump 9
+Block #9: queuemaster.QueueMaster.Run.for.body
+			00: t36 = &q.shipping [#1]
+			01: t37 = *t36
+			02: t38 = &t4.ID [#0]
+			03: t39 = *t38
+			04: t40 = invoke t37.UpdateStatus(ctx, t39, "shipped":string)
+			05: t41 = t40 != nil:error
+			06: if t41 goto 10 else 1
+Block #10: queuemaster.QueueMaster.Run.if.then
+			00: t42 = &q.exitOnError [#2]
+			01: t43 = *t42
+			02: if t43 goto 11 else 12
+Block #11: queuemaster.QueueMaster.Run.if.then
+			00: return t40
+Block #12: queuemaster.QueueMaster.Run.if.else
+			00: t44 = &t4.ID [#0]
+			01: t45 = *t44
+			02: t46 = new [2]any (varargs)
+			03: t47 = &t46[0:int]
+			04: t48 = make any <- string (t45)
+			05: *t47 = t48
+			06: t49 = &t46[1:int]
+			07: t50 = change interface any <- error (t40)
+			08: *t49 = t50
+			09: t51 = slice t46[:]
+			10: t52 = fmt.Sprintf("Unable to send sh...":string, t51...)
+			11: t53 = log/slog.Error(t52, nil:[]any...)
+			12: t54 = time.Sleep(1000000000:time.Duration)
+			13: jump 9
+	Global: init$guard, Type: *bool
+		Parameters:
+Function: queuemaster.init
+Block #0: queuemaster.init.entry
+			00: t0 = *init$guard
+			01: if t0 goto 2 else 1
+Block #1: queuemaster.init.init.start
+			00: *init$guard = true:bool
+			01: t1 = context.init()
+			02: t2 = fmt.init()
+			03: t3 = log/slog.init()
+			04: t4 = sync/atomic.init()
+			05: t5 = time.init()
+			06: t6 = github.com/blueprint-uservices/blueprint/runtime/core/backend.init()
+			07: t7 = github.com/blueprint-uservices/blueprint/examples/sockshop/workflow/shipping.init()
+			08: jump 2
+Block #2: queuemaster.init.init.done
+			00: return

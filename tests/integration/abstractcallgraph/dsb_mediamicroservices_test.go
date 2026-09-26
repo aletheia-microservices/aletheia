@@ -3,8 +3,8 @@ package abstractcallgraph
 import (
 	"testing"
 
-	"analyzer/pkg/analysis/common"
-	"analyzer/tests/runner"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
 // dsb_mediamicroservices (DeathStarBench): an APIService registers movies, users and reviews, and
