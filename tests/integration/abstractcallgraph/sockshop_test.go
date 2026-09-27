@@ -169,7 +169,7 @@ func TestSockshopCatalogueListReadsSocks(t *testing.T) {
 }
 
 func TestSockshopRemoveItemDeletesEmptyCart(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #4), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #3), e.g. " +
 		"CartService.RemoveItem -> DeleteCart -> deleteMany")
 
 	g := runner.Get(t, "sockshop").AbsGraph

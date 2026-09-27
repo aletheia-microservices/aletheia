@@ -304,7 +304,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *abstractgraph.AbstractCallGraph,
 	for _, currTaint := range mappingKeys {
 		otherTaintsLst := taintMapping.GetMappingForKey(currTaint)
 		currDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(currTaint.GetDatabasePath()))
-		currField := currDb.GetLastSchema().GetOrCreateField(currDb, currTaint.GetDatabasePath())
+		currField := currDb.GetSchemaForFieldPath(currTaint.GetDatabasePath()).GetOrCreateField(currDb, currTaint.GetDatabasePath())
 
 		for _, otherTaint := range otherTaintsLst {
 			otherDb := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(otherTaint.GetDatabasePath()))
@@ -314,7 +314,7 @@ func PropagateNewTaintsToDatabaseSchemas(graph *abstractgraph.AbstractCallGraph,
 				// may happen when iterating queue.Push() --> queue.Pop()
 				continue
 			}
-			otherField := otherDb.GetLastSchema().GetOrCreateField(otherDb, otherTaint.GetDatabasePath())
+			otherField := otherDb.GetSchemaForFieldPath(otherTaint.GetDatabasePath()).GetOrCreateField(otherDb, otherTaint.GetDatabasePath())
 
 			if otherField.GetDatabase() == currField.GetDatabase() {
 				continue
@@ -417,7 +417,7 @@ func propagateTaintsWriteWritePair(graph *abstractgraph.AbstractCallGraph, reqId
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			constraint.EnableMandatory(reqIdx)
 			field2_write.AddConstraint(constraint)
-			schema := db2_write.GetLastSchema()
+			schema := field2_write.GetSchema()
 			schema.AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, schema, constraint)
 			modified = true
@@ -457,7 +457,7 @@ func propagateTaintsReadWritePair(graph *abstractgraph.AbstractCallGraph, reqIdx
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			constraint.DisableMandatory(reqIdx)
 			field2_write.AddConstraint(constraint)
-			schema := db2_write.GetLastSchema()
+			schema := field2_write.GetSchema()
 			schema.AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, schema, constraint)
 			modified = true
@@ -513,7 +513,7 @@ func propagateTaintsWriteReadPair(graph *abstractgraph.AbstractCallGraph, reqIdx
 			// must (un)set mandatory before calling GetSchema().AddConstraint()
 			constraint.DisableMandatory(reqIdx)
 			field1_write.AddConstraint(constraint)
-			schema := db1_write.GetLastSchema()
+			schema := field1_write.GetSchema()
 			schema.AddConstraint(constraint)
 			updateTransitiveReferencesTriggeredByCurrent(graph, schema, constraint)
 			modified = true
@@ -547,7 +547,7 @@ func propagateTaintsReadReadPair(graph *abstractgraph.AbstractCallGraph, reqIdx 
 				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field2, field1)
 				constraint.DisableMandatory(reqIdx)
 				field2.AddConstraint(constraint)
-				db2.GetLastSchema().AddConstraint(constraint)
+				field2.GetSchema().AddConstraint(constraint)
 				modified = true
 			}
 		} else if taint1.IsReadValue() && taint2.IsReadKey() {
@@ -566,7 +566,7 @@ func propagateTaintsReadReadPair(graph *abstractgraph.AbstractCallGraph, reqIdx 
 				constraint := backends.NewConstraint(backends.CONSTRAINT_FOREIGN_KEY, field1, field2)
 				constraint.DisableMandatory(reqIdx)
 				field1.AddConstraint(constraint)
-				db1.GetLastSchema().AddConstraint(constraint)
+				field1.GetSchema().AddConstraint(constraint)
 				modified = true
 			}
 		}

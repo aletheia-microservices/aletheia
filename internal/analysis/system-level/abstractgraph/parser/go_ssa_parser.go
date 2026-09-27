@@ -265,10 +265,10 @@ func registerDatabaseFields(graph *abstractgraph.AbstractCallGraph, args []*abst
 		for _, taintLst := range arg.GetPrimaryTaints() {
 			for _, taint := range taintLst {
 				db := graph.GetApp().GetDatabaseByName(utils.ExtractDatabaseNameFromFieldPath(taint.GetDatabasePath()))
-				latestSchema := db.GetLastSchema()
-				if !latestSchema.HasField(taint.GetDatabasePath()) {
-					field := backends.NewField(taint.GetDatabasePath(), db, latestSchema)
-					latestSchema.AddField(field)
+				schema := db.GetSchemaForFieldPath(taint.GetDatabasePath())
+				if !schema.HasField(taint.GetDatabasePath()) {
+					field := backends.NewField(taint.GetDatabasePath(), db, schema)
+					schema.AddField(field)
 				}
 			}
 		}

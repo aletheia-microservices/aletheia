@@ -5,11 +5,10 @@ Found while writing the test suite in `tests/`. Each item has a test that is ski
 | # | Area | Summary | Impact | Test |
 |---|------|---------|--------|------|
 | 1 | Abstract graph | `GetPrimaryTaints` / `GetSecondaryTaints` / `GetWriteTaints` do not filter | High | `TestAbstractObjectPrimaryAndSecondaryFilters` |
-| 2 | Schema | `GetLastSchema()` returns `schemas[0]`, whose order is random, so fields and constraints land in the wrong collection | High | `TestDetectionOutput/sockshop/constraints` |
-| 3 | Detection | `TaintMapping.Clear()` does nothing, so the backward phase of an RPC reuses the forward mapping | Medium | `TestTaintMappingClear` |
-| 4 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
+| 2 | Detection | `TaintMapping.Clear()` does nothing, so the backward phase of an RPC reuses the forward mapping | Medium | `TestTaintMappingClear` |
+| 3 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
 
-Items 1 and 2 are ordered by estimated impact. Item 3 was found later, while adding unit tests for `pkg/abstractgraph`, and item 4 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
+Item 1 was found first. Item 2 was found later, while adding unit tests for `pkg/abstractgraph`, and item 3 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
 
 ---
 
@@ -43,31 +42,7 @@ During the detection phase, objects hold secondary taints propagated from other 
 
 **Fix:** return the filtered map. Some detection results will change. Review the diff (`go test ./tests/integration -run TestDetectionOutput`) before running `-update`.
 
-## 2. `GetLastSchema()` returns the first schema, in random order
-
-**Where:** `pkg/app/backends/database.go:78`
-
-```go
-func (database *Database) GetLastSchema() *Schema {
-	return database.schemas[0]
-}
-```
-
-**Callers:** `pkg/abstractgraph/parser.go:266` and `pkg/abstractgraph/tainter.go:301, 311, 414, 454, 510, 544, 563`.
-
-- **Wrong collection:** whatever the name suggests, fields and constraints always go to the first schema, never the one matching the taint's collection. On databases with several collections they land in the wrong one.
-- **Random order:** schemas are created in `registry.RegisterFields` (`pkg/ssagraph/registry/nosql_primary_keys.go:39`), which receives `graphsLst`. `main.go` builds that list by iterating the `funcGraphs` map, so which schema ends up at `schemas[0]` changes between runs.
-
-**Evidence (sockshop):**
-- `user_db` has the `user`, `address` and `card` collections. On some runs the `address` schema in `schema.json` contains `user_db.card.*` and `user_db.user.*` fields.
-- `schema.json` differs from `output-expected/` on HEAD, and between repeated runs of the same binary.
-- The inferred constraints vary too. `FOREIGN_KEY order_db.orders.Shipment.Name REFERENCES ship_db.shipments.Name` (and the same key into `ship_queue.notification.Name`) appeared in 7 of 12 runs.
-- The detection output was identical in all 12 runs, but that looks like luck rather than something guaranteed.
-- trainticket's `schema.json` also changes order between runs.
-
-**Fix:** look up the schema from the field path, e.g. `db.GetSchemaByNameIfExists(utils.ExtractSchemaNameFromFieldPath(path))`. Separately, sort `graphsLst` (or the `funcGraphs` keys) in `main.go` so that the remaining order-dependent steps are reproducible. Once constraints are stable, remove `sockshop` from `nondeterministicConstraints` in `tests/integration/detection_test.go` and run `-update`.
-
-## 3. `TaintMapping.Clear()` does nothing
+## 2. `TaintMapping.Clear()` does nothing
 
 **Where:** `pkg/abstractgraph/taintmapping.go:33`, called from `pkg/detection/iterator.go:192`
 
@@ -87,7 +62,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Tried:** clearing the fields in place changes no warnings in the included apps, but removes one inferred foreign key in `dsb_mediamicroservices`: `movie_info_cache.*.Key REFERENCES movie_info_db.movie_info._id [T]`. That foreign key looks correct, since `MovieInfoService.ReadMovieInfo` uses the same `movieID` as the cache key and as the `_id` filter of `movie_info_db`. It is currently found only as a side effect of this bug, so find out why it is not inferred directly before fixing.
 
-## 4. Database and RPC calls two or more helper calls deep are dropped
+## 3. Database and RPC calls two or more helper calls deep are dropped
 
 **Where:** `pkg/abstractgraph/parser.go:253`
 

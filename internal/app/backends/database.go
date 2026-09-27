@@ -4,6 +4,9 @@ package backends
 import (
 	"encoding/json"
 	"sort"
+	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Database struct {
@@ -76,8 +79,27 @@ func (database *Database) GetOrCreateSchema(name string) *Schema {
 	return schema
 }
 
-func (database *Database) GetLastSchema() *Schema {
-	return database.schemas[0]
+// GetSchemaForFieldPath returns the schema of a field path (<database>.<schema>[.<field>]),
+// e.g., user_db.address.City => address
+func (database *Database) GetSchemaForFieldPath(fieldpath string) *Schema {
+	parts := strings.SplitN(fieldpath, ".", 3)
+	if len(parts) < 2 {
+		return nil
+	}
+	schemaName := parts[1]
+	// TODO(improvement): sometimes we get schema name "schema[*]" from fieldpaths "schema[*].Value"
+	// because mongodb read filter fields are not being yet parsed for reads taints
+	// for now we hardcode to remove the [*] in "schema[*]"
+	schemaName = strings.TrimSuffix(schemaName, "[*]")
+	schema := database.GetSchemaByNameIfExists(schemaName)
+	if schema == nil {
+		// the schema of every database call is created when parsing it, so this means the field path
+		// does not name a schema of the database (e.g., travel_db.tripResponse.PriceForConfortClass in trainticket,
+		// where tripResponse is a field of the struct that holds the trip)
+		logrus.Warnf("[DATABASE] creating schema (%s) for field path (%s) not matching any schema of database (%s)", schemaName, fieldpath, database.name)
+		schema = database.GetOrCreateSchema(schemaName)
+	}
+	return schema
 }
 
 func (database *Database) GetSchemas() []*Schema {
