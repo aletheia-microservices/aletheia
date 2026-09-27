@@ -84,41 +84,40 @@ func TestMediaMicroservicesCalls(t *testing.T) {
 		"read MovieReviewService.UploadMovieReview -> movie_review_db.movie_review.FindOne",
 		"read PlotService.ReadPlot -> plot_db.plot.FindOne",
 		"read ReviewStorageService.ReadReviews -> review_storage_db.review.FindMany",
-		"read UserReviewService.UploadUserReview -> movie_review_db.movie_review.FindOne",
+		"read UserReviewService.UploadUserReview -> user_review_db.user_review.FindOne",
 		"read UserService.Login -> user_db.user.FindOne",
 		"read UserService.UploadUserWithUsername -> user_db.user.FindOne",
 		"update MovieReviewService.UploadMovieReview -> movie_review_db.movie_review.UpdateMany",
-		"update UserReviewService.UploadUserReview -> movie_review_db.movie_review.UpdateMany",
+		"update UserReviewService.UploadUserReview -> user_review_db.user_review.UpdateMany",
 		"write CastInfoService.WriteCastInfo -> cast_info_db.cast.InsertOne",
 		"write MovieIdService.RegisterMovieId -> movie_id_db.movie.InsertOne",
 		"write MovieInfoService.WriteMovieInfo -> movie_info_db.movie_info.InsertOne",
 		"write MovieReviewService.UploadMovieReview -> movie_review_db.movie_review.InsertOne",
 		"write PlotService.WritePlot -> plot_db.plot.InsertOne",
 		"write ReviewStorageService.StoreReview -> review_storage_db.review.InsertOne",
-		"write UserReviewService.UploadUserReview -> movie_review_db.movie_review.InsertOne",
+		"write UserReviewService.UploadUserReview -> user_review_db.user_review.InsertOne",
 		"write UserService.RegisterUser -> user_db.user.InsertOne",
 	})
 }
 
 func TestMediaMicroservicesCounts(t *testing.T) {
 	assertCounts(t, runner.Get(t, "dsb_mediamicroservices").AbsGraph, map[string]int{
-		"service nodes": 38, "database nodes": 24,
+		"service nodes": 38, "database nodes": 25,
 		"entry": 12, "rpc": 42, "read": 30, "write": 23, "update": 2,
 	})
 }
 
 func TestMediaMicroservicesDatabaseOwners(t *testing.T) {
 	owners := databaseOwners(runner.Get(t, "dsb_mediamicroservices").AbsGraph, isNotCache)
-	// UserReviewService is wired to user_review_db, but one of its calls names movie_review_db,
-	// see LIKELY_BUGS.md #18 and TestMediaMicroservicesUserReviewUsesWiredDatabase
-	delete(owners, "movie_review_db.movie_review")
 	assertOwners(t, owners, map[string][]string{
-		"cast_info_db.cast":        {"CastInfoService"},
-		"movie_id_db.movie":        {"MovieIdService"},
-		"movie_info_db.movie_info": {"MovieInfoService"},
-		"plot_db.plot":             {"PlotService"},
-		"review_storage_db.review": {"ReviewStorageService"},
-		"user_db.user":             {"UserService"},
+		"cast_info_db.cast":            {"CastInfoService"},
+		"movie_id_db.movie":            {"MovieIdService"},
+		"movie_info_db.movie_info":     {"MovieInfoService"},
+		"movie_review_db.movie_review": {"MovieReviewService"},
+		"plot_db.plot":                 {"PlotService"},
+		"review_storage_db.review":     {"ReviewStorageService"},
+		"user_db.user":                 {"UserService"},
+		"user_review_db.user_review":   {"UserReviewService"},
 	})
 }
 
@@ -154,11 +153,14 @@ func TestMediaMicroservicesRegisterMovieWritesEverywhere(t *testing.T) {
 	)
 }
 
+// UserReviewService is wired to user_review_db only, so it must not share movie_review_db with MovieReviewService
 func TestMediaMicroservicesUserReviewUsesWiredDatabase(t *testing.T) {
-	t.Skip("known bug: NoSQL database names come from the GetCollection string instead of the wired backend " +
-		"(see LIKELY_BUGS.md #18), so UserReviewService.UploadUserReview is reported on movie_review_db")
-
 	owners := databaseOwners(runner.Get(t, "dsb_mediamicroservices").AbsGraph, isNotCache)
-	assertOwners(t, map[string][]string{"movie_review_db.movie_review": owners["movie_review_db.movie_review"]},
-		map[string][]string{"movie_review_db.movie_review": {"MovieReviewService"}})
+	assertOwners(t, map[string][]string{
+		"movie_review_db.movie_review": owners["movie_review_db.movie_review"],
+		"user_review_db.user_review":   owners["user_review_db.user_review"],
+	}, map[string][]string{
+		"movie_review_db.movie_review": {"MovieReviewService"},
+		"user_review_db.user_review":   {"UserReviewService"},
+	})
 }

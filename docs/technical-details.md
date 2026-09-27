@@ -41,4 +41,4 @@ The `(read_val, read_key)` rule is disabled by default. To enable it, set `Creat
 
 ## Current Limitations
 
-See [technical-assumptions.md](./technical-assumptions.md) for the current analysis assumptions and limitations.
+See [conventions.md](./conventions.md) for the current analysis assumptions and limitations.

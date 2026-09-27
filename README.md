@@ -401,7 +401,7 @@ blueprint/examples/{app}/
 
 Note that `blueprint/` is a git submodule, so your application's code belongs to that repository, not to Aletheia's.
 
-**3. Follow Aletheia's naming conventions.** The current implementation makes a few assumptions about the application's code, described in [technical-assumptions.md](./docs/technical-assumptions.md).
+**3. Follow Aletheia's naming conventions.** The current implementation makes a few assumptions about the application's code, described in [conventions.md](./docs/conventions.md).
 
 **4. Register the application** by adding an entry at the end of the `apps` list in `registry/apps.yaml`, replacing `{app}` with the name of your application's folder and `{spec}` with the name of its wiring spec:
 

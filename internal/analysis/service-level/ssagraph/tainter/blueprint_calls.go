@@ -518,6 +518,14 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 						logrus.Fatalf("[CALLS BLUEPRINT] [NOSQL] database (%s) extracted from value (%s) not found for app with databases: %v", database, databaseVal.String(), graph.GetApp().GetAllDatabases())
 					}
 
+					// the database used at runtime is the backend wired to the service field,
+					// so fail when the name passed to GetCollection does not match it
+					if unOp, ok := ssaCall.Call.Value.(*ssa.UnOp); ok {
+						if wiredDatabase, ok := extractWiringNameFromUnOpIfExists(graph, unOp); ok && wiredDatabase != database {
+							logrus.WithField("graph", graph.String()).Fatalf("[CALLS BLUEPRINT] [NOSQL] database (%s) in GetCollection call (%s) does not match wired database (%s)", database, ssaCall.String(), wiredDatabase)
+						}
+					}
+
 					var valFieldPathLst []ValFieldPath
 					if opType == common.OP_WRITE {
 						docVal := call.Call.Args[1]
@@ -1035,6 +1043,26 @@ func ssaValueIsUsedInMongoBsonFilter(graph *ssagraph.SSAGraph, val ssa.Value) (b
 		}
 	}
 	return false, false
+}
+
+// extractWiringNameFromUnOpIfExists returns the wiring name of the service field loaded by unOp, if any
+// unlike extractDatabaseNameFromUnOp, it does not fail when the field cannot be resolved
+func extractWiringNameFromUnOpIfExists(graph *ssagraph.SSAGraph, unOp *ssa.UnOp) (string, bool) {
+	if ssaFieldAddr, ok := unOp.X.(*ssa.FieldAddr); ok {
+		if ssaParam, ok := ssaFieldAddr.X.(*ssa.Parameter); ok {
+			if typesPointer, ok := ssaParam.Type().(*types.Pointer); ok {
+				if typeNamed, ok := typesPointer.Elem().(*types.Named); ok {
+					service := graph.GetApp().GetServiceWithImplPathIfExists(typeNamed.String())
+					if service == nil || ssaFieldAddr.Field >= len(service.GetAllFields()) {
+						return "", false
+					}
+					wiringName := service.GetFieldAt(ssaFieldAddr.Field).GetWiringName()
+					return wiringName, wiringName != ""
+				}
+			}
+		}
+	}
+	return "", false
 }
 
 // extractDatabaseNameFromUnOp can be used for RelationalDB and Queue calls

@@ -1,10 +1,10 @@
-# Analysis Assumptions
+# Conventions
 
 This document describes the assumptions made by Aletheia’s current implementation that developers should take into account when analyzing their applications. These are temporary assumptions that can be addressed in the future by extending the implementation:
 
 ## Database Naming
 
-- The name of the database used in the wiring specification (e.g., `mongodb.Container`) must exactly match the name passed in service operations (e.g., `GetCollection`).
+- The name of the database used in the wiring specification (e.g., `mongodb.Container`) must exactly match the name passed in service operations (e.g., `GetCollection`). 
 
   ```Go
   // wiring
