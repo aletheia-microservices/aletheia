@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"maps"
 	"os"
 	"slices"
 	"sort"
@@ -311,19 +312,27 @@ func (app *App) WriteSchemaToJSON() error {
 	return os.WriteFile(filename, data, 0644)
 }
 
-// ConstraintsString returns all constraints inferred for the app, sorted and deduplicated
+// ConstraintsString returns all constraints inferred for the app, sorted and deduplicated, and
+// grouped by the database of their first field (i.e., the referencing field for foreign keys),
+// with an empty line between databases
 func (app *App) ConstraintsString() string {
-	var lines []string
+	linesPerDb := make(map[string][]string)
 	for _, db := range app.GetAllDatabases() {
 		for _, schema := range db.GetSchemas() {
 			for _, constraint := range schema.GetAllConstraints() {
-				lines = append(lines, constraint.String())
+				dbName := constraint.GetFieldAt(0).GetDatabase().GetName()
+				linesPerDb[dbName] = append(linesPerDb[dbName], constraint.String())
 			}
 		}
 	}
-	sort.Strings(lines)
-	lines = slices.Compact(lines)
-	return strings.Join(lines, "\n") + "\n"
+	var groups []string
+	for _, dbName := range slices.Sorted(maps.Keys(linesPerDb)) {
+		lines := linesPerDb[dbName]
+		sort.Strings(lines)
+		lines = slices.Compact(lines)
+		groups = append(groups, strings.Join(lines, "\n"))
+	}
+	return strings.Join(groups, "\n\n") + "\n"
 }
 
 func (app *App) WriteConstraintsToFile() error {

@@ -1,4 +1,5 @@
 FOREIGN_KEY assurance_db.assurance.OrderID REFERENCES order_db.order.ID [MANDATORY]
+
 FOREIGN_KEY consign_db.consign_record.AccountID REFERENCES user_db.user.UserID [T]
 FOREIGN_KEY consign_db.consign_record.FromPlace REFERENCES station_db.station.Name [T]
 FOREIGN_KEY consign_db.consign_record.OrderID REFERENCES order_db.order.ID [MANDATORY]
@@ -7,6 +8,7 @@ FOREIGN_KEY consign_db.consign_record.Price REFERENCES consignprice_db.consign.I
 FOREIGN_KEY consign_db.consign_record.Price REFERENCES consignprice_db.consign.WithinPrice
 FOREIGN_KEY consign_db.consign_record.TargetDate REFERENCES order_db.order.TravelDate [MANDATORY]
 FOREIGN_KEY consign_db.consign_record.ToPlace REFERENCES station_db.station.Name [T]
+
 FOREIGN_KEY delivery_db.delivery REFERENCES delivery_queue.notification [MANDATORY]
 FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES delivery_queue.notification.FoodName [MANDATORY]
 FOREIGN_KEY delivery_db.delivery.FoodName REFERENCES food_db.food_order.FoodName [MANDATORY]
@@ -15,8 +17,11 @@ FOREIGN_KEY delivery_db.delivery.StationName REFERENCES delivery_queue.notificat
 FOREIGN_KEY delivery_db.delivery.StationName REFERENCES food_db.food_order.StationName [MANDATORY]
 FOREIGN_KEY delivery_db.delivery.StoreName REFERENCES delivery_queue.notification.StoreName [MANDATORY]
 FOREIGN_KEY delivery_db.delivery.StoreName REFERENCES food_db.food_order.StoreName [MANDATORY]
+
 FOREIGN_KEY delivery_queue.notification.OrderID REFERENCES order_db.order.ID [MANDATORY]
+
 FOREIGN_KEY food_db.food_order.OrderID REFERENCES order_db.order.ID [MANDATORY]
+
 FOREIGN_KEY order_db.order.AccountID REFERENCES user_db.user.UserID
 FOREIGN_KEY order_db.order.ContactsDocumentNumber REFERENCES contacts_db.contacts.DocumentNumber
 FOREIGN_KEY order_db.order.ContactsName REFERENCES contacts_db.contacts.Name
@@ -29,4 +34,5 @@ FOREIGN_KEY order_db.order.Price REFERENCES travel_db.tripResponse.PriceForEcono
 FOREIGN_KEY order_db.order.ToStation REFERENCES station_db.station.Name
 FOREIGN_KEY order_db.order.TrainNumber REFERENCES travel_db.trip.TripID
 FOREIGN_KEY order_db.order.TravelTime REFERENCES travel_db.trip.StartTime
+
 FOREIGN_KEY price_db.price_config.RouteID REFERENCES route_db.route.ID

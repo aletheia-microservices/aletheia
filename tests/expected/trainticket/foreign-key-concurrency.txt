@@ -32,9 +32,9 @@ delete: AdminRouteService.DeleteRoute() ... RouteService.DeleteRoute() ... route
 
 delete: AdminTravelService.DeleteTravel() ... TravelService.DeleteTrip() ... travel_db.trip.DeleteOne()
 	write #11: AdminOrderService.AddOrder() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
-		- database={order_db}, entity={order}, written_fields={Price, TrainNumber, TravelTime}
+		- database={order_db}, entity={order}, written_fields={TrainNumber, TravelTime}
 	write #12: Dashboard.PreserveTicketConfirm() ... OrderService.CreateNewOrder() ... order_db.order.InsertOne()
-		- database={order_db}, entity={order}, written_fields={Price, TrainNumber, TravelTime}
+		- database={order_db}, entity={order}, written_fields={TrainNumber, TravelTime}
 
 delete: AdminUserService.DeleteUser() ... UserService.DeleteUser() ... user_db.user.DeleteOne()
 	write #13: Dashboard.PreserveTicketConfirm() ... ConsignService.InsertConsign() ... consign_db.consign_record.InsertOne()

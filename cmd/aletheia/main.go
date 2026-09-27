@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -20,7 +21,7 @@ const evalMetricsBase = "eval/metrics"
 
 func printUsage() {
 	out := flag.CommandLine.Output()
-	fmt.Fprintf(out, "usage: aletheia [flags] <app>\n\n")
+	fmt.Fprintf(out, "usage: aletheia [flags] <app>\n       aletheia [flags] -all\n\n")
 	fmt.Fprintf(out, "Analyzes a Blueprint application registered in registry/apps.yaml and\nsaves the results in output/<app>/. Run it from the repository root.\n\n")
 	fmt.Fprintln(out, "flags:")
 	flag.PrintDefaults()
@@ -32,6 +33,8 @@ func printUsage() {
 
 func main() {
 	opts := pipeline.Options{WriteOutputs: true}
+	var all bool
+	flag.BoolVar(&all, "all", false, "analyze every registered app, one after the other, instead of a single <app>")
 	flag.BoolVar(&opts.InitOnly, "init", false, "only load the app's Blueprint wiring, then exit without analyzing it")
 	flag.BoolVar(&opts.Eval, "eval", false, "evaluation mode: skip intermediate outputs, print timings and save them in "+evalMetricsBase+"/")
 	flag.BoolVar(&opts.Synthetic, "synthetic", false, "mark the app as synthetic (only changes where -eval saves timings)")
@@ -41,16 +44,32 @@ func main() {
 	flag.Usage = printUsage
 	flag.Parse()
 
-	if flag.NArg() < 1 {
-		flag.Usage()
-		os.Exit(1)
-	}
-
-	opts.App = flag.Arg(0)
-	if _, ok := blueprint_apps.APPS_INFO[opts.App]; !ok {
-		fmt.Fprintf(os.Stderr, "unknown app %q\n\n", opts.App)
-		flag.Usage()
-		os.Exit(1)
+	var apps []string
+	if all {
+		if flag.NArg() > 0 {
+			fmt.Fprintf(os.Stderr, "-all does not take an <app>\n\n")
+			flag.Usage()
+			os.Exit(1)
+		}
+		// each detection config is for a single app (it is rejected for any other app)
+		if opts.DetectionConfig != "" {
+			fmt.Fprintf(os.Stderr, "-all cannot be combined with -detection_config\n\n")
+			flag.Usage()
+			os.Exit(1)
+		}
+		apps = blueprint_apps.AppNames()
+	} else {
+		if flag.NArg() < 1 {
+			flag.Usage()
+			os.Exit(1)
+		}
+		app := flag.Arg(0)
+		if _, ok := blueprint_apps.APPS_INFO[app]; !ok {
+			fmt.Fprintf(os.Stderr, "unknown app %q\n\n", app)
+			flag.Usage()
+			os.Exit(1)
+		}
+		apps = []string{app}
 	}
 
 	logrus.SetFormatter(&logrus.TextFormatter{
@@ -70,12 +89,50 @@ func main() {
 		}()
 	}
 
+	if !all {
+		opts.App = apps[0]
+		if err := runApp(opts); err != nil {
+			logrus.Fatalf("error: %s", err.Error())
+		}
+		return
+	}
+
+	// keep analyzing the remaining apps when one fails, and report the failures at the end
+	var failed []string
+	for _, app := range apps {
+		fmt.Printf("\n========== %s ==========\n", app)
+		opts.App = app
+		if err := runAppRecovered(opts); err != nil {
+			logrus.Errorf("error analyzing %s: %s", app, err.Error())
+			failed = append(failed, app)
+		}
+	}
+	fmt.Printf("\nanalyzed %d/%d apps\n", len(apps)-len(failed), len(apps))
+	if len(failed) > 0 {
+		fmt.Fprintf(os.Stderr, "failed: %s\n", strings.Join(failed, ", "))
+		os.Exit(1)
+	}
+}
+
+// runAppRecovered is the same as runApp but returns panics as errors, since the pipeline panics
+// on unexpected states, which should not stop the analysis of the other apps with -all
+func runAppRecovered(opts pipeline.Options) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v", r)
+		}
+	}()
+	return runApp(opts)
+}
+
+// runApp runs the pipeline for opts.App, prints its results and, with -eval, saves its timings
+func runApp(opts pipeline.Options) error {
 	res, err := pipeline.Run(opts)
 	if err != nil {
-		logrus.Fatalf("error: %s", err.Error())
+		return err
 	}
 	if opts.InitOnly {
-		return
+		return nil
 	}
 
 	for _, summary := range res.Summaries {
@@ -107,9 +164,10 @@ func main() {
 			Detection:        t.Detection.Seconds(),
 		}
 		if err := saveAnalysisTimes(times, opts.Synthetic); err != nil {
-			logrus.Fatalf("error saving analysis times: %s", err.Error())
+			return fmt.Errorf("saving analysis times: %w", err)
 		}
 	}
+	return nil
 }
 
 type analysisTimes struct {
