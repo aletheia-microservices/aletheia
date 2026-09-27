@@ -39,7 +39,8 @@ type Options struct {
 	InputRefs bool
 	// DetectionConfig is the path of a YAML file listing warnings to suppress (ignored if empty)
 	DetectionConfig string
-	// WriteOutputs saves the SSA code, app and schema JSON and detector results to output/{app}/
+	// WriteOutputs saves the SSA code, app and schema JSON, inferred constraints and detector
+	// results to output/{app}/
 	WriteOutputs bool
 	// Eval skips the intermediate outputs (only relevant with WriteOutputs)
 	Eval bool
@@ -294,6 +295,7 @@ func Run(opts Options) (*Result, error) {
 	if opts.WriteOutputs {
 		a.WriteAppToJSON()
 		a.WriteSchemaToJSON()
+		a.WriteConstraintsToFile()
 	}
 
 	return res, nil

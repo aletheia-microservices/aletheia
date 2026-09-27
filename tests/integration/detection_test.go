@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
-	"sort"
 	"strings"
 	"testing"
 
@@ -28,10 +27,7 @@ var analyzedApps = []string{
 }
 
 // apps whose inferred constraints are known to vary between runs
-var nondeterministicConstraints = map[string]string{
-	"sockshop": "FOREIGN_KEY order_db.orders.Shipment.Name REFERENCES {ship_db.shipments.Name, ship_queue.notification.Name} " +
-		"are only inferred on some runs (fields are attached to db.GetLastSchema(), whose order is not stable)",
-}
+var nondeterministicConstraints = map[string]string{}
 
 var detectorTypes = []string{
 	"foreign-key-cascade",
@@ -39,21 +35,6 @@ var detectorTypes = []string{
 	"foreign-key-coordination",
 	"primary-key-coordination",
 	"uniqueness-concurrency",
-}
-
-// constraintsString returns all constraints inferred for the app, sorted and deduplicated
-func constraintsString(a *runner.Analysis) string {
-	var lines []string
-	for _, db := range a.App.GetAllDatabases() {
-		for _, schema := range db.GetSchemas() {
-			for _, constraint := range schema.GetAllConstraints() {
-				lines = append(lines, constraint.String())
-			}
-		}
-	}
-	sort.Strings(lines)
-	lines = slices.Compact(lines)
-	return strings.Join(lines, "\n") + "\n"
 }
 
 func checkExpectedOutput(t *testing.T, path string, got string) {
@@ -91,7 +72,7 @@ func runExpectedOutputTests(t *testing.T, appname string, configPath string, exp
 		if reason, ok := nondeterministicConstraints[appname]; ok {
 			t.Skip("known bug: " + reason)
 		}
-		checkExpectedOutput(t, filepath.Join(expectedDir, "constraints.txt"), constraintsString(a))
+		checkExpectedOutput(t, filepath.Join(expectedDir, "constraints.txt"), a.App.ConstraintsString())
 	})
 }
 
@@ -150,9 +131,9 @@ func assertWarnings(t *testing.T, a *runner.Analysis, detectorType string, want 
 
 func assertConstraint(t *testing.T, a *runner.Analysis, constraint string, want bool) {
 	t.Helper()
-	constraints := strings.Split(constraintsString(a), "\n")
+	constraints := strings.Split(a.App.ConstraintsString(), "\n")
 	if got := slices.Contains(constraints, constraint); got != want {
-		t.Errorf("constraint %q inferred = %v, want %v\nconstraints:\n%s", constraint, got, want, constraintsString(a))
+		t.Errorf("constraint %q inferred = %v, want %v\nconstraints:\n%s", constraint, got, want, a.App.ConstraintsString())
 	}
 }
 

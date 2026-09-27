@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -308,4 +309,24 @@ func (app *App) WriteSchemaToJSON() error {
 		return fmt.Errorf("failed to marshal combined schema: %w", err)
 	}
 	return os.WriteFile(filename, data, 0644)
+}
+
+// ConstraintsString returns all constraints inferred for the app, sorted and deduplicated
+func (app *App) ConstraintsString() string {
+	var lines []string
+	for _, db := range app.GetAllDatabases() {
+		for _, schema := range db.GetSchemas() {
+			for _, constraint := range schema.GetAllConstraints() {
+				lines = append(lines, constraint.String())
+			}
+		}
+	}
+	sort.Strings(lines)
+	lines = slices.Compact(lines)
+	return strings.Join(lines, "\n") + "\n"
+}
+
+func (app *App) WriteConstraintsToFile() error {
+	filename := fmt.Sprintf("output/%s/constraints.txt", app.name)
+	return os.WriteFile(filename, []byte(app.ConstraintsString()), 0644)
 }
