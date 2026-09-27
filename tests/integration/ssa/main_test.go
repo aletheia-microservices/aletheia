@@ -1,7 +1,6 @@
-// Package integration runs the full Aletheia pipeline on the Blueprint apps in blueprint/examples
-// and checks the SSA taints, the abstract call graph, the inferred schema and the detected
-// integrity violations
-package integration
+// Package ssa checks the SSA taint propagation (stage 1) for each app in blueprint/examples,
+// with one file per app
+package ssa
 
 import (
 	"fmt"
