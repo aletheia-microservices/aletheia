@@ -131,7 +131,7 @@ func TestSSATaintTIsScopedByCaller(t *testing.T) {
 		t.Errorf("GetT() without caller = %q, want %q", got, callNode.GetName())
 	}
 
-	// combiner.go sets the caller timestamp once the callee graph is inlined
+	// InlineMethodGraphs sets the caller timestamp once the callee graph is inlined
 	taint.SetCallerT("t4")
 	if got, want := taint.GetT(), "t4."+callNode.GetName(); got != want {
 		t.Errorf("GetT() with caller = %q, want %q", got, want)

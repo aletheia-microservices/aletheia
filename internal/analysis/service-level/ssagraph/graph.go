@@ -36,11 +36,11 @@ type SSAGraph struct {
 	dbCalls     []*DatabaseCall
 	allCalls    []Call
 
-	// managed by combiner.go
-	combinedGraphs             []*SSAGraph
-	callerT                    string
-	combinedGraphsToMethodCall map[*SSAGraph]*MethodCall
-	methodCallToCombinedGraphs map[*MethodCall]*SSAGraph
+	// managed by tainter.InlineMethodGraphs
+	inlinedGraphs             []*SSAGraph
+	callerT                   string
+	inlinedGraphsToMethodCall map[*SSAGraph]*MethodCall
+	methodCallToInlinedGraphs map[*MethodCall]*SSAGraph
 
 	goroutine bool
 }
@@ -75,7 +75,7 @@ func (graph *SSAGraph) Release() {
 	graph.params = nil
 	graph.freevars = nil
 	graph.returns = nil
-	graph.combinedGraphs = nil
+	graph.inlinedGraphs = nil
 }
 
 func (graph *SSAGraph) SimpleCopy() *SSAGraph {
@@ -155,27 +155,27 @@ func (graph *SSAGraph) SetCallerT(t string) {
 	graph.callerT = t
 }
 
-func (graph *SSAGraph) AddCombinedGraph(toGraph *SSAGraph, methodCall *MethodCall) {
-	if graph.combinedGraphsToMethodCall == nil {
-		graph.combinedGraphsToMethodCall = make(map[*SSAGraph]*MethodCall)
-		graph.methodCallToCombinedGraphs = make(map[*MethodCall]*SSAGraph)
+func (graph *SSAGraph) AddInlinedGraph(toGraph *SSAGraph, methodCall *MethodCall) {
+	if graph.inlinedGraphsToMethodCall == nil {
+		graph.inlinedGraphsToMethodCall = make(map[*SSAGraph]*MethodCall)
+		graph.methodCallToInlinedGraphs = make(map[*MethodCall]*SSAGraph)
 	}
 	toGraph.SetCallerT(methodCall.GetT())
-	graph.combinedGraphs = append(graph.combinedGraphs, toGraph)
-	graph.combinedGraphsToMethodCall[toGraph] = methodCall
-	graph.methodCallToCombinedGraphs[methodCall] = toGraph
+	graph.inlinedGraphs = append(graph.inlinedGraphs, toGraph)
+	graph.inlinedGraphsToMethodCall[toGraph] = methodCall
+	graph.methodCallToInlinedGraphs[methodCall] = toGraph
 }
 
-func (graph *SSAGraph) GetAllCombinedGraphs() []*SSAGraph {
-	return graph.combinedGraphs
+func (graph *SSAGraph) GetAllInlinedGraphs() []*SSAGraph {
+	return graph.inlinedGraphs
 }
 
-func (graph *SSAGraph) GetMethodCallForCombinedGraph(other *SSAGraph) *MethodCall {
-	return graph.combinedGraphsToMethodCall[other]
+func (graph *SSAGraph) GetMethodCallForInlinedGraph(other *SSAGraph) *MethodCall {
+	return graph.inlinedGraphsToMethodCall[other]
 }
 
-func (graph *SSAGraph) GetCombinedGraphForMethodCallIfExists(call *MethodCall) *SSAGraph {
-	if m, ok := graph.methodCallToCombinedGraphs[call]; ok {
+func (graph *SSAGraph) GetInlinedGraphForMethodCallIfExists(call *MethodCall) *SSAGraph {
+	if m, ok := graph.methodCallToInlinedGraphs[call]; ok {
 		return m
 	}
 	return nil

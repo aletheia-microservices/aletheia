@@ -22,7 +22,7 @@ const (
 type SSATaint struct {
 	// --- input for abstract call graph ---
 	taintType TaintType
-	callerTS  string // originated at combiner.go
+	callerTS  string // set by tainter.InlineMethodGraphs
 	path      string // database path for TAINT_DATABASE; service path for TAINT_SERVICE
 	call      Call   // *DatabaseCall for TAINT_DATABASE; *ServiceCall for TAINT_SERVICE
 	// database-specific info

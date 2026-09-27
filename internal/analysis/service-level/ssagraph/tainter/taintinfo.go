@@ -48,7 +48,7 @@ type TaintInfo struct {
 	TaintInfoData
 	prevval ssa.Value // debug purposes
 	objroot bool
-	callerT string // managed at combiner.go
+	callerT string // managed by InlineMethodGraphs
 }
 
 func (ti TaintInfo) String() string {

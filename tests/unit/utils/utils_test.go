@@ -17,13 +17,13 @@ func TestLessT(t *testing.T) {
 		// numeric, not lexicographic
 		{"t9", "t10", true},
 		{"t10", "t9", false},
-		// nested timestamps from combined graphs: <caller t>.<callee t>
+		// nested timestamps from inlined graphs: <caller t>.<callee t>
 		{"t4.t7", "t4.t8", true},
 		{"t4.t8", "t4.t8.t9", true},
 		{"t4.t8.t9", "t4.t8", false},
 		{"t4.t14", "t5", true},
 		{"t5", "t4.t14", false},
-		// the callee timestamp of a combined graph does not matter when callers differ
+		// the callee timestamp of a inlined graph does not matter when callers differ
 		{"t4.t99", "t106.t15", true},
 		// values without 't' prefix (e.g., empty) are always considered smaller
 		{"", "t0", true},

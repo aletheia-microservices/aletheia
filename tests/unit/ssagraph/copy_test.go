@@ -79,24 +79,24 @@ func TestSimpleCopyRemapsFreeVars(t *testing.T) {
 	}
 }
 
-func TestCombinedGraphBookkeeping(t *testing.T) {
+func TestInlinedGraphBookkeeping(t *testing.T) {
 	caller := newTestGraph()
 	callee := newTestGraph()
 	call := ssagraph.NewMethodCall("StorageService.StorePost.5:int", newValNode(caller, 5), nil, nil, "helper", "fn")
 	other := ssagraph.NewMethodCall("StorageService.StorePost.6:int", newValNode(caller, 6), nil, nil, "helper", "fn")
 
-	if caller.GetCombinedGraphForMethodCallIfExists(call) != nil {
-		t.Errorf("graph without combined graphs must return nil")
+	if caller.GetInlinedGraphForMethodCallIfExists(call) != nil {
+		t.Errorf("graph without inlined graphs must return nil")
 	}
-	caller.AddCombinedGraph(callee, call)
+	caller.AddInlinedGraph(callee, call)
 
-	if got := caller.GetAllCombinedGraphs(); len(got) != 1 || got[0] != callee {
-		t.Errorf("combined graphs = %v", got)
+	if got := caller.GetAllInlinedGraphs(); len(got) != 1 || got[0] != callee {
+		t.Errorf("inlined graphs = %v", got)
 	}
-	if caller.GetMethodCallForCombinedGraph(callee) != call || caller.GetCombinedGraphForMethodCallIfExists(call) != callee {
-		t.Errorf("combined graph and call must be mapped to each other")
+	if caller.GetMethodCallForInlinedGraph(callee) != call || caller.GetInlinedGraphForMethodCallIfExists(call) != callee {
+		t.Errorf("inlined graph and call must be mapped to each other")
 	}
-	if caller.GetCombinedGraphForMethodCallIfExists(other) != nil {
+	if caller.GetInlinedGraphForMethodCallIfExists(other) != nil {
 		t.Errorf("other calls must not be mapped")
 	}
 }

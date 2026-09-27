@@ -273,30 +273,30 @@ func TestSSACallsAreRegisteredInProgramOrder(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------
-// inter-procedural SSA taint propagation through combined graphs (digota)
+// inter-procedural SSA taint propagation through inlined graphs (digota)
 // ---------------------------------------------------------------------
 
 // OrderService.Pay calls the internal helpers storageGetOne and storageUpdate, which access the
 // database: the helper graphs must be copied and inlined into the caller, with taints scoped by
 // the caller timestamp (<caller t>.<callee t>) and propagated back to the caller objects
-func TestSSACombineInlinesHelperDatabaseCalls(t *testing.T) {
+func TestSSAInlinesHelperDatabaseCalls(t *testing.T) {
 	a := runner.Get(t, "digota")
 	caller := getSSAGraph(t, a, "digota.OrderService.Pay")
 
 	getOne := getMethodCall(t, caller, "digota.OrderService.storageGetOne")
-	callee := caller.GetCombinedGraphForMethodCallIfExists(getOne)
+	callee := caller.GetInlinedGraphForMethodCallIfExists(getOne)
 	if callee == nil {
-		t.Fatalf("storageGetOne is not combined into Pay")
+		t.Fatalf("storageGetOne is not inlined into Pay")
 	}
 	original := getSSAGraph(t, a, "digota.OrderService.storageGetOne")
 	if callee == original {
-		t.Fatalf("combined graph must be a copy of the original callee graph")
+		t.Fatalf("inlined graph must be a copy of the original callee graph")
 	}
-	if caller.GetMethodCallForCombinedGraph(callee) != getOne {
-		t.Errorf("combined graph must be mapped back to its method call")
+	if caller.GetMethodCallForInlinedGraph(callee) != getOne {
+		t.Errorf("inlined graph must be mapped back to its method call")
 	}
 
-	// callee database call inside the combined copy is scoped by the caller timestamp
+	// callee database call inside the inlined copy is scoped by the caller timestamp
 	find := getDatabaseCall(t, callee, "orders_db.orders", "FindOne")
 	scopedT := getOne.GetT() + "." + find.GetT()
 	var sawScoped bool
@@ -308,14 +308,14 @@ func TestSSACombineInlinesHelperDatabaseCalls(t *testing.T) {
 				if taint.IsDatabaseTaint() && taint.GetDatabaseCall() == find {
 					sawScoped = true
 					if taint.GetT() != scopedT {
-						t.Errorf("combined taint %s has t=%s, want %s", taint.GetDatabasePath(), taint.GetT(), scopedT)
+						t.Errorf("inlined taint %s has t=%s, want %s", taint.GetDatabasePath(), taint.GetT(), scopedT)
 					}
 				}
 			}
 		}
 	}
 	if !sawScoped {
-		t.Fatalf("no scoped taints from FindOne found in the combined graph")
+		t.Fatalf("no scoped taints from FindOne found in the inlined graph")
 	}
 
 	// the original graph is left untouched (no caller timestamp)
@@ -346,18 +346,18 @@ func TestSSACombineInlinesHelperDatabaseCalls(t *testing.T) {
 
 	// the second helper (storageUpdate) writes the same object later in the caller
 	update := getMethodCall(t, caller, "digota.OrderService.storageUpdate")
-	if caller.GetCombinedGraphForMethodCallIfExists(update) == nil {
-		t.Fatalf("storageUpdate is not combined into Pay")
+	if caller.GetInlinedGraphForMethodCallIfExists(update) == nil {
+		t.Fatalf("storageUpdate is not inlined into Pay")
 	}
-	replace := getDatabaseCall(t, caller.GetCombinedGraphForMethodCallIfExists(update), "orders_db.orders", "ReplaceOne")
+	replace := getDatabaseCall(t, caller.GetInlinedGraphForMethodCallIfExists(update), "orders_db.orders", "ReplaceOne")
 	assertDatabaseTaint(t, order, dbTaint{objpath: "_obj", dbpath: "orders_db.orders", op: common.OP_UPDATE, t: update.GetT() + "." + replace.GetT()})
 }
 
-func TestSSACombineScopesAllCalleeTaints(t *testing.T) {
+func TestSSAInlineScopesAllCalleeTaints(t *testing.T) {
 	a := runner.Get(t, "digota")
 	caller := getSSAGraph(t, a, "digota.OrderService.Pay")
 	getOne := getMethodCall(t, caller, "digota.OrderService.storageGetOne")
-	find := getDatabaseCall(t, caller.GetCombinedGraphForMethodCallIfExists(getOne), "orders_db.orders", "FindOne")
+	find := getDatabaseCall(t, caller.GetInlinedGraphForMethodCallIfExists(getOne), "orders_db.orders", "FindOne")
 	for _, arg := range find.GetArguments() {
 		for objpath, taints := range arg.GetTaints() {
 			for _, taint := range taints {
@@ -387,9 +387,9 @@ func TestSSAReadKeyFlagIsDeterministic(t *testing.T) {
 	}
 }
 
-// combined graphs propagate service taints too: the charge amount passed to
+// inlined graphs propagate service taints too: the charge amount passed to
 // PaymentService.NewCharge comes from the order read by the helper
-func TestSSACombinePropagatesServiceTaintsToHelperObjects(t *testing.T) {
+func TestSSAInlinePropagatesServiceTaintsToHelperObjects(t *testing.T) {
 	a := runner.Get(t, "digota")
 	caller := getSSAGraph(t, a, "digota.OrderService.Pay")
 

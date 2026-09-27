@@ -236,7 +236,7 @@ func parseDatabaseCall(graph *abstractgraph.AbstractCallGraph, node *abstractgra
 }
 
 func parseMethodCall(graph *abstractgraph.AbstractCallGraph, node *abstractgraph.AbstractNode, fromSSAGraph *ssagraph.SSAGraph, methodCall *ssagraph.MethodCall, funcGraphs map[string]*ssagraph.SSAGraph) {
-	toSSAGraph := fromSSAGraph.GetCombinedGraphForMethodCallIfExists(methodCall)
+	toSSAGraph := fromSSAGraph.GetInlinedGraphForMethodCallIfExists(methodCall)
 	if toSSAGraph == nil {
 		// should never happen
 		return

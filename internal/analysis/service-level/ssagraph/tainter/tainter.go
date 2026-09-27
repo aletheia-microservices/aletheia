@@ -1,5 +1,5 @@
 // Package tainter propagates taints through SSA graphs, marking values with the database fields and
-// RPCs they flow to, and combines graphs across calls
+// RPCs they flow to, and inlines the graphs of called methods
 package tainter
 
 import (

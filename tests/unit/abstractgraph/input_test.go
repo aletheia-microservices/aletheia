@@ -1,7 +1,6 @@
 package abstractgraph_test
 
 import (
-	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 	"go/constant"
 	"go/types"
 	"os"
@@ -12,6 +11,7 @@ import (
 	"golang.org/x/tools/go/ssa"
 
 	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
 	abstractgraphparser "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/parser"
 	"github.com/aletheia-microservices/aletheia/internal/app"

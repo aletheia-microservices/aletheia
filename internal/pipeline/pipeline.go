@@ -184,9 +184,9 @@ func Run(opts Options) (*Result, error) {
 	res.Timings.SSATainting = time.Since(startSSATainting)
 
 	// ------------ PART 6
-	log.Infof("[6/12] combining SSA graphs")
+	log.Infof("[6/12] inlining method graphs")
 	for _, graph := range funcGraphs {
-		tainter.Combine(graph, funcGraphs)
+		tainter.InlineMethodGraphs(graph, funcGraphs)
 	}
 
 	if writeDebug {
@@ -196,7 +196,7 @@ func Run(opts Options) (*Result, error) {
 			written[fn] = true
 		}
 		for fn, graph := range funcGraphs {
-			for _, toGraph := range graph.GetAllCombinedGraphs() {
+			for _, toGraph := range graph.GetAllInlinedGraphs() {
 				newFn := fn + "." + toGraph.GetMethodName()
 				if !written[newFn] {
 					toGraph.WriteToDOTFile(opts.App, newFn, true)
