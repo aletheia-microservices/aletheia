@@ -7,7 +7,6 @@ import (
 
 	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
-
 	"github.com/aletheia-microservices/aletheia/tests/runner"
 )
 
@@ -304,13 +303,9 @@ func TestSSACombineInlinesHelperDatabaseCalls(t *testing.T) {
 	for _, arg := range find.GetArguments() {
 		for _, taints := range arg.GetTaints() {
 			for _, taint := range taints {
-				if taint.GetCallerT() == "" {
-					continue // see TestSSACombineScopesAllCalleeTaints
-				}
-				if taint.GetCallerT() != getOne.GetT() {
-					t.Errorf("combined taint %s has caller t=%s, want %s", taint.GetPath(), taint.GetCallerT(), getOne.GetT())
-				}
-				if taint.GetDatabaseCall() == find {
+				// the arguments also carry taints from other calls on the same order, which keep their own
+				// scope, e.g. storageUpdate's ReplaceOne (t106.t15) or Pay's NewCharge (t43)
+				if taint.IsDatabaseTaint() && taint.GetDatabaseCall() == find {
 					sawScoped = true
 					if taint.GetT() != scopedT {
 						t.Errorf("combined taint %s has t=%s, want %s", taint.GetDatabasePath(), taint.GetT(), scopedT)
@@ -359,9 +354,6 @@ func TestSSACombineInlinesHelperDatabaseCalls(t *testing.T) {
 }
 
 func TestSSACombineScopesAllCalleeTaints(t *testing.T) {
-	t.Skip("known bug: taints propagated back into a combined graph (caller args >>> callee params, with callerT=\"\") " +
-		"lose the caller scope, so e.g. Pay/storageGetOne FindOne has both [t4.t14] and [t14] taints for the same call")
-
 	a := runner.Get(t, "digota")
 	caller := getSSAGraph(t, a, "digota.OrderService.Pay")
 	getOne := getMethodCall(t, caller, "digota.OrderService.storageGetOne")

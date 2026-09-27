@@ -10,50 +10,70 @@ import (
 	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph"
 )
 
-func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
-	for _, methodCall := range graph.GetMethodCalls() {
-		toGraph := graphs[methodCall.GetFuncShortPath()]
-		if toGraph == nil {
+// Combine connects callerGraph with the graphs of the methods it calls. For each method call in callerGraph,
+// it copies the graph of the called method (the callee) from graphsByFunc, runs the tainter on the copy, stores
+// the copy as a combined graph of callerGraph, and propagates taints between the call and the copy in both directions:
+//   - caller <<< callee: taints are scoped by the call's t (t14 becomes t4.t14)
+//   - caller >>> callee: taints keep their own scope
+//
+// e.g., Pay calls storageGetOne(ctx, order) at t4, and storageGetOne reads the order with FindOne at t14:
+//   - caller <<< callee: the callee param's taint [t14] orders_db.orders is added to Pay's order as [t4.t14]
+//   - caller >>> callee: Pay's order taints, e.g., [t4.t14] and storageUpdate's [t106.t15], are added to
+//     the callee param of the combined storageGetOne with those same scopes
+//
+// the copies are then combined with their own helper methods, recursively
+func Combine(callerGraph *ssagraph.SSAGraph, graphsByFunc map[string]*ssagraph.SSAGraph) {
+	for _, methodCall := range callerGraph.GetMethodCalls() {
+		// 1. copy the callee graph and store it as a combined graph of the caller
+		// (calls to functions without a graph are skipped)
+		calleeGraph := graphsByFunc[methodCall.GetFuncShortPath()]
+		if calleeGraph == nil {
 			continue
 		}
-		toGraph = toGraph.SimpleCopy()
-		graph.AddCombinedGraph(toGraph, methodCall)
+		calleeGraph = calleeGraph.SimpleCopy()
+		callerGraph.AddCombinedGraph(calleeGraph, methodCall)
 
+		// 2. run the tainter on the copy, so it has the taints of its own calls
 		var callerT string
-		RunTainter(toGraph)
+		RunTainter(calleeGraph)
 		callerT = methodCall.GetT()
 
-		if toGraph.IsGoRoutine() {
-			for i, callee_freevar := range toGraph.GetFreeVars() {
+		// 3. caller <<< callee: propagate the callee taints to the caller, scoped by callerT (e.g. t4)
+
+		// propagation: caller binds <<< callee free vars (goroutines)
+		if calleeGraph.IsGoRoutine() {
+			for i, callee_freevar := range calleeGraph.GetFreeVars() {
 				caller_var := methodCall.GetBindAt(i)
 				callee_taints := callee_freevar.GetTaints()
-				propagateTaints(graph, caller_var, callee_taints, callerT)
+				propagateTaints(callerGraph, caller_var, callee_taints, callerT)
 			}
 			// TODO rets
 		}
 
 		// propagation: caller args <<< callee params
 		// TODO: upper/lower taints
-		for i, callee_params := range toGraph.GetParams() {
+		for i, callee_param := range calleeGraph.GetParams() {
 			caller_arg := methodCall.GetArgumentAt(i)
-			callee_taints := callee_params.GetTaints()
-			propagateTaints(graph, caller_arg, callee_taints, callerT)
+			callee_taints := callee_param.GetTaints()
+			propagateTaints(callerGraph, caller_arg, callee_taints, callerT)
 		}
 
 		// propagation: caller rets <<< callee rets
 		// TODO: upper/lower taints
-		for _, callee_rets := range toGraph.GetReturnsLst() {
+		for _, callee_rets := range calleeGraph.GetReturnsLst() {
 			for i, callee_ret := range callee_rets {
 				caller_ret := methodCall.TryGetReturnAt(i)
 				if caller_ret != nil {
 					callee_taints := callee_ret.GetTaints()
-					propagateTaints(graph, caller_ret, callee_taints, callerT)
+					propagateTaints(callerGraph, caller_ret, callee_taints, callerT)
 				}
 			}
 		}
 
+		// 4. scope the taints on the arguments and returns of the service and database calls inside the
+		// copy by callerT (e.g. t14 becomes t4.t14), so they are ordered in the caller's timeline
 		var callee_objs []*ssagraph.SSANode
-		for _, call := range toGraph.GetServiceCalls() {
+		for _, call := range calleeGraph.GetServiceCalls() {
 			for _, obj := range call.GetArguments() {
 				if !slices.Contains(callee_objs, obj) {
 					callee_objs = append(callee_objs, obj)
@@ -65,7 +85,7 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 				}
 			}
 		}
-		for _, call := range toGraph.GetDatabaseCalls() {
+		for _, call := range calleeGraph.GetDatabaseCalls() {
 			for _, obj := range call.GetArguments() {
 				if !slices.Contains(callee_objs, obj) {
 					callee_objs = append(callee_objs, obj)
@@ -81,21 +101,26 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 		}
 	}
 
+	// 5. caller >>> callee: propagate the caller taints back to each copy, keeping their own scope
+	// this runs after all method calls are combined, so each copy also gets the taints that other callees
+	// added to the caller's objects (e.g. storageUpdate's t106.t15 on the order passed to storageGetOne)
+
 	// propagation: caller args >>> callee params
 	// TODO: upper/lower taints
-	for _, toGraph := range graph.GetAllCombinedGraphs() {
-		methodCall := graph.GetMethodCallForCombinedGraph(toGraph)
+	for _, calleeGraph := range callerGraph.GetAllCombinedGraphs() {
+		methodCall := callerGraph.GetMethodCallForCombinedGraph(calleeGraph)
 		for i, arg := range methodCall.GetArguments() {
-			callee_param := toGraph.GetParamAt(i)
+			callee_param := calleeGraph.GetParamAt(i)
 			caller_taints := arg.GetTaints()
-			propagateTaints(toGraph, callee_param, caller_taints, "")
+			propagateTaints(calleeGraph, callee_param, caller_taints, "")
 		}
 
-		if toGraph.IsGoRoutine() {
-			for i, callee_freevar := range toGraph.GetFreeVars() {
+		// propagation: caller binds >>> callee free vars (goroutines)
+		if calleeGraph.IsGoRoutine() {
+			for i, callee_freevar := range calleeGraph.GetFreeVars() {
 				caller_var := methodCall.GetBindAt(i)
 				caller_taints := caller_var.GetTaints()
-				propagateTaints(toGraph, callee_freevar, caller_taints, "")
+				propagateTaints(calleeGraph, callee_freevar, caller_taints, "")
 			}
 			// TODO rets
 		}
@@ -103,52 +128,71 @@ func Combine(graph *ssagraph.SSAGraph, graphs map[string]*ssagraph.SSAGraph) {
 
 	// propagation: caller rets >>> callee rets
 	// TODO: upper/lower taints
-	for _, toGraph := range graph.GetAllCombinedGraphs() {
-		methodCall := graph.GetMethodCallForCombinedGraph(toGraph)
+	for _, calleeGraph := range callerGraph.GetAllCombinedGraphs() {
+		methodCall := callerGraph.GetMethodCallForCombinedGraph(calleeGraph)
 		for i, ret := range methodCall.GetReturns() {
-			for _, callee_rets := range toGraph.GetReturnsLst() {
+			for _, callee_rets := range calleeGraph.GetReturnsLst() {
 				if i < len(callee_rets) { // sanity check
 					callee_ret := callee_rets[i]
 					caller_taints := ret.GetTaints()
-					propagateTaints(toGraph, callee_ret, caller_taints, "")
+					propagateTaints(calleeGraph, callee_ret, caller_taints, "")
 				}
 			}
 		}
 	}
 
-	for _, toGraph := range graph.GetAllCombinedGraphs() {
-		if graph.GetFunctionShortPath() == toGraph.GetFunctionShortPath() {
+	// 6. combine each copy with the methods it calls
+	for _, calleeGraph := range callerGraph.GetAllCombinedGraphs() {
+		if callerGraph.GetFunctionShortPath() == calleeGraph.GetFunctionShortPath() {
 			// skip to avoid recursion
 			continue
 		}
-		Combine(toGraph, graphs)
+		Combine(calleeGraph, graphsByFunc)
 	}
 }
 
-func propagateTaints(graph *ssagraph.SSAGraph, to_obj *ssagraph.SSANode, from_taints map[string][]*ssagraph.SSATaint, callerT string) {
-	for objpath, taintsLst := range from_taints {
+// propagateTaints copies the taints of an object in one graph (fromTaints) to the matching object of
+// another graph (toObj), and then spreads them from toObj to the rest of that graph, as the tainter
+// does for taints created from a call
+//
+// the object path of each taint (e.g., _obj.Status) is kept, so the taint lands on the same field of toObj
+//
+// scopeT scopes the copied taints (t14 becomes t4.t14) when propagating from a callee to its caller;
+// when empty (from a caller to a callee), each taint keeps its own caller scope (see Combine)
+func propagateTaints(graph *ssagraph.SSAGraph, toObj *ssagraph.SSANode, fromTaints map[string][]*ssagraph.SSATaint, scopeT string) {
+	for objpath, taintsLst := range fromTaints {
 		for _, taint := range taintsLst {
 			visited := make(map[ssa.Value]bool)
 			var taintInfo TaintInfo
-			path, ok := strings.CutPrefix(objpath, "_obj")
+			fieldpath, ok := strings.CutPrefix(objpath, "_obj")
 			if !ok {
 				logrus.Fatalf("objpath (%s) does not have '_obj' prefix", objpath)
 			}
 			if taint.IsDatabaseTaint() {
-				taintInfo = NewTaintInfoDatabase(taint.GetDatabasePath(), path, nil, taint.GetDatabaseCall(), taint.IsReadKey(), taint.IsReadValue())
+				taintInfo = NewTaintInfoDatabase(taint.GetDatabasePath(), fieldpath, nil, taint.GetDatabaseCall(), taint.IsReadKey(), taint.IsReadValue())
 			} else if taint.IsServiceTaint() {
-				taintInfo = NewTaintInfoService(taint.GetServicePath(), path, nil, taint.GetServiceCall())
+				taintInfo = NewTaintInfoService(taint.GetServicePath(), fieldpath, nil, taint.GetServiceCall())
 			} else {
 				logrus.Fatalf("unexpected type of taint: %s\n", taint.String())
 			}
-			if callerT != "" {
-				taintInfo.callerT = callerT
+			// scopeT is the scope to apply, set by Combine depending on the direction:
+			//
+			// - caller <<< callee (if): Combine passes the method call's t (e.g. t4), so the taint is scoped by it,
+			//   e.g., the callee's taint [t14] is added to the caller as [t4.t14]
+			//
+			// - caller >>> callee (else): Combine passes "", so the taint keeps its own scope,
+			//   e.g., the caller's taint [t4.t14] (added earlier through the if) is added back to the callee as [t4.t14],
+			//   not [t14], and a taint from the caller's own call [t43] stays [t43]
+			if scopeT != "" {
+				taintInfo.callerT = scopeT
+			} else {
+				taintInfo.callerT = taint.GetCallerT()
 			}
 			seenTaint = make(map[TaintInfoData]bool)
-			if path != "" {
+			if fieldpath != "" {
 				taintInfo = taintInfo.disableObjectRoot()
 			}
-			propagateTaintNearby(graph, false, to_obj.GetValue(), taintInfo, visited, false)
+			propagateTaintNearby(graph, false, toObj.GetValue(), taintInfo, visited, false)
 			seenTaint = nil
 		}
 	}
