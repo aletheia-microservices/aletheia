@@ -123,3 +123,24 @@ func TestDatabaseCallAccessors(t *testing.T) {
 		t.Errorf("arguments = %v", call.GetArguments())
 	}
 }
+
+// a call inside an inlined graph is scoped by the t of the method call it was inlined for
+// (set by tainter.InlineMethodGraphs), e.g. a call at t21 inside a helper called at t106 is at t106.t21
+func TestCallScopedT(t *testing.T) {
+	graph := newTestGraph()
+	call := newTestDatabaseCall(graph, newValNode(graph, 21), common.OP_WRITE)
+
+	// not inlined: the scoped t is the t of the call
+	if call.GetScopedT() != call.GetT() {
+		t.Errorf("scoped t = %q, want %q (the t of the call)", call.GetScopedT(), call.GetT())
+	}
+
+	call.SetCallerT("t106")
+	if want := "t106." + call.GetT(); call.GetScopedT() != want {
+		t.Errorf("scoped t = %q, want %q", call.GetScopedT(), want)
+	}
+	// GetT stays local, since taints add the caller scope themselves
+	if call.GetT() == call.GetScopedT() {
+		t.Errorf("GetT() = %q must not include the caller scope", call.GetT())
+	}
+}

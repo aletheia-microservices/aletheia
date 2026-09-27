@@ -92,7 +92,7 @@ func TestUniquenessTypeString(t *testing.T) {
 
 func TestUniquenessReportsRelatedWriteBeforeUniqueWrite(t *testing.T) {
 	t.Skip("known bug: uniquenessconcurrency only reports related writes that come after the unique write " +
-		"in the request (see LIKELY_BUGS.md #12)")
+		"in the request (see known_bugs.md #5)")
 	a := newMovieRegistrationApp(true)
 	d := uniquenessconcurrency.NewDetector()
 	// both writes use the same title, so each argument carries a secondary taint from the other write

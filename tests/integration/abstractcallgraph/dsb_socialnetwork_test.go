@@ -140,7 +140,7 @@ func TestSocialNetworkUnreachableCodeHasNoCalls(t *testing.T) {
 }
 
 func TestSocialNetworkUnfollowWithUsernameUpdatesGraph(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see LIKELY_BUGS.md #17), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #7), e.g. " +
 		"SocialGraphService.UnfollowWithUsername -> Unfollow -> go routines")
 
 	g := runner.Get(t, "dsb_socialnetwork").AbsGraph
@@ -150,7 +150,7 @@ func TestSocialNetworkUnfollowWithUsernameUpdatesGraph(t *testing.T) {
 }
 
 func TestSocialNetworkComposeUrlsWritesUrls(t *testing.T) {
-	t.Skip("known bug: NoSQLCollection.InsertMany is not a recognized database call (see LIKELY_BUGS.md #15), so " +
+	t.Skip("not supported yet: NoSQLCollection.InsertMany is skipped with a warning (see the TODO in tainter/blueprint_calls.go), so " +
 		"UrlShortenService.ComposeUrls never writes to urlshorten_db")
 
 	g := runner.Get(t, "dsb_socialnetwork").AbsGraph

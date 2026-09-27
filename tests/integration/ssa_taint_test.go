@@ -296,9 +296,13 @@ func TestSSAInlinesHelperDatabaseCalls(t *testing.T) {
 		t.Errorf("inlined graph must be mapped back to its method call")
 	}
 
-	// callee database call inside the inlined copy is scoped by the caller timestamp
+	// callee database call inside the inlined copy is scoped by the caller timestamp,
+	// e.g. FindOne at t14 in storageGetOne, called at t4 in Pay, is at t4.t14 in Pay
 	find := getDatabaseCall(t, callee, "orders_db.orders", "FindOne")
 	scopedT := getOne.GetT() + "." + find.GetT()
+	if find.GetScopedT() != scopedT {
+		t.Errorf("inlined call FindOne has scoped t=%s, want %s", find.GetScopedT(), scopedT)
+	}
 	var sawScoped bool
 	for _, arg := range find.GetArguments() {
 		for _, taints := range arg.GetTaints() {

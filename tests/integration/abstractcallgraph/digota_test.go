@@ -110,6 +110,34 @@ func TestDigotaHelperCallsAreInlined(t *testing.T) {
 	assertPrimaryTaint(t, id, "_obj", "orders_db.orders.Id", common.OP_UPDATE)
 }
 
+// database edges from helpers must be ordered in the timeline of the service method that calls the helper
+//
+// in digota, OrderService.Pay reads the order, charges it and then updates it:
+//
+//	func (s *OrderServiceImpl) Pay(...) {
+//		s.storageGetOne(ctx, order)     // t4:   helper that calls FindOne at its own t14
+//		s.paymentService.NewCharge(...) // t43:  RPC made by Pay itself
+//		s.storageUpdate(ctx, order)     // t106: helper that calls ReplaceOne at its own t15
+//	}
+//
+// the t of a call inside a helper (e.g. t15) is local to the helper, so InlineMethodGraphs scopes it by the
+// t of the helper call in Pay (t106.t15). Without the scope, ReplaceOne (t15) would come before NewCharge (t43)
+func TestDigotaHelperDatabaseEdgesAreScoped(t *testing.T) {
+	g := runner.Get(t, "digota").AbsGraph
+
+	find := getEdge(t, g, "OrderService.Pay", "orders_db.orders", "FindOne")             // t4.t14
+	charge := getEdge(t, g, "OrderService.Pay", "PaymentService.NewCharge", "NewCharge") // t43
+	replace := getEdge(t, g, "OrderService.Pay", "orders_db.orders", "ReplaceOne")       // t106.t15
+
+	// FindOne < NewCharge < ReplaceOne
+	if !isBefore(find.GetT(), charge.GetT()) {
+		t.Errorf("FindOne (t=%s) must happen before NewCharge (t=%s)", find.GetT(), charge.GetT())
+	}
+	if !isBefore(charge.GetT(), replace.GetT()) {
+		t.Errorf("NewCharge (t=%s) must happen before ReplaceOne (t=%s)", charge.GetT(), replace.GetT())
+	}
+}
+
 // SkuService.New checks the parent product with ProductService.Get and stores it in the sku,
 // which is how skus_db.skus.Parent later references products_db.products.Id
 func TestDigotaSkuParentFlow(t *testing.T) {

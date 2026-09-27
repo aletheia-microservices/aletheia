@@ -151,7 +151,7 @@ func TestSockshopQueueMasterForwardsPoppedShipment(t *testing.T) {
 }
 
 func TestSockshopRegisterWritesUser(t *testing.T) {
-	t.Skip("known bug: NoSQLCollection.UpsertID is not a recognized database call (see LIKELY_BUGS.md #15), so " +
+	t.Skip("not supported yet: NoSQLCollection.UpsertID is skipped with a warning (see the TODO in tainter/blueprint_calls.go), so " +
 		"UserService.Register never writes to user_db")
 
 	g := runner.Get(t, "sockshop").AbsGraph
@@ -161,7 +161,7 @@ func TestSockshopRegisterWritesUser(t *testing.T) {
 }
 
 func TestSockshopCatalogueListReadsSocks(t *testing.T) {
-	t.Skip("known bug: Select with a query built at runtime is ignored (see LIKELY_BUGS.md #16), so " +
+	t.Skip("known bug: Select with a query built at runtime is ignored (see known_bugs.md #6), so " +
 		"CatalogueService.List has no database call")
 
 	g := runner.Get(t, "sockshop").AbsGraph
@@ -171,7 +171,7 @@ func TestSockshopCatalogueListReadsSocks(t *testing.T) {
 }
 
 func TestSockshopRemoveItemDeletesEmptyCart(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see LIKELY_BUGS.md #17), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #7), e.g. " +
 		"CartService.RemoveItem -> DeleteCart -> deleteMany")
 
 	g := runner.Get(t, "sockshop").AbsGraph

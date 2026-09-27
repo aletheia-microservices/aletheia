@@ -23,10 +23,11 @@ type Call interface {
 // baseCall holds the fields common to all calls
 type baseCall struct {
 	// --- input for abstract call graph ---
-	callID string     // unique call identifier; format: [<func_short_path>_]<ssa_instr_unique_name> (func_short_path does not exist for database calls)
-	callTS string     // timestamp to order calls within function; format: <ssa_variable_name>
-	args   []*SSANode // arguments passed to the call
-	method string
+	callID  string     // unique call identifier; format: [<func_short_path>_]<ssa_instr_unique_name> (func_short_path does not exist for database calls)
+	callTS  string     // timestamp to order calls within function; format: <ssa_variable_name>
+	callerT string     // t of the method call when the call is inside an inlined graph (set by tainter.InlineMethodGraphs)
+	args    []*SSANode // arguments passed to the call
+	method  string
 
 	// --- extra info for SSA graph ---
 	node *SSANode
@@ -43,6 +44,22 @@ func newBaseCall(id string, ts string, node *SSANode, args []*SSANode, method st
 }
 
 func (call *baseCall) GetT() string {
+	return call.callTS
+}
+
+func (call *baseCall) SetCallerT(callerT string) {
+	if call.callerT != "" {
+		logrus.Fatalf("callerT already exists for call (existing_callerT=%s) (new_callerT=%s) (call=%s)", call.callerT, callerT, call.callID)
+	}
+	call.callerT = callerT
+}
+
+// GetScopedT returns the t of the call in the timeline of its caller, e.g. t106.t15 for a call at t15
+// inside a helper inlined at t106, or just the t of the call when it is not inside an inlined graph
+func (call *baseCall) GetScopedT() string {
+	if call.callerT != "" {
+		return call.callerT + "." + call.callTS
+	}
 	return call.callTS
 }
 

@@ -70,8 +70,14 @@ func InlineMethodGraphs(callerGraph *ssagraph.SSAGraph, graphsByFunc map[string]
 			}
 		}
 
-		// 4. scope the taints on the arguments and returns of the service and database calls inside the
-		// copy by callerT (e.g. t14 becomes t4.t14), so they are ordered in the caller's timeline
+		// 4. scope the service and database calls inside the copy, and the taints on their arguments and
+		// returns, by callerT (e.g. t14 becomes t4.t14), so they are ordered in the caller's timeline
+		for _, call := range calleeGraph.GetServiceCalls() {
+			call.SetCallerT(callerT)
+		}
+		for _, call := range calleeGraph.GetDatabaseCalls() {
+			call.SetCallerT(callerT)
+		}
 		var callee_objs []*ssagraph.SSANode
 		for _, call := range calleeGraph.GetServiceCalls() {
 			for _, obj := range call.GetArguments() {

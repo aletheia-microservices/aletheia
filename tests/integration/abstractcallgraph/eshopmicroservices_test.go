@@ -126,7 +126,7 @@ func TestEshopCheckoutPushesBasketTotal(t *testing.T) {
 }
 
 func TestEshopOrderConsumerStoresOrder(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see LIKELY_BUGS.md #17), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #7), e.g. " +
 		"OrderService.Init -> CreateNewOrder -> add")
 
 	g := runner.Get(t, "eshopmicroservices").AbsGraph

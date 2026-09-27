@@ -215,7 +215,7 @@ func parseDatabaseCall(graph *abstractgraph.AbstractCallGraph, node *abstractgra
 		}
 	}
 
-	edge := abstractgraph.NewAbstractEdge(databaseCall.GetT(), databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), abstractgraph.EDGE_DATABASE_CALL)
+	edge := abstractgraph.NewAbstractEdge(databaseCall.GetScopedT(), databaseCall.GetID(), databaseCall.GetMethod(), node, toNode, databaseCall.GetOpType(), abstractgraph.EDGE_DATABASE_CALL)
 
 	for _, callArg := range databaseCall.GetArguments() {
 		arg := abstractgraph.NewAbstractObject(callArg.GetName(), ssaTaintDatabaseToAbstractTaint(graph, callArg.GetTaints()), ssaTaintServiceToAbstractTrace(graph, callArg.GetTaints()))
