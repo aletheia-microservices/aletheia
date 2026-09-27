@@ -1,6 +1,7 @@
 package abstractgraphtainter
 
 import (
+	"maps"
 	"slices"
 	"strings"
 
@@ -70,10 +71,10 @@ func MergeTaints(obj *abstractgraph.AbstractObject, otherTaintsMap map[string][]
 	// logrus.Tracef("[TAINTMAPPING] merging taints mode={%s}: %v\n", mergeModeToString(mode), otherTaintsMap)
 	taintMapping := abstractgraph.NewTaintMapping()
 	// when it's not nil its because we want to maintain the order
+	// otherwise, sort the object paths so that the taint mapping (and the constraints created from it)
+	// does not depend on the map order, which changes between runs
 	if otherTaintsMapKeys == nil {
-		for key := range otherTaintsMap {
-			otherTaintsMapKeys = append(otherTaintsMapKeys, key)
-		}
+		otherTaintsMapKeys = slices.Sorted(maps.Keys(otherTaintsMap))
 	}
 
 	for _, objpath := range otherTaintsMapKeys {
