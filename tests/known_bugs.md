@@ -7,10 +7,9 @@ Found while writing the test suite in `tests/`. Each item has a test that is ski
 | 1 | Abstract graph | `GetPrimaryTaints` / `GetSecondaryTaints` / `GetWriteTaints` do not filter | High | `TestAbstractObjectPrimaryAndSecondaryFilters` |
 | 2 | Schema | `GetLastSchema()` returns `schemas[0]`, whose order is random, so fields and constraints land in the wrong collection | High | `TestDetectionOutput/sockshop/constraints` |
 | 3 | Detection | `TaintMapping.Clear()` does nothing, so the backward phase of an RPC reuses the forward mapping | Medium | `TestTaintMappingClear` |
-| 4 | SSA taints | SQL calls whose statement is built at runtime are silently ignored | Medium | `TestSockshopCatalogueListReadsSocks` |
-| 5 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
+| 4 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
 
-Items 1 and 2 are ordered by estimated impact. Item 3 was found later, while adding unit tests for `pkg/abstractgraph`, and items 4 and 5 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
+Items 1 and 2 are ordered by estimated impact. Item 3 was found later, while adding unit tests for `pkg/abstractgraph`, and item 4 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
 
 ---
 
@@ -88,19 +87,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Tried:** clearing the fields in place changes no warnings in the included apps, but removes one inferred foreign key in `dsb_mediamicroservices`: `movie_info_cache.*.Key REFERENCES movie_info_db.movie_info._id [T]`. That foreign key looks correct, since `MovieInfoService.ReadMovieInfo` uses the same `movieID` as the cache key and as the `_id` filter of `movie_info_db`. It is currently found only as a side effect of this bug, so find out why it is not inferred directly before fixing.
 
-## 4. SQL calls whose statement is built at runtime are silently ignored
-
-**Where:** `pkg/ssagraph/tainter/blueprint_calls.go:172`
-
-`isBlueprintRelationalDBCall` reads the SQL statement with `utils.ExtractStringFromValue`, which only works for constants. When the statement is built at runtime, the call is treated as not being a database call, with no warning.
-
-**Evidence:** sockshop `CatalogueService.List` builds its query from a base query and the requested tags (`catalogue/catalogueservice.go:47-72`) before calling `Select`, and has no database call in the abstract call graph.
-
-**Impact:** medium. In the included apps it only hides one read, but a dynamic `INSERT` or `DELETE` would be hidden too.
-
-**Fix:** at least log a warning. To support the call, fall back to the table of the base query (e.g., by following the `BinOp` that builds the string), or to the tables of the database schema.
-
-## 5. Database and RPC calls two or more helper calls deep are dropped
+## 4. Database and RPC calls two or more helper calls deep are dropped
 
 **Where:** `pkg/abstractgraph/parser.go:253`
 

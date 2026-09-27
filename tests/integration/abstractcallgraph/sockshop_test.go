@@ -79,6 +79,7 @@ func TestSockshopCalls(t *testing.T) {
 		"read CartService.RemoveItem -> cart_db.carts.FindOne",
 		"read CartService.UpdateItem -> cart_db.carts.FindOne",
 		"read CatalogueService.Get -> catalogue_db.sock.Get",
+		"read CatalogueService.List -> catalogue_db.sock.Select",
 		"read CatalogueService.Tags -> catalogue_db.tag.Select",
 		"read OrderService.GetOrder -> order_db.orders.FindOne",
 		"read OrderService.GetOrders -> order_db.orders.FindMany",
@@ -106,7 +107,7 @@ func TestSockshopCalls(t *testing.T) {
 func TestSockshopCounts(t *testing.T) {
 	assertCounts(t, runner.Get(t, "sockshop").AbsGraph, map[string]int{
 		"service nodes": 41, "database nodes": 9,
-		"entry": 19, "rpc": 30, "read": 18, "write": 3, "update": 7, "delete": 2,
+		"entry": 19, "rpc": 30, "read": 19, "write": 3, "update": 7, "delete": 2,
 	})
 }
 
@@ -161,9 +162,6 @@ func TestSockshopRegisterWritesUser(t *testing.T) {
 }
 
 func TestSockshopCatalogueListReadsSocks(t *testing.T) {
-	t.Skip("known bug: Select with a query built at runtime is ignored (see known_bugs.md #4), so " +
-		"CatalogueService.List has no database call")
-
 	g := runner.Get(t, "sockshop").AbsGraph
 	if !hasEdge(g, "CatalogueService.List", "catalogue_db.sock", "Select") {
 		t.Errorf("missing read CatalogueService.List -> catalogue_db.sock.Select")
@@ -171,7 +169,7 @@ func TestSockshopCatalogueListReadsSocks(t *testing.T) {
 }
 
 func TestSockshopRemoveItemDeletesEmptyCart(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #5), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #4), e.g. " +
 		"CartService.RemoveItem -> DeleteCart -> deleteMany")
 
 	g := runner.Get(t, "sockshop").AbsGraph

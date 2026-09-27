@@ -325,10 +325,25 @@ func ParseSQLDelete(db string, stmtStr string) ([]string, []string, bool) {
 func parseSQLTableExprs(tableExprs sqlparser.TableExprs) []tableNameAlias {
 	var tableNameAliasLst []tableNameAlias
 	for _, table := range tableExprs {
-		if aliasedTableExpr, ok := table.(*sqlparser.AliasedTableExpr); ok {
-			if tableName, ok := aliasedTableExpr.Expr.(sqlparser.TableName); ok {
-				tableNameAliasLst = append(tableNameAliasLst, tableNameAlias{alias: aliasedTableExpr.As.CompliantName(), name: tableName.Name.CompliantName()})
-			}
+		tableNameAliasLst = appendSQLTableExpr(tableNameAliasLst, table)
+	}
+	return tableNameAliasLst
+}
+
+// appendSQLTableExpr appends the tables of a FROM expression, from left to right, so the first table
+// is the main one, e.g., FROM sock JOIN sock_tag ON ... JOIN tag ON ... => [sock, sock_tag, tag]
+func appendSQLTableExpr(tableNameAliasLst []tableNameAlias, table sqlparser.TableExpr) []tableNameAlias {
+	switch table := table.(type) {
+	case *sqlparser.AliasedTableExpr:
+		if tableName, ok := table.Expr.(sqlparser.TableName); ok {
+			tableNameAliasLst = append(tableNameAliasLst, tableNameAlias{alias: table.As.CompliantName(), name: tableName.Name.CompliantName()})
+		}
+	case *sqlparser.JoinTableExpr:
+		tableNameAliasLst = appendSQLTableExpr(tableNameAliasLst, table.LeftExpr)
+		tableNameAliasLst = appendSQLTableExpr(tableNameAliasLst, table.RightExpr)
+	case *sqlparser.ParenTableExpr:
+		for _, expr := range table.Exprs {
+			tableNameAliasLst = appendSQLTableExpr(tableNameAliasLst, expr)
 		}
 	}
 	return tableNameAliasLst

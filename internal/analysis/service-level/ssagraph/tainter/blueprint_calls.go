@@ -138,20 +138,28 @@ func isDatabaseCall(graph *ssagraph.SSAGraph, val ssa.Value) (string, string, st
 	return "", "", "", -1, nil, false
 }
 
-// example:
-// t3 = &m.movieIdDB [#0]
-// t4 = *t3
-// t5 = new [2]any (varargs)
-// t6 = &t5[0:int]
-// t7 = make any <- string (movieID)
-// *t6 = t7
-// t8 = &t5[1:int]
-// t9 = make any <- string (title)
-// *t8 = t9
-// t10 = slice t5[:]
-// t11 = invoke t4.Exec(ctx, "INSERT INTO movie...":string, t10...)
-// t12 = extract t11 #0
-// t13 = extract t11 #1
+// isSQLDDLStatement returns true for DDL statements (e.g., CREATE TABLE, DROP TABLE, ALTER TABLE)
+func isSQLDDLStatement(stmt string) bool {
+	stmt = strings.ToUpper(strings.TrimSpace(stmt))
+	return strings.HasPrefix(stmt, "CREATE") || strings.HasPrefix(stmt, "DROP") || strings.HasPrefix(stmt, "ALTER")
+}
+
+// isBlueprintRelationalDBCall checks if call is a RelationalDB call (Exec, Select or Get) and extracts
+// its database, table, operation type and the values it reads or writes
+//
+// e.g., m.movieIdDB.Exec(ctx, "INSERT INTO movie ...", movieID, title) is, in SSA:
+//
+//	t3 = &m.movieIdDB [#0]
+//	t4 = *t3                          // receiver (unOp): the database, from the wiring of m.movieIdDB
+//	t5 = new [2]any (varargs)         // values passed to the statement, stored in a slice:
+//	t6 = &t5[0:int]
+//	t7 = make any <- string (movieID) // - movieID
+//	*t6 = t7
+//	t8 = &t5[1:int]
+//	t9 = make any <- string (title)   // - title
+//	*t8 = t9
+//	t10 = slice t5[:]
+//	t11 = invoke t4.Exec(ctx, "INSERT INTO movie...":string, t10...) // statement: the table and fields
 func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp *ssa.UnOp) (string, string, common.DatabaseOperationType, []ValFieldPath, bool) {
 	var opType common.DatabaseOperationType
 	if typeNamed, ok := unOp.Type().(*types.Named); ok {
@@ -174,8 +182,27 @@ func isBlueprintRelationalDBCall(graph *ssagraph.SSAGraph, call *ssa.Call, unOp 
 				sliceArgsVal = call.Call.Args[2]
 			}
 
-			stmt, ok := utils.ExtractStringFromValue(stmtVal)
+			// extract the SQL statement, which can be:
+			// - a constant, e.g., Exec(ctx, "INSERT INTO sock ...")
+			// - a package-level variable, e.g., Exec(ctx, createSockTable) with var createSockTable = "CREATE TABLE ..."
+			// - built at runtime, e.g., Select(ctx, &socks, query) with query := baseQuery + " WHERE ..." + ";"
+			//   NOTE: complete is false, as only the constant it starts with is used (e.g., baseQuery = "SELECT ... FROM sock"),
+			//   so the parts added at runtime (e.g., the WHERE clause) are not parsed
+			stmt, complete, ok := utils.ExtractBaseStringFromValue(stmtVal)
 			if !ok {
+				logrus.WithField("graph", graph.String()).Warnf("[CALLS BLUEPRINT] [RELDB] ignoring call with a SQL statement built at runtime: %s", call.String())
+				return "", "", -1, nil, false
+			}
+			if !complete {
+				// simply warn and continue, as the base of the SQL statement is still useful for analysis
+				// TODO: parse the parts added at runtime (e.g., WHERE tag.Name=? in sockshop CatalogueService.List),
+				// e.g., by following each concatenation and combining the constants of each branch
+				// (for now, the read or written values of these parts are not tainted)
+				logrus.WithField("graph", graph.String()).Warnf("[CALLS BLUEPRINT] [RELDB] using only the base of a SQL statement built at runtime for call: %s", call.String())
+			}
+
+			// DDL statements (e.g., CREATE TABLE, DROP TABLE, ALTER TABLE) do not read or write data
+			if isSQLDDLStatement(stmt) {
 				return "", "", -1, nil, false
 			}
 
