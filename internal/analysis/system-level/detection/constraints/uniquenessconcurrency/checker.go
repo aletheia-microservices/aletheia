@@ -3,6 +3,7 @@ package uniquenessconcurrency
 import (
 	"slices"
 
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection"
 	"github.com/aletheia-microservices/aletheia/internal/app"
 	"github.com/aletheia-microservices/aletheia/internal/app/backends"
 	"github.com/aletheia-microservices/aletheia/internal/utils"
@@ -27,6 +28,11 @@ func (writeSet *VulnerableWriteSet) hasOtherOperation(op *WriteOperation) bool {
 func (detector *UniquenessConcurrencyDetector) checkInconsistenciesForRequest(app *app.App, request *Request) {
 	// 1. create a write set for each write of a unique field
 	for _, op := range request.GetAllOperations() {
+		// a linearizable database rejects the second of two concurrent writes of the same unique
+		// value, so the related writes are never left behind
+		if detection.IsLinearizable(op.call.GetToNode().GetDatabaseName()) {
+			continue
+		}
 		if constrainedFields := computeConstrainedFields(app, op); constrainedFields != nil {
 			writeSet := &VulnerableWriteSet{
 				constrainedOp:     op,

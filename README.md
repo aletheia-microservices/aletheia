@@ -302,10 +302,13 @@ ignore_cascade:                   # missing cascading deletes to ignore (RI-1 on
     entity: <entity>
     trigger_database: <database>  # optional, together with trigger_entity: only when
     trigger_entity: <entity>      # the deleted record is in this database and entity
+linearizable_databases:           # databases that are not eventually consistent (Un-1 only)
+  - <database>                    # database name, as shown in schema.json
 ```
 
 - `ignore_foreignkeys` stops Aletheia from inferring foreign keys from the listed fields, so those foreign keys do not appear in `schema.json` and do not lead to warnings.
 - `ignore_cascade` hides RI-1 warnings about records left behind in the given `database` and `entity`. To hide them only when the delete happens in a specific database and entity, set both `trigger_database` and `trigger_entity`. If only one of them is set, it has no effect.
+- `linearizable_databases` marks the listed databases as linearizable: each write appears to take effect at a single point in time, and all clients observe writes in that order. By default, Aletheia assumes every database is eventually consistent, so replicas accept writes independently and merge them later. A linearizable database rejects the second of two concurrent writes of the same unique value, so Un-1 does not report unique writes to it.
 
 You can ignore specific inferred foreign keys. For example, `config/postnotification.yaml` ignores the foreign key on `notifications_queue.notification.ReqID`:
 

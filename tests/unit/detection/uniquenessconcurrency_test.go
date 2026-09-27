@@ -5,6 +5,7 @@ import (
 
 	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection/constraints/uniquenessconcurrency"
 	"github.com/aletheia-microservices/aletheia/internal/app"
 	"github.com/aletheia-microservices/aletheia/internal/app/backends"
@@ -71,6 +72,30 @@ func TestUniquenessIgnoresUnrelatedWrite(t *testing.T) {
 	runRequest(d, a, 0, entry, writes...)
 
 	wantWarnings(t, results(d, a), 0)
+}
+
+func TestUniquenessIgnoresUniqueWriteToLinearizableDatabase(t *testing.T) {
+	resetDetectionConfig(t)
+	detection.Config.LinearizableDatabases = []string{"movie_id_db"}
+	a := newMovieRegistrationApp(true)
+	d := uniquenessconcurrency.NewDetector()
+	entry, writes := registerMovie(true)
+
+	runRequest(d, a, 0, entry, writes...)
+
+	wantWarnings(t, results(d, a), 0)
+}
+
+func TestUniquenessReportsWhenOnlyRelatedDatabaseIsLinearizable(t *testing.T) {
+	resetDetectionConfig(t)
+	detection.Config.LinearizableDatabases = []string{"movie_info_db"}
+	a := newMovieRegistrationApp(true)
+	d := uniquenessconcurrency.NewDetector()
+	entry, writes := registerMovie(true)
+
+	runRequest(d, a, 0, entry, writes...)
+
+	wantWarnings(t, results(d, a), 1)
 }
 
 func TestUniquenessIgnoresRelatedWriteInAnotherRequest(t *testing.T) {

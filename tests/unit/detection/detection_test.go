@@ -42,6 +42,8 @@ ignore_cascade:
     entity: orders
     trigger_database: cart_db
     trigger_entity: carts
+linearizable_databases:
+  - catalogue_db
 `)
 
 	detection.LoadInputConfig("sockshop", path)
@@ -52,9 +54,22 @@ ignore_cascade:
 		IgnoreCascade: []detection.IgnoreCascadeEntry{
 			{Database: "order_db", Entity: "orders", TriggerDatabase: "cart_db", TriggerEntity: "carts"},
 		},
+		LinearizableDatabases: []string{"catalogue_db"},
 	}
 	if !reflect.DeepEqual(detection.Config, want) {
 		t.Errorf("Config = %+v, want %+v", detection.Config, want)
+	}
+}
+
+func TestIsLinearizable(t *testing.T) {
+	resetDetectionConfig(t)
+	detection.Config.LinearizableDatabases = []string{"catalogue_db"}
+
+	if !detection.IsLinearizable("catalogue_db") {
+		t.Errorf("IsLinearizable(catalogue_db) = false, want true")
+	}
+	if detection.IsLinearizable("order_db") {
+		t.Errorf("IsLinearizable(order_db) = true, want false")
 	}
 }
 
