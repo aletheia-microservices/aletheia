@@ -56,7 +56,7 @@ func (detector *UniquenessConcurrencyDetector) OnNewRequest(node *abstractgraph.
 }
 
 func (detector *UniquenessConcurrencyDetector) OnEndRequest(app *app.App) {
-	// nothing to do
+	detector.checkInconsistenciesForRequest(app, detector.getCurrentRequest())
 }
 
 func (detector *UniquenessConcurrencyDetector) OnNewNode(app *app.App, node *abstractgraph.AbstractNode) {
@@ -72,12 +72,9 @@ func (detector *UniquenessConcurrencyDetector) OnRead(app *app.App, reqIdx int, 
 }
 
 func (detector *UniquenessConcurrencyDetector) OnWrite(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {
+	// the writes are checked once the request ends (see OnEndRequest)
 	op := NewWriteOperation(edge, edge.GetArguments())
-	request := detector.getCurrentRequest()
-
-	// must check inconsistency before adding read to request
-	detector.checkInconsistency(app, request, op)
-	request.AddOperation(op)
+	detector.getCurrentRequest().AddOperation(op)
 }
 
 func (detector *UniquenessConcurrencyDetector) OnUpdate(app *app.App, reqIdx int, edge *abstractgraph.AbstractEdge) {

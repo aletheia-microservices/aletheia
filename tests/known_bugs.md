@@ -7,11 +7,10 @@ Found while writing the test suite in `tests/`. Each item has a test that is ski
 | 1 | Abstract graph | `GetPrimaryTaints` / `GetSecondaryTaints` / `GetWriteTaints` do not filter | High | `TestAbstractObjectPrimaryAndSecondaryFilters` |
 | 2 | Schema | `GetLastSchema()` returns `schemas[0]`, whose order is random, so fields and constraints land in the wrong collection | High | `TestDetectionOutput/sockshop/constraints` |
 | 3 | Detection | `TaintMapping.Clear()` does nothing, so the backward phase of an RPC reuses the forward mapping | Medium | `TestTaintMappingClear` |
-| 4 | Detection | Un-1 only reports a related write that comes after the unique write | Medium | `TestUniquenessReportsRelatedWriteBeforeUniqueWrite` |
-| 5 | SSA taints | SQL calls whose statement is built at runtime are silently ignored | Medium | `TestSockshopCatalogueListReadsSocks` |
-| 6 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
+| 4 | SSA taints | SQL calls whose statement is built at runtime are silently ignored | Medium | `TestSockshopCatalogueListReadsSocks` |
+| 5 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
 
-Items 1 and 2 are ordered by estimated impact. Item 3 was found later, while adding unit tests for `pkg/abstractgraph`. Item 4 was found while adding unit tests for `pkg/detection`, and items 5 and 6 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
+Items 1 and 2 are ordered by estimated impact. Item 3 was found later, while adding unit tests for `pkg/abstractgraph`, and items 4 and 5 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
 
 ---
 
@@ -89,19 +88,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Tried:** clearing the fields in place changes no warnings in the included apps, but removes one inferred foreign key in `dsb_mediamicroservices`: `movie_info_cache.*.Key REFERENCES movie_info_db.movie_info._id [T]`. That foreign key looks correct, since `MovieInfoService.ReadMovieInfo` uses the same `movieID` as the cache key and as the `_id` filter of `movie_info_db`. It is currently found only as a side effect of this bug, so find out why it is not inferred directly before fixing.
 
-## 4. Un-1 only reports a related write that comes after the unique write
-
-**Where:** `pkg/detection/constraints/uniquenessconcurrency/detector.go:78` and `checker.go:53`
-
-`OnWrite` checks each write against the writes already recorded in the request, and only then records it. A write set is created for each write of a unique field (`checker.go:65`). A later write that carries a secondary taint from it is added to that set (`checker.go:56`). But a new write set never looks back at the writes recorded before it, so a related write that comes first is never added.
-
-**Evidence:** in `TestUniquenessReportsRelatedWriteBeforeUniqueWrite`, `RegisterMovie` writes the movie info to `movie_info_db` and then the unique `Title` to `movie_id_db`, and each argument carries a secondary taint from the other write. No warning is reported. With the same writes in the opposite order, `TestUniquenessReportsRelatedWriteToAnotherDatabase` reports one.
-
-**Impact:** pattern Un-1 in the paper only requires both writes to be in the same request, in any order. Requests that write the related data before the unique value are missed.
-
-**Fix:** check the whole request at once in `OnEndRequest`, as RI-1 does, so that the order of the writes does not matter.
-
-## 5. SQL calls whose statement is built at runtime are silently ignored
+## 4. SQL calls whose statement is built at runtime are silently ignored
 
 **Where:** `pkg/ssagraph/tainter/blueprint_calls.go:172`
 
@@ -113,7 +100,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Fix:** at least log a warning. To support the call, fall back to the table of the base query (e.g., by following the `BinOp` that builds the string), or to the tables of the database schema.
 
-## 6. Database and RPC calls two or more helper calls deep are dropped
+## 5. Database and RPC calls two or more helper calls deep are dropped
 
 **Where:** `pkg/abstractgraph/parser.go:253`
 
