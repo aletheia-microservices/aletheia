@@ -36,20 +36,31 @@ func (trace *AbstractTrace) GetArgumentName() string {
 	return arraySplits[0]
 }
 
-func (trace *AbstractTrace) GetArgumentPath() string {
+// same format as GetArgumentName; we want the path after the ssa name, with _obj in its place
+// examples:
+// - MovieIdService.RegisterMovieId.t4 => _obj
+// - MovieIdService.RegisterMovieId.t4.MovieId => _obj.MovieId
+// - CastInfoService.ReadCastInfos.t17[*] => _obj[*]
+// - CastInfoService.ReadCastInfos.t17[*].CastInfoID => _obj[*].CastInfoID
+func (trace *AbstractTrace) ExtractTracedObjectPath() string {
 	splits := strings.SplitN(trace.GetServicePath(), ".", 4)
-	if len(splits) > 3 {
-		return "_obj." + splits[3]
-	}
+	path := "_obj"
 
 	// handle array case if it exists
 	// e.g., CastInfoService.ReadCastInfos.t17[*]...
 	// we want to extract [*]...
 	arraySplits := strings.SplitN(splits[2], "[*]", 2)
 	if len(arraySplits) > 1 {
-		return "_obj[*]" + arraySplits[1]
+		path += "[*]" + arraySplits[1]
 	}
-	return "_obj"
+
+	// handle sub path if it exists (everything after the ssa name)
+	// e.g., CastInfoService.ReadCastInfos.t17[*].CastInfoID
+	// splits[3] is CastInfoID (SplitN drops the dots), so we append "." + splits[3] = .CastInfoID
+	if len(splits) > 3 {
+		path += "." + splits[3]
+	}
+	return path
 }
 
 func (trace *AbstractTrace) GetT() string {

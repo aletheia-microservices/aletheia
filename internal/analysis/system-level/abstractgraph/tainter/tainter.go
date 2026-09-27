@@ -696,7 +696,7 @@ func taintTracedObjectsOnEdge(currObj *abstractgraph.AbstractObject, currNode *a
 
 			// we get exactly the matching object by looking for the trace argument name
 			if tracedObj := otherEdge.GetArgumentByNameIfExists(trace.GetArgumentName()); tracedObj != nil {
-				tracedObjPath := trace.GetArgumentPath()
+				tracedObjPath := trace.ExtractTracedObjectPath()
 				taintTracedObjectsHelper(currObj, tracedObj, currObjpath, tracedObjPath, trace, taintMapping, true, doTaintAfter, readOnly)
 			}
 		}

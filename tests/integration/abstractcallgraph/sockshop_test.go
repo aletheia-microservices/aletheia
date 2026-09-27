@@ -161,7 +161,7 @@ func TestSockshopRegisterWritesUser(t *testing.T) {
 }
 
 func TestSockshopCatalogueListReadsSocks(t *testing.T) {
-	t.Skip("known bug: Select with a query built at runtime is ignored (see known_bugs.md #6), so " +
+	t.Skip("known bug: Select with a query built at runtime is ignored (see known_bugs.md #5), so " +
 		"CatalogueService.List has no database call")
 
 	g := runner.Get(t, "sockshop").AbsGraph
@@ -171,7 +171,7 @@ func TestSockshopCatalogueListReadsSocks(t *testing.T) {
 }
 
 func TestSockshopRemoveItemDeletesEmptyCart(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #7), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #6), e.g. " +
 		"CartService.RemoveItem -> DeleteCart -> deleteMany")
 
 	g := runner.Get(t, "sockshop").AbsGraph

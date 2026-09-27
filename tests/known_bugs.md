@@ -6,13 +6,12 @@ Found while writing the test suite in `tests/`. Each item has a test that is ski
 |---|------|---------|--------|------|
 | 1 | Abstract graph | `GetPrimaryTaints` / `GetSecondaryTaints` / `GetWriteTaints` do not filter | High | `TestAbstractObjectPrimaryAndSecondaryFilters` |
 | 2 | Schema | `GetLastSchema()` returns `schemas[0]`, whose order is random, so fields and constraints land in the wrong collection | High | `TestDetectionOutput/sockshop/constraints` |
-| 3 | Abstract graph | `AbstractTrace.GetArgumentPath` drops `[*]` when a sub path follows it | Low–Medium | `TestAbstractTraceArgumentPathOnArrayWithSubPath` |
-| 4 | Detection | `TaintMapping.Clear()` does nothing, so the backward phase of an RPC reuses the forward mapping | Medium | `TestTaintMappingClear` |
-| 5 | Detection | Un-1 only reports a related write that comes after the unique write | Medium | `TestUniquenessReportsRelatedWriteBeforeUniqueWrite` |
-| 6 | SSA taints | SQL calls whose statement is built at runtime are silently ignored | Medium | `TestSockshopCatalogueListReadsSocks` |
-| 7 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
+| 3 | Detection | `TaintMapping.Clear()` does nothing, so the backward phase of an RPC reuses the forward mapping | Medium | `TestTaintMappingClear` |
+| 4 | Detection | Un-1 only reports a related write that comes after the unique write | Medium | `TestUniquenessReportsRelatedWriteBeforeUniqueWrite` |
+| 5 | SSA taints | SQL calls whose statement is built at runtime are silently ignored | Medium | `TestSockshopCatalogueListReadsSocks` |
+| 6 | Abstract graph | Database and RPC calls two or more helper calls deep are dropped | High | `TestSockshopRemoveItemDeletesEmptyCart`, `TestEshopOrderConsumerStoresOrder`, `TestSocialNetworkUnfollowWithUsernameUpdatesGraph` |
 
-Items 1–3 are ordered by estimated impact. Item 4 was found later, while adding unit tests for `pkg/abstractgraph`. Item 5 was found while adding unit tests for `pkg/detection`, and items 6 and 7 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
+Items 1 and 2 are ordered by estimated impact. Item 3 was found later, while adding unit tests for `pkg/abstractgraph`. Item 4 was found while adding unit tests for `pkg/detection`, and items 5 and 6 while adding the abstract call graph tests in `tests/integration/abstractcallgraph`.
 
 ---
 
@@ -70,22 +69,7 @@ func (database *Database) GetLastSchema() *Schema {
 
 **Fix:** look up the schema from the field path, e.g. `db.GetSchemaByNameIfExists(utils.ExtractSchemaNameFromFieldPath(path))`. Separately, sort `graphsLst` (or the `funcGraphs` keys) in `main.go` so that the remaining order-dependent steps are reproducible. Once constraints are stable, remove `sockshop` from `nondeterministicConstraints` in `tests/integration/detection_test.go` and run `-update`.
 
-## 3. `AbstractTrace.GetArgumentPath` drops `[*]` when a sub path follows
-
-**Where:** `pkg/abstractgraph/trace.go:39`
-
-`SplitN(path, ".", 4)` puts `t17[*]` in `splits[2]` and `CastInfoID` in `splits[3]`, so the function returns `"_obj." + splits[3]`. The array case is only handled when nothing follows `[*]`.
-
-| Service path | Returned | Expected |
-|---|---|---|
-| `CastInfoService.ReadCastInfos.t17[*]` | `_obj[*]` | `_obj[*]` |
-| `CastInfoService.ReadCastInfos.t17[*].CastInfoID` | `_obj.CastInfoID` | `_obj[*].CastInfoID` |
-
-**Impact:** traced objects that are slices of structs (dsb_mediamicroservices) get taints at the wrong abstract location.
-
-**Fix:** keep the part of `splits[2]` after `[*]` in front of the sub path, e.g. `"_obj" + arrayPart + "." + splits[3]`.
-
-## 4. `TaintMapping.Clear()` does nothing
+## 3. `TaintMapping.Clear()` does nothing
 
 **Where:** `pkg/abstractgraph/taintmapping.go:33`, called from `pkg/detection/iterator.go:192`
 
@@ -105,7 +89,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Tried:** clearing the fields in place changes no warnings in the included apps, but removes one inferred foreign key in `dsb_mediamicroservices`: `movie_info_cache.*.Key REFERENCES movie_info_db.movie_info._id [T]`. That foreign key looks correct, since `MovieInfoService.ReadMovieInfo` uses the same `movieID` as the cache key and as the `_id` filter of `movie_info_db`. It is currently found only as a side effect of this bug, so find out why it is not inferred directly before fixing.
 
-## 5. Un-1 only reports a related write that comes after the unique write
+## 4. Un-1 only reports a related write that comes after the unique write
 
 **Where:** `pkg/detection/constraints/uniquenessconcurrency/detector.go:78` and `checker.go:53`
 
@@ -117,7 +101,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Fix:** check the whole request at once in `OnEndRequest`, as RI-1 does, so that the order of the writes does not matter.
 
-## 6. SQL calls whose statement is built at runtime are silently ignored
+## 5. SQL calls whose statement is built at runtime are silently ignored
 
 **Where:** `pkg/ssagraph/tainter/blueprint_calls.go:172`
 
@@ -129,7 +113,7 @@ The first point can add taints on the caller side, and later constraints, that t
 
 **Fix:** at least log a warning. To support the call, fall back to the table of the base query (e.g., by following the `BinOp` that builds the string), or to the tables of the database schema.
 
-## 7. Database and RPC calls two or more helper calls deep are dropped
+## 6. Database and RPC calls two or more helper calls deep are dropped
 
 **Where:** `pkg/abstractgraph/parser.go:253`
 

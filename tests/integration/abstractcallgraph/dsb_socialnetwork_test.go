@@ -140,7 +140,7 @@ func TestSocialNetworkUnreachableCodeHasNoCalls(t *testing.T) {
 }
 
 func TestSocialNetworkUnfollowWithUsernameUpdatesGraph(t *testing.T) {
-	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #7), e.g. " +
+	t.Skip("known bug: database calls two helper calls deep are dropped (see known_bugs.md #6), e.g. " +
 		"SocialGraphService.UnfollowWithUsername -> Unfollow -> go routines")
 
 	g := runner.Get(t, "dsb_socialnetwork").AbsGraph

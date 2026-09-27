@@ -20,19 +20,16 @@ func TestAbstractTraceArgument(t *testing.T) {
 		if got := trace.GetArgumentName(); got != tt.name {
 			t.Errorf("GetArgumentName(%q) = %q, want %q", tt.svpath, got, tt.name)
 		}
-		if got := trace.GetArgumentPath(); got != tt.path {
-			t.Errorf("GetArgumentPath(%q) = %q, want %q", tt.svpath, got, tt.path)
+		if got := trace.ExtractTracedObjectPath(); got != tt.path {
+			t.Errorf("ExtractTracedObjectPath(%q) = %q, want %q", tt.svpath, got, tt.path)
 		}
 	}
 }
 
-func TestAbstractTraceArgumentPathOnArrayWithSubPath(t *testing.T) {
-	t.Skip("known bug: abstractgraph.AbstractTrace.GetArgumentPath drops '[*]' when the array is followed by a sub path " +
-		"(e.g., 'CastInfoService.ReadCastInfos.t17[*].CastInfoID' yields '_obj.CastInfoID')")
-
+func TestAbstractTraceTracedObjectPathOnArrayWithSubPath(t *testing.T) {
 	trace := abstractgraph.NewAbstractTrace("t1", "CastInfoService.ReadCastInfos.t17[*].CastInfoID", "call")
-	if got := trace.GetArgumentPath(); got != "_obj[*].CastInfoID" {
-		t.Errorf("GetArgumentPath = %q, want _obj[*].CastInfoID", got)
+	if got := trace.ExtractTracedObjectPath(); got != "_obj[*].CastInfoID" {
+		t.Errorf("ExtractTracedObjectPath = %q, want _obj[*].CastInfoID", got)
 	}
 }
 
