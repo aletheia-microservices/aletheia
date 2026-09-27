@@ -53,10 +53,6 @@ func (taint *AbstractTaint) SetReadKey(readKey bool) {
 	taint.readKey = readKey
 }
 
-func (taint *AbstractTaint) SetReadValue(readVal bool) {
-	taint.readKey = readVal
-}
-
 func (taint *AbstractTaint) IsReadKey() bool {
 	return taint.readKey
 }

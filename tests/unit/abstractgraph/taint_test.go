@@ -43,16 +43,6 @@ func TestAbstractTaintFlags(t *testing.T) {
 	}
 }
 
-func TestAbstractTaintSetReadValue(t *testing.T) {
-	t.Skip("known bug: abstractgraph.AbstractTaint.SetReadValue assigns readKey instead of readVal")
-
-	taint := primaryWrite("t1", "db.schema", "call")
-	taint.SetReadValue(true)
-	if !taint.IsReadValue() || taint.IsReadKey() {
-		t.Errorf("SetReadValue(true) -> (key=%v, value=%v), want (false, true)", taint.IsReadKey(), taint.IsReadValue())
-	}
-}
-
 func TestAbstractTaintComparisons(t *testing.T) {
 	a := primaryWrite("t21", "posts_db.post", "StorageService.StorePost.t21")
 	secondary := secondaryWrite("t21", "posts_db.post", "StorageService.StorePost.t21")

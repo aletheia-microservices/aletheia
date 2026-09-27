@@ -21,6 +21,11 @@ var BLUEPRINT_BACKEND_CALLS_QUEUE = []string{"Push", "Pop"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLDATABASE = []string{"GetCollection"}
 
 var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION = []string{"InsertOne", "FindOne", "DeleteOne", "DeleteMany", "FindMany", "UpdateOne", "UpdateMany", "Upsert", "ReplaceOne"}
+
+// TODO: support these NoSQLCollection calls:
+// UpsertID(ctx, id, document) is a write of document, InsertMany(ctx, documents) a write of each element,
+// and ReplaceMany(ctx, filter, replacements...) an update
+var BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION_UNSUPPORTED = []string{"InsertMany", "UpsertID", "ReplaceMany"}
 var BLUEPRINT_BACKEND_CALLS_NOSQLCURSOR = []string{"One", "All"}
 var BLUEPRINT_BACKEND_CALLS_RELATIONALDB = []string{"Exec", "Select", "Get"}
 var BLUEPRINT_BACKEND_CALLS_CACHE = []string{"Get", "Put", "Mget"}
@@ -482,6 +487,11 @@ func isBlueprintNoSQLCollectionCall(graph *ssagraph.SSAGraph, call *ssa.Call, ex
 	var opType common.DatabaseOperationType
 	if typeNamed, ok := extr.Type().(*types.Named); ok {
 		if typeNamed.String() == BLUEPRINT_BACKEND_PACKAGE+".NoSQLCollection" {
+			// TODO: handle unsupported calls instead of skipping them
+			if slices.Contains(BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION_UNSUPPORTED, call.Call.Method.Name()) {
+				logrus.WithField("graph", graph.String()).Warnf("[CALLS BLUEPRINT] [NOSQL] ignoring unsupported call: %s", call.String())
+				return "", "", -1, nil, false
+			}
 			if !slices.Contains(BLUEPRINT_BACKEND_CALLS_NOSQLCOLLECTION, call.Call.Method.Name()) {
 				return "", "", -1, nil, false
 			}
