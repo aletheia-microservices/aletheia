@@ -80,10 +80,6 @@ func TestMergeTaintsIgnoresSecondaryTaintsInTaintMode(t *testing.T) {
 }
 
 func TestMergeTaintsMapsGrandparentPath(t *testing.T) {
-	t.Skip("known bug: MergeTaints climbs upper paths with only the last path segment as sub path, so a taint on " +
-		"_obj.Creator.Username merged into an object with a primary taint on _obj is mapped from posts_db.post.Creator " +
-		"instead of posts_db.post.Creator.Username")
-
 	obj := newObject(map[string][]*abstractgraph.AbstractTaint{
 		"_obj":         {primaryWrite("t21", "posts_db.post", "c1")},
 		"_obj.Creator": {primaryWrite("t21", "posts_db.post.Creator", "c1")},

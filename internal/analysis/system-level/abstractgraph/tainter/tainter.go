@@ -2,6 +2,7 @@ package abstractgraphtainter
 
 import (
 	"slices"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 
@@ -122,15 +123,21 @@ func MergeTaints(obj *abstractgraph.AbstractObject, otherTaintsMap map[string][]
 					// are not exact matches such as, for example, arg-params, which is necessary for computing upper taints
 					// and we already extracted the selected taints (which also includes lower paths) prior to calling MergeTaints
 
-					// 1. explore all upper paths
-					var subpath string
-					var ok bool
-					for {
-						objpath, subpath, ok = utils.ExtractUpperPath(objpath)
-						if !ok {
-							break
-						}
-						mergeExistingTaintsWithNewTaints(obj, objpath, subpath, newTaint, taintMapping, mode, t)
+					// 1. explore all upper paths of objpath, from the closest one up to _obj: the EXISTING taints at
+					// upperPath are extended with pathBelowUpper (the rest of objpath) and mapped to the NEW taint
+					//
+					// e.g., NEW taint users_db.user.Username merged at objpath _obj.Creator.Username,
+					// with EXISTING taints posts_db.post at _obj and posts_db.post.Creator at _obj.Creator:
+					//   upperPath      pathBelowUpper      mapping
+					//   _obj.Creator   .Username           posts_db.post.Creator + .Username   -> users_db.user.Username
+					//   _obj           .Creator.Username   posts_db.post + .Creator.Username   -> users_db.user.Username
+					//
+					// both give posts_db.post.Creator.Username here, which the taint mapping stores once,
+					// but they can differ when upper paths have taints from different databases
+					for upperPath, _, ok := utils.ExtractUpperPath(objpath); ok; upperPath, _, ok = utils.ExtractUpperPath(upperPath) {
+						// e.g., objpath = _obj.Creator.Username, upperPath = _obj => pathBelowUpper = .Creator.Username
+						pathBelowUpper := strings.TrimPrefix(objpath, upperPath)
+						mergeExistingTaintsWithNewTaints(obj, upperPath, pathBelowUpper, newTaint, taintMapping, mode, t)
 					}
 				}
 			}
