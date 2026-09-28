@@ -9,6 +9,22 @@ For instructions on how to reproduce the experiments from the paper, see the [Al
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+  - [Integrity Violation Patterns](#integrity-violation-patterns)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+  - [Running Aletheia](#running-aletheia)
+  - [Reading the Output](#reading-the-output)
+    - [Suppressing Detection Warnings](#suppressing-detection-warnings)
+  - [Tutorial: Analyzing Your First Application (simpleshop)](#tutorial-analyzing-your-first-application-simpleshop)
+  - [Analyzing Your Own Application](#analyzing-your-own-application)
+- [Generating Diagrams](#generating-diagrams)
+- [Technical Details](#technical-details)
+- [Citation](#citation)
+
 ## Overview
 
 In microservice architectures, data is stored across heterogeneous systems, with data schemas partitioned and managed by separate services. Due to the complexity of microservices, it can be almost impossible for developers to have a comprehensive understanding of the entire system, making it challenging to reason about and maintain data integrity at the application level.
@@ -71,8 +87,11 @@ aletheia/
 ├── cmd/aletheia/          # CLI entry point (flags, printing results, saving eval metrics)
 ├── internal/              # Packages that implement Aletheia (see below)
 ├── scripts/
-│   ├── gen-registry/      # Generates the app registry from registry/*.yaml
-│   └── verify/            # Compares warning counts of every app against a baseline
+│   ├── app-diagram/       # Draws the service dependency graph of an app (see scripts/app-diagram/README.md)
+│   ├── gen-registry/      # Generates the app registry from registry/*.yaml (see scripts/gen-registry/README.md)
+│   ├── schema-diagram/    # Draws the tables, fields and foreign keys of an app (see scripts/schema-diagram/README.md)
+│   └── verify/            # Compares warning counts of every app against a baseline (see scripts/verify/README.md)
+|
 ├── registry/              # Registered applications (apps.yaml)
 ├── config/                # Per-application detection configs that suppress warnings
 ├── tests/                 # Unit and integration tests (see tests/README.md)
@@ -91,7 +110,7 @@ internal/
 │   ├── service-level/              # Implementation for intra-service analysis
 │   │   └── ssagraph/               # SSA graph construction and taint propagation within each service
 |   |
-│   └── system-level/               # Implementation for intra-service analysis
+│   └── system-level/               # Implementation for inter-service analysis
 │       ├── abstractgraph/          # Abstract call graph construction and analysis across services
 │       └── detection/              # Detection for each pattern (RI-1, RI-2, RI-3, EI-1, Un-1)
 |
@@ -115,12 +134,13 @@ After analyzing an application, the output will be stored in `output/{app}` acco
 output/{app}/
 ├── app.json                            # High-level dependencies with services metadata (packages, fields, methods, etc.) and databases
 ├── schema.json                         # Extracted data schema
-└── analysis/                           # Results for each analyzed pattern
+├── analysis/                           # Results for each analyzed pattern
 │   ├── foreign-key-cascade.txt         # RI-1 pattern
 │   ├── foreign-key-concurrency.txt     # RI-2 pattern
 │   ├── foreign-key-coordination.txt    # RI-3 pattern
 │   ├── primary-key-coordination.txt    # EI-1 pattern
 │   └── uniqueness-concurrency.txt      # Un-1 pattern
+└── diagrams/                           # App and schema diagrams, only if generated (see Generating Diagrams)
 ```
 
 ## Requirements
@@ -448,6 +468,23 @@ make registry
 ```
 
 **7. Run the analysis and review the warnings.** Run `./bin/aletheia {app}`, then see [Reading the Output](#reading-the-output) to interpret the warnings and [Suppressing Detection Warnings](#suppressing-detection-warnings) to ignore false positives.
+
+## Generating Diagrams
+
+Two scripts draw diagrams of an analyzed app from the files in `output/{app}/` and save them in `output/{app}/diagrams/`:
+
+- **App diagram** ([scripts/app-diagram/README.md](./scripts/app-diagram/README.md)): the services and databases of the app and the dependencies between them, drawn from `app.json`.
+- **Schema diagram** ([scripts/schema-diagram/README.md](./scripts/schema-diagram/README.md)): the tables of each database with their fields and keys, and the inferred foreign keys between them, drawn from `schema.json`.
+
+Analyze the app first, then run the scripts from the repository root:
+
+```zsh
+./bin/aletheia postnotification
+go run ./scripts/app-diagram postnotification      # writes output/postnotification/diagrams/app.png
+go run ./scripts/schema-diagram postnotification   # writes output/postnotification/diagrams/schema.png
+```
+
+Both scripts need [Graphviz](https://graphviz.org/download/) to render the image. Without it, they only write the `.dot` file. See each README for an example diagram and the other options, such as SVG or PDF output, the image resolution, and drawing several apps at once.
 
 ## Technical Details
 
