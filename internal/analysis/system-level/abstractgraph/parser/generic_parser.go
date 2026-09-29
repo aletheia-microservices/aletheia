@@ -3,59 +3,43 @@ package abstractgraphparser
 import (
 	"fmt"
 
-	"github.com/aletheia-microservices/aletheia/internal/analysis/common"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
 	abstractgraphinput "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/input"
-	abstractgraphtainter "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/tainter"
-	"github.com/aletheia-microservices/aletheia/internal/app/backends"
 )
 
-// ParseFile loads calls from YAML and adds their edges from source to graph.
-// Service definitions and entrypoint edges can be supplied by the caller independently.
-func ParseFile(graph *abstractgraph.AbstractCallGraph, source *abstractgraph.AbstractNode, path string) error {
+// ParseFile loads an input model from a YAML file and parses it into graph (see ParseInput)
+func ParseFile(graph *abstractgraph.AbstractCallGraph, path string) error {
 	model, err := abstractgraphinput.LoadInputModel(path)
 	if err != nil {
 		return err
 	}
-	return ParseInput(graph, source, model)
+	return ParseInput(graph, model)
 }
 
-// ParseInput builds call edges without depending on SSA or a source language.
-// source must already belong to graph. All taint call references must occur in model.
-func ParseInput(graph *abstractgraph.AbstractCallGraph, source *abstractgraph.AbstractNode, model *abstractgraphinput.InputModel) error {
-	if graph == nil || source == nil || graph.GetNodeByNameIfExists(source.GetName()) != source {
-		return fmt.Errorf("source must belong to the abstract graph")
+// ParseInput is the language-independent equivalent of Parse: it builds graph from the functions
+// of model, starting from each of its entrypoints. The graph is not mutated if model is invalid
+func ParseInput(graph *abstractgraph.AbstractCallGraph, model *abstractgraphinput.InputModel) error {
+	if graph == nil || graph.GetApp() == nil {
+		return fmt.Errorf("abstract graph must belong to an app")
 	}
-	calls, err := model.Index()
+	// validate the model and index its functions by func_short_path and calls by call_id
+	index, err := model.Index()
 	if err != nil {
 		return err
 	}
-	// Check external database references before mutating the graph.
-	for _, call := range model.Calls {
-		if db := call.DatabaseCall; db != nil {
-			if graph.GetApp() == nil || !graph.GetApp().HasDatabase(db.Database) {
-				return fmt.Errorf("call %q: database %q not found", call.CallID, db.Database)
+	// check external database references before mutating the graph
+	for _, fn := range model.Functions {
+		for _, call := range fn.Calls {
+			if db := call.DatabaseCall; db != nil && !graph.GetApp().HasDatabase(db.Database) {
+				return fmt.Errorf("function %q: call %q: database %q not found", fn.FuncShortPath, call.CallID, db.Database)
 			}
 		}
 	}
-	for _, call := range model.Calls {
-		parseInputCall(graph, source, call, calls)
+	// build the graph starting from each entrypoint
+	for _, entrypoint := range model.Entrypoints {
+		parseInputFunction(graph, index, entrypoint, true)
 	}
 	return nil
-}
-
-func inputDatabaseNode(graph *abstractgraph.AbstractCallGraph, db *abstractgraphinput.DatabaseCall) *abstractgraph.AbstractNode {
-	path := db.Database + "." + db.Schema
-	node := graph.GetNodeByNameIfExists(path)
-	if node == nil {
-		node = abstractgraph.NewAbstractNode(path, abstractgraph.NODE_DATABASE, "", "", db.Database, db.Schema)
-		graph.AddNode(path, node)
-	}
-	database := graph.GetApp().GetDatabaseByName(db.Database)
-	if !database.HasSchema(db.Schema) {
-		database.AddSchema(backends.NewSchema(db.Schema, database))
-	}
-	return node
 }
 
 func inputObject(graph *abstractgraph.AbstractCallGraph, node *abstractgraphinput.Node, calls map[string]*abstractgraphinput.Call) *abstractgraph.AbstractObject {
@@ -63,16 +47,23 @@ func inputObject(graph *abstractgraph.AbstractCallGraph, node *abstractgraphinpu
 	traces := make(map[string][]*abstractgraph.AbstractTrace)
 	for path, list := range node.Taints {
 		for _, taint := range list {
+			// timestamp of the call that originated the taint, prefixed with the caller's timestamp (if any)
 			call := calls[taint.CallID]
 			ts := call.CallTS
 			if taint.CallerT != "" {
 				ts = taint.CallerT + "." + ts
 			}
+			// database taints become abstract taints (and the database node is created if needed)
 			if taint.TaintType == abstractgraphinput.TaintDatabase {
-				inputDatabaseNode(graph, call.DatabaseCall)
+				getOrCreateDatabaseNode(graph, call.DatabaseCall.Database, call.DatabaseCall.Schema)
 				op, _ := abstractgraphinput.OperationType(call.DatabaseCall.OperationType)
-				taints[path] = append(taints[path], abstractgraph.NewAbstractTaint(ts, taint.Path, taint.CallID, op, true, false, taint.DatabaseTaint.ReadKey, taint.DatabaseTaint.ReadValue))
+				var read abstractgraphinput.DatabaseTaint
+				if taint.DatabaseTaint != nil {
+					read = *taint.DatabaseTaint
+				}
+				taints[path] = append(taints[path], abstractgraph.NewAbstractTaint(ts, taint.Path, taint.CallID, op, true, false, read.ReadKey, read.ReadValue))
 			} else {
+				// service taints become abstract traces
 				traces[path] = append(traces[path], abstractgraph.NewAbstractTrace(ts, taint.Path, taint.CallID))
 			}
 		}
@@ -80,37 +71,63 @@ func inputObject(graph *abstractgraph.AbstractCallGraph, node *abstractgraphinpu
 	return abstractgraph.NewAbstractObject(node.Name, taints, traces)
 }
 
-func parseInputCall(graph *abstractgraph.AbstractCallGraph, source *abstractgraph.AbstractNode, call *abstractgraphinput.Call, calls map[string]*abstractgraphinput.Call) {
-	var edge *abstractgraph.AbstractEdge
+func inputObjects(graph *abstractgraph.AbstractCallGraph, nodes []*abstractgraphinput.Node, calls map[string]*abstractgraphinput.Call) []*abstractgraph.AbstractObject {
+	var objs []*abstractgraph.AbstractObject
+	for _, node := range nodes {
+		objs = append(objs, inputObject(graph, node, calls))
+	}
+	return objs
+}
+
+func inputParams(graph *abstractgraph.AbstractCallGraph, index *abstractgraphinput.Index, funcShortPath string) func() []*abstractgraph.AbstractObject {
+	return func() []*abstractgraph.AbstractObject {
+		return inputObjects(graph, index.Functions[funcShortPath].Params, index.Calls[funcShortPath])
+	}
+}
+
+func parseInputFunction(graph *abstractgraph.AbstractCallGraph, index *abstractgraphinput.Index, funcShortPath string, entrypoint bool) {
+	fn := index.Functions[funcShortPath]
+	calls := index.Calls[funcShortPath]
+	// get or create the node of the function, and skip it if it was already parsed
+	node, ok := visitFunction(graph, fn.Service, fn.Method, funcShortPath, entrypoint, inputParams(graph, index, funcShortPath))
+	if !ok {
+		return
+	}
+
+	// add the returns of the function (returns are optional in input models), merging the objects of all its return statements
+	if len(fn.Returns) > 0 {
+		var retsLst [][]*abstractgraph.AbstractObject
+		for _, rets := range fn.Returns {
+			retsLst = append(retsLst, inputObjects(graph, rets, calls))
+		}
+		addReturns(node, retsLst)
+	}
+
+	// add an edge for each call of the function
+	for _, call := range fn.Calls {
+		parseInputCall(graph, index, node, call, calls)
+	}
+	// then, recursively parse the functions called by RPC
+	for _, call := range fn.Calls {
+		if call.ServiceCall != nil {
+			parseInputFunction(graph, index, call.ServiceCall.FuncShortPath, false)
+		}
+	}
+}
+
+func parseInputCall(graph *abstractgraph.AbstractCallGraph, index *abstractgraphinput.Index, node *abstractgraph.AbstractNode, call *abstractgraphinput.Call, calls map[string]*abstractgraphinput.Call) {
+	// parse if service call
 	if svc := call.ServiceCall; svc != nil {
-		name := svc.Service + "." + svc.Method
-		target := graph.GetNodeByNameIfExists(name)
-		if target == nil {
-			target = abstractgraph.NewAbstractNode(name, abstractgraph.NODE_SERVICE, svc.Service, svc.Method, "", "")
-			graph.AddNode(name, target)
-		}
-		edge = abstractgraph.NewAbstractEdge(call.CallTS, call.CallID, svc.Method, source, target, common.OP_UNDEFINED, abstractgraph.EDGE_SERVICE_RPC)
-		for _, ret := range svc.Returns {
-			edge.AddReturn(inputObject(graph, ret, calls))
-		}
-		graph.IncrRPCs()
-	} else {
-		db := call.DatabaseCall
-		target := inputDatabaseNode(graph, db)
-		op, _ := abstractgraphinput.OperationType(db.OperationType)
-		edge = abstractgraph.NewAbstractEdge(call.CallTS, call.CallID, db.Method, source, target, op, abstractgraph.EDGE_DATABASE_CALL)
-		graph.IncrDBAccesses()
+		toNode := getOrCreateServiceNode(graph, svc.Service, svc.Method, inputParams(graph, index, svc.FuncShortPath))
+		args := inputObjects(graph, call.Arguments, calls)
+		rets := inputObjects(graph, svc.Returns, calls)
+		addServiceCallEdge(graph, node, toNode, call.CallTS, call.CallID, svc.Method, args, rets)
+		return
 	}
-	for _, arg := range call.Arguments {
-		edge.AddArgument(inputObject(graph, arg, calls))
-	}
-	if call.CallType == abstractgraphinput.CallTypeDB {
-		registerDatabaseFields(graph, edge.GetArguments())
-		for i, param := range edge.GetToNode().GetParams() {
-			if i < len(edge.GetArguments()) {
-				abstractgraphtainter.MergeTaints(param, edge.GetArgumentAt(i).GetPrimaryTaints(), nil, abstractgraphtainter.MERGE_MODE_PARSE, "", false)
-			}
-		}
-	}
-	graph.AddEdge(edge)
+	// or parse if database call
+	db := call.DatabaseCall
+	toNode := getOrCreateDatabaseNode(graph, db.Database, db.Schema)
+	op, _ := abstractgraphinput.OperationType(db.OperationType)
+	args := inputObjects(graph, call.Arguments, calls)
+	addDatabaseCallEdge(graph, node, toNode, call.CallTS, call.CallID, db.Method, op, args)
 }

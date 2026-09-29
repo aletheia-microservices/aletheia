@@ -1,0 +1,135 @@
+# Backend of tinyshop, a small shop, combined with frontend.yaml (see ../README.md for the format): the services
+# called by the frontend, which store products in product_db and the items of each cart in cart_db
+
+app: tinyshop
+
+databases:
+  - name: product_db
+    type: NoSQLDatabase
+  - name: cart_db
+    type: NoSQLDatabase
+
+# the backend services can also be called directly by clients, besides the frontend
+# entrypoints:
+#  - tinyshop.ProductService.GetProduct
+#  - tinyshop.ProductService.DeleteProduct
+#  - tinyshop.CartService.AddItem
+
+functions:
+  # func (s *ProductServiceImpl) GetProduct(ctx context.Context, productID string) (Product, error) {
+  #     var product Product
+  #     collection, _ := s.productDb.GetCollection(ctx, "product_db", "product")
+  #     query := bson.D{{Key: "ProductID", Value: productID}}
+  #     result, err := collection.FindOne(ctx, query)                    // t4
+  #     result.One(ctx, &product)
+  #     return product, err
+  # }
+  - func_short_path: tinyshop.ProductService.GetProduct
+    service: ProductService
+    method: GetProduct
+    params:
+      - name: productID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: ProductService.GetProduct.FindOne, path: product_db.product.ProductID, database_taint: {read_key: true}}
+    returns:
+      - - name: product
+          taints:
+            _obj:
+              - {taint_type: TAINT_DATABASE, call_id: ProductService.GetProduct.FindOne, path: product_db.product, database_taint: {read_value: true}}
+        - name: err
+    calls:
+      - call_id: ProductService.GetProduct.FindOne
+        call_ts: t4
+        call_type: DB
+        # the key and value of the query filter, and the object that holds the result
+        arguments:
+          - name: key
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: ProductService.GetProduct.FindOne, path: product_db.product.ProductID, database_taint: {read_key: true}}
+          - name: productID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: ProductService.GetProduct.FindOne, path: product_db.product.ProductID, database_taint: {read_key: true}}
+          - name: product
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: ProductService.GetProduct.FindOne, path: product_db.product, database_taint: {read_value: true}}
+        database_call:
+          operation_type: read
+          database: product_db
+          schema: product
+          method: FindOne
+
+  # func (s *ProductServiceImpl) DeleteProduct(ctx context.Context, productID string) error {
+  #     collection, _ := s.productDb.GetCollection(ctx, "product_db", "product")
+  #     query := bson.D{{Key: "ProductID", Value: productID}}
+  #     return collection.DeleteOne(ctx, query)                          // t3
+  # }
+  - func_short_path: tinyshop.ProductService.DeleteProduct
+    service: ProductService
+    method: DeleteProduct
+    params:
+      - name: productID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: ProductService.DeleteProduct.DeleteOne, path: product_db.product.ProductID, database_taint: {read_key: true}}
+    returns:
+      - - name: err
+    calls:
+      - call_id: ProductService.DeleteProduct.DeleteOne
+        call_ts: t3
+        call_type: DB
+        arguments:
+          - name: key
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: ProductService.DeleteProduct.DeleteOne, path: product_db.product.ProductID, database_taint: {read_key: true}}
+          - name: productID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: ProductService.DeleteProduct.DeleteOne, path: product_db.product.ProductID, database_taint: {read_key: true}}
+        database_call:
+          operation_type: delete
+          database: product_db
+          schema: product
+          method: DeleteOne
+
+  # func (s *CartServiceImpl) AddItem(ctx context.Context, userID string, productID string) error {
+  #     item := CartItem{UserID: userID, ProductID: productID}
+  #     collection, _ := s.cartDb.GetCollection(ctx, "cart_db", "cart")
+  #     return collection.InsertOne(ctx, item)                           // t4
+  # }
+  - func_short_path: tinyshop.CartService.AddItem
+    service: CartService
+    method: AddItem
+    params:
+      - name: userID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: CartService.AddItem.InsertOne, path: cart_db.cart.UserID}
+      - name: productID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: CartService.AddItem.InsertOne, path: cart_db.cart.ProductID}
+    returns:
+      - - name: err
+    calls:
+      - call_id: CartService.AddItem.InsertOne
+        call_ts: t4
+        call_type: DB
+        arguments:
+          - name: item
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: CartService.AddItem.InsertOne, path: cart_db.cart}
+              _obj.UserID:
+                - {taint_type: TAINT_DATABASE, call_id: CartService.AddItem.InsertOne, path: cart_db.cart.UserID}
+              _obj.ProductID:
+                - {taint_type: TAINT_DATABASE, call_id: CartService.AddItem.InsertOne, path: cart_db.cart.ProductID}
+        database_call:
+          operation_type: write
+          database: cart_db
+          schema: cart
+          method: InsertOne

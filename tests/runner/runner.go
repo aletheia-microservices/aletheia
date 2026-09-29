@@ -46,6 +46,18 @@ func GetWithConfig(t *testing.T, appname string, configPath string) *Analysis {
 	return a
 }
 
+// GetFromInput runs the pipeline for the app described by the input model at inputPath (same as the
+// -input flag), which is fast enough to also run in -short mode since it skips Blueprint and SSA
+func GetFromInput(t *testing.T, inputPath string) *Analysis {
+	t.Helper()
+	logrus.SetLevel(logrus.ErrorLevel)
+	a, err := pipeline.Run(pipeline.Options{InputPath: inputPath})
+	if err != nil {
+		t.Fatalf("running pipeline for %s: %v", inputPath, err)
+	}
+	return a
+}
+
 // runAnalysis runs the same pipeline as the CLI without writing to output/
 func runAnalysis(t *testing.T, appname string, configPath string) *Analysis {
 	t.Helper()

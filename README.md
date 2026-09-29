@@ -21,6 +21,7 @@ For instructions on how to reproduce the experiments from the paper, see the [Al
     - [Suppressing Detection Warnings](#suppressing-detection-warnings)
   - [Tutorial: Analyzing Your First Application (simpleshop)](#tutorial-analyzing-your-first-application-simpleshop)
   - [Analyzing Your Own Application](#analyzing-your-own-application)
+  - [Analyzing an Application from an Input File](#analyzing-an-application-from-an-input-file)
 - [Generating Diagrams](#generating-diagrams)
 - [Technical Details](#technical-details)
 - [Citation](#citation)
@@ -94,13 +95,14 @@ aletheia/
 |
 ├── registry/              # Registered applications (apps.yaml)
 ├── config/                # Per-application detection configs that suppress warnings
+├── input-models/          # Input models that describe applications without Blueprint, one folder per app (see input-models/README.md)
 ├── tests/                 # Unit and integration tests (see tests/README.md)
 ├── docs/                  # Technical details and assumptions
 ├── blueprint/             # Blueprint framework and example applications (git submodule)
 └── Makefile
 ```
 
-The `internal/` directory is organized as follows:
+The `internal/` directory contains **the main implementation of Aletheia** and is organized as follows:
 
 ```
 internal/
@@ -468,6 +470,16 @@ make registry
 ```
 
 **7. Run the analysis and review the warnings.** Run `./bin/aletheia {app}`, then see [Reading the Output](#reading-the-output) to interpret the warnings and [Suppressing Detection Warnings](#suppressing-detection-warnings) to ignore false positives.
+
+### Analyzing an Application from an Input File
+
+Instead of a Blueprint application, Aletheia can analyze an application described by a YAML input model with its databases, service methods and calls (see [input-models/README.md](./input-models/README.md) for the format). This skips Blueprint and the SSA analysis, so the application does not need to be registered or written in Go. Each app has its own folder in `input-models/`, usually with a single input model (or several that are combined):
+
+```zsh
+./bin/aletheia --input input-models/postnotification
+```
+
+The results are saved in `output/{app}/`, where `{app}` is the name given in the input model.
 
 ## Generating Diagrams
 

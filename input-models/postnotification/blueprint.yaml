@@ -1,0 +1,331 @@
+# Input equivalent of the postnotification app in blueprint/examples/postnotification:
+#
+#   UploadService.UploadPost  --RPC-->  StorageService.StorePost  --write-->  posts_db.post
+#                             --push-->  notifications_queue.notification
+#   NotifyService.Run         --pop--->  notifications_queue.notification
+#                             --RPC-->  StorageService.ReadPost   --read--->  posts_db.post
+#   UploadService.DeletePost  --RPC-->  StorageService.DeletePost --delete->  posts_db.post
+#
+# Taints are what the SSA analysis infers for each object: a database taint marks an object that holds
+# (or is written to) a database field; a service taint marks an object passed to (or returned by) another
+# service. See ../README.md for the format
+#
+# Run it from the repository root with:
+#   go run ./cmd/aletheia -input input-models/postnotification
+
+app: postnotification_example
+
+# the backends of the wiring (blueprint/examples/postnotification/wiring/specs)
+databases:
+  - name: posts_db
+    type: NoSQLDatabase
+  - name: notifications_queue
+    type: Queue
+
+# the entrypoints of the app: the methods of the frontend (UploadService) and of the services that run
+# on startup (NotifyService.Run)
+entrypoints:
+  - postnotification.UploadService.UploadPost
+  - postnotification.UploadService.DeletePost
+  - postnotification.NotifyService.Run
+
+functions:
+  # func (u *UploadServiceImpl) UploadPost(ctx context.Context, username string, text string) (int64, error) {
+  #     reqID := rand.Int63()
+  #     postID, _ := u.storageService.StorePost(ctx, reqID, text)       // t3
+  #     message := Message{ReqID: reqID, PostID: postID}
+  #     _, err := u.notificationsQueue.Push(ctx, message)               // t13
+  #     if err != nil {
+  #         return 0, err
+  #     }
+  #     return postID, nil
+  # }
+  - func_short_path: postnotification.UploadService.UploadPost
+    service: UploadService
+    method: UploadPost
+    params:
+      - name: username
+      - name: text
+        taints:
+          _obj:
+            - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.text}
+    # one list per return statement: the objects of each position are merged
+    returns:
+      - - name: postID
+        - name: err
+      - - name: postID
+          taints:
+            _obj:
+              - {taint_type: TAINT_DATABASE, call_id: UploadService.UploadPost.Push, path: notifications_queue.notification.PostID}
+              - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.postID}
+        - name: err
+    calls:
+      - call_id: UploadService.UploadPost.StorePost
+        call_ts: t3
+        call_type: RPC
+        arguments:
+          - name: reqID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: UploadService.UploadPost.Push, path: notifications_queue.notification.ReqID}
+                - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.reqID}
+          - name: text
+            taints:
+              _obj:
+                - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.text}
+        service_call:
+          service: StorageService
+          method: StorePost
+          func_short_path: postnotification.StorageService.StorePost
+          returns:
+            - name: postID
+              taints:
+                _obj:
+                  - {taint_type: TAINT_DATABASE, call_id: UploadService.UploadPost.Push, path: notifications_queue.notification.PostID}
+                  - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.postID}
+            - name: err
+              taints:
+                _obj:
+                  - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.err}
+      - call_id: UploadService.UploadPost.Push
+        call_ts: t13
+        call_type: DB
+        arguments:
+          - name: message
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: UploadService.UploadPost.Push, path: notifications_queue.notification}
+              _obj.PostID:
+                - {taint_type: TAINT_DATABASE, call_id: UploadService.UploadPost.Push, path: notifications_queue.notification.PostID}
+                - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.postID}
+              _obj.ReqID:
+                - {taint_type: TAINT_DATABASE, call_id: UploadService.UploadPost.Push, path: notifications_queue.notification.ReqID}
+                - {taint_type: TAINT_SERVICE, call_id: UploadService.UploadPost.StorePost, path: StorageService.StorePost.reqID}
+        database_call:
+          operation_type: write
+          database: notifications_queue
+          schema: notification
+          method: Push
+
+  # func (u *UploadServiceImpl) DeletePost(ctx context.Context, postID int64) error {
+  #     return u.storageService.DeletePost(ctx, postID)                 // t2
+  # }
+  - func_short_path: postnotification.UploadService.DeletePost
+    service: UploadService
+    method: DeletePost
+    params:
+      - name: postID
+        taints:
+          _obj:
+            - {taint_type: TAINT_SERVICE, call_id: UploadService.DeletePost.DeletePost, path: StorageService.DeletePost.postID}
+    returns:
+      - - name: err
+          taints:
+            _obj:
+              - {taint_type: TAINT_SERVICE, call_id: UploadService.DeletePost.DeletePost, path: StorageService.DeletePost.err}
+    calls:
+      - call_id: UploadService.DeletePost.DeletePost
+        call_ts: t2
+        call_type: RPC
+        arguments:
+          - name: postID
+            taints:
+              _obj:
+                - {taint_type: TAINT_SERVICE, call_id: UploadService.DeletePost.DeletePost, path: StorageService.DeletePost.postID}
+        service_call:
+          service: StorageService
+          method: DeletePost
+          func_short_path: postnotification.StorageService.DeletePost
+          returns:
+            - name: err
+              taints:
+                _obj:
+                  - {taint_type: TAINT_SERVICE, call_id: UploadService.DeletePost.DeletePost, path: StorageService.DeletePost.err}
+
+  # func (n *NotifyServiceImpl) Run(ctx context.Context) error {
+  #     for {
+  #         var workerMessage Message
+  #         ok, err := n.notificationsQueue.Pop(ctx, &workerMessage)       // t8
+  #         ...
+  #         n.storageService.ReadPost(ctx, workerMessage.ReqID, workerMessage.PostID) // t20
+  #     }
+  # }
+  - func_short_path: postnotification.NotifyService.Run
+    service: NotifyService
+    method: Run
+    returns:
+      - - name: err
+    calls:
+      - call_id: NotifyService.Run.Pop
+        call_ts: t8
+        call_type: DB
+        arguments:
+          - name: workerMessage
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: NotifyService.Run.Pop, path: notifications_queue.notification, database_taint: {read_value: true}}
+              _obj.PostID:
+                - {taint_type: TAINT_DATABASE, call_id: NotifyService.Run.Pop, path: notifications_queue.notification.PostID, database_taint: {read_value: true}}
+                - {taint_type: TAINT_SERVICE, call_id: NotifyService.Run.ReadPost, path: StorageService.ReadPost.postID}
+              _obj.ReqID:
+                - {taint_type: TAINT_DATABASE, call_id: NotifyService.Run.Pop, path: notifications_queue.notification.ReqID, database_taint: {read_value: true}}
+                - {taint_type: TAINT_SERVICE, call_id: NotifyService.Run.ReadPost, path: StorageService.ReadPost.reqID}
+        database_call:
+          operation_type: read
+          database: notifications_queue
+          schema: notification
+          method: Pop
+      - call_id: NotifyService.Run.ReadPost
+        call_ts: t20
+        call_type: RPC
+        arguments:
+          - name: reqID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: NotifyService.Run.Pop, path: notifications_queue.notification.ReqID, database_taint: {read_value: true}}
+                - {taint_type: TAINT_SERVICE, call_id: NotifyService.Run.ReadPost, path: StorageService.ReadPost.reqID}
+          - name: postID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: NotifyService.Run.Pop, path: notifications_queue.notification.PostID, database_taint: {read_value: true}}
+                - {taint_type: TAINT_SERVICE, call_id: NotifyService.Run.ReadPost, path: StorageService.ReadPost.postID}
+        service_call:
+          service: StorageService
+          method: ReadPost
+          func_short_path: postnotification.StorageService.ReadPost
+
+  # func (s *StorageServiceImpl) StorePost(ctx context.Context, reqID int64, text string) (int64, error) {
+  #     post := &Post{ReqID: reqID, PostID: rand.Int63(), Text: text, Mentions: ..., Timestamp: ..., Creator: ...}
+  #     collection, _ := s.postsDb.GetCollection(ctx, "posts_db", "post")
+  #     err = collection.InsertOne(ctx, post)                             // t21
+  #     return post.PostID, err
+  # }
+  - func_short_path: postnotification.StorageService.StorePost
+    service: StorageService
+    method: StorePost
+    params:
+      - name: reqID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.ReqID}
+      - name: text
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.Text}
+    returns:
+      - - name: postID
+          taints:
+            _obj:
+              - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.PostID}
+        - name: err
+    calls:
+      - call_id: StorageService.StorePost.InsertOne
+        call_ts: t21
+        call_type: DB
+        arguments:
+          - name: post
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post}
+              _obj.ReqID:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.ReqID}
+              _obj.PostID:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.PostID}
+              _obj.Text:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.Text}
+              _obj.Mentions:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.Mentions}
+              _obj.Mentions[*]:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: "posts_db.post.Mentions[*]"}
+              _obj.Timestamp:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.Timestamp}
+              _obj.Creator:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.Creator}
+              _obj.Creator.Username:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.StorePost.InsertOne, path: posts_db.post.Creator.Username}
+        database_call:
+          operation_type: write
+          database: posts_db
+          schema: post
+          method: InsertOne
+
+  # func (s *StorageServiceImpl) ReadPost(ctx context.Context, reqID int64, postID int64) (Post, error) {
+  #     var post Post
+  #     collection, _ := s.postsDb.GetCollection(ctx, "posts_db", "post")
+  #     query := bson.D{{Key: "PostID", Value: postID}}
+  #     result, err := collection.FindOne(ctx, query)                     // t14
+  #     result.One(ctx, &post)
+  #     return post, err
+  # }
+  - func_short_path: postnotification.StorageService.ReadPost
+    service: StorageService
+    method: ReadPost
+    params:
+      - name: reqID
+      - name: postID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: StorageService.ReadPost.FindOne, path: posts_db.post.PostID, database_taint: {read_key: true}}
+    returns:
+      - - name: post
+          taints:
+            _obj:
+              - {taint_type: TAINT_DATABASE, call_id: StorageService.ReadPost.FindOne, path: posts_db.post, database_taint: {read_value: true}}
+        - name: err
+    calls:
+      - call_id: StorageService.ReadPost.FindOne
+        call_ts: t14
+        call_type: DB
+        # the key and value of the query filter, and the object that holds the result
+        arguments:
+          - name: key
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.ReadPost.FindOne, path: posts_db.post.PostID, database_taint: {read_key: true}}
+          - name: postID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.ReadPost.FindOne, path: posts_db.post.PostID, database_taint: {read_key: true}}
+          - name: post
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.ReadPost.FindOne, path: posts_db.post, database_taint: {read_value: true}}
+        database_call:
+          operation_type: read
+          database: posts_db
+          schema: post
+          method: FindOne
+
+  # func (s *StorageServiceImpl) DeletePost(ctx context.Context, postID int64) error {
+  #     collection, _ := s.postsDb.GetCollection(ctx, "posts_db", "post")
+  #     query := bson.D{{Key: "PostID", Value: postID}}
+  #     return collection.DeleteOne(ctx, query)                           // t12
+  # }
+  - func_short_path: postnotification.StorageService.DeletePost
+    service: StorageService
+    method: DeletePost
+    params:
+      - name: postID
+        taints:
+          _obj:
+            - {taint_type: TAINT_DATABASE, call_id: StorageService.DeletePost.DeleteOne, path: posts_db.post.PostID, database_taint: {read_key: true}}
+    returns:
+      - - name: err
+    calls:
+      - call_id: StorageService.DeletePost.DeleteOne
+        call_ts: t12
+        call_type: DB
+        arguments:
+          - name: key
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.DeletePost.DeleteOne, path: posts_db.post.PostID, database_taint: {read_key: true}}
+          - name: postID
+            taints:
+              _obj:
+                - {taint_type: TAINT_DATABASE, call_id: StorageService.DeletePost.DeleteOne, path: posts_db.post.PostID, database_taint: {read_key: true}}
+        database_call:
+          operation_type: delete
+          database: posts_db
+          schema: post
+          method: DeleteOne

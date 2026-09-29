@@ -1,0 +1,126 @@
+# Frontend of tinyshop, a small shop, combined with backend.yaml (see ../README.md for the format):
+#
+#   Frontend.AddToCart      --RPC-->  ProductService.GetProduct     --read--->  product_db.product
+#                           --RPC-->  CartService.AddItem           --write-->  cart_db.cart
+#   Frontend.DeleteProduct  --RPC-->  ProductService.DeleteProduct  --delete->  product_db.product
+#
+# The frontend only calls other services, which are described in backend.yaml, so this input model is
+# only valid when combined with it. Run it from the repository root with:
+#   go run ./cmd/aletheia -input input-models/tinyshop
+#
+# Since AddToCart passes the ProductID read from product_db to the cart, Aletheia infers
+#   FOREIGN_KEY cart_db.cart.ProductID REFERENCES product_db.product.ProductID
+# and warns that DeleteProduct leaves the cart items of the deleted product (RI-1: absence of cascading
+# deletes) and can delete the product while AddToCart adds it to a cart (RI-2: concurrent operations)
+
+app: tinyshop
+
+entrypoints:
+  - tinyshop.Frontend.AddToCart
+  - tinyshop.Frontend.DeleteProduct
+
+functions:
+  # func (f *FrontendImpl) AddToCart(ctx context.Context, userID string, productID string) error {
+  #     product, err := f.productService.GetProduct(ctx, productID)      // t2
+  #     return f.cartService.AddItem(ctx, userID, product.ProductID)      // t5
+  # }
+  - func_short_path: tinyshop.Frontend.AddToCart
+    service: Frontend
+    method: AddToCart
+    params:
+      - name: userID
+        taints:
+          _obj:
+            - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.AddItem, path: CartService.AddItem.userID}
+      - name: productID
+        taints:
+          _obj:
+            - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.GetProduct, path: ProductService.GetProduct.productID}
+    returns:
+      - - name: err
+          taints:
+            _obj:
+              - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.AddItem, path: CartService.AddItem.err}
+    calls:
+      - call_id: Frontend.AddToCart.GetProduct
+        call_ts: t2
+        call_type: RPC
+        arguments:
+          - name: productID
+            taints:
+              _obj:
+                - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.GetProduct, path: ProductService.GetProduct.productID}
+        service_call:
+          service: ProductService
+          method: GetProduct
+          func_short_path: tinyshop.ProductService.GetProduct
+          returns:
+            # product.ProductID is returned by GetProduct and then passed to AddItem
+            - name: product
+              taints:
+                _obj:
+                  - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.GetProduct, path: ProductService.GetProduct.product}
+                _obj.ProductID:
+                  - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.GetProduct, path: ProductService.GetProduct.product.ProductID}
+                  - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.AddItem, path: CartService.AddItem.productID}
+            - name: err
+              taints:
+                _obj:
+                  - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.GetProduct, path: ProductService.GetProduct.err}
+      - call_id: Frontend.AddToCart.AddItem
+        call_ts: t5
+        call_type: RPC
+        arguments:
+          - name: userID
+            taints:
+              _obj:
+                - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.AddItem, path: CartService.AddItem.userID}
+          - name: productID
+            taints:
+              _obj:
+                - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.AddItem, path: CartService.AddItem.productID}
+                - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.GetProduct, path: ProductService.GetProduct.product.ProductID}
+        service_call:
+          service: CartService
+          method: AddItem
+          func_short_path: tinyshop.CartService.AddItem
+          returns:
+            - name: err
+              taints:
+                _obj:
+                  - {taint_type: TAINT_SERVICE, call_id: Frontend.AddToCart.AddItem, path: CartService.AddItem.err}
+
+  # func (f *FrontendImpl) DeleteProduct(ctx context.Context, productID string) error {
+  #     return f.productService.DeleteProduct(ctx, productID)             // t1
+  # }
+  - func_short_path: tinyshop.Frontend.DeleteProduct
+    service: Frontend
+    method: DeleteProduct
+    params:
+      - name: productID
+        taints:
+          _obj:
+            - {taint_type: TAINT_SERVICE, call_id: Frontend.DeleteProduct.DeleteProduct, path: ProductService.DeleteProduct.productID}
+    returns:
+      - - name: err
+          taints:
+            _obj:
+              - {taint_type: TAINT_SERVICE, call_id: Frontend.DeleteProduct.DeleteProduct, path: ProductService.DeleteProduct.err}
+    calls:
+      - call_id: Frontend.DeleteProduct.DeleteProduct
+        call_ts: t1
+        call_type: RPC
+        arguments:
+          - name: productID
+            taints:
+              _obj:
+                - {taint_type: TAINT_SERVICE, call_id: Frontend.DeleteProduct.DeleteProduct, path: ProductService.DeleteProduct.productID}
+        service_call:
+          service: ProductService
+          method: DeleteProduct
+          func_short_path: tinyshop.ProductService.DeleteProduct
+          returns:
+            - name: err
+              taints:
+                _obj:
+                  - {taint_type: TAINT_SERVICE, call_id: Frontend.DeleteProduct.DeleteProduct, path: ProductService.DeleteProduct.err}

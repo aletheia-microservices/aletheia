@@ -15,7 +15,7 @@ There is one folder per stage, each with one file per app (e.g., `ssa/digota_tes
 
 - `ssa/` (stage 1): checks that values are marked with the right database fields and RPCs.
 - `abstractcallgraph/` (stage 2): checks that the graph has the expected services, databases and calls, and that values flow between them as in the app's code.
-- `detection/` (stages 3 and 4): checks that the expected constraints and violations are found. `detection/output_test.go` also checks that every app's results match `expected/`.
+- `detection/` (stages 3 and 4): checks that the expected constraints and violations are found. `detection/output_test.go` also checks that every app's results match `expected/`, and `detection/input_models_test.go` checks the results of the input models in `input-models/`, which must match the `expected/` output of the Blueprint app they describe, if any (it skips stage 1, so it also runs with `-short`).
 
 The integration tests don't run the `aletheia` binary, because it only writes the final results to files. Instead, they call the **runner** (`runner/`), which runs the same pipeline as the binary (`pipeline.Run`) without writing to `output/` and keeps what each stage produced in memory (SSA graphs, abstract call graph, schema, detector results), so the tests can check them directly. The four stages run only once per app in each `go test` run, and all tests reuse that result.
 

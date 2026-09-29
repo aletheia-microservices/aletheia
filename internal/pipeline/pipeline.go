@@ -1,5 +1,6 @@
-// Package pipeline runs Aletheia's analysis of a registered Blueprint application: SSA taint
-// propagation, abstract call graph, schema building and pattern detection
+// Package pipeline runs Aletheia's analysis of a registered Blueprint application (SSA taint
+// propagation, abstract call graph, schema building and pattern detection), or of an application
+// described by input models (abstract call graph, schema building and pattern detection)
 package pipeline
 
 import (
@@ -15,6 +16,7 @@ import (
 	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph/registry"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/service-level/ssagraph/tainter"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph"
+	abstractgraphinput "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/input"
 	abstractgraphparser "github.com/aletheia-microservices/aletheia/internal/analysis/system-level/abstractgraph/parser"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection"
 	"github.com/aletheia-microservices/aletheia/internal/analysis/system-level/detection/constraints/foreignkeycascade"
@@ -29,9 +31,12 @@ import (
 
 // Options configures a run of the pipeline
 type Options struct {
-	// App is the name of the application in registry/apps.yaml
+	// App is the name of the application in registry/apps.yaml (ignored with InputPath)
 	App string
-	// InitOnly only loads the app's Blueprint wiring and returns without analyzing it
+	// InputPath is the path of the YAML input model describing the application, or of a folder whose input
+	// models are combined (see input-models/), which is analyzed instead of App, skipping Blueprint and SSA
+	InputPath string
+	// InitOnly only loads the app's Blueprint wiring (or input model) and returns without analyzing it
 	InitOnly bool
 	// Synthetic marks the app as synthetic
 	Synthetic bool
@@ -80,8 +85,21 @@ type Result struct {
 	Timings   Timings
 }
 
-// Run runs every stage of the pipeline for opts.App
+// Run runs every stage of the pipeline for opts.App, or for the app in opts.InputPath
 func Run(opts Options) (*Result, error) {
+	var model *abstractgraphinput.InputModel
+	if opts.InputPath != "" {
+		var err error
+		model, err = abstractgraphinput.LoadInputModel(opts.InputPath)
+		if err != nil {
+			return nil, fmt.Errorf("loading input model %s: %w", opts.InputPath, err)
+		}
+		if model.App == "" {
+			return nil, fmt.Errorf("loading input model %s: app is required", opts.InputPath)
+		}
+		opts.App = model.App
+	}
+
 	// the detection config is global state, so reset it for every run
 	detection.Config = detection.InputConfig{}
 	if opts.DetectionConfig != "" {
@@ -92,6 +110,74 @@ func Run(opts Options) (*Result, error) {
 	log := logrus.WithField("app", opts.App)
 	res := &Result{}
 
+	var err error
+	if model != nil {
+		err = buildFromInput(opts, model, res, log)
+	} else {
+		err = buildFromBlueprint(opts, res, log, start)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if opts.InitOnly {
+		return res, nil
+	}
+	res.Timings.Parsing = time.Since(start)
+
+	detect(opts, res, log, start)
+	return res, nil
+}
+
+// createOutputDirs creates output/{app} and, with opts.Debug, its subdirectories in debugDirs
+func createOutputDirs(opts Options, debugDirs ...string) error {
+	if !opts.WriteOutputs {
+		return nil
+	}
+	dirs := []string{fmt.Sprintf("output/%s", opts.App)}
+	if opts.Debug {
+		for _, dir := range debugDirs {
+			dirs = append(dirs, fmt.Sprintf("output/%s/%s", opts.App, dir))
+		}
+	}
+	for _, dir := range dirs {
+		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// buildFromInput builds the app and its abstract call graph from the input model (stages 1 and 7)
+func buildFromInput(opts Options, model *abstractgraphinput.InputModel, res *Result, log *logrus.Entry) error {
+	// ------------ PART 1
+	log.Infof("[1/12] initializing program from input model %s", opts.InputPath)
+
+	a := app.NewApp(opts.App)
+	res.App = a
+	appparser.InitFromInput(a, model)
+	if opts.InputRefs {
+		log.Infof("reading input refs...")
+		appparser.ParseUserInputReferences(a)
+	}
+
+	if opts.InitOnly {
+		return nil
+	}
+
+	// ------------ PART 7
+	log.Infof("[7/12] creating new abstract call graph from input model")
+	absgraph := abstractgraph.NewAbstractCallGraph(a)
+	if err := abstractgraphparser.ParseInput(absgraph, model); err != nil {
+		return fmt.Errorf("parsing input model %s: %w", opts.InputPath, err)
+	}
+	res.AbsGraph = absgraph
+
+	// only create the output of valid input models
+	return createOutputDirs(opts, "abstractcallgraph")
+}
+
+// buildFromBlueprint builds the app from its Blueprint wiring and its abstract call graph from the SSA graphs (stages 1 to 8)
+func buildFromBlueprint(opts Options, res *Result, log *logrus.Entry, start time.Time) error {
 	// ------------ PART 1
 	log.WithField("synthetic", opts.Synthetic).Infof("[1/12] initializing program")
 
@@ -101,7 +187,7 @@ func Run(opts Options) (*Result, error) {
 	appparser.Init(a, opts.Synthetic)
 
 	if opts.InitOnly {
-		return res, nil
+		return nil
 	}
 
 	res.Timings.Blueprint = time.Since(start)
@@ -109,21 +195,8 @@ func Run(opts Options) (*Result, error) {
 	writeIntermediate := opts.WriteOutputs && !opts.Eval
 	writeDebug := writeIntermediate && opts.Debug
 
-	if opts.WriteOutputs {
-		dirs := []string{fmt.Sprintf("output/%s", opts.App)}
-		if opts.Debug {
-			dirs = append(dirs,
-				fmt.Sprintf("output/%s/ssagraphs/tainted", opts.App),
-				fmt.Sprintf("output/%s/ssagraphs/untainted", opts.App),
-				fmt.Sprintf("output/%s/abstractcallgraph", opts.App),
-				fmt.Sprintf("output/%s/ssa", opts.App),
-			)
-		}
-		for _, dir := range dirs {
-			if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-				return nil, err
-			}
-		}
+	if err := createOutputDirs(opts, "ssagraphs/tainted", "ssagraphs/untainted", "abstractcallgraph", "ssa"); err != nil {
+		return err
 	}
 
 	// ------------ PART 2
@@ -131,7 +204,7 @@ func Run(opts Options) (*Result, error) {
 
 	prog, pkgs, err := utils.BuildProgram(apppath)
 	if err != nil {
-		return nil, fmt.Errorf("building program for %s: %w", opts.App, err)
+		return fmt.Errorf("building program for %s: %w", opts.App, err)
 	}
 
 	appparser.InitServiceFields(a, pkgs)
@@ -231,7 +304,14 @@ func Run(opts Options) (*Result, error) {
 		funcGraphs = nil
 	}
 
-	res.Timings.Parsing = time.Since(start)
+	return nil
+}
+
+// detect builds the schema and runs the pattern detectors on the abstract call graph (stages 9 to 12)
+func detect(opts Options, res *Result, log *logrus.Entry, start time.Time) {
+	a, absgraph := res.App, res.AbsGraph
+	writeIntermediate := opts.WriteOutputs && !opts.Eval
+	writeDebug := writeIntermediate && opts.Debug
 
 	res.Detectors = []detection.Detector{
 		keycoordination.NewDetector(keycoordination.DETECTION_TYPE_PRIMARY_KEY),
@@ -297,6 +377,4 @@ func Run(opts Options) (*Result, error) {
 		a.WriteSchemaToJSON()
 		a.WriteConstraintsToFile()
 	}
-
-	return res, nil
 }

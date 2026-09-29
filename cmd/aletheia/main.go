@@ -1,5 +1,6 @@
-// Command aletheia analyzes a Blueprint application registered in registry/apps.yaml for
-// integrity violations across microservices and saves the results in output/<app>/
+// Command aletheia analyzes a Blueprint application registered in registry/apps.yaml (or an
+// application described by input models) for integrity violations across microservices and
+// saves the results in output/<app>/
 package main
 
 import (
@@ -21,8 +22,8 @@ const evalMetricsBase = "eval/metrics"
 
 func printUsage() {
 	out := flag.CommandLine.Output()
-	fmt.Fprintf(out, "usage: aletheia [flags] <app>\n       aletheia [flags] -all\n\n")
-	fmt.Fprintf(out, "Analyzes a Blueprint application registered in registry/apps.yaml and\nsaves the results in output/<app>/. Run it from the repository root.\n\n")
+	fmt.Fprintf(out, "usage: aletheia [flags] <app>\n       aletheia [flags] -all\n       aletheia [flags] -input <file>\n\n")
+	fmt.Fprintf(out, "Analyzes a Blueprint application registered in registry/apps.yaml (or the\napplication described by input models) and saves the results in output/<app>/.\nRun it from the repository root.\n\n")
 	fmt.Fprintln(out, "flags:")
 	flag.PrintDefaults()
 	fmt.Fprintln(out, "\nregistered apps:")
@@ -35,6 +36,7 @@ func main() {
 	opts := pipeline.Options{WriteOutputs: true}
 	var all bool
 	flag.BoolVar(&all, "all", false, "analyze every registered app, one after the other, instead of a single <app>")
+	flag.StringVar(&opts.InputPath, "input", "", "analyze the app described by the YAML input model at `path` instead of a registered <app>,\nwithout Blueprint and the SSA analysis; path is a file, or a folder whose input models\nare combined (examples in input-models/)")
 	flag.BoolVar(&opts.InitOnly, "init", false, "only load the app's Blueprint wiring, then exit without analyzing it")
 	flag.BoolVar(&opts.Eval, "eval", false, "evaluation mode: skip intermediate outputs, print timings and save them in "+evalMetricsBase+"/")
 	flag.BoolVar(&opts.Synthetic, "synthetic", false, "mark the app as synthetic (only changes where -eval saves timings)")
@@ -45,7 +47,14 @@ func main() {
 	flag.Parse()
 
 	var apps []string
-	if all {
+	if opts.InputPath != "" {
+		// the app is named in the input model
+		if all || flag.NArg() > 0 {
+			fmt.Fprintf(os.Stderr, "-input cannot be combined with -all or an <app>\n\n")
+			flag.Usage()
+			os.Exit(1)
+		}
+	} else if all {
 		if flag.NArg() > 0 {
 			fmt.Fprintf(os.Stderr, "-all does not take an <app>\n\n")
 			flag.Usage()
@@ -90,7 +99,9 @@ func main() {
 	}
 
 	if !all {
-		opts.App = apps[0]
+		if len(apps) > 0 {
+			opts.App = apps[0]
+		}
 		if err := runApp(opts); err != nil {
 			logrus.Fatalf("error: %s", err.Error())
 		}
