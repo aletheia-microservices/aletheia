@@ -1,0 +1,89 @@
+/* Solarized palette */
+:root {
+  --base03: #002b36; --base02: #073642; --base01: #586e75; --base00: #657b83;
+  --base0:  #839496; --base1:  #93a1a1; --base2:  #eee8d5; --base3:  #fdf6e3;
+  --yellow: #b58900; --orange: #cb4b16; --red:    #dc322f; --magenta: #d33682;
+  --violet: #6c71c4; --blue:   #268bd2; --cyan:   #2aa198; --green:   #859900;
+}
+
+/* Solarized Light */
+[data-md-color-scheme="solarized-light"] {
+  --md-default-bg-color: var(--base3);
+  --md-default-fg-color: var(--base00);
+  --md-default-fg-color--light: var(--base01);
+  --md-default-fg-color--lighter: var(--base1);
+  --md-default-fg-color--lightest: var(--base2);
+  --md-typeset-color: var(--base00);
+  --md-primary-fg-color: var(--base2);
+  --md-primary-bg-color: var(--base01);
+  --md-accent-fg-color: var(--orange);
+  --md-typeset-a-color: var(--blue);
+  --md-code-bg-color: var(--base2);
+  --md-code-fg-color: var(--base01);
+  --md-admonition-fg-color: var(--base00);
+  --md-admonition-bg-color: var(--base3);
+  --md-footer-bg-color: var(--base2);
+  --md-footer-fg-color: var(--base01);
+}
+
+/* Solarized Dark */
+[data-md-color-scheme="solarized-dark"] {
+  color-scheme: dark;
+  --md-default-bg-color: var(--base03);
+  --md-default-fg-color: var(--base0);
+  --md-default-fg-color--light: var(--base1);
+  --md-default-fg-color--lighter: var(--base01);
+  --md-default-fg-color--lightest: var(--base02);
+  --md-typeset-color: var(--base0);
+  --md-primary-fg-color: var(--base02);
+  --md-primary-bg-color: var(--base1);
+  --md-accent-fg-color: var(--orange);
+  --md-typeset-a-color: var(--blue);
+  --md-code-bg-color: var(--base02);
+  --md-code-fg-color: var(--base1);
+  --md-admonition-fg-color: var(--base0);
+  --md-admonition-bg-color: var(--base03);
+  --md-typeset-table-color: rgba(147, 161, 161, 0.15);
+  --md-typeset-kbd-color: var(--base02);
+  --md-typeset-kbd-accent-color: var(--base03);
+  --md-typeset-kbd-border-color: var(--base01);
+  --md-shadow-z1: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.3);
+  --md-shadow-z2: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.4);
+  --md-shadow-z3: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
+  --md-footer-bg-color: var(--base02);
+  --md-footer-fg-color: var(--base1);
+}
+
+/* Syntax highlighting (Solarized schemes only) */
+[data-md-color-scheme="solarized-light"],
+[data-md-color-scheme="solarized-dark"] {
+  --md-code-hl-keyword-color: var(--green);
+  --md-code-hl-string-color: var(--cyan);
+  --md-code-hl-number-color: var(--magenta);
+  --md-code-hl-function-color: var(--blue);
+  --md-code-hl-constant-color: var(--violet);
+  --md-code-hl-special-color: var(--red);
+  --md-code-hl-name-color: var(--md-code-fg-color);
+  --md-code-hl-comment-color: var(--base01);
+  --md-code-hl-operator-color: var(--yellow);
+}
+
+/* Buttons (Solarized schemes only): Material colors them with the header color, which is close to the page background */
+[data-md-color-scheme="solarized-light"] .md-typeset .md-button,
+[data-md-color-scheme="solarized-dark"] .md-typeset .md-button {
+  color: var(--md-typeset-a-color);
+}
+
+[data-md-color-scheme="solarized-light"] .md-typeset .md-button--primary,
+[data-md-color-scheme="solarized-dark"] .md-typeset .md-button--primary {
+  background-color: var(--md-typeset-a-color);
+  border-color: var(--md-typeset-a-color);
+  color: var(--md-default-bg-color);
+}
+
+[data-md-color-scheme="solarized-light"] .md-typeset .md-button:is(:hover, :focus),
+[data-md-color-scheme="solarized-dark"] .md-typeset .md-button:is(:hover, :focus) {
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-default-bg-color);
+}

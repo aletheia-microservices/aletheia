@@ -14,7 +14,7 @@ PRINT_USAGE = if [ -t 1 ]; then hl=$$(printf '\033[1;32m'); rs=$$(printf '\033[0
 
 .PHONY: help
 help: ## show this help
-	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-18s %s\n", $$1, $$2}'
 
 .PHONY: build
 build: ## build the aletheia binary into bin/
@@ -59,6 +59,27 @@ registry: ## regenerate the app registry and go.mod entries from registry/*.yaml
 	go run ./scripts/gen-registry
 	@$(MAKE) --no-print-directory build
 
+# the docs targets need uv, which the official install script puts in ~/.local/bin
+docs-install docs-install-brew docs-serve docs-build: export PATH := $(HOME)/.local/bin:$(PATH)
+
+.PHONY: docs-install
+docs-install: ## install the docs dependencies (installs uv with its install script if missing)
+	@command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+	uv sync --group docs
+
+.PHONY: docs-install-brew
+docs-install-brew: ## install the docs dependencies (installs uv with Homebrew if missing)
+	@command -v uv >/dev/null || brew install uv
+	uv sync --group docs
+
+.PHONY: docs-serve
+docs-serve: ## serve the docs site with live reload and open it in the browser
+	uv run --group docs mkdocs serve --open
+
+.PHONY: docs-build
+docs-build: ## build the docs site into site/ (fails on broken links)
+	uv run --group docs mkdocs build --strict
+
 .PHONY: clean
 clean: ## remove build artifacts
-	rm -rf bin
+	rm -rf bin site

@@ -1,0 +1,149 @@
+site_name: Aletheia
+site_description: Automated detection of data integrity violations in microservices
+site_url: https://aletheia-microservices.github.io/aletheia/  # where the site is published (GitHub Pages)
+
+repo_url: https://github.com/aletheia-microservices/aletheia  # repository link in the header
+repo_name: aletheia-microservices/aletheia
+edit_uri: edit/main/docs/         # target of the "edit this page" button
+
+nav:
+  - Home: index.md
+  - What Aletheia Detects: patterns.md
+  - Aletheia Pipeline:
+      - Intra-procedural Analysis: 1-pipeline/intra-procedural-analysis.md
+      - Inter-microservice Analysis: 1-pipeline/inter-microservice-analysis.md
+      - Schema Extraction: 1-pipeline/schema-extraction.md
+      - Detection of Problematic Patterns: 1-pipeline/detection-of-problematic-patterns.md
+  - Getting Started:
+      - Installation: 2-getting-started/installation.md
+      - Running Aletheia: 2-getting-started/running.md
+      - Tutorial: 2-getting-started/tutorial.md
+  - Usage:
+      - Suppressing Detection Warnings: 3-usage/suppressing-warnings.md
+      - Registering an Application in Blueprint: 3-usage/blueprint-application.md
+      - Registering an Application without Blueprint: 3-usage/without-blueprint.md
+      - Generating Diagrams: 3-usage/diagrams.md
+  - Formats:
+      - Writing Input Models: 4-formats/writing-input-models.md
+      - Reading Detection Warnings: 4-formats/reading-warnings.md
+  - Reference:
+      - Project Structure: 5-reference/project-structure.md
+      - Conventions: 5-reference/conventions.md
+
+theme:
+  name: material                  # Material for MkDocs theme
+  custom_dir: overrides           # extra theme files; overrides/main.html loads the stylesheets and scripts in overrides/assets/
+  logo: assets/logo.png           # header logo, relative to docs/
+  favicon: assets/logo.png        # browser tab icon, relative to docs/
+  icon:
+    admonition:                   # callout icons; names from https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/
+      tip: octicons/light-bulb-16 # lightbulb, as GitHub draws > [!TIP] (default is a flame)
+  features:
+    - navigation.instant          # load pages without full reload (faster navigation)
+    - navigation.indexes          # a folder's index.md opens when clicking the folder name in the sidebar
+    #- navigation.expand           # all sidebar folders start expanded (remove to start collapsed)
+    - navigation.sections         # top-level nav sections (Getting Started, Usage, ...) render as groups in the sidebar
+    - navigation.footer           # previous/next page links at the bottom of each page
+    - navigation.top              # "back to top" button when scrolling up
+    - search.highlight            # highlight search terms on the page you open from search
+    - search.suggest              # autocomplete in the search box
+    - toc.follow                  # right-side table of contents follows your scroll position
+    - content.code.copy           # copy button on code blocks
+    - content.action.edit         # "edit this page" button that opens the page on GitHub (uses edit_uri)
+  palette:                        # theme toggle cycles through these in order; first = default
+    # Each "name" is the tooltip, describing the NEXT scheme in the cycle
+    - scheme: default             # Material's built-in light theme; top bar colors in theme-material.css
+      toggle:
+        icon: material/brightness-7
+        name: Switch to Solarized Light
+    - scheme: solarized-light     # custom scheme, colors defined in theme-solarized.css
+      primary: custom             # take header/accent colors from CSS, not Material's palettes
+      accent: custom
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to dark mode
+    - scheme: slate               # Material's built-in dark theme; top bar colors in theme-material.css
+      toggle:
+        icon: material/brightness-4
+        name: Switch to Solarized Dark
+    - scheme: solarized-dark      # custom scheme, colors defined in theme-solarized.css
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+# Plugins need installing:
+#   uv add --group docs mkdocs-git-revision-date-localized-plugin mkdocs-glightbox
+# Restart `mkdocs serve` after installing new plugins
+plugins:
+  - search                        # built-in search; must be listed once a plugins section exists
+  - git-revision-date-localized:  # "Last update: <date>" at the bottom of each page, from git history
+      type: date
+      fallback_to_build_date: true  # uncommitted pages show the build date instead of failing
+  - glightbox                     # click an image to zoom it
+  - tags                          # built into Material; add to a page's front matter:
+                                  #   ---
+                                  #   tags:
+                                  #     - detection
+                                  #   ---
+
+markdown_extensions:
+  # Callout boxes (MkDocs only):
+  #   !!! tip "Optional title"     -> box with custom title
+  #   !!! warning ""               -> box without title bar
+  #       content indented 4 spaces
+  # Types (aliases in parentheses):
+  #   note, abstract (summary, tldr), info (todo), tip (hint, important),
+  #   success (check, done), question (help, faq), warning (caution, attention),
+  #   failure (fail, missing), danger (error), bug, example, quote (cite)
+  - admonition
+
+  # Collapsible callouts (MkDocs only):
+  #   ??? note "Title"   -> starts collapsed
+  #   ???+ note "Title"  -> starts open
+  - pymdownx.details
+
+  # GitHub-style callouts (work in MkDocs, VS Code and GitHub):
+  #   > [!NOTE]
+  #   > content
+  # Types: NOTE, TIP, IMPORTANT, WARNING, CAUTION (no custom titles)
+  # Requires: uv add --group docs markdown-callouts
+  - github-callouts
+
+  # Code
+  - pymdownx.highlight:           # syntax highlighting for code blocks
+      anchor_linenums: true       # clickable line numbers; enable per block with ```go linenums="1"
+  - pymdownx.inlinehilite         # highlighting for inline code: `#!go fmt.Println("hi")`
+  - pymdownx.snippets:            # --8<-- "path/to/file.go:10:20" inserts lines 10-20 of a file, e.g. inside a code block
+      base_path:
+        - !relative $config_dir   # paths are relative to the repository root
+      check_paths: true           # fail the build if a file is missing (e.g. blueprint/ submodule not initialized)
+  - pymdownx.superfences:         # better code blocks (nesting, code inside lists/admonitions)
+      custom_fences:              # ```mermaid blocks render as diagrams (also on GitHub)
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+  # Text formatting
+  - pymdownx.mark                 # ==highlighted text==
+  - pymdownx.keys                 # ++ctrl+c++ renders as keyboard keys
+  - footnotes                     # text[^1] ... [^1]: footnote text
+  - def_list                      # term on one line, ": definition" on the next
+  - attr_list                     # attributes on elements, e.g. ![img](a.png){ width="600" }
+  # Icons by name, e.g. :material-file-pdf-box: Paper (MkDocs only)
+  # Names: https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - md_in_html                    # Markdown inside HTML tags that have a markdown attribute, e.g.
+                                  #   <details markdown> (collapsible block that also works on GitHub)
+  - pymdownx.tasklist:            # - [ ] / - [x] checkboxes
+      custom_checkbox: true       # styled checkboxes instead of browser defaults
+  - toc:
+      permalink: true             # ¶ link next to each heading to copy a direct link
+
+# Pages served as /conventions.html instead of /conventions/
+# Needed so relative paths in HTML tags (e.g. <img src="res/x.png" width="600">)
+# work both in MkDocs and in VS Code's Markdown preview
+use_directory_urls: false

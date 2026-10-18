@@ -29,7 +29,7 @@ The generator exits with an error unless it runs from a directory named `alethei
 
 ## Registry Format
 
-See step 4 of [Analyzing Your Own Application](../../README.md#analyzing-your-own-application) for how to add an app. The generator uses these fields:
+See step 4 of [Registering an Application in Blueprint](https://aletheia-microservices.github.io/aletheia/3-usage/blueprint-application.html) for how to add an app. The generator uses these fields:
 
 - `build_tag`: the Go build constraint written at the top of the generated file (default `!eval`).
 - `app_root`: the module path of the app. The `go.mod` entries point it, and its `/workflow` and `/wiring` modules, to `./blueprint/examples/{last segment of app_root}`.

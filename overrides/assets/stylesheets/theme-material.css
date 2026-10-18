@@ -1,0 +1,43 @@
+/* Top bar of Material's built-in schemes (Light and Dark): same color as the page, with a thin line below it */
+/* Colors are overridden only inside the bar, so links and buttons in the page keep Material's indigo */
+
+/* Light: white bar with navy text, matching the logo */
+[data-md-color-scheme="default"] .md-header,
+[data-md-color-scheme="default"] .md-nav--primary .md-nav__title[for="__drawer"],
+[data-md-color-scheme="default"] .md-nav__source {
+  --md-primary-fg-color: #ffffff;
+  --md-primary-fg-color--dark: #f5f5f5;
+  --md-primary-bg-color: #001a42;
+  --md-primary-bg-color--light: #001a42b3;
+}
+
+/* Dark: bar in the page's dark background with the page's text color */
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__title[for="__drawer"],
+[data-md-color-scheme="slate"] .md-nav__source {
+  --md-primary-fg-color: var(--md-default-bg-color);
+  --md-primary-fg-color--dark: var(--md-code-bg-color);
+  --md-primary-bg-color: var(--md-default-fg-color);
+  --md-primary-bg-color--light: var(--md-default-fg-color--light);
+}
+
+[data-md-color-scheme="default"] .md-header,
+[data-md-color-scheme="slate"] .md-header {
+  border-bottom: 0.05rem solid var(--md-default-fg-color--lightest);
+}
+
+/* Search box: Material uses translucent black/white, made for a colored bar */
+@media screen and (min-width: 60em) {
+  [data-md-color-scheme="default"] .md-search__form,
+  [data-md-color-scheme="slate"] .md-search__form {
+    background-color: var(--md-default-fg-color--lightest);
+  }
+
+  [data-md-color-scheme="default"] .md-search__form:hover {
+    background-color: #0000001f;
+  }
+
+  [data-md-color-scheme="slate"] .md-search__form:hover {
+    background-color: hsla(var(--md-hue), 15%, 90%, 0.2);
+  }
+}

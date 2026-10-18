@@ -1,0 +1,131 @@
+/* Material loads Roboto only at 300, 400 and 700; the semi-bold links below need 500 */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
+
+.md-grid {
+  max-width: 1600px; /* default is 61rem (~976px); use "none" for full width */
+}
+
+/* narrower table of contents on the right, leaving more room for the page content */
+.md-sidebar--secondary {
+  width: 10rem; /* default is 12.1rem */
+}
+
+/* links in the page content are semi-bold, so they stand out a bit from the text around them */
+.md-typeset a {
+  font-weight: 500;
+}
+
+/* make the sidebar's section titles (Getting Started, Usage, ...) stand out from the pages under them */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary > .md-nav__list > .md-nav__item--section {
+    margin-top: 1.4em;
+    padding-top: 0.8em;
+    border-top: 1px solid var(--md-default-fg-color--lightest);
+  }
+
+  .md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link {
+    color: var(--md-default-fg-color);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}
+
+/* comments that explain an example inside a code block marked with the "annotated" class, and the
+   identifiers they point at; annotated-code.js tags each one by what it points out
+   (Solarized blue, green and yellow) */
+.md-typeset .annotated .c1 {
+  font-weight: 700;
+}
+
+.md-typeset .annotated span.annotation-service:not(.hll) {
+  color: #1973b3;
+  font-weight: 700;
+}
+
+.md-typeset .annotated span.annotation-database:not(.hll) {
+  color: #687803;
+  font-weight: 700;
+}
+
+.md-typeset .annotated .c1.annotation-other {
+  color: #cb4b16;
+  font-weight: 700;
+}
+
+/* identifiers named by data-other are orange, so they stand apart from their yellow comment */
+.md-typeset .annotated span.annotation-other:not(.hll):not(.c1) {
+  color: #cb4b16;
+  font-weight: 700;
+}
+
+/* the highlighted line of each comment, tinted in the same color, with a matching marker on its left */
+.md-typeset .annotated .hll.annotation-service {
+  background-color: #268bd226;
+  box-shadow: 2px 0 0 0 #1973b3 inset;
+}
+
+.md-typeset .annotated .hll.annotation-database {
+  background-color: #85990026;
+  box-shadow: 2px 0 0 0 #687803 inset;
+}
+
+.md-typeset .annotated .hll.annotation-other {
+  background-color: #b5890026;
+  box-shadow: 2px 0 0 0 #b58900 inset;
+}
+
+/* center Mermaid diagrams (Material renders each one into a div.mermaid) */
+.md-typeset div.mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+/* step-by-step diagrams (see diagram-steps.js): the buttons under the diagram, and the item of the list
+   whose step the diagram shows */
+.md-typeset .diagram-steps__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.4em 0 1em;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.7rem;
+}
+
+.md-typeset .diagram-steps__controls button {
+  min-width: 2.4rem;
+  padding: 0.15em 0.7em;
+  border: 0.05rem solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.md-typeset .diagram-steps__controls button:is(:hover, :focus-visible):not(:disabled) {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset .diagram-steps__controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.md-typeset .diagram-steps > ol > li {
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.md-typeset .diagram-steps > ol > li.diagram-steps__active {
+  background-color: color-mix(in srgb, var(--md-accent-fg-color) 12%, transparent);
+}
+
+/* keep code in the first column of tables on one line (e.g. the tag [MANDATORY]) */
+.md-typeset table:not([class]) td:first-child code {
+  white-space: nowrap;
+}

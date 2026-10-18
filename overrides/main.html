@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ 'assets/stylesheets/theme-material.css' | url }}">
+  <link rel="stylesheet" href="{{ 'assets/stylesheets/theme-solarized.css' | url }}">
+  <link rel="stylesheet" href="{{ 'assets/stylesheets/text-size.css' | url }}">
+  <link rel="stylesheet" href="{{ 'assets/stylesheets/page.css' | url }}">
+{% endblock %}
+
+{% block libs %}
+  {{ super() }}
+  <!-- must run before Material's bundle, which checks for a global mermaid object -->
+  <script src="{{ 'assets/javascripts/mermaid.js' | url }}"></script>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ 'assets/javascripts/text-size.js' | url }}"></script>
+  <script src="{{ 'assets/javascripts/annotated-code.js' | url }}"></script>
+  <script src="{{ 'assets/javascripts/diagram-steps.js' | url }}"></script>
+{% endblock %}
