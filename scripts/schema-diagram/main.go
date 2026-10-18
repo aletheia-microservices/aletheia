@@ -384,7 +384,7 @@ func buildDot(appName string, graph *SchemaGraph) string {
 	fmt.Fprintf(&b, "digraph %q {\n", appName)
 	// straight segments (polyline) are easier to follow through dense areas than curves, and mclimit=10
 	// makes dot work harder at reducing edge crossings
-	fmt.Fprintf(&b, "  graph [rankdir=LR, splines=polyline, mclimit=10, nodesep=0.6, ranksep=1.4, fontname=\"Helvetica\", fontsize=20, labelloc=t, label=<<B>%s</B><BR/><FONT POINT-SIZE=\"16\">data schema</FONT>>];\n", html.EscapeString(appName))
+	fmt.Fprintf(&b, "  graph [bgcolor=transparent, rankdir=LR, splines=polyline, mclimit=10, nodesep=0.6, ranksep=1.4, fontname=\"Helvetica\", fontsize=20, labelloc=t, label=<<B>%s</B><BR/><FONT POINT-SIZE=\"16\">data schema</FONT>>];\n", html.EscapeString(appName))
 	fmt.Fprintf(&b, "  node [shape=plain, fontname=\"Helvetica\", fontsize=11];\n")
 	fmt.Fprintf(&b, "  edge [arrowsize=0.9, penwidth=1.3];\n")
 

@@ -129,7 +129,7 @@ func buildDot(app App) string {
 		{lineSample(SERVICE_EDGE), "service &#8594; service dependency"},
 		{lineSample(DATABASE_EDGE), "service &#8594; database dependency"},
 	})
-	fmt.Fprintf(&b, "  graph [rankdir=LR, splines=true, nodesep=0.3, ranksep=1.2, fontname=\"Helvetica\", fontsize=20, labelloc=t, label=<<B>%s</B><BR/><FONT POINT-SIZE=\"16\">service dependency graph</FONT>>];\n", html.EscapeString(app.Name))
+	fmt.Fprintf(&b, "  graph [bgcolor=transparent, rankdir=LR, splines=true, nodesep=0.3, ranksep=1.2, fontname=\"Helvetica\", fontsize=20, labelloc=t, label=<<B>%s</B><BR/><FONT POINT-SIZE=\"16\">service dependency graph</FONT>>];\n", html.EscapeString(app.Name))
 	fmt.Fprintf(&b, "  node [fontname=\"Helvetica\", fontsize=12, style=filled, penwidth=1.5];\n")
 	fmt.Fprintf(&b, "  edge [arrowsize=0.7, penwidth=1.1];\n\n")
 
