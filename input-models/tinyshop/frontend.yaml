@@ -1,10 +1,10 @@
-# Frontend of tinyshop, a small shop, combined with backend.yaml (see https://aletheia-microservices.github.io/aletheia/4-formats/writing-input-models.html for the format):
+# Frontend of tinyshop, a small shop, combined with backend.yaml (see https://aletheia-microservices.github.io/aletheia/app-registry/abstract-model/#guidelines-for-writing-abstract-models for the format):
 #
 #   Frontend.AddToCart      --RPC-->  ProductService.GetProduct     --read--->  product_db.product
 #                           --RPC-->  CartService.AddItem           --write-->  cart_db.cart
 #   Frontend.DeleteProduct  --RPC-->  ProductService.DeleteProduct  --delete->  product_db.product
 #
-# The frontend only calls other services, which are described in backend.yaml, so this input model is
+# The frontend only calls other services, which are described in backend.yaml, so this abstract model is
 # only valid when combined with it. Run it from the repository root with:
 #   go run ./cmd/aletheia -input input-models/tinyshop
 #

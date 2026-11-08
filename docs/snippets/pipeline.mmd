@@ -1,0 +1,20 @@
+---
+config:
+  flowchart:
+    rankSpacing: 30  # horizontal gap between columns (Mermaid default: 50)
+---
+flowchart LR
+    blueprint["<b>Blueprint application</b><br/>workflow and wiring<br/>(Go)"]
+    model["<b>Abstract model</b><br/>intra-procedural taints<br/>(YAML)"]
+    ssa["<b>1. Intra-procedural<br/>analysis</b><br/>SSA taints"]
+    acg["<b>2. Inter-microservice<br/>analysis</b><br/>abstract call graph"]
+    schema["<b>3. Schema<br/>extraction</b><br/>schemas and constraints"]
+    detect["<b>4. Pattern<br/>detection</b><br/>RI-1, RI-2, RI-3,<br/>EI-1, Un-1"]
+    output["<b>Output</b><br/>warnings, schemas, etc."]
+    blueprint --> ssa --> acg --> schema --> detect --> output
+    model -..->|optional, skips step 1| acg
+    acg --> detect
+    classDef step fill:#268bd214,stroke:#268bd280
+    classDef current fill:#268bd214,stroke:#268bd2,stroke-width:2px
+    classDef io fill:#00000000,stroke:#80808099,stroke-dasharray:4 3
+    class blueprint,model,output io

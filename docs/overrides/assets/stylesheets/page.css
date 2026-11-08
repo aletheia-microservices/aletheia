@@ -1,0 +1,504 @@
+/* Material loads Roboto only at 300, 400 and 700; the semi-bold links below need 500, and the bold text 600
+   (also in Roboto Mono, for bold code such as the package names in Codebase Overview) */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500;600&family=Roboto+Mono:wght@600&display=swap");
+
+/* bold text one step lighter than Material's 700, which looks too heavy next to the regular text */
+.md-typeset :is(strong, b, th, dt, .admonition-title, summary) {
+  font-weight: 600;
+}
+
+.md-grid {
+  max-width: 1600px; /* default is 61rem (~976px); use "none" for full width */
+}
+
+/* narrower table of contents on the right, leaving more room for the page content */
+.md-sidebar--secondary {
+  width: 10rem; /* default is 12.1rem */
+}
+
+/* links in the page content are semi-bold, so they stand out a bit from the text around them */
+.md-typeset a {
+  font-weight: 500;
+}
+
+/* make the sidebar's section titles (Getting Started, Usage, ...) stand out from the pages under them */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary > .md-nav__list > .md-nav__item--section {
+    margin-top: 1.4em;
+    padding-top: 0.8em;
+    border-top: 1px solid var(--md-default-fg-color--lightest);
+  }
+
+  .md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link {
+    color: var(--md-default-fg-color);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}
+
+/* comments that explain an example inside a code block marked with the "annotated" class, and the
+   identifiers they point at; annotated-code.js tags each one by what it points out
+   (Solarized blue, green and yellow) */
+.md-typeset .annotated .c1 {
+  font-weight: 700;
+}
+
+.md-typeset .annotated span.annotation-service:not(.hll) {
+  color: #1973b3;
+  font-weight: 700;
+}
+
+.md-typeset .annotated span.annotation-database:not(.hll) {
+  color: #687803;
+  font-weight: 700;
+}
+
+.md-typeset .annotated .c1.annotation-other {
+  color: #cb4b16;
+  font-weight: 700;
+}
+
+/* identifiers named by data-other are orange, so they stand apart from their yellow comment */
+.md-typeset .annotated span.annotation-other:not(.hll):not(.c1) {
+  color: #cb4b16;
+  font-weight: 700;
+}
+
+/* the highlighted line of each comment, tinted in the same color, with a matching marker on its left */
+.md-typeset .annotated .hll.annotation-service {
+  background-color: #268bd226;
+  box-shadow: 2px 0 0 0 #1973b3 inset;
+}
+
+.md-typeset .annotated .hll.annotation-database {
+  background-color: #85990026;
+  box-shadow: 2px 0 0 0 #687803 inset;
+}
+
+.md-typeset .annotated .hll.annotation-other {
+  background-color: #b5890026;
+  box-shadow: 2px 0 0 0 #b58900 inset;
+}
+
+/* center Mermaid diagrams (Material renders each one into a div.mermaid) */
+.md-typeset div.mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+/* step-by-step diagrams (see diagram-steps.js): the buttons under the diagram, and the item of the list
+   whose step the diagram shows */
+.md-typeset .diagram-steps__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.4em 0 1em;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.7rem;
+}
+
+.md-typeset .diagram-steps__controls button {
+  min-width: 2.4rem;
+  padding: 0.15em 0.7em;
+  border: 0.05rem solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.md-typeset .diagram-steps__controls button:is(:hover, :focus-visible):not(:disabled) {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+
+/* the "All steps" button while the diagram shows all its steps */
+.md-typeset .diagram-steps__controls button[aria-pressed="true"] {
+  border-color: var(--md-accent-fg-color);
+  background-color: color-mix(in srgb, var(--md-accent-fg-color) 12%, transparent);
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset .diagram-steps__controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.md-typeset .diagram-steps > ol > li {
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.md-typeset .diagram-steps > ol > li.diagram-steps__active {
+  background-color: color-mix(in srgb, var(--md-accent-fg-color) 12%, transparent);
+}
+
+/* keep code in the first column of tables on one line (e.g. the tag [MANDATORY]) */
+.md-typeset table:not([class]) td:first-child code {
+  white-space: nowrap;
+}
+
+/* Keep search and appearance beside the title; push publication links to the right. */
+.md-header__title {
+  flex: 0 1 8rem;
+}
+
+.header-spacer {
+  flex: 1 1 0;
+}
+
+/* Plain icon-and-text project links in the top bar. */
+.project-links {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+  margin-inline: 0.8rem 0.4rem;
+}
+
+.project-links__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-block: 0.45rem;
+  color: inherit;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.project-links__link .md-icon svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.project-links__link:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.project-links__link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@media screen and (max-width: 76.234375em) {
+  .md-header__inner {
+    flex-wrap: wrap;
+  }
+
+  .project-links {
+    order: 10;
+    flex: 1 0 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0 0.8rem;
+    margin: 0;
+    padding: 0 0.4rem 0.2rem;
+  }
+}
+
+/* Divider between publication links and repository information. */
+.md-header__source {
+  position: relative;
+  padding-inline-start: 0.8rem;
+}
+
+.md-header__source::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 50%;
+  height: 0.9rem;
+  transform: translateY(-50%);
+  border-inline-start: 1px solid currentColor;
+  opacity: 0.4;
+}
+
+/* On smaller screens the links occupy their own row. */
+@media screen and (max-width: 76.234375em) {
+  .md-header__source::before {
+    display: none;
+  }
+}
+
+/* Widen the desktop search field without changing the mobile search overlay. */
+@media screen and (min-width: 60em) {
+  .md-header .md-search {
+    flex: 0 1 12rem;
+    margin-inline-start: 1.5rem;
+  }
+
+  .md-header .md-search__inner {
+    width: 100%;
+  }
+}
+
+/* Publication details on the home page. */
+.md-typeset .publication-card {
+  margin: 1em 0 1.5em;
+  padding: clamp(1rem, 3vw, 1.2rem);
+  border-inline-start: 2px solid var(--md-default-fg-color--lightest);
+  background-color: color-mix(in srgb, var(--md-default-fg-color) 2%, var(--md-default-bg-color));
+}
+
+.md-typeset .publication-card p {
+  margin: 0;
+}
+
+.md-typeset .publication-card p + p {
+  margin-top: 0.5em;
+}
+
+.md-typeset .publication-card__title {
+  font-size: 1.05em;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.md-typeset .publication-card__authors {
+  font-size: 0.95em;
+}
+
+.md-typeset :is(.publication-card__affiliation, .publication-card__venue) {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.9em;
+}
+
+.md-typeset .publication-card__venue {
+  font-weight: 400;
+}
+
+/* compact cards (<div class="grid cards compact" markdown>), e.g., the folders in Project Structure:
+   narrower columns, less padding and tighter paragraphs, so that more cards fit on the screen */
+.md-typeset .grid.cards.compact {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  font-size: 0.7rem;
+}
+
+.md-typeset .grid.cards.compact > ul > li {
+  padding: 0.5rem 0.7rem;
+  border-color: var(--md-default-fg-color--lighter); /* default is --lightest, which is barely visible */
+}
+
+.md-typeset .grid.cards.compact > ul > li > p {
+  margin: 0.3em 0;
+}
+
+/* cards for users in blue and for developers in orange (Repository Layout and Codebase Overview): a thin
+   gray outline and a colored bar on the left, with a
+   square of the same color before the heading of each group ("### Using Aletheia { .repo-group .users }") */
+.md-typeset .grid.cards.compact.users > ul > li {
+  border: 0.5px solid var(--md-default-fg-color--lighter);
+  border-left: 0.1rem solid #268bd2;
+}
+
+.md-typeset .developers {
+  --developer-accent: #f57c00;
+}
+
+.md-typeset .grid.cards.compact.developers > ul > li {
+  border: 0.5px solid var(--md-default-fg-color--lighter);
+  border-left: 0.1rem solid var(--developer-accent);
+}
+
+.md-typeset .repo-group-nav {
+  position: sticky;
+  top: var(--repo-group-header-height, 2.4rem);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline-start: auto;
+  padding: 0.4rem 0.65rem;
+  background: var(--md-default-bg-color);
+  font-size: 0.85em;
+}
+
+.md-typeset:has(.repo-group-nav) :target {
+  scroll-margin-top: calc(var(--repo-group-header-height, 2.4rem) + var(--repo-group-nav-height, 2rem) + 0.5rem);
+}
+
+.md-typeset .repo-group::before {
+  content: "";
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  margin-right: 0.4em;
+  border-radius: 0.1em;
+  vertical-align: 0.05em;
+}
+
+.md-typeset .repo-group.users::before {
+  background: #268bd2;
+}
+
+.md-typeset .repo-group.developers::before {
+  background: var(--developer-accent);
+}
+
+/* wider compact cards (<div class="grid cards compact wide" markdown>), for cards with lists inside */
+.md-typeset .grid.cards.compact.wide {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+/* file trees (<div class="file-tree annotate" markdown> with a nested list), e.g., the packages in
+   Codebase Overview: no bullets, a faint guide line per level, package names in bold and descriptions muted */
+.md-typeset .file-tree ul,
+.md-typeset .file-tree li {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.md-typeset .file-tree ul ul {
+  margin: 0.1em 0 0.1em 0.55em;
+  padding-left: 1.1em;
+  border-left: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .file-tree li {
+  margin: 0.15em 0;
+  color: var(--md-default-fg-color--light);
+}
+
+/* the first code of each line is the package name; later ones are part of the description */
+.md-typeset .file-tree li > code:first-of-type {
+  margin-right: 0.4em;
+  padding: 0;
+  background: none;
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .file-tree li > .twemoji {
+  margin-right: 0.15em;
+  color: var(--developer-accent, #268bd2);
+}
+
+/* number of a pipeline step, in the colors of the steps in the pipeline figure */
+.md-typeset .step-badge {
+  display: inline-block;
+  min-width: 1.5em;
+  margin-right: 0.15em;
+  padding: 0 0.3em;
+  border: 1px solid #268bd280;
+  border-radius: 0.2em;
+  background: #268bd214;
+  color: var(--md-default-fg-color);
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* app cards in Running Aletheia (<div class="grid cards compact apps" markdown>): a domain tag on the
+   right of the title, and the size and origin of each app in smaller, muted text */
+/* one grid per category, always three columns (the most apps in a category), so the cards are as wide as
+   the page allows and keep the same width when a row has fewer apps; two columns on smaller screens
+   and one on phones */
+.md-typeset .grid.cards.compact.apps {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media screen and (max-width: 59.9375em) {
+  .md-typeset .grid.cards.compact.apps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 29.9375em) {
+  .md-typeset .grid.cards.compact.apps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* title row: icon, name and tag on one line, with the tag pushed to the right (wraps below long names) */
+.md-typeset .grid.cards.apps > ul > li > p:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.md-typeset .card-tag {
+  margin-left: auto;
+  padding: 0 0.45em;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 1em;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.75em;
+  line-height: 1.6;
+}
+
+.md-typeset .card-meta {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.9em;
+}
+
+
+/* a small arrow after some links in the page content (link-icons.js sets the class): up or down for a
+   section above or below on the same page, and diagonal for anything outside the site; links to other
+   pages of this site get no arrow. Material's octicons arrows, drawn in the color of the link */
+:root {
+  --link-icon-up: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath d=%22M3.47 7.78a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018L9 4.81v7.44a.75.75 0 0 1-1.5 0V4.81L4.53 7.78a.75.75 0 0 1-1.06 0%22/%3E%3C/svg%3E");
+  --link-icon-down: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath d=%22M13.03 8.22a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L3.47 9.28a.75.75 0 0 1 .018-1.042.75.75 0 0 1 1.042-.018l2.97 2.97V3.75a.75.75 0 0 1 1.5 0v7.44l2.97-2.97a.75.75 0 0 1 1.06 0%22/%3E%3C/svg%3E");
+  --link-icon-arrow: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath d=%22M4.53 4.75A.75.75 0 0 1 5.28 4h6.01a.75.75 0 0 1 .75.75v6.01a.75.75 0 0 1-1.5 0v-4.2l-5.26 5.261a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734L9.48 5.5h-4.2a.75.75 0 0 1-.75-.75%22/%3E%3C/svg%3E");
+}
+
+.md-typeset a.link-up { --link-icon: var(--link-icon-up); }
+.md-typeset a.link-down { --link-icon: var(--link-icon-down); }
+.md-typeset a.link-external { --link-icon: var(--link-icon-arrow); }
+
+.md-typeset a:is(.link-up, .link-down, .link-external)::after {
+  content: "";
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.15em;
+  vertical-align: -0.05em;
+  background-color: currentColor;
+  -webkit-mask: var(--link-icon) center / contain no-repeat;
+  mask: var(--link-icon) center / contain no-repeat;
+}
+
+/* problem caused by each pattern in What Aletheia Detects ("_Problem:_ ...{ .impact }"): a thin red bar on
+   the left and a red label, in the red of the violations in the diagrams, instead of a box */
+.md-typeset p.impact {
+  padding-left: 0.7em;
+  border-left: 0.2rem solid #dc322f;
+}
+
+.md-typeset p.impact > em:first-child {
+  color: #dc322f;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* parts of the warnings and constraints that Aletheia writes, colored by warning-colors.js in code blocks marked
+   with the "warnings" class: services in blue and databases in green, as in the diagrams */
+.md-typeset .warnings .w-label { font-weight: 600; }
+.md-typeset .warnings .w-service { color: #268bd2; }
+.md-typeset .warnings .w-db { color: #6c8000; }
+.md-typeset .warnings .w-constraint { color: #cb4b16; font-weight: 600; }
+.md-typeset .warnings .w-faded,
+.md-typeset .warnings .w-count { color: var(--md-default-fg-color--light); }
+
+[data-md-color-scheme="slate"] .md-typeset .warnings .w-db,
+[data-md-color-scheme="solarized-dark"] .md-typeset .warnings .w-db,
+[data-md-color-scheme="contrast-dark"] .md-typeset .warnings .w-db { color: #9cb31a; }
+
+/* placeholders in code that readers replace with their own values, such as {app} or {spec} (placeholders.js
+   sets the class): italic and in the theme's color for special code tokens, so they stand out in every theme */
+.md-typeset code .placeholder {
+  color: var(--md-code-hl-special-color);
+  font-style: italic;
+}

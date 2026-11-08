@@ -18,7 +18,6 @@ type InputConfig struct {
 	App               string               `yaml:"app"`
 	IgnoreCascade     []IgnoreCascadeEntry `yaml:"ignore_cascade"`
 	IgnoreForeignKeys []string             `yaml:"ignore_foreignkeys"`
-	// linearizable databases; the others are eventually consistent
 	LinearizableDatabases []string `yaml:"linearizable_databases"`
 }
 
@@ -54,8 +53,7 @@ func LoadInputConfig(appname string, path string) {
 	}
 }
 
-// IsLinearizable reports whether the database is listed as linearizable; databases not listed are
-// eventually consistent
+// IsLinearizable reports whether the database is listed as linearizable
 func IsLinearizable(database string) bool {
 	for _, entry := range Config.LinearizableDatabases {
 		if entry == database {

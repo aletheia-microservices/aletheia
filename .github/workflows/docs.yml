@@ -1,4 +1,4 @@
-# Builds the MkDocs site and publishes it to GitHub Pages (site_url in mkdocs.yml)
+# Builds the MkDocs site in docs/ and publishes it to GitHub Pages (site_url in docs/mkdocs.yml)
 # Requires Settings > Pages > Build and deployment > Source: GitHub Actions
 name: docs
 
@@ -24,12 +24,12 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0          # full history, for the "Last update" dates (git-revision-date-localized)
-          submodules: true        # docs/patterns.md includes code from blueprint/ (check_paths fails without it)
+          submodules: true        # docs/pages/patterns.md includes code from blueprint/ (check_paths fails without it)
       - uses: astral-sh/setup-uv@v6
-      - run: make docs-build      # mkdocs build --strict into site/
+      - run: make docs-build      # mkdocs build --strict into docs/site/
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          path: docs/site
 
   deploy:
     needs: build

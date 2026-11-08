@@ -6,4 +6,4 @@ Draws the service dependency graph of an app from the `output/{app}/app.json` th
 go run ./scripts/app-diagram trainticket   # writes output/trainticket/diagrams/app.png
 ```
 
-See [Generating Diagrams](https://aletheia-microservices.github.io/aletheia/3-usage/diagrams.html#app-diagram) for an example diagram, the options, and how to update the diagrams in [examples](examples/).
+See [Generate Diagrams](https://aletheia-microservices.github.io/aletheia/usage/diagrams/#app-diagram) for an example diagram, the options, and how to update the diagrams in [examples](examples/).
