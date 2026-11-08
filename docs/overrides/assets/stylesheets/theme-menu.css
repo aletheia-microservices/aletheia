@@ -1,0 +1,77 @@
+/* Theme menu (theme-menu.js): a button in the top bar, showing the current theme's icon, that opens the
+   list of themes below it */
+.theme-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-inline-start: 0.8rem;
+}
+
+.theme-menu__list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1;
+  min-width: 10rem;
+  margin: 0;
+  padding: 0.3rem 0;
+  border-radius: 0.2rem;
+  background-color: var(--md-default-bg-color);
+  box-shadow: var(--md-shadow-z2);
+  color: var(--md-default-fg-color);
+  list-style: none;
+}
+
+.theme-menu__list[hidden] {
+  display: none;
+}
+
+.theme-menu__list button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.4rem 0.8rem;
+  color: inherit;
+  font-size: 0.7rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.theme-menu__list svg {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  fill: currentcolor;
+}
+
+.theme-menu__list button:is(:hover, :focus-visible) {
+  background-color: var(--md-accent-fg-color--transparent);
+  color: var(--md-accent-fg-color);
+}
+
+/* the current theme: bold, with a check mark at the end of its line */
+.theme-menu__list button[aria-checked="true"] {
+  font-weight: 700;
+}
+
+.theme-menu__list button[aria-checked="true"]::after {
+  content: "";
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: auto;
+  background-color: currentcolor;
+  -webkit-mask: var(--theme-menu-check) center / contain no-repeat;
+  mask: var(--theme-menu-check) center / contain no-repeat;
+}
+
+:root {
+  --theme-menu-check: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59z"/></svg>');
+}
+
+/* Smaller glyph while retaining the full button target. */
+.theme-menu__button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}

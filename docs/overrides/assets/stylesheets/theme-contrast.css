@@ -1,0 +1,218 @@
+/* High contrast themes: black and white, with every text color at least 7:1 against its background
+   (WCAG AAA), secondary text on tinted bars at least 4.5:1, borders and outlines at least 3:1, links
+   underlined, and a visible outline around whatever has keyboard focus */
+
+/* High Contrast Light */
+[data-md-color-scheme="contrast-light"] {
+  color-scheme: light;
+  --md-default-bg-color: #ffffff;
+  --md-default-bg-color--light: #ffffffb3;
+  --md-default-bg-color--lighter: #ffffff4d;
+  --md-default-bg-color--lightest: #ffffff1f;
+  --md-default-fg-color: #000000;
+  --md-default-fg-color--light: #262626;
+  --md-default-fg-color--lighter: #595959;
+  --md-default-fg-color--lightest: #949494;     /* borders, separators and tinted bars */
+  --md-typeset-color: #000000;
+  --md-typeset-a-color: #0000c2;
+  --md-primary-fg-color: #0000c2;               /* buttons in the page; the top bar gets its own colors below */
+  --md-primary-fg-color--light: #0000c2;
+  --md-primary-fg-color--dark: #000091;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #ffffffb3;
+  --md-accent-fg-color: #7000b8;                /* hover and focus */
+  --md-accent-fg-color--transparent: #7000b81a;
+  --md-accent-bg-color: #ffffff;
+  --md-accent-bg-color--light: #ffffffb3;
+  --md-code-bg-color: #f2f2f2;
+  --md-code-bg-color--light: #f2f2f2b3;
+  --md-code-bg-color--lighter: #f2f2f24d;
+  --md-code-fg-color: #000000;
+  --md-code-hl-color: #0000c2;
+  --md-code-hl-color--light: #0000c21f;
+  --md-code-hl-keyword-color: #0033a6;
+  --md-code-hl-string-color: #005c00;
+  --md-code-hl-number-color: #a30000;
+  --md-code-hl-function-color: #6a1b9a;
+  --md-code-hl-constant-color: #004f80;
+  --md-code-hl-special-color: #9e0050;
+  --md-code-hl-comment-color: #4d4d4d;
+  --md-code-hl-operator-color: #1f1f1f;
+  --md-code-hl-punctuation-color: #1f1f1f;
+  --md-code-hl-generic-color: #1f1f1f;
+  --md-code-hl-variable-color: #1f1f1f;
+  --md-code-hl-name-color: var(--md-code-fg-color);
+  --md-typeset-mark-color: #ffff00;
+  --md-typeset-table-color: #767676;
+  --md-typeset-table-color--light: #0000000d;
+  --md-typeset-kbd-color: #ffffff;
+  --md-typeset-kbd-accent-color: #ffffff;
+  --md-typeset-kbd-border-color: #000000;
+  --md-admonition-fg-color: #000000;
+  --md-admonition-bg-color: #ffffff;
+  --md-footer-bg-color: #000000;
+  --md-footer-bg-color--dark: #000000;
+  --md-footer-fg-color: #ffffff;
+  --md-footer-fg-color--light: #e0e0e0;
+  --md-footer-fg-color--lighter: #bfbfbf;
+  --annotation-service-color: #0047ad;          /* annotated code, see below */
+  --annotation-database-color: #365200;
+  --annotation-other-color: #8f2a00;
+  --annotation-other-line-color: #8a6100;
+  --diagram-focus-color: #8a6100;               /* read by diagram-steps.js */
+  --diagram-idle-color: #595959;
+}
+
+/* High Contrast Dark */
+[data-md-color-scheme="contrast-dark"] {
+  color-scheme: dark;
+  --md-default-bg-color: #000000;
+  --md-default-bg-color--light: #000000b3;
+  --md-default-bg-color--lighter: #0000004d;
+  --md-default-bg-color--lightest: #0000001f;
+  --md-default-fg-color: #ffffff;
+  --md-default-fg-color--light: #e0e0e0;
+  --md-default-fg-color--lighter: #b3b3b3;
+  --md-default-fg-color--lightest: #5c5c5c;     /* borders, separators and tinted bars */
+  --md-typeset-color: #ffffff;
+  --md-typeset-a-color: #8cc2ff;
+  --md-primary-fg-color: #8cc2ff;               /* buttons in the page; the top bar gets its own colors below */
+  --md-primary-fg-color--light: #8cc2ff;
+  --md-primary-fg-color--dark: #5ea8ff;
+  --md-primary-bg-color: #000000;
+  --md-primary-bg-color--light: #000000b3;
+  --md-accent-fg-color: #ffd75e;                /* hover and focus */
+  --md-accent-fg-color--transparent: #ffd75e26;
+  --md-accent-bg-color: #000000;
+  --md-accent-bg-color--light: #000000b3;
+  --md-code-bg-color: #141414;
+  --md-code-bg-color--light: #141414b3;
+  --md-code-bg-color--lighter: #1414144d;
+  --md-code-fg-color: #ffffff;
+  --md-code-hl-color: #8cc2ff;
+  --md-code-hl-color--light: #8cc2ff33;
+  --md-code-hl-keyword-color: #94b8ff;
+  --md-code-hl-string-color: #9fe870;
+  --md-code-hl-number-color: #ffa3a3;
+  --md-code-hl-function-color: #e2acff;
+  --md-code-hl-constant-color: #78d8ff;
+  --md-code-hl-special-color: #ff94d4;
+  --md-code-hl-comment-color: #bdbdbd;
+  --md-code-hl-operator-color: #e6e6e6;
+  --md-code-hl-punctuation-color: #e6e6e6;
+  --md-code-hl-generic-color: #e6e6e6;
+  --md-code-hl-variable-color: #e6e6e6;
+  --md-code-hl-name-color: var(--md-code-fg-color);
+  --md-typeset-mark-color: #ffff00;
+  --md-typeset-table-color: #8c8c8c;
+  --md-typeset-table-color--light: #ffffff14;
+  --md-typeset-kbd-color: #1a1a1a;
+  --md-typeset-kbd-accent-color: #000000;
+  --md-typeset-kbd-border-color: #ffffff;
+  --md-admonition-fg-color: #ffffff;
+  --md-admonition-bg-color: #000000;
+  --md-footer-bg-color: #000000;
+  --md-footer-bg-color--dark: #000000;
+  --md-footer-fg-color: #ffffff;
+  --md-footer-fg-color--light: #e0e0e0;
+  --md-footer-fg-color--lighter: #bfbfbf;
+  --annotation-service-color: #80bcff;
+  --annotation-database-color: #bde05a;
+  --annotation-other-color: #ffa366;
+  --annotation-other-line-color: #ffd75e;
+  --diagram-focus-color: #ffd75e;
+  --diagram-idle-color: #a6a6a6;
+}
+
+/* Top bar: same color as the page, with a solid line below it, as theme-material.css does for Light and
+   Dark; the colors are overridden only inside the bar, so buttons in the page keep the link color */
+[data-md-color-scheme="contrast-light"] .md-header,
+[data-md-color-scheme="contrast-light"] .md-nav--primary .md-nav__title[for="__drawer"],
+[data-md-color-scheme="contrast-light"] .md-nav__source {
+  --md-primary-fg-color: #ffffff;
+  --md-primary-fg-color--dark: #ffffff;
+  --md-primary-bg-color: #000000;
+  --md-primary-bg-color--light: #262626;
+}
+
+[data-md-color-scheme="contrast-dark"] .md-header,
+[data-md-color-scheme="contrast-dark"] .md-nav--primary .md-nav__title[for="__drawer"],
+[data-md-color-scheme="contrast-dark"] .md-nav__source {
+  --md-primary-fg-color: #000000;
+  --md-primary-fg-color--dark: #000000;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #e0e0e0;
+}
+
+[data-md-color-scheme^="contrast-"] .md-header {
+  border-bottom: 0.1rem solid var(--md-default-fg-color);
+}
+
+/* Search box: outlined in the text color, instead of Material's translucent fill made for a colored bar */
+@media screen and (min-width: 60em) {
+  [data-md-color-scheme^="contrast-"] .md-search__form {
+    background-color: var(--md-default-bg-color);
+    box-shadow: inset 0 0 0 0.05rem var(--md-default-fg-color);
+  }
+
+  [data-md-color-scheme^="contrast-"] .md-search__form:hover {
+    background-color: var(--md-accent-fg-color--transparent);
+  }
+}
+
+/* Footer: the dark theme's footer is as black as the page, so a line separates them */
+[data-md-color-scheme="contrast-dark"] .md-footer {
+  border-top: 0.1rem solid var(--md-default-fg-color);
+}
+
+/* Floating boxes (search results, tooltips, back-to-top button, theme menu) get an outline, since a shadow
+   barely shows against white or black */
+[data-md-color-scheme^="contrast-"] :is(.md-search__output, .md-tooltip, .md-tooltip2, .md-top, .theme-menu__list) {
+  outline: 0.05rem solid var(--md-default-fg-color);
+}
+
+/* Links in the page are underlined, so they do not rely on color alone */
+[data-md-color-scheme^="contrast-"] .md-typeset a:not(.headerlink, .md-button, .glightbox) {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Keyboard focus: a solid outline in the accent color */
+[data-md-color-scheme^="contrast-"] :is(a, button, label, summary, input):focus-visible {
+  outline: 0.1rem solid var(--md-accent-fg-color);
+  outline-offset: 0.1rem;
+}
+
+/* Highlighted text: black on yellow, also in the dark theme, where the text would otherwise stay white */
+[data-md-color-scheme="contrast-dark"] .md-typeset mark {
+  color: #000000;
+}
+
+/* Annotated code (page.css): its Solarized colors are below 7:1 on these code backgrounds */
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated span.annotation-service:not(.hll) {
+  color: var(--annotation-service-color);
+}
+
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated span.annotation-database:not(.hll) {
+  color: var(--annotation-database-color);
+}
+
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated .c1.annotation-other,
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated span.annotation-other:not(.hll):not(.c1) {
+  color: var(--annotation-other-color);
+}
+
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated .hll.annotation-service {
+  background-color: color-mix(in srgb, var(--annotation-service-color) 15%, transparent);
+  box-shadow: 2px 0 0 0 var(--annotation-service-color) inset;
+}
+
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated .hll.annotation-database {
+  background-color: color-mix(in srgb, var(--annotation-database-color) 15%, transparent);
+  box-shadow: 2px 0 0 0 var(--annotation-database-color) inset;
+}
+
+[data-md-color-scheme^="contrast-"] .md-typeset .annotated .hll.annotation-other {
+  background-color: color-mix(in srgb, var(--annotation-other-line-color) 15%, transparent);
+  box-shadow: 2px 0 0 0 var(--annotation-other-line-color) inset;
+}

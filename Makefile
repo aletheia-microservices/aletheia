@@ -59,27 +59,32 @@ registry: ## regenerate the app registry and go.mod entries from registry/*.yaml
 	go run ./scripts/gen-registry
 	@$(MAKE) --no-print-directory build
 
+# everything MkDocs-related (mkdocs.yml, the pages in pages/, theme overrides, the Python project and the
+# built site/) lives in docs/; uv --directory runs from there, so uv uses docs/pyproject.toml and
+# docs/.venv, and mkdocs finds docs/mkdocs.yml
+DOCS := docs
+
 # the docs targets need uv, which the official install script puts in ~/.local/bin
 docs-install docs-install-brew docs-serve docs-build: export PATH := $(HOME)/.local/bin:$(PATH)
 
 .PHONY: docs-install
 docs-install: ## install the docs dependencies (installs uv with its install script if missing)
 	@command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
-	uv sync --group docs
+	uv --directory $(DOCS) sync --group docs
 
 .PHONY: docs-install-brew
 docs-install-brew: ## install the docs dependencies (installs uv with Homebrew if missing)
 	@command -v uv >/dev/null || brew install uv
-	uv sync --group docs
+	uv --directory $(DOCS) sync --group docs
 
 .PHONY: docs-serve
 docs-serve: ## serve the docs site with live reload and open it in the browser
-	uv run --group docs mkdocs serve --open
+	uv --directory $(DOCS) run --group docs mkdocs serve --open
 
 .PHONY: docs-build
-docs-build: ## build the docs site into site/ (fails on broken links)
-	uv run --group docs mkdocs build --strict
+docs-build: ## build the docs site into docs/site/ (fails on broken links)
+	uv --directory $(DOCS) run --group docs mkdocs build --strict
 
 .PHONY: clean
 clean: ## remove build artifacts
-	rm -rf bin site
+	rm -rf bin $(DOCS)/site

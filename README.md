@@ -8,9 +8,9 @@
 [![Cite](https://img.shields.io/badge/Cite-BibTeX-6c757d)](#citation)
 
 **Aletheia: Automated Detection of Data Integrity Violations in Microservices**<br>
-Mafalda Sofia Ferreira, João Ferreira Loff, João Garcia, and Rodrigo Rodrigues<br>
+Mafalda Sofia Ferreira, João Ferreira Loff, João Garcia, Rodrigo Rodrigues<br>
 INESC-ID, Instituto Superior Técnico, Universidade de Lisboa<br>
-*20th USENIX Symposium on Operating Systems Design and Implementation (OSDI ’26)*
+*20th USENIX Symposium on Operating Systems Design and Implementation (OSDI 2026)*
 
 For instructions on how to reproduce the experiments from the paper, see the [Aletheia Artifact OSDI'26](https://github.com/aletheia-microservices/aletheia-artifact-osdi26) repository.
 
@@ -52,7 +52,7 @@ If you use Aletheia in your work, please cite our paper:
 @inproceedings{aletheia-osdi26,
   author = {Mafalda Sofia Ferreira and Jo{\~a}o Ferreira Loff and Jo{\~a}o Garcia and Rodrigo Rodrigues},
   title = {Aletheia: Automated Detection of Data Integrity Violations in Microservices},
-  booktitle = {20th USENIX Symposium on Operating Systems Design and Implementation (OSDI 26)},
+  booktitle = {20th USENIX Symposium on Operating Systems Design and Implementation (OSDI 2026)},
   year = {2026},
   isbn = {978-1-939133-55-7},
   address = {Seattle, WA},
